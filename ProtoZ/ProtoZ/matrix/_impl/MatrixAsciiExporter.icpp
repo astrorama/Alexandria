@@ -1,0 +1,106 @@
+/** 
+ * @file MatrixAsciiExporter.icpp
+ * @date December 13, 2013
+ * @author Nikolaos Apostolakos
+ */
+
+#ifdef MATRIXASCIIEXPORTER_IMPL
+
+#include "ProtoZ/matrix/MatrixAsciiExporter.h"
+
+#define ASCII_TABLE_COLUMN_WIDTH 20
+
+namespace ProtoZ {
+namespace matrix {
+
+template<typename T, typename... Axes>
+void MatrixAsciiExporter::exportMatrixAsAsciiFile(const std::string& filename,
+                                                  const Matrix<T,Axes...>& matrix) {
+  exportMatrixAsAsciiFile(filename, matrix, "Value");
+}
+
+template<typename T, typename... Axes>
+void MatrixAsciiExporter::exportMatrixAsAsciiFile(const std::string& filename,
+                                                  const Matrix<T,Axes...>& matrix,
+                                                  const std::string& matrixName) {
+  std::ofstream ofs(filename);
+  ofs << "#";
+  ofs << AxesLabelCreator<Axes...>::createTitle(matrix.axesInfo(), matrixName,
+                                        TemplateLoopCounter<sizeof...(Axes)>{});
+  ofs << "\n";
+  // Instead of iterating through the different axes we iterate through the data
+  // of the matrix and delegate the reconstruction of the different axes indices
+  // to the DataTextCreator class
+  for (uint64_t i = 0; i < matrix.m_data.size(); ++i) {
+    std::string line = DataTextCreator<T,Axes...>::createDataLine(
+                             matrix, i, TemplateLoopCounter<sizeof...(Axes)>{});
+    ofs << line;
+    ofs << "\n";
+  }
+  ofs.close();
+}
+
+template<typename T, typename... Axes>
+class MatrixAsciiExporter::DataTextCreator {
+  
+public:
+  
+  template<int I>
+  static std::string createDataLine(const Matrix<T, Axes...>& matrix, uint64_t index,
+                                    const TemplateLoopCounter<I>&) {
+    // The following lines calculate the axis index based on the index of the
+    // data vector.
+    uint32_t axisIndex = index;
+    for (int i = matrix.rank()-1; i >= I; --i) {
+      axisIndex = axisIndex % matrix.m_axis_index_factors[i];
+    }
+    axisIndex = axisIndex / matrix.m_axis_index_factors[I-1];
+    
+    std::stringstream dataText;
+    dataText << std::setw(ASCII_TABLE_COLUMN_WIDTH);
+    dataText << std::get<I-1>(matrix.m_axes).indexToValue(axisIndex);
+    dataText << createDataLine(matrix, index, TemplateLoopCounter<I-1>{});
+    return dataText.str();
+  }
+  
+  // The last column contains the value of the matrix
+  static std::string createDataLine(const Matrix<T, Axes...>& matrix, uint64_t index,
+                                    const TemplateLoopCounter<0>&) {
+    std::stringstream dataText;
+    dataText << std::setw(ASCII_TABLE_COLUMN_WIDTH) << matrix.m_data[index];
+    return dataText.str();
+  }
+  
+}; /* end of MatrixAsciiExporter::DataTextCreator */
+  
+template<typename... Axes>
+class MatrixAsciiExporter::AxesLabelCreator {
+  
+public:
+  
+  template<int I>
+  static std::string createTitle(const std::tuple<AxisInfo<Axes>...>& axes,
+                                 const std::string& matrixName,
+                                 const TemplateLoopCounter<I>&) {
+    std::stringstream title;
+    title << std::setw(ASCII_TABLE_COLUMN_WIDTH);
+    // The extra space is to align correctly because of the initial #
+    title << std::get<I-1>(axes).name() + " ";
+    title << createTitle(axes, matrixName, TemplateLoopCounter<I-1>{});
+    return title.str();
+  }
+  
+  static std::string createTitle(const std::tuple<AxisInfo<Axes>...>&,
+                                 const std::string& matrixName,
+                                 const TemplateLoopCounter<0>&) {
+    std::stringstream title;
+    title << std::setw(ASCII_TABLE_COLUMN_WIDTH) << matrixName + " ";
+    return title.str();
+  }
+  
+}; /* end of MatrixAsciiExporter::AxesLabelCreator */
+
+} /* namespace matrix */
+} /* namespace ProtoZ */
+
+#endif /* MATRIXASCIIEXPORTER_IMPL */

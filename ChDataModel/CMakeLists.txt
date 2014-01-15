@@ -1,0 +1,54 @@
+elements_subdir(ChDataModel 1.0)
+
+elements_depends_on_subdirs(ChTools)
+
+find_package(Boost REQUIRED COMPONENTS filesystem thread system)
+find_package(Eigen3)
+
+
+#===== Libraries ===============================================================
+
+elements_add_library(ChDataModel src/*.cpp src/Fits/*.cpp
+                  LINK_LIBRARIES ${CMAKE_DL_LIBS} Boost ChTools
+                  INCLUDE_DIRS Eigen3 Boost ChTools
+                  PUBLIC_HEADERS ChDataModel)
+
+
+#===== Boost tests =============================================================
+
+elements_add_unit_test(Catalog_test tests/src/Catalog_test.cpp tests/src/TestMain.cpp
+                       LINK_LIBRARIES ChDataModel ChTools TYPE Boost)
+
+elements_add_unit_test(Filter_test tests/src/Filter_test.cpp tests/src/TestMain.cpp
+                       LINK_LIBRARIES ChDataModel ChTools TYPE Boost)
+
+elements_add_unit_test(Photometry_test tests/src/Photometry_test.cpp tests/src/TestMain.cpp
+                       LINK_LIBRARIES ChDataModel ChTools TYPE Boost)
+
+elements_add_unit_test(Sed_test tests/src/Sed_test.cpp tests/src/TestMain.cpp
+                       LINK_LIBRARIES ChDataModel ChTools TYPE Boost)
+
+elements_add_unit_test(Source_test tests/src/Source_test.cpp tests/src/TestMain.cpp
+                       LINK_LIBRARIES ChDataModel ChTools TYPE Boost)
+
+elements_add_unit_test(Survey_test tests/src/Survey_test.cpp tests/src/TestMain.cpp
+                       LINK_LIBRARIES ChDataModel ChTools TYPE Boost)
+
+elements_add_unit_test(VectorPair_test tests/src/VectorPair_test.cpp tests/src/TestMain.cpp
+                       LINK_LIBRARIES ChDataModel ChTools TYPE Boost)
+
+elements_add_unit_test(Keyword_test tests/src/Keyword_test.cpp tests/src/TestMain.cpp
+                       LINK_LIBRARIES ChDataModel ChTools TYPE Boost)
+
+elements_add_unit_test(Header_test tests/src/Header_test.cpp tests/src/TestMain.cpp
+                       LINK_LIBRARIES ChDataModel ChTools TYPE Boost)
+
+elements_add_unit_test(Image_test tests/src/Image_test.cpp tests/src/TestMain.cpp
+                       LINK_LIBRARIES ChDataModel ChTools TYPE Boost)
+
+#-------------------------------------------------------------------------------
+
+elements_add_unit_test(ChDataModel_all_tests tests/src/*_test.cpp tests/src/TestMain.cpp
+                       LINK_LIBRARIES ChDataModel ChTools TYPE Boost)
+
+#-------------------------------------------------------------------------------

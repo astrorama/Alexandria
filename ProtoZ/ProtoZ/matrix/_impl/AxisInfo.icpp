@@ -1,0 +1,42 @@
+/** 
+ * @file AxisInfo.icpp
+ * @date December 10, 2013
+ * @author Nikolaos Apostolakos
+ */
+
+#ifdef AXISINFO_IMPL
+
+namespace ProtoZ {
+namespace matrix {
+
+template<typename T>
+AxisInfo<T>::AxisInfo(const std::string& name, const std::vector<T>& values)
+       : m_name{name}, m_values{values} { }
+
+template<typename T>
+uint32_t AxisInfo<T>::size() const {
+  return m_values.size();
+}
+
+template<typename T>
+const std::string& AxisInfo<T>::name() const {
+  return m_name;
+}
+
+template<typename T>
+const T& AxisInfo<T>::indexToValue(uint32_t index) const {
+  return m_values.at(index);
+}
+
+template<typename T>
+int64_t AxisInfo<T>::valueToIndex(const T& value) const {
+  for (int i = 0; i < m_values.size(); i++)
+    if (value == m_values[i])
+      return i;
+  return -1;
+}
+
+} /* namespace matrix */
+} /* namespace ProtoZ */
+
+#endif /* AXISINFO_IMPL */
