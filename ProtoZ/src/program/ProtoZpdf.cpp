@@ -141,7 +141,7 @@ public:
   void mainMethod() {
 
     // Get logger and log the entry into the mainMethod
-    ElementsLogging& logger = ElementsLogging::getLogger();
+    ElementsLogging logger = ElementsLogging::getLogger("ProtoZpdf");
 
     logger.info("#");
     logger.info("#  Logging from the mainMethod() of the ProtoZpdf ");
