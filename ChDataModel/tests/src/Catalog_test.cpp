@@ -7,7 +7,7 @@
 
 #include <boost/test/unit_test.hpp>
 #include "ChDataModel/Enumerations/SurveyNames.h"
-#include "ChDataModel/Source/Source.h"
+#include "ChDataModel/Source.h"
 #include "ChDataModel/Catalog.h"
 
 #include "ElementsKernel/ElementsException.h"

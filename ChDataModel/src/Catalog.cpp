@@ -10,7 +10,7 @@
 #include <iomanip>
 
 #include "ChDataModel/Catalog.h"
-#include "ChDataModel/Source/Source.h"
+#include "ChDataModel/Source.h"
 
 #include "ElementsKernel/ElementsException.h"
 

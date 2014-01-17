@@ -10,7 +10,7 @@
 #define CATALOG_H_
 
 #include <map>
-#include "ChDataModel/Source/Source.h"
+#include "ChDataModel/Source.h"
 
 namespace ChDataModel {
 
