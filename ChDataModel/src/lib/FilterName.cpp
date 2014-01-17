@@ -20,9 +20,9 @@ const std::string& FilterName::name() const {
 }
 
 const std::string& FilterName::qualifiedName() const {
-  if (!m_qual_name) {
+  if (m_qual_name.empty()) {
     std::string temp {m_group};
-    temp.append('/').append(m_name);
+    temp.append("/").append(m_name);
     m_qual_name = temp;
   }
   return m_qual_name;
@@ -31,10 +31,40 @@ const std::string& FilterName::qualifiedName() const {
 size_t FilterName::hash() const {
   if (m_hash == 0) {
       std::hash<std::string> stringHash;
-      size_t temp = 0;
-      m_hash = temp;
+      m_hash = stringHash(qualifiedName());
     }
     return m_hash;
 }
 
+bool FilterName::operator<(const FilterName& other) const {
+  size_t thisHash = this->hash();
+  size_t otherHash = other.hash();
+  if (thisHash != otherHash) {
+    return thisHash < otherHash;
+  } else{
+    return this->qualifiedName() < other.qualifiedName();
+  }
+}
+
+bool FilterName::operator==(const FilterName& other) const {
+  size_t thisHash = this->hash();
+  size_t otherHash = other.hash();
+  if (thisHash != otherHash) {
+    return false;
+  } else{
+    return this->qualifiedName() == other.qualifiedName();
+  }
+}
+
 } // namespace ChDataModel
+
+namespace std {
+
+template <>
+struct hash<ChDataModel::FilterName> {
+  size_t operator()(const ChDataModel::FilterName& filterName) const {
+    return filterName.hash();
+  }
+};
+
+} // namespace std

@@ -17,6 +17,10 @@ class FilterName {
 public:
 
   FilterName(const std::string& group, const std::string& name);
+  
+  FilterName(const FilterName& other);
+  
+  FilterName& operator=(const FilterName& other);
 
   virtual ~FilterName() = default;
 

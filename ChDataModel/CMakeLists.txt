@@ -8,7 +8,7 @@ find_package(Eigen3)
 
 #===== Libraries ===============================================================
 
-elements_add_library(ChDataModel src/*.cpp src/Fits/*.cpp
+elements_add_library(ChDataModel src/*.cpp src/Fits/*.cpp src/lib/*.cpp
                   LINK_LIBRARIES ${CMAKE_DL_LIBS} Boost 
                   INCLUDE_DIRS Eigen3 Boost 
                   PUBLIC_HEADERS ChDataModel)
@@ -38,6 +38,9 @@ elements_add_unit_test(Header_test tests/src/Header_test.cpp tests/src/TestMain.
                        LINK_LIBRARIES ChDataModel TYPE Boost)
 
 elements_add_unit_test(Image_test tests/src/Image_test.cpp tests/src/TestMain.cpp
+                       LINK_LIBRARIES ChDataModel TYPE Boost)
+
+elements_add_unit_test(FilterName_test tests/src/FilterName_test.cpp tests/src/TestMain.cpp
                        LINK_LIBRARIES ChDataModel TYPE Boost)
 
 #-------------------------------------------------------------------------------
