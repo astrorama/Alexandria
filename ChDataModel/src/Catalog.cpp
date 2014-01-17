@@ -10,7 +10,7 @@
 #include <iomanip>
 
 #include "ChDataModel/Catalog.h"
-#include "ChDataModel/Survey.h"
+#include "ChDataModel/Source/Source.h"
 
 #include "ElementsKernel/ElementsException.h"
 
@@ -21,7 +21,7 @@ namespace ChDataModel {
 //-----------------------------------------------------------------------------
 // Add a source to the catalog
 
-Source & Catalog::addSource(const Source & source) {
+void Catalog::addSource(const Source & source) {
 
   // Insert the source into the container
   const pair<map<int64_t, Source>::iterator, bool> & p = m_source_map.insert(
@@ -34,12 +34,6 @@ Source & Catalog::addSource(const Source & source) {
         << " is already in this catalog" << endl;
     throw ElementsException(errorBuffer.str());
   }
-
-  // In the source, set the back pointer to this catalog
-  p.first->second.setCatalogPtr(this);
-
-  // Return the source object
-  return p.first->second;
 
 } // Eof Catalog::createSource
 
@@ -63,24 +57,6 @@ Source & Catalog::getSource(int64_t source_id) {
   return m_source_map[source_id];
 
 } // Eof Catalog::getSource
-
-//-----------------------------------------------------------------------------
-
-void Catalog::printCatalog() {
-
-  cout << "In Catalog : Number of sources   = " << size() << endl;
-
-  int srcNr = 0;
-  for (Catalog::SourceIterator it2 = begin(); it2 != end(); ++it2) {
-
-    cout << "\n===== Source no. " << ++srcNr << " =========================\n";
-    it2->printSource();
-
-  } // Eof for (sources)
-
-  cout << "***** End of Catalog *************************\n\n";
-
-} // Eof Source::printCatalog
 
 //-----------------------------------------------------------------------------
 

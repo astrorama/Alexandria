@@ -19,9 +19,6 @@ elements_add_library(ChDataModel src/*.cpp src/Fits/*.cpp
 elements_add_unit_test(Catalog_test tests/src/Catalog_test.cpp tests/src/TestMain.cpp
                        LINK_LIBRARIES ChDataModel TYPE Boost)
 
-elements_add_unit_test(Filter_test tests/src/Filter_test.cpp tests/src/TestMain.cpp
-                       LINK_LIBRARIES ChDataModel TYPE Boost)
-
 elements_add_unit_test(Photometry_test tests/src/Photometry_test.cpp tests/src/TestMain.cpp
                        LINK_LIBRARIES ChDataModel TYPE Boost)
 
@@ -29,9 +26,6 @@ elements_add_unit_test(Sed_test tests/src/Sed_test.cpp tests/src/TestMain.cpp
                        LINK_LIBRARIES ChDataModel TYPE Boost)
 
 elements_add_unit_test(Source_test tests/src/Source_test.cpp tests/src/TestMain.cpp
-                       LINK_LIBRARIES ChDataModel TYPE Boost)
-
-elements_add_unit_test(Survey_test tests/src/Survey_test.cpp tests/src/TestMain.cpp
                        LINK_LIBRARIES ChDataModel TYPE Boost)
 
 elements_add_unit_test(VectorPair_test tests/src/VectorPair_test.cpp tests/src/TestMain.cpp
