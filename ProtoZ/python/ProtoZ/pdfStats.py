@@ -1,4 +1,5 @@
 #! /usr/bin/env python
+# Author NM
 
 import os
 import subprocess
@@ -10,23 +11,6 @@ import matplotlib.pyplot as plt
 from astropy.table import Table
 
 
-def display_histo(data, mean, median, sigma, outliersPercent, filename):
-    """
-    """
-    # display histogram
-    plt.hist(data, bins=100)
-    plt.suptitle("Outliers >1.5 Histogram for file: %s" % filename)
-    plt.xlabel("Value")
-    plt.ylabel("Frequency")
-    xticks = np.arange(min(data), max(data), 0.25)
-    plt.xticks(xticks)
-    plt.title('Mean: %2.5f Median: %2.5f Sigma: %2.5f Outliers: %2.5f%% ' % (mean, median, sigma, outliersPercent))
-    plt.show()
-               
-    
-#
-#-------------------------------------------------------------------------------
-#
 
 def file_exist(file):
     """
@@ -48,10 +32,12 @@ def read_table(filename, mode='ascii'):
     
     return data
              
+          
 #
 #-------------------------------------------------------------------------------
 #
-
+    
+    
 def compute_stats(array):
     """
     Computes mean, median, sigma and outliers 
@@ -62,24 +48,76 @@ def compute_stats(array):
     # 
     specZ = array.field(1)
     photZ = array.field(2)
+ 
 
-    diffArr = abs(photZ - specZ) 
+    diffArr = photZ - specZ
     plusArr = 1 + specZ  
     dataArr = diffArr / plusArr
     
     mean     = np.average(dataArr)
     median   = np.median(dataArr)
     sigma    = np.std(dataArr)
-    outliers = [i for i in dataArr if i >= 0.15]
+    
+    # Mean absolute deviation
+    mad = np.median(abs(dataArr - median)) 
+    
+    absDataArr = abs(dataArr)
+    outliers = [i for i in absDataArr if i > 0.15]
     outliersPercent =  len(outliers)*100. / len(photZ)
+ 
+    # Without outliers
+    noOutliersArr   = [i for i in absDataArr if i <= 0.15]
+    sigmaNoOutliers = np.std(noOutliersArr)
+    meanNoOutliers  = np.average(noOutliersArr)
     
-    print '--> Mean         : ', mean     
-    print '--> Median       : ', median     
-    print '--> Sigma        : ', sigma     
-    print '--> Outliers     : ', outliersPercent, '%'
-    
-    return (dataArr, mean, median, sigma, outliersPercent)
+                    
+    print '--> Mean                : ', mean     
+    print '--> Median              : ', median     
+    print '--> Sigma               : ', sigma     
+    print '--> Mad                 : ', mad     
+    print '--> Outliers            : ', outliersPercent, '%'
+    print '--> Sigma (no outliers) : ', sigmaNoOutliers     
+   
+    return (specZ, photZ, dataArr, mean, median, sigma, mad, outliersPercent, sigmaNoOutliers, meanNoOutliers)
 
+#
+#-------------------------------------------------------------------------------
+#
+
+def display_data(specZ, photZ, data, mean, median, sigma, mad, outliersPercent, sigmaNoOutliers, meanNoOutliers, filename):
+    """
+    """
+    # First plot specZ/photZ
+    
+    fig1 = plt.subplot(2, 1, 1, aspect=1.0)  # 2 graphs 
+    plt.subplots_adjust(hspace = .4) 
+                       
+    plt.xlabel("SpecZ")
+    plt.ylabel("PhotZ")
+    plt.plot(np.arange(0, max(photZ)),np.arange(0, max(photZ)),"r")
+    plt.plot(specZ,photZ,"yo")
+    plt.plot(plt.xlim(), plt.xlim(),"r")
+        
+    fig2 = plt.subplot(2, 1, 2)  # 2 graphs 
+    plt.subplots_adjust(hspace = .4)
+   
+    # Second plot (histogram)
+    
+    barValues, bins, patches = plt.hist(data, bins=100) 
+
+    plt.axvline(x=0.15,color='r')
+    plt.axvline(x=-0.15,color='r')
+    plt.suptitle("Outliers >1.5 Histogram for file: %s" % filename)
+    plt.xlabel("Value")
+    plt.ylabel("Frequency")
+    plt.title('Distribution of : (photZ - specZ)/(1 + specZ)')
+              
+    # Write information
+    txt = ' Mean : %2.5f\n Median : %2.5f\n Mad : %2.5f\n Sigma : %2.5f\n Outliers : %2.5f%%\n Sigma(no outliers) : %2.5f\n Mean((no outliers) : %2.5f ' \
+        % (mean, median, mad, sigma, outliersPercent, sigmaNoOutliers, meanNoOutliers)
+    plt.text(max(bins)-0.5, max(barValues), txt, fontsize=15, family='sans-serif', style='italic', ha='left', va='top')
+    
+    plt.show() 
 #
 #-------------------------------------------------------------------------------
 #
@@ -104,7 +142,8 @@ def main():
     parser.add_option("-f", "--file", dest="input_file", type="string",
                       default="/tmp/pdf_catalog.dat",
                       help="Input file to read(catalog) (default: /tmp/pdf_catalog.dat)")
-    parser.add_option("-d", "--display", dest="display", type="string",
+    parser.add_option("-n", "--noplot", dest="display", action="store_false",
+                      default=True,
                       help="Plots the data distribution (by default) ")
 
     (options, args) = parser.parse_args()
@@ -115,20 +154,19 @@ def main():
     
 ################## MAIN ###########
 if __name__ == '__main__':
-        
-    # Create logger
-    
-
+            
     (options,args) = main()  
     
     # Get program options
-    input_file = options.input_file
-
+    input_file = options.input_file   
     file_exist(input_file)
-    table = read_table(input_file)    
-    (data, mean, median, sigma, outliersPercent) = compute_stats(table)
-    if str(options.display) == 'true':
-       display_histo(data, mean, median, sigma, outliersPercent, input_file)
+    # Read file
+    table = read_table(input_file)
+    # Get stats    
+    (specZ, photZ, data, mean, median, mad, sigma, outliersPercent,sigmaNoOutliers, meanNoOutliers) = compute_stats(table)
+    # Plot distribution
+    if options.display:
+       display_data(specZ, photZ, data, mean, median, mad, sigma, outliersPercent, sigmaNoOutliers, meanNoOutliers, input_file)
     
     
     
