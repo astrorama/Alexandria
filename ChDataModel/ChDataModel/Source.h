@@ -23,9 +23,9 @@ class Source {
 
 public:
 
-  Source() {}
   /// Constructor with member assignment
-  Source(int64_t source_id) : m_source_id(source_id) {
+  Source(int64_t source_id, std::map<AttributeName, Attribute> attribute_map) :
+      m_source_id(source_id), m_attribute_map(attribute_map) {
   }
 
   /// Virtual default destructor
@@ -36,12 +36,19 @@ public:
     return m_source_id;
   }
 
+  std::map<AttributeName, Attribute> getAttributeMap() const {
+    return m_attribute_map;
+  }
+
 private:
 
   /// Source identification (attributed in the survey)
-  const int64_t m_source_id {};
+  const int64_t m_source_id { };
 
-}; // Eof class Source
+  std::map<AttributeName, Attribute> m_attribute_map;
+
+};
+// Eof class Source
 
 } /* namespace ChDataModel */
 #endif /* SOURCE_H_ */

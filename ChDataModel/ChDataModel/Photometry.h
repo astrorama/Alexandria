@@ -1,11 +1,9 @@
 /**
  * @file Photometry.h
  *
- * @author Pierre Dubath
- *
- * Created on: Jan 30, 2013
+ * Created on: Jan 17, 2014
+ *     Author: Pierre Dubath
  */
-
 #ifndef PHOTOMETRY_H_
 #define PHOTOMETRY_H_
 
@@ -13,25 +11,11 @@
 
 namespace ChDataModel {
 
-/// Forward declaration
-class Source;
 
-/// Source pointer type
-typedef Source* SourcePtr;
 
 /**
- * The Photometry class is design to store a photometric measurement
- * obtained throw the specified filter (filterName).
- * The photometric "values" can be of different types:
- *
- *  - flux
- *  - AB magnitude
- *  - Vega magnitude
- *
- * as indicated by the "photometry type". All fields are constant and
- * should be provided to the constructor, except for the source "back" pointer,
- * that can be set. This allows to create "free floating" photometric objects,
- * that can be associated to a given source later.
+ * The Photometry class is design to store a photometric flux measurement
+ * obtained through the specified filter (filterName).
  */
 class Photometry {
 

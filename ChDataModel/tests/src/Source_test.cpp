@@ -7,7 +7,12 @@
 
 #include <boost/test/unit_test.hpp>
 #include "ChDataModel/Source.h"
-#include "ChDataModel/Catalog.h"
+#include "ChDataModel/Photometry.h"
+#include "ChDataModel/Attribute.h"
+#include "ChDataModel/AttributeName.h"
+#include "ChDataModel/SourceAttribute/Coordinates.h"
+#include "ChDataModel/SourceAttribute/PhotometryMap.h"
+#include "ChDataModel/SourceAttribute/SpectroscopicRedshift.h"
 
 #include "ElementsKernel/ElementsException.h"
 
@@ -22,47 +27,30 @@ using namespace std;
 typedef Source* SourcePtr;
 typedef Catalog * CatalogPtr;
 
-//struct SourceFix {
-//
-//  CatalogPtr catalog_ptr;
-//  SourcePtr source_ptr;
-//  SourcePtr source_ptr_2;
-//  int64_t expectedSourceId = 1273684;
-//  int64_t expectedSourceId2 = 3;
-//  double expectedRa = 181.4657;
-//  double expectedDec = -36.27363;
-//  Photometry photometry_1 = Photometry(FilterNames::V_Subaru,
-//      PhotometryTypes::AB_MAGNITUDE, 13.6452, 0.002534);
-//  Photometry photometry_2 = Photometry(FilterNames::u_CFHT,
-//      PhotometryTypes::AB_MAGNITUDE, 11.5452, 0.001324);
-//
-//  string expected_photometric_parameter_names_1 = "eppn_1";
-//  string expected_photometric_parameter_names_2 = "eppn_2";
-//  string expected_photometric_parameter_names_3 = "eppn_3";
-//
-//  double expected_photometric_parameter_value_1 = 102.364;
-//  double expected_photometric_parameter_value_2 = 2384.645;
-//  double expected_photometric_parameter_value_3 = 34.273;
-//
-//  SourceFix() {
-//    // setup
-//    catalog_ptr = new Catalog();
-//    source_ptr = new Source(expectedSourceId, expectedRa, expectedDec);
-//    source_ptr->addPhotometry(photometry_1);
-//    source_ptr->addPhotometry(photometry_2);
-//    source_ptr_2 = new Source(expectedSourceId2, expectedRa,
-//        expectedDec);
-//  }
-//  ~SourceFix() {
-//    // teardown
-//    delete catalog_ptr;
-//    delete source_ptr;
-//    delete source_ptr_2;
-//  }
-//
-//  SourceFix(const SourceFix&) = delete ;
-//
-//};
+struct SourceFix {
+
+  int64_t expectedSourceId = 1273684;
+
+  double expectedRa = 181.4657;
+  double expectedDec = -36.27363;
+  Coordinates coordinate {expectedRa, expectedDec};
+
+
+  Photometry photometry_1 = Photometry("V_Subaru", 0.026354, 0.000534);
+  Photometry photometry_2 = Photometry("u_CFHT", 0.5642, 0.001324);
+
+  map<>
+
+  SourceFix() {
+    // setup
+  }
+  ~SourceFix() {
+    // teardown
+  }
+
+  SourceFix(const SourceFix&) = delete ;
+
+};
 
 //-----------------------------------------------------------------------------
 
