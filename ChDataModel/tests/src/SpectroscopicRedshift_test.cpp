@@ -5,7 +5,7 @@
  * @author dubath
  */
 
-#include "SpectroscopicRedshift.h"
+#include "ChDataModel/SourceAttributes/SpectroscopicRedshift.h"
 
 namespace ChDataModel {
 

@@ -17,7 +17,7 @@ public:
   Attribute(AttributeName attribute_name) : m_attribute_name(attribute_name) {}
   virtual ~Attribute() {}
 
-  const AttributeName getAttributeName() const {
+  AttributeName getAttributeName() const {
     return m_attribute_name;
   }
 

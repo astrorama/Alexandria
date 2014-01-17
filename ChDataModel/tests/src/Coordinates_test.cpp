@@ -5,7 +5,7 @@
  * @author dubath
  */
 
-#include "Coordinates.h"
+#include "ChDataModel/SourceAttributes/Coordinates.h"
 
 namespace ChDataModel {
 

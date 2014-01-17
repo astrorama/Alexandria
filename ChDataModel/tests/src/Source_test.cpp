@@ -10,14 +10,15 @@
 #include "ChDataModel/Photometry.h"
 #include "ChDataModel/Attribute.h"
 #include "ChDataModel/AttributeName.h"
-#include "ChDataModel/SourceAttribute/Coordinates.h"
-#include "ChDataModel/SourceAttribute/PhotometryMap.h"
-#include "ChDataModel/SourceAttribute/SpectroscopicRedshift.h"
+#include "ChDataModel/SourceAttributes/Coordinates.h"
+#include "ChDataModel/SourceAttributes/PhotometryMap.h"
+#include "ChDataModel/SourceAttributes/SpectroscopicRedshift.h"
 
 #include "ElementsKernel/ElementsException.h"
 
 #include <iostream>
 #include <map>
+#include "ChDataModel/Catalog.h"
 
 using namespace ChDataModel;
 using namespace std;
@@ -39,7 +40,7 @@ struct SourceFix {
   Photometry photometry_1 = Photometry("V_Subaru", 0.026354, 0.000534);
   Photometry photometry_2 = Photometry("u_CFHT", 0.5642, 0.001324);
 
-  map<>
+//  map<>
 
   SourceFix() {
     // setup

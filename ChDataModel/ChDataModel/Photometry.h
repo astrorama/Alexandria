@@ -34,11 +34,11 @@ public:
     return m_filter_name;
   }
 
-  const double getFlux() const {
+  double getFlux() const {
     return m_flux;
   }
 
-  const double getFluxError() const {
+  double getFluxError() const {
     return m_flux_error;
   }
 

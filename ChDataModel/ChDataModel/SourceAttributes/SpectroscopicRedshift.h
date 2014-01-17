@@ -8,18 +8,20 @@
 #ifndef SPECTROSCOPICREDSHIFT_H_
 #define SPECTROSCOPICREDSHIFT_H_
 
+#include "ChDataModel/Attribute.h"
+
 namespace ChDataModel {
 
 class SpectroscopicRedshift : public Attribute {
 public:
-  SpectroscopicRedshift(double value, double error) : m_value(value), m_error(error) {}
+  SpectroscopicRedshift(double value, double error) : Attribute{AttributeName::SPECTROSCOPIC_REDSHIFT}, m_value(value), m_error(error) {}
   virtual ~SpectroscopicRedshift();
 
-  const double getError() const {
+  double getError() const {
     return m_error;
   }
 
-  const double getValue() const {
+  double getValue() const {
     return m_value;
   }
 

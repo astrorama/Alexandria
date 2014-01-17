@@ -13,6 +13,8 @@
 #include <map>
 
 #include "ChDataModel/Photometry.h"
+#include "ChDataModel/AttributeName.h"
+#include "ChDataModel/Attribute.h"
 
 namespace ChDataModel {
 
@@ -32,7 +34,7 @@ public:
   virtual ~Source() {
   }
 
-  const int64_t getSourceId() const {
+  int64_t getSourceId() const {
     return m_source_id;
   }
 

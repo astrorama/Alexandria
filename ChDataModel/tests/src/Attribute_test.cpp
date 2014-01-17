@@ -5,7 +5,7 @@
  * @author dubath
  */
 
-#include "Attribute.h"
+#include "ChDataModel/Attribute.h"
 
 namespace ChDataModel {
 

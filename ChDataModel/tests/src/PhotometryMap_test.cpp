@@ -5,7 +5,7 @@
  * @author dubath
  */
 
-#include "PhotometryMap.h"
+#include "ChDataModel/SourceAttributes/PhotometryMap.h"
 
 namespace ChDataModel {
 

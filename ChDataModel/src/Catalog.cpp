@@ -54,7 +54,7 @@ Source & Catalog::getSource(int64_t source_id) {
   }
 
   // Return the source, if found in the container
-  return m_source_map[source_id];
+  return it->second;
 
 } // Eof Catalog::getSource
 
