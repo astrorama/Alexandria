@@ -9,6 +9,7 @@
 #define FILTERNAME_H_
 
 #include <string>
+#include <functional>
 
 namespace ChDataModel {
 
@@ -18,9 +19,13 @@ public:
 
   FilterName(const std::string& group, const std::string& name);
   
-  FilterName(const FilterName& other);
+  FilterName(const FilterName&) = default;
   
-  FilterName& operator=(const FilterName& other);
+  FilterName& operator=(const FilterName&) = default;
+  
+  FilterName(FilterName&&) = default;
+  
+  FilterName& operator=(FilterName&&) = default;
 
   virtual ~FilterName() = default;
 
@@ -38,8 +43,8 @@ public:
 
 private:
 
-  const std::string m_group;
-  const std::string m_name;
+  std::string m_group;
+  std::string m_name;
   mutable std::string m_qual_name {};
   mutable size_t m_hash {0};
 
@@ -50,7 +55,11 @@ private:
 namespace std {
 
 template <>
-struct hash<ChDataModel::FilterName>;
+struct hash<ChDataModel::FilterName> {
+  size_t operator()(const ChDataModel::FilterName& filterName) const {
+    return filterName.hash();
+  }
+};
 
 } // namespace std
 

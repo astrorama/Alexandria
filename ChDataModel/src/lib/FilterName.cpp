@@ -57,14 +57,3 @@ bool FilterName::operator==(const FilterName& other) const {
 }
 
 } // namespace ChDataModel
-
-namespace std {
-
-template <>
-struct hash<ChDataModel::FilterName> {
-  size_t operator()(const ChDataModel::FilterName& filterName) const {
-    return filterName.hash();
-  }
-};
-
-} // namespace std
