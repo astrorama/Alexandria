@@ -5,6 +5,8 @@
  */
 
 #include <string>
+#include <set>
+#include <stdexcept>
 #include <boost/test/unit_test.hpp>
 
 #include "ChDataModel/FilterName.h"
@@ -12,6 +14,19 @@
 //-----------------------------------------------------------------------------
 
 BOOST_AUTO_TEST_SUITE (FilterName_test)
+
+//-----------------------------------------------------------------------------
+// Check that invalid constructor arguments throw exceptions
+//-----------------------------------------------------------------------------
+
+BOOST_AUTO_TEST_CASE(constructorExceptions_test) {
+  
+  BOOST_CHECK_THROW((ChDataModel::FilterName{"", "b"}), std::invalid_argument);
+  BOOST_CHECK_THROW((ChDataModel::FilterName{"asd/sad", "b"}), std::invalid_argument);
+  BOOST_CHECK_THROW((ChDataModel::FilterName{"a", ""}), std::invalid_argument);
+  BOOST_CHECK_THROW((ChDataModel::FilterName{"a", "bdf/sdf"}), std::invalid_argument);
+  
+}
 
 //-----------------------------------------------------------------------------
 // Check group, name and qualifiedName methods work
@@ -124,6 +139,66 @@ BOOST_AUTO_TEST_CASE(equality_test) {
   BOOST_CHECK(!(filterName2 == filterName3));
   BOOST_CHECK(!(filterName1 == filterName3));
 
+}
+
+//-----------------------------------------------------------------------------
+// Check the ordering by hash
+//-----------------------------------------------------------------------------
+
+BOOST_AUTO_TEST_CASE(hashOrdering_test) {
+  
+  // Given
+  ChDataModel::FilterName filterName1 {"SDSS", "g"};
+  ChDataModel::FilterName filterName2 {"COSMOS", "g"};
+  ChDataModel::FilterName filterName3 {"COSMOS", "z"};
+  
+  // When
+  std::set<ChDataModel::FilterName> filterSet {};
+  filterSet.insert(filterName1);
+  filterSet.insert(filterName2);
+  filterSet.insert(filterName3);
+  
+  // Then
+  BOOST_CHECK(filterName3.hash() < filterName2.hash());
+  BOOST_CHECK(filterName2.hash() < filterName1.hash());
+  BOOST_CHECK(filterName3.hash() < filterName1.hash());
+  auto iterator = filterSet.begin();
+  BOOST_CHECK((*iterator) == filterName3);
+  ++iterator;
+  BOOST_CHECK((*iterator) == filterName2);
+  ++iterator;
+  BOOST_CHECK((*iterator) == filterName1);
+  
+}
+
+//-----------------------------------------------------------------------------
+// Check the ordering alphabetically
+//-----------------------------------------------------------------------------
+
+BOOST_AUTO_TEST_CASE(alphabeticalOrdering_test) {
+  
+  // Given
+  ChDataModel::FilterName filterName1 {"SDSS", "g"};
+  ChDataModel::FilterName filterName2 {"COSMOS", "g"};
+  ChDataModel::FilterName filterName3 {"COSMOS", "z"};
+  
+  // When
+  std::set<ChDataModel::FilterName, ChDataModel::FilterName::AlphabeticalComparator> filterSet {};
+  filterSet.insert(filterName1);
+  filterSet.insert(filterName2);
+  filterSet.insert(filterName3);
+  
+  // Then
+  BOOST_CHECK(filterName3.hash() < filterName2.hash());
+  BOOST_CHECK(filterName2.hash() < filterName1.hash());
+  BOOST_CHECK(filterName3.hash() < filterName1.hash());
+  auto iterator = filterSet.begin();
+  BOOST_CHECK((*iterator) == filterName2);
+  ++iterator;
+  BOOST_CHECK((*iterator) == filterName3);
+  ++iterator;
+  BOOST_CHECK((*iterator) == filterName1);
+  
 }
 
 BOOST_AUTO_TEST_SUITE_END ()

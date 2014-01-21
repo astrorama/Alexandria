@@ -4,12 +4,20 @@
  * @author Nikolaos Apostolakos
  */
 
+#include <stdexcept>
 #include "ChDataModel/FilterName.h"
 
 namespace ChDataModel {
 
 FilterName::FilterName(const std::string& group, const std::string& name)
-    : m_group {group}, m_name {name} { }
+    : m_group {group}, m_name {name} {
+  if (group.empty() || group.find('/') != std::string::npos) {
+    throw std::invalid_argument("ChDataModel::FilterName::group");
+  }
+  if (name.empty() || name.find('/') != std::string::npos) {
+    throw std::invalid_argument("ChDataModel::FilterName::name");
+  }
+}
 
 const std::string& FilterName::group() const {
   return m_group;

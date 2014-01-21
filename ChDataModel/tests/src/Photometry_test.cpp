@@ -7,7 +7,7 @@
 #include <boost/test/unit_test.hpp>
 #include <iostream>
 #include "ChDataModel/Source.h"
-#include "ChDataModel/Photometry.h"
+// #include "ChDataModel/Photometry.h"
 #include "ChDataModel/FilterName.h"
 
 using namespace ChDataModel;

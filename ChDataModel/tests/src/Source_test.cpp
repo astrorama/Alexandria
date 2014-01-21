@@ -7,7 +7,7 @@
 
 #include <boost/test/unit_test.hpp>
 #include "ChDataModel/Source.h"
-#include "ChDataModel/Photometry.h"
+// #include "ChDataModel/Photometry.h"
 #include "ChDataModel/Attribute.h"
 #include "ChDataModel/AttributeName.h"
 #include "ChDataModel/SourceAttributes/Coordinates.h"
@@ -37,8 +37,8 @@ struct SourceFix {
   Coordinates coordinate {expectedRa, expectedDec};
 
 
-  Photometry photometry_1 = Photometry("V_Subaru", 0.026354, 0.000534);
-  Photometry photometry_2 = Photometry("u_CFHT", 0.5642, 0.001324);
+//  Photometry photometry_1 = Photometry("V_Subaru", 0.026354, 0.000534);
+//  Photometry photometry_2 = Photometry("u_CFHT", 0.5642, 0.001324);
 
 //  map<>
 
