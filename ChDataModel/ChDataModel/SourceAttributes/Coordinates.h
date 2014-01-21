@@ -14,7 +14,7 @@ namespace ChDataModel {
 
 class Coordinates : public Attribute {
 public:
-  Coordinates(double ra, double dec) : Attribute {AttributeName::COORDINATES}, m_ra(ra), m_dec(dec) {}
+  Coordinates(double ra, double dec) : m_ra(ra), m_dec(dec) {}
   virtual ~Coordinates() {}
 
   double getDec() const {

@@ -12,6 +12,7 @@
 #include <sstream>
 #include <map>
 #include "ElementsKernel/ElementsException.h"
+#include "ChDataModel/Attribute.h"
 #include "ChDataModel/FilterName.h"
 
 namespace ChDataModel {
@@ -20,7 +21,7 @@ namespace ChDataModel {
  * The Photometry class is design to store a photometric flux measurement
  * obtained through the specified filter (filterName).
  */
-class Photometry {
+class Photometry : public Attribute {
 
 public:
 

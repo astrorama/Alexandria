@@ -13,15 +13,20 @@ namespace ChDataModel {
 
 class Attribute {
 public:
-  Attribute(AttributeName attribute_name) : m_attribute_name(attribute_name) {}
-  virtual ~Attribute() {}
-
-  AttributeName getAttributeName() const {
-    return m_attribute_name;
+  Attribute() {
+  }
+  virtual ~Attribute() {
   }
 
-private:
-  const AttributeName m_attribute_name;
+  //  Attribute(AttributeName attribute_name) : m_attribute_name(attribute_name) {}
+//  virtual ~Attribute() {}
+//
+//  AttributeName getAttributeName() const {
+//    return m_attribute_name;
+//  }
+//
+//private:
+//  const AttributeName m_attribute_name;
 };
 
 } // namespace ChDataModel 

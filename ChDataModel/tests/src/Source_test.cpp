@@ -7,11 +7,10 @@
 
 #include <boost/test/unit_test.hpp>
 #include "ChDataModel/Source.h"
-// #include "ChDataModel/Photometry.h"
 #include "ChDataModel/Attribute.h"
 #include "ChDataModel/AttributeName.h"
 #include "ChDataModel/SourceAttributes/Coordinates.h"
-#include "ChDataModel/SourceAttributes/PhotometryMap.h"
+#include "ChDataModel/SourceAttributes/Photometry.h"
 #include "ChDataModel/SourceAttributes/SpectroscopicRedshift.h"
 
 #include "ElementsKernel/ElementsException.h"
@@ -30,26 +29,43 @@ typedef Catalog * CatalogPtr;
 
 struct SourceFix {
 
+  double tolerence = 1e-8;
+
+
+  Source* source;
+  Photometry* photometry;
+  Coordinates* coordinates;
+  SpectroscopicRedshift* spectroscopicRedshift;
+
+  const FilterName expectedFilterName { "COSMOS", "V_band" };
+  double expectedFlux = 0.46575674;
+  double expectedError = 0.00001534;
+
   int64_t expectedSourceId = 1273684;
 
   double expectedRa = 181.4657;
   double expectedDec = -36.27363;
-  Coordinates coordinate {expectedRa, expectedDec};
 
 
-//  Photometry photometry_1 = Photometry("V_Subaru", 0.026354, 0.000534);
-//  Photometry photometry_2 = Photometry("u_CFHT", 0.5642, 0.001324);
-
-//  map<>
+  std::vector<Attribute*> attribute_vector {};
 
   SourceFix() {
     // setup
-  }
-  ~SourceFix() {
-    // teardown
+    coordinates = new Coordinates {expectedRa, expectedDec};
+    photometry = new Photometry {};
+    photometry->addFlux(expectedFilterName, expectedFlux, expectedError);
+    source = new Source(expectedSourceId);
+
   }
 
-  SourceFix(const SourceFix&) = delete ;
+  ~SourceFix() {
+    // teardown
+    delete(coordinates);
+    delete(photometry);
+    delete(source);
+  }
+
+  SourceFix(const SourceFix&) = delete;
 
 };
 
@@ -57,8 +73,19 @@ struct SourceFix {
 
 BOOST_AUTO_TEST_SUITE (Source_test)
 
-BOOST_AUTO_TEST_CASE( fake_test ) {
-  BOOST_CHECK(true);
+BOOST_FIXTURE_TEST_CASE( getAttribute_test, SourceFix ) {
+
+  BOOST_CHECK(source->addAttribute<Photometry>(photometry));
+  BOOST_CHECK_CLOSE(expectedFlux, source->getAttribute<Photometry>()->getFlux(expectedFilterName), tolerence);
+
+  BOOST_CHECK(!source->addAttribute<Photometry>(photometry));
+  BOOST_CHECK(source->addAttribute<Coordinates>(coordinates));
+  BOOST_CHECK_CLOSE(expectedRa, source->getAttribute<Coordinates>()->getRa(), tolerence);
+
+  BOOST_CHECK(source->hasAttribute<Photometry>());
+  BOOST_CHECK(! source->hasAttribute<SpectroscopicRedshift>() );
+  BOOST_CHECK( nullptr == source->getAttribute<SpectroscopicRedshift>() );
+
 }
 
 // BOOST_GLOBAL_FIXTURE(PV); // this does not work as test case do not have access to PV members!?!?
