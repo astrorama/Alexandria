@@ -1,10 +1,9 @@
 /**
  * @file Attribute.h
  *
- * @date Jan 16, 2014
- * @author dubath
+ * Created on: Jan 20, 2014
+ *     Author: Pierre Dubath
  */
-
 #ifndef ATTRIBUTE_H_
 #define ATTRIBUTE_H_
 

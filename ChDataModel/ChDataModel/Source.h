@@ -12,7 +12,7 @@
 #include <string>
 #include <map>
 
-#include "ChDataModel/Photometry.h"
+#include "ChDataModel/SourceAttributes/Photometry.h"
 #include "ChDataModel/AttributeName.h"
 #include "ChDataModel/Attribute.h"
 

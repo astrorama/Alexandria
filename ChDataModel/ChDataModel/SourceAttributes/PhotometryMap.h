@@ -11,7 +11,7 @@
 #include<string>
 #include<map>
 #include "ChDataModel/Attribute.h"
-#include "ChDataModel/Photometry.h"
+#include "ChDataModel/SourceAttributes/Photometry.h"
 
 namespace ChDataModel {
 
