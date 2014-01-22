@@ -33,6 +33,8 @@ public:
 
   virtual ~FluxToPdf();
 
+  double analyzePdf(ProtoZ::matrix::PdfMatrix& pdf_matrix);
+
   std::tuple<SedNames, double, std::string, double, double> getMax(
       ProtoZ::matrix::PdfMatrix& pdf_matrix);
 

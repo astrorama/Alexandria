@@ -157,10 +157,9 @@ public:
         variables_map["photometric-catalog-path"].as<string>();
     int catalog_start_line = variables_map["catalog-start-line"].as<int>();
     int source_number = variables_map["source-number"].as<int>();
-    string catalog_output_file =
-        variables_map["catalog-output-file"].as<string>();
+    string catalog_output_file = variables_map["catalog-output-file"].as<string>();
 
-//    double z_step = variables_map["z-step"].as<double>();
+    //    double z_step = variables_map["z-step"].as<double>();
 //    double z_stop = variables_map["z-stop"].as<double>();
 //    double ebmv_start = variables_map["ebmv-start"].as<double>();
 //    double ebmv_step = variables_map["ebmv-step"].as<double>();
@@ -213,13 +212,14 @@ public:
       int i {0};
       for (auto source : source_map) {
         i++;
-        logger.info("Processing source no %d, with ID %d", i, source.second.getSourceId());
+        if ( i%10 == 0 ) { logger.info("Processing source no %d, with ID %d", i, source.second.getSourceId()); }
         if (source.second.getSpecZ() > 0.0
             && source.second.getAgnFlag() < 990) {
           pdfMatrix = fluxToPdf.compute(source.second);
-          std::tie(sedName, ebv, extLaw, redshift, max) = fluxToPdf.getMax(
-              pdfMatrix);
-
+          std::tie(sedName, ebv, extLaw, redshift, max) = fluxToPdf.getMax(pdfMatrix);
+          // Get the marginalization
+          double z_marginalization = fluxToPdf.analyzePdf(pdfMatrix);
+          // Save data to file
           source_results.str(std::string());
           source_results << source.second.getSourceId()
               << std::setw(MY_ASCII_TABLE_COLUMN_WIDTH)
@@ -227,7 +227,8 @@ public:
               << redshift << std::setw(MY_ASCII_TABLE_COLUMN_WIDTH)
               << sedName << std::setw(MY_ASCII_TABLE_COLUMN_WIDTH)
               << ebv << std::setw(MY_ASCII_TABLE_COLUMN_WIDTH)
-              << max;
+              << max << std::setw(MY_ASCII_TABLE_COLUMN_WIDTH)
+              << z_marginalization;
           catalog_results.push_back(source_results.str());
 
         }
@@ -239,7 +240,6 @@ public:
       logger.info("#");
       logger.info("#    The pdf calculation and result extraction is completed ");
       logger.info("#");
-
 
       aReader.writeAsciiFile(catalog_results, catalog_output_file);
 

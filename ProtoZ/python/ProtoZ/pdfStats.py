@@ -38,7 +38,7 @@ def read_table(filename, mode='ascii'):
 #
     
     
-def compute_stats(array):
+def compute_stats(array, col_number):
     """
     Computes mean, median, sigma and outliers 
     Array contents : sourceIdArr speczArr redshift sedname ebv max
@@ -47,10 +47,10 @@ def compute_stats(array):
     """
     # 
     specZ = array.field(1)
-    photZ = array.field(2)
+    colZ  = array.field(col_number)
  
 
-    diffArr = photZ - specZ
+    diffArr = colZ - specZ
     plusArr = 1 + specZ  
     dataArr = diffArr / plusArr
     
@@ -63,7 +63,7 @@ def compute_stats(array):
     
     absDataArr = abs(dataArr)
     outliers = [i for i in absDataArr if i > 0.15]
-    outliersPercent =  len(outliers)*100. / len(photZ)
+    outliersPercent =  len(outliers)*100. / len(colZ)
  
     # Without outliers
     noOutliersArr   = [i for i in absDataArr if i <= 0.15]
@@ -78,24 +78,27 @@ def compute_stats(array):
     print '--> Outliers            : ', outliersPercent, '%'
     print '--> Sigma (no outliers) : ', sigmaNoOutliers     
    
-    return (specZ, photZ, dataArr, mean, median, sigma, mad, outliersPercent, sigmaNoOutliers, meanNoOutliers)
+    return (specZ, colZ, dataArr, mean, median, sigma, mad, outliersPercent, sigmaNoOutliers, meanNoOutliers)
 
 #
 #-------------------------------------------------------------------------------
 #
 
-def display_data(specZ, photZ, data, mean, median, sigma, mad, outliersPercent, sigmaNoOutliers, meanNoOutliers, filename):
+def display_data(label, specZ, colZ, data, mean, median, sigma, mad, outliersPercent, sigmaNoOutliers, meanNoOutliers, filename):
     """
     """
-    # First plot specZ/photZ
-    
+    # First plot specZ/colZ
+    styles = [ "b:s", "r--o", "g+",
+               "c-.", "m.", "y-D",
+               "r-^", "rv", "k-1" ]
+
     fig1 = plt.subplot(2, 1, 1, aspect=1.0)  # 2 graphs 
     plt.subplots_adjust(hspace = .4) 
                        
     plt.xlabel("SpecZ")
-    plt.ylabel("PhotZ")
-    plt.plot(np.arange(0, max(photZ)),np.arange(0, max(photZ)),"r")
-    plt.plot(specZ,photZ,"yo")
+    plt.ylabel(label)
+    plt.plot(np.arange(0, max(colZ)),np.arange(0, max(colZ)),"r")
+    plt.plot(specZ,colZ,styles[2])
     plt.plot(plt.xlim(), plt.xlim(),"r")
         
     fig2 = plt.subplot(2, 1, 2)  # 2 graphs 
@@ -110,12 +113,12 @@ def display_data(specZ, photZ, data, mean, median, sigma, mad, outliersPercent, 
     plt.suptitle("Outliers >1.5 Histogram for file: %s" % filename)
     plt.xlabel("Value")
     plt.ylabel("Frequency")
-    plt.title('Distribution of : (photZ - specZ)/(1 + specZ)')
+    plt.title('Distribution of : ('+label+' - specZ)/(1 + specZ)')
               
     # Write information
     txt = ' Mean : %2.5f\n Median : %2.5f\n Mad : %2.5f\n Sigma : %2.5f\n Outliers : %2.5f%%\n Sigma(no outliers) : %2.5f\n Mean((no outliers) : %2.5f ' \
         % (mean, median, mad, sigma, outliersPercent, sigmaNoOutliers, meanNoOutliers)
-    plt.text(max(bins)-0.5, max(barValues), txt, fontsize=15, family='sans-serif', style='italic', ha='left', va='top')
+    plt.text(max(bins)-0.8, max(barValues), txt, fontsize=15, family='sans-serif', style='italic', ha='left', va='top')
     
     plt.show() 
 #
@@ -145,6 +148,9 @@ def main():
     parser.add_option("-n", "--noplot", dest="display", action="store_false",
                       default=True,
                       help="Plots the data distribution (by default) ")
+    parser.add_option("-m", "--marginalization", dest="marginal", action="store_true",
+                      default=False,
+                      help="Plots the data distribution taking into account the marginalizaton column")
 
     (options, args) = parser.parse_args()
             
@@ -162,11 +168,19 @@ if __name__ == '__main__':
     file_exist(input_file)
     # Read file
     table = read_table(input_file)
-    # Get stats    
-    (specZ, photZ, data, mean, median, mad, sigma, outliersPercent,sigmaNoOutliers, meanNoOutliers) = compute_stats(table)
+    # Select the right column
+    if options.marginal:
+        col_number = 6
+        label = "MagZ"
+    else:
+        col_number = 2 
+        label = "PhotZ"  
+    
+    (specZ, colZ, data, mean, median, mad, sigma, outliersPercent,sigmaNoOutliers, meanNoOutliers) = compute_stats(table, col_number)
+        
     # Plot distribution
     if options.display:
-       display_data(specZ, photZ, data, mean, median, mad, sigma, outliersPercent, sigmaNoOutliers, meanNoOutliers, input_file)
-    
+            display_data(label, specZ, colZ, data, mean, median, mad, sigma, outliersPercent, sigmaNoOutliers, meanNoOutliers, input_file)
+            
     
     
