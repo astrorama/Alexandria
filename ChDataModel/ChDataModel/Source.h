@@ -20,69 +20,73 @@
 namespace ChDataModel {
 
 /**
- * The Source class include all information related to a sky source
+* @class Source
+ * @brief The Source class include all information related to a sky source
  */
 class Source {
 
 public:
-
-  /// Constructor with member assignment
+  /// Constructor with source ID assignment
   Source(int64_t source_id) :
       m_source_id(source_id) {
   }
-
   /// Virtual default destructor
-  virtual ~Source() {
-  }
+  virtual ~Source() { }
 
+  /**
+   * @brief Get the source ID
+   *
+   * @return The source ID
+   */
   int64_t getSourceId() const {
     return m_source_id;
   }
 
+  /**
+   * @brief Get a pointer to source attribute of type T or a
+   *    null pointer if the source do not contain
+   *    an attribute of type T
+   *
+   * @return The pointer to the attribute or nullptr if
+   *    the attribute is not found
+   */
   template<typename T>
-  T* getAttribute() {
-    // loop over all source attribute
-    for (Attribute* attribute_ptr : m_attribute_ptr_vector) {
-      if (dynamic_cast<T*>(attribute_ptr) != nullptr) {
-        return dynamic_cast<T*>(attribute_ptr);
-      }
-    }
-    return nullptr;
-  }
+  T* getAttribute();
 
+  /**
+   * @brief Check whether a source has an attribute of type T
+   *
+   * @return true/false if the source has/has not an attribute of type T
+   */
   template<typename T>
-  bool hasAttribute() {
-    bool hasAttribute = false;
-    // loop over all source attribute
-    for (Attribute* attribute_ptr : m_attribute_ptr_vector) {
-      if (dynamic_cast<T*>(attribute_ptr) != nullptr) {
-        hasAttribute = true;
-        break;
-      }
-    }
-    return hasAttribute;
-  }
+  bool hasAttribute();
 
+  /**
+   * @brief Add a pointer to an attribute of type T to the source
+   *    if pointer to an attribute of type T is not already included
+   *    in teh source
+   *
+   * @return true/false depending whether the adding was successful or not
+   *
+   */
   template<typename T>
-  bool addAttribute(Attribute* attribute_ptr) {
-    bool did_it = true;
-    if (!hasAttribute<T>()) {
-      m_attribute_ptr_vector.push_back(attribute_ptr);
-    } else {
-      did_it = false;
-    }
-    return did_it;
-  }
+  bool addAttribute(Attribute* attribute_ptr);
 
 private:
 
-  /// Source identification (attributed in the survey)
+  /// Source identification
   const int64_t m_source_id { };
 
+  /// Vector of pointers to attribute (base class)
   std::vector<Attribute*> m_attribute_ptr_vector;
 
 };
 // Eof class Source
 
+#define SOURCE_IMPL
+#include "ChDataModel/_impl/Source.icpp"
+#undef SOURCE_IMPL
+
 } /* namespace ChDataModel */
+
 #endif /* SOURCE_H_ */

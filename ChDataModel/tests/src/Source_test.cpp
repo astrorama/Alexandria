@@ -17,7 +17,6 @@
 
 #include <iostream>
 #include <map>
-#include "ChDataModel/Catalog.h"
 
 using namespace ChDataModel;
 using namespace std;
@@ -25,7 +24,6 @@ using namespace std;
 //-----------------------------------------------------------------------------
 
 typedef Source* SourcePtr;
-typedef Catalog * CatalogPtr;
 
 struct SourceFix {
 

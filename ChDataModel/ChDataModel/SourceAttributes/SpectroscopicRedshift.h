@@ -12,6 +12,12 @@
 
 namespace ChDataModel {
 
+/**
+ * @class SpectroscopicRedshift
+ *
+ * @brief Store the spectroscopic redshift of a source
+ *
+ */
 class SpectroscopicRedshift : public Attribute {
 public:
   SpectroscopicRedshift(double value, double error) : m_value(value), m_error(error) {}

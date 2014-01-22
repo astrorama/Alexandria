@@ -1,0 +1,50 @@
+/**
+ * @file Source.cpp
+ *
+ * Created on: Jan 22, 2014
+ *     Author: Pierre Dubath
+ */
+
+#ifdef SOURCE_IMPL
+
+template<typename T>
+T* Source::getAttribute() {
+  // loop over all source attribute
+  for (Attribute* attribute_ptr : m_attribute_ptr_vector) {
+    // check whether there is a source attribute that can be successfully casted in Type T
+    if (dynamic_cast<T*>(attribute_ptr) != nullptr) {
+      return dynamic_cast<T*>(attribute_ptr);
+    }
+  }
+  return nullptr;
+}
+
+template<typename T>
+bool Source::hasAttribute() {
+  bool hasAttribute = false;
+  // loop over all source attribute
+  for (Attribute* attribute_ptr : m_attribute_ptr_vector) {
+    // check whether there is a source attribute that can be successfully casted in Type T
+    if (dynamic_cast<T*>(attribute_ptr) != nullptr) {
+      hasAttribute = true;
+      break;
+    }
+  }
+  return hasAttribute;
+}
+
+template<typename T>
+bool Source::addAttribute(Attribute* attribute_ptr) {
+  bool did_it = true;
+  // add the attribute pointer if a pointer of type T is not already there
+  if (!hasAttribute<T>()) {
+    m_attribute_ptr_vector.push_back(attribute_ptr);
+  } else {
+    did_it = false;
+  }
+  return did_it;
+}
+
+//-----------------------------------------------------------------------------
+
+#endif /* SOURCE_IMPL */
