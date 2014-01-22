@@ -32,6 +32,8 @@ public:
   FluxToPdf(ProtoZ::matrix::FluxMatrix& flux_matrix);
 
   virtual ~FluxToPdf();
+  
+  std::vector<double> marginalizePdf(ProtoZ::matrix::PdfMatrix& pdf_matrix);
 
   double analyzePdf(ProtoZ::matrix::PdfMatrix& pdf_matrix);
 

@@ -43,6 +43,11 @@ elements_add_executable(ProtoZpdf src/program/ProtoZpdf.cpp
                   INCLUDE_DIRS ProtoZ
                   PUBLIC_HEADERS ProtoZ)
 
+elements_add_executable(ProtoZmarg src/program/ProtoZmarg.cpp
+                  LINK_LIBRARIES ${CMAKE_DL_LIBS} ProtoZ
+                  INCLUDE_DIRS ProtoZ
+                  PUBLIC_HEADERS ProtoZ)
+
 elements_install_python_modules()
 
 #-------------------------------------------------------------------------------
