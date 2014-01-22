@@ -7,8 +7,6 @@
 #ifndef ATTRIBUTE_H_
 #define ATTRIBUTE_H_
 
-#include "AttributeName.h"
-
 namespace ChDataModel {
 
 class Attribute {
@@ -18,15 +16,6 @@ public:
   virtual ~Attribute() {
   }
 
-  //  Attribute(AttributeName attribute_name) : m_attribute_name(attribute_name) {}
-//  virtual ~Attribute() {}
-//
-//  AttributeName getAttributeName() const {
-//    return m_attribute_name;
-//  }
-//
-//private:
-//  const AttributeName m_attribute_name;
 };
 
 } // namespace ChDataModel 

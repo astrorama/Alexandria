@@ -8,7 +8,6 @@
 #include <boost/test/unit_test.hpp>
 #include "ChDataModel/Source.h"
 #include "ChDataModel/Attribute.h"
-#include "ChDataModel/AttributeName.h"
 #include "ChDataModel/SourceAttributes/Coordinates.h"
 #include "ChDataModel/SourceAttributes/Photometry.h"
 #include "ChDataModel/SourceAttributes/SpectroscopicRedshift.h"

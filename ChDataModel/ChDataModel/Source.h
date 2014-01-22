@@ -8,13 +8,12 @@
 #define SOURCE_H_
 
 #include <string>
-#include <map>
+#include <vector>
 #include "ElementsKernel/ElementsException.h"
 
 #include "ChDataModel/SourceAttributes/Photometry.h"
 #include "ChDataModel/SourceAttributes/SpectroscopicRedshift.h"
 #include "ChDataModel/SourceAttributes/Coordinates.h"
-#include "ChDataModel/AttributeName.h"
 #include "ChDataModel/Attribute.h"
 
 namespace ChDataModel {
