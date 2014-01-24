@@ -48,7 +48,11 @@ elements_add_executable(ProtoZmarg src/program/ProtoZmarg.cpp
                   INCLUDE_DIRS ProtoZ
                   PUBLIC_HEADERS ProtoZ)
 
+#---Python modules, Scripts, conf and aux files --------------------------------
+
+elements_install_conf_files()
 elements_install_python_modules()
+elements_install_scripts()
 
 #-------------------------------------------------------------------------------
 # CMAKE_SOURCE_DIR         = directory of the project (workspace, e.g. /.../Alexandria)
