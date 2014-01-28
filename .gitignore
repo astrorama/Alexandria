@@ -3,3 +3,4 @@
 InstallArea
 build.*
 .settings
+/.pydevproject
