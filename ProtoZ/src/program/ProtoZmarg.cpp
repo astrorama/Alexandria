@@ -50,6 +50,7 @@ namespace param = ProtoZ::parameter;
 #include "ProtoZ/matrix/PdfMatrix.h"
 #include "ProtoZ/matrix/serialize.h"
 #include "ProtoZ/matrix/MatrixAsciiExporter.h"
+#include "ProtoZ/matrix/MatrixFitsExporter.h"
 #include "ProtoZ/FluxToPdf.h"
 namespace matrix = ProtoZ::matrix;
 
@@ -114,6 +115,15 @@ public:
     // Path of the directory for the PDF output results
     ("pdf-output-dir", po::value<string>()->default_value(string { }),
         "Directory of the PDF output results")
+    // Flag to produce binary output or not
+    ("binary-output", po::value<bool>()->default_value(false),
+        "Flag to produce binary output or not")
+    // Flag to produce ASCII output or not
+    ("ascii-table-output", po::value<bool>()->default_value(false),
+        "Flag to produce ASCII table output or not")
+    // Flag to produce FITS output or not
+    ("fits-output", po::value<bool>()->default_value(false),
+        "Flag to produce FITS output or not")
     ("source-id",
         po::value<vector<int>>()->multitoken()->default_value(vector<int> { },
             "Empty"), "The IDs of the sources to calculate the PDF for");
@@ -155,6 +165,9 @@ public:
     if (!fs::is_directory(pdf_output_dir)) {
       fs::create_directories(pdf_output_dir);
     }
+    bool binary_output = variables_map["binary-output"].as<bool>();
+    bool ascii_table_output = variables_map["ascii-table-output"].as<bool>();
+    bool fits_output = variables_map["fits-output"].as<bool>();
     vector<int> source_id_vector = variables_map["source-id"].as<vector<int>>();
     set<int> source_id_set {source_id_vector.begin(), source_id_vector.end()};
 
@@ -198,16 +211,27 @@ public:
           std::string sourceIdStr = convert.str();
           logger.info("Processing source with ID " + sourceIdStr);
           pdfMatrix = fluxToPdf.compute(source.second);
+          
           std::vector<double> margValues = fluxToPdf.marginalizePdf(pdfMatrix);
-          pdfMatrix.exportAsAscii(pdf_output_dir + "/" + sourceIdStr + "FullPDF.dat");
-          pdfMatrix.writeInFile(pdf_output_dir + "/" + sourceIdStr + "FullPDF.bin");
           auto margMatrix = matrix::Matrix<double, double>(pdfMatrix.getZAxis());
           for (uint i = 0; i < margValues.size(); i++) {
             uint32_t coord[] = { i };
             margMatrix.setValue(coord, margValues[i]);
           }
-          matrix::MatrixAsciiExporter::exportMatrixAsAsciiFile(
-                pdf_output_dir + "/" + sourceIdStr + "MargPDF.dat", margMatrix);
+          if (binary_output) {
+            pdfMatrix.writeInFile(pdf_output_dir + "/" + sourceIdStr + "FullPDF.bin");
+            matrix::writeMatrixInFile(pdf_output_dir + "/" + sourceIdStr + "MargPDF.bin", margMatrix);
+          }
+          if (ascii_table_output) {
+            pdfMatrix.exportAsAscii(pdf_output_dir + "/" + sourceIdStr + "FullPDF.dat");
+            matrix::MatrixAsciiExporter::exportMatrixAsAsciiFile(
+                    pdf_output_dir + "/" + sourceIdStr + "MargPDF.dat", margMatrix);
+          }
+          if (fits_output) {
+            pdfMatrix.exportAsFits(pdf_output_dir + "/" + sourceIdStr + "FullPDF.fits");
+            matrix::MatrixFitsExporter::exportMatrixAsFitsFile(
+                    pdf_output_dir + "/" + sourceIdStr + "MargPDF.fits", margMatrix);
+          }
         }
       }
 

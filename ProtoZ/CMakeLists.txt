@@ -6,13 +6,15 @@ elements_depends_on_subdirs(ChDataModel)
 elements_depends_on_subdirs(ChTools)
 
 find_package(Boost REQUIRED COMPONENTS program_options serialization)
+find_package(CCfits)
+find_package(Cfitsio)
 
 
 #===== Libraries ===============================================================
 
 elements_add_library(ProtoZ src/lib/*.cpp src/lib/parameter/*.cpp src/lib/matrix/*.cpp
-                  LINK_LIBRARIES ${CMAKE_DL_LIBS} Boost ChTools ChDataModel ChDataHandling ElementsKernel
-                  INCLUDE_DIRS Boost ChTools ChDataModel ChDataHandling ElementsKernel
+                  LINK_LIBRARIES ${CMAKE_DL_LIBS} Boost ChTools ChDataModel ChDataHandling ElementsKernel CCfits Cfitsio
+                  INCLUDE_DIRS Boost ChTools ChDataModel ChDataHandling ElementsKernel CCfits Cfitsio
                   PUBLIC_HEADERS ProtoZ)
 
                   

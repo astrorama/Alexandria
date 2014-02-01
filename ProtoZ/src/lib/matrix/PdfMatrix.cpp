@@ -7,6 +7,7 @@
 #include <tuple>
 #include "ProtoZ/matrix/serialize.h"
 #include "ProtoZ/matrix/MatrixAsciiExporter.h"
+#include "ProtoZ/matrix/MatrixFitsExporter.h"
 #include "ProtoZ/matrix/PdfMatrix.h"
 
 namespace ProtoZ {
@@ -56,6 +57,9 @@ void PdfMatrix::exportAsAscii(const std::string& filename) const {
   MatrixAsciiExporter::exportMatrixAsAsciiFile(filename, m_matrix, "chi^2");
 }
 
+void PdfMatrix::exportAsFits(const std::string& filename) const {
+  MatrixFitsExporter::exportMatrixAsFitsFile(filename, m_matrix);
+}
 
 } /* namespace matrix */
 } /* namespace ProtoZ */

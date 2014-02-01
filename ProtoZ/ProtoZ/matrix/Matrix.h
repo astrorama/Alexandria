@@ -41,6 +41,7 @@ class Matrix {
   
   // Allow direct access to the members to facilitated export to ASCII table
   friend class MatrixAsciiExporter;
+  friend class MatrixFitsExporter;
 
 public:
   

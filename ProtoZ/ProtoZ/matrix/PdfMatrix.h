@@ -167,6 +167,15 @@ public:
    */
   void exportAsAscii(const std::string& filename) const;
   
+  /**
+   * @brief
+   *    Exports the matrix in a FITS file.
+   * 
+   * @param filename
+   *    The name of the file
+   */
+  void exportAsFits(const std::string& filename) const;
+  
 private:
   
   /// The matrix where the PDF values are really stored
