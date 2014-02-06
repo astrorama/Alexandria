@@ -14,25 +14,31 @@ using namespace std;
 
 //-----------------------------------------------------------------------------
 
-
 struct PhotometryFixture {
 
-  double tolerence = 1e-8;
-
-  Photometry photometry { };
-
   const FilterName expectedFilterName { "COSMOS", "V_band" };
-  double expectedFlux = 0.46575674;
+  double expectedFlux  = 0.46575674;
   double expectedError = 0.00001534;
 
+  const FilterName expectedFilterName2 { "COSMOS", "U_band" };
+  double expectedFlux2  = 0.46575674;
+  double expectedError2 = 0.00001534;
+
+  Photometry photometry {createPhotometryMap()};
+
   PhotometryFixture() {
-//    cout << "setup" << endl;
 
   }
   ~PhotometryFixture() {
-//    cout << "teardown" << endl;
   }
-  //PhotometryFixture(const PhotometryFixture&) = delete;
+
+  map< FilterName, pair<double, double> > createPhotometryMap() {
+    map< FilterName, pair<double, double> > phot_map {};
+    phot_map.insert(make_pair(expectedFilterName, make_pair(expectedFlux, expectedError)));
+    phot_map.insert(make_pair(expectedFilterName2, make_pair(expectedFlux2, expectedError2)));
+    return phot_map;
+  }
+
 };
 
 //----------------------------------------------------------------------------
@@ -41,34 +47,13 @@ BOOST_AUTO_TEST_SUITE (Photometry_test)
 
 BOOST_FIXTURE_TEST_CASE( getter_test, PhotometryFixture ) {
 
-  photometry.clear();
-  photometry.addFlux(expectedFilterName, expectedFlux, expectedError);
+  shared_ptr<pair<double,double>> ptr1 = photometry.find(expectedFilterName);
+  shared_ptr<pair<double,double>> ptr2 = photometry.find(expectedFilterName2);
 
-  BOOST_CHECK_EQUAL(expectedFilterName.name(), "V_band");
-  BOOST_CHECK_CLOSE(expectedFlux, photometry.getFlux(expectedFilterName), tolerence);
-  BOOST_CHECK_CLOSE(expectedError, photometry.getFluxError(expectedFilterName), tolerence);
-
-  BOOST_CHECK_CLOSE(expectedFlux, photometry.getFluxAndError(expectedFilterName).first, tolerence);
-  BOOST_CHECK_CLOSE(expectedError, photometry.getFluxAndError(expectedFilterName).second, tolerence);
-}
-
-//-----------------------------------------------------------------------------
-
-BOOST_FIXTURE_TEST_CASE( unicity_test, PhotometryFixture ) {
-
-  bool exception = false;
-  try {
-    photometry.addFlux(expectedFilterName, expectedFlux, expectedError);
-    photometry.addFlux(expectedFilterName, expectedFlux, expectedError);
-  } catch (const ElementsException & e) {
-    string exception_str = e.what();
-    exception =
-    (exception_str.find("Photometry::addFlux") != string::npos);
-  }
-  BOOST_CHECK(exception);
-  photometry.clear();
-  photometry.addFlux(expectedFilterName, expectedFlux, expectedError);
-  BOOST_CHECK_CLOSE(expectedFlux, photometry.getFlux(expectedFilterName), tolerence);
+  BOOST_CHECK_EQUAL(expectedFlux, ptr1->first);
+  BOOST_CHECK_EQUAL(expectedError, ptr1->second);
+  BOOST_CHECK_EQUAL(expectedFlux2, ptr2->first);
+  BOOST_CHECK_EQUAL(expectedError2, ptr2->second);
 }
 
 //-----------------------------------------------------------------------------

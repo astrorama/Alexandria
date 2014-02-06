@@ -21,6 +21,12 @@ elements_add_unit_test(Catalog_test tests/src/Catalog_test.cpp tests/src/TestMai
 
 elements_add_unit_test(Photometry_test tests/src/SourceAttributes/Photometry_test.cpp tests/src/TestMain.cpp
                        LINK_LIBRARIES ChDataModel TYPE Boost)
+ 
+elements_add_unit_test(Coordinates_test tests/src/SourceAttributes/Coordinates_test.cpp tests/src/TestMain.cpp
+                       LINK_LIBRARIES ChDataModel TYPE Boost)
+
+elements_add_unit_test(SpectroscopicRedshift_test tests/src/SourceAttributes/SpectroscopicRedshift_test.cpp tests/src/TestMain.cpp
+                       LINK_LIBRARIES ChDataModel TYPE Boost)
                        
 elements_add_unit_test(Sed_test tests/src/Sed_test.cpp tests/src/TestMain.cpp
                        LINK_LIBRARIES ChDataModel TYPE Boost)

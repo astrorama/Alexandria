@@ -82,7 +82,7 @@ public:
   /**
    * @brief Move assignment operator
    * @param The filter name to move from
-   * @return Areference to the filter name in which was moved in
+   * @return A reference to the filter name in which was moved in
    */
   FilterName& operator=(FilterName&&) = default;
 

@@ -24,17 +24,13 @@ public:
   Coordinates(double ra, double dec) : m_ra(ra), m_dec(dec) {}
   virtual ~Coordinates() {}
 
-  double getDec() const {
-    return m_dec;
-  }
+  double getDec() const { return m_dec; }
 
-  double getRa() const {
-    return m_ra;
-  }
+  double getRa() const { return m_ra; }
 
 private:
-  const double m_ra {};
-  const double m_dec {};
+  double m_ra {};
+  double m_dec {};
 
 };
 

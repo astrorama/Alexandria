@@ -9,6 +9,8 @@
 
 #include <string>
 #include <vector>
+#include <memory>
+
 #include "ElementsKernel/ElementsException.h"
 
 #include "ChDataModel/SourceAttributes/Photometry.h"
@@ -25,59 +27,46 @@ namespace ChDataModel {
 class Source {
 
 public:
-  /// Constructor with source ID assignment
-  Source(int64_t source_id) :
-      m_source_id(source_id) {
+  /**
+   * @brief Constructor
+   * @param source_id
+   *  Source identification
+   * @param  vector<std::shared_ptr<Attribute>>
+   * Vector of shared pointer on Attribute objects
+   */
+  Source(uint64_t source_id, std::vector<std::shared_ptr<Attribute>> attibuteVector)
+        : m_source_id(source_id), m_attribute_vector(attibuteVector) {
   }
+
   /// Virtual default destructor
   virtual ~Source() { }
 
   /**
    * @brief Get the source ID
-   *
    * @return The source ID
    */
-  int64_t getSourceId() const {
+  uint64_t getId() const {
     return m_source_id;
   }
 
   /**
-   * @brief Get a pointer to source attribute of type T or a
-   *    null pointer if the source do not contain
+   * @brief Get a pointer to source attribute of type T or a null pointer
+   *    if the source do not contain
    *    an attribute of type T
-   *
    * @return The pointer to the attribute or nullptr if
    *    the attribute is not found
    */
   template<typename T>
-  T* getAttribute();
+  std::shared_ptr<T> getAttribute();
 
-  /**
-   * @brief Check whether a source has an attribute of type T
-   *
-   * @return true/false if the source has/has not an attribute of type T
-   */
-  template<typename T>
-  bool hasAttribute();
 
-  /**
-   * @brief Add a pointer to an attribute of type T to the source
-   *    if pointer to an attribute of type T is not already included
-   *    in teh source
-   *
-   * @return true/false depending whether the adding was successful or not
-   *
-   */
-  template<typename T>
-  bool addAttribute(Attribute* attribute_ptr);
-
-private:
+ private:
 
   /// Source identification
-  const int64_t m_source_id { };
+  uint64_t m_source_id { };
 
-  /// Vector of pointers to attribute (base class)
-  std::vector<Attribute*> m_attribute_ptr_vector;
+  /// Vector of shared pointers to attribute
+  std::vector<std::shared_ptr<Attribute>> m_attribute_vector;
 
 };
 // Eof class Source

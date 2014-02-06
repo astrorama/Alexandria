@@ -20,49 +20,67 @@
 using namespace ChDataModel;
 using namespace std;
 
-//-----------------------------------------------------------------------------
-
-typedef Source* SourcePtr;
 
 struct SourceFix {
 
   double tolerence = 1e-8;
 
-
-  Source* source;
-  Photometry* photometry;
-  Coordinates* coordinates;
-  SpectroscopicRedshift* spectroscopicRedshift;
+  //SpectroscopicRedshift* spectroscopicRedshift;
 
   const FilterName expectedFilterName { "COSMOS", "V_band" };
-  double expectedFlux = 0.46575674;
+  double expectedFlux  = 0.46575674;
   double expectedError = 0.00001534;
 
-  int64_t expectedSourceId = 1273684;
+  int64_t expectedSourceId     = 1273684;
+  int64_t expectedSourceIdMiss = 2345678;
 
-  double expectedRa = 181.4657;
-  double expectedDec = -36.27363;
+  double expectedRa      = 181.4657;
+  double expectedDec     = -36.27363;
+  double expectedMissRa  = 281.4657;
+  double expectedMissDec = -26.27363;
 
+  double expectedZvalue = 3.;
+  double expectedZerror = 0.01;
 
-  std::vector<Attribute*> attribute_vector {};
+  vector<shared_ptr<Attribute>> attribute_vector {};
+  vector<shared_ptr<Attribute>> attribute_miss_vector {};
+
+  Source* sourcePtr{};
+  Source* sourceMissAttrPtr{};
 
   SourceFix() {
-    // setup
-    coordinates = new Coordinates {expectedRa, expectedDec};
-    photometry = new Photometry {};
-    photometry->addFlux(expectedFilterName, expectedFlux, expectedError);
-    source = new Source(expectedSourceId);
 
-  }
+    // setup
+    shared_ptr<Coordinates> coordinates_ptr(new Coordinates(expectedRa, expectedDec));
+    shared_ptr<SpectroscopicRedshift> spec_redshift_ptr(new SpectroscopicRedshift(expectedZvalue, expectedZerror));
+    shared_ptr<Photometry> photometry_ptr(new Photometry{createPhotometryMap()});
+    attribute_vector.push_back(coordinates_ptr);
+    attribute_vector.push_back(spec_redshift_ptr);
+    attribute_vector.push_back(photometry_ptr);
+
+    sourcePtr = new Source(expectedSourceId, attribute_vector);
+
+    // Missing Photometry attibute for the second source
+    shared_ptr<Coordinates> coordinates_ptr2(new Coordinates(expectedMissRa, expectedMissDec));
+    shared_ptr<SpectroscopicRedshift> spec_redshift_ptr2(new SpectroscopicRedshift(expectedZvalue, expectedZerror));
+    attribute_miss_vector.push_back(coordinates_ptr2);
+    attribute_miss_vector.push_back(spec_redshift_ptr2);
+
+    sourceMissAttrPtr = new Source(expectedSourceIdMiss, attribute_miss_vector);
+ }
 
   ~SourceFix() {
     // teardown
-    delete(coordinates);
-    delete(photometry);
-    delete(source);
+    delete(sourcePtr);
   }
 
   SourceFix(const SourceFix&) = delete;
+
+  map< FilterName, pair<double, double> > createPhotometryMap() {
+    map< FilterName, pair<double, double> > phot_map {};
+    phot_map.insert(make_pair(expectedFilterName, make_pair(expectedFlux, expectedError)));
+    return phot_map;
+  }
 
 };
 
@@ -72,174 +90,50 @@ BOOST_AUTO_TEST_SUITE (Source_test)
 
 BOOST_FIXTURE_TEST_CASE( getAttribute_test, SourceFix ) {
 
-  BOOST_CHECK(source->addAttribute<Photometry>(photometry));
-  BOOST_CHECK_CLOSE(expectedFlux, source->getAttribute<Photometry>()->getFlux(expectedFilterName), tolerence);
+   BOOST_TEST_MESSAGE("--> getAttribute test ");
 
-  BOOST_CHECK(!source->addAttribute<Photometry>(photometry));
-  BOOST_CHECK(source->addAttribute<Coordinates>(coordinates));
-  BOOST_CHECK_CLOSE(expectedRa, source->getAttribute<Coordinates>()->getRa(), tolerence);
+   shared_ptr<Photometry> ptrPhoto(sourcePtr->getAttribute<Photometry>());
+//   cout << " Flux  : " << (ptrPhoto->find(expectedFilterName))->first
+//        << " Error : " << (ptrPhoto->find(expectedFilterName))->second
+//        << endl;
+   BOOST_CHECK_CLOSE(expectedFlux,(ptrPhoto->find(expectedFilterName))->first, tolerence);
+   BOOST_CHECK_CLOSE(expectedError,(ptrPhoto->find(expectedFilterName))->second, tolerence);
 
-  BOOST_CHECK(source->hasAttribute<Photometry>());
-  BOOST_CHECK(! source->hasAttribute<SpectroscopicRedshift>() );
-  BOOST_CHECK( nullptr == source->getAttribute<SpectroscopicRedshift>() );
+   shared_ptr<Coordinates> ptrCoord(sourcePtr->getAttribute<Coordinates>());
+//   cout << " Ra  : " << ptrCoord->getRa()
+//        << " Dec : " << ptrCoord->getDec()
+//        << endl;
+   BOOST_CHECK_CLOSE(expectedRa, ptrCoord->getRa(), tolerence);
+   BOOST_CHECK_CLOSE(expectedDec,ptrCoord->getDec(), tolerence);
+
+   shared_ptr<SpectroscopicRedshift> ptrRedshift(sourcePtr->getAttribute<SpectroscopicRedshift>());
+//   cout << " Zvalue : " << ptrRedshift->getValue()
+//        << " Error  : " << ptrRedshift->getError()
+//        << endl;
+   BOOST_CHECK_CLOSE(expectedZvalue, ptrRedshift->getValue(), tolerence);
+   BOOST_CHECK_CLOSE(expectedZerror, ptrRedshift->getError(), tolerence);
 
 }
 
-// BOOST_GLOBAL_FIXTURE(PV); // this does not work as test case do not have access to PV members!?!?
+//-----------------------------------------------------------------------------
 
-// BOOST_AUTO_TEST_CASE( constructors_test ) { // this is a test case that do not depend on fixture
+BOOST_FIXTURE_TEST_CASE( getId_test, SourceFix ) {
+
+   BOOST_TEST_MESSAGE("--> getId test ");
+   uint64_t sourceID = sourcePtr->getId();
+   BOOST_CHECK_EQUAL(expectedSourceId, sourceID);
+
+}
 
 //-----------------------------------------------------------------------------
 
-//BOOST_FIXTURE_TEST_CASE( constructors_test, SourceFix ) {
-//  Source* sourceConstructorTest = nullptr;
-//  BOOST_CHECK(nullptr == sourceConstructorTest);
-//  sourceConstructorTest = new Source(expectedSourceId, expectedRa, expectedDec);
-//  BOOST_CHECK(sourceConstructorTest);
-//  delete sourceConstructorTest;
-//
-//}
-//
-////-----------------------------------------------------------------------------
-//
-//BOOST_FIXTURE_TEST_CASE( getters_test, SourceFix ) {
-//  //
-//  int64_t actualSourceId = source_ptr->getSourceId();
-//  BOOST_CHECK_EQUAL(actualSourceId, expectedSourceId);
-//  double tolerence = 0.00001;
-//  double actualRa = source_ptr->getRa();
-//  BOOST_CHECK_CLOSE( actualRa, expectedRa, tolerence);
-//  double actualDec = source_ptr->getDec();
-//  BOOST_CHECK_CLOSE( actualDec, expectedDec, tolerence);
-//}
-//
-////-----------------------------------------------------------------------------
-//
-//BOOST_FIXTURE_TEST_CASE( getPhotometry_test, SourceFix ) {
-//  Photometry photometry = source_ptr->getPhotometry(FilterNames::V_Subaru);
-//  BOOST_CHECK_EQUAL(photometry.getSourcePtr()->getSourceId(), expectedSourceId);
-//  BOOST_CHECK_EQUAL(photometry.getAbMagnitude(), 13.6452);
-//  BOOST_CHECK_EQUAL(photometry.getValue(), 13.6452);
-//  BOOST_CHECK_EQUAL(photometry.getValueError(), 0.002534);
-//  BOOST_CHECK(photometry.getFilterName() == FilterNames::V_Subaru);
-//  BOOST_CHECK(photometry.getPhotometryType() == PhotometryTypes::AB_MAGNITUDE);
-//}
-//
-////-----------------------------------------------------------------------------
-//
-//BOOST_FIXTURE_TEST_CASE( getPhotometry_test_2, SourceFix ) {
-//  Photometry photometry = source_ptr->getPhotometry(FilterNames::u_CFHT);
-//  BOOST_CHECK_EQUAL(photometry.getSourcePtr()->getSourceId(), expectedSourceId);
-//  BOOST_CHECK_EQUAL(photometry.getValue(), 11.5452);
-//}
-//
-////-----------------------------------------------------------------------------
-//
-//BOOST_FIXTURE_TEST_CASE( catalog_back_pointer_test, SourceFix ) {
-//  BOOST_CHECK(source_ptr->getCatalogPtr() == nullptr);
-//  Source insertedSource = catalog_ptr->addSource(*source_ptr);
-//  CatalogPtr actual_catalog_ptr = insertedSource.getCatalogPtr();
-//  BOOST_CHECK_EQUAL(actual_catalog_ptr, catalog_ptr);
-//
-//  Source insertedSource2 = catalog_ptr->addSource(*source_ptr_2);
-//  actual_catalog_ptr = insertedSource2.getCatalogPtr();
-//  BOOST_CHECK_EQUAL(actual_catalog_ptr, catalog_ptr);
-//}
-//
-////-----------------------------------------------------------------------------
-//
-//BOOST_FIXTURE_TEST_CASE( source_back_pointer_test, SourceFix ) {
-//  //
-//  Photometry photometry_3 = Photometry(FilterNames::g_Subaru,
-//        PhotometryTypes::AB_MAGNITUDE, 10.5452, 0.006324);
-// Photometry photom =
-//    source_ptr->addPhotometry(photometry_3);
-//  BOOST_CHECK_EQUAL(photom.getSourcePtr(), source_ptr);
-//}
-//
-////-----------------------------------------------------------------------------
-//
-//BOOST_FIXTURE_TEST_CASE( addPhotometry_exception_test, SourceFix ) {
-//  //
-//  bool exception = false;
-//  try {
-//    source_ptr->addPhotometry(photometry_1);
-//  } catch (const ElementsException & e) {
-//    //exception = true;
-//    string exception_str = e.what();
-//    exception =
-//        (exception_str.find(
-//            "Source::addPhotometry : Photometry")
-//            != string::npos);
-//  }
-//  BOOST_CHECK(exception);
-//}
-//
-////-----------------------------------------------------------------------------
-//
-//BOOST_FIXTURE_TEST_CASE( getPhotometry_exception_test, SourceFix ) {
-//  //
-//  bool exception = false;
-//  try {
-//    Photometry photometry = source_ptr->getPhotometry(FilterNames::B_Subaru);
-//  } catch (const ElementsException & e) {
-//    string exception_str = e.what();
-//    exception =
-//        (exception_str.find("Source::getPhotometry : ") != string::npos);
-//  }
-//  BOOST_CHECK(exception);
-//}
-//
-////-----------------------------------------------------------------------------
-//
-//BOOST_FIXTURE_TEST_CASE( add_and_getPhotometricAttribute_test, SourceFix ) {
-//  source_ptr->addPhotometricAttribute(expected_photometric_parameter_names_1,
-//      expected_photometric_parameter_value_1);
-//  source_ptr->addPhotometricAttribute(expected_photometric_parameter_names_2,
-//      expected_photometric_parameter_value_2);
-//  double tolerence = 0.00001;
-//  double actual_photometric_parameter_value_1 =
-//      source_ptr->getPhotometricAttribute(
-//          expected_photometric_parameter_names_1);
-//  BOOST_CHECK_CLOSE( actual_photometric_parameter_value_1,
-//      expected_photometric_parameter_value_1, tolerence);
-//  double actual_photometric_parameter_value_2 =
-//      source_ptr->getPhotometricAttribute(
-//          expected_photometric_parameter_names_2);
-//  BOOST_CHECK_CLOSE( actual_photometric_parameter_value_2,
-//      expected_photometric_parameter_value_2, tolerence);
-//}
-//
-////-----------------------------------------------------------------------------
-//
-//BOOST_FIXTURE_TEST_CASE( addPhotometricAttribute_exception_test, SourceFix ) {
-//  bool exception = false;
-//  try {
-//    source_ptr->addPhotometricAttribute(expected_photometric_parameter_names_1,
-//        expected_photometric_parameter_value_1);
-//    source_ptr->addPhotometricAttribute(expected_photometric_parameter_names_1,
-//        expected_photometric_parameter_value_1);
-//  } catch (const ElementsException & e) {
-//    string exception_str = e.what();
-//    exception =
-//        (exception_str.find("Source::addPhotometricAttribute : a") != string::npos);
-//  }
-//  BOOST_CHECK(exception);
-//}
-//
-////-----------------------------------------------------------------------------
-//
-//BOOST_FIXTURE_TEST_CASE( getPhotometricAttribute_exception_test, SourceFix ) {
-//  bool exception = false;
-//  try {
-//    source_ptr->getPhotometricAttribute(expected_photometric_parameter_names_3);
-//  } catch (const ElementsException & e) {
-//    string exception_str = e.what();
-//    exception =
-//        (exception_str.find("Source::getPhotometricAttribute :") != string::npos);
-//  }
-//  BOOST_CHECK(exception);
-//}
+BOOST_FIXTURE_TEST_CASE( missing_attribute_test, SourceFix ) {
+
+   BOOST_TEST_MESSAGE("--> missing_attribute test ");
+   shared_ptr<Photometry> ptrPhoto(sourceMissAttrPtr->getAttribute<Photometry>());
+   BOOST_CHECK(nullptr == ptrPhoto);
+
+}
 
 //-----------------------------------------------------------------------------
 

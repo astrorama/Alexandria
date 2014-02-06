@@ -20,22 +20,25 @@ namespace ChDataModel {
  */
 class SpectroscopicRedshift : public Attribute {
 public:
+
+  /**
+ * @brief Constructor
+ * @param value
+ *  Value of the redshift
+ * @param error
+ *  Error value of the value parameter
+ */
   SpectroscopicRedshift(double value, double error) : m_value(value), m_error(error) {}
+
   virtual ~SpectroscopicRedshift() {}
 
-  double getError() const {
-    return m_error;
-  }
-
-  double getValue() const {
-    return m_value;
-  }
+  double getValue() const { return m_value; }
+  double getError() const { return m_error; }
 
 private:
 
-  const double m_value {};
-
-  const double m_error {};
+  double m_value {};
+  double m_error {};
 };
 
 } // namespace ChDataModel 

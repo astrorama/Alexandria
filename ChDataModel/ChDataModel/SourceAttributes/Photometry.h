@@ -4,13 +4,13 @@
  * Created on: Jan 17, 2014
  *     Author: Pierre Dubath
  */
+
 #ifndef PHOTOMETRY_H_
 #define PHOTOMETRY_H_
 
-#include <string>
-#include <utility>
-#include <sstream>
+#include <memory>
 #include <map>
+#include <set>
 #include "ElementsKernel/ElementsException.h"
 #include "ChDataModel/Attribute.h"
 #include "ChDataModel/FilterName.h"
@@ -25,91 +25,53 @@ class Photometry: public Attribute {
 
 public:
 
-  Photometry() {
-  }
+  Photometry(std::map< FilterName, std::pair<double, double>> photometry_map)
+            : m_photometry_map(photometry_map) { }
+
   /// default destructor
-  virtual ~Photometry() {
-  }
+  virtual ~Photometry() { }
 
   /**
-   * @brief Add a particular flux measurement to the photometry map
-   * @details
-   * @param filterName
-   *
-   * @through An exception in there is already a flux measurement
-   *    for this filter in the photometry map
+   * @brief
+   * Return the size of the photometry map
    */
-  void addFlux(const FilterName filterName, const double flux,
-      const double fluxError) {
-    auto filterUnicity = m_photometry_map.emplace(filterName,
-        std::pair<double, double> { flux, fluxError });
-
-    if (!(filterUnicity.second)) {
-      std::stringstream errorBuffer;
-      errorBuffer << "Photometry::addFlux: A photometric flux if filter: "
-          << filterName.qualifiedName()
-          << " is already included in the photometry map " << std::endl;
-      throw ElementsException(errorBuffer.str());
-    }
-  }
+  std::size_t size() const { return m_photometry_map.size(); }
 
   /**
-   * @brief Erase all elements in the photometry map
+   * @brief
+   * Return a photometry measurement through the specified filter
+   * @param filter_name
+   *  The filter name
+   * @return
+   *  A pair containing a value and the corresponding error
    */
-  void clear() {
-    m_photometry_map.clear();
-  }
+  std::shared_ptr<std::pair<double, double>> find(FilterName filter_name) const;
 
   /**
-   * @brief Return teh size of the photometry map
+   * @brief
+   *  Get a const_iterator pointing to the first element in the map container
+   * @return
+   *  Returns a const_iterator pointing to the first element in the map container
    */
-  std::size_t size() {
-    return m_photometry_map.size();
-  }
+  std::map< FilterName, std::pair<double, double>>::const_iterator cbegin()
+      { return m_photometry_map.cbegin() ; }
 
   /**
-   * @brief Return a photometry measurement through the specified filter
-   *
-   * @param filterName
-   *    The filter name
-   * @return A pair with the Flux and the FluxError
+   * @brief
+   *  Get an const_iterator pointing to the last element in the map container
+   * @return
+   *  Returns a const_iterator pointing to the past-the-end element in the
+   *  map container
    */
-  std::pair<double, double> getFluxAndError(FilterName filterName) {
-    /// here it is not clear if we should use "at()" or "[]", i.e., do we need range checking or not?
-    return m_photometry_map.at(filterName);
-  }
-
-  /**
-   * @brief Return a photometry measurement through the specified filter
-   *
-   * @param filterName
-   *    The filter name
-   * @return The Flux
-   */
-  double getFlux(FilterName filterName) const {
-    /// here it is not clear if we should use "at()" or "[]", i.e., do we need range checking or not?
-    return m_photometry_map.at(filterName).first;
-  }
-
-  /**
-   * @brief Return a photometry measurement through the specified filter
-   *
-   * @param filterName
-   *    The filter name
-   * @return The Flux Error
-   */
-  double getFluxError(FilterName filterName) const {
-    /// here it is not clear if we should use "at()" or "[]", i.e., do we need range checking or not?
-    return m_photometry_map.at(filterName).second;
-  }
+  std::map< FilterName, std::pair<double, double>>::const_iterator cend()
+      { return m_photometry_map.cend() ; }
 
 private:
 
   /// The photometry map
-  std::map<const FilterName, std::pair<double, double>> m_photometry_map { };
+  std::map< FilterName, std::pair<double, double>> m_photometry_map { };
 
-};
-// Eof class Photometry
+}; // Eof class Photometry
 
 } /* namespace ChDataModel */
 
