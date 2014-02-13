@@ -46,6 +46,7 @@ namespace param = ProtoZ::parameter;
 #include "ProtoZ/matrix/PdfMatrix.h"
 #include "ProtoZ/matrix/serialize.h"
 #include "ProtoZ/matrix/MatrixAsciiExporter.h"
+#include "ProtoZ/output/PdfDataFitsOutput.h"
 #include "ProtoZ/FluxToPdf.h"
 namespace matrix = ProtoZ::matrix;
 
@@ -109,7 +110,10 @@ public:
         "The number of to-be-processed sources")
     // Path of the file for the catalog output results
     ("catalog-output-file", po::value<string>()->default_value(string { }),
-        "Path of the catalog output results");
+        "Path of the catalog output results")
+    // Path of the file for the PDF data output results
+    ("pdf-data-output-file", po::value<string>()->default_value(string { }),
+        "Path of the PDF data output results");
 
 //    // A string vector option
 //    ("string-vector",
@@ -158,6 +162,7 @@ public:
     int catalog_start_line = variables_map["catalog-start-line"].as<int>();
     int source_number = variables_map["source-number"].as<int>();
     string catalog_output_file = variables_map["catalog-output-file"].as<string>();
+    string pdf_data_output_file = variables_map["pdf-data-output-file"].as<string>();
 
     //    double z_step = variables_map["z-step"].as<double>();
 //    double z_stop = variables_map["z-stop"].as<double>();
@@ -202,6 +207,13 @@ public:
 
       std::vector<std::string> catalog_results;
       std::stringstream source_results;
+      
+      PdfDataFitsOutput pdfOutput {pdf_data_output_file};
+      // We calculate the zValues vector here because it is the same for all objects
+      std::vector<double> zValues {};
+      for (uint i=0; i<pdfMatrix.getZAxis().size(); i++) {
+        zValues.push_back(pdfMatrix.getZAxis().indexToValue(i));
+      }
 
       SedNames sedName { };
       double ebv { };
@@ -219,6 +231,8 @@ public:
           std::tie(sedName, ebv, extLaw, redshift, max) = fluxToPdf.getMax(pdfMatrix);
           // Get the marginalization
           double z_marginalization = fluxToPdf.analyzePdf(pdfMatrix);
+          // Save the marginalized PDF to file
+          pdfOutput.addPdf(source.first, zValues, fluxToPdf.marginalizePdf(pdfMatrix));
           // Save data to file
           source_results.str(std::string());
           source_results << source.second.getSourceId()
