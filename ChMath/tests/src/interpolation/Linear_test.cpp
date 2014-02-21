@@ -30,7 +30,7 @@ BOOST_FIXTURE_TEST_CASE(Linear, Linear_Fixture) {
   std::vector<double> y {4.,3.,1.,2.,2.,20.};
   
   // When
-  auto linear = ChMath::linearInterpolation(x, y);
+  auto linear = ChMath::interpolate(x, y, ChMath::InterpolationType::LINEAR);
   double value1 = (*linear)(-2.);
   double value2 = (*linear)(-1.);
   double value3 = (*linear)(-.5);

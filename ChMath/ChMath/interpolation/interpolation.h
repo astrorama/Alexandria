@@ -13,9 +13,11 @@
 
 namespace ChMath {
 
-std::unique_ptr<Function> linearInterpolation(const std::vector<double>& x, const std::vector<double>& y);
+enum class InterpolationType {
+  LINEAR, CUBIC_SPLINE
+};
 
-std::unique_ptr<Function> splineInterpolation(const std::vector<double>& x, const std::vector<double>& y);
+std::unique_ptr<Function> interpolate(const std::vector<double>& x, const std::vector<double>& y, InterpolationType type);
 
 } // End of ChMath
 
