@@ -60,29 +60,14 @@ BOOST_FIXTURE_TEST_CASE(PiecewiseWithGeneric, Multiplication_Fixture) {
   
   // When
   auto multPointer = ChMath::multiply(piecewise, generic);
-  double value1 = (*multPointer)(-2.);
-  double value2 = (*multPointer)(-1.);
-  double value3 = (*multPointer)(-.5);
-  double value4 = (*multPointer)(0.);
-  double value5 = (*multPointer)(.5);
-  double value6 = (*multPointer)(1.);
-  double value7 = (*multPointer)(1.5);
-  double value8 = (*multPointer)(2.);
-  double value9 = (*multPointer)(2.5);
   
   // Then
   BOOST_CHECK(multPointer);
   ChMath::Piecewise* piecePointer = dynamic_cast<ChMath::Piecewise*>(multPointer.get());
   BOOST_CHECK(piecePointer);
-  BOOST_CHECK_CLOSE(value1, 0., close_tolerance);
-  BOOST_CHECK_CLOSE(value2, 5., close_tolerance);
-  BOOST_CHECK_CLOSE(value3, 5., close_tolerance);
-  BOOST_CHECK_CLOSE(value4, 5., close_tolerance);
-  BOOST_CHECK_CLOSE(value5, 10., close_tolerance);
-  BOOST_CHECK_CLOSE(value6, 10., close_tolerance);
-  BOOST_CHECK_CLOSE(value7, 5., close_tolerance);
-  BOOST_CHECK_CLOSE(value8, 5., close_tolerance);
-  BOOST_CHECK_CLOSE(value9, 0., close_tolerance);
+  for (double x=-2.;x<= 3.; x+=.1) {
+    BOOST_CHECK_CLOSE((*multPointer)(x), piecewise(x)*generic(x), close_tolerance);
+  }
 }
 
 //-----------------------------------------------------------------------------
@@ -109,15 +94,6 @@ BOOST_FIXTURE_TEST_CASE(PiecewiseWithPiecewise, Multiplication_Fixture) {
   
   // When
   auto multPointer = ChMath::multiply(p1, p2);
-  double value1 = (*multPointer)(0.);
-  double value2 = (*multPointer)(.5);
-  double value3 = (*multPointer)(.6);
-  double value4 = (*multPointer)(.7);
-  double value5 = (*multPointer)(.88);
-  double value6 = (*multPointer)(1.);
-  double value7 = (*multPointer)(1.3);
-  double value8 = (*multPointer)(1.5);
-  double value9 = (*multPointer)(2.);
   
   // Then
   BOOST_CHECK(multPointer);
@@ -126,15 +102,9 @@ BOOST_FIXTURE_TEST_CASE(PiecewiseWithPiecewise, Multiplication_Fixture) {
   auto resKnots = piecePointer->getKnots();
   std::vector<double> expectedKnots {.5,.7,1.,1.5,2.};
   BOOST_CHECK_EQUAL_COLLECTIONS(resKnots.begin(), resKnots.end(), expectedKnots.begin(), expectedKnots.end());
-  BOOST_CHECK_CLOSE(value1, 0., close_tolerance);
-  BOOST_CHECK_CLOSE(value2, 6., close_tolerance);
-  BOOST_CHECK_CLOSE(value3, 6., close_tolerance);
-  BOOST_CHECK_CLOSE(value4, 6., close_tolerance);
-  BOOST_CHECK_CLOSE(value5, 4., close_tolerance);
-  BOOST_CHECK_CLOSE(value6, 4., close_tolerance);
-  BOOST_CHECK_CLOSE(value7, 1., close_tolerance);
-  BOOST_CHECK_CLOSE(value8, 1., close_tolerance);
-  BOOST_CHECK_CLOSE(value9, 3., close_tolerance);
+  for (double x=-2.;x<= 7.; x+=.1) {
+    BOOST_CHECK_CLOSE((*multPointer)(x), p1(x)*p2(x), close_tolerance);
+  }
 }
 
 //-----------------------------------------------------------------------------
