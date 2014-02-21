@@ -4,6 +4,7 @@
  * @author Nikolaos Apostolakos
  */
 
+#include <algorithm>
 #include "ElementsKernel/ElementsException.h"
 #include "ChMath/function/Piecewise.h"
 #include "ChMath/function/function_tools.h"
@@ -33,18 +34,19 @@ std::vector<std::shared_ptr<Function>> Piecewise::getFunctions() const {
 }
 
 double Piecewise::operator()(const double x) const {
-  if (x < m_knots.front()) {
+  auto knotsBegin = m_knots.begin();
+  if (x < *knotsBegin) {
     return 0;
   }
-  int i {0};
-  auto knotIter = m_knots.begin();
-  while (++knotIter != m_knots.end()) {
-    if (x <= *knotIter) {
-      return (*m_functions[i])(x);
-    }
-    ++i;
+  if (x == *knotsBegin) {
+    return (*m_functions[0])(x);
   }
-  return 0;
+  auto knotsEnd = m_knots.end();
+  auto findX = std::lower_bound(knotsBegin, knotsEnd, x);
+  if (findX == knotsEnd) {
+    return 0;
+  }
+  return (*m_functions[findX-knotsBegin-1])(x);
 }
 
 std::unique_ptr<Function> Piecewise::clone() const {
@@ -64,8 +66,11 @@ double Piecewise::integrate(const double x1, const double x2) const {
     max = x1;
   }
   double result = 0;
-  auto knotIter = m_knots.begin();
-  auto functionIter = m_functions.begin();
+  auto knotIter = std::upper_bound(m_knots.begin(), m_knots.end(), min);
+  if (knotIter != m_knots.begin()) {
+    --knotIter;
+  }
+  auto functionIter = m_functions.begin() + (knotIter - m_knots.begin());
   while (++knotIter != m_knots.end()) {
     auto prevKnotIter = knotIter - 1;
     if (max <= *prevKnotIter) {
