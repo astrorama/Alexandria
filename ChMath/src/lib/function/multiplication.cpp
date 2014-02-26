@@ -22,8 +22,8 @@ std::unique_ptr<Function> multiplyPolynomials(const Function& f1, const Function
   std::vector<double> c1 = p1.getCoefficients();
   std::vector<double> c2 = p2.getCoefficients();
   std::vector<double> resultCoef(c1.size() + c2.size() - 1, 0.);
-  for (uint i = 0; i < c1.size(); ++i)
-    for (uint j = 0; j < c2.size(); ++j)
+  for (size_t i = 0; i < c1.size(); ++i)
+    for (size_t j = 0; j < c2.size(); ++j)
       resultCoef[i + j] += c1[i] * c2[j];
   return std::unique_ptr<Polynomial>(new Polynomial{resultCoef});
 }
