@@ -7,5 +7,5 @@ find_package(ElementsProject)
 #---------------------------------------------------------------
 
 # Declare project name and version
-elements_project(Alexandria 1.0 USE Elements 1.2)
+elements_project(Alexandria 1.2 USE Elements 2.0)
 
