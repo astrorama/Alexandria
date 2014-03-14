@@ -1,3 +1,12 @@
+import os
+import CommonDM.sys.sgs_stub as sgs_stub
+
+class LocalFileUnavailable(Exception):
+    def __init__(self, value):
+        self.value = value
+    def __str__(self):
+        return repr(self.value)
+
 def get_file_from_data_container(dc):
     """Extracts the local filename from a data container.
 
