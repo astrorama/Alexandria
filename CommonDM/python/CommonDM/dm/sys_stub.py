@@ -1,7 +1,7 @@
-# /home/nikoapos/ISDC/Projects/Alexandria/1.0/CommonDM/python/CommonDM/sys_stub.py
+# /home/nikoapos/ISDC/Projects/Alexandria/1.0/CommonDM/python/CommonDM/dm/sys_stub.py
 # PyXB bindings for NamespaceModule
 # NSM:ef11d8db76a7f46c6c12cc44757c7de95f0af727
-# Generated 2014-03-14 15:21:54.439537 by PyXB version 1.1.2
+# Generated 2014-03-17 11:53:47.248661 by PyXB version 1.1.2
 import pyxb
 import pyxb.binding
 import pyxb.binding.saxer
@@ -11,11 +11,11 @@ import pyxb.utils.domutils
 import sys
 
 # Unique identifier for bindings created at the same time
-_GenerationUID = pyxb.utils.utility.UniqueIdentifier('urn:uuid:fcce2776-ab83-11e3-b899-c4d98710dc86')
+_GenerationUID = pyxb.utils.utility.UniqueIdentifier('urn:uuid:6923c468-adc2-11e3-8fb8-f01faf601f90')
 
 # Import bindings for namespaces imported into schema
 import pyxb.binding.datatypes
-import CommonDM.bas_stub
+import CommonDM.dm.bas_stub
 
 Namespace = pyxb.namespace.NamespaceForURI(u'http://euclid.esa.org/schema/sys', create_if_missing=True)
 Namespace.configureCategories(['typeBinding', 'elementBinding'])
@@ -44,6 +44,20 @@ def CreateFromDOM (node, default_namespace=None):
 
 
 # Atomic SimpleTypeDefinition
+class configFileName (pyxb.binding.datatypes.string):
+
+    """An atomic simple type."""
+
+    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'configFileName')
+    _Documentation = None
+configFileName._CF_pattern = pyxb.binding.facets.CF_pattern()
+configFileName._CF_pattern.addPattern(pattern=u'EUC-[GSOV|IOTE|OPER|4SVT?|TD??|TEST].[A-Za-z0-9]{3,4}')
+configFileName._CF_maxLength = pyxb.binding.facets.CF_maxLength(value=pyxb.binding.datatypes.nonNegativeInteger(64L))
+configFileName._InitializeFacetMap(configFileName._CF_pattern,
+   configFileName._CF_maxLength)
+Namespace.addCategoryObject('typeBinding', u'configFileName', configFileName)
+
+# Atomic SimpleTypeDefinition
 class version (pyxb.binding.datatypes.string):
 
     """Generic use for a release of data,software, model,...No specific constraint between 3 and 6 characters from 0.1to 2.2.3 for example."""
@@ -55,6 +69,31 @@ version._CF_maxLength = pyxb.binding.facets.CF_maxLength(value=pyxb.binding.data
 version._InitializeFacetMap(version._CF_minLength,
    version._CF_maxLength)
 Namespace.addCategoryObject('typeBinding', u'version', version)
+
+# Atomic SimpleTypeDefinition
+class scientificGroupName (pyxb.binding.datatypes.string, pyxb.binding.basis.enumeration_mixin):
+
+    """List of scientific groups used in EUCLID SGSreferring to OUs andSWG	"""
+
+    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'scientificGroupName')
+    _Documentation = u'List of scientific groups used in EUCLID SGSreferring to OUs andSWG\t'
+scientificGroupName._CF_enumeration = pyxb.binding.facets.CF_enumeration(value_datatype=scientificGroupName, enum_prefix=None)
+scientificGroupName.VIS = scientificGroupName._CF_enumeration.addEnumeration(unicode_value=u'VIS')
+scientificGroupName.NIR = scientificGroupName._CF_enumeration.addEnumeration(unicode_value=u'NIR')
+scientificGroupName.SIR = scientificGroupName._CF_enumeration.addEnumeration(unicode_value=u'SIR')
+scientificGroupName.SPE = scientificGroupName._CF_enumeration.addEnumeration(unicode_value=u'SPE')
+scientificGroupName.SIMWL = scientificGroupName._CF_enumeration.addEnumeration(unicode_value=u'SIMWL')
+scientificGroupName.SIM = scientificGroupName._CF_enumeration.addEnumeration(unicode_value=u'SIM')
+scientificGroupName.PHZ = scientificGroupName._CF_enumeration.addEnumeration(unicode_value=u'PHZ')
+scientificGroupName.LE3 = scientificGroupName._CF_enumeration.addEnumeration(unicode_value=u'LE3')
+scientificGroupName.EXTDES = scientificGroupName._CF_enumeration.addEnumeration(unicode_value=u'EXTDES')
+scientificGroupName.EXTPAN = scientificGroupName._CF_enumeration.addEnumeration(unicode_value=u'EXTPAN')
+scientificGroupName.EXTLSST = scientificGroupName._CF_enumeration.addEnumeration(unicode_value=u'EXTLSST')
+scientificGroupName.EXTKIDS = scientificGroupName._CF_enumeration.addEnumeration(unicode_value=u'EXTKIDS')
+scientificGroupName.SHE = scientificGroupName._CF_enumeration.addEnumeration(unicode_value=u'SHE')
+scientificGroupName.MER = scientificGroupName._CF_enumeration.addEnumeration(unicode_value=u'MER')
+scientificGroupName._InitializeFacetMap(scientificGroupName._CF_enumeration)
+Namespace.addCategoryObject('typeBinding', u'scientificGroupName', scientificGroupName)
 
 # Atomic SimpleTypeDefinition
 class systemDateTime (pyxb.binding.datatypes.dateTime):
@@ -107,45 +146,6 @@ dataFileName._InitializeFacetMap(dataFileName._CF_pattern,
    dataFileName._CF_maxLength)
 Namespace.addCategoryObject('typeBinding', u'dataFileName', dataFileName)
 
-# Atomic SimpleTypeDefinition
-class configFileName (pyxb.binding.datatypes.string):
-
-    """An atomic simple type."""
-
-    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'configFileName')
-    _Documentation = None
-configFileName._CF_pattern = pyxb.binding.facets.CF_pattern()
-configFileName._CF_pattern.addPattern(pattern=u'EUC-[GSOV|IOTE|OPER|4SVT?|TD??|TEST].[A-Za-z0-9]{3,4}')
-configFileName._CF_maxLength = pyxb.binding.facets.CF_maxLength(value=pyxb.binding.datatypes.nonNegativeInteger(64L))
-configFileName._InitializeFacetMap(configFileName._CF_pattern,
-   configFileName._CF_maxLength)
-Namespace.addCategoryObject('typeBinding', u'configFileName', configFileName)
-
-# Atomic SimpleTypeDefinition
-class scientificGroupName (pyxb.binding.datatypes.string, pyxb.binding.basis.enumeration_mixin):
-
-    """List of scientific groups used in EUCLID SGSreferring to OUs andSWG	"""
-
-    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'scientificGroupName')
-    _Documentation = u'List of scientific groups used in EUCLID SGSreferring to OUs andSWG\t'
-scientificGroupName._CF_enumeration = pyxb.binding.facets.CF_enumeration(value_datatype=scientificGroupName, enum_prefix=None)
-scientificGroupName.VIS = scientificGroupName._CF_enumeration.addEnumeration(unicode_value=u'VIS')
-scientificGroupName.NIR = scientificGroupName._CF_enumeration.addEnumeration(unicode_value=u'NIR')
-scientificGroupName.SIR = scientificGroupName._CF_enumeration.addEnumeration(unicode_value=u'SIR')
-scientificGroupName.SPE = scientificGroupName._CF_enumeration.addEnumeration(unicode_value=u'SPE')
-scientificGroupName.SIMWL = scientificGroupName._CF_enumeration.addEnumeration(unicode_value=u'SIMWL')
-scientificGroupName.SIM = scientificGroupName._CF_enumeration.addEnumeration(unicode_value=u'SIM')
-scientificGroupName.PHZ = scientificGroupName._CF_enumeration.addEnumeration(unicode_value=u'PHZ')
-scientificGroupName.LE3 = scientificGroupName._CF_enumeration.addEnumeration(unicode_value=u'LE3')
-scientificGroupName.EXTDES = scientificGroupName._CF_enumeration.addEnumeration(unicode_value=u'EXTDES')
-scientificGroupName.EXTPAN = scientificGroupName._CF_enumeration.addEnumeration(unicode_value=u'EXTPAN')
-scientificGroupName.EXTLSST = scientificGroupName._CF_enumeration.addEnumeration(unicode_value=u'EXTLSST')
-scientificGroupName.EXTKIDS = scientificGroupName._CF_enumeration.addEnumeration(unicode_value=u'EXTKIDS')
-scientificGroupName.SHE = scientificGroupName._CF_enumeration.addEnumeration(unicode_value=u'SHE')
-scientificGroupName.MER = scientificGroupName._CF_enumeration.addEnumeration(unicode_value=u'MER')
-scientificGroupName._InitializeFacetMap(scientificGroupName._CF_enumeration)
-Namespace.addCategoryObject('typeBinding', u'scientificGroupName', scientificGroupName)
-
 # Complex type genericHeader with content type ELEMENT_ONLY
 class genericHeader (pyxb.binding.basis.complexTypeDefinition):
     _TypeDefinition = None
@@ -153,13 +153,6 @@ class genericHeader (pyxb.binding.basis.complexTypeDefinition):
     _Abstract = False
     _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'genericHeader')
     # Base type is pyxb.binding.datatypes.anyType
-    
-    # Element {http://euclid.esa.org/schema/sys}SoftwareRelease uses Python identifier SoftwareRelease
-    __SoftwareRelease = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'SoftwareRelease'), 'SoftwareRelease', '__httpeuclid_esa_orgschemasys_genericHeader_httpeuclid_esa_orgschemasysSoftwareRelease', False)
-
-    
-    SoftwareRelease = property(__SoftwareRelease.value, __SoftwareRelease.set, None, u'This SoftwareRelease is extracted from the task definition : /tsk/component tsk/version')
-
     
     # Element {http://euclid.esa.org/schema/sys}ProductType uses Python identifier ProductType
     __ProductType = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'ProductType'), 'ProductType', '__httpeuclid_esa_orgschemasys_genericHeader_httpeuclid_esa_orgschemasysProductType', False)
@@ -202,15 +195,22 @@ class genericHeader (pyxb.binding.basis.complexTypeDefinition):
     
     ProductId = property(__ProductId.value, __ProductId.set, None, u'This Id is the unique reference of the object defined in thi interface, this Id is processed by IAL to ensure the uniqueness.')
 
+    
+    # Element {http://euclid.esa.org/schema/sys}SoftwareRelease uses Python identifier SoftwareRelease
+    __SoftwareRelease = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'SoftwareRelease'), 'SoftwareRelease', '__httpeuclid_esa_orgschemasys_genericHeader_httpeuclid_esa_orgschemasysSoftwareRelease', False)
+
+    
+    SoftwareRelease = property(__SoftwareRelease.value, __SoftwareRelease.set, None, u'This SoftwareRelease is extracted from the task definition : /tsk/component tsk/version')
+
 
     _ElementMap = {
-        __SoftwareRelease.name() : __SoftwareRelease,
         __ProductType.name() : __ProductType,
         __ScientificCustodian.name() : __ScientificCustodian,
         __ProductName.name() : __ProductName,
         __SoftwareName.name() : __SoftwareName,
         __AccessRights.name() : __AccessRights,
-        __ProductId.name() : __ProductId
+        __ProductId.name() : __ProductId,
+        __SoftwareRelease.name() : __SoftwareRelease
     }
     _AttributeMap = {
         
@@ -268,19 +268,19 @@ Namespace.addCategoryObject('typeBinding', u'accessRights', accessRights)
 
 
 
-genericHeader._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'SoftwareRelease'), version, scope=genericHeader, documentation=u'This SoftwareRelease is extracted from the task definition : /tsk/component tsk/version'))
-
 genericHeader._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'ProductType'), pyxb.binding.datatypes.QName, scope=genericHeader, documentation=u'Identifies the type of product. The list of product types is defined within the Data Model.'))
 
 genericHeader._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'ScientificCustodian'), scientificGroupName, scope=genericHeader, documentation=u'Scientific Group responsible of the quality of  the data referring to the OU or SWG or else. The custodian of this group and coordinates complete '))
 
-genericHeader._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'ProductName'), CommonDM.bas_stub.objectName, scope=genericHeader, documentation=u'Product Name, the interface embeds one and only one Product. This information is derived from the task schema input/output name. '))
+genericHeader._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'ProductName'), CommonDM.dm.bas_stub.objectName, scope=genericHeader, documentation=u'Product Name, the interface embeds one and only one Product. This information is derived from the task schema input/output name. '))
 
 genericHeader._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'SoftwareName'), pyxb.binding.datatypes.string, scope=genericHeader, documentation=u'This SoftwareName is extracted from the task definition : /tsk/component tsk/executable'))
 
 genericHeader._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'AccessRights'), accessRights, scope=genericHeader, documentation=u'Interface access rights.'))
 
-genericHeader._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'ProductId'), CommonDM.bas_stub.objectId, scope=genericHeader, documentation=u'This Id is the unique reference of the object defined in thi interface, this Id is processed by IAL to ensure the uniqueness.'))
+genericHeader._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'ProductId'), CommonDM.dm.bas_stub.objectId, scope=genericHeader, documentation=u'This Id is the unique reference of the object defined in thi interface, this Id is processed by IAL to ensure the uniqueness.'))
+
+genericHeader._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'SoftwareRelease'), version, scope=genericHeader, documentation=u'This SoftwareRelease is extracted from the task definition : /tsk/component tsk/version'))
 genericHeader._GroupModel = pyxb.binding.content.GroupSequence(
     pyxb.binding.content.ParticleModel(genericHeader._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'ProductName')), min_occurs=1, max_occurs=1),
     pyxb.binding.content.ParticleModel(genericHeader._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'ProductId')), min_occurs=1, max_occurs=1),

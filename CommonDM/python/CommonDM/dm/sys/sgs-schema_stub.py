@@ -1,7 +1,7 @@
-# /home/nikoapos/ISDC/Projects/Alexandria/1.0/CommonDM/python/CommonDM/pro_stub.py
+# /home/nikoapos/ISDC/Projects/Alexandria/1.0/CommonDM/python/CommonDM/dm/sys/sgs-schema_stub.py
 # PyXB bindings for NamespaceModule
-# NSM:f84364656a42906de1a48a507fb326ac741a132a
-# Generated 2014-03-14 15:21:54.443964 by PyXB version 1.1.2
+# NSM:f70e6b6e888f21e7b8901f8b39af81a0e0071061
+# Generated 2014-03-17 11:53:47.251534 by PyXB version 1.1.2
 import pyxb
 import pyxb.binding
 import pyxb.binding.saxer
@@ -11,12 +11,12 @@ import pyxb.utils.domutils
 import sys
 
 # Unique identifier for bindings created at the same time
-_GenerationUID = pyxb.utils.utility.UniqueIdentifier('urn:uuid:fcce2776-ab83-11e3-b899-c4d98710dc86')
+_GenerationUID = pyxb.utils.utility.UniqueIdentifier('urn:uuid:6923c468-adc2-11e3-8fb8-f01faf601f90')
 
 # Import bindings for namespaces imported into schema
+import CommonDM.dm.sys.sgs_stub
 
-
-Namespace = pyxb.namespace.NamespaceForURI(u'http://euclid.esa.org/schema/pro', create_if_missing=True)
+Namespace = pyxb.namespace.NamespaceForURI(u'http://euclid.esa.org/schema/sys/sgs-schema', create_if_missing=True)
 Namespace.configureCategories(['typeBinding', 'elementBinding'])
 #ModuleRecord = Namespace.lookupModuleRecordByUID(_GenerationUID, create_if_missing=True)
 #ModuleRecord._setModule(sys.modules[__name__])
@@ -41,3 +41,6 @@ def CreateFromDOM (node, default_namespace=None):
         default_namespace = Namespace.fallbackNamespace()
     return pyxb.binding.basis.element.AnyCreateFromDOM(node, _fallback_namespace=default_namespace)
 
+
+Storage = pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Storage'), CommonDM.dm.sys.sgs_stub.storageNode)
+Namespace.addCategoryObject('elementBinding', Storage.name().localName(), Storage)

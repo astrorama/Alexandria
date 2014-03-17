@@ -1,7 +1,7 @@
-# /home/nikoapos/ISDC/Projects/Alexandria/1.0/CommonDM/python/CommonDM/ins_stub.py
+# /home/nikoapos/ISDC/Projects/Alexandria/1.0/CommonDM/python/CommonDM/dm/ins_stub.py
 # PyXB bindings for NamespaceModule
 # NSM:b0796ff167f6d7eb4af7e5fe181d133e7dd0aa4e
-# Generated 2014-03-14 15:21:54.440044 by PyXB version 1.1.2
+# Generated 2014-03-17 11:53:47.249359 by PyXB version 1.1.2
 import pyxb
 import pyxb.binding
 import pyxb.binding.saxer
@@ -11,13 +11,13 @@ import pyxb.utils.domutils
 import sys
 
 # Unique identifier for bindings created at the same time
-_GenerationUID = pyxb.utils.utility.UniqueIdentifier('urn:uuid:fcce2776-ab83-11e3-b899-c4d98710dc86')
+_GenerationUID = pyxb.utils.utility.UniqueIdentifier('urn:uuid:6923c468-adc2-11e3-8fb8-f01faf601f90')
 
 # Import bindings for namespaces imported into schema
 import pyxb.binding.datatypes
-import CommonDM.bas.utd_stub
-import CommonDM.bas.dtd_stub
-import CommonDM.bas.mat_stub
+import CommonDM.dm.bas.utd_stub
+import CommonDM.dm.bas.dtd_stub
+import CommonDM.dm.bas.mat_stub
 
 Namespace = pyxb.namespace.NamespaceForURI(u'http://euclid.esa.org/schema/ins', create_if_missing=True)
 Namespace.configureCategories(['typeBinding', 'elementBinding'])
@@ -85,38 +85,6 @@ wavelengthBand.RED = wavelengthBand._CF_enumeration.addEnumeration(unicode_value
 wavelengthBand._InitializeFacetMap(wavelengthBand._CF_enumeration)
 Namespace.addCategoryObject('typeBinding', u'wavelengthBand', wavelengthBand)
 
-# Complex type transmissionFactor with content type ELEMENT_ONLY
-class transmissionFactor (pyxb.binding.basis.complexTypeDefinition):
-    _TypeDefinition = None
-    _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
-    _Abstract = False
-    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'transmissionFactor')
-    # Base type is pyxb.binding.datatypes.anyType
-    
-    # Element {http://euclid.esa.org/schema/ins}Unit uses Python identifier Unit
-    __Unit = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Unit'), 'Unit', '__httpeuclid_esa_orgschemains_transmissionFactor_httpeuclid_esa_orgschemainsUnit', False)
-
-    
-    Unit = property(__Unit.value, __Unit.set, None, None)
-
-    
-    # Element {http://euclid.esa.org/schema/ins}Value uses Python identifier Value
-    __Value = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Value'), 'Value', '__httpeuclid_esa_orgschemains_transmissionFactor_httpeuclid_esa_orgschemainsValue', False)
-
-    
-    Value = property(__Value.value, __Value.set, None, None)
-
-
-    _ElementMap = {
-        __Unit.name() : __Unit,
-        __Value.name() : __Value
-    }
-    _AttributeMap = {
-        
-    }
-Namespace.addCategoryObject('typeBinding', u'transmissionFactor', transmissionFactor)
-
-
 # Complex type noise with content type ELEMENT_ONLY
 class noise (pyxb.binding.basis.complexTypeDefinition):
     _TypeDefinition = None
@@ -179,38 +147,6 @@ class wavelength (pyxb.binding.basis.complexTypeDefinition):
         
     }
 Namespace.addCategoryObject('typeBinding', u'wavelength', wavelength)
-
-
-# Complex type errorOnTransmission with content type ELEMENT_ONLY
-class errorOnTransmission (pyxb.binding.basis.complexTypeDefinition):
-    _TypeDefinition = None
-    _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
-    _Abstract = False
-    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'errorOnTransmission')
-    # Base type is pyxb.binding.datatypes.anyType
-    
-    # Element {http://euclid.esa.org/schema/ins}Unit uses Python identifier Unit
-    __Unit = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Unit'), 'Unit', '__httpeuclid_esa_orgschemains_errorOnTransmission_httpeuclid_esa_orgschemainsUnit', False)
-
-    
-    Unit = property(__Unit.value, __Unit.set, None, None)
-
-    
-    # Element {http://euclid.esa.org/schema/ins}Value uses Python identifier Value
-    __Value = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Value'), 'Value', '__httpeuclid_esa_orgschemains_errorOnTransmission_httpeuclid_esa_orgschemainsValue', False)
-
-    
-    Value = property(__Value.value, __Value.set, None, None)
-
-
-    _ElementMap = {
-        __Unit.name() : __Unit,
-        __Value.name() : __Value
-    }
-    _AttributeMap = {
-        
-    }
-Namespace.addCategoryObject('typeBinding', u'errorOnTransmission', errorOnTransmission)
 
 
 # Complex type flux with content type ELEMENT_ONLY
@@ -293,13 +229,6 @@ class insParameterValue (pyxb.binding.basis.complexTypeDefinition):
     _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'insParameterValue')
     # Base type is pyxb.binding.datatypes.anyType
     
-    # Element {http://euclid.esa.org/schema/ins}list uses Python identifier list
-    __list = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'list'), 'list', '__httpeuclid_esa_orgschemains_insParameterValue_httpeuclid_esa_orgschemainslist', False)
-
-    
-    list = property(__list.value, __list.set, None, None)
-
-    
     # Element {http://euclid.esa.org/schema/ins}text uses Python identifier text
     __text = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'text'), 'text', '__httpeuclid_esa_orgschemains_insParameterValue_httpeuclid_esa_orgschemainstext', False)
 
@@ -314,6 +243,13 @@ class insParameterValue (pyxb.binding.basis.complexTypeDefinition):
     polynomial = property(__polynomial.value, __polynomial.set, None, None)
 
     
+    # Element {http://euclid.esa.org/schema/ins}list uses Python identifier list
+    __list = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'list'), 'list', '__httpeuclid_esa_orgschemains_insParameterValue_httpeuclid_esa_orgschemainslist', False)
+
+    
+    list = property(__list.value, __list.set, None, None)
+
+    
     # Element {http://euclid.esa.org/schema/ins}double uses Python identifier double
     __double = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'double'), 'double', '__httpeuclid_esa_orgschemains_insParameterValue_httpeuclid_esa_orgschemainsdouble', False)
 
@@ -322,9 +258,9 @@ class insParameterValue (pyxb.binding.basis.complexTypeDefinition):
 
 
     _ElementMap = {
-        __list.name() : __list,
         __text.name() : __text,
         __polynomial.name() : __polynomial,
+        __list.name() : __list,
         __double.name() : __double
     }
     _AttributeMap = {
@@ -333,22 +269,75 @@ class insParameterValue (pyxb.binding.basis.complexTypeDefinition):
 Namespace.addCategoryObject('typeBinding', u'insParameterValue', insParameterValue)
 
 
+# Complex type errorOnTransmission with content type ELEMENT_ONLY
+class errorOnTransmission (pyxb.binding.basis.complexTypeDefinition):
+    _TypeDefinition = None
+    _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
+    _Abstract = False
+    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'errorOnTransmission')
+    # Base type is pyxb.binding.datatypes.anyType
+    
+    # Element {http://euclid.esa.org/schema/ins}Unit uses Python identifier Unit
+    __Unit = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Unit'), 'Unit', '__httpeuclid_esa_orgschemains_errorOnTransmission_httpeuclid_esa_orgschemainsUnit', False)
+
+    
+    Unit = property(__Unit.value, __Unit.set, None, None)
+
+    
+    # Element {http://euclid.esa.org/schema/ins}Value uses Python identifier Value
+    __Value = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Value'), 'Value', '__httpeuclid_esa_orgschemains_errorOnTransmission_httpeuclid_esa_orgschemainsValue', False)
+
+    
+    Value = property(__Value.value, __Value.set, None, None)
 
 
-transmissionFactor._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Unit'), CommonDM.bas.utd_stub.unit, scope=transmissionFactor))
+    _ElementMap = {
+        __Unit.name() : __Unit,
+        __Value.name() : __Value
+    }
+    _AttributeMap = {
+        
+    }
+Namespace.addCategoryObject('typeBinding', u'errorOnTransmission', errorOnTransmission)
 
-transmissionFactor._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Value'), CommonDM.bas.dtd_stub.listOfDouble, scope=transmissionFactor))
-transmissionFactor._GroupModel = pyxb.binding.content.GroupSequence(
-    pyxb.binding.content.ParticleModel(transmissionFactor._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Value')), min_occurs=1, max_occurs=1),
-    pyxb.binding.content.ParticleModel(transmissionFactor._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Unit')), min_occurs=1, max_occurs=1)
-    )
-transmissionFactor._ContentModel = pyxb.binding.content.ParticleModel(transmissionFactor._GroupModel, min_occurs=1, max_occurs=1)
+
+# Complex type transmissionFactor with content type ELEMENT_ONLY
+class transmissionFactor (pyxb.binding.basis.complexTypeDefinition):
+    _TypeDefinition = None
+    _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
+    _Abstract = False
+    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'transmissionFactor')
+    # Base type is pyxb.binding.datatypes.anyType
+    
+    # Element {http://euclid.esa.org/schema/ins}Unit uses Python identifier Unit
+    __Unit = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Unit'), 'Unit', '__httpeuclid_esa_orgschemains_transmissionFactor_httpeuclid_esa_orgschemainsUnit', False)
+
+    
+    Unit = property(__Unit.value, __Unit.set, None, None)
+
+    
+    # Element {http://euclid.esa.org/schema/ins}Value uses Python identifier Value
+    __Value = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Value'), 'Value', '__httpeuclid_esa_orgschemains_transmissionFactor_httpeuclid_esa_orgschemainsValue', False)
+
+    
+    Value = property(__Value.value, __Value.set, None, None)
+
+
+    _ElementMap = {
+        __Unit.name() : __Unit,
+        __Value.name() : __Value
+    }
+    _AttributeMap = {
+        
+    }
+Namespace.addCategoryObject('typeBinding', u'transmissionFactor', transmissionFactor)
 
 
 
-noise._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Unit'), CommonDM.bas.utd_stub.unit, scope=noise))
 
-noise._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Value'), CommonDM.bas.dtd_stub.listOfDouble, scope=noise))
+noise._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Unit'), CommonDM.dm.bas.utd_stub.unit, scope=noise))
+
+noise._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Value'), CommonDM.dm.bas.dtd_stub.listOfDouble, scope=noise))
 noise._GroupModel = pyxb.binding.content.GroupSequence(
     pyxb.binding.content.ParticleModel(noise._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Value')), min_occurs=1, max_occurs=1),
     pyxb.binding.content.ParticleModel(noise._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Unit')), min_occurs=1, max_occurs=1)
@@ -357,9 +346,9 @@ noise._ContentModel = pyxb.binding.content.ParticleModel(noise._GroupModel, min_
 
 
 
-wavelength._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Unit'), CommonDM.bas.utd_stub.unit, scope=wavelength))
+wavelength._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Unit'), CommonDM.dm.bas.utd_stub.unit, scope=wavelength))
 
-wavelength._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Value'), CommonDM.bas.dtd_stub.listOfDouble, scope=wavelength))
+wavelength._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Value'), CommonDM.dm.bas.dtd_stub.listOfDouble, scope=wavelength))
 wavelength._GroupModel = pyxb.binding.content.GroupSequence(
     pyxb.binding.content.ParticleModel(wavelength._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Value')), min_occurs=1, max_occurs=1),
     pyxb.binding.content.ParticleModel(wavelength._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Unit')), min_occurs=1, max_occurs=1)
@@ -368,20 +357,9 @@ wavelength._ContentModel = pyxb.binding.content.ParticleModel(wavelength._GroupM
 
 
 
-errorOnTransmission._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Unit'), CommonDM.bas.utd_stub.unit, scope=errorOnTransmission))
+flux._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Unit'), CommonDM.dm.bas.utd_stub.unit, scope=flux))
 
-errorOnTransmission._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Value'), CommonDM.bas.dtd_stub.listOfDouble, scope=errorOnTransmission))
-errorOnTransmission._GroupModel = pyxb.binding.content.GroupSequence(
-    pyxb.binding.content.ParticleModel(errorOnTransmission._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Value')), min_occurs=1, max_occurs=1),
-    pyxb.binding.content.ParticleModel(errorOnTransmission._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Unit')), min_occurs=1, max_occurs=1)
-    )
-errorOnTransmission._ContentModel = pyxb.binding.content.ParticleModel(errorOnTransmission._GroupModel, min_occurs=1, max_occurs=1)
-
-
-
-flux._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Unit'), CommonDM.bas.utd_stub.unit, scope=flux))
-
-flux._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Value'), CommonDM.bas.dtd_stub.listOfDouble, scope=flux))
+flux._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Value'), CommonDM.dm.bas.dtd_stub.listOfDouble, scope=flux))
 flux._GroupModel = pyxb.binding.content.GroupSequence(
     pyxb.binding.content.ParticleModel(flux._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Value')), min_occurs=1, max_occurs=1),
     pyxb.binding.content.ParticleModel(flux._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Unit')), min_occurs=1, max_occurs=1)
@@ -390,7 +368,7 @@ flux._ContentModel = pyxb.binding.content.ParticleModel(flux._GroupModel, min_oc
 
 
 
-insParameter._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Unit'), CommonDM.bas.utd_stub.unit, scope=insParameter))
+insParameter._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Unit'), CommonDM.dm.bas.utd_stub.unit, scope=insParameter))
 
 insParameter._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Value'), insParameterValue, scope=insParameter))
 
@@ -404,11 +382,11 @@ insParameter._ContentModel = pyxb.binding.content.ParticleModel(insParameter._Gr
 
 
 
-insParameterValue._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'list'), CommonDM.bas.dtd_stub.listOfDouble, scope=insParameterValue))
-
 insParameterValue._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'text'), pyxb.binding.datatypes.string, scope=insParameterValue))
 
-insParameterValue._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'polynomial'), CommonDM.bas.mat_stub.varXpolynomialModel, scope=insParameterValue))
+insParameterValue._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'polynomial'), CommonDM.dm.bas.mat_stub.varXpolynomialModel, scope=insParameterValue))
+
+insParameterValue._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'list'), CommonDM.dm.bas.dtd_stub.listOfDouble, scope=insParameterValue))
 
 insParameterValue._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'double'), pyxb.binding.datatypes.double, scope=insParameterValue))
 insParameterValue._GroupModel = pyxb.binding.content.GroupChoice(
@@ -418,3 +396,25 @@ insParameterValue._GroupModel = pyxb.binding.content.GroupChoice(
     pyxb.binding.content.ParticleModel(insParameterValue._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'polynomial')), min_occurs=1, max_occurs=1)
     )
 insParameterValue._ContentModel = pyxb.binding.content.ParticleModel(insParameterValue._GroupModel, min_occurs=1, max_occurs=1)
+
+
+
+errorOnTransmission._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Unit'), CommonDM.dm.bas.utd_stub.unit, scope=errorOnTransmission))
+
+errorOnTransmission._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Value'), CommonDM.dm.bas.dtd_stub.listOfDouble, scope=errorOnTransmission))
+errorOnTransmission._GroupModel = pyxb.binding.content.GroupSequence(
+    pyxb.binding.content.ParticleModel(errorOnTransmission._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Value')), min_occurs=1, max_occurs=1),
+    pyxb.binding.content.ParticleModel(errorOnTransmission._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Unit')), min_occurs=1, max_occurs=1)
+    )
+errorOnTransmission._ContentModel = pyxb.binding.content.ParticleModel(errorOnTransmission._GroupModel, min_occurs=1, max_occurs=1)
+
+
+
+transmissionFactor._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Unit'), CommonDM.dm.bas.utd_stub.unit, scope=transmissionFactor))
+
+transmissionFactor._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Value'), CommonDM.dm.bas.dtd_stub.listOfDouble, scope=transmissionFactor))
+transmissionFactor._GroupModel = pyxb.binding.content.GroupSequence(
+    pyxb.binding.content.ParticleModel(transmissionFactor._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Value')), min_occurs=1, max_occurs=1),
+    pyxb.binding.content.ParticleModel(transmissionFactor._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Unit')), min_occurs=1, max_occurs=1)
+    )
+transmissionFactor._ContentModel = pyxb.binding.content.ParticleModel(transmissionFactor._GroupModel, min_occurs=1, max_occurs=1)
