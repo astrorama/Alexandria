@@ -1,7 +1,7 @@
 # /home/nikoapos/ISDC/Projects/Alexandria/1.0/CommonDM/python/CommonDM/dm/bas/fit_stub.py
 # PyXB bindings for NamespaceModule
 # NSM:975654cc63c7654a0853e9fafa22678e8820cfb9
-# Generated 2014-03-17 11:53:47.249813 by PyXB version 1.1.2
+# Generated 2014-03-17 18:50:36.638939 by PyXB version 1.1.2
 import pyxb
 import pyxb.binding
 import pyxb.binding.saxer
@@ -11,13 +11,13 @@ import pyxb.utils.domutils
 import sys
 
 # Unique identifier for bindings created at the same time
-_GenerationUID = pyxb.utils.utility.UniqueIdentifier('urn:uuid:6923c468-adc2-11e3-8fb8-f01faf601f90')
+_GenerationUID = pyxb.utils.utility.UniqueIdentifier('urn:uuid:a3e7637c-adfc-11e3-9f2e-c4d98710dc86')
 
 # Import bindings for namespaces imported into schema
 import pyxb.binding.datatypes
-import CommonDM.dm.sys.sgs_stub
 import CommonDM.dm.bas.imp.fits_stub
 import CommonDM.dm.bas.utd_stub
+import CommonDM.dm.sys.sgs_stub
 
 Namespace = pyxb.namespace.NamespaceForURI(u'http://euclid.esa.org/schema/bas/fit', create_if_missing=True)
 Namespace.configureCategories(['typeBinding', 'elementBinding'])
@@ -134,41 +134,147 @@ hduMultiplicity.emptyString = u'*'                # originally STD_ANON.emptyStr
 hduMultiplicity._InitializeFacetMap()
 Namespace.addCategoryObject('typeBinding', u'hduMultiplicity', hduMultiplicity)
 
-# Complex type fitsFile with content type ELEMENT_ONLY
-class fitsFile (pyxb.binding.basis.complexTypeDefinition):
+# Complex type headerUndefinedKeyword with content type EMPTY
+class headerUndefinedKeyword (pyxb.binding.basis.complexTypeDefinition):
     _TypeDefinition = None
-    _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
-    _Abstract = True
-    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'fitsFile')
+    _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_EMPTY
+    _Abstract = False
+    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'headerUndefinedKeyword')
     # Base type is pyxb.binding.datatypes.anyType
     
-    # Element DataContainer uses Python identifier DataContainer
-    __DataContainer = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(None, u'DataContainer'), 'DataContainer', '__httpeuclid_esa_orgschemabasfit_fitsFile_DataContainer', False)
-
+    # Attribute name uses Python identifier name
+    __name = pyxb.binding.content.AttributeUse(pyxb.namespace.ExpandedName(None, u'name'), 'name', '__httpeuclid_esa_orgschemabasfit_headerUndefinedKeyword_name', CommonDM.dm.bas.imp.fits_stub.headerKeywordName, required=True)
     
-    DataContainer = property(__DataContainer.value, __DataContainer.set, None, None)
-
-    
-    # Attribute version uses Python identifier version
-    __version = pyxb.binding.content.AttributeUse(pyxb.namespace.ExpandedName(None, u'version'), 'version', '__httpeuclid_esa_orgschemabasfit_fitsFile_version', fitsFormatVersion, required=True)
-    
-    version = property(__version.value, __version.set, None, None)
-
-    
-    # Attribute format uses Python identifier format
-    __format = pyxb.binding.content.AttributeUse(pyxb.namespace.ExpandedName(None, u'format'), 'format', '__httpeuclid_esa_orgschemabasfit_fitsFile_format', fitsFormatIdentifier, required=True)
-    
-    format = property(__format.value, __format.set, None, None)
+    name = property(__name.value, __name.set, None, None)
 
 
     _ElementMap = {
-        __DataContainer.name() : __DataContainer
+        
     }
     _AttributeMap = {
-        __version.name() : __version,
-        __format.name() : __format
+        __name.name() : __name
     }
-Namespace.addCategoryObject('typeBinding', u'fitsFile', fitsFile)
+Namespace.addCategoryObject('typeBinding', u'headerUndefinedKeyword', headerUndefinedKeyword)
+
+
+# Complex type headerStringKeyword with content type EMPTY
+class headerStringKeyword (pyxb.binding.basis.complexTypeDefinition):
+    _TypeDefinition = None
+    _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_EMPTY
+    _Abstract = False
+    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'headerStringKeyword')
+    # Base type is pyxb.binding.datatypes.anyType
+    
+    # Attribute fixed uses Python identifier fixed
+    __fixed = pyxb.binding.content.AttributeUse(pyxb.namespace.ExpandedName(None, u'fixed'), 'fixed', '__httpeuclid_esa_orgschemabasfit_headerStringKeyword_fixed', CommonDM.dm.bas.imp.fits_stub.stringKeywordValue)
+    
+    fixed = property(__fixed.value, __fixed.set, None, None)
+
+    
+    # Attribute name uses Python identifier name
+    __name = pyxb.binding.content.AttributeUse(pyxb.namespace.ExpandedName(None, u'name'), 'name', '__httpeuclid_esa_orgschemabasfit_headerStringKeyword_name', CommonDM.dm.bas.imp.fits_stub.headerKeywordName, required=True)
+    
+    name = property(__name.value, __name.set, None, None)
+
+
+    _ElementMap = {
+        
+    }
+    _AttributeMap = {
+        __fixed.name() : __fixed,
+        __name.name() : __name
+    }
+Namespace.addCategoryObject('typeBinding', u'headerStringKeyword', headerStringKeyword)
+
+
+# Complex type headerLogicalKeyword with content type EMPTY
+class headerLogicalKeyword (pyxb.binding.basis.complexTypeDefinition):
+    _TypeDefinition = None
+    _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_EMPTY
+    _Abstract = False
+    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'headerLogicalKeyword')
+    # Base type is pyxb.binding.datatypes.anyType
+    
+    # Attribute fixed uses Python identifier fixed
+    __fixed = pyxb.binding.content.AttributeUse(pyxb.namespace.ExpandedName(None, u'fixed'), 'fixed', '__httpeuclid_esa_orgschemabasfit_headerLogicalKeyword_fixed', CommonDM.dm.bas.imp.fits_stub.logicalKeywordValue)
+    
+    fixed = property(__fixed.value, __fixed.set, None, None)
+
+    
+    # Attribute name uses Python identifier name
+    __name = pyxb.binding.content.AttributeUse(pyxb.namespace.ExpandedName(None, u'name'), 'name', '__httpeuclid_esa_orgschemabasfit_headerLogicalKeyword_name', CommonDM.dm.bas.imp.fits_stub.headerKeywordName, required=True)
+    
+    name = property(__name.value, __name.set, None, None)
+
+
+    _ElementMap = {
+        
+    }
+    _AttributeMap = {
+        __fixed.name() : __fixed,
+        __name.name() : __name
+    }
+Namespace.addCategoryObject('typeBinding', u'headerLogicalKeyword', headerLogicalKeyword)
+
+
+# Complex type headerIntegerKeyword with content type EMPTY
+class headerIntegerKeyword (pyxb.binding.basis.complexTypeDefinition):
+    _TypeDefinition = None
+    _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_EMPTY
+    _Abstract = False
+    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'headerIntegerKeyword')
+    # Base type is pyxb.binding.datatypes.anyType
+    
+    # Attribute fixed uses Python identifier fixed
+    __fixed = pyxb.binding.content.AttributeUse(pyxb.namespace.ExpandedName(None, u'fixed'), 'fixed', '__httpeuclid_esa_orgschemabasfit_headerIntegerKeyword_fixed', CommonDM.dm.bas.imp.fits_stub.integerKeywordValue)
+    
+    fixed = property(__fixed.value, __fixed.set, None, None)
+
+    
+    # Attribute name uses Python identifier name
+    __name = pyxb.binding.content.AttributeUse(pyxb.namespace.ExpandedName(None, u'name'), 'name', '__httpeuclid_esa_orgschemabasfit_headerIntegerKeyword_name', CommonDM.dm.bas.imp.fits_stub.headerKeywordName, required=True)
+    
+    name = property(__name.value, __name.set, None, None)
+
+
+    _ElementMap = {
+        
+    }
+    _AttributeMap = {
+        __fixed.name() : __fixed,
+        __name.name() : __name
+    }
+Namespace.addCategoryObject('typeBinding', u'headerIntegerKeyword', headerIntegerKeyword)
+
+
+# Complex type headerDoubleKeyword with content type EMPTY
+class headerDoubleKeyword (pyxb.binding.basis.complexTypeDefinition):
+    _TypeDefinition = None
+    _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_EMPTY
+    _Abstract = False
+    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'headerDoubleKeyword')
+    # Base type is pyxb.binding.datatypes.anyType
+    
+    # Attribute fixed uses Python identifier fixed
+    __fixed = pyxb.binding.content.AttributeUse(pyxb.namespace.ExpandedName(None, u'fixed'), 'fixed', '__httpeuclid_esa_orgschemabasfit_headerDoubleKeyword_fixed', CommonDM.dm.bas.imp.fits_stub.doubleKeywordValue)
+    
+    fixed = property(__fixed.value, __fixed.set, None, None)
+
+    
+    # Attribute name uses Python identifier name
+    __name = pyxb.binding.content.AttributeUse(pyxb.namespace.ExpandedName(None, u'name'), 'name', '__httpeuclid_esa_orgschemabasfit_headerDoubleKeyword_name', CommonDM.dm.bas.imp.fits_stub.headerKeywordName, required=True)
+    
+    name = property(__name.value, __name.set, None, None)
+
+
+    _ElementMap = {
+        
+    }
+    _AttributeMap = {
+        __fixed.name() : __fixed,
+        __name.name() : __name
+    }
+Namespace.addCategoryObject('typeBinding', u'headerDoubleKeyword', headerDoubleKeyword)
 
 
 # Complex type binaryTableColumn with content type EMPTY
@@ -208,126 +314,41 @@ class binaryTableColumn (pyxb.binding.basis.complexTypeDefinition):
 Namespace.addCategoryObject('typeBinding', u'binaryTableColumn', binaryTableColumn)
 
 
-# Complex type genericHdu with content type ELEMENT_ONLY
-class genericHdu (pyxb.binding.basis.complexTypeDefinition):
+# Complex type fitsFile with content type ELEMENT_ONLY
+class fitsFile (pyxb.binding.basis.complexTypeDefinition):
     _TypeDefinition = None
     _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
-    _Abstract = False
-    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'genericHdu')
+    _Abstract = True
+    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'fitsFile')
     # Base type is pyxb.binding.datatypes.anyType
     
-    # Element {http://euclid.esa.org/schema/bas/fit}HeaderKeywordList uses Python identifier HeaderKeywordList
-    __HeaderKeywordList = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'HeaderKeywordList'), 'HeaderKeywordList', '__httpeuclid_esa_orgschemabasfit_genericHdu_httpeuclid_esa_orgschemabasfitHeaderKeywordList', False)
+    # Element DataContainer uses Python identifier DataContainer
+    __DataContainer = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(None, u'DataContainer'), 'DataContainer', '__httpeuclid_esa_orgschemabasfit_fitsFile_DataContainer', False)
 
     
-    HeaderKeywordList = property(__HeaderKeywordList.value, __HeaderKeywordList.set, None, None)
+    DataContainer = property(__DataContainer.value, __DataContainer.set, None, None)
 
     
-    # Attribute multiplicity uses Python identifier multiplicity
-    __multiplicity = pyxb.binding.content.AttributeUse(pyxb.namespace.ExpandedName(None, u'multiplicity'), 'multiplicity', '__httpeuclid_esa_orgschemabasfit_genericHdu_multiplicity', hduMultiplicity)
+    # Attribute version uses Python identifier version
+    __version = pyxb.binding.content.AttributeUse(pyxb.namespace.ExpandedName(None, u'version'), 'version', '__httpeuclid_esa_orgschemabasfit_fitsFile_version', fitsFormatVersion, required=True)
     
-    multiplicity = property(__multiplicity.value, __multiplicity.set, None, None)
+    version = property(__version.value, __version.set, None, None)
 
     
-    # Attribute name uses Python identifier name
-    __name = pyxb.binding.content.AttributeUse(pyxb.namespace.ExpandedName(None, u'name'), 'name', '__httpeuclid_esa_orgschemabasfit_genericHdu_name', pyxb.binding.datatypes.string)
+    # Attribute format uses Python identifier format
+    __format = pyxb.binding.content.AttributeUse(pyxb.namespace.ExpandedName(None, u'format'), 'format', '__httpeuclid_esa_orgschemabasfit_fitsFile_format', fitsFormatIdentifier, required=True)
     
-    name = property(__name.value, __name.set, None, None)
+    format = property(__format.value, __format.set, None, None)
 
 
     _ElementMap = {
-        __HeaderKeywordList.name() : __HeaderKeywordList
+        __DataContainer.name() : __DataContainer
     }
     _AttributeMap = {
-        __multiplicity.name() : __multiplicity,
-        __name.name() : __name
+        __version.name() : __version,
+        __format.name() : __format
     }
-Namespace.addCategoryObject('typeBinding', u'genericHdu', genericHdu)
-
-
-# Complex type tableHdu with content type ELEMENT_ONLY
-class tableHdu (genericHdu):
-    _TypeDefinition = None
-    _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
-    _Abstract = False
-    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'tableHdu')
-    # Base type is genericHdu
-    
-    # Element HeaderKeywordList ({http://euclid.esa.org/schema/bas/fit}HeaderKeywordList) inherited from {http://euclid.esa.org/schema/bas/fit}genericHdu
-    
-    # Element {http://euclid.esa.org/schema/bas/fit}ColumnList uses Python identifier ColumnList
-    __ColumnList = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'ColumnList'), 'ColumnList', '__httpeuclid_esa_orgschemabasfit_tableHdu_httpeuclid_esa_orgschemabasfitColumnList', False)
-
-    
-    ColumnList = property(__ColumnList.value, __ColumnList.set, None, None)
-
-    
-    # Attribute multiplicity inherited from {http://euclid.esa.org/schema/bas/fit}genericHdu
-    
-    # Attribute name inherited from {http://euclid.esa.org/schema/bas/fit}genericHdu
-
-    _ElementMap = genericHdu._ElementMap.copy()
-    _ElementMap.update({
-        __ColumnList.name() : __ColumnList
-    })
-    _AttributeMap = genericHdu._AttributeMap.copy()
-    _AttributeMap.update({
-        
-    })
-Namespace.addCategoryObject('typeBinding', u'tableHdu', tableHdu)
-
-
-# Complex type headerUndefinedKeyword with content type EMPTY
-class headerUndefinedKeyword (pyxb.binding.basis.complexTypeDefinition):
-    _TypeDefinition = None
-    _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_EMPTY
-    _Abstract = False
-    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'headerUndefinedKeyword')
-    # Base type is pyxb.binding.datatypes.anyType
-    
-    # Attribute name uses Python identifier name
-    __name = pyxb.binding.content.AttributeUse(pyxb.namespace.ExpandedName(None, u'name'), 'name', '__httpeuclid_esa_orgschemabasfit_headerUndefinedKeyword_name', CommonDM.dm.bas.imp.fits_stub.headerKeywordName, required=True)
-    
-    name = property(__name.value, __name.set, None, None)
-
-
-    _ElementMap = {
-        
-    }
-    _AttributeMap = {
-        __name.name() : __name
-    }
-Namespace.addCategoryObject('typeBinding', u'headerUndefinedKeyword', headerUndefinedKeyword)
-
-
-# Complex type headerIntegerKeyword with content type EMPTY
-class headerIntegerKeyword (pyxb.binding.basis.complexTypeDefinition):
-    _TypeDefinition = None
-    _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_EMPTY
-    _Abstract = False
-    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'headerIntegerKeyword')
-    # Base type is pyxb.binding.datatypes.anyType
-    
-    # Attribute fixed uses Python identifier fixed
-    __fixed = pyxb.binding.content.AttributeUse(pyxb.namespace.ExpandedName(None, u'fixed'), 'fixed', '__httpeuclid_esa_orgschemabasfit_headerIntegerKeyword_fixed', CommonDM.dm.bas.imp.fits_stub.integerKeywordValue)
-    
-    fixed = property(__fixed.value, __fixed.set, None, None)
-
-    
-    # Attribute name uses Python identifier name
-    __name = pyxb.binding.content.AttributeUse(pyxb.namespace.ExpandedName(None, u'name'), 'name', '__httpeuclid_esa_orgschemabasfit_headerIntegerKeyword_name', CommonDM.dm.bas.imp.fits_stub.headerKeywordName, required=True)
-    
-    name = property(__name.value, __name.set, None, None)
-
-
-    _ElementMap = {
-        
-    }
-    _AttributeMap = {
-        __fixed.name() : __fixed,
-        __name.name() : __name
-    }
-Namespace.addCategoryObject('typeBinding', u'headerIntegerKeyword', headerIntegerKeyword)
+Namespace.addCategoryObject('typeBinding', u'fitsFile', fitsFile)
 
 
 # Complex type tableColumnList with content type ELEMENT_ONLY
@@ -398,30 +419,6 @@ class wcsAxis (pyxb.binding.basis.complexTypeDefinition):
 Namespace.addCategoryObject('typeBinding', u'wcsAxis', wcsAxis)
 
 
-# Complex type wcsAxesList with content type ELEMENT_ONLY
-class wcsAxesList (pyxb.binding.basis.complexTypeDefinition):
-    _TypeDefinition = None
-    _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
-    _Abstract = False
-    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'wcsAxesList')
-    # Base type is pyxb.binding.datatypes.anyType
-    
-    # Element {http://euclid.esa.org/schema/bas/fit}Axis uses Python identifier Axis
-    __Axis = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Axis'), 'Axis', '__httpeuclid_esa_orgschemabasfit_wcsAxesList_httpeuclid_esa_orgschemabasfitAxis', True)
-
-    
-    Axis = property(__Axis.value, __Axis.set, None, None)
-
-
-    _ElementMap = {
-        __Axis.name() : __Axis
-    }
-    _AttributeMap = {
-        
-    }
-Namespace.addCategoryObject('typeBinding', u'wcsAxesList', wcsAxesList)
-
-
 # Complex type arrayInfo with content type EMPTY
 class arrayInfo (pyxb.binding.basis.complexTypeDefinition):
     _TypeDefinition = None
@@ -459,58 +456,28 @@ class arrayInfo (pyxb.binding.basis.complexTypeDefinition):
 Namespace.addCategoryObject('typeBinding', u'arrayInfo', arrayInfo)
 
 
-# Complex type wcsList with content type ELEMENT_ONLY
-class wcsList (pyxb.binding.basis.complexTypeDefinition):
+# Complex type wcsAxesList with content type ELEMENT_ONLY
+class wcsAxesList (pyxb.binding.basis.complexTypeDefinition):
     _TypeDefinition = None
     _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
     _Abstract = False
-    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'wcsList')
+    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'wcsAxesList')
     # Base type is pyxb.binding.datatypes.anyType
     
-    # Element {http://euclid.esa.org/schema/bas/fit}WCS uses Python identifier WCS
-    __WCS = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'WCS'), 'WCS', '__httpeuclid_esa_orgschemabasfit_wcsList_httpeuclid_esa_orgschemabasfitWCS', True)
+    # Element {http://euclid.esa.org/schema/bas/fit}Axis uses Python identifier Axis
+    __Axis = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Axis'), 'Axis', '__httpeuclid_esa_orgschemabasfit_wcsAxesList_httpeuclid_esa_orgschemabasfitAxis', True)
 
     
-    WCS = property(__WCS.value, __WCS.set, None, None)
+    Axis = property(__Axis.value, __Axis.set, None, None)
 
 
     _ElementMap = {
-        __WCS.name() : __WCS
+        __Axis.name() : __Axis
     }
     _AttributeMap = {
         
     }
-Namespace.addCategoryObject('typeBinding', u'wcsList', wcsList)
-
-
-# Complex type headerLogicalKeyword with content type EMPTY
-class headerLogicalKeyword (pyxb.binding.basis.complexTypeDefinition):
-    _TypeDefinition = None
-    _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_EMPTY
-    _Abstract = False
-    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'headerLogicalKeyword')
-    # Base type is pyxb.binding.datatypes.anyType
-    
-    # Attribute fixed uses Python identifier fixed
-    __fixed = pyxb.binding.content.AttributeUse(pyxb.namespace.ExpandedName(None, u'fixed'), 'fixed', '__httpeuclid_esa_orgschemabasfit_headerLogicalKeyword_fixed', CommonDM.dm.bas.imp.fits_stub.logicalKeywordValue)
-    
-    fixed = property(__fixed.value, __fixed.set, None, None)
-
-    
-    # Attribute name uses Python identifier name
-    __name = pyxb.binding.content.AttributeUse(pyxb.namespace.ExpandedName(None, u'name'), 'name', '__httpeuclid_esa_orgschemabasfit_headerLogicalKeyword_name', CommonDM.dm.bas.imp.fits_stub.headerKeywordName, required=True)
-    
-    name = property(__name.value, __name.set, None, None)
-
-
-    _ElementMap = {
-        
-    }
-    _AttributeMap = {
-        __fixed.name() : __fixed,
-        __name.name() : __name
-    }
-Namespace.addCategoryObject('typeBinding', u'headerLogicalKeyword', headerLogicalKeyword)
+Namespace.addCategoryObject('typeBinding', u'wcsAxesList', wcsAxesList)
 
 
 # Complex type wcsType with content type ELEMENT_ONLY
@@ -550,136 +517,28 @@ class wcsType (pyxb.binding.basis.complexTypeDefinition):
 Namespace.addCategoryObject('typeBinding', u'wcsType', wcsType)
 
 
-# Complex type headerStringKeyword with content type EMPTY
-class headerStringKeyword (pyxb.binding.basis.complexTypeDefinition):
-    _TypeDefinition = None
-    _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_EMPTY
-    _Abstract = False
-    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'headerStringKeyword')
-    # Base type is pyxb.binding.datatypes.anyType
-    
-    # Attribute fixed uses Python identifier fixed
-    __fixed = pyxb.binding.content.AttributeUse(pyxb.namespace.ExpandedName(None, u'fixed'), 'fixed', '__httpeuclid_esa_orgschemabasfit_headerStringKeyword_fixed', CommonDM.dm.bas.imp.fits_stub.stringKeywordValue)
-    
-    fixed = property(__fixed.value, __fixed.set, None, None)
-
-    
-    # Attribute name uses Python identifier name
-    __name = pyxb.binding.content.AttributeUse(pyxb.namespace.ExpandedName(None, u'name'), 'name', '__httpeuclid_esa_orgschemabasfit_headerStringKeyword_name', CommonDM.dm.bas.imp.fits_stub.headerKeywordName, required=True)
-    
-    name = property(__name.value, __name.set, None, None)
-
-
-    _ElementMap = {
-        
-    }
-    _AttributeMap = {
-        __fixed.name() : __fixed,
-        __name.name() : __name
-    }
-Namespace.addCategoryObject('typeBinding', u'headerStringKeyword', headerStringKeyword)
-
-
-# Complex type headerDoubleKeyword with content type EMPTY
-class headerDoubleKeyword (pyxb.binding.basis.complexTypeDefinition):
-    _TypeDefinition = None
-    _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_EMPTY
-    _Abstract = False
-    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'headerDoubleKeyword')
-    # Base type is pyxb.binding.datatypes.anyType
-    
-    # Attribute fixed uses Python identifier fixed
-    __fixed = pyxb.binding.content.AttributeUse(pyxb.namespace.ExpandedName(None, u'fixed'), 'fixed', '__httpeuclid_esa_orgschemabasfit_headerDoubleKeyword_fixed', CommonDM.dm.bas.imp.fits_stub.doubleKeywordValue)
-    
-    fixed = property(__fixed.value, __fixed.set, None, None)
-
-    
-    # Attribute name uses Python identifier name
-    __name = pyxb.binding.content.AttributeUse(pyxb.namespace.ExpandedName(None, u'name'), 'name', '__httpeuclid_esa_orgschemabasfit_headerDoubleKeyword_name', CommonDM.dm.bas.imp.fits_stub.headerKeywordName, required=True)
-    
-    name = property(__name.value, __name.set, None, None)
-
-
-    _ElementMap = {
-        
-    }
-    _AttributeMap = {
-        __fixed.name() : __fixed,
-        __name.name() : __name
-    }
-Namespace.addCategoryObject('typeBinding', u'headerDoubleKeyword', headerDoubleKeyword)
-
-
-# Complex type headerKeywordList with content type ELEMENT_ONLY
-class headerKeywordList (pyxb.binding.basis.complexTypeDefinition):
+# Complex type wcsList with content type ELEMENT_ONLY
+class wcsList (pyxb.binding.basis.complexTypeDefinition):
     _TypeDefinition = None
     _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
     _Abstract = False
-    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'headerKeywordList')
+    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'wcsList')
     # Base type is pyxb.binding.datatypes.anyType
     
-    # Element {http://euclid.esa.org/schema/bas/fit}DoubleKeyword uses Python identifier DoubleKeyword
-    __DoubleKeyword = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'DoubleKeyword'), 'DoubleKeyword', '__httpeuclid_esa_orgschemabasfit_headerKeywordList_httpeuclid_esa_orgschemabasfitDoubleKeyword', True)
+    # Element {http://euclid.esa.org/schema/bas/fit}WCS uses Python identifier WCS
+    __WCS = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'WCS'), 'WCS', '__httpeuclid_esa_orgschemabasfit_wcsList_httpeuclid_esa_orgschemabasfitWCS', True)
 
     
-    DoubleKeyword = property(__DoubleKeyword.value, __DoubleKeyword.set, None, None)
-
-    
-    # Element {http://euclid.esa.org/schema/bas/fit}UndefinedKeyword uses Python identifier UndefinedKeyword
-    __UndefinedKeyword = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'UndefinedKeyword'), 'UndefinedKeyword', '__httpeuclid_esa_orgschemabasfit_headerKeywordList_httpeuclid_esa_orgschemabasfitUndefinedKeyword', True)
-
-    
-    UndefinedKeyword = property(__UndefinedKeyword.value, __UndefinedKeyword.set, None, None)
-
-    
-    # Element {http://euclid.esa.org/schema/bas/fit}ComplexDoubleKeyword uses Python identifier ComplexDoubleKeyword
-    __ComplexDoubleKeyword = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'ComplexDoubleKeyword'), 'ComplexDoubleKeyword', '__httpeuclid_esa_orgschemabasfit_headerKeywordList_httpeuclid_esa_orgschemabasfitComplexDoubleKeyword', True)
-
-    
-    ComplexDoubleKeyword = property(__ComplexDoubleKeyword.value, __ComplexDoubleKeyword.set, None, None)
-
-    
-    # Element {http://euclid.esa.org/schema/bas/fit}StringKeyword uses Python identifier StringKeyword
-    __StringKeyword = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'StringKeyword'), 'StringKeyword', '__httpeuclid_esa_orgschemabasfit_headerKeywordList_httpeuclid_esa_orgschemabasfitStringKeyword', True)
-
-    
-    StringKeyword = property(__StringKeyword.value, __StringKeyword.set, None, None)
-
-    
-    # Element {http://euclid.esa.org/schema/bas/fit}LogicalKeyword uses Python identifier LogicalKeyword
-    __LogicalKeyword = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'LogicalKeyword'), 'LogicalKeyword', '__httpeuclid_esa_orgschemabasfit_headerKeywordList_httpeuclid_esa_orgschemabasfitLogicalKeyword', True)
-
-    
-    LogicalKeyword = property(__LogicalKeyword.value, __LogicalKeyword.set, None, None)
-
-    
-    # Element {http://euclid.esa.org/schema/bas/fit}ComplexIntegerKeyword uses Python identifier ComplexIntegerKeyword
-    __ComplexIntegerKeyword = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'ComplexIntegerKeyword'), 'ComplexIntegerKeyword', '__httpeuclid_esa_orgschemabasfit_headerKeywordList_httpeuclid_esa_orgschemabasfitComplexIntegerKeyword', True)
-
-    
-    ComplexIntegerKeyword = property(__ComplexIntegerKeyword.value, __ComplexIntegerKeyword.set, None, None)
-
-    
-    # Element {http://euclid.esa.org/schema/bas/fit}IntegerKeyword uses Python identifier IntegerKeyword
-    __IntegerKeyword = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'IntegerKeyword'), 'IntegerKeyword', '__httpeuclid_esa_orgschemabasfit_headerKeywordList_httpeuclid_esa_orgschemabasfitIntegerKeyword', True)
-
-    
-    IntegerKeyword = property(__IntegerKeyword.value, __IntegerKeyword.set, None, None)
+    WCS = property(__WCS.value, __WCS.set, None, None)
 
 
     _ElementMap = {
-        __DoubleKeyword.name() : __DoubleKeyword,
-        __UndefinedKeyword.name() : __UndefinedKeyword,
-        __ComplexDoubleKeyword.name() : __ComplexDoubleKeyword,
-        __StringKeyword.name() : __StringKeyword,
-        __LogicalKeyword.name() : __LogicalKeyword,
-        __ComplexIntegerKeyword.name() : __ComplexIntegerKeyword,
-        __IntegerKeyword.name() : __IntegerKeyword
+        __WCS.name() : __WCS
     }
     _AttributeMap = {
         
     }
-Namespace.addCategoryObject('typeBinding', u'headerKeywordList', headerKeywordList)
+Namespace.addCategoryObject('typeBinding', u'wcsList', wcsList)
 
 
 # Complex type headerComplexIntegerKeyword with content type EMPTY
@@ -742,90 +601,41 @@ class headerComplexDoubleKeyword (pyxb.binding.basis.complexTypeDefinition):
 Namespace.addCategoryObject('typeBinding', u'headerComplexDoubleKeyword', headerComplexDoubleKeyword)
 
 
-# Complex type arrayHdu with content type ELEMENT_ONLY
-class arrayHdu (genericHdu):
+# Complex type genericHdu with content type ELEMENT_ONLY
+class genericHdu (pyxb.binding.basis.complexTypeDefinition):
     _TypeDefinition = None
     _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
     _Abstract = False
-    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'arrayHdu')
-    # Base type is genericHdu
-    
-    # Element HeaderKeywordList ({http://euclid.esa.org/schema/bas/fit}HeaderKeywordList) inherited from {http://euclid.esa.org/schema/bas/fit}genericHdu
-    
-    # Element {http://euclid.esa.org/schema/bas/fit}WCSList uses Python identifier WCSList
-    __WCSList = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'WCSList'), 'WCSList', '__httpeuclid_esa_orgschemabasfit_arrayHdu_httpeuclid_esa_orgschemabasfitWCSList', False)
-
-    
-    WCSList = property(__WCSList.value, __WCSList.set, None, None)
-
-    
-    # Element {http://euclid.esa.org/schema/bas/fit}ArrayInfo uses Python identifier ArrayInfo
-    __ArrayInfo = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'ArrayInfo'), 'ArrayInfo', '__httpeuclid_esa_orgschemabasfit_arrayHdu_httpeuclid_esa_orgschemabasfitArrayInfo', False)
-
-    
-    ArrayInfo = property(__ArrayInfo.value, __ArrayInfo.set, None, None)
-
-    
-    # Attribute multiplicity inherited from {http://euclid.esa.org/schema/bas/fit}genericHdu
-    
-    # Attribute name inherited from {http://euclid.esa.org/schema/bas/fit}genericHdu
-
-    _ElementMap = genericHdu._ElementMap.copy()
-    _ElementMap.update({
-        __WCSList.name() : __WCSList,
-        __ArrayInfo.name() : __ArrayInfo
-    })
-    _AttributeMap = genericHdu._AttributeMap.copy()
-    _AttributeMap.update({
-        
-    })
-Namespace.addCategoryObject('typeBinding', u'arrayHdu', arrayHdu)
-
-
-# Complex type hduGroup with content type ELEMENT_ONLY
-class hduGroup (pyxb.binding.basis.complexTypeDefinition):
-    _TypeDefinition = None
-    _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
-    _Abstract = False
-    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'hduGroup')
+    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'genericHdu')
     # Base type is pyxb.binding.datatypes.anyType
     
-    # Element {http://euclid.esa.org/schema/bas/fit}ArrayHDU uses Python identifier ArrayHDU
-    __ArrayHDU = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'ArrayHDU'), 'ArrayHDU', '__httpeuclid_esa_orgschemabasfit_hduGroup_httpeuclid_esa_orgschemabasfitArrayHDU', True)
+    # Element {http://euclid.esa.org/schema/bas/fit}HeaderKeywordList uses Python identifier HeaderKeywordList
+    __HeaderKeywordList = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'HeaderKeywordList'), 'HeaderKeywordList', '__httpeuclid_esa_orgschemabasfit_genericHdu_httpeuclid_esa_orgschemabasfitHeaderKeywordList', False)
 
     
-    ArrayHDU = property(__ArrayHDU.value, __ArrayHDU.set, None, None)
-
-    
-    # Element {http://euclid.esa.org/schema/bas/fit}TableHDU uses Python identifier TableHDU
-    __TableHDU = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'TableHDU'), 'TableHDU', '__httpeuclid_esa_orgschemabasfit_hduGroup_httpeuclid_esa_orgschemabasfitTableHDU', True)
-
-    
-    TableHDU = property(__TableHDU.value, __TableHDU.set, None, None)
-
-    
-    # Element {http://euclid.esa.org/schema/bas/fit}GenericHDU uses Python identifier GenericHDU
-    __GenericHDU = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'GenericHDU'), 'GenericHDU', '__httpeuclid_esa_orgschemabasfit_hduGroup_httpeuclid_esa_orgschemabasfitGenericHDU', True)
-
-    
-    GenericHDU = property(__GenericHDU.value, __GenericHDU.set, None, None)
+    HeaderKeywordList = property(__HeaderKeywordList.value, __HeaderKeywordList.set, None, None)
 
     
     # Attribute multiplicity uses Python identifier multiplicity
-    __multiplicity = pyxb.binding.content.AttributeUse(pyxb.namespace.ExpandedName(None, u'multiplicity'), 'multiplicity', '__httpeuclid_esa_orgschemabasfit_hduGroup_multiplicity', hduMultiplicity)
+    __multiplicity = pyxb.binding.content.AttributeUse(pyxb.namespace.ExpandedName(None, u'multiplicity'), 'multiplicity', '__httpeuclid_esa_orgschemabasfit_genericHdu_multiplicity', hduMultiplicity)
     
     multiplicity = property(__multiplicity.value, __multiplicity.set, None, None)
 
+    
+    # Attribute name uses Python identifier name
+    __name = pyxb.binding.content.AttributeUse(pyxb.namespace.ExpandedName(None, u'name'), 'name', '__httpeuclid_esa_orgschemabasfit_genericHdu_name', pyxb.binding.datatypes.string)
+    
+    name = property(__name.value, __name.set, None, None)
+
 
     _ElementMap = {
-        __ArrayHDU.name() : __ArrayHDU,
-        __TableHDU.name() : __TableHDU,
-        __GenericHDU.name() : __GenericHDU
+        __HeaderKeywordList.name() : __HeaderKeywordList
     }
     _AttributeMap = {
-        __multiplicity.name() : __multiplicity
+        __multiplicity.name() : __multiplicity,
+        __name.name() : __name
     }
-Namespace.addCategoryObject('typeBinding', u'hduGroup', hduGroup)
+Namespace.addCategoryObject('typeBinding', u'genericHdu', genericHdu)
 
 
 # Complex type fitsFormat with content type ELEMENT_ONLY
@@ -889,6 +699,196 @@ class fitsFormat (pyxb.binding.basis.complexTypeDefinition):
 Namespace.addCategoryObject('typeBinding', u'fitsFormat', fitsFormat)
 
 
+# Complex type arrayHdu with content type ELEMENT_ONLY
+class arrayHdu (genericHdu):
+    _TypeDefinition = None
+    _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
+    _Abstract = False
+    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'arrayHdu')
+    # Base type is genericHdu
+    
+    # Element HeaderKeywordList ({http://euclid.esa.org/schema/bas/fit}HeaderKeywordList) inherited from {http://euclid.esa.org/schema/bas/fit}genericHdu
+    
+    # Element {http://euclid.esa.org/schema/bas/fit}WCSList uses Python identifier WCSList
+    __WCSList = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'WCSList'), 'WCSList', '__httpeuclid_esa_orgschemabasfit_arrayHdu_httpeuclid_esa_orgschemabasfitWCSList', False)
+
+    
+    WCSList = property(__WCSList.value, __WCSList.set, None, None)
+
+    
+    # Element {http://euclid.esa.org/schema/bas/fit}ArrayInfo uses Python identifier ArrayInfo
+    __ArrayInfo = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'ArrayInfo'), 'ArrayInfo', '__httpeuclid_esa_orgschemabasfit_arrayHdu_httpeuclid_esa_orgschemabasfitArrayInfo', False)
+
+    
+    ArrayInfo = property(__ArrayInfo.value, __ArrayInfo.set, None, None)
+
+    
+    # Attribute multiplicity inherited from {http://euclid.esa.org/schema/bas/fit}genericHdu
+    
+    # Attribute name inherited from {http://euclid.esa.org/schema/bas/fit}genericHdu
+
+    _ElementMap = genericHdu._ElementMap.copy()
+    _ElementMap.update({
+        __WCSList.name() : __WCSList,
+        __ArrayInfo.name() : __ArrayInfo
+    })
+    _AttributeMap = genericHdu._AttributeMap.copy()
+    _AttributeMap.update({
+        
+    })
+Namespace.addCategoryObject('typeBinding', u'arrayHdu', arrayHdu)
+
+
+# Complex type tableHdu with content type ELEMENT_ONLY
+class tableHdu (genericHdu):
+    _TypeDefinition = None
+    _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
+    _Abstract = False
+    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'tableHdu')
+    # Base type is genericHdu
+    
+    # Element HeaderKeywordList ({http://euclid.esa.org/schema/bas/fit}HeaderKeywordList) inherited from {http://euclid.esa.org/schema/bas/fit}genericHdu
+    
+    # Element {http://euclid.esa.org/schema/bas/fit}ColumnList uses Python identifier ColumnList
+    __ColumnList = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'ColumnList'), 'ColumnList', '__httpeuclid_esa_orgschemabasfit_tableHdu_httpeuclid_esa_orgschemabasfitColumnList', False)
+
+    
+    ColumnList = property(__ColumnList.value, __ColumnList.set, None, None)
+
+    
+    # Attribute multiplicity inherited from {http://euclid.esa.org/schema/bas/fit}genericHdu
+    
+    # Attribute name inherited from {http://euclid.esa.org/schema/bas/fit}genericHdu
+
+    _ElementMap = genericHdu._ElementMap.copy()
+    _ElementMap.update({
+        __ColumnList.name() : __ColumnList
+    })
+    _AttributeMap = genericHdu._AttributeMap.copy()
+    _AttributeMap.update({
+        
+    })
+Namespace.addCategoryObject('typeBinding', u'tableHdu', tableHdu)
+
+
+# Complex type hduGroup with content type ELEMENT_ONLY
+class hduGroup (pyxb.binding.basis.complexTypeDefinition):
+    _TypeDefinition = None
+    _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
+    _Abstract = False
+    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'hduGroup')
+    # Base type is pyxb.binding.datatypes.anyType
+    
+    # Element {http://euclid.esa.org/schema/bas/fit}ArrayHDU uses Python identifier ArrayHDU
+    __ArrayHDU = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'ArrayHDU'), 'ArrayHDU', '__httpeuclid_esa_orgschemabasfit_hduGroup_httpeuclid_esa_orgschemabasfitArrayHDU', True)
+
+    
+    ArrayHDU = property(__ArrayHDU.value, __ArrayHDU.set, None, None)
+
+    
+    # Element {http://euclid.esa.org/schema/bas/fit}TableHDU uses Python identifier TableHDU
+    __TableHDU = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'TableHDU'), 'TableHDU', '__httpeuclid_esa_orgschemabasfit_hduGroup_httpeuclid_esa_orgschemabasfitTableHDU', True)
+
+    
+    TableHDU = property(__TableHDU.value, __TableHDU.set, None, None)
+
+    
+    # Element {http://euclid.esa.org/schema/bas/fit}GenericHDU uses Python identifier GenericHDU
+    __GenericHDU = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'GenericHDU'), 'GenericHDU', '__httpeuclid_esa_orgschemabasfit_hduGroup_httpeuclid_esa_orgschemabasfitGenericHDU', True)
+
+    
+    GenericHDU = property(__GenericHDU.value, __GenericHDU.set, None, None)
+
+    
+    # Attribute multiplicity uses Python identifier multiplicity
+    __multiplicity = pyxb.binding.content.AttributeUse(pyxb.namespace.ExpandedName(None, u'multiplicity'), 'multiplicity', '__httpeuclid_esa_orgschemabasfit_hduGroup_multiplicity', hduMultiplicity)
+    
+    multiplicity = property(__multiplicity.value, __multiplicity.set, None, None)
+
+
+    _ElementMap = {
+        __ArrayHDU.name() : __ArrayHDU,
+        __TableHDU.name() : __TableHDU,
+        __GenericHDU.name() : __GenericHDU
+    }
+    _AttributeMap = {
+        __multiplicity.name() : __multiplicity
+    }
+Namespace.addCategoryObject('typeBinding', u'hduGroup', hduGroup)
+
+
+# Complex type headerKeywordList with content type ELEMENT_ONLY
+class headerKeywordList (pyxb.binding.basis.complexTypeDefinition):
+    _TypeDefinition = None
+    _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
+    _Abstract = False
+    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'headerKeywordList')
+    # Base type is pyxb.binding.datatypes.anyType
+    
+    # Element {http://euclid.esa.org/schema/bas/fit}DoubleKeyword uses Python identifier DoubleKeyword
+    __DoubleKeyword = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'DoubleKeyword'), 'DoubleKeyword', '__httpeuclid_esa_orgschemabasfit_headerKeywordList_httpeuclid_esa_orgschemabasfitDoubleKeyword', True)
+
+    
+    DoubleKeyword = property(__DoubleKeyword.value, __DoubleKeyword.set, None, None)
+
+    
+    # Element {http://euclid.esa.org/schema/bas/fit}UndefinedKeyword uses Python identifier UndefinedKeyword
+    __UndefinedKeyword = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'UndefinedKeyword'), 'UndefinedKeyword', '__httpeuclid_esa_orgschemabasfit_headerKeywordList_httpeuclid_esa_orgschemabasfitUndefinedKeyword', True)
+
+    
+    UndefinedKeyword = property(__UndefinedKeyword.value, __UndefinedKeyword.set, None, None)
+
+    
+    # Element {http://euclid.esa.org/schema/bas/fit}ComplexIntegerKeyword uses Python identifier ComplexIntegerKeyword
+    __ComplexIntegerKeyword = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'ComplexIntegerKeyword'), 'ComplexIntegerKeyword', '__httpeuclid_esa_orgschemabasfit_headerKeywordList_httpeuclid_esa_orgschemabasfitComplexIntegerKeyword', True)
+
+    
+    ComplexIntegerKeyword = property(__ComplexIntegerKeyword.value, __ComplexIntegerKeyword.set, None, None)
+
+    
+    # Element {http://euclid.esa.org/schema/bas/fit}LogicalKeyword uses Python identifier LogicalKeyword
+    __LogicalKeyword = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'LogicalKeyword'), 'LogicalKeyword', '__httpeuclid_esa_orgschemabasfit_headerKeywordList_httpeuclid_esa_orgschemabasfitLogicalKeyword', True)
+
+    
+    LogicalKeyword = property(__LogicalKeyword.value, __LogicalKeyword.set, None, None)
+
+    
+    # Element {http://euclid.esa.org/schema/bas/fit}ComplexDoubleKeyword uses Python identifier ComplexDoubleKeyword
+    __ComplexDoubleKeyword = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'ComplexDoubleKeyword'), 'ComplexDoubleKeyword', '__httpeuclid_esa_orgschemabasfit_headerKeywordList_httpeuclid_esa_orgschemabasfitComplexDoubleKeyword', True)
+
+    
+    ComplexDoubleKeyword = property(__ComplexDoubleKeyword.value, __ComplexDoubleKeyword.set, None, None)
+
+    
+    # Element {http://euclid.esa.org/schema/bas/fit}StringKeyword uses Python identifier StringKeyword
+    __StringKeyword = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'StringKeyword'), 'StringKeyword', '__httpeuclid_esa_orgschemabasfit_headerKeywordList_httpeuclid_esa_orgschemabasfitStringKeyword', True)
+
+    
+    StringKeyword = property(__StringKeyword.value, __StringKeyword.set, None, None)
+
+    
+    # Element {http://euclid.esa.org/schema/bas/fit}IntegerKeyword uses Python identifier IntegerKeyword
+    __IntegerKeyword = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'IntegerKeyword'), 'IntegerKeyword', '__httpeuclid_esa_orgschemabasfit_headerKeywordList_httpeuclid_esa_orgschemabasfitIntegerKeyword', True)
+
+    
+    IntegerKeyword = property(__IntegerKeyword.value, __IntegerKeyword.set, None, None)
+
+
+    _ElementMap = {
+        __DoubleKeyword.name() : __DoubleKeyword,
+        __UndefinedKeyword.name() : __UndefinedKeyword,
+        __ComplexIntegerKeyword.name() : __ComplexIntegerKeyword,
+        __LogicalKeyword.name() : __LogicalKeyword,
+        __ComplexDoubleKeyword.name() : __ComplexDoubleKeyword,
+        __StringKeyword.name() : __StringKeyword,
+        __IntegerKeyword.name() : __IntegerKeyword
+    }
+    _AttributeMap = {
+        
+    }
+Namespace.addCategoryObject('typeBinding', u'headerKeywordList', headerKeywordList)
+
+
 # Complex type fitsFormatList with content type ELEMENT_ONLY
 class fitsFormatList (pyxb.binding.basis.complexTypeDefinition):
     _TypeDefinition = None
@@ -926,29 +926,6 @@ fitsFile._ContentModel = pyxb.binding.content.ParticleModel(fitsFile._GroupModel
 
 
 
-genericHdu._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'HeaderKeywordList'), headerKeywordList, scope=genericHdu))
-genericHdu._GroupModel = pyxb.binding.content.GroupSequence(
-    pyxb.binding.content.ParticleModel(genericHdu._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'HeaderKeywordList')), min_occurs=1, max_occurs=1)
-    )
-genericHdu._ContentModel = pyxb.binding.content.ParticleModel(genericHdu._GroupModel, min_occurs=1, max_occurs=1)
-
-
-
-tableHdu._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'ColumnList'), tableColumnList, scope=tableHdu))
-tableHdu._GroupModel_ = pyxb.binding.content.GroupSequence(
-    pyxb.binding.content.ParticleModel(tableHdu._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'HeaderKeywordList')), min_occurs=1, max_occurs=1)
-    )
-tableHdu._GroupModel_2 = pyxb.binding.content.GroupSequence(
-    pyxb.binding.content.ParticleModel(tableHdu._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'ColumnList')), min_occurs=1, max_occurs=1)
-    )
-tableHdu._GroupModel = pyxb.binding.content.GroupSequence(
-    pyxb.binding.content.ParticleModel(tableHdu._GroupModel_, min_occurs=1, max_occurs=1),
-    pyxb.binding.content.ParticleModel(tableHdu._GroupModel_2, min_occurs=1, max_occurs=1)
-    )
-tableHdu._ContentModel = pyxb.binding.content.ParticleModel(tableHdu._GroupModel, min_occurs=1, max_occurs=1)
-
-
-
 tableColumnList._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Column'), binaryTableColumn, scope=tableColumnList))
 tableColumnList._GroupModel = pyxb.binding.content.GroupSequence(
     pyxb.binding.content.ParticleModel(tableColumnList._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Column')), min_occurs=0L, max_occurs=999L)
@@ -965,14 +942,6 @@ wcsAxesList._ContentModel = pyxb.binding.content.ParticleModel(wcsAxesList._Grou
 
 
 
-wcsList._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'WCS'), wcsType, scope=wcsList))
-wcsList._GroupModel = pyxb.binding.content.GroupSequence(
-    pyxb.binding.content.ParticleModel(wcsList._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'WCS')), min_occurs=1, max_occurs=1)
-    )
-wcsList._ContentModel = pyxb.binding.content.ParticleModel(wcsList._GroupModel, min_occurs=1, max_occurs=None)
-
-
-
 wcsType._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'AxesList'), wcsAxesList, scope=wcsType))
 wcsType._GroupModel = pyxb.binding.content.GroupSequence(
     pyxb.binding.content.ParticleModel(wcsType._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'AxesList')), min_occurs=1, max_occurs=1)
@@ -981,29 +950,36 @@ wcsType._ContentModel = pyxb.binding.content.ParticleModel(wcsType._GroupModel, 
 
 
 
-headerKeywordList._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'DoubleKeyword'), headerDoubleKeyword, scope=headerKeywordList))
-
-headerKeywordList._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'UndefinedKeyword'), headerUndefinedKeyword, scope=headerKeywordList))
-
-headerKeywordList._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'ComplexDoubleKeyword'), headerComplexDoubleKeyword, scope=headerKeywordList))
-
-headerKeywordList._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'StringKeyword'), headerStringKeyword, scope=headerKeywordList))
-
-headerKeywordList._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'LogicalKeyword'), headerLogicalKeyword, scope=headerKeywordList))
-
-headerKeywordList._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'ComplexIntegerKeyword'), headerComplexIntegerKeyword, scope=headerKeywordList))
-
-headerKeywordList._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'IntegerKeyword'), headerIntegerKeyword, scope=headerKeywordList))
-headerKeywordList._GroupModel = pyxb.binding.content.GroupChoice(
-    pyxb.binding.content.ParticleModel(headerKeywordList._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'UndefinedKeyword')), min_occurs=1, max_occurs=1),
-    pyxb.binding.content.ParticleModel(headerKeywordList._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'StringKeyword')), min_occurs=1, max_occurs=1),
-    pyxb.binding.content.ParticleModel(headerKeywordList._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'LogicalKeyword')), min_occurs=1, max_occurs=1),
-    pyxb.binding.content.ParticleModel(headerKeywordList._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'IntegerKeyword')), min_occurs=1, max_occurs=1),
-    pyxb.binding.content.ParticleModel(headerKeywordList._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'DoubleKeyword')), min_occurs=1, max_occurs=1),
-    pyxb.binding.content.ParticleModel(headerKeywordList._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'ComplexIntegerKeyword')), min_occurs=1, max_occurs=1),
-    pyxb.binding.content.ParticleModel(headerKeywordList._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'ComplexDoubleKeyword')), min_occurs=1, max_occurs=1)
+wcsList._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'WCS'), wcsType, scope=wcsList))
+wcsList._GroupModel = pyxb.binding.content.GroupSequence(
+    pyxb.binding.content.ParticleModel(wcsList._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'WCS')), min_occurs=1, max_occurs=1)
     )
-headerKeywordList._ContentModel = pyxb.binding.content.ParticleModel(headerKeywordList._GroupModel, min_occurs=0L, max_occurs=None)
+wcsList._ContentModel = pyxb.binding.content.ParticleModel(wcsList._GroupModel, min_occurs=1, max_occurs=None)
+
+
+
+genericHdu._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'HeaderKeywordList'), headerKeywordList, scope=genericHdu))
+genericHdu._GroupModel = pyxb.binding.content.GroupSequence(
+    pyxb.binding.content.ParticleModel(genericHdu._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'HeaderKeywordList')), min_occurs=1, max_occurs=1)
+    )
+genericHdu._ContentModel = pyxb.binding.content.ParticleModel(genericHdu._GroupModel, min_occurs=1, max_occurs=1)
+
+
+
+fitsFormat._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'HDUGroup'), hduGroup, scope=fitsFormat))
+
+fitsFormat._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'TableHDU'), tableHdu, scope=fitsFormat))
+
+fitsFormat._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'ArrayHDU'), arrayHdu, scope=fitsFormat))
+
+fitsFormat._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'GenericHDU'), genericHdu, scope=fitsFormat))
+fitsFormat._GroupModel = pyxb.binding.content.GroupChoice(
+    pyxb.binding.content.ParticleModel(fitsFormat._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'GenericHDU')), min_occurs=1, max_occurs=1),
+    pyxb.binding.content.ParticleModel(fitsFormat._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'TableHDU')), min_occurs=1, max_occurs=1),
+    pyxb.binding.content.ParticleModel(fitsFormat._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'ArrayHDU')), min_occurs=1, max_occurs=1),
+    pyxb.binding.content.ParticleModel(fitsFormat._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'HDUGroup')), min_occurs=1, max_occurs=1)
+    )
+fitsFormat._ContentModel = pyxb.binding.content.ParticleModel(fitsFormat._GroupModel, min_occurs=1, max_occurs=None)
 
 
 
@@ -1025,6 +1001,21 @@ arrayHdu._ContentModel = pyxb.binding.content.ParticleModel(arrayHdu._GroupModel
 
 
 
+tableHdu._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'ColumnList'), tableColumnList, scope=tableHdu))
+tableHdu._GroupModel_ = pyxb.binding.content.GroupSequence(
+    pyxb.binding.content.ParticleModel(tableHdu._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'HeaderKeywordList')), min_occurs=1, max_occurs=1)
+    )
+tableHdu._GroupModel_2 = pyxb.binding.content.GroupSequence(
+    pyxb.binding.content.ParticleModel(tableHdu._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'ColumnList')), min_occurs=1, max_occurs=1)
+    )
+tableHdu._GroupModel = pyxb.binding.content.GroupSequence(
+    pyxb.binding.content.ParticleModel(tableHdu._GroupModel_, min_occurs=1, max_occurs=1),
+    pyxb.binding.content.ParticleModel(tableHdu._GroupModel_2, min_occurs=1, max_occurs=1)
+    )
+tableHdu._ContentModel = pyxb.binding.content.ParticleModel(tableHdu._GroupModel, min_occurs=1, max_occurs=1)
+
+
+
 hduGroup._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'ArrayHDU'), arrayHdu, scope=hduGroup))
 
 hduGroup._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'TableHDU'), tableHdu, scope=hduGroup))
@@ -1039,20 +1030,29 @@ hduGroup._ContentModel = pyxb.binding.content.ParticleModel(hduGroup._GroupModel
 
 
 
-fitsFormat._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'HDUGroup'), hduGroup, scope=fitsFormat))
+headerKeywordList._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'DoubleKeyword'), headerDoubleKeyword, scope=headerKeywordList))
 
-fitsFormat._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'TableHDU'), tableHdu, scope=fitsFormat))
+headerKeywordList._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'UndefinedKeyword'), headerUndefinedKeyword, scope=headerKeywordList))
 
-fitsFormat._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'ArrayHDU'), arrayHdu, scope=fitsFormat))
+headerKeywordList._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'ComplexIntegerKeyword'), headerComplexIntegerKeyword, scope=headerKeywordList))
 
-fitsFormat._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'GenericHDU'), genericHdu, scope=fitsFormat))
-fitsFormat._GroupModel = pyxb.binding.content.GroupChoice(
-    pyxb.binding.content.ParticleModel(fitsFormat._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'GenericHDU')), min_occurs=1, max_occurs=1),
-    pyxb.binding.content.ParticleModel(fitsFormat._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'TableHDU')), min_occurs=1, max_occurs=1),
-    pyxb.binding.content.ParticleModel(fitsFormat._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'ArrayHDU')), min_occurs=1, max_occurs=1),
-    pyxb.binding.content.ParticleModel(fitsFormat._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'HDUGroup')), min_occurs=1, max_occurs=1)
+headerKeywordList._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'LogicalKeyword'), headerLogicalKeyword, scope=headerKeywordList))
+
+headerKeywordList._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'ComplexDoubleKeyword'), headerComplexDoubleKeyword, scope=headerKeywordList))
+
+headerKeywordList._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'StringKeyword'), headerStringKeyword, scope=headerKeywordList))
+
+headerKeywordList._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'IntegerKeyword'), headerIntegerKeyword, scope=headerKeywordList))
+headerKeywordList._GroupModel = pyxb.binding.content.GroupChoice(
+    pyxb.binding.content.ParticleModel(headerKeywordList._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'UndefinedKeyword')), min_occurs=1, max_occurs=1),
+    pyxb.binding.content.ParticleModel(headerKeywordList._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'StringKeyword')), min_occurs=1, max_occurs=1),
+    pyxb.binding.content.ParticleModel(headerKeywordList._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'LogicalKeyword')), min_occurs=1, max_occurs=1),
+    pyxb.binding.content.ParticleModel(headerKeywordList._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'IntegerKeyword')), min_occurs=1, max_occurs=1),
+    pyxb.binding.content.ParticleModel(headerKeywordList._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'DoubleKeyword')), min_occurs=1, max_occurs=1),
+    pyxb.binding.content.ParticleModel(headerKeywordList._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'ComplexIntegerKeyword')), min_occurs=1, max_occurs=1),
+    pyxb.binding.content.ParticleModel(headerKeywordList._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'ComplexDoubleKeyword')), min_occurs=1, max_occurs=1)
     )
-fitsFormat._ContentModel = pyxb.binding.content.ParticleModel(fitsFormat._GroupModel, min_occurs=1, max_occurs=None)
+headerKeywordList._ContentModel = pyxb.binding.content.ParticleModel(headerKeywordList._GroupModel, min_occurs=0L, max_occurs=None)
 
 
 

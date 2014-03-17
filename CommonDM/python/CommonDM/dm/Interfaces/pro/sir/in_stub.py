@@ -1,7 +1,7 @@
 # /home/nikoapos/ISDC/Projects/Alexandria/1.0/CommonDM/python/CommonDM/dm/Interfaces/pro/sir/in_stub.py
 # PyXB bindings for NamespaceModule
 # NSM:e2b8695628fe894ba26bb65e75625907c4e1d81b
-# Generated 2014-03-17 11:53:47.254170 by PyXB version 1.1.2
+# Generated 2014-03-17 18:50:36.642024 by PyXB version 1.1.2
 import pyxb
 import pyxb.binding
 import pyxb.binding.saxer
@@ -11,10 +11,10 @@ import pyxb.utils.domutils
 import sys
 
 # Unique identifier for bindings created at the same time
-_GenerationUID = pyxb.utils.utility.UniqueIdentifier('urn:uuid:6923c468-adc2-11e3-8fb8-f01faf601f90')
+_GenerationUID = pyxb.utils.utility.UniqueIdentifier('urn:uuid:a3e7637c-adfc-11e3-9f2e-c4d98710dc86')
 
 # Import bindings for namespaces imported into schema
-import CommonDM.dm.pro.sir-mockup_stub
+import CommonDM.dm.pro.sir_mockup_stub
 
 Namespace = pyxb.namespace.NamespaceForURI(u'http://euclid.esa.org/schema/Interfaces/pro/sir/in', create_if_missing=True)
 Namespace.configureCategories(['typeBinding', 'elementBinding'])
@@ -42,14 +42,14 @@ def CreateFromDOM (node, default_namespace=None):
     return pyxb.binding.basis.element.AnyCreateFromDOM(node, _fallback_namespace=default_namespace)
 
 
-OutputCatalog = pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'OutputCatalog'), CommonDM.dm.pro.sir-mockup_stub.outputCatalog)
+OutputCatalog = pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'OutputCatalog'), CommonDM.dm.pro.sir_mockup_stub.outputCatalog)
 Namespace.addCategoryObject('elementBinding', OutputCatalog.name().localName(), OutputCatalog)
 
-InputImage = pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'InputImage'), CommonDM.dm.pro.sir-mockup_stub.nispImage)
+InputImage = pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'InputImage'), CommonDM.dm.pro.sir_mockup_stub.nispImage)
 Namespace.addCategoryObject('elementBinding', InputImage.name().localName(), InputImage)
 
-InputCatalog = pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'InputCatalog'), CommonDM.dm.pro.sir-mockup_stub.parentCatalog)
+InputCatalog = pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'InputCatalog'), CommonDM.dm.pro.sir_mockup_stub.parentCatalog)
 Namespace.addCategoryObject('elementBinding', InputCatalog.name().localName(), InputCatalog)
 
-InputParameters = pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'InputParameters'), CommonDM.dm.pro.sir-mockup_stub.inputParameters)
+InputParameters = pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'InputParameters'), CommonDM.dm.pro.sir_mockup_stub.inputParameters)
 Namespace.addCategoryObject('elementBinding', InputParameters.name().localName(), InputParameters)

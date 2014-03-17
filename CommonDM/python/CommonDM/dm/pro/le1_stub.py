@@ -1,7 +1,7 @@
 # /home/nikoapos/ISDC/Projects/Alexandria/1.0/CommonDM/python/CommonDM/dm/pro/le1_stub.py
 # PyXB bindings for NamespaceModule
 # NSM:23b1c64dcf05022ed49ac75f3cb8280755f2bfaf
-# Generated 2014-03-17 11:53:47.252296 by PyXB version 1.1.2
+# Generated 2014-03-17 18:50:36.640872 by PyXB version 1.1.2
 import pyxb
 import pyxb.binding
 import pyxb.binding.saxer
@@ -11,7 +11,7 @@ import pyxb.utils.domutils
 import sys
 
 # Unique identifier for bindings created at the same time
-_GenerationUID = pyxb.utils.utility.UniqueIdentifier('urn:uuid:6923c468-adc2-11e3-8fb8-f01faf601f90')
+_GenerationUID = pyxb.utils.utility.UniqueIdentifier('urn:uuid:a3e7637c-adfc-11e3-9f2e-c4d98710dc86')
 
 # Import bindings for namespaces imported into schema
 import pyxb.binding.datatypes
@@ -47,6 +47,19 @@ def CreateFromDOM (node, default_namespace=None):
 
 
 # Atomic SimpleTypeDefinition
+class productCategory (pyxb.binding.datatypes.string, pyxb.binding.basis.enumeration_mixin):
+
+    """Data product category: science frame or calibration frame"""
+
+    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'productCategory')
+    _Documentation = u'Data product category: science frame or calibration frame'
+productCategory._CF_enumeration = pyxb.binding.facets.CF_enumeration(value_datatype=productCategory, enum_prefix=None)
+productCategory.Science = productCategory._CF_enumeration.addEnumeration(unicode_value=u'Science')
+productCategory.Calib = productCategory._CF_enumeration.addEnumeration(unicode_value=u'Calib')
+productCategory._InitializeFacetMap(productCategory._CF_enumeration)
+Namespace.addCategoryObject('typeBinding', u'productCategory', productCategory)
+
+# Atomic SimpleTypeDefinition
 class productType (pyxb.binding.datatypes.string, pyxb.binding.basis.enumeration_mixin):
 
     """Data product type: sky, bias, dark, flat, wave-lamp, standard source"""
@@ -77,33 +90,6 @@ productTech._InitializeFacetMap(productTech._CF_enumeration)
 Namespace.addCategoryObject('typeBinding', u'productTech', productTech)
 
 # Atomic SimpleTypeDefinition
-class productCategory (pyxb.binding.datatypes.string, pyxb.binding.basis.enumeration_mixin):
-
-    """Data product category: science frame or calibration frame"""
-
-    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'productCategory')
-    _Documentation = u'Data product category: science frame or calibration frame'
-productCategory._CF_enumeration = pyxb.binding.facets.CF_enumeration(value_datatype=productCategory, enum_prefix=None)
-productCategory.Science = productCategory._CF_enumeration.addEnumeration(unicode_value=u'Science')
-productCategory.Calib = productCategory._CF_enumeration.addEnumeration(unicode_value=u'Calib')
-productCategory._InitializeFacetMap(productCategory._CF_enumeration)
-Namespace.addCategoryObject('typeBinding', u'productCategory', productCategory)
-
-# Atomic SimpleTypeDefinition
-class observationMode (pyxb.binding.datatypes.string, pyxb.binding.basis.enumeration_mixin):
-
-    """Euclid (NISP) observation modes"""
-
-    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'observationMode')
-    _Documentation = u'Euclid (NISP) observation modes'
-observationMode._CF_enumeration = pyxb.binding.facets.CF_enumeration(value_datatype=observationMode, enum_prefix=None)
-observationMode.WideSurvey = observationMode._CF_enumeration.addEnumeration(unicode_value=u'WideSurvey')
-observationMode.DeepSurvey = observationMode._CF_enumeration.addEnumeration(unicode_value=u'DeepSurvey')
-observationMode.None_ = observationMode._CF_enumeration.addEnumeration(unicode_value=u'None')
-observationMode._InitializeFacetMap(observationMode._CF_enumeration)
-Namespace.addCategoryObject('typeBinding', u'observationMode', observationMode)
-
-# Atomic SimpleTypeDefinition
 class readoutModeMethod (pyxb.binding.datatypes.string, pyxb.binding.basis.enumeration_mixin):
 
     """NISP readout modes available"""
@@ -116,23 +102,6 @@ readoutModeMethod.UP_THE_RAMP = readoutModeMethod._CF_enumeration.addEnumeration
 readoutModeMethod.FOWLER_SAMPLES = readoutModeMethod._CF_enumeration.addEnumeration(unicode_value=u'FOWLER_SAMPLES')
 readoutModeMethod._InitializeFacetMap(readoutModeMethod._CF_enumeration)
 Namespace.addCategoryObject('typeBinding', u'readoutModeMethod', readoutModeMethod)
-
-# Atomic SimpleTypeDefinition
-class grismWheelPosition (pyxb.binding.datatypes.string, pyxb.binding.basis.enumeration_mixin):
-
-    """NISP Grism Wheel positions"""
-
-    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'grismWheelPosition')
-    _Documentation = u'NISP Grism Wheel positions'
-grismWheelPosition._CF_enumeration = pyxb.binding.facets.CF_enumeration(value_datatype=grismWheelPosition, enum_prefix=None)
-grismWheelPosition.RH = grismWheelPosition._CF_enumeration.addEnumeration(unicode_value=u'RH')
-grismWheelPosition.RV = grismWheelPosition._CF_enumeration.addEnumeration(unicode_value=u'RV')
-grismWheelPosition.BH = grismWheelPosition._CF_enumeration.addEnumeration(unicode_value=u'BH')
-grismWheelPosition.BV = grismWheelPosition._CF_enumeration.addEnumeration(unicode_value=u'BV')
-grismWheelPosition.OPEN = grismWheelPosition._CF_enumeration.addEnumeration(unicode_value=u'OPEN')
-grismWheelPosition.CLOSE = grismWheelPosition._CF_enumeration.addEnumeration(unicode_value=u'CLOSE')
-grismWheelPosition._InitializeFacetMap(grismWheelPosition._CF_enumeration)
-Namespace.addCategoryObject('typeBinding', u'grismWheelPosition', grismWheelPosition)
 
 # Atomic SimpleTypeDefinition
 class instrumentMode (pyxb.binding.datatypes.string, pyxb.binding.basis.enumeration_mixin):
@@ -152,6 +121,20 @@ instrumentMode._InitializeFacetMap(instrumentMode._CF_enumeration)
 Namespace.addCategoryObject('typeBinding', u'instrumentMode', instrumentMode)
 
 # Atomic SimpleTypeDefinition
+class observationMode (pyxb.binding.datatypes.string, pyxb.binding.basis.enumeration_mixin):
+
+    """Euclid (NISP) observation modes"""
+
+    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'observationMode')
+    _Documentation = u'Euclid (NISP) observation modes'
+observationMode._CF_enumeration = pyxb.binding.facets.CF_enumeration(value_datatype=observationMode, enum_prefix=None)
+observationMode.WideSurvey = observationMode._CF_enumeration.addEnumeration(unicode_value=u'WideSurvey')
+observationMode.DeepSurvey = observationMode._CF_enumeration.addEnumeration(unicode_value=u'DeepSurvey')
+observationMode.None_ = observationMode._CF_enumeration.addEnumeration(unicode_value=u'None')
+observationMode._InitializeFacetMap(observationMode._CF_enumeration)
+Namespace.addCategoryObject('typeBinding', u'observationMode', observationMode)
+
+# Atomic SimpleTypeDefinition
 class fpaPointingType (pyxb.binding.datatypes.string, pyxb.binding.basis.enumeration_mixin):
 
     """Determines the point of the FPA for which the RA, DEC are given. It can be either "Center" or "BottomLeft"."""
@@ -163,6 +146,23 @@ fpaPointingType.Center = fpaPointingType._CF_enumeration.addEnumeration(unicode_
 fpaPointingType.BottomLeft = fpaPointingType._CF_enumeration.addEnumeration(unicode_value=u'BottomLeft')
 fpaPointingType._InitializeFacetMap(fpaPointingType._CF_enumeration)
 Namespace.addCategoryObject('typeBinding', u'fpaPointingType', fpaPointingType)
+
+# Atomic SimpleTypeDefinition
+class grismWheelPosition (pyxb.binding.datatypes.string, pyxb.binding.basis.enumeration_mixin):
+
+    """NISP Grism Wheel positions"""
+
+    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'grismWheelPosition')
+    _Documentation = u'NISP Grism Wheel positions'
+grismWheelPosition._CF_enumeration = pyxb.binding.facets.CF_enumeration(value_datatype=grismWheelPosition, enum_prefix=None)
+grismWheelPosition.RH = grismWheelPosition._CF_enumeration.addEnumeration(unicode_value=u'RH')
+grismWheelPosition.RV = grismWheelPosition._CF_enumeration.addEnumeration(unicode_value=u'RV')
+grismWheelPosition.BH = grismWheelPosition._CF_enumeration.addEnumeration(unicode_value=u'BH')
+grismWheelPosition.BV = grismWheelPosition._CF_enumeration.addEnumeration(unicode_value=u'BV')
+grismWheelPosition.OPEN = grismWheelPosition._CF_enumeration.addEnumeration(unicode_value=u'OPEN')
+grismWheelPosition.CLOSE = grismWheelPosition._CF_enumeration.addEnumeration(unicode_value=u'CLOSE')
+grismWheelPosition._InitializeFacetMap(grismWheelPosition._CF_enumeration)
+Namespace.addCategoryObject('typeBinding', u'grismWheelPosition', grismWheelPosition)
 
 # Atomic SimpleTypeDefinition
 class filterWheelPosition (pyxb.binding.datatypes.string, pyxb.binding.basis.enumeration_mixin):
@@ -179,6 +179,30 @@ filterWheelPosition.OPEN = filterWheelPosition._CF_enumeration.addEnumeration(un
 filterWheelPosition.CLOSE = filterWheelPosition._CF_enumeration.addEnumeration(unicode_value=u'CLOSE')
 filterWheelPosition._InitializeFacetMap(filterWheelPosition._CF_enumeration)
 Namespace.addCategoryObject('typeBinding', u'filterWheelPosition', filterWheelPosition)
+
+# Complex type nisDetectorFrameList with content type ELEMENT_ONLY
+class nisDetectorFrameList (pyxb.binding.basis.complexTypeDefinition):
+    _TypeDefinition = None
+    _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
+    _Abstract = False
+    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'nisDetectorFrameList')
+    # Base type is pyxb.binding.datatypes.anyType
+    
+    # Element {http://euclid.esa.org/schema/pro/le1}Detector uses Python identifier Detector
+    __Detector = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Detector'), 'Detector', '__httpeuclid_esa_orgschemaprole1_nisDetectorFrameList_httpeuclid_esa_orgschemaprole1Detector', True)
+
+    
+    Detector = property(__Detector.value, __Detector.set, None, None)
+
+
+    _ElementMap = {
+        __Detector.name() : __Detector
+    }
+    _AttributeMap = {
+        
+    }
+Namespace.addCategoryObject('typeBinding', u'nisDetectorFrameList', nisDetectorFrameList)
+
 
 # Complex type nispRawFrame with content type ELEMENT_ONLY
 class nispRawFrame (pyxb.binding.basis.complexTypeDefinition):
@@ -284,62 +308,6 @@ class nispRawFrame (pyxb.binding.basis.complexTypeDefinition):
 Namespace.addCategoryObject('typeBinding', u'nispRawFrame', nispRawFrame)
 
 
-# Complex type nispCalibrationFrame with content type ELEMENT_ONLY
-class nispCalibrationFrame (nispRawFrame):
-    _TypeDefinition = None
-    _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
-    _Abstract = False
-    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'nispCalibrationFrame')
-    # Base type is nispRawFrame
-    
-    # Element GrismWheelPos ({http://euclid.esa.org/schema/pro/le1}GrismWheelPos) inherited from {http://euclid.esa.org/schema/pro/le1}nispRawFrame
-    
-    # Element DataProduct ({http://euclid.esa.org/schema/pro/le1}DataProduct) inherited from {http://euclid.esa.org/schema/pro/le1}nispRawFrame
-    
-    # Element ObservationSequence ({http://euclid.esa.org/schema/pro/le1}ObservationSequence) inherited from {http://euclid.esa.org/schema/pro/le1}nispRawFrame
-    
-    # Element {http://euclid.esa.org/schema/pro/le1}CalibUnit uses Python identifier CalibUnit
-    __CalibUnit = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'CalibUnit'), 'CalibUnit', '__httpeuclid_esa_orgschemaprole1_nispCalibrationFrame_httpeuclid_esa_orgschemaprole1CalibUnit', False)
-
-    
-    CalibUnit = property(__CalibUnit.value, __CalibUnit.set, None, u' Calibration Unit (ON/OFF and intensity level)')
-
-    
-    # Element FilterWheelPos ({http://euclid.esa.org/schema/pro/le1}FilterWheelPos) inherited from {http://euclid.esa.org/schema/pro/le1}nispRawFrame
-    
-    # Element InstrumentMode ({http://euclid.esa.org/schema/pro/le1}InstrumentMode) inherited from {http://euclid.esa.org/schema/pro/le1}nispRawFrame
-    
-    # Element ObservationDate ({http://euclid.esa.org/schema/pro/le1}ObservationDate) inherited from {http://euclid.esa.org/schema/pro/le1}nispRawFrame
-    
-    # Element {http://euclid.esa.org/schema/pro/le1}DetectorList uses Python identifier DetectorList
-    __DetectorList = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'DetectorList'), 'DetectorList', '__httpeuclid_esa_orgschemaprole1_nispCalibrationFrame_httpeuclid_esa_orgschemaprole1DetectorList', False)
-
-    
-    DetectorList = property(__DetectorList.value, __DetectorList.set, None, None)
-
-    
-    # Element CommandedFPAPointing ({http://euclid.esa.org/schema/pro/le1}CommandedFPAPointing) inherited from {http://euclid.esa.org/schema/pro/le1}nispRawFrame
-    
-    # Element ReadoutMode ({http://euclid.esa.org/schema/pro/le1}ReadoutMode) inherited from {http://euclid.esa.org/schema/pro/le1}nispRawFrame
-    
-    # Element ObservationMode ({http://euclid.esa.org/schema/pro/le1}ObservationMode) inherited from {http://euclid.esa.org/schema/pro/le1}nispRawFrame
-    
-    # Element ExposureTime ({http://euclid.esa.org/schema/pro/le1}ExposureTime) inherited from {http://euclid.esa.org/schema/pro/le1}nispRawFrame
-    
-    # Element ReconsFPAPointing ({http://euclid.esa.org/schema/pro/le1}ReconsFPAPointing) inherited from {http://euclid.esa.org/schema/pro/le1}nispRawFrame
-
-    _ElementMap = nispRawFrame._ElementMap.copy()
-    _ElementMap.update({
-        __CalibUnit.name() : __CalibUnit,
-        __DetectorList.name() : __DetectorList
-    })
-    _AttributeMap = nispRawFrame._AttributeMap.copy()
-    _AttributeMap.update({
-        
-    })
-Namespace.addCategoryObject('typeBinding', u'nispCalibrationFrame', nispCalibrationFrame)
-
-
 # Complex type sirRawFrame with content type ELEMENT_ONLY
 class sirRawFrame (nispRawFrame):
     _TypeDefinition = None
@@ -360,8 +328,6 @@ class sirRawFrame (nispRawFrame):
     
     # Element InstrumentMode ({http://euclid.esa.org/schema/pro/le1}InstrumentMode) inherited from {http://euclid.esa.org/schema/pro/le1}nispRawFrame
     
-    # Element ObservationDate ({http://euclid.esa.org/schema/pro/le1}ObservationDate) inherited from {http://euclid.esa.org/schema/pro/le1}nispRawFrame
-    
     # Element {http://euclid.esa.org/schema/pro/le1}DetectorList uses Python identifier DetectorList
     __DetectorList = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'DetectorList'), 'DetectorList', '__httpeuclid_esa_orgschemaprole1_sirRawFrame_httpeuclid_esa_orgschemaprole1DetectorList', False)
 
@@ -372,6 +338,8 @@ class sirRawFrame (nispRawFrame):
     # Element ReconsFPAPointing ({http://euclid.esa.org/schema/pro/le1}ReconsFPAPointing) inherited from {http://euclid.esa.org/schema/pro/le1}nispRawFrame
     
     # Element ObservationMode ({http://euclid.esa.org/schema/pro/le1}ObservationMode) inherited from {http://euclid.esa.org/schema/pro/le1}nispRawFrame
+    
+    # Element ObservationDate ({http://euclid.esa.org/schema/pro/le1}ObservationDate) inherited from {http://euclid.esa.org/schema/pro/le1}nispRawFrame
     
     # Element ReadoutMode ({http://euclid.esa.org/schema/pro/le1}ReadoutMode) inherited from {http://euclid.esa.org/schema/pro/le1}nispRawFrame
     
@@ -426,6 +394,128 @@ class nisRawFrameFitsFile (CommonDM.dm.bas.fit_stub.fitsFile):
 Namespace.addCategoryObject('typeBinding', u'nisRawFrameFitsFile', nisRawFrameFitsFile)
 
 
+# Complex type dataProduct with content type ELEMENT_ONLY
+class dataProduct (pyxb.binding.basis.complexTypeDefinition):
+    _TypeDefinition = None
+    _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
+    _Abstract = False
+    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'dataProduct')
+    # Base type is pyxb.binding.datatypes.anyType
+    
+    # Element {http://euclid.esa.org/schema/pro/le1}Tech uses Python identifier Tech
+    __Tech = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Tech'), 'Tech', '__httpeuclid_esa_orgschemaprole1_dataProduct_httpeuclid_esa_orgschemaprole1Tech', False)
+
+    
+    Tech = property(__Tech.value, __Tech.set, None, None)
+
+    
+    # Element {http://euclid.esa.org/schema/pro/le1}Category uses Python identifier Category
+    __Category = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Category'), 'Category', '__httpeuclid_esa_orgschemaprole1_dataProduct_httpeuclid_esa_orgschemaprole1Category', False)
+
+    
+    Category = property(__Category.value, __Category.set, None, None)
+
+    
+    # Element {http://euclid.esa.org/schema/pro/le1}Type uses Python identifier Type
+    __Type = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Type'), 'Type', '__httpeuclid_esa_orgschemaprole1_dataProduct_httpeuclid_esa_orgschemaprole1Type', False)
+
+    
+    Type = property(__Type.value, __Type.set, None, None)
+
+
+    _ElementMap = {
+        __Tech.name() : __Tech,
+        __Category.name() : __Category,
+        __Type.name() : __Type
+    }
+    _AttributeMap = {
+        
+    }
+Namespace.addCategoryObject('typeBinding', u'dataProduct', dataProduct)
+
+
+# Complex type detectorFrame with content type ELEMENT_ONLY
+class detectorFrame (pyxb.binding.basis.complexTypeDefinition):
+    _TypeDefinition = None
+    _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
+    _Abstract = False
+    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'detectorFrame')
+    # Base type is pyxb.binding.datatypes.anyType
+    
+    # Element {http://euclid.esa.org/schema/pro/le1}Gain uses Python identifier Gain
+    __Gain = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Gain'), 'Gain', '__httpeuclid_esa_orgschemaprole1_detectorFrame_httpeuclid_esa_orgschemaprole1Gain', False)
+
+    
+    Gain = property(__Gain.value, __Gain.set, None, None)
+
+    
+    # Element {http://euclid.esa.org/schema/pro/le1}ReadoutNoise uses Python identifier ReadoutNoise
+    __ReadoutNoise = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'ReadoutNoise'), 'ReadoutNoise', '__httpeuclid_esa_orgschemaprole1_detectorFrame_httpeuclid_esa_orgschemaprole1ReadoutNoise', False)
+
+    
+    ReadoutNoise = property(__ReadoutNoise.value, __ReadoutNoise.set, None, None)
+
+    
+    # Element {http://euclid.esa.org/schema/pro/le1}ChipId uses Python identifier ChipId
+    __ChipId = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'ChipId'), 'ChipId', '__httpeuclid_esa_orgschemaprole1_detectorFrame_httpeuclid_esa_orgschemaprole1ChipId', False)
+
+    
+    ChipId = property(__ChipId.value, __ChipId.set, None, None)
+
+    
+    # Element {http://euclid.esa.org/schema/pro/le1}AstrometricSolution uses Python identifier AstrometricSolution
+    __AstrometricSolution = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'AstrometricSolution'), 'AstrometricSolution', '__httpeuclid_esa_orgschemaprole1_detectorFrame_httpeuclid_esa_orgschemaprole1AstrometricSolution', False)
+
+    
+    AstrometricSolution = property(__AstrometricSolution.value, __AstrometricSolution.set, None, None)
+
+
+    _ElementMap = {
+        __Gain.name() : __Gain,
+        __ReadoutNoise.name() : __ReadoutNoise,
+        __ChipId.name() : __ChipId,
+        __AstrometricSolution.name() : __AstrometricSolution
+    }
+    _AttributeMap = {
+        
+    }
+Namespace.addCategoryObject('typeBinding', u'detectorFrame', detectorFrame)
+
+
+# Complex type nisDetectorFrame with content type ELEMENT_ONLY
+class nisDetectorFrame (detectorFrame):
+    _TypeDefinition = None
+    _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
+    _Abstract = False
+    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'nisDetectorFrame')
+    # Base type is detectorFrame
+    
+    # Element ReadoutNoise ({http://euclid.esa.org/schema/pro/le1}ReadoutNoise) inherited from {http://euclid.esa.org/schema/pro/le1}detectorFrame
+    
+    # Element Gain ({http://euclid.esa.org/schema/pro/le1}Gain) inherited from {http://euclid.esa.org/schema/pro/le1}detectorFrame
+    
+    # Element {http://euclid.esa.org/schema/pro/le1}DetectorFrameFitsFile uses Python identifier DetectorFrameFitsFile
+    __DetectorFrameFitsFile = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'DetectorFrameFitsFile'), 'DetectorFrameFitsFile', '__httpeuclid_esa_orgschemaprole1_nisDetectorFrame_httpeuclid_esa_orgschemaprole1DetectorFrameFitsFile', False)
+
+    
+    DetectorFrameFitsFile = property(__DetectorFrameFitsFile.value, __DetectorFrameFitsFile.set, None, None)
+
+    
+    # Element ChipId ({http://euclid.esa.org/schema/pro/le1}ChipId) inherited from {http://euclid.esa.org/schema/pro/le1}detectorFrame
+    
+    # Element AstrometricSolution ({http://euclid.esa.org/schema/pro/le1}AstrometricSolution) inherited from {http://euclid.esa.org/schema/pro/le1}detectorFrame
+
+    _ElementMap = detectorFrame._ElementMap.copy()
+    _ElementMap.update({
+        __DetectorFrameFitsFile.name() : __DetectorFrameFitsFile
+    })
+    _AttributeMap = detectorFrame._AttributeMap.copy()
+    _AttributeMap.update({
+        
+    })
+Namespace.addCategoryObject('typeBinding', u'nisDetectorFrame', nisDetectorFrame)
+
+
 # Complex type sirRawFrameFitsFile with content type ELEMENT_ONLY
 class sirRawFrameFitsFile (CommonDM.dm.bas.fit_stub.fitsFile):
     _TypeDefinition = None
@@ -464,54 +554,6 @@ class sirRawFrameFitsFile (CommonDM.dm.bas.fit_stub.fitsFile):
 Namespace.addCategoryObject('typeBinding', u'sirRawFrameFitsFile', sirRawFrameFitsFile)
 
 
-# Complex type detectorFrame with content type ELEMENT_ONLY
-class detectorFrame (pyxb.binding.basis.complexTypeDefinition):
-    _TypeDefinition = None
-    _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
-    _Abstract = False
-    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'detectorFrame')
-    # Base type is pyxb.binding.datatypes.anyType
-    
-    # Element {http://euclid.esa.org/schema/pro/le1}ChipId uses Python identifier ChipId
-    __ChipId = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'ChipId'), 'ChipId', '__httpeuclid_esa_orgschemaprole1_detectorFrame_httpeuclid_esa_orgschemaprole1ChipId', False)
-
-    
-    ChipId = property(__ChipId.value, __ChipId.set, None, None)
-
-    
-    # Element {http://euclid.esa.org/schema/pro/le1}AstrometricSolution uses Python identifier AstrometricSolution
-    __AstrometricSolution = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'AstrometricSolution'), 'AstrometricSolution', '__httpeuclid_esa_orgschemaprole1_detectorFrame_httpeuclid_esa_orgschemaprole1AstrometricSolution', False)
-
-    
-    AstrometricSolution = property(__AstrometricSolution.value, __AstrometricSolution.set, None, None)
-
-    
-    # Element {http://euclid.esa.org/schema/pro/le1}ReadoutNoise uses Python identifier ReadoutNoise
-    __ReadoutNoise = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'ReadoutNoise'), 'ReadoutNoise', '__httpeuclid_esa_orgschemaprole1_detectorFrame_httpeuclid_esa_orgschemaprole1ReadoutNoise', False)
-
-    
-    ReadoutNoise = property(__ReadoutNoise.value, __ReadoutNoise.set, None, None)
-
-    
-    # Element {http://euclid.esa.org/schema/pro/le1}Gain uses Python identifier Gain
-    __Gain = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Gain'), 'Gain', '__httpeuclid_esa_orgschemaprole1_detectorFrame_httpeuclid_esa_orgschemaprole1Gain', False)
-
-    
-    Gain = property(__Gain.value, __Gain.set, None, None)
-
-
-    _ElementMap = {
-        __ChipId.name() : __ChipId,
-        __AstrometricSolution.name() : __AstrometricSolution,
-        __ReadoutNoise.name() : __ReadoutNoise,
-        __Gain.name() : __Gain
-    }
-    _AttributeMap = {
-        
-    }
-Namespace.addCategoryObject('typeBinding', u'detectorFrame', detectorFrame)
-
-
 # Complex type sirDetectorFrame with content type ELEMENT_ONLY
 class sirDetectorFrame (detectorFrame):
     _TypeDefinition = None
@@ -519,6 +561,8 @@ class sirDetectorFrame (detectorFrame):
     _Abstract = False
     _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'sirDetectorFrame')
     # Base type is detectorFrame
+    
+    # Element ReadoutNoise ({http://euclid.esa.org/schema/pro/le1}ReadoutNoise) inherited from {http://euclid.esa.org/schema/pro/le1}detectorFrame
     
     # Element {http://euclid.esa.org/schema/pro/le1}DetectorFrameFitsFile uses Python identifier DetectorFrameFitsFile
     __DetectorFrameFitsFile = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'DetectorFrameFitsFile'), 'DetectorFrameFitsFile', '__httpeuclid_esa_orgschemaprole1_sirDetectorFrame_httpeuclid_esa_orgschemaprole1DetectorFrameFitsFile', False)
@@ -529,11 +573,9 @@ class sirDetectorFrame (detectorFrame):
     
     # Element Gain ({http://euclid.esa.org/schema/pro/le1}Gain) inherited from {http://euclid.esa.org/schema/pro/le1}detectorFrame
     
-    # Element AstrometricSolution ({http://euclid.esa.org/schema/pro/le1}AstrometricSolution) inherited from {http://euclid.esa.org/schema/pro/le1}detectorFrame
-    
-    # Element ReadoutNoise ({http://euclid.esa.org/schema/pro/le1}ReadoutNoise) inherited from {http://euclid.esa.org/schema/pro/le1}detectorFrame
-    
     # Element ChipId ({http://euclid.esa.org/schema/pro/le1}ChipId) inherited from {http://euclid.esa.org/schema/pro/le1}detectorFrame
+    
+    # Element AstrometricSolution ({http://euclid.esa.org/schema/pro/le1}AstrometricSolution) inherited from {http://euclid.esa.org/schema/pro/le1}detectorFrame
 
     _ElementMap = detectorFrame._ElementMap.copy()
     _ElementMap.update({
@@ -610,46 +652,6 @@ class observationSequence (pyxb.binding.basis.complexTypeDefinition):
 Namespace.addCategoryObject('typeBinding', u'observationSequence', observationSequence)
 
 
-# Complex type dataProduct with content type ELEMENT_ONLY
-class dataProduct (pyxb.binding.basis.complexTypeDefinition):
-    _TypeDefinition = None
-    _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
-    _Abstract = False
-    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'dataProduct')
-    # Base type is pyxb.binding.datatypes.anyType
-    
-    # Element {http://euclid.esa.org/schema/pro/le1}Tech uses Python identifier Tech
-    __Tech = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Tech'), 'Tech', '__httpeuclid_esa_orgschemaprole1_dataProduct_httpeuclid_esa_orgschemaprole1Tech', False)
-
-    
-    Tech = property(__Tech.value, __Tech.set, None, None)
-
-    
-    # Element {http://euclid.esa.org/schema/pro/le1}Category uses Python identifier Category
-    __Category = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Category'), 'Category', '__httpeuclid_esa_orgschemaprole1_dataProduct_httpeuclid_esa_orgschemaprole1Category', False)
-
-    
-    Category = property(__Category.value, __Category.set, None, None)
-
-    
-    # Element {http://euclid.esa.org/schema/pro/le1}Type uses Python identifier Type
-    __Type = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Type'), 'Type', '__httpeuclid_esa_orgschemaprole1_dataProduct_httpeuclid_esa_orgschemaprole1Type', False)
-
-    
-    Type = property(__Type.value, __Type.set, None, None)
-
-
-    _ElementMap = {
-        __Tech.name() : __Tech,
-        __Category.name() : __Category,
-        __Type.name() : __Type
-    }
-    _AttributeMap = {
-        
-    }
-Namespace.addCategoryObject('typeBinding', u'dataProduct', dataProduct)
-
-
 # Complex type fpaPointing with content type ELEMENT_ONLY
 class fpaPointing (pyxb.binding.basis.complexTypeDefinition):
     _TypeDefinition = None
@@ -694,6 +696,118 @@ class fpaPointing (pyxb.binding.basis.complexTypeDefinition):
         __type.name() : __type
     }
 Namespace.addCategoryObject('typeBinding', u'fpaPointing', fpaPointing)
+
+
+# Complex type sirDetectorFrameList with content type ELEMENT_ONLY
+class sirDetectorFrameList (pyxb.binding.basis.complexTypeDefinition):
+    _TypeDefinition = None
+    _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
+    _Abstract = False
+    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'sirDetectorFrameList')
+    # Base type is pyxb.binding.datatypes.anyType
+    
+    # Element {http://euclid.esa.org/schema/pro/le1}Detector uses Python identifier Detector
+    __Detector = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Detector'), 'Detector', '__httpeuclid_esa_orgschemaprole1_sirDetectorFrameList_httpeuclid_esa_orgschemaprole1Detector', True)
+
+    
+    Detector = property(__Detector.value, __Detector.set, None, None)
+
+
+    _ElementMap = {
+        __Detector.name() : __Detector
+    }
+    _AttributeMap = {
+        
+    }
+Namespace.addCategoryObject('typeBinding', u'sirDetectorFrameList', sirDetectorFrameList)
+
+
+# Complex type nispCalibrationFrame with content type ELEMENT_ONLY
+class nispCalibrationFrame (nispRawFrame):
+    _TypeDefinition = None
+    _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
+    _Abstract = False
+    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'nispCalibrationFrame')
+    # Base type is nispRawFrame
+    
+    # Element GrismWheelPos ({http://euclid.esa.org/schema/pro/le1}GrismWheelPos) inherited from {http://euclid.esa.org/schema/pro/le1}nispRawFrame
+    
+    # Element DataProduct ({http://euclid.esa.org/schema/pro/le1}DataProduct) inherited from {http://euclid.esa.org/schema/pro/le1}nispRawFrame
+    
+    # Element ObservationSequence ({http://euclid.esa.org/schema/pro/le1}ObservationSequence) inherited from {http://euclid.esa.org/schema/pro/le1}nispRawFrame
+    
+    # Element {http://euclid.esa.org/schema/pro/le1}CalibUnit uses Python identifier CalibUnit
+    __CalibUnit = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'CalibUnit'), 'CalibUnit', '__httpeuclid_esa_orgschemaprole1_nispCalibrationFrame_httpeuclid_esa_orgschemaprole1CalibUnit', False)
+
+    
+    CalibUnit = property(__CalibUnit.value, __CalibUnit.set, None, u' Calibration Unit (ON/OFF and intensity level)')
+
+    
+    # Element FilterWheelPos ({http://euclid.esa.org/schema/pro/le1}FilterWheelPos) inherited from {http://euclid.esa.org/schema/pro/le1}nispRawFrame
+    
+    # Element InstrumentMode ({http://euclid.esa.org/schema/pro/le1}InstrumentMode) inherited from {http://euclid.esa.org/schema/pro/le1}nispRawFrame
+    
+    # Element ObservationDate ({http://euclid.esa.org/schema/pro/le1}ObservationDate) inherited from {http://euclid.esa.org/schema/pro/le1}nispRawFrame
+    
+    # Element ObservationMode ({http://euclid.esa.org/schema/pro/le1}ObservationMode) inherited from {http://euclid.esa.org/schema/pro/le1}nispRawFrame
+    
+    # Element {http://euclid.esa.org/schema/pro/le1}DetectorList uses Python identifier DetectorList
+    __DetectorList = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'DetectorList'), 'DetectorList', '__httpeuclid_esa_orgschemaprole1_nispCalibrationFrame_httpeuclid_esa_orgschemaprole1DetectorList', False)
+
+    
+    DetectorList = property(__DetectorList.value, __DetectorList.set, None, None)
+
+    
+    # Element CommandedFPAPointing ({http://euclid.esa.org/schema/pro/le1}CommandedFPAPointing) inherited from {http://euclid.esa.org/schema/pro/le1}nispRawFrame
+    
+    # Element ReadoutMode ({http://euclid.esa.org/schema/pro/le1}ReadoutMode) inherited from {http://euclid.esa.org/schema/pro/le1}nispRawFrame
+    
+    # Element ExposureTime ({http://euclid.esa.org/schema/pro/le1}ExposureTime) inherited from {http://euclid.esa.org/schema/pro/le1}nispRawFrame
+    
+    # Element ReconsFPAPointing ({http://euclid.esa.org/schema/pro/le1}ReconsFPAPointing) inherited from {http://euclid.esa.org/schema/pro/le1}nispRawFrame
+
+    _ElementMap = nispRawFrame._ElementMap.copy()
+    _ElementMap.update({
+        __CalibUnit.name() : __CalibUnit,
+        __DetectorList.name() : __DetectorList
+    })
+    _AttributeMap = nispRawFrame._AttributeMap.copy()
+    _AttributeMap.update({
+        
+    })
+Namespace.addCategoryObject('typeBinding', u'nispCalibrationFrame', nispCalibrationFrame)
+
+
+# Complex type nispCalibUnit with content type ELEMENT_ONLY
+class nispCalibUnit (pyxb.binding.basis.complexTypeDefinition):
+    _TypeDefinition = None
+    _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
+    _Abstract = False
+    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'nispCalibUnit')
+    # Base type is pyxb.binding.datatypes.anyType
+    
+    # Element {http://euclid.esa.org/schema/pro/le1}IntensityLevel uses Python identifier IntensityLevel
+    __IntensityLevel = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'IntensityLevel'), 'IntensityLevel', '__httpeuclid_esa_orgschemaprole1_nispCalibUnit_httpeuclid_esa_orgschemaprole1IntensityLevel', False)
+
+    
+    IntensityLevel = property(__IntensityLevel.value, __IntensityLevel.set, None, u' Calibration lamp intensity level (in W/m2)')
+
+    
+    # Element {http://euclid.esa.org/schema/pro/le1}Status uses Python identifier Status
+    __Status = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Status'), 'Status', '__httpeuclid_esa_orgschemaprole1_nispCalibUnit_httpeuclid_esa_orgschemaprole1Status', False)
+
+    
+    Status = property(__Status.value, __Status.set, None, u'Calibration unit status (ON=1, OFF=0)')
+
+
+    _ElementMap = {
+        __IntensityLevel.name() : __IntensityLevel,
+        __Status.name() : __Status
+    }
+    _AttributeMap = {
+        
+    }
+Namespace.addCategoryObject('typeBinding', u'nispCalibUnit', nispCalibUnit)
 
 
 # Complex type readoutMode with content type ELEMENT_ONLY
@@ -784,119 +898,13 @@ class nirRawFrame (nispRawFrame):
 Namespace.addCategoryObject('typeBinding', u'nirRawFrame', nirRawFrame)
 
 
-# Complex type nisDetectorFrameList with content type ELEMENT_ONLY
-class nisDetectorFrameList (pyxb.binding.basis.complexTypeDefinition):
-    _TypeDefinition = None
-    _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
-    _Abstract = False
-    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'nisDetectorFrameList')
-    # Base type is pyxb.binding.datatypes.anyType
-    
-    # Element {http://euclid.esa.org/schema/pro/le1}Detector uses Python identifier Detector
-    __Detector = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Detector'), 'Detector', '__httpeuclid_esa_orgschemaprole1_nisDetectorFrameList_httpeuclid_esa_orgschemaprole1Detector', True)
-
-    
-    Detector = property(__Detector.value, __Detector.set, None, None)
 
 
-    _ElementMap = {
-        __Detector.name() : __Detector
-    }
-    _AttributeMap = {
-        
-    }
-Namespace.addCategoryObject('typeBinding', u'nisDetectorFrameList', nisDetectorFrameList)
-
-
-# Complex type nisDetectorFrame with content type ELEMENT_ONLY
-class nisDetectorFrame (detectorFrame):
-    _TypeDefinition = None
-    _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
-    _Abstract = False
-    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'nisDetectorFrame')
-    # Base type is detectorFrame
-    
-    # Element Gain ({http://euclid.esa.org/schema/pro/le1}Gain) inherited from {http://euclid.esa.org/schema/pro/le1}detectorFrame
-    
-    # Element AstrometricSolution ({http://euclid.esa.org/schema/pro/le1}AstrometricSolution) inherited from {http://euclid.esa.org/schema/pro/le1}detectorFrame
-    
-    # Element ChipId ({http://euclid.esa.org/schema/pro/le1}ChipId) inherited from {http://euclid.esa.org/schema/pro/le1}detectorFrame
-    
-    # Element ReadoutNoise ({http://euclid.esa.org/schema/pro/le1}ReadoutNoise) inherited from {http://euclid.esa.org/schema/pro/le1}detectorFrame
-    
-    # Element {http://euclid.esa.org/schema/pro/le1}DetectorFrameFitsFile uses Python identifier DetectorFrameFitsFile
-    __DetectorFrameFitsFile = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'DetectorFrameFitsFile'), 'DetectorFrameFitsFile', '__httpeuclid_esa_orgschemaprole1_nisDetectorFrame_httpeuclid_esa_orgschemaprole1DetectorFrameFitsFile', False)
-
-    
-    DetectorFrameFitsFile = property(__DetectorFrameFitsFile.value, __DetectorFrameFitsFile.set, None, None)
-
-
-    _ElementMap = detectorFrame._ElementMap.copy()
-    _ElementMap.update({
-        __DetectorFrameFitsFile.name() : __DetectorFrameFitsFile
-    })
-    _AttributeMap = detectorFrame._AttributeMap.copy()
-    _AttributeMap.update({
-        
-    })
-Namespace.addCategoryObject('typeBinding', u'nisDetectorFrame', nisDetectorFrame)
-
-
-# Complex type sirDetectorFrameList with content type ELEMENT_ONLY
-class sirDetectorFrameList (pyxb.binding.basis.complexTypeDefinition):
-    _TypeDefinition = None
-    _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
-    _Abstract = False
-    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'sirDetectorFrameList')
-    # Base type is pyxb.binding.datatypes.anyType
-    
-    # Element {http://euclid.esa.org/schema/pro/le1}Detector uses Python identifier Detector
-    __Detector = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Detector'), 'Detector', '__httpeuclid_esa_orgschemaprole1_sirDetectorFrameList_httpeuclid_esa_orgschemaprole1Detector', True)
-
-    
-    Detector = property(__Detector.value, __Detector.set, None, None)
-
-
-    _ElementMap = {
-        __Detector.name() : __Detector
-    }
-    _AttributeMap = {
-        
-    }
-Namespace.addCategoryObject('typeBinding', u'sirDetectorFrameList', sirDetectorFrameList)
-
-
-# Complex type nispCalibUnit with content type ELEMENT_ONLY
-class nispCalibUnit (pyxb.binding.basis.complexTypeDefinition):
-    _TypeDefinition = None
-    _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
-    _Abstract = False
-    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'nispCalibUnit')
-    # Base type is pyxb.binding.datatypes.anyType
-    
-    # Element {http://euclid.esa.org/schema/pro/le1}IntensityLevel uses Python identifier IntensityLevel
-    __IntensityLevel = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'IntensityLevel'), 'IntensityLevel', '__httpeuclid_esa_orgschemaprole1_nispCalibUnit_httpeuclid_esa_orgschemaprole1IntensityLevel', False)
-
-    
-    IntensityLevel = property(__IntensityLevel.value, __IntensityLevel.set, None, u' Calibration lamp intensity level (in W/m2)')
-
-    
-    # Element {http://euclid.esa.org/schema/pro/le1}Status uses Python identifier Status
-    __Status = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Status'), 'Status', '__httpeuclid_esa_orgschemaprole1_nispCalibUnit_httpeuclid_esa_orgschemaprole1Status', False)
-
-    
-    Status = property(__Status.value, __Status.set, None, u'Calibration unit status (ON=1, OFF=0)')
-
-
-    _ElementMap = {
-        __IntensityLevel.name() : __IntensityLevel,
-        __Status.name() : __Status
-    }
-    _AttributeMap = {
-        
-    }
-Namespace.addCategoryObject('typeBinding', u'nispCalibUnit', nispCalibUnit)
-
+nisDetectorFrameList._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Detector'), nisDetectorFrame, scope=nisDetectorFrameList))
+nisDetectorFrameList._GroupModel = pyxb.binding.content.GroupSequence(
+    pyxb.binding.content.ParticleModel(nisDetectorFrameList._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Detector')), min_occurs=1, max_occurs=None)
+    )
+nisDetectorFrameList._ContentModel = pyxb.binding.content.ParticleModel(nisDetectorFrameList._GroupModel, min_occurs=1, max_occurs=1)
 
 
 
@@ -938,34 +946,6 @@ nispRawFrame._ContentModel = pyxb.binding.content.ParticleModel(nispRawFrame._Gr
 
 
 
-nispCalibrationFrame._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'CalibUnit'), nispCalibUnit, scope=nispCalibrationFrame, documentation=u' Calibration Unit (ON/OFF and intensity level)'))
-
-nispCalibrationFrame._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'DetectorList'), nisDetectorFrameList, scope=nispCalibrationFrame))
-nispCalibrationFrame._GroupModel_ = pyxb.binding.content.GroupSequence(
-    pyxb.binding.content.ParticleModel(nispCalibrationFrame._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'ObservationSequence')), min_occurs=1, max_occurs=1),
-    pyxb.binding.content.ParticleModel(nispCalibrationFrame._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'InstrumentMode')), min_occurs=1, max_occurs=1),
-    pyxb.binding.content.ParticleModel(nispCalibrationFrame._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'ObservationMode')), min_occurs=1, max_occurs=1),
-    pyxb.binding.content.ParticleModel(nispCalibrationFrame._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'DataProduct')), min_occurs=1, max_occurs=1),
-    pyxb.binding.content.ParticleModel(nispCalibrationFrame._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'ObservationDate')), min_occurs=1, max_occurs=1),
-    pyxb.binding.content.ParticleModel(nispCalibrationFrame._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'ExposureTime')), min_occurs=1, max_occurs=1),
-    pyxb.binding.content.ParticleModel(nispCalibrationFrame._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'CommandedFPAPointing')), min_occurs=1, max_occurs=1),
-    pyxb.binding.content.ParticleModel(nispCalibrationFrame._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'ReconsFPAPointing')), min_occurs=1, max_occurs=1),
-    pyxb.binding.content.ParticleModel(nispCalibrationFrame._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'GrismWheelPos')), min_occurs=1, max_occurs=1),
-    pyxb.binding.content.ParticleModel(nispCalibrationFrame._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'FilterWheelPos')), min_occurs=1, max_occurs=1),
-    pyxb.binding.content.ParticleModel(nispCalibrationFrame._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'ReadoutMode')), min_occurs=1, max_occurs=1)
-    )
-nispCalibrationFrame._GroupModel_2 = pyxb.binding.content.GroupSequence(
-    pyxb.binding.content.ParticleModel(nispCalibrationFrame._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'CalibUnit')), min_occurs=1, max_occurs=1),
-    pyxb.binding.content.ParticleModel(nispCalibrationFrame._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'DetectorList')), min_occurs=1, max_occurs=1)
-    )
-nispCalibrationFrame._GroupModel = pyxb.binding.content.GroupSequence(
-    pyxb.binding.content.ParticleModel(nispCalibrationFrame._GroupModel_, min_occurs=1, max_occurs=1),
-    pyxb.binding.content.ParticleModel(nispCalibrationFrame._GroupModel_2, min_occurs=1, max_occurs=1)
-    )
-nispCalibrationFrame._ContentModel = pyxb.binding.content.ParticleModel(nispCalibrationFrame._GroupModel, min_occurs=1, max_occurs=1)
-
-
-
 sirRawFrame._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'DetectorList'), sirDetectorFrameList, scope=sirRawFrame))
 sirRawFrame._GroupModel_ = pyxb.binding.content.GroupSequence(
     pyxb.binding.content.ParticleModel(sirRawFrame._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'ObservationSequence')), min_occurs=1, max_occurs=1),
@@ -996,20 +976,28 @@ nisRawFrameFitsFile._GroupModel = pyxb.binding.content.GroupSequence(
 nisRawFrameFitsFile._ContentModel = pyxb.binding.content.ParticleModel(nisRawFrameFitsFile._GroupModel, min_occurs=1, max_occurs=1)
 
 
-sirRawFrameFitsFile._GroupModel = pyxb.binding.content.GroupSequence(
-    pyxb.binding.content.ParticleModel(sirRawFrameFitsFile._UseForTag(pyxb.namespace.ExpandedName(None, u'DataContainer')), min_occurs=1, max_occurs=1)
+
+dataProduct._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Tech'), productTech, scope=dataProduct))
+
+dataProduct._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Category'), productCategory, scope=dataProduct))
+
+dataProduct._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Type'), productType, scope=dataProduct))
+dataProduct._GroupModel = pyxb.binding.content.GroupSequence(
+    pyxb.binding.content.ParticleModel(dataProduct._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Category')), min_occurs=1, max_occurs=1),
+    pyxb.binding.content.ParticleModel(dataProduct._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Type')), min_occurs=1, max_occurs=1),
+    pyxb.binding.content.ParticleModel(dataProduct._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Tech')), min_occurs=1, max_occurs=1)
     )
-sirRawFrameFitsFile._ContentModel = pyxb.binding.content.ParticleModel(sirRawFrameFitsFile._GroupModel, min_occurs=1, max_occurs=1)
+dataProduct._ContentModel = pyxb.binding.content.ParticleModel(dataProduct._GroupModel, min_occurs=1, max_occurs=1)
 
 
+
+detectorFrame._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Gain'), pyxb.binding.datatypes.double, scope=detectorFrame))
+
+detectorFrame._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'ReadoutNoise'), pyxb.binding.datatypes.double, scope=detectorFrame))
 
 detectorFrame._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'ChipId'), pyxb.binding.datatypes.int, scope=detectorFrame))
 
 detectorFrame._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'AstrometricSolution'), CommonDM.dm.bas.cot_stub.astrom, scope=detectorFrame))
-
-detectorFrame._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'ReadoutNoise'), pyxb.binding.datatypes.double, scope=detectorFrame))
-
-detectorFrame._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Gain'), pyxb.binding.datatypes.double, scope=detectorFrame))
 detectorFrame._GroupModel = pyxb.binding.content.GroupSequence(
     pyxb.binding.content.ParticleModel(detectorFrame._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'ChipId')), min_occurs=1, max_occurs=1),
     pyxb.binding.content.ParticleModel(detectorFrame._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Gain')), min_occurs=1, max_occurs=1),
@@ -1017,6 +1005,30 @@ detectorFrame._GroupModel = pyxb.binding.content.GroupSequence(
     pyxb.binding.content.ParticleModel(detectorFrame._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'AstrometricSolution')), min_occurs=1, max_occurs=1)
     )
 detectorFrame._ContentModel = pyxb.binding.content.ParticleModel(detectorFrame._GroupModel, min_occurs=1, max_occurs=1)
+
+
+
+nisDetectorFrame._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'DetectorFrameFitsFile'), nisRawFrameFitsFile, scope=nisDetectorFrame))
+nisDetectorFrame._GroupModel_ = pyxb.binding.content.GroupSequence(
+    pyxb.binding.content.ParticleModel(nisDetectorFrame._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'ChipId')), min_occurs=1, max_occurs=1),
+    pyxb.binding.content.ParticleModel(nisDetectorFrame._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Gain')), min_occurs=1, max_occurs=1),
+    pyxb.binding.content.ParticleModel(nisDetectorFrame._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'ReadoutNoise')), min_occurs=1, max_occurs=1),
+    pyxb.binding.content.ParticleModel(nisDetectorFrame._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'AstrometricSolution')), min_occurs=1, max_occurs=1)
+    )
+nisDetectorFrame._GroupModel_2 = pyxb.binding.content.GroupSequence(
+    pyxb.binding.content.ParticleModel(nisDetectorFrame._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'DetectorFrameFitsFile')), min_occurs=1, max_occurs=1)
+    )
+nisDetectorFrame._GroupModel = pyxb.binding.content.GroupSequence(
+    pyxb.binding.content.ParticleModel(nisDetectorFrame._GroupModel_, min_occurs=1, max_occurs=1),
+    pyxb.binding.content.ParticleModel(nisDetectorFrame._GroupModel_2, min_occurs=1, max_occurs=1)
+    )
+nisDetectorFrame._ContentModel = pyxb.binding.content.ParticleModel(nisDetectorFrame._GroupModel, min_occurs=1, max_occurs=1)
+
+
+sirRawFrameFitsFile._GroupModel = pyxb.binding.content.GroupSequence(
+    pyxb.binding.content.ParticleModel(sirRawFrameFitsFile._UseForTag(pyxb.namespace.ExpandedName(None, u'DataContainer')), min_occurs=1, max_occurs=1)
+    )
+sirRawFrameFitsFile._ContentModel = pyxb.binding.content.ParticleModel(sirRawFrameFitsFile._GroupModel, min_occurs=1, max_occurs=1)
 
 
 
@@ -1061,20 +1073,6 @@ observationSequence._ContentModel = pyxb.binding.content.ParticleModel(observati
 
 
 
-dataProduct._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Tech'), productTech, scope=dataProduct))
-
-dataProduct._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Category'), productCategory, scope=dataProduct))
-
-dataProduct._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Type'), productType, scope=dataProduct))
-dataProduct._GroupModel = pyxb.binding.content.GroupSequence(
-    pyxb.binding.content.ParticleModel(dataProduct._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Category')), min_occurs=1, max_occurs=1),
-    pyxb.binding.content.ParticleModel(dataProduct._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Type')), min_occurs=1, max_occurs=1),
-    pyxb.binding.content.ParticleModel(dataProduct._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Tech')), min_occurs=1, max_occurs=1)
-    )
-dataProduct._ContentModel = pyxb.binding.content.ParticleModel(dataProduct._GroupModel, min_occurs=1, max_occurs=1)
-
-
-
 fpaPointing._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Orientation'), CommonDM.dm.bas.dtd_stub.degAngle, scope=fpaPointing, documentation=u'Counterclockwise angle from the positive RA axis, in degrees.'))
 
 fpaPointing._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Dec'), CommonDM.dm.bas.dtd_stub.degAngle, scope=fpaPointing, documentation=u'Declination of the FPA, in degrees.'))
@@ -1086,6 +1084,53 @@ fpaPointing._GroupModel = pyxb.binding.content.GroupSequence(
     pyxb.binding.content.ParticleModel(fpaPointing._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Orientation')), min_occurs=1, max_occurs=1)
     )
 fpaPointing._ContentModel = pyxb.binding.content.ParticleModel(fpaPointing._GroupModel, min_occurs=1, max_occurs=1)
+
+
+
+sirDetectorFrameList._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Detector'), sirDetectorFrame, scope=sirDetectorFrameList))
+sirDetectorFrameList._GroupModel = pyxb.binding.content.GroupSequence(
+    pyxb.binding.content.ParticleModel(sirDetectorFrameList._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Detector')), min_occurs=1, max_occurs=None)
+    )
+sirDetectorFrameList._ContentModel = pyxb.binding.content.ParticleModel(sirDetectorFrameList._GroupModel, min_occurs=1, max_occurs=1)
+
+
+
+nispCalibrationFrame._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'CalibUnit'), nispCalibUnit, scope=nispCalibrationFrame, documentation=u' Calibration Unit (ON/OFF and intensity level)'))
+
+nispCalibrationFrame._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'DetectorList'), nisDetectorFrameList, scope=nispCalibrationFrame))
+nispCalibrationFrame._GroupModel_ = pyxb.binding.content.GroupSequence(
+    pyxb.binding.content.ParticleModel(nispCalibrationFrame._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'ObservationSequence')), min_occurs=1, max_occurs=1),
+    pyxb.binding.content.ParticleModel(nispCalibrationFrame._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'InstrumentMode')), min_occurs=1, max_occurs=1),
+    pyxb.binding.content.ParticleModel(nispCalibrationFrame._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'ObservationMode')), min_occurs=1, max_occurs=1),
+    pyxb.binding.content.ParticleModel(nispCalibrationFrame._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'DataProduct')), min_occurs=1, max_occurs=1),
+    pyxb.binding.content.ParticleModel(nispCalibrationFrame._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'ObservationDate')), min_occurs=1, max_occurs=1),
+    pyxb.binding.content.ParticleModel(nispCalibrationFrame._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'ExposureTime')), min_occurs=1, max_occurs=1),
+    pyxb.binding.content.ParticleModel(nispCalibrationFrame._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'CommandedFPAPointing')), min_occurs=1, max_occurs=1),
+    pyxb.binding.content.ParticleModel(nispCalibrationFrame._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'ReconsFPAPointing')), min_occurs=1, max_occurs=1),
+    pyxb.binding.content.ParticleModel(nispCalibrationFrame._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'GrismWheelPos')), min_occurs=1, max_occurs=1),
+    pyxb.binding.content.ParticleModel(nispCalibrationFrame._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'FilterWheelPos')), min_occurs=1, max_occurs=1),
+    pyxb.binding.content.ParticleModel(nispCalibrationFrame._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'ReadoutMode')), min_occurs=1, max_occurs=1)
+    )
+nispCalibrationFrame._GroupModel_2 = pyxb.binding.content.GroupSequence(
+    pyxb.binding.content.ParticleModel(nispCalibrationFrame._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'CalibUnit')), min_occurs=1, max_occurs=1),
+    pyxb.binding.content.ParticleModel(nispCalibrationFrame._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'DetectorList')), min_occurs=1, max_occurs=1)
+    )
+nispCalibrationFrame._GroupModel = pyxb.binding.content.GroupSequence(
+    pyxb.binding.content.ParticleModel(nispCalibrationFrame._GroupModel_, min_occurs=1, max_occurs=1),
+    pyxb.binding.content.ParticleModel(nispCalibrationFrame._GroupModel_2, min_occurs=1, max_occurs=1)
+    )
+nispCalibrationFrame._ContentModel = pyxb.binding.content.ParticleModel(nispCalibrationFrame._GroupModel, min_occurs=1, max_occurs=1)
+
+
+
+nispCalibUnit._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'IntensityLevel'), pyxb.binding.datatypes.double, scope=nispCalibUnit, documentation=u' Calibration lamp intensity level (in W/m2)'))
+
+nispCalibUnit._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Status'), pyxb.binding.datatypes.boolean, scope=nispCalibUnit, documentation=u'Calibration unit status (ON=1, OFF=0)'))
+nispCalibUnit._GroupModel = pyxb.binding.content.GroupSequence(
+    pyxb.binding.content.ParticleModel(nispCalibUnit._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Status')), min_occurs=1, max_occurs=1),
+    pyxb.binding.content.ParticleModel(nispCalibUnit._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'IntensityLevel')), min_occurs=1, max_occurs=1)
+    )
+nispCalibUnit._ContentModel = pyxb.binding.content.ParticleModel(nispCalibUnit._GroupModel, min_occurs=1, max_occurs=1)
 
 
 
@@ -1125,48 +1170,3 @@ nirRawFrame._GroupModel = pyxb.binding.content.GroupSequence(
     pyxb.binding.content.ParticleModel(nirRawFrame._GroupModel_2, min_occurs=1, max_occurs=1)
     )
 nirRawFrame._ContentModel = pyxb.binding.content.ParticleModel(nirRawFrame._GroupModel, min_occurs=1, max_occurs=1)
-
-
-
-nisDetectorFrameList._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Detector'), nisDetectorFrame, scope=nisDetectorFrameList))
-nisDetectorFrameList._GroupModel = pyxb.binding.content.GroupSequence(
-    pyxb.binding.content.ParticleModel(nisDetectorFrameList._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Detector')), min_occurs=1, max_occurs=None)
-    )
-nisDetectorFrameList._ContentModel = pyxb.binding.content.ParticleModel(nisDetectorFrameList._GroupModel, min_occurs=1, max_occurs=1)
-
-
-
-nisDetectorFrame._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'DetectorFrameFitsFile'), nisRawFrameFitsFile, scope=nisDetectorFrame))
-nisDetectorFrame._GroupModel_ = pyxb.binding.content.GroupSequence(
-    pyxb.binding.content.ParticleModel(nisDetectorFrame._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'ChipId')), min_occurs=1, max_occurs=1),
-    pyxb.binding.content.ParticleModel(nisDetectorFrame._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Gain')), min_occurs=1, max_occurs=1),
-    pyxb.binding.content.ParticleModel(nisDetectorFrame._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'ReadoutNoise')), min_occurs=1, max_occurs=1),
-    pyxb.binding.content.ParticleModel(nisDetectorFrame._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'AstrometricSolution')), min_occurs=1, max_occurs=1)
-    )
-nisDetectorFrame._GroupModel_2 = pyxb.binding.content.GroupSequence(
-    pyxb.binding.content.ParticleModel(nisDetectorFrame._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'DetectorFrameFitsFile')), min_occurs=1, max_occurs=1)
-    )
-nisDetectorFrame._GroupModel = pyxb.binding.content.GroupSequence(
-    pyxb.binding.content.ParticleModel(nisDetectorFrame._GroupModel_, min_occurs=1, max_occurs=1),
-    pyxb.binding.content.ParticleModel(nisDetectorFrame._GroupModel_2, min_occurs=1, max_occurs=1)
-    )
-nisDetectorFrame._ContentModel = pyxb.binding.content.ParticleModel(nisDetectorFrame._GroupModel, min_occurs=1, max_occurs=1)
-
-
-
-sirDetectorFrameList._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Detector'), sirDetectorFrame, scope=sirDetectorFrameList))
-sirDetectorFrameList._GroupModel = pyxb.binding.content.GroupSequence(
-    pyxb.binding.content.ParticleModel(sirDetectorFrameList._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Detector')), min_occurs=1, max_occurs=None)
-    )
-sirDetectorFrameList._ContentModel = pyxb.binding.content.ParticleModel(sirDetectorFrameList._GroupModel, min_occurs=1, max_occurs=1)
-
-
-
-nispCalibUnit._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'IntensityLevel'), pyxb.binding.datatypes.double, scope=nispCalibUnit, documentation=u' Calibration lamp intensity level (in W/m2)'))
-
-nispCalibUnit._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Status'), pyxb.binding.datatypes.boolean, scope=nispCalibUnit, documentation=u'Calibration unit status (ON=1, OFF=0)'))
-nispCalibUnit._GroupModel = pyxb.binding.content.GroupSequence(
-    pyxb.binding.content.ParticleModel(nispCalibUnit._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Status')), min_occurs=1, max_occurs=1),
-    pyxb.binding.content.ParticleModel(nispCalibUnit._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'IntensityLevel')), min_occurs=1, max_occurs=1)
-    )
-nispCalibUnit._ContentModel = pyxb.binding.content.ParticleModel(nispCalibUnit._GroupModel, min_occurs=1, max_occurs=1)

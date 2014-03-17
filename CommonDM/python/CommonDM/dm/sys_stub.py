@@ -1,7 +1,7 @@
 # /home/nikoapos/ISDC/Projects/Alexandria/1.0/CommonDM/python/CommonDM/dm/sys_stub.py
 # PyXB bindings for NamespaceModule
 # NSM:ef11d8db76a7f46c6c12cc44757c7de95f0af727
-# Generated 2014-03-17 11:53:47.248661 by PyXB version 1.1.2
+# Generated 2014-03-17 18:50:36.638039 by PyXB version 1.1.2
 import pyxb
 import pyxb.binding
 import pyxb.binding.saxer
@@ -11,7 +11,7 @@ import pyxb.utils.domutils
 import sys
 
 # Unique identifier for bindings created at the same time
-_GenerationUID = pyxb.utils.utility.UniqueIdentifier('urn:uuid:6923c468-adc2-11e3-8fb8-f01faf601f90')
+_GenerationUID = pyxb.utils.utility.UniqueIdentifier('urn:uuid:a3e7637c-adfc-11e3-9f2e-c4d98710dc86')
 
 # Import bindings for namespaces imported into schema
 import pyxb.binding.datatypes
@@ -42,20 +42,6 @@ def CreateFromDOM (node, default_namespace=None):
         default_namespace = Namespace.fallbackNamespace()
     return pyxb.binding.basis.element.AnyCreateFromDOM(node, _fallback_namespace=default_namespace)
 
-
-# Atomic SimpleTypeDefinition
-class configFileName (pyxb.binding.datatypes.string):
-
-    """An atomic simple type."""
-
-    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'configFileName')
-    _Documentation = None
-configFileName._CF_pattern = pyxb.binding.facets.CF_pattern()
-configFileName._CF_pattern.addPattern(pattern=u'EUC-[GSOV|IOTE|OPER|4SVT?|TD??|TEST].[A-Za-z0-9]{3,4}')
-configFileName._CF_maxLength = pyxb.binding.facets.CF_maxLength(value=pyxb.binding.datatypes.nonNegativeInteger(64L))
-configFileName._InitializeFacetMap(configFileName._CF_pattern,
-   configFileName._CF_maxLength)
-Namespace.addCategoryObject('typeBinding', u'configFileName', configFileName)
 
 # Atomic SimpleTypeDefinition
 class version (pyxb.binding.datatypes.string):
@@ -96,18 +82,18 @@ scientificGroupName._InitializeFacetMap(scientificGroupName._CF_enumeration)
 Namespace.addCategoryObject('typeBinding', u'scientificGroupName', scientificGroupName)
 
 # Atomic SimpleTypeDefinition
-class systemDateTime (pyxb.binding.datatypes.dateTime):
+class configFileName (pyxb.binding.datatypes.string):
 
-    """
-                An UTC date-time value with a precision of one millisecond
-            """
+    """An atomic simple type."""
 
-    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'systemDateTime')
-    _Documentation = u'\n                An UTC date-time value with a precision of one millisecond\n            '
-systemDateTime._CF_pattern = pyxb.binding.facets.CF_pattern()
-systemDateTime._CF_pattern.addPattern(pattern=u'\\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\dZ')
-systemDateTime._InitializeFacetMap(systemDateTime._CF_pattern)
-Namespace.addCategoryObject('typeBinding', u'systemDateTime', systemDateTime)
+    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'configFileName')
+    _Documentation = None
+configFileName._CF_pattern = pyxb.binding.facets.CF_pattern()
+configFileName._CF_pattern.addPattern(pattern=u'EUC-[GSOV|IOTE|OPER|4SVT?|TD??|TEST].[A-Za-z0-9]{3,4}')
+configFileName._CF_maxLength = pyxb.binding.facets.CF_maxLength(value=pyxb.binding.datatypes.nonNegativeInteger(64L))
+configFileName._InitializeFacetMap(configFileName._CF_pattern,
+   configFileName._CF_maxLength)
+Namespace.addCategoryObject('typeBinding', u'configFileName', configFileName)
 
 # Atomic SimpleTypeDefinition
 class infraName (pyxb.binding.datatypes.string, pyxb.binding.basis.enumeration_mixin):
@@ -131,6 +117,20 @@ infraName.CLOUDServices = infraName._CF_enumeration.addEnumeration(unicode_value
 infraName.LOCAL = infraName._CF_enumeration.addEnumeration(unicode_value=u'LOCAL')
 infraName._InitializeFacetMap(infraName._CF_enumeration)
 Namespace.addCategoryObject('typeBinding', u'infraName', infraName)
+
+# Atomic SimpleTypeDefinition
+class systemDateTime (pyxb.binding.datatypes.dateTime):
+
+    """
+                An UTC date-time value with a precision of one millisecond
+            """
+
+    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'systemDateTime')
+    _Documentation = u'\n                An UTC date-time value with a precision of one millisecond\n            '
+systemDateTime._CF_pattern = pyxb.binding.facets.CF_pattern()
+systemDateTime._CF_pattern.addPattern(pattern=u'\\d\\d\\d\\d-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d\\d\\dZ')
+systemDateTime._InitializeFacetMap(systemDateTime._CF_pattern)
+Namespace.addCategoryObject('typeBinding', u'systemDateTime', systemDateTime)
 
 # Atomic SimpleTypeDefinition
 class dataFileName (pyxb.binding.datatypes.string):

@@ -1,7 +1,7 @@
 # /home/nikoapos/ISDC/Projects/Alexandria/1.0/CommonDM/python/CommonDM/dm/bas/imp/fits_stub.py
 # PyXB bindings for NamespaceModule
 # NSM:95932c6e7cbd7814eb20271e660263f6bcf8ffdc
-# Generated 2014-03-17 11:53:47.249700 by PyXB version 1.1.2
+# Generated 2014-03-17 18:50:36.638818 by PyXB version 1.1.2
 import pyxb
 import pyxb.binding
 import pyxb.binding.saxer
@@ -11,7 +11,7 @@ import pyxb.utils.domutils
 import sys
 
 # Unique identifier for bindings created at the same time
-_GenerationUID = pyxb.utils.utility.UniqueIdentifier('urn:uuid:6923c468-adc2-11e3-8fb8-f01faf601f90')
+_GenerationUID = pyxb.utils.utility.UniqueIdentifier('urn:uuid:a3e7637c-adfc-11e3-9f2e-c4d98710dc86')
 
 # Import bindings for namespaces imported into schema
 import pyxb.binding.datatypes
@@ -42,6 +42,62 @@ def CreateFromDOM (node, default_namespace=None):
         default_namespace = Namespace.fallbackNamespace()
     return pyxb.binding.basis.element.AnyCreateFromDOM(node, _fallback_namespace=default_namespace)
 
+
+# Atomic SimpleTypeDefinition
+class headerKeywordName (pyxb.binding.datatypes.string):
+
+    """Describes the format allowed for header keyword names. It allows for strings up to 8 characters long, composed only of digits, upper case letters, the underscore ('_') and the hyphen ('-')."""
+
+    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'headerKeywordName')
+    _Documentation = u"Describes the format allowed for header keyword names. It allows for strings up to 8 characters long, composed only of digits, upper case letters, the underscore ('_') and the hyphen ('-')."
+headerKeywordName._CF_pattern = pyxb.binding.facets.CF_pattern()
+headerKeywordName._CF_pattern.addPattern(pattern=u'[-A-Z0-9_]{1,8}')
+headerKeywordName._InitializeFacetMap(headerKeywordName._CF_pattern)
+Namespace.addCategoryObject('typeBinding', u'headerKeywordName', headerKeywordName)
+
+# Atomic SimpleTypeDefinition
+class stringKeywordValue (pyxb.binding.datatypes.string):
+
+    """Describes the allowed values of a string type HDU header keyword. It allows for up to 68 ASCII text characters (decimal 32 through 126). Note that the single quote characters used in the FITS file should NOT be included in this string."""
+
+    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'stringKeywordValue')
+    _Documentation = u'Describes the allowed values of a string type HDU header keyword. It allows for up to 68 ASCII text characters (decimal 32 through 126). Note that the single quote characters used in the FITS file should NOT be included in this string.'
+stringKeywordValue._CF_pattern = pyxb.binding.facets.CF_pattern()
+stringKeywordValue._CF_pattern.addPattern(pattern=u'([ -~])*')
+stringKeywordValue._CF_maxLength = pyxb.binding.facets.CF_maxLength(value=pyxb.binding.datatypes.nonNegativeInteger(68L))
+stringKeywordValue._InitializeFacetMap(stringKeywordValue._CF_pattern,
+   stringKeywordValue._CF_maxLength)
+Namespace.addCategoryObject('typeBinding', u'stringKeywordValue', stringKeywordValue)
+
+# Atomic SimpleTypeDefinition
+class logicalKeywordValue (pyxb.binding.datatypes.boolean):
+
+    """Describes the allowed values of a logical type HDU header keyword. It takes the values "true" and "false" as they are defined by the XSL Schema boolean type and NOT the "T" and "F" defined in the FITS specification. This is done to make easier the implementation of the different parsers."""
+
+    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'logicalKeywordValue')
+    _Documentation = u'Describes the allowed values of a logical type HDU header keyword. It takes the values "true" and "false" as they are defined by the XSL Schema boolean type and NOT the "T" and "F" defined in the FITS specification. This is done to make easier the implementation of the different parsers.'
+logicalKeywordValue._InitializeFacetMap()
+Namespace.addCategoryObject('typeBinding', u'logicalKeywordValue', logicalKeywordValue)
+
+# Atomic SimpleTypeDefinition
+class integerKeywordValue (pyxb.binding.datatypes.long):
+
+    """Describes the allowed values of an integer type HDU header keyword. It can be any 64 bit integer, as defined by the XML Schema."""
+
+    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'integerKeywordValue')
+    _Documentation = u'Describes the allowed values of an integer type HDU header keyword. It can be any 64 bit integer, as defined by the XML Schema.'
+integerKeywordValue._InitializeFacetMap()
+Namespace.addCategoryObject('typeBinding', u'integerKeywordValue', integerKeywordValue)
+
+# Atomic SimpleTypeDefinition
+class doubleKeywordValue (pyxb.binding.datatypes.double):
+
+    """Describes the allowed values of a floating point type HDU header keyword. It can be any 64 bit double, as defined by the XML Schema. Note that this definition is more strict than the FITS definition, but this is necessary to achieve a unique interpretation of the number between different systems."""
+
+    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'doubleKeywordValue')
+    _Documentation = u'Describes the allowed values of a floating point type HDU header keyword. It can be any 64 bit double, as defined by the XML Schema. Note that this definition is more strict than the FITS definition, but this is necessary to achieve a unique interpretation of the number between different systems.'
+doubleKeywordValue._InitializeFacetMap()
+Namespace.addCategoryObject('typeBinding', u'doubleKeywordValue', doubleKeywordValue)
 
 # Atomic SimpleTypeDefinition
 class binaryTableColumnFormat (pyxb.binding.datatypes.string):
@@ -83,28 +139,6 @@ binaryTableColumnName._InitializeFacetMap(binaryTableColumnName._CF_minLength,
 Namespace.addCategoryObject('typeBinding', u'binaryTableColumnName', binaryTableColumnName)
 
 # Atomic SimpleTypeDefinition
-class headerKeywordName (pyxb.binding.datatypes.string):
-
-    """Describes the format allowed for header keyword names. It allows for strings up to 8 characters long, composed only of digits, upper case letters, the underscore ('_') and the hyphen ('-')."""
-
-    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'headerKeywordName')
-    _Documentation = u"Describes the format allowed for header keyword names. It allows for strings up to 8 characters long, composed only of digits, upper case letters, the underscore ('_') and the hyphen ('-')."
-headerKeywordName._CF_pattern = pyxb.binding.facets.CF_pattern()
-headerKeywordName._CF_pattern.addPattern(pattern=u'[-A-Z0-9_]{1,8}')
-headerKeywordName._InitializeFacetMap(headerKeywordName._CF_pattern)
-Namespace.addCategoryObject('typeBinding', u'headerKeywordName', headerKeywordName)
-
-# Atomic SimpleTypeDefinition
-class integerKeywordValue (pyxb.binding.datatypes.long):
-
-    """Describes the allowed values of an integer type HDU header keyword. It can be any 64 bit integer, as defined by the XML Schema."""
-
-    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'integerKeywordValue')
-    _Documentation = u'Describes the allowed values of an integer type HDU header keyword. It can be any 64 bit integer, as defined by the XML Schema.'
-integerKeywordValue._InitializeFacetMap()
-Namespace.addCategoryObject('typeBinding', u'integerKeywordValue', integerKeywordValue)
-
-# Atomic SimpleTypeDefinition
 class wcsAxisName (pyxb.binding.datatypes.string):
 
     """Represens the name of an WCS axis (FITS keyword CNAMEia. It allows for upper and lower case letters, digits and the underscore ('_') character."""
@@ -115,6 +149,18 @@ wcsAxisName._CF_pattern = pyxb.binding.facets.CF_pattern()
 wcsAxisName._CF_pattern.addPattern(pattern=u'[a-zA-Z0-9_]*')
 wcsAxisName._InitializeFacetMap(wcsAxisName._CF_pattern)
 Namespace.addCategoryObject('typeBinding', u'wcsAxisName', wcsAxisName)
+
+# Atomic SimpleTypeDefinition
+class wcsAxisProjectionAlgorithm (pyxb.binding.datatypes.string):
+
+    """Describes the allowed values for an WCS axis projection algorithm. It allows for a 3 character string consisting of uper case leters, numbers and the underscore.The empty string means a linear projection. Note that non linear projection algorithms can be used only for specific celestial coordinate system axis and for specific spectral axis, as described in the FITS specification."""
+
+    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'wcsAxisProjectionAlgorithm')
+    _Documentation = u'Describes the allowed values for an WCS axis projection algorithm. It allows for a 3 character string consisting of uper case leters, numbers and the underscore.The empty string means a linear projection. Note that non linear projection algorithms can be used only for specific celestial coordinate system axis and for specific spectral axis, as described in the FITS specification.'
+wcsAxisProjectionAlgorithm._CF_pattern = pyxb.binding.facets.CF_pattern()
+wcsAxisProjectionAlgorithm._CF_pattern.addPattern(pattern=u'[A-Z0-9_]{3}|')
+wcsAxisProjectionAlgorithm._InitializeFacetMap(wcsAxisProjectionAlgorithm._CF_pattern)
+Namespace.addCategoryObject('typeBinding', u'wcsAxisProjectionAlgorithm', wcsAxisProjectionAlgorithm)
 
 # Atomic SimpleTypeDefinition
 class wcsAxisType (pyxb.binding.datatypes.string):
@@ -129,18 +175,6 @@ wcsAxisType._CF_maxLength = pyxb.binding.facets.CF_maxLength(value=pyxb.binding.
 wcsAxisType._InitializeFacetMap(wcsAxisType._CF_pattern,
    wcsAxisType._CF_maxLength)
 Namespace.addCategoryObject('typeBinding', u'wcsAxisType', wcsAxisType)
-
-# Atomic SimpleTypeDefinition
-class wcsAxisProjectionAlgorithm (pyxb.binding.datatypes.string):
-
-    """Describes the allowed values for an WCS axis projection algorithm. It allows for a 3 character string consisting of uper case leters, numbers and the underscore.The empty string means a linear projection. Note that non linear projection algorithms can be used only for specific celestial coordinate system axis and for specific spectral axis, as described in the FITS specification."""
-
-    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'wcsAxisProjectionAlgorithm')
-    _Documentation = u'Describes the allowed values for an WCS axis projection algorithm. It allows for a 3 character string consisting of uper case leters, numbers and the underscore.The empty string means a linear projection. Note that non linear projection algorithms can be used only for specific celestial coordinate system axis and for specific spectral axis, as described in the FITS specification.'
-wcsAxisProjectionAlgorithm._CF_pattern = pyxb.binding.facets.CF_pattern()
-wcsAxisProjectionAlgorithm._CF_pattern.addPattern(pattern=u'[A-Z0-9_]{3}|')
-wcsAxisProjectionAlgorithm._InitializeFacetMap(wcsAxisProjectionAlgorithm._CF_pattern)
-Namespace.addCategoryObject('typeBinding', u'wcsAxisProjectionAlgorithm', wcsAxisProjectionAlgorithm)
 
 # Atomic SimpleTypeDefinition
 class arrayFormat (pyxb.binding.datatypes.byte, pyxb.binding.basis.enumeration_mixin):
@@ -179,16 +213,6 @@ arrayNumberOfDimensions._InitializeFacetMap(arrayNumberOfDimensions._CF_maxInclu
 Namespace.addCategoryObject('typeBinding', u'arrayNumberOfDimensions', arrayNumberOfDimensions)
 
 # Atomic SimpleTypeDefinition
-class logicalKeywordValue (pyxb.binding.datatypes.boolean):
-
-    """Describes the allowed values of a logical type HDU header keyword. It takes the values "true" and "false" as they are defined by the XSL Schema boolean type and NOT the "T" and "F" defined in the FITS specification. This is done to make easier the implementation of the different parsers."""
-
-    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'logicalKeywordValue')
-    _Documentation = u'Describes the allowed values of a logical type HDU header keyword. It takes the values "true" and "false" as they are defined by the XSL Schema boolean type and NOT the "T" and "F" defined in the FITS specification. This is done to make easier the implementation of the different parsers.'
-logicalKeywordValue._InitializeFacetMap()
-Namespace.addCategoryObject('typeBinding', u'logicalKeywordValue', logicalKeywordValue)
-
-# Atomic SimpleTypeDefinition
 class wcsIdentifier (pyxb.binding.datatypes.string):
 
     """Describes the possible identifiers for a WCS. These identifiers are mapped to the alphabetic code alpha postfixed to the WCS FITS keywords. It can be any upper case letter (A-Z), which defines an alternative WCS representation, or empty, which defines the primary representation."""
@@ -211,30 +235,6 @@ wcsName._CF_pattern = pyxb.binding.facets.CF_pattern()
 wcsName._CF_pattern.addPattern(pattern=u'[a-zA-Z0-9_]*')
 wcsName._InitializeFacetMap(wcsName._CF_pattern)
 Namespace.addCategoryObject('typeBinding', u'wcsName', wcsName)
-
-# Atomic SimpleTypeDefinition
-class stringKeywordValue (pyxb.binding.datatypes.string):
-
-    """Describes the allowed values of a string type HDU header keyword. It allows for up to 68 ASCII text characters (decimal 32 through 126). Note that the single quote characters used in the FITS file should NOT be included in this string."""
-
-    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'stringKeywordValue')
-    _Documentation = u'Describes the allowed values of a string type HDU header keyword. It allows for up to 68 ASCII text characters (decimal 32 through 126). Note that the single quote characters used in the FITS file should NOT be included in this string.'
-stringKeywordValue._CF_pattern = pyxb.binding.facets.CF_pattern()
-stringKeywordValue._CF_pattern.addPattern(pattern=u'([ -~])*')
-stringKeywordValue._CF_maxLength = pyxb.binding.facets.CF_maxLength(value=pyxb.binding.datatypes.nonNegativeInteger(68L))
-stringKeywordValue._InitializeFacetMap(stringKeywordValue._CF_pattern,
-   stringKeywordValue._CF_maxLength)
-Namespace.addCategoryObject('typeBinding', u'stringKeywordValue', stringKeywordValue)
-
-# Atomic SimpleTypeDefinition
-class doubleKeywordValue (pyxb.binding.datatypes.double):
-
-    """Describes the allowed values of a floating point type HDU header keyword. It can be any 64 bit double, as defined by the XML Schema. Note that this definition is more strict than the FITS definition, but this is necessary to achieve a unique interpretation of the number between different systems."""
-
-    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'doubleKeywordValue')
-    _Documentation = u'Describes the allowed values of a floating point type HDU header keyword. It can be any 64 bit double, as defined by the XML Schema. Note that this definition is more strict than the FITS definition, but this is necessary to achieve a unique interpretation of the number between different systems.'
-doubleKeywordValue._InitializeFacetMap()
-Namespace.addCategoryObject('typeBinding', u'doubleKeywordValue', doubleKeywordValue)
 
 # List SimpleTypeDefinition
 # superclasses CommonDM.dm.bas.dtd_stub.listOfInteger8

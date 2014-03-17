@@ -1,7 +1,7 @@
 # /home/nikoapos/ISDC/Projects/Alexandria/1.0/CommonDM/python/CommonDM/dm/sys/tsk_stub.py
 # PyXB bindings for NamespaceModule
 # NSM:4d4c1cd48d5bfb7604fcb66c8a481339a235819e
-# Generated 2014-03-17 11:53:47.250546 by PyXB version 1.1.2
+# Generated 2014-03-17 18:50:36.639308 by PyXB version 1.1.2
 import pyxb
 import pyxb.binding
 import pyxb.binding.saxer
@@ -11,12 +11,12 @@ import pyxb.utils.domutils
 import sys
 
 # Unique identifier for bindings created at the same time
-_GenerationUID = pyxb.utils.utility.UniqueIdentifier('urn:uuid:6923c468-adc2-11e3-8fb8-f01faf601f90')
+_GenerationUID = pyxb.utils.utility.UniqueIdentifier('urn:uuid:a3e7637c-adfc-11e3-9f2e-c4d98710dc86')
 
 # Import bindings for namespaces imported into schema
 import pyxb.binding.datatypes
-import CommonDM.dm.sys.sgs_stub
 import CommonDM.dm.sys_stub
+import CommonDM.dm.sys.sgs_stub
 
 Namespace = pyxb.namespace.NamespaceForURI(u'http://euclid.esa.org/schema/sys/tsk', create_if_missing=True)
 Namespace.configureCategories(['typeBinding', 'elementBinding'])
@@ -42,6 +42,144 @@ def CreateFromDOM (node, default_namespace=None):
     if default_namespace is None:
         default_namespace = Namespace.fallbackNamespace()
     return pyxb.binding.basis.element.AnyCreateFromDOM(node, _fallback_namespace=default_namespace)
+
+
+# Complex type taskDefinition with content type ELEMENT_ONLY
+class taskDefinition (pyxb.binding.basis.complexTypeDefinition):
+    _TypeDefinition = None
+    _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
+    _Abstract = False
+    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'taskDefinition')
+    # Base type is pyxb.binding.datatypes.anyType
+    
+    # Element {http://euclid.esa.org/schema/sys/tsk}Output uses Python identifier Output
+    __Output = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Output'), 'Output', '__httpeuclid_esa_orgschemasystsk_taskDefinition_httpeuclid_esa_orgschemasystskOutput', True)
+
+    
+    Output = property(__Output.value, __Output.set, None, None)
+
+    
+    # Element {http://euclid.esa.org/schema/sys/tsk}Description uses Python identifier Description
+    __Description = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Description'), 'Description', '__httpeuclid_esa_orgschemasystsk_taskDefinition_httpeuclid_esa_orgschemasystskDescription', False)
+
+    
+    Description = property(__Description.value, __Description.set, None, None)
+
+    
+    # Element {http://euclid.esa.org/schema/sys/tsk}Name uses Python identifier Name
+    __Name = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Name'), 'Name', '__httpeuclid_esa_orgschemasystsk_taskDefinition_httpeuclid_esa_orgschemasystskName', False)
+
+    
+    Name = property(__Name.value, __Name.set, None, None)
+
+    
+    # Element {http://euclid.esa.org/schema/sys/tsk}Input uses Python identifier Input
+    __Input = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Input'), 'Input', '__httpeuclid_esa_orgschemasystsk_taskDefinition_httpeuclid_esa_orgschemasystskInput', True)
+
+    
+    Input = property(__Input.value, __Input.set, None, None)
+
+
+    _ElementMap = {
+        __Output.name() : __Output,
+        __Description.name() : __Description,
+        __Name.name() : __Name,
+        __Input.name() : __Input
+    }
+    _AttributeMap = {
+        
+    }
+Namespace.addCategoryObject('typeBinding', u'taskDefinition', taskDefinition)
+
+
+# Complex type workflowDefinition with content type ELEMENT_ONLY
+class workflowDefinition (taskDefinition):
+    _TypeDefinition = None
+    _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
+    _Abstract = False
+    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'workflowDefinition')
+    # Base type is taskDefinition
+    
+    # Element {http://euclid.esa.org/schema/sys/tsk}Task uses Python identifier Task
+    __Task = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Task'), 'Task', '__httpeuclid_esa_orgschemasystsk_workflowDefinition_httpeuclid_esa_orgschemasystskTask', True)
+
+    
+    Task = property(__Task.value, __Task.set, None, None)
+
+    
+    # Element Input ({http://euclid.esa.org/schema/sys/tsk}Input) inherited from {http://euclid.esa.org/schema/sys/tsk}taskDefinition
+    
+    # Element {http://euclid.esa.org/schema/sys/tsk}Workflow uses Python identifier Workflow
+    __Workflow = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Workflow'), 'Workflow', '__httpeuclid_esa_orgschemasystsk_workflowDefinition_httpeuclid_esa_orgschemasystskWorkflow', True)
+
+    
+    Workflow = property(__Workflow.value, __Workflow.set, None, None)
+
+    
+    # Element Output ({http://euclid.esa.org/schema/sys/tsk}Output) inherited from {http://euclid.esa.org/schema/sys/tsk}taskDefinition
+    
+    # Element Name ({http://euclid.esa.org/schema/sys/tsk}Name) inherited from {http://euclid.esa.org/schema/sys/tsk}taskDefinition
+    
+    # Element {http://euclid.esa.org/schema/sys/tsk}Edge uses Python identifier Edge
+    __Edge = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Edge'), 'Edge', '__httpeuclid_esa_orgschemasystsk_workflowDefinition_httpeuclid_esa_orgschemasystskEdge', True)
+
+    
+    Edge = property(__Edge.value, __Edge.set, None, None)
+
+    
+    # Element Description ({http://euclid.esa.org/schema/sys/tsk}Description) inherited from {http://euclid.esa.org/schema/sys/tsk}taskDefinition
+
+    _ElementMap = taskDefinition._ElementMap.copy()
+    _ElementMap.update({
+        __Task.name() : __Task,
+        __Workflow.name() : __Workflow,
+        __Edge.name() : __Edge
+    })
+    _AttributeMap = taskDefinition._AttributeMap.copy()
+    _AttributeMap.update({
+        
+    })
+Namespace.addCategoryObject('typeBinding', u'workflowDefinition', workflowDefinition)
+
+
+# Complex type pipelineDefinition with content type ELEMENT_ONLY
+class pipelineDefinition (workflowDefinition):
+    _TypeDefinition = None
+    _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
+    _Abstract = False
+    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'pipelineDefinition')
+    # Base type is workflowDefinition
+    
+    # Element Description ({http://euclid.esa.org/schema/sys/tsk}Description) inherited from {http://euclid.esa.org/schema/sys/tsk}taskDefinition
+    
+    # Element Input ({http://euclid.esa.org/schema/sys/tsk}Input) inherited from {http://euclid.esa.org/schema/sys/tsk}taskDefinition
+    
+    # Element Workflow ({http://euclid.esa.org/schema/sys/tsk}Workflow) inherited from {http://euclid.esa.org/schema/sys/tsk}workflowDefinition
+    
+    # Element Output ({http://euclid.esa.org/schema/sys/tsk}Output) inherited from {http://euclid.esa.org/schema/sys/tsk}taskDefinition
+    
+    # Element Name ({http://euclid.esa.org/schema/sys/tsk}Name) inherited from {http://euclid.esa.org/schema/sys/tsk}taskDefinition
+    
+    # Element Edge ({http://euclid.esa.org/schema/sys/tsk}Edge) inherited from {http://euclid.esa.org/schema/sys/tsk}workflowDefinition
+    
+    # Element Task ({http://euclid.esa.org/schema/sys/tsk}Task) inherited from {http://euclid.esa.org/schema/sys/tsk}workflowDefinition
+    
+    # Element {http://euclid.esa.org/schema/sys/tsk}Owner uses Python identifier Owner
+    __Owner = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Owner'), 'Owner', '__httpeuclid_esa_orgschemasystsk_pipelineDefinition_httpeuclid_esa_orgschemasystskOwner', False)
+
+    
+    Owner = property(__Owner.value, __Owner.set, None, None)
+
+
+    _ElementMap = workflowDefinition._ElementMap.copy()
+    _ElementMap.update({
+        __Owner.name() : __Owner
+    })
+    _AttributeMap = workflowDefinition._AttributeMap.copy()
+    _AttributeMap.update({
+        
+    })
+Namespace.addCategoryObject('typeBinding', u'pipelineDefinition', pipelineDefinition)
 
 
 # Complex type port with content type ELEMENT_ONLY
@@ -142,104 +280,6 @@ class pipelineTask (pyxb.binding.basis.complexTypeDefinition):
 Namespace.addCategoryObject('typeBinding', u'pipelineTask', pipelineTask)
 
 
-# Complex type taskDefinition with content type ELEMENT_ONLY
-class taskDefinition (pyxb.binding.basis.complexTypeDefinition):
-    _TypeDefinition = None
-    _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
-    _Abstract = False
-    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'taskDefinition')
-    # Base type is pyxb.binding.datatypes.anyType
-    
-    # Element {http://euclid.esa.org/schema/sys/tsk}Output uses Python identifier Output
-    __Output = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Output'), 'Output', '__httpeuclid_esa_orgschemasystsk_taskDefinition_httpeuclid_esa_orgschemasystskOutput', True)
-
-    
-    Output = property(__Output.value, __Output.set, None, None)
-
-    
-    # Element {http://euclid.esa.org/schema/sys/tsk}Description uses Python identifier Description
-    __Description = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Description'), 'Description', '__httpeuclid_esa_orgschemasystsk_taskDefinition_httpeuclid_esa_orgschemasystskDescription', False)
-
-    
-    Description = property(__Description.value, __Description.set, None, None)
-
-    
-    # Element {http://euclid.esa.org/schema/sys/tsk}Name uses Python identifier Name
-    __Name = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Name'), 'Name', '__httpeuclid_esa_orgschemasystsk_taskDefinition_httpeuclid_esa_orgschemasystskName', False)
-
-    
-    Name = property(__Name.value, __Name.set, None, None)
-
-    
-    # Element {http://euclid.esa.org/schema/sys/tsk}Input uses Python identifier Input
-    __Input = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Input'), 'Input', '__httpeuclid_esa_orgschemasystsk_taskDefinition_httpeuclid_esa_orgschemasystskInput', True)
-
-    
-    Input = property(__Input.value, __Input.set, None, None)
-
-
-    _ElementMap = {
-        __Output.name() : __Output,
-        __Description.name() : __Description,
-        __Name.name() : __Name,
-        __Input.name() : __Input
-    }
-    _AttributeMap = {
-        
-    }
-Namespace.addCategoryObject('typeBinding', u'taskDefinition', taskDefinition)
-
-
-# Complex type workflowDefinition with content type ELEMENT_ONLY
-class workflowDefinition (taskDefinition):
-    _TypeDefinition = None
-    _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
-    _Abstract = False
-    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'workflowDefinition')
-    # Base type is taskDefinition
-    
-    # Element {http://euclid.esa.org/schema/sys/tsk}Task uses Python identifier Task
-    __Task = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Task'), 'Task', '__httpeuclid_esa_orgschemasystsk_workflowDefinition_httpeuclid_esa_orgschemasystskTask', True)
-
-    
-    Task = property(__Task.value, __Task.set, None, None)
-
-    
-    # Element Output ({http://euclid.esa.org/schema/sys/tsk}Output) inherited from {http://euclid.esa.org/schema/sys/tsk}taskDefinition
-    
-    # Element Input ({http://euclid.esa.org/schema/sys/tsk}Input) inherited from {http://euclid.esa.org/schema/sys/tsk}taskDefinition
-    
-    # Element {http://euclid.esa.org/schema/sys/tsk}Workflow uses Python identifier Workflow
-    __Workflow = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Workflow'), 'Workflow', '__httpeuclid_esa_orgschemasystsk_workflowDefinition_httpeuclid_esa_orgschemasystskWorkflow', True)
-
-    
-    Workflow = property(__Workflow.value, __Workflow.set, None, None)
-
-    
-    # Element Name ({http://euclid.esa.org/schema/sys/tsk}Name) inherited from {http://euclid.esa.org/schema/sys/tsk}taskDefinition
-    
-    # Element {http://euclid.esa.org/schema/sys/tsk}Edge uses Python identifier Edge
-    __Edge = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Edge'), 'Edge', '__httpeuclid_esa_orgschemasystsk_workflowDefinition_httpeuclid_esa_orgschemasystskEdge', True)
-
-    
-    Edge = property(__Edge.value, __Edge.set, None, None)
-
-    
-    # Element Description ({http://euclid.esa.org/schema/sys/tsk}Description) inherited from {http://euclid.esa.org/schema/sys/tsk}taskDefinition
-
-    _ElementMap = taskDefinition._ElementMap.copy()
-    _ElementMap.update({
-        __Task.name() : __Task,
-        __Workflow.name() : __Workflow,
-        __Edge.name() : __Edge
-    })
-    _AttributeMap = taskDefinition._AttributeMap.copy()
-    _AttributeMap.update({
-        
-    })
-Namespace.addCategoryObject('typeBinding', u'workflowDefinition', workflowDefinition)
-
-
 # Complex type edge with content type EMPTY
 class edge (pyxb.binding.basis.complexTypeDefinition):
     _TypeDefinition = None
@@ -285,16 +325,7 @@ class pipelineTaskDefinition (taskDefinition):
     _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'pipelineTaskDefinition')
     # Base type is taskDefinition
     
-    # Element {http://euclid.esa.org/schema/sys/tsk}Interpreter uses Python identifier Interpreter
-    __Interpreter = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Interpreter'), 'Interpreter', '__httpeuclid_esa_orgschemasystsk_pipelineTaskDefinition_httpeuclid_esa_orgschemasystskInterpreter', False)
-
-    
-    Interpreter = property(__Interpreter.value, __Interpreter.set, None, None)
-
-    
-    # Element Name ({http://euclid.esa.org/schema/sys/tsk}Name) inherited from {http://euclid.esa.org/schema/sys/tsk}taskDefinition
-    
-    # Element Output ({http://euclid.esa.org/schema/sys/tsk}Output) inherited from {http://euclid.esa.org/schema/sys/tsk}taskDefinition
+    # Element Description ({http://euclid.esa.org/schema/sys/tsk}Description) inherited from {http://euclid.esa.org/schema/sys/tsk}taskDefinition
     
     # Element {http://euclid.esa.org/schema/sys/tsk}ExecutableName uses Python identifier ExecutableName
     __ExecutableName = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'ExecutableName'), 'ExecutableName', '__httpeuclid_esa_orgschemasystsk_pipelineTaskDefinition_httpeuclid_esa_orgschemasystskExecutableName', False)
@@ -312,6 +343,10 @@ class pipelineTaskDefinition (taskDefinition):
     PackageName = property(__PackageName.value, __PackageName.set, None, None)
 
     
+    # Element Name ({http://euclid.esa.org/schema/sys/tsk}Name) inherited from {http://euclid.esa.org/schema/sys/tsk}taskDefinition
+    
+    # Element Output ({http://euclid.esa.org/schema/sys/tsk}Output) inherited from {http://euclid.esa.org/schema/sys/tsk}taskDefinition
+    
     # Element {http://euclid.esa.org/schema/sys/tsk}PackageVersion uses Python identifier PackageVersion
     __PackageVersion = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'PackageVersion'), 'PackageVersion', '__httpeuclid_esa_orgschemasystsk_pipelineTaskDefinition_httpeuclid_esa_orgschemasystskPackageVersion', False)
 
@@ -319,14 +354,19 @@ class pipelineTaskDefinition (taskDefinition):
     PackageVersion = property(__PackageVersion.value, __PackageVersion.set, None, None)
 
     
-    # Element Description ({http://euclid.esa.org/schema/sys/tsk}Description) inherited from {http://euclid.esa.org/schema/sys/tsk}taskDefinition
+    # Element {http://euclid.esa.org/schema/sys/tsk}Interpreter uses Python identifier Interpreter
+    __Interpreter = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Interpreter'), 'Interpreter', '__httpeuclid_esa_orgschemasystsk_pipelineTaskDefinition_httpeuclid_esa_orgschemasystskInterpreter', False)
+
+    
+    Interpreter = property(__Interpreter.value, __Interpreter.set, None, None)
+
 
     _ElementMap = taskDefinition._ElementMap.copy()
     _ElementMap.update({
-        __Interpreter.name() : __Interpreter,
         __ExecutableName.name() : __ExecutableName,
         __PackageName.name() : __PackageName,
-        __PackageVersion.name() : __PackageVersion
+        __PackageVersion.name() : __PackageVersion,
+        __Interpreter.name() : __Interpreter
     })
     _AttributeMap = taskDefinition._AttributeMap.copy()
     _AttributeMap.update({
@@ -366,63 +406,6 @@ class packageDefinition (pyxb.binding.basis.complexTypeDefinition):
     }
 Namespace.addCategoryObject('typeBinding', u'packageDefinition', packageDefinition)
 
-
-# Complex type pipelineDefinition with content type ELEMENT_ONLY
-class pipelineDefinition (workflowDefinition):
-    _TypeDefinition = None
-    _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
-    _Abstract = False
-    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'pipelineDefinition')
-    # Base type is workflowDefinition
-    
-    # Element Task ({http://euclid.esa.org/schema/sys/tsk}Task) inherited from {http://euclid.esa.org/schema/sys/tsk}workflowDefinition
-    
-    # Element Description ({http://euclid.esa.org/schema/sys/tsk}Description) inherited from {http://euclid.esa.org/schema/sys/tsk}taskDefinition
-    
-    # Element Output ({http://euclid.esa.org/schema/sys/tsk}Output) inherited from {http://euclid.esa.org/schema/sys/tsk}taskDefinition
-    
-    # Element Input ({http://euclid.esa.org/schema/sys/tsk}Input) inherited from {http://euclid.esa.org/schema/sys/tsk}taskDefinition
-    
-    # Element Workflow ({http://euclid.esa.org/schema/sys/tsk}Workflow) inherited from {http://euclid.esa.org/schema/sys/tsk}workflowDefinition
-    
-    # Element {http://euclid.esa.org/schema/sys/tsk}Owner uses Python identifier Owner
-    __Owner = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Owner'), 'Owner', '__httpeuclid_esa_orgschemasystsk_pipelineDefinition_httpeuclid_esa_orgschemasystskOwner', False)
-
-    
-    Owner = property(__Owner.value, __Owner.set, None, None)
-
-    
-    # Element Edge ({http://euclid.esa.org/schema/sys/tsk}Edge) inherited from {http://euclid.esa.org/schema/sys/tsk}workflowDefinition
-    
-    # Element Name ({http://euclid.esa.org/schema/sys/tsk}Name) inherited from {http://euclid.esa.org/schema/sys/tsk}taskDefinition
-
-    _ElementMap = workflowDefinition._ElementMap.copy()
-    _ElementMap.update({
-        __Owner.name() : __Owner
-    })
-    _AttributeMap = workflowDefinition._AttributeMap.copy()
-    _AttributeMap.update({
-        
-    })
-Namespace.addCategoryObject('typeBinding', u'pipelineDefinition', pipelineDefinition)
-
-
-
-
-port._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'ProductType'), pyxb.binding.datatypes.string, scope=port))
-
-port._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Mandatory'), pyxb.binding.datatypes.boolean, scope=port))
-
-port._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Reference'), CommonDM.dm.sys.sgs_stub.fileDescriptor, scope=port))
-
-port._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Description'), pyxb.binding.datatypes.string, scope=port))
-port._GroupModel = pyxb.binding.content.GroupSequence(
-    pyxb.binding.content.ParticleModel(port._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Description')), min_occurs=0L, max_occurs=1L),
-    pyxb.binding.content.ParticleModel(port._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'ProductType')), min_occurs=0L, max_occurs=1L),
-    pyxb.binding.content.ParticleModel(port._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Mandatory')), min_occurs=0L, max_occurs=1L),
-    pyxb.binding.content.ParticleModel(port._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Reference')), min_occurs=0L, max_occurs=None)
-    )
-port._ContentModel = pyxb.binding.content.ParticleModel(port._GroupModel, min_occurs=1, max_occurs=1)
 
 
 
@@ -470,13 +453,60 @@ workflowDefinition._ContentModel = pyxb.binding.content.ParticleModel(workflowDe
 
 
 
-pipelineTaskDefinition._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Interpreter'), pyxb.binding.datatypes.string, scope=pipelineTaskDefinition))
+pipelineDefinition._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Owner'), CommonDM.dm.sys_stub.scientificGroupName, scope=pipelineDefinition))
+pipelineDefinition._GroupModel_2 = pyxb.binding.content.GroupSequence(
+    pyxb.binding.content.ParticleModel(pipelineDefinition._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Name')), min_occurs=1L, max_occurs=1L),
+    pyxb.binding.content.ParticleModel(pipelineDefinition._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Description')), min_occurs=0L, max_occurs=1L),
+    pyxb.binding.content.ParticleModel(pipelineDefinition._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Input')), min_occurs=0L, max_occurs=None),
+    pyxb.binding.content.ParticleModel(pipelineDefinition._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Output')), min_occurs=0L, max_occurs=None)
+    )
+pipelineDefinition._GroupModel_4 = pyxb.binding.content.GroupChoice(
+    pyxb.binding.content.ParticleModel(pipelineDefinition._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Task')), min_occurs=1, max_occurs=1),
+    pyxb.binding.content.ParticleModel(pipelineDefinition._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Workflow')), min_occurs=1, max_occurs=1)
+    )
+pipelineDefinition._GroupModel_3 = pyxb.binding.content.GroupSequence(
+    pyxb.binding.content.ParticleModel(pipelineDefinition._GroupModel_4, min_occurs=0L, max_occurs=None),
+    pyxb.binding.content.ParticleModel(pipelineDefinition._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Edge')), min_occurs=0L, max_occurs=None)
+    )
+pipelineDefinition._GroupModel_ = pyxb.binding.content.GroupSequence(
+    pyxb.binding.content.ParticleModel(pipelineDefinition._GroupModel_2, min_occurs=1, max_occurs=1),
+    pyxb.binding.content.ParticleModel(pipelineDefinition._GroupModel_3, min_occurs=1, max_occurs=1)
+    )
+pipelineDefinition._GroupModel_5 = pyxb.binding.content.GroupSequence(
+    pyxb.binding.content.ParticleModel(pipelineDefinition._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Owner')), min_occurs=0L, max_occurs=1)
+    )
+pipelineDefinition._GroupModel = pyxb.binding.content.GroupSequence(
+    pyxb.binding.content.ParticleModel(pipelineDefinition._GroupModel_, min_occurs=1, max_occurs=1),
+    pyxb.binding.content.ParticleModel(pipelineDefinition._GroupModel_5, min_occurs=1, max_occurs=1)
+    )
+pipelineDefinition._ContentModel = pyxb.binding.content.ParticleModel(pipelineDefinition._GroupModel, min_occurs=1, max_occurs=1)
+
+
+
+port._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'ProductType'), pyxb.binding.datatypes.string, scope=port))
+
+port._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Mandatory'), pyxb.binding.datatypes.boolean, scope=port))
+
+port._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Reference'), CommonDM.dm.sys.sgs_stub.fileDescriptor, scope=port))
+
+port._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Description'), pyxb.binding.datatypes.string, scope=port))
+port._GroupModel = pyxb.binding.content.GroupSequence(
+    pyxb.binding.content.ParticleModel(port._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Description')), min_occurs=0L, max_occurs=1L),
+    pyxb.binding.content.ParticleModel(port._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'ProductType')), min_occurs=0L, max_occurs=1L),
+    pyxb.binding.content.ParticleModel(port._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Mandatory')), min_occurs=0L, max_occurs=1L),
+    pyxb.binding.content.ParticleModel(port._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Reference')), min_occurs=0L, max_occurs=None)
+    )
+port._ContentModel = pyxb.binding.content.ParticleModel(port._GroupModel, min_occurs=1, max_occurs=1)
+
+
 
 pipelineTaskDefinition._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'ExecutableName'), pyxb.binding.datatypes.string, scope=pipelineTaskDefinition))
 
 pipelineTaskDefinition._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'PackageName'), pyxb.binding.datatypes.string, scope=pipelineTaskDefinition))
 
 pipelineTaskDefinition._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'PackageVersion'), pyxb.binding.datatypes.string, scope=pipelineTaskDefinition))
+
+pipelineTaskDefinition._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Interpreter'), pyxb.binding.datatypes.string, scope=pipelineTaskDefinition))
 pipelineTaskDefinition._GroupModel_ = pyxb.binding.content.GroupSequence(
     pyxb.binding.content.ParticleModel(pipelineTaskDefinition._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Name')), min_occurs=1L, max_occurs=1L),
     pyxb.binding.content.ParticleModel(pipelineTaskDefinition._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Description')), min_occurs=0L, max_occurs=1L),
@@ -505,33 +535,3 @@ packageDefinition._GroupModel = pyxb.binding.content.GroupSequence(
     pyxb.binding.content.ParticleModel(packageDefinition._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'TaskDefinition')), min_occurs=0L, max_occurs=None)
     )
 packageDefinition._ContentModel = pyxb.binding.content.ParticleModel(packageDefinition._GroupModel, min_occurs=1, max_occurs=1)
-
-
-
-pipelineDefinition._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Owner'), CommonDM.dm.sys_stub.scientificGroupName, scope=pipelineDefinition))
-pipelineDefinition._GroupModel_2 = pyxb.binding.content.GroupSequence(
-    pyxb.binding.content.ParticleModel(pipelineDefinition._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Name')), min_occurs=1L, max_occurs=1L),
-    pyxb.binding.content.ParticleModel(pipelineDefinition._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Description')), min_occurs=0L, max_occurs=1L),
-    pyxb.binding.content.ParticleModel(pipelineDefinition._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Input')), min_occurs=0L, max_occurs=None),
-    pyxb.binding.content.ParticleModel(pipelineDefinition._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Output')), min_occurs=0L, max_occurs=None)
-    )
-pipelineDefinition._GroupModel_4 = pyxb.binding.content.GroupChoice(
-    pyxb.binding.content.ParticleModel(pipelineDefinition._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Task')), min_occurs=1, max_occurs=1),
-    pyxb.binding.content.ParticleModel(pipelineDefinition._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Workflow')), min_occurs=1, max_occurs=1)
-    )
-pipelineDefinition._GroupModel_3 = pyxb.binding.content.GroupSequence(
-    pyxb.binding.content.ParticleModel(pipelineDefinition._GroupModel_4, min_occurs=0L, max_occurs=None),
-    pyxb.binding.content.ParticleModel(pipelineDefinition._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Edge')), min_occurs=0L, max_occurs=None)
-    )
-pipelineDefinition._GroupModel_ = pyxb.binding.content.GroupSequence(
-    pyxb.binding.content.ParticleModel(pipelineDefinition._GroupModel_2, min_occurs=1, max_occurs=1),
-    pyxb.binding.content.ParticleModel(pipelineDefinition._GroupModel_3, min_occurs=1, max_occurs=1)
-    )
-pipelineDefinition._GroupModel_5 = pyxb.binding.content.GroupSequence(
-    pyxb.binding.content.ParticleModel(pipelineDefinition._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Owner')), min_occurs=0L, max_occurs=1)
-    )
-pipelineDefinition._GroupModel = pyxb.binding.content.GroupSequence(
-    pyxb.binding.content.ParticleModel(pipelineDefinition._GroupModel_, min_occurs=1, max_occurs=1),
-    pyxb.binding.content.ParticleModel(pipelineDefinition._GroupModel_5, min_occurs=1, max_occurs=1)
-    )
-pipelineDefinition._ContentModel = pyxb.binding.content.ParticleModel(pipelineDefinition._GroupModel, min_occurs=1, max_occurs=1)

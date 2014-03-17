@@ -1,7 +1,7 @@
 # /home/nikoapos/ISDC/Projects/Alexandria/1.0/CommonDM/python/CommonDM/dm/bas/img_stub.py
 # PyXB bindings for NamespaceModule
 # NSM:2b04cf6feb6fd3bb861db96b6787e5a2f0416c17
-# Generated 2014-03-17 11:53:47.250981 by PyXB version 1.1.2
+# Generated 2014-03-17 18:50:36.640490 by PyXB version 1.1.2
 import pyxb
 import pyxb.binding
 import pyxb.binding.saxer
@@ -11,7 +11,7 @@ import pyxb.utils.domutils
 import sys
 
 # Unique identifier for bindings created at the same time
-_GenerationUID = pyxb.utils.utility.UniqueIdentifier('urn:uuid:6923c468-adc2-11e3-8fb8-f01faf601f90')
+_GenerationUID = pyxb.utils.utility.UniqueIdentifier('urn:uuid:a3e7637c-adfc-11e3-9f2e-c4d98710dc86')
 
 # Import bindings for namespaces imported into schema
 import pyxb.binding.datatypes
@@ -134,6 +134,13 @@ class template (pyxb.binding.basis.complexTypeDefinition):
     _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'template')
     # Base type is pyxb.binding.datatypes.anyType
     
+    # Element {http://euclid.esa.org/schema/bas/img}DictionaryId uses Python identifier DictionaryId
+    __DictionaryId = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'DictionaryId'), 'DictionaryId', '__httpeuclid_esa_orgschemabasimg_template_httpeuclid_esa_orgschemabasimgDictionaryId', False)
+
+    
+    DictionaryId = property(__DictionaryId.value, __DictionaryId.set, None, u' Identifier of the observational\n                        dictionary defining the type of observation [None] ')
+
+    
     # Element {http://euclid.esa.org/schema/bas/img}Name uses Python identifier Name
     __Name = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Name'), 'Name', '__httpeuclid_esa_orgschemabasimg_template_httpeuclid_esa_orgschemabasimgName', False)
 
@@ -148,25 +155,11 @@ class template (pyxb.binding.basis.complexTypeDefinition):
     Filter = property(__Filter.value, __Filter.set, None, u' Information about the observational\n                        filter [None] ')
 
     
-    # Element {http://euclid.esa.org/schema/bas/img}DictionaryId uses Python identifier DictionaryId
-    __DictionaryId = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'DictionaryId'), 'DictionaryId', '__httpeuclid_esa_orgschemabasimg_template_httpeuclid_esa_orgschemabasimgDictionaryId', False)
+    # Element {http://euclid.esa.org/schema/bas/img}Sequencer uses Python identifier Sequencer
+    __Sequencer = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Sequencer'), 'Sequencer', '__httpeuclid_esa_orgschemabasimg_template_httpeuclid_esa_orgschemabasimgSequencer', False)
 
     
-    DictionaryId = property(__DictionaryId.value, __DictionaryId.set, None, u' Identifier of the observational\n                        dictionary defining the type of observation [None] ')
-
-    
-    # Element {http://euclid.esa.org/schema/bas/img}Exposures uses Python identifier Exposures
-    __Exposures = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Exposures'), 'Exposures', '__httpeuclid_esa_orgschemabasimg_template_httpeuclid_esa_orgschemabasimgExposures', False)
-
-    
-    Exposures = property(__Exposures.value, __Exposures.set, None, u' Number of exposures within the\n                        observational template [None] ')
-
-    
-    # Element {http://euclid.esa.org/schema/bas/img}Category uses Python identifier Category
-    __Category = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Category'), 'Category', '__httpeuclid_esa_orgschemabasimg_template_httpeuclid_esa_orgschemabasimgCategory', False)
-
-    
-    Category = property(__Category.value, __Category.set, None, u' Observational template category [None] ')
+    Sequencer = property(__Sequencer.value, __Sequencer.set, None, u' Observational sequencer script [None] ')
 
     
     # Element {http://euclid.esa.org/schema/bas/img}Id uses Python identifier Id
@@ -176,11 +169,11 @@ class template (pyxb.binding.basis.complexTypeDefinition):
     Id = property(__Id.value, __Id.set, None, u' Identifier of the observational template\n                        [None] ')
 
     
-    # Element {http://euclid.esa.org/schema/bas/img}Technique uses Python identifier Technique
-    __Technique = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Technique'), 'Technique', '__httpeuclid_esa_orgschemabasimg_template_httpeuclid_esa_orgschemabasimgTechnique', False)
+    # Element {http://euclid.esa.org/schema/bas/img}Type uses Python identifier Type
+    __Type = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Type'), 'Type', '__httpeuclid_esa_orgschemabasimg_template_httpeuclid_esa_orgschemabasimgType', False)
 
     
-    Technique = property(__Technique.value, __Technique.set, None, u' Observational template technique [None] ')
+    Type = property(__Type.value, __Type.set, None, u' Observational template type [None] ')
 
     
     # Element {http://euclid.esa.org/schema/bas/img}Start uses Python identifier Start
@@ -190,18 +183,32 @@ class template (pyxb.binding.basis.complexTypeDefinition):
     Start = property(__Start.value, __Start.set, None, u' UTC date the observational template was\n                        started [None] ')
 
     
-    # Element {http://euclid.esa.org/schema/bas/img}Sequencer uses Python identifier Sequencer
-    __Sequencer = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Sequencer'), 'Sequencer', '__httpeuclid_esa_orgschemabasimg_template_httpeuclid_esa_orgschemabasimgSequencer', False)
+    # Element {http://euclid.esa.org/schema/bas/img}Technique uses Python identifier Technique
+    __Technique = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Technique'), 'Technique', '__httpeuclid_esa_orgschemabasimg_template_httpeuclid_esa_orgschemabasimgTechnique', False)
 
     
-    Sequencer = property(__Sequencer.value, __Sequencer.set, None, u' Observational sequencer script [None] ')
+    Technique = property(__Technique.value, __Technique.set, None, u' Observational template technique [None] ')
 
     
-    # Element {http://euclid.esa.org/schema/bas/img}Strategy uses Python identifier Strategy
-    __Strategy = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Strategy'), 'Strategy', '__httpeuclid_esa_orgschemabasimg_template_httpeuclid_esa_orgschemabasimgStrategy', False)
+    # Element {http://euclid.esa.org/schema/bas/img}Exposures uses Python identifier Exposures
+    __Exposures = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Exposures'), 'Exposures', '__httpeuclid_esa_orgschemabasimg_template_httpeuclid_esa_orgschemabasimgExposures', False)
 
     
-    Strategy = property(__Strategy.value, __Strategy.set, None, u' Observational template strategy [None] ')
+    Exposures = property(__Exposures.value, __Exposures.set, None, u' Number of exposures within the\n                        observational template [None] ')
+
+    
+    # Element {http://euclid.esa.org/schema/bas/img}ExtObjectId uses Python identifier ExtObjectId
+    __ExtObjectId = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'ExtObjectId'), 'ExtObjectId', '__httpeuclid_esa_orgschemabasimg_template_httpeuclid_esa_orgschemabasimgExtObjectId', False)
+
+    
+    ExtObjectId = property(__ExtObjectId.value, __ExtObjectId.set, None, u' Unique EXT object identifier [None] ')
+
+    
+    # Element {http://euclid.esa.org/schema/bas/img}ObsId uses Python identifier ObsId
+    __ObsId = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'ObsId'), 'ObsId', '__httpeuclid_esa_orgschemabasimg_template_httpeuclid_esa_orgschemabasimgObsId', False)
+
+    
+    ObsId = property(__ObsId.value, __ObsId.set, None, u' Identifier of the associated\n                        observational block [None] ')
 
     
     # Element {http://euclid.esa.org/schema/bas/img}Version uses Python identifier Version
@@ -218,18 +225,11 @@ class template (pyxb.binding.basis.complexTypeDefinition):
     ObsStart = property(__ObsStart.value, __ObsStart.set, None, u' UTC date the associated observational\n                        block was started [None] ')
 
     
-    # Element {http://euclid.esa.org/schema/bas/img}Type uses Python identifier Type
-    __Type = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Type'), 'Type', '__httpeuclid_esa_orgschemabasimg_template_httpeuclid_esa_orgschemabasimgType', False)
+    # Element {http://euclid.esa.org/schema/bas/img}Category uses Python identifier Category
+    __Category = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Category'), 'Category', '__httpeuclid_esa_orgschemabasimg_template_httpeuclid_esa_orgschemabasimgCategory', False)
 
     
-    Type = property(__Type.value, __Type.set, None, u' Observational template type [None] ')
-
-    
-    # Element {http://euclid.esa.org/schema/bas/img}ExtObjectId uses Python identifier ExtObjectId
-    __ExtObjectId = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'ExtObjectId'), 'ExtObjectId', '__httpeuclid_esa_orgschemabasimg_template_httpeuclid_esa_orgschemabasimgExtObjectId', False)
-
-    
-    ExtObjectId = property(__ExtObjectId.value, __ExtObjectId.set, None, u' Unique EXT object identifier [None] ')
+    Category = property(__Category.value, __Category.set, None, u' Observational template category [None] ')
 
     
     # Element {http://euclid.esa.org/schema/bas/img}Index uses Python identifier Index
@@ -239,35 +239,123 @@ class template (pyxb.binding.basis.complexTypeDefinition):
     Index = property(__Index.value, __Index.set, None, u' Observational template index within the\n                        associated observational block [None] ')
 
     
-    # Element {http://euclid.esa.org/schema/bas/img}ObsId uses Python identifier ObsId
-    __ObsId = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'ObsId'), 'ObsId', '__httpeuclid_esa_orgschemabasimg_template_httpeuclid_esa_orgschemabasimgObsId', False)
+    # Element {http://euclid.esa.org/schema/bas/img}Strategy uses Python identifier Strategy
+    __Strategy = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Strategy'), 'Strategy', '__httpeuclid_esa_orgschemabasimg_template_httpeuclid_esa_orgschemabasimgStrategy', False)
 
     
-    ObsId = property(__ObsId.value, __ObsId.set, None, u' Identifier of the associated\n                        observational block [None] ')
+    Strategy = property(__Strategy.value, __Strategy.set, None, u' Observational template strategy [None] ')
 
 
     _ElementMap = {
+        __DictionaryId.name() : __DictionaryId,
         __Name.name() : __Name,
         __Filter.name() : __Filter,
-        __DictionaryId.name() : __DictionaryId,
-        __Exposures.name() : __Exposures,
-        __Category.name() : __Category,
-        __Id.name() : __Id,
-        __Technique.name() : __Technique,
-        __Start.name() : __Start,
         __Sequencer.name() : __Sequencer,
-        __Strategy.name() : __Strategy,
+        __Id.name() : __Id,
+        __Type.name() : __Type,
+        __Start.name() : __Start,
+        __Technique.name() : __Technique,
+        __Exposures.name() : __Exposures,
+        __ExtObjectId.name() : __ExtObjectId,
+        __ObsId.name() : __ObsId,
         __Version.name() : __Version,
         __ObsStart.name() : __ObsStart,
-        __Type.name() : __Type,
-        __ExtObjectId.name() : __ExtObjectId,
+        __Category.name() : __Category,
         __Index.name() : __Index,
-        __ObsId.name() : __ObsId
+        __Strategy.name() : __Strategy
     }
     _AttributeMap = {
         
     }
 Namespace.addCategoryObject('typeBinding', u'template', template)
+
+
+# Complex type filter with content type ELEMENT_ONLY
+class filter (pyxb.binding.basis.complexTypeDefinition):
+    _TypeDefinition = None
+    _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
+    _Abstract = False
+    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'filter')
+    # Base type is pyxb.binding.datatypes.anyType
+    
+    # Element {http://euclid.esa.org/schema/bas/img}HasFringes uses Python identifier HasFringes
+    __HasFringes = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'HasFringes'), 'HasFringes', '__httpeuclid_esa_orgschemabasimg_filter_httpeuclid_esa_orgschemabasimgHasFringes', False)
+
+    
+    HasFringes = property(__HasFringes.value, __HasFringes.set, None, u' Indicates if data in this photometric\n                        band may contain fringes [None] ')
+
+    
+    # Element {http://euclid.esa.org/schema/bas/img}ExtObjectId uses Python identifier ExtObjectId
+    __ExtObjectId = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'ExtObjectId'), 'ExtObjectId', '__httpeuclid_esa_orgschemabasimg_filter_httpeuclid_esa_orgschemabasimgExtObjectId', False)
+
+    
+    ExtObjectId = property(__ExtObjectId.value, __ExtObjectId.set, None, u' Unique EXT object identifier [None] ')
+
+    
+    # Element {http://euclid.esa.org/schema/bas/img}MagId uses Python identifier MagId
+    __MagId = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'MagId'), 'MagId', '__httpeuclid_esa_orgschemabasimg_filter_httpeuclid_esa_orgschemabasimgMagId', False)
+
+    
+    MagId = property(__MagId.value, __MagId.set, None, u' Identifier of the photometric band [None] ')
+
+    
+    # Element {http://euclid.esa.org/schema/bas/img}CentralWavelength uses Python identifier CentralWavelength
+    __CentralWavelength = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'CentralWavelength'), 'CentralWavelength', '__httpeuclid_esa_orgschemabasimg_filter_httpeuclid_esa_orgschemabasimgCentralWavelength', False)
+
+    
+    CentralWavelength = property(__CentralWavelength.value, __CentralWavelength.set, None, u' Center wavelength of the photometric band\n                        [angstrom] ')
+
+    
+    # Element {http://euclid.esa.org/schema/bas/img}Name uses Python identifier Name
+    __Name = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Name'), 'Name', '__httpeuclid_esa_orgschemabasimg_filter_httpeuclid_esa_orgschemabasimgName', False)
+
+    
+    Name = property(__Name.value, __Name.set, None, u' Name of the observational filter [None] ')
+
+
+    _ElementMap = {
+        __HasFringes.name() : __HasFringes,
+        __ExtObjectId.name() : __ExtObjectId,
+        __MagId.name() : __MagId,
+        __CentralWavelength.name() : __CentralWavelength,
+        __Name.name() : __Name
+    }
+    _AttributeMap = {
+        
+    }
+Namespace.addCategoryObject('typeBinding', u'filter', filter)
+
+
+# Complex type chip with content type ELEMENT_ONLY
+class chip (pyxb.binding.basis.complexTypeDefinition):
+    _TypeDefinition = None
+    _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
+    _Abstract = False
+    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'chip')
+    # Base type is pyxb.binding.datatypes.anyType
+    
+    # Element {http://euclid.esa.org/schema/bas/img}Name uses Python identifier Name
+    __Name = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Name'), 'Name', '__httpeuclid_esa_orgschemabasimg_chip_httpeuclid_esa_orgschemabasimgName', False)
+
+    
+    Name = property(__Name.value, __Name.set, None, u' Name of the chip [None] ')
+
+    
+    # Element {http://euclid.esa.org/schema/bas/img}ExtObjectId uses Python identifier ExtObjectId
+    __ExtObjectId = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'ExtObjectId'), 'ExtObjectId', '__httpeuclid_esa_orgschemabasimg_chip_httpeuclid_esa_orgschemabasimgExtObjectId', False)
+
+    
+    ExtObjectId = property(__ExtObjectId.value, __ExtObjectId.set, None, u' Unique EXT object identifier [None] ')
+
+
+    _ElementMap = {
+        __Name.name() : __Name,
+        __ExtObjectId.name() : __ExtObjectId
+    }
+    _AttributeMap = {
+        
+    }
+Namespace.addCategoryObject('typeBinding', u'chip', chip)
 
 
 # Complex type processTarget with content type ELEMENT_ONLY
@@ -335,11 +423,11 @@ class processTargetDataObject (processTarget):
     
     # Element CreationDate ({http://euclid.esa.org/schema/bas/img}CreationDate) inherited from {http://euclid.esa.org/schema/bas/img}processTarget
     
-    # Element QualityFlags ({http://euclid.esa.org/schema/bas/img}QualityFlags) inherited from {http://euclid.esa.org/schema/bas/img}processTarget
-    
     # Element IsValid ({http://euclid.esa.org/schema/bas/img}IsValid) inherited from {http://euclid.esa.org/schema/bas/img}processTarget
     
     # Element ExtObjectId ({http://euclid.esa.org/schema/bas/img}ExtObjectId) inherited from {http://euclid.esa.org/schema/bas/img}processTarget
+    
+    # Element QualityFlags ({http://euclid.esa.org/schema/bas/img}QualityFlags) inherited from {http://euclid.esa.org/schema/bas/img}processTarget
 
     _ElementMap = processTarget._ElementMap.copy()
     _ElementMap.update({
@@ -360,6 +448,8 @@ class baseFrame (processTargetDataObject):
     _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'baseFrame')
     # Base type is processTargetDataObject
     
+    # Element QualityFlags ({http://euclid.esa.org/schema/bas/img}QualityFlags) inherited from {http://euclid.esa.org/schema/bas/img}processTarget
+    
     # Element {http://euclid.esa.org/schema/bas/img}Naxis2 uses Python identifier Naxis2
     __Naxis2 = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Naxis2'), 'Naxis2', '__httpeuclid_esa_orgschemabasimg_baseFrame_httpeuclid_esa_orgschemabasimgNaxis2', False)
 
@@ -367,7 +457,23 @@ class baseFrame (processTargetDataObject):
     Naxis2 = property(__Naxis2.value, __Naxis2.set, None, u' Length of data in axis 2 [pixel] ')
 
     
-    # Element QualityFlags ({http://euclid.esa.org/schema/bas/img}QualityFlags) inherited from {http://euclid.esa.org/schema/bas/img}processTarget
+    # Element Storage ({http://euclid.esa.org/schema/bas/img}Storage) inherited from {http://euclid.esa.org/schema/bas/img}processTargetDataObject
+    
+    # Element CreationDate ({http://euclid.esa.org/schema/bas/img}CreationDate) inherited from {http://euclid.esa.org/schema/bas/img}processTarget
+    
+    # Element {http://euclid.esa.org/schema/bas/img}ImStat uses Python identifier ImStat
+    __ImStat = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'ImStat'), 'ImStat', '__httpeuclid_esa_orgschemabasimg_baseFrame_httpeuclid_esa_orgschemabasimgImStat', False)
+
+    
+    ImStat = property(__ImStat.value, __ImStat.set, None, u' Information about the statistics\n                                of the image pixels [None] ')
+
+    
+    # Element {http://euclid.esa.org/schema/bas/img}Naxis1 uses Python identifier Naxis1
+    __Naxis1 = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Naxis1'), 'Naxis1', '__httpeuclid_esa_orgschemabasimg_baseFrame_httpeuclid_esa_orgschemabasimgNaxis1', False)
+
+    
+    Naxis1 = property(__Naxis1.value, __Naxis1.set, None, u' Length of data in axis 1 [pixel] ')
+
     
     # Element ExtObjectId ({http://euclid.esa.org/schema/bas/img}ExtObjectId) inherited from {http://euclid.esa.org/schema/bas/img}processTarget
     
@@ -378,32 +484,14 @@ class baseFrame (processTargetDataObject):
     Instrument = property(__Instrument.value, __Instrument.set, None, u' Information about the acquisition\n                                instrument [None] ')
 
     
-    # Element {http://euclid.esa.org/schema/bas/img}ImStat uses Python identifier ImStat
-    __ImStat = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'ImStat'), 'ImStat', '__httpeuclid_esa_orgschemabasimg_baseFrame_httpeuclid_esa_orgschemabasimgImStat', False)
-
-    
-    ImStat = property(__ImStat.value, __ImStat.set, None, u' Information about the statistics\n                                of the image pixels [None] ')
-
-    
-    # Element CreationDate ({http://euclid.esa.org/schema/bas/img}CreationDate) inherited from {http://euclid.esa.org/schema/bas/img}processTarget
-    
     # Element IsValid ({http://euclid.esa.org/schema/bas/img}IsValid) inherited from {http://euclid.esa.org/schema/bas/img}processTarget
-    
-    # Element Storage ({http://euclid.esa.org/schema/bas/img}Storage) inherited from {http://euclid.esa.org/schema/bas/img}processTargetDataObject
-    
-    # Element {http://euclid.esa.org/schema/bas/img}Naxis1 uses Python identifier Naxis1
-    __Naxis1 = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Naxis1'), 'Naxis1', '__httpeuclid_esa_orgschemabasimg_baseFrame_httpeuclid_esa_orgschemabasimgNaxis1', False)
-
-    
-    Naxis1 = property(__Naxis1.value, __Naxis1.set, None, u' Length of data in axis 1 [pixel] ')
-
 
     _ElementMap = processTargetDataObject._ElementMap.copy()
     _ElementMap.update({
         __Naxis2.name() : __Naxis2,
-        __Instrument.name() : __Instrument,
         __ImStat.name() : __ImStat,
-        __Naxis1.name() : __Naxis1
+        __Naxis1.name() : __Naxis1,
+        __Instrument.name() : __Instrument
     })
     _AttributeMap = processTargetDataObject._AttributeMap.copy()
     _AttributeMap.update({
@@ -484,94 +572,6 @@ class instrument (pyxb.binding.basis.complexTypeDefinition):
 Namespace.addCategoryObject('typeBinding', u'instrument', instrument)
 
 
-# Complex type filter with content type ELEMENT_ONLY
-class filter (pyxb.binding.basis.complexTypeDefinition):
-    _TypeDefinition = None
-    _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
-    _Abstract = False
-    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'filter')
-    # Base type is pyxb.binding.datatypes.anyType
-    
-    # Element {http://euclid.esa.org/schema/bas/img}HasFringes uses Python identifier HasFringes
-    __HasFringes = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'HasFringes'), 'HasFringes', '__httpeuclid_esa_orgschemabasimg_filter_httpeuclid_esa_orgschemabasimgHasFringes', False)
-
-    
-    HasFringes = property(__HasFringes.value, __HasFringes.set, None, u' Indicates if data in this photometric\n                        band may contain fringes [None] ')
-
-    
-    # Element {http://euclid.esa.org/schema/bas/img}ExtObjectId uses Python identifier ExtObjectId
-    __ExtObjectId = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'ExtObjectId'), 'ExtObjectId', '__httpeuclid_esa_orgschemabasimg_filter_httpeuclid_esa_orgschemabasimgExtObjectId', False)
-
-    
-    ExtObjectId = property(__ExtObjectId.value, __ExtObjectId.set, None, u' Unique EXT object identifier [None] ')
-
-    
-    # Element {http://euclid.esa.org/schema/bas/img}CentralWavelength uses Python identifier CentralWavelength
-    __CentralWavelength = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'CentralWavelength'), 'CentralWavelength', '__httpeuclid_esa_orgschemabasimg_filter_httpeuclid_esa_orgschemabasimgCentralWavelength', False)
-
-    
-    CentralWavelength = property(__CentralWavelength.value, __CentralWavelength.set, None, u' Center wavelength of the photometric band\n                        [angstrom] ')
-
-    
-    # Element {http://euclid.esa.org/schema/bas/img}Name uses Python identifier Name
-    __Name = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Name'), 'Name', '__httpeuclid_esa_orgschemabasimg_filter_httpeuclid_esa_orgschemabasimgName', False)
-
-    
-    Name = property(__Name.value, __Name.set, None, u' Name of the observational filter [None] ')
-
-    
-    # Element {http://euclid.esa.org/schema/bas/img}MagId uses Python identifier MagId
-    __MagId = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'MagId'), 'MagId', '__httpeuclid_esa_orgschemabasimg_filter_httpeuclid_esa_orgschemabasimgMagId', False)
-
-    
-    MagId = property(__MagId.value, __MagId.set, None, u' Identifier of the photometric band [None] ')
-
-
-    _ElementMap = {
-        __HasFringes.name() : __HasFringes,
-        __ExtObjectId.name() : __ExtObjectId,
-        __CentralWavelength.name() : __CentralWavelength,
-        __Name.name() : __Name,
-        __MagId.name() : __MagId
-    }
-    _AttributeMap = {
-        
-    }
-Namespace.addCategoryObject('typeBinding', u'filter', filter)
-
-
-# Complex type chip with content type ELEMENT_ONLY
-class chip (pyxb.binding.basis.complexTypeDefinition):
-    _TypeDefinition = None
-    _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
-    _Abstract = False
-    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'chip')
-    # Base type is pyxb.binding.datatypes.anyType
-    
-    # Element {http://euclid.esa.org/schema/bas/img}Name uses Python identifier Name
-    __Name = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Name'), 'Name', '__httpeuclid_esa_orgschemabasimg_chip_httpeuclid_esa_orgschemabasimgName', False)
-
-    
-    Name = property(__Name.value, __Name.set, None, u' Name of the chip [None] ')
-
-    
-    # Element {http://euclid.esa.org/schema/bas/img}ExtObjectId uses Python identifier ExtObjectId
-    __ExtObjectId = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'ExtObjectId'), 'ExtObjectId', '__httpeuclid_esa_orgschemabasimg_chip_httpeuclid_esa_orgschemabasimgExtObjectId', False)
-
-    
-    ExtObjectId = property(__ExtObjectId.value, __ExtObjectId.set, None, u' Unique EXT object identifier [None] ')
-
-
-    _ElementMap = {
-        __Name.name() : __Name,
-        __ExtObjectId.name() : __ExtObjectId
-    }
-    _AttributeMap = {
-        
-    }
-Namespace.addCategoryObject('typeBinding', u'chip', chip)
-
-
 # Complex type imStats with content type ELEMENT_ONLY
 class imStats (pyxb.binding.basis.complexTypeDefinition):
     _TypeDefinition = None
@@ -580,11 +580,11 @@ class imStats (pyxb.binding.basis.complexTypeDefinition):
     _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'imStats')
     # Base type is pyxb.binding.datatypes.anyType
     
-    # Element {http://euclid.esa.org/schema/bas/img}ExtObjectId uses Python identifier ExtObjectId
-    __ExtObjectId = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'ExtObjectId'), 'ExtObjectId', '__httpeuclid_esa_orgschemabasimg_imStats_httpeuclid_esa_orgschemabasimgExtObjectId', False)
+    # Element {http://euclid.esa.org/schema/bas/img}XUpper uses Python identifier XUpper
+    __XUpper = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'XUpper'), 'XUpper', '__httpeuclid_esa_orgschemabasimg_imStats_httpeuclid_esa_orgschemabasimgXUpper', False)
 
     
-    ExtObjectId = property(__ExtObjectId.value, __ExtObjectId.set, None, u' Unique EXT object identifier [None] ')
+    XUpper = property(__XUpper.value, __XUpper.set, None, u' X position of upper right corner of the\n                        statistics region [pixel] ')
 
     
     # Element {http://euclid.esa.org/schema/bas/img}MaxX uses Python identifier MaxX
@@ -601,18 +601,11 @@ class imStats (pyxb.binding.basis.complexTypeDefinition):
     Median = property(__Median.value, __Median.set, None, u' Median value of the data [count] ')
 
     
-    # Element {http://euclid.esa.org/schema/bas/img}XLower uses Python identifier XLower
-    __XLower = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'XLower'), 'XLower', '__httpeuclid_esa_orgschemabasimg_imStats_httpeuclid_esa_orgschemabasimgXLower', False)
+    # Element {http://euclid.esa.org/schema/bas/img}Mean uses Python identifier Mean
+    __Mean = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Mean'), 'Mean', '__httpeuclid_esa_orgschemabasimg_imStats_httpeuclid_esa_orgschemabasimgMean', False)
 
     
-    XLower = property(__XLower.value, __XLower.set, None, u' X position of lower left corner of the\n                        statistics region [pixel] ')
-
-    
-    # Element {http://euclid.esa.org/schema/bas/img}Min uses Python identifier Min
-    __Min = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Min'), 'Min', '__httpeuclid_esa_orgschemabasimg_imStats_httpeuclid_esa_orgschemabasimgMin', False)
-
-    
-    Min = property(__Min.value, __Min.set, None, u' Minimum value of the data [count] ')
+    Mean = property(__Mean.value, __Mean.set, None, u' Mean value of the data [count] ')
 
     
     # Element {http://euclid.esa.org/schema/bas/img}YUpper uses Python identifier YUpper
@@ -622,11 +615,11 @@ class imStats (pyxb.binding.basis.complexTypeDefinition):
     YUpper = property(__YUpper.value, __YUpper.set, None, u' Y position of upper right corner of the\n                        statistics region [pixel] ')
 
     
-    # Element {http://euclid.esa.org/schema/bas/img}XUpper uses Python identifier XUpper
-    __XUpper = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'XUpper'), 'XUpper', '__httpeuclid_esa_orgschemabasimg_imStats_httpeuclid_esa_orgschemabasimgXUpper', False)
+    # Element {http://euclid.esa.org/schema/bas/img}MinX uses Python identifier MinX
+    __MinX = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'MinX'), 'MinX', '__httpeuclid_esa_orgschemabasimg_imStats_httpeuclid_esa_orgschemabasimgMinX', False)
 
     
-    XUpper = property(__XUpper.value, __XUpper.set, None, u' X position of upper right corner of the\n                        statistics region [pixel] ')
+    MinX = property(__MinX.value, __MinX.set, None, u' X position of minimum value [pixel] ')
 
     
     # Element {http://euclid.esa.org/schema/bas/img}MaxY uses Python identifier MaxY
@@ -636,25 +629,32 @@ class imStats (pyxb.binding.basis.complexTypeDefinition):
     MaxY = property(__MaxY.value, __MaxY.set, None, u' Y position of maximum value [pixel] ')
 
     
-    # Element {http://euclid.esa.org/schema/bas/img}YLower uses Python identifier YLower
-    __YLower = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'YLower'), 'YLower', '__httpeuclid_esa_orgschemabasimg_imStats_httpeuclid_esa_orgschemabasimgYLower', False)
+    # Element {http://euclid.esa.org/schema/bas/img}Min uses Python identifier Min
+    __Min = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Min'), 'Min', '__httpeuclid_esa_orgschemabasimg_imStats_httpeuclid_esa_orgschemabasimgMin', False)
 
     
-    YLower = property(__YLower.value, __YLower.set, None, u' Y position of lower left corner of the\n                        statistics region [pixel] ')
+    Min = property(__Min.value, __Min.set, None, u' Minimum value of the data [count] ')
 
     
-    # Element {http://euclid.esa.org/schema/bas/img}MinX uses Python identifier MinX
-    __MinX = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'MinX'), 'MinX', '__httpeuclid_esa_orgschemabasimg_imStats_httpeuclid_esa_orgschemabasimgMinX', False)
+    # Element {http://euclid.esa.org/schema/bas/img}ExtObjectId uses Python identifier ExtObjectId
+    __ExtObjectId = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'ExtObjectId'), 'ExtObjectId', '__httpeuclid_esa_orgschemabasimg_imStats_httpeuclid_esa_orgschemabasimgExtObjectId', False)
 
     
-    MinX = property(__MinX.value, __MinX.set, None, u' X position of minimum value [pixel] ')
+    ExtObjectId = property(__ExtObjectId.value, __ExtObjectId.set, None, u' Unique EXT object identifier [None] ')
 
     
-    # Element {http://euclid.esa.org/schema/bas/img}Mean uses Python identifier Mean
-    __Mean = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Mean'), 'Mean', '__httpeuclid_esa_orgschemabasimg_imStats_httpeuclid_esa_orgschemabasimgMean', False)
+    # Element {http://euclid.esa.org/schema/bas/img}Stdev uses Python identifier Stdev
+    __Stdev = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Stdev'), 'Stdev', '__httpeuclid_esa_orgschemabasimg_imStats_httpeuclid_esa_orgschemabasimgStdev', False)
 
     
-    Mean = property(__Mean.value, __Mean.set, None, u' Mean value of the data [count] ')
+    Stdev = property(__Stdev.value, __Stdev.set, None, u' Sample standard deviation of the data\n                        [count] ')
+
+    
+    # Element {http://euclid.esa.org/schema/bas/img}XLower uses Python identifier XLower
+    __XLower = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'XLower'), 'XLower', '__httpeuclid_esa_orgschemabasimg_imStats_httpeuclid_esa_orgschemabasimgXLower', False)
+
+    
+    XLower = property(__XLower.value, __XLower.set, None, u' X position of lower left corner of the\n                        statistics region [pixel] ')
 
     
     # Element {http://euclid.esa.org/schema/bas/img}Max uses Python identifier Max
@@ -664,13 +664,6 @@ class imStats (pyxb.binding.basis.complexTypeDefinition):
     Max = property(__Max.value, __Max.set, None, u' Maximum value of the data [count] ')
 
     
-    # Element {http://euclid.esa.org/schema/bas/img}NPix uses Python identifier NPix
-    __NPix = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'NPix'), 'NPix', '__httpeuclid_esa_orgschemabasimg_imStats_httpeuclid_esa_orgschemabasimgNPix', False)
-
-    
-    NPix = property(__NPix.value, __NPix.set, None, u' Number of pixels in the data [None] ')
-
-    
     # Element {http://euclid.esa.org/schema/bas/img}MinY uses Python identifier MinY
     __MinY = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'MinY'), 'MinY', '__httpeuclid_esa_orgschemabasimg_imStats_httpeuclid_esa_orgschemabasimgMinY', False)
 
@@ -678,29 +671,36 @@ class imStats (pyxb.binding.basis.complexTypeDefinition):
     MinY = property(__MinY.value, __MinY.set, None, u' Y position of minimum value [pixel] ')
 
     
-    # Element {http://euclid.esa.org/schema/bas/img}Stdev uses Python identifier Stdev
-    __Stdev = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Stdev'), 'Stdev', '__httpeuclid_esa_orgschemabasimg_imStats_httpeuclid_esa_orgschemabasimgStdev', False)
+    # Element {http://euclid.esa.org/schema/bas/img}NPix uses Python identifier NPix
+    __NPix = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'NPix'), 'NPix', '__httpeuclid_esa_orgschemabasimg_imStats_httpeuclid_esa_orgschemabasimgNPix', False)
 
     
-    Stdev = property(__Stdev.value, __Stdev.set, None, u' Sample standard deviation of the data\n                        [count] ')
+    NPix = property(__NPix.value, __NPix.set, None, u' Number of pixels in the data [None] ')
+
+    
+    # Element {http://euclid.esa.org/schema/bas/img}YLower uses Python identifier YLower
+    __YLower = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'YLower'), 'YLower', '__httpeuclid_esa_orgschemabasimg_imStats_httpeuclid_esa_orgschemabasimgYLower', False)
+
+    
+    YLower = property(__YLower.value, __YLower.set, None, u' Y position of lower left corner of the\n                        statistics region [pixel] ')
 
 
     _ElementMap = {
-        __ExtObjectId.name() : __ExtObjectId,
+        __XUpper.name() : __XUpper,
         __MaxX.name() : __MaxX,
         __Median.name() : __Median,
-        __XLower.name() : __XLower,
-        __Min.name() : __Min,
-        __YUpper.name() : __YUpper,
-        __XUpper.name() : __XUpper,
-        __MaxY.name() : __MaxY,
-        __YLower.name() : __YLower,
-        __MinX.name() : __MinX,
         __Mean.name() : __Mean,
+        __YUpper.name() : __YUpper,
+        __MinX.name() : __MinX,
+        __MaxY.name() : __MaxY,
+        __Min.name() : __Min,
+        __ExtObjectId.name() : __ExtObjectId,
+        __Stdev.name() : __Stdev,
+        __XLower.name() : __XLower,
         __Max.name() : __Max,
-        __NPix.name() : __NPix,
         __MinY.name() : __MinY,
-        __Stdev.name() : __Stdev
+        __NPix.name() : __NPix,
+        __YLower.name() : __YLower
     }
     _AttributeMap = {
         
@@ -716,6 +716,16 @@ class baseCalFrame (baseFrame):
     _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'baseCalFrame')
     # Base type is baseFrame
     
+    # Element QualityFlags ({http://euclid.esa.org/schema/bas/img}QualityFlags) inherited from {http://euclid.esa.org/schema/bas/img}processTarget
+    
+    # Element Naxis2 ({http://euclid.esa.org/schema/bas/img}Naxis2) inherited from {http://euclid.esa.org/schema/bas/img}baseFrame
+    
+    # Element ExtObjectId ({http://euclid.esa.org/schema/bas/img}ExtObjectId) inherited from {http://euclid.esa.org/schema/bas/img}processTarget
+    
+    # Element ImStat ({http://euclid.esa.org/schema/bas/img}ImStat) inherited from {http://euclid.esa.org/schema/bas/img}baseFrame
+    
+    # Element CreationDate ({http://euclid.esa.org/schema/bas/img}CreationDate) inherited from {http://euclid.esa.org/schema/bas/img}processTarget
+    
     # Element {http://euclid.esa.org/schema/bas/img}TimestampEnd uses Python identifier TimestampEnd
     __TimestampEnd = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'TimestampEnd'), 'TimestampEnd', '__httpeuclid_esa_orgschemabasimg_baseCalFrame_httpeuclid_esa_orgschemabasimgTimestampEnd', False)
 
@@ -723,7 +733,9 @@ class baseCalFrame (baseFrame):
     TimestampEnd = property(__TimestampEnd.value, __TimestampEnd.set, None, u' UTC date of the ending of the\n                                valid period [None] ')
 
     
-    # Element QualityFlags ({http://euclid.esa.org/schema/bas/img}QualityFlags) inherited from {http://euclid.esa.org/schema/bas/img}processTarget
+    # Element Storage ({http://euclid.esa.org/schema/bas/img}Storage) inherited from {http://euclid.esa.org/schema/bas/img}processTargetDataObject
+    
+    # Element Naxis1 ({http://euclid.esa.org/schema/bas/img}Naxis1) inherited from {http://euclid.esa.org/schema/bas/img}baseFrame
     
     # Element {http://euclid.esa.org/schema/bas/img}Chip uses Python identifier Chip
     __Chip = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Chip'), 'Chip', '__httpeuclid_esa_orgschemabasimg_baseCalFrame_httpeuclid_esa_orgschemabasimgChip', False)
@@ -732,17 +744,9 @@ class baseCalFrame (baseFrame):
     Chip = property(__Chip.value, __Chip.set, None, u' Information about the detector\n                                chip [None] ')
 
     
+    # Element IsValid ({http://euclid.esa.org/schema/bas/img}IsValid) inherited from {http://euclid.esa.org/schema/bas/img}processTarget
+    
     # Element Instrument ({http://euclid.esa.org/schema/bas/img}Instrument) inherited from {http://euclid.esa.org/schema/bas/img}baseFrame
-    
-    # Element CreationDate ({http://euclid.esa.org/schema/bas/img}CreationDate) inherited from {http://euclid.esa.org/schema/bas/img}processTarget
-    
-    # Element ImStat ({http://euclid.esa.org/schema/bas/img}ImStat) inherited from {http://euclid.esa.org/schema/bas/img}baseFrame
-    
-    # Element ExtObjectId ({http://euclid.esa.org/schema/bas/img}ExtObjectId) inherited from {http://euclid.esa.org/schema/bas/img}processTarget
-    
-    # Element Naxis1 ({http://euclid.esa.org/schema/bas/img}Naxis1) inherited from {http://euclid.esa.org/schema/bas/img}baseFrame
-    
-    # Element Storage ({http://euclid.esa.org/schema/bas/img}Storage) inherited from {http://euclid.esa.org/schema/bas/img}processTargetDataObject
     
     # Element {http://euclid.esa.org/schema/bas/img}TimestampStart uses Python identifier TimestampStart
     __TimestampStart = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'TimestampStart'), 'TimestampStart', '__httpeuclid_esa_orgschemabasimg_baseCalFrame_httpeuclid_esa_orgschemabasimgTimestampStart', False)
@@ -750,10 +754,6 @@ class baseCalFrame (baseFrame):
     
     TimestampStart = property(__TimestampStart.value, __TimestampStart.set, None, u' UTC date of the beginning of the\n                                valid period [None] ')
 
-    
-    # Element Naxis2 ({http://euclid.esa.org/schema/bas/img}Naxis2) inherited from {http://euclid.esa.org/schema/bas/img}baseFrame
-    
-    # Element IsValid ({http://euclid.esa.org/schema/bas/img}IsValid) inherited from {http://euclid.esa.org/schema/bas/img}processTarget
 
     _ElementMap = baseFrame._ElementMap.copy()
     _ElementMap.update({
@@ -776,7 +776,40 @@ class baseSciFrame (baseFrame):
     _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'baseSciFrame')
     # Base type is baseFrame
     
+    # Element QualityFlags ({http://euclid.esa.org/schema/bas/img}QualityFlags) inherited from {http://euclid.esa.org/schema/bas/img}processTarget
+    
+    # Element ImStat ({http://euclid.esa.org/schema/bas/img}ImStat) inherited from {http://euclid.esa.org/schema/bas/img}baseFrame
+    
+    # Element {http://euclid.esa.org/schema/bas/img}Astrom uses Python identifier Astrom
+    __Astrom = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Astrom'), 'Astrom', '__httpeuclid_esa_orgschemabasimg_baseSciFrame_httpeuclid_esa_orgschemabasimgAstrom', False)
+
+    
+    Astrom = property(__Astrom.value, __Astrom.set, None, u' The (basic) astrometric\n                                parameters (with only linear\n                                terms)')
+
+    
     # Element Naxis2 ({http://euclid.esa.org/schema/bas/img}Naxis2) inherited from {http://euclid.esa.org/schema/bas/img}baseFrame
+    
+    # Element {http://euclid.esa.org/schema/bas/img}Filter uses Python identifier Filter
+    __Filter = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Filter'), 'Filter', '__httpeuclid_esa_orgschemabasimg_baseSciFrame_httpeuclid_esa_orgschemabasimgFilter', False)
+
+    
+    Filter = property(__Filter.value, __Filter.set, None, u' Information about the\n                                observational filter [None] ')
+
+    
+    # Element CreationDate ({http://euclid.esa.org/schema/bas/img}CreationDate) inherited from {http://euclid.esa.org/schema/bas/img}processTarget
+    
+    # Element {http://euclid.esa.org/schema/bas/img}Template uses Python identifier Template
+    __Template = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Template'), 'Template', '__httpeuclid_esa_orgschemabasimg_baseSciFrame_httpeuclid_esa_orgschemabasimgTemplate', False)
+
+    
+    Template = property(__Template.value, __Template.set, None, u' Information about the\n                                observational template [None] ')
+
+    
+    # Element Storage ({http://euclid.esa.org/schema/bas/img}Storage) inherited from {http://euclid.esa.org/schema/bas/img}processTargetDataObject
+    
+    # Element Naxis1 ({http://euclid.esa.org/schema/bas/img}Naxis1) inherited from {http://euclid.esa.org/schema/bas/img}baseFrame
+    
+    # Element ExtObjectId ({http://euclid.esa.org/schema/bas/img}ExtObjectId) inherited from {http://euclid.esa.org/schema/bas/img}processTarget
     
     # Element {http://euclid.esa.org/schema/bas/img}ObsBlock uses Python identifier ObsBlock
     __ObsBlock = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'ObsBlock'), 'ObsBlock', '__httpeuclid_esa_orgschemabasimg_baseSciFrame_httpeuclid_esa_orgschemabasimgObsBlock', False)
@@ -787,47 +820,14 @@ class baseSciFrame (baseFrame):
     
     # Element Instrument ({http://euclid.esa.org/schema/bas/img}Instrument) inherited from {http://euclid.esa.org/schema/bas/img}baseFrame
     
-    # Element {http://euclid.esa.org/schema/bas/img}Template uses Python identifier Template
-    __Template = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Template'), 'Template', '__httpeuclid_esa_orgschemabasimg_baseSciFrame_httpeuclid_esa_orgschemabasimgTemplate', False)
-
-    
-    Template = property(__Template.value, __Template.set, None, u' Information about the\n                                observational template [None] ')
-
-    
-    # Element {http://euclid.esa.org/schema/bas/img}Filter uses Python identifier Filter
-    __Filter = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Filter'), 'Filter', '__httpeuclid_esa_orgschemabasimg_baseSciFrame_httpeuclid_esa_orgschemabasimgFilter', False)
-
-    
-    Filter = property(__Filter.value, __Filter.set, None, u' Information about the\n                                observational filter [None] ')
-
-    
-    # Element ImStat ({http://euclid.esa.org/schema/bas/img}ImStat) inherited from {http://euclid.esa.org/schema/bas/img}baseFrame
-    
-    # Element QualityFlags ({http://euclid.esa.org/schema/bas/img}QualityFlags) inherited from {http://euclid.esa.org/schema/bas/img}processTarget
-    
     # Element IsValid ({http://euclid.esa.org/schema/bas/img}IsValid) inherited from {http://euclid.esa.org/schema/bas/img}processTarget
-    
-    # Element {http://euclid.esa.org/schema/bas/img}Astrom uses Python identifier Astrom
-    __Astrom = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Astrom'), 'Astrom', '__httpeuclid_esa_orgschemabasimg_baseSciFrame_httpeuclid_esa_orgschemabasimgAstrom', False)
-
-    
-    Astrom = property(__Astrom.value, __Astrom.set, None, u' The (basic) astrometric\n                                parameters (with only linear\n                                terms)')
-
-    
-    # Element Storage ({http://euclid.esa.org/schema/bas/img}Storage) inherited from {http://euclid.esa.org/schema/bas/img}processTargetDataObject
-    
-    # Element CreationDate ({http://euclid.esa.org/schema/bas/img}CreationDate) inherited from {http://euclid.esa.org/schema/bas/img}processTarget
-    
-    # Element ExtObjectId ({http://euclid.esa.org/schema/bas/img}ExtObjectId) inherited from {http://euclid.esa.org/schema/bas/img}processTarget
-    
-    # Element Naxis1 ({http://euclid.esa.org/schema/bas/img}Naxis1) inherited from {http://euclid.esa.org/schema/bas/img}baseFrame
 
     _ElementMap = baseFrame._ElementMap.copy()
     _ElementMap.update({
-        __ObsBlock.name() : __ObsBlock,
-        __Template.name() : __Template,
+        __Astrom.name() : __Astrom,
         __Filter.name() : __Filter,
-        __Astrom.name() : __Astrom
+        __Template.name() : __Template,
+        __ObsBlock.name() : __ObsBlock
     })
     _AttributeMap = baseFrame._AttributeMap.copy()
     _AttributeMap.update({
@@ -867,37 +867,37 @@ obsBlock._ContentModel = pyxb.binding.content.ParticleModel(obsBlock._GroupModel
 
 
 
+template._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'DictionaryId'), pyxb.binding.datatypes.string, scope=template, documentation=u' Identifier of the observational\n                        dictionary defining the type of observation [None] '))
+
 template._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Name'), pyxb.binding.datatypes.string, scope=template, documentation=u' Name of the observational template [None] '))
 
 template._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Filter'), filter, scope=template, documentation=u' Information about the observational\n                        filter [None] '))
 
-template._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'DictionaryId'), pyxb.binding.datatypes.string, scope=template, documentation=u' Identifier of the observational\n                        dictionary defining the type of observation [None] '))
-
-template._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Exposures'), pyxb.binding.datatypes.short, scope=template, documentation=u' Number of exposures within the\n                        observational template [None] '))
-
-template._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Category'), pyxb.binding.datatypes.string, scope=template, documentation=u' Observational template category [None] '))
+template._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Sequencer'), pyxb.binding.datatypes.string, scope=template, documentation=u' Observational sequencer script [None] '))
 
 template._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Id'), pyxb.binding.datatypes.short, scope=template, documentation=u' Identifier of the observational template\n                        [None] '))
 
-template._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Technique'), pyxb.binding.datatypes.string, scope=template, documentation=u' Observational template technique [None] '))
+template._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Type'), pyxb.binding.datatypes.string, scope=template, documentation=u' Observational template type [None] '))
 
 template._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Start'), pyxb.binding.datatypes.dateTime, scope=template, documentation=u' UTC date the observational template was\n                        started [None] '))
 
-template._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Sequencer'), pyxb.binding.datatypes.string, scope=template, documentation=u' Observational sequencer script [None] '))
+template._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Technique'), pyxb.binding.datatypes.string, scope=template, documentation=u' Observational template technique [None] '))
 
-template._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Strategy'), pyxb.binding.datatypes.string, scope=template, documentation=u' Observational template strategy [None] '))
+template._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Exposures'), pyxb.binding.datatypes.short, scope=template, documentation=u' Number of exposures within the\n                        observational template [None] '))
+
+template._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'ExtObjectId'), CommonDM.dm.bas_stub.extObjectId, scope=template, documentation=u' Unique EXT object identifier [None] '))
+
+template._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'ObsId'), pyxb.binding.datatypes.short, scope=template, documentation=u' Identifier of the associated\n                        observational block [None] '))
 
 template._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Version'), pyxb.binding.datatypes.string, scope=template, documentation=u' Version of the observational template\n                        [None] '))
 
 template._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'ObsStart'), pyxb.binding.datatypes.dateTime, scope=template, documentation=u' UTC date the associated observational\n                        block was started [None] '))
 
-template._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Type'), pyxb.binding.datatypes.string, scope=template, documentation=u' Observational template type [None] '))
-
-template._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'ExtObjectId'), CommonDM.dm.bas_stub.extObjectId, scope=template, documentation=u' Unique EXT object identifier [None] '))
+template._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Category'), pyxb.binding.datatypes.string, scope=template, documentation=u' Observational template category [None] '))
 
 template._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Index'), pyxb.binding.datatypes.short, scope=template, documentation=u' Observational template index within the\n                        associated observational block [None] '))
 
-template._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'ObsId'), pyxb.binding.datatypes.short, scope=template, documentation=u' Identifier of the associated\n                        observational block [None] '))
+template._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Strategy'), pyxb.binding.datatypes.string, scope=template, documentation=u' Observational template strategy [None] '))
 template._GroupModel = pyxb.binding.content.GroupSequence(
     pyxb.binding.content.ParticleModel(template._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'ExtObjectId')), min_occurs=1, max_occurs=1),
     pyxb.binding.content.ParticleModel(template._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'DictionaryId')), min_occurs=1, max_occurs=1),
@@ -917,6 +917,37 @@ template._GroupModel = pyxb.binding.content.GroupSequence(
     pyxb.binding.content.ParticleModel(template._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Filter')), min_occurs=1, max_occurs=1)
     )
 template._ContentModel = pyxb.binding.content.ParticleModel(template._GroupModel, min_occurs=1, max_occurs=1)
+
+
+
+filter._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'HasFringes'), pyxb.binding.datatypes.int, scope=filter, documentation=u' Indicates if data in this photometric\n                        band may contain fringes [None] '))
+
+filter._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'ExtObjectId'), CommonDM.dm.bas_stub.extObjectId, scope=filter, documentation=u' Unique EXT object identifier [None] '))
+
+filter._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'MagId'), CommonDM.dm.bas.dtd_stub.nameRestriction, scope=filter, documentation=u' Identifier of the photometric band [None] '))
+
+filter._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'CentralWavelength'), pyxb.binding.datatypes.float, scope=filter, documentation=u' Center wavelength of the photometric band\n                        [angstrom] '))
+
+filter._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Name'), CommonDM.dm.bas.dtd_stub.nameRestriction, scope=filter, documentation=u' Name of the observational filter [None] '))
+filter._GroupModel = pyxb.binding.content.GroupSequence(
+    pyxb.binding.content.ParticleModel(filter._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'ExtObjectId')), min_occurs=1, max_occurs=1),
+    pyxb.binding.content.ParticleModel(filter._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Name')), min_occurs=1, max_occurs=1),
+    pyxb.binding.content.ParticleModel(filter._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'MagId')), min_occurs=1, max_occurs=1),
+    pyxb.binding.content.ParticleModel(filter._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'CentralWavelength')), min_occurs=1, max_occurs=1),
+    pyxb.binding.content.ParticleModel(filter._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'HasFringes')), min_occurs=1, max_occurs=1)
+    )
+filter._ContentModel = pyxb.binding.content.ParticleModel(filter._GroupModel, min_occurs=1, max_occurs=1)
+
+
+
+chip._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Name'), CommonDM.dm.bas.dtd_stub.nameRestriction, scope=chip, documentation=u' Name of the chip [None] '))
+
+chip._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'ExtObjectId'), CommonDM.dm.bas_stub.extObjectId, scope=chip, documentation=u' Unique EXT object identifier [None] '))
+chip._GroupModel = pyxb.binding.content.GroupSequence(
+    pyxb.binding.content.ParticleModel(chip._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'ExtObjectId')), min_occurs=1, max_occurs=1),
+    pyxb.binding.content.ParticleModel(chip._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Name')), min_occurs=1, max_occurs=1)
+    )
+chip._ContentModel = pyxb.binding.content.ParticleModel(chip._GroupModel, min_occurs=1, max_occurs=1)
 
 
 
@@ -957,11 +988,11 @@ processTargetDataObject._ContentModel = pyxb.binding.content.ParticleModel(proce
 
 baseFrame._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Naxis2'), pyxb.binding.datatypes.int, scope=baseFrame, documentation=u' Length of data in axis 2 [pixel] '))
 
-baseFrame._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Instrument'), instrument, scope=baseFrame, documentation=u' Information about the acquisition\n                                instrument [None] '))
-
 baseFrame._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'ImStat'), imStats, scope=baseFrame, documentation=u' Information about the statistics\n                                of the image pixels [None] '))
 
 baseFrame._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Naxis1'), pyxb.binding.datatypes.int, scope=baseFrame, documentation=u' Length of data in axis 1 [pixel] '))
+
+baseFrame._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Instrument'), instrument, scope=baseFrame, documentation=u' Information about the acquisition\n                                instrument [None] '))
 baseFrame._GroupModel_2 = pyxb.binding.content.GroupSequence(
     pyxb.binding.content.ParticleModel(baseFrame._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'ExtObjectId')), min_occurs=1, max_occurs=1),
     pyxb.binding.content.ParticleModel(baseFrame._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'IsValid')), min_occurs=1, max_occurs=1),
@@ -1015,66 +1046,35 @@ instrument._ContentModel = pyxb.binding.content.ParticleModel(instrument._GroupM
 
 
 
-filter._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'HasFringes'), pyxb.binding.datatypes.int, scope=filter, documentation=u' Indicates if data in this photometric\n                        band may contain fringes [None] '))
-
-filter._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'ExtObjectId'), CommonDM.dm.bas_stub.extObjectId, scope=filter, documentation=u' Unique EXT object identifier [None] '))
-
-filter._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'CentralWavelength'), pyxb.binding.datatypes.float, scope=filter, documentation=u' Center wavelength of the photometric band\n                        [angstrom] '))
-
-filter._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Name'), CommonDM.dm.bas.dtd_stub.nameRestriction, scope=filter, documentation=u' Name of the observational filter [None] '))
-
-filter._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'MagId'), CommonDM.dm.bas.dtd_stub.nameRestriction, scope=filter, documentation=u' Identifier of the photometric band [None] '))
-filter._GroupModel = pyxb.binding.content.GroupSequence(
-    pyxb.binding.content.ParticleModel(filter._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'ExtObjectId')), min_occurs=1, max_occurs=1),
-    pyxb.binding.content.ParticleModel(filter._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Name')), min_occurs=1, max_occurs=1),
-    pyxb.binding.content.ParticleModel(filter._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'MagId')), min_occurs=1, max_occurs=1),
-    pyxb.binding.content.ParticleModel(filter._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'CentralWavelength')), min_occurs=1, max_occurs=1),
-    pyxb.binding.content.ParticleModel(filter._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'HasFringes')), min_occurs=1, max_occurs=1)
-    )
-filter._ContentModel = pyxb.binding.content.ParticleModel(filter._GroupModel, min_occurs=1, max_occurs=1)
-
-
-
-chip._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Name'), CommonDM.dm.bas.dtd_stub.nameRestriction, scope=chip, documentation=u' Name of the chip [None] '))
-
-chip._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'ExtObjectId'), CommonDM.dm.bas_stub.extObjectId, scope=chip, documentation=u' Unique EXT object identifier [None] '))
-chip._GroupModel = pyxb.binding.content.GroupSequence(
-    pyxb.binding.content.ParticleModel(chip._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'ExtObjectId')), min_occurs=1, max_occurs=1),
-    pyxb.binding.content.ParticleModel(chip._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Name')), min_occurs=1, max_occurs=1)
-    )
-chip._ContentModel = pyxb.binding.content.ParticleModel(chip._GroupModel, min_occurs=1, max_occurs=1)
-
-
-
-imStats._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'ExtObjectId'), CommonDM.dm.bas_stub.extObjectId, scope=imStats, documentation=u' Unique EXT object identifier [None] '))
+imStats._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'XUpper'), pyxb.binding.datatypes.int, scope=imStats, documentation=u' X position of upper right corner of the\n                        statistics region [pixel] '))
 
 imStats._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'MaxX'), pyxb.binding.datatypes.int, scope=imStats, documentation=u' X position of maximum value [pixel] '))
 
 imStats._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Median'), pyxb.binding.datatypes.double, scope=imStats, documentation=u' Median value of the data [count] '))
 
-imStats._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'XLower'), pyxb.binding.datatypes.int, scope=imStats, documentation=u' X position of lower left corner of the\n                        statistics region [pixel] '))
-
-imStats._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Min'), pyxb.binding.datatypes.double, scope=imStats, documentation=u' Minimum value of the data [count] '))
+imStats._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Mean'), pyxb.binding.datatypes.double, scope=imStats, documentation=u' Mean value of the data [count] '))
 
 imStats._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'YUpper'), pyxb.binding.datatypes.int, scope=imStats, documentation=u' Y position of upper right corner of the\n                        statistics region [pixel] '))
 
-imStats._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'XUpper'), pyxb.binding.datatypes.int, scope=imStats, documentation=u' X position of upper right corner of the\n                        statistics region [pixel] '))
+imStats._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'MinX'), pyxb.binding.datatypes.int, scope=imStats, documentation=u' X position of minimum value [pixel] '))
 
 imStats._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'MaxY'), pyxb.binding.datatypes.int, scope=imStats, documentation=u' Y position of maximum value [pixel] '))
 
-imStats._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'YLower'), pyxb.binding.datatypes.int, scope=imStats, documentation=u' Y position of lower left corner of the\n                        statistics region [pixel] '))
+imStats._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Min'), pyxb.binding.datatypes.double, scope=imStats, documentation=u' Minimum value of the data [count] '))
 
-imStats._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'MinX'), pyxb.binding.datatypes.int, scope=imStats, documentation=u' X position of minimum value [pixel] '))
+imStats._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'ExtObjectId'), CommonDM.dm.bas_stub.extObjectId, scope=imStats, documentation=u' Unique EXT object identifier [None] '))
 
-imStats._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Mean'), pyxb.binding.datatypes.double, scope=imStats, documentation=u' Mean value of the data [count] '))
+imStats._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Stdev'), pyxb.binding.datatypes.double, scope=imStats, documentation=u' Sample standard deviation of the data\n                        [count] '))
+
+imStats._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'XLower'), pyxb.binding.datatypes.int, scope=imStats, documentation=u' X position of lower left corner of the\n                        statistics region [pixel] '))
 
 imStats._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Max'), pyxb.binding.datatypes.double, scope=imStats, documentation=u' Maximum value of the data [count] '))
 
-imStats._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'NPix'), pyxb.binding.datatypes.long, scope=imStats, documentation=u' Number of pixels in the data [None] '))
-
 imStats._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'MinY'), pyxb.binding.datatypes.int, scope=imStats, documentation=u' Y position of minimum value [pixel] '))
 
-imStats._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Stdev'), pyxb.binding.datatypes.double, scope=imStats, documentation=u' Sample standard deviation of the data\n                        [count] '))
+imStats._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'NPix'), pyxb.binding.datatypes.long, scope=imStats, documentation=u' Number of pixels in the data [None] '))
+
+imStats._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'YLower'), pyxb.binding.datatypes.int, scope=imStats, documentation=u' Y position of lower left corner of the\n                        statistics region [pixel] '))
 imStats._GroupModel = pyxb.binding.content.GroupSequence(
     pyxb.binding.content.ParticleModel(imStats._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'ExtObjectId')), min_occurs=1, max_occurs=1),
     pyxb.binding.content.ParticleModel(imStats._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Min')), min_occurs=1, max_occurs=1),
@@ -1137,13 +1137,13 @@ baseCalFrame._ContentModel = pyxb.binding.content.ParticleModel(baseCalFrame._Gr
 
 
 
-baseSciFrame._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'ObsBlock'), obsBlock, scope=baseSciFrame, documentation=u' Information about the\n                                observational block [None] '))
-
-baseSciFrame._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Template'), template, scope=baseSciFrame, documentation=u' Information about the\n                                observational template [None] '))
+baseSciFrame._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Astrom'), CommonDM.dm.bas.cot_stub.astrom, scope=baseSciFrame, documentation=u' The (basic) astrometric\n                                parameters (with only linear\n                                terms)'))
 
 baseSciFrame._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Filter'), filter, scope=baseSciFrame, documentation=u' Information about the\n                                observational filter [None] '))
 
-baseSciFrame._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Astrom'), CommonDM.dm.bas.cot_stub.astrom, scope=baseSciFrame, documentation=u' The (basic) astrometric\n                                parameters (with only linear\n                                terms)'))
+baseSciFrame._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Template'), template, scope=baseSciFrame, documentation=u' Information about the\n                                observational template [None] '))
+
+baseSciFrame._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'ObsBlock'), obsBlock, scope=baseSciFrame, documentation=u' Information about the\n                                observational block [None] '))
 baseSciFrame._GroupModel_3 = pyxb.binding.content.GroupSequence(
     pyxb.binding.content.ParticleModel(baseSciFrame._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'ExtObjectId')), min_occurs=1, max_occurs=1),
     pyxb.binding.content.ParticleModel(baseSciFrame._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'IsValid')), min_occurs=1, max_occurs=1),
