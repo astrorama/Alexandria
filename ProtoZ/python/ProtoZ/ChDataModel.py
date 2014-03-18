@@ -29,3 +29,9 @@ def _read_xy_datasets_from_dir(path):
 
 def get_filters(path):
     return _read_xy_datasets_from_dir(path)
+
+def get_seds(path):
+    return _read_xy_datasets_from_dir(path)
+
+def get_reddening_curves(path):
+    return _read_xy_datasets_from_dir(path)
