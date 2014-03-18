@@ -1,7 +1,7 @@
 # /home/nikoapos/ISDC/Projects/Alexandria/1.0/CommonDM/python/CommonDM/dm/ins_stub.py
 # PyXB bindings for NamespaceModule
 # NSM:b0796ff167f6d7eb4af7e5fe181d133e7dd0aa4e
-# Generated 2014-03-17 11:53:47.249359 by PyXB version 1.1.2
+# Generated 2014-03-17 18:50:36.638530 by PyXB version 1.1.2
 import pyxb
 import pyxb.binding
 import pyxb.binding.saxer
@@ -11,7 +11,7 @@ import pyxb.utils.domutils
 import sys
 
 # Unique identifier for bindings created at the same time
-_GenerationUID = pyxb.utils.utility.UniqueIdentifier('urn:uuid:6923c468-adc2-11e3-8fb8-f01faf601f90')
+_GenerationUID = pyxb.utils.utility.UniqueIdentifier('urn:uuid:a3e7637c-adfc-11e3-9f2e-c4d98710dc86')
 
 # Import bindings for namespaces imported into schema
 import pyxb.binding.datatypes
@@ -46,18 +46,6 @@ def CreateFromDOM (node, default_namespace=None):
 
 
 # Atomic SimpleTypeDefinition
-class detectorId (pyxb.binding.datatypes.string, pyxb.binding.basis.enumeration_mixin):
-
-    """Detector Id"""
-
-    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'detectorId')
-    _Documentation = u'Detector Id'
-detectorId._CF_enumeration = pyxb.binding.facets.CF_enumeration(value_datatype=detectorId, enum_prefix=None)
-detectorId.n0 = detectorId._CF_enumeration.addEnumeration(unicode_value=u'0')
-detectorId._InitializeFacetMap(detectorId._CF_enumeration)
-Namespace.addCategoryObject('typeBinding', u'detectorId', detectorId)
-
-# Atomic SimpleTypeDefinition
 class observationMode (pyxb.binding.datatypes.string, pyxb.binding.basis.enumeration_mixin):
 
     """observation modes"""
@@ -73,6 +61,18 @@ observationMode._InitializeFacetMap(observationMode._CF_enumeration)
 Namespace.addCategoryObject('typeBinding', u'observationMode', observationMode)
 
 # Atomic SimpleTypeDefinition
+class detectorId (pyxb.binding.datatypes.string, pyxb.binding.basis.enumeration_mixin):
+
+    """Detector Id"""
+
+    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'detectorId')
+    _Documentation = u'Detector Id'
+detectorId._CF_enumeration = pyxb.binding.facets.CF_enumeration(value_datatype=detectorId, enum_prefix=None)
+detectorId.n0 = detectorId._CF_enumeration.addEnumeration(unicode_value=u'0')
+detectorId._InitializeFacetMap(detectorId._CF_enumeration)
+Namespace.addCategoryObject('typeBinding', u'detectorId', detectorId)
+
+# Atomic SimpleTypeDefinition
 class wavelengthBand (pyxb.binding.datatypes.string, pyxb.binding.basis.enumeration_mixin):
 
     """The wavelength band for which the sky background is calculated. It can take the values "BLUE" and "RED"."""
@@ -84,38 +84,6 @@ wavelengthBand.BLUE = wavelengthBand._CF_enumeration.addEnumeration(unicode_valu
 wavelengthBand.RED = wavelengthBand._CF_enumeration.addEnumeration(unicode_value=u'RED')
 wavelengthBand._InitializeFacetMap(wavelengthBand._CF_enumeration)
 Namespace.addCategoryObject('typeBinding', u'wavelengthBand', wavelengthBand)
-
-# Complex type noise with content type ELEMENT_ONLY
-class noise (pyxb.binding.basis.complexTypeDefinition):
-    _TypeDefinition = None
-    _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
-    _Abstract = False
-    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'noise')
-    # Base type is pyxb.binding.datatypes.anyType
-    
-    # Element {http://euclid.esa.org/schema/ins}Unit uses Python identifier Unit
-    __Unit = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Unit'), 'Unit', '__httpeuclid_esa_orgschemains_noise_httpeuclid_esa_orgschemainsUnit', False)
-
-    
-    Unit = property(__Unit.value, __Unit.set, None, None)
-
-    
-    # Element {http://euclid.esa.org/schema/ins}Value uses Python identifier Value
-    __Value = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Value'), 'Value', '__httpeuclid_esa_orgschemains_noise_httpeuclid_esa_orgschemainsValue', False)
-
-    
-    Value = property(__Value.value, __Value.set, None, None)
-
-
-    _ElementMap = {
-        __Unit.name() : __Unit,
-        __Value.name() : __Value
-    }
-    _AttributeMap = {
-        
-    }
-Namespace.addCategoryObject('typeBinding', u'noise', noise)
-
 
 # Complex type wavelength with content type ELEMENT_ONLY
 class wavelength (pyxb.binding.basis.complexTypeDefinition):
@@ -269,6 +237,38 @@ class insParameterValue (pyxb.binding.basis.complexTypeDefinition):
 Namespace.addCategoryObject('typeBinding', u'insParameterValue', insParameterValue)
 
 
+# Complex type noise with content type ELEMENT_ONLY
+class noise (pyxb.binding.basis.complexTypeDefinition):
+    _TypeDefinition = None
+    _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
+    _Abstract = False
+    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'noise')
+    # Base type is pyxb.binding.datatypes.anyType
+    
+    # Element {http://euclid.esa.org/schema/ins}Unit uses Python identifier Unit
+    __Unit = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Unit'), 'Unit', '__httpeuclid_esa_orgschemains_noise_httpeuclid_esa_orgschemainsUnit', False)
+
+    
+    Unit = property(__Unit.value, __Unit.set, None, None)
+
+    
+    # Element {http://euclid.esa.org/schema/ins}Value uses Python identifier Value
+    __Value = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Value'), 'Value', '__httpeuclid_esa_orgschemains_noise_httpeuclid_esa_orgschemainsValue', False)
+
+    
+    Value = property(__Value.value, __Value.set, None, None)
+
+
+    _ElementMap = {
+        __Unit.name() : __Unit,
+        __Value.name() : __Value
+    }
+    _AttributeMap = {
+        
+    }
+Namespace.addCategoryObject('typeBinding', u'noise', noise)
+
+
 # Complex type errorOnTransmission with content type ELEMENT_ONLY
 class errorOnTransmission (pyxb.binding.basis.complexTypeDefinition):
     _TypeDefinition = None
@@ -335,17 +335,6 @@ Namespace.addCategoryObject('typeBinding', u'transmissionFactor', transmissionFa
 
 
 
-noise._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Unit'), CommonDM.dm.bas.utd_stub.unit, scope=noise))
-
-noise._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Value'), CommonDM.dm.bas.dtd_stub.listOfDouble, scope=noise))
-noise._GroupModel = pyxb.binding.content.GroupSequence(
-    pyxb.binding.content.ParticleModel(noise._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Value')), min_occurs=1, max_occurs=1),
-    pyxb.binding.content.ParticleModel(noise._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Unit')), min_occurs=1, max_occurs=1)
-    )
-noise._ContentModel = pyxb.binding.content.ParticleModel(noise._GroupModel, min_occurs=1, max_occurs=1)
-
-
-
 wavelength._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Unit'), CommonDM.dm.bas.utd_stub.unit, scope=wavelength))
 
 wavelength._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Value'), CommonDM.dm.bas.dtd_stub.listOfDouble, scope=wavelength))
@@ -396,6 +385,17 @@ insParameterValue._GroupModel = pyxb.binding.content.GroupChoice(
     pyxb.binding.content.ParticleModel(insParameterValue._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'polynomial')), min_occurs=1, max_occurs=1)
     )
 insParameterValue._ContentModel = pyxb.binding.content.ParticleModel(insParameterValue._GroupModel, min_occurs=1, max_occurs=1)
+
+
+
+noise._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Unit'), CommonDM.dm.bas.utd_stub.unit, scope=noise))
+
+noise._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Value'), CommonDM.dm.bas.dtd_stub.listOfDouble, scope=noise))
+noise._GroupModel = pyxb.binding.content.GroupSequence(
+    pyxb.binding.content.ParticleModel(noise._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Value')), min_occurs=1, max_occurs=1),
+    pyxb.binding.content.ParticleModel(noise._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Unit')), min_occurs=1, max_occurs=1)
+    )
+noise._ContentModel = pyxb.binding.content.ParticleModel(noise._GroupModel, min_occurs=1, max_occurs=1)
 
 
 

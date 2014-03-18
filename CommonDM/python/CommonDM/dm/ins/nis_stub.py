@@ -1,7 +1,7 @@
 # /home/nikoapos/ISDC/Projects/Alexandria/1.0/CommonDM/python/CommonDM/dm/ins/nis_stub.py
 # PyXB bindings for NamespaceModule
 # NSM:6e6d3cdee0146c7b53063e709e7bcb83a74176c6
-# Generated 2014-03-17 11:53:47.250325 by PyXB version 1.1.2
+# Generated 2014-03-17 18:50:36.639880 by PyXB version 1.1.2
 import pyxb
 import pyxb.binding
 import pyxb.binding.saxer
@@ -11,18 +11,18 @@ import pyxb.utils.domutils
 import sys
 
 # Unique identifier for bindings created at the same time
-_GenerationUID = pyxb.utils.utility.UniqueIdentifier('urn:uuid:6923c468-adc2-11e3-8fb8-f01faf601f90')
+_GenerationUID = pyxb.utils.utility.UniqueIdentifier('urn:uuid:a3e7637c-adfc-11e3-9f2e-c4d98710dc86')
 
 # Import bindings for namespaces imported into schema
 import pyxb.binding.datatypes
 import CommonDM.dm.bas.fit_stub
-import CommonDM.dm.bas.spm_stub
 import CommonDM.dm.bas.utd_stub
-import CommonDM.dm.bas.dtd_stub
-import CommonDM.dm.sys_stub
-import CommonDM.dm.sys.sgs_stub
 import CommonDM.dm.bas.mat_stub
 import CommonDM.dm.ins_stub
+import CommonDM.dm.sys_stub
+import CommonDM.dm.sys.sgs_stub
+import CommonDM.dm.bas.dtd_stub
+import CommonDM.dm.bas.spm_stub
 
 Namespace = pyxb.namespace.NamespaceForURI(u'http://euclid.esa.org/schema/ins/nis', create_if_missing=True)
 Namespace.configureCategories(['typeBinding', 'elementBinding'])
@@ -94,6 +94,19 @@ grismName.GRED90 = grismName._CF_enumeration.addEnumeration(unicode_value=u'GRED
 grismName._InitializeFacetMap(grismName._CF_enumeration)
 Namespace.addCategoryObject('typeBinding', u'grismName', grismName)
 
+# Atomic SimpleTypeDefinition
+class FPAName (pyxb.binding.datatypes.string, pyxb.binding.basis.enumeration_mixin):
+
+    """An atomic simple type."""
+
+    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'FPAName')
+    _Documentation = None
+FPAName._CF_enumeration = pyxb.binding.facets.CF_enumeration(value_datatype=FPAName, enum_prefix=None)
+FPAName.VIS_FPA = FPAName._CF_enumeration.addEnumeration(unicode_value=u'VIS_FPA')
+FPAName.NISP_FPA = FPAName._CF_enumeration.addEnumeration(unicode_value=u'NISP_FPA')
+FPAName._InitializeFacetMap(FPAName._CF_enumeration)
+Namespace.addCategoryObject('typeBinding', u'FPAName', FPAName)
+
 # Union SimpleTypeDefinition
 # superclasses pyxb.binding.datatypes.anySimpleType
 class nispMode (pyxb.binding.basis.STD_union):
@@ -117,25 +130,12 @@ nispMode._InitializeFacetMap(nispMode._CF_pattern,
    nispMode._CF_enumeration)
 Namespace.addCategoryObject('typeBinding', u'nispMode', nispMode)
 
-# Atomic SimpleTypeDefinition
-class FPAName (pyxb.binding.datatypes.string, pyxb.binding.basis.enumeration_mixin):
-
-    """An atomic simple type."""
-
-    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'FPAName')
-    _Documentation = None
-FPAName._CF_enumeration = pyxb.binding.facets.CF_enumeration(value_datatype=FPAName, enum_prefix=None)
-FPAName.VIS_FPA = FPAName._CF_enumeration.addEnumeration(unicode_value=u'VIS_FPA')
-FPAName.NISP_FPA = FPAName._CF_enumeration.addEnumeration(unicode_value=u'NISP_FPA')
-FPAName._InitializeFacetMap(FPAName._CF_enumeration)
-Namespace.addCategoryObject('typeBinding', u'FPAName', FPAName)
-
-# Complex type cosmicRayMap with content type ELEMENT_ONLY
-class cosmicRayMap (CommonDM.dm.bas.fit_stub.fitsFile):
+# Complex type quantumEfficiencyMap with content type ELEMENT_ONLY
+class quantumEfficiencyMap (CommonDM.dm.bas.fit_stub.fitsFile):
     _TypeDefinition = None
     _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
     _Abstract = False
-    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'cosmicRayMap')
+    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'quantumEfficiencyMap')
     # Base type is CommonDM.dm.bas.fit_stub.fitsFile
     
     # Element DataContainer (DataContainer) inherited from {http://euclid.esa.org/schema/bas/fit}fitsFile
@@ -151,7 +151,7 @@ class cosmicRayMap (CommonDM.dm.bas.fit_stub.fitsFile):
     # Attribute format is restricted from parent
     
     # Attribute format uses Python identifier format
-    __format = pyxb.binding.content.AttributeUse(pyxb.namespace.ExpandedName(None, u'format'), 'format', '__httpeuclid_esa_orgschemabasfit_fitsFile_format', CommonDM.dm.bas.fit_stub.fitsFormatIdentifier, fixed=True, unicode_default=u'nis.cosmicRayMap', required=True)
+    __format = pyxb.binding.content.AttributeUse(pyxb.namespace.ExpandedName(None, u'format'), 'format', '__httpeuclid_esa_orgschemabasfit_fitsFile_format', CommonDM.dm.bas.fit_stub.fitsFormatIdentifier, fixed=True, unicode_default=u'nis.detectorQuantumEfficiencyMap', required=True)
     
     format = property(__format.value, __format.set, None, None)
 
@@ -165,125 +165,7 @@ class cosmicRayMap (CommonDM.dm.bas.fit_stub.fitsFile):
         __version.name() : __version,
         __format.name() : __format
     })
-Namespace.addCategoryObject('typeBinding', u'cosmicRayMap', cosmicRayMap)
-
-
-# Complex type nipOpticsModel with content type ELEMENT_ONLY
-class nipOpticsModel (pyxb.binding.basis.complexTypeDefinition):
-    _TypeDefinition = None
-    _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
-    _Abstract = False
-    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'nipOpticsModel')
-    # Base type is pyxb.binding.datatypes.anyType
-    
-    # Element {http://euclid.esa.org/schema/ins/nis}FilterMode uses Python identifier FilterMode
-    __FilterMode = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'FilterMode'), 'FilterMode', '__httpeuclid_esa_orgschemainsnis_nipOpticsModel_httpeuclid_esa_orgschemainsnisFilterMode', True)
-
-    
-    FilterMode = property(__FilterMode.value, __FilterMode.set, None, None)
-
-
-    _ElementMap = {
-        __FilterMode.name() : __FilterMode
-    }
-    _AttributeMap = {
-        
-    }
-Namespace.addCategoryObject('typeBinding', u'nipOpticsModel', nipOpticsModel)
-
-
-# Complex type darkCurrentMap with content type ELEMENT_ONLY
-class darkCurrentMap (CommonDM.dm.bas.fit_stub.fitsFile):
-    _TypeDefinition = None
-    _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
-    _Abstract = False
-    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'darkCurrentMap')
-    # Base type is CommonDM.dm.bas.fit_stub.fitsFile
-    
-    # Element DataContainer (DataContainer) inherited from {http://euclid.esa.org/schema/bas/fit}fitsFile
-    
-    # Attribute version is restricted from parent
-    
-    # Attribute version uses Python identifier version
-    __version = pyxb.binding.content.AttributeUse(pyxb.namespace.ExpandedName(None, u'version'), 'version', '__httpeuclid_esa_orgschemabasfit_fitsFile_version', CommonDM.dm.bas.fit_stub.fitsFormatVersion, fixed=True, unicode_default=u'0.1', required=True)
-    
-    version = property(__version.value, __version.set, None, None)
-
-    
-    # Attribute format is restricted from parent
-    
-    # Attribute format uses Python identifier format
-    __format = pyxb.binding.content.AttributeUse(pyxb.namespace.ExpandedName(None, u'format'), 'format', '__httpeuclid_esa_orgschemabasfit_fitsFile_format', CommonDM.dm.bas.fit_stub.fitsFormatIdentifier, fixed=True, unicode_default=u'nis.detectorDarkCurrentMap', required=True)
-    
-    format = property(__format.value, __format.set, None, None)
-
-
-    _ElementMap = CommonDM.dm.bas.fit_stub.fitsFile._ElementMap.copy()
-    _ElementMap.update({
-        
-    })
-    _AttributeMap = CommonDM.dm.bas.fit_stub.fitsFile._AttributeMap.copy()
-    _AttributeMap.update({
-        __version.name() : __version,
-        __format.name() : __format
-    })
-Namespace.addCategoryObject('typeBinding', u'darkCurrentMap', darkCurrentMap)
-
-
-# Complex type spectrumRange with content type ELEMENT_ONLY
-class spectrumRange (pyxb.binding.basis.complexTypeDefinition):
-    _TypeDefinition = None
-    _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
-    _Abstract = False
-    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'spectrumRange')
-    # Base type is pyxb.binding.datatypes.anyType
-    
-    # Element {http://euclid.esa.org/schema/ins/nis}MinWavelengthValue uses Python identifier MinWavelengthValue
-    __MinWavelengthValue = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'MinWavelengthValue'), 'MinWavelengthValue', '__httpeuclid_esa_orgschemainsnis_spectrumRange_httpeuclid_esa_orgschemainsnisMinWavelengthValue', False)
-
-    
-    MinWavelengthValue = property(__MinWavelengthValue.value, __MinWavelengthValue.set, None, u'')
-
-    
-    # Element {http://euclid.esa.org/schema/ins/nis}MaxWavelengthValue uses Python identifier MaxWavelengthValue
-    __MaxWavelengthValue = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'MaxWavelengthValue'), 'MaxWavelengthValue', '__httpeuclid_esa_orgschemainsnis_spectrumRange_httpeuclid_esa_orgschemainsnisMaxWavelengthValue', False)
-
-    
-    MaxWavelengthValue = property(__MaxWavelengthValue.value, __MaxWavelengthValue.set, None, u'')
-
-    
-    # Element {http://euclid.esa.org/schema/ins/nis}RangeID uses Python identifier RangeID
-    __RangeID = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'RangeID'), 'RangeID', '__httpeuclid_esa_orgschemainsnis_spectrumRange_httpeuclid_esa_orgschemainsnisRangeID', False)
-
-    
-    RangeID = property(__RangeID.value, __RangeID.set, None, u'Name or ID commonly used for this spectral band')
-
-    
-    # Element {http://euclid.esa.org/schema/ins/nis}Unit uses Python identifier Unit
-    __Unit = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Unit'), 'Unit', '__httpeuclid_esa_orgschemainsnis_spectrumRange_httpeuclid_esa_orgschemainsnisUnit', False)
-
-    
-    Unit = property(__Unit.value, __Unit.set, None, None)
-
-    
-    # Element {http://euclid.esa.org/schema/ins/nis}Resolution uses Python identifier Resolution
-    __Resolution = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Resolution'), 'Resolution', '__httpeuclid_esa_orgschemainsnis_spectrumRange_httpeuclid_esa_orgschemainsnisResolution', False)
-
-    
-    Resolution = property(__Resolution.value, __Resolution.set, None, u'The number of samples is equal to : max - min divided by resolution + 2 ')
-
-
-    _ElementMap = {
-        __MinWavelengthValue.name() : __MinWavelengthValue,
-        __MaxWavelengthValue.name() : __MaxWavelengthValue,
-        __RangeID.name() : __RangeID,
-        __Unit.name() : __Unit,
-        __Resolution.name() : __Resolution
-    }
-    _AttributeMap = {
-        
-    }
-Namespace.addCategoryObject('typeBinding', u'spectrumRange', spectrumRange)
+Namespace.addCategoryObject('typeBinding', u'quantumEfficiencyMap', quantumEfficiencyMap)
 
 
 # Complex type grismModeModel with content type ELEMENT_ONLY
@@ -324,6 +206,30 @@ class grismModeModel (pyxb.binding.basis.complexTypeDefinition):
         
     }
 Namespace.addCategoryObject('typeBinding', u'grismModeModel', grismModeModel)
+
+
+# Complex type nisOpticsModel with content type ELEMENT_ONLY
+class nisOpticsModel (pyxb.binding.basis.complexTypeDefinition):
+    _TypeDefinition = None
+    _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
+    _Abstract = False
+    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'nisOpticsModel')
+    # Base type is pyxb.binding.datatypes.anyType
+    
+    # Element {http://euclid.esa.org/schema/ins/nis}GrismMode uses Python identifier GrismMode
+    __GrismMode = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'GrismMode'), 'GrismMode', '__httpeuclid_esa_orgschemainsnis_nisOpticsModel_httpeuclid_esa_orgschemainsnisGrismMode', True)
+
+    
+    GrismMode = property(__GrismMode.value, __GrismMode.set, None, None)
+
+
+    _ElementMap = {
+        __GrismMode.name() : __GrismMode
+    }
+    _AttributeMap = {
+        
+    }
+Namespace.addCategoryObject('typeBinding', u'nisOpticsModel', nisOpticsModel)
 
 
 # Complex type grismOrderModel with content type ELEMENT_ONLY
@@ -398,164 +304,28 @@ class grismOrderModel (pyxb.binding.basis.complexTypeDefinition):
 Namespace.addCategoryObject('typeBinding', u'grismOrderModel', grismOrderModel)
 
 
-# Complex type curvatureModel with content type ELEMENT_ONLY
-class curvatureModel (pyxb.binding.basis.complexTypeDefinition):
+# Complex type grismOrderList with content type ELEMENT_ONLY
+class grismOrderList (pyxb.binding.basis.complexTypeDefinition):
     _TypeDefinition = None
     _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
     _Abstract = False
-    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'curvatureModel')
+    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'grismOrderList')
     # Base type is pyxb.binding.datatypes.anyType
     
-    # Element {http://euclid.esa.org/schema/ins/nis}Unit uses Python identifier Unit
-    __Unit = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Unit'), 'Unit', '__httpeuclid_esa_orgschemainsnis_curvatureModel_httpeuclid_esa_orgschemainsnisUnit', False)
+    # Element {http://euclid.esa.org/schema/ins/nis}GrismOrder uses Python identifier GrismOrder
+    __GrismOrder = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'GrismOrder'), 'GrismOrder', '__httpeuclid_esa_orgschemainsnis_grismOrderList_httpeuclid_esa_orgschemainsnisGrismOrder', True)
 
     
-    Unit = property(__Unit.value, __Unit.set, None, u'The unit used to describe the Start, End and polynomial coefficients of the trace. Default: um')
-
-    
-    # Element {http://euclid.esa.org/schema/ins/nis}DispAngle uses Python identifier DispAngle
-    __DispAngle = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'DispAngle'), 'DispAngle', '__httpeuclid_esa_orgschemainsnis_curvatureModel_httpeuclid_esa_orgschemainsnisDispAngle', False)
-
-    
-    DispAngle = property(__DispAngle.value, __DispAngle.set, None, u'The dispersion direction (0 or 90). Counter-clockwise in the FPA frame.')
-
-    
-    # Element {http://euclid.esa.org/schema/ins/nis}PolyOrder uses Python identifier PolyOrder
-    __PolyOrder = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'PolyOrder'), 'PolyOrder', '__httpeuclid_esa_orgschemainsnis_curvatureModel_httpeuclid_esa_orgschemainsnisPolyOrder', False)
-
-    
-    PolyOrder = property(__PolyOrder.value, __PolyOrder.set, None, u'The order of the polynomial DY = a0 + a1 DX + a2 DX^2 + ...')
-
-    
-    # Element {http://euclid.esa.org/schema/ins/nis}Version uses Python identifier Version
-    __Version = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Version'), 'Version', '__httpeuclid_esa_orgschemainsnis_curvatureModel_httpeuclid_esa_orgschemainsnisVersion', False)
-
-    
-    Version = property(__Version.value, __Version.set, None, None)
-
-    
-    # Element {http://euclid.esa.org/schema/ins/nis}End uses Python identifier End
-    __End = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'End'), 'End', '__httpeuclid_esa_orgschemainsnis_curvatureModel_httpeuclid_esa_orgschemainsnisEnd', False)
-
-    
-    End = property(__End.value, __End.set, None, u'The position of the end of the spectrum in the dispersion direction, blueward of the reference wavelength.')
-
-    
-    # Element {http://euclid.esa.org/schema/ins/nis}Start uses Python identifier Start
-    __Start = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Start'), 'Start', '__httpeuclid_esa_orgschemainsnis_curvatureModel_httpeuclid_esa_orgschemainsnisStart', False)
-
-    
-    Start = property(__Start.value, __Start.set, None, u'The position of the beginning of the spectrum in the dispersion direction, redward of the reference wavelength.')
-
-    
-    # Element {http://euclid.esa.org/schema/ins/nis}ComputationDate uses Python identifier ComputationDate
-    __ComputationDate = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'ComputationDate'), 'ComputationDate', '__httpeuclid_esa_orgschemainsnis_curvatureModel_httpeuclid_esa_orgschemainsnisComputationDate', False)
-
-    
-    ComputationDate = property(__ComputationDate.value, __ComputationDate.set, None, None)
-
-    
-    # Element {http://euclid.esa.org/schema/ins/nis}CalibrationDataPath uses Python identifier CalibrationDataPath
-    __CalibrationDataPath = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'CalibrationDataPath'), 'CalibrationDataPath', '__httpeuclid_esa_orgschemainsnis_curvatureModel_httpeuclid_esa_orgschemainsnisCalibrationDataPath', False)
-
-    
-    CalibrationDataPath = property(__CalibrationDataPath.value, __CalibrationDataPath.set, None, None)
-
-    
-    # Element {http://euclid.esa.org/schema/ins/nis}Coefficients uses Python identifier Coefficients
-    __Coefficients = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Coefficients'), 'Coefficients', '__httpeuclid_esa_orgschemainsnis_curvatureModel_httpeuclid_esa_orgschemainsnisCoefficients', True)
-
-    
-    Coefficients = property(__Coefficients.value, __Coefficients.set, None, u'The coefficients of the polynomial DY = a0 + a1 DX + a2 DX^2 + ... Each coefficient (a0, a1, a2, etc) can be a constant or a 2D xy field dependent polynomial. ')
+    GrismOrder = property(__GrismOrder.value, __GrismOrder.set, None, None)
 
 
     _ElementMap = {
-        __Unit.name() : __Unit,
-        __DispAngle.name() : __DispAngle,
-        __PolyOrder.name() : __PolyOrder,
-        __Version.name() : __Version,
-        __End.name() : __End,
-        __Start.name() : __Start,
-        __ComputationDate.name() : __ComputationDate,
-        __CalibrationDataPath.name() : __CalibrationDataPath,
-        __Coefficients.name() : __Coefficients
+        __GrismOrder.name() : __GrismOrder
     }
     _AttributeMap = {
         
     }
-Namespace.addCategoryObject('typeBinding', u'curvatureModel', curvatureModel)
-
-
-# Complex type dispersionFunction with content type ELEMENT_ONLY
-class dispersionFunction (pyxb.binding.basis.complexTypeDefinition):
-    _TypeDefinition = None
-    _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
-    _Abstract = False
-    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'dispersionFunction')
-    # Base type is pyxb.binding.datatypes.anyType
-    
-    # Element {http://euclid.esa.org/schema/ins/nis}Coefficients uses Python identifier Coefficients
-    __Coefficients = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Coefficients'), 'Coefficients', '__httpeuclid_esa_orgschemainsnis_dispersionFunction_httpeuclid_esa_orgschemainsnisCoefficients', True)
-
-    
-    Coefficients = property(__Coefficients.value, __Coefficients.set, None, u'The coefficients of the polynomial DL = a0 + a1 DX + a2 DX^2 + ..., where DX is the distance along the trace. Each coefficient (a0, a1, a2, etc) can be a constant or a 2D xy field dependent polynomial. ')
-
-    
-    # Element {http://euclid.esa.org/schema/ins/nis}ComputationDate uses Python identifier ComputationDate
-    __ComputationDate = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'ComputationDate'), 'ComputationDate', '__httpeuclid_esa_orgschemainsnis_dispersionFunction_httpeuclid_esa_orgschemainsnisComputationDate', False)
-
-    
-    ComputationDate = property(__ComputationDate.value, __ComputationDate.set, None, None)
-
-    
-    # Element {http://euclid.esa.org/schema/ins/nis}CalibrationDataPath uses Python identifier CalibrationDataPath
-    __CalibrationDataPath = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'CalibrationDataPath'), 'CalibrationDataPath', '__httpeuclid_esa_orgschemainsnis_dispersionFunction_httpeuclid_esa_orgschemainsnisCalibrationDataPath', False)
-
-    
-    CalibrationDataPath = property(__CalibrationDataPath.value, __CalibrationDataPath.set, None, None)
-
-    
-    # Element {http://euclid.esa.org/schema/ins/nis}DXUnit uses Python identifier DXUnit
-    __DXUnit = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'DXUnit'), 'DXUnit', '__httpeuclid_esa_orgschemainsnis_dispersionFunction_httpeuclid_esa_orgschemainsnisDXUnit', False)
-
-    
-    DXUnit = property(__DXUnit.value, __DXUnit.set, None, u'The unit used for the displacement DX in the dispersion function. Default: um')
-
-    
-    # Element {http://euclid.esa.org/schema/ins/nis}PolyOrder uses Python identifier PolyOrder
-    __PolyOrder = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'PolyOrder'), 'PolyOrder', '__httpeuclid_esa_orgschemainsnis_dispersionFunction_httpeuclid_esa_orgschemainsnisPolyOrder', False)
-
-    
-    PolyOrder = property(__PolyOrder.value, __PolyOrder.set, None, u'The order of the polynomial DL = a0 + a1 DX + a2 DX^2 + ..., where DX is the distance along the trace.')
-
-    
-    # Element {http://euclid.esa.org/schema/ins/nis}DLUnit uses Python identifier DLUnit
-    __DLUnit = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'DLUnit'), 'DLUnit', '__httpeuclid_esa_orgschemainsnis_dispersionFunction_httpeuclid_esa_orgschemainsnisDLUnit', False)
-
-    
-    DLUnit = property(__DLUnit.value, __DLUnit.set, None, u'The unit used for the dispersion DL in the dispersion function. Default: Angstrom')
-
-    
-    # Element {http://euclid.esa.org/schema/ins/nis}Version uses Python identifier Version
-    __Version = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Version'), 'Version', '__httpeuclid_esa_orgschemainsnis_dispersionFunction_httpeuclid_esa_orgschemainsnisVersion', False)
-
-    
-    Version = property(__Version.value, __Version.set, None, None)
-
-
-    _ElementMap = {
-        __Coefficients.name() : __Coefficients,
-        __ComputationDate.name() : __ComputationDate,
-        __CalibrationDataPath.name() : __CalibrationDataPath,
-        __DXUnit.name() : __DXUnit,
-        __PolyOrder.name() : __PolyOrder,
-        __DLUnit.name() : __DLUnit,
-        __Version.name() : __Version
-    }
-    _AttributeMap = {
-        
-    }
-Namespace.addCategoryObject('typeBinding', u'dispersionFunction', dispersionFunction)
+Namespace.addCategoryObject('typeBinding', u'grismOrderList', grismOrderList)
 
 
 # Complex type distortionModel with content type ELEMENT_ONLY
@@ -596,6 +366,108 @@ class distortionModel (pyxb.binding.basis.complexTypeDefinition):
         
     }
 Namespace.addCategoryObject('typeBinding', u'distortionModel', distortionModel)
+
+
+# Complex type psf with content type ELEMENT_ONLY
+class psf (pyxb.binding.basis.complexTypeDefinition):
+    _TypeDefinition = None
+    _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
+    _Abstract = False
+    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'psf')
+    # Base type is pyxb.binding.datatypes.anyType
+    
+    # Element {http://euclid.esa.org/schema/ins/nis}DoubleGaussian uses Python identifier DoubleGaussian
+    __DoubleGaussian = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'DoubleGaussian'), 'DoubleGaussian', '__httpeuclid_esa_orgschemainsnis_psf_httpeuclid_esa_orgschemainsnisDoubleGaussian', False)
+
+    
+    DoubleGaussian = property(__DoubleGaussian.value, __DoubleGaussian.set, None, None)
+
+    
+    # Element {http://euclid.esa.org/schema/ins/nis}AnalyticExpression uses Python identifier AnalyticExpression
+    __AnalyticExpression = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'AnalyticExpression'), 'AnalyticExpression', '__httpeuclid_esa_orgschemainsnis_psf_httpeuclid_esa_orgschemainsnisAnalyticExpression', False)
+
+    
+    AnalyticExpression = property(__AnalyticExpression.value, __AnalyticExpression.set, None, None)
+
+    
+    # Element {http://euclid.esa.org/schema/ins/nis}DataCube uses Python identifier DataCube
+    __DataCube = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'DataCube'), 'DataCube', '__httpeuclid_esa_orgschemainsnis_psf_httpeuclid_esa_orgschemainsnisDataCube', False)
+
+    
+    DataCube = property(__DataCube.value, __DataCube.set, None, None)
+
+
+    _ElementMap = {
+        __DoubleGaussian.name() : __DoubleGaussian,
+        __AnalyticExpression.name() : __AnalyticExpression,
+        __DataCube.name() : __DataCube
+    }
+    _AttributeMap = {
+        
+    }
+Namespace.addCategoryObject('typeBinding', u'psf', psf)
+
+
+# Complex type transmissionFitsFile with content type ELEMENT_ONLY
+class transmissionFitsFile (CommonDM.dm.bas.fit_stub.fitsFile):
+    _TypeDefinition = None
+    _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
+    _Abstract = False
+    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'transmissionFitsFile')
+    # Base type is CommonDM.dm.bas.fit_stub.fitsFile
+    
+    # Element DataContainer (DataContainer) inherited from {http://euclid.esa.org/schema/bas/fit}fitsFile
+    
+    # Attribute version is restricted from parent
+    
+    # Attribute version uses Python identifier version
+    __version = pyxb.binding.content.AttributeUse(pyxb.namespace.ExpandedName(None, u'version'), 'version', '__httpeuclid_esa_orgschemabasfit_fitsFile_version', CommonDM.dm.bas.fit_stub.fitsFormatVersion, fixed=True, unicode_default=u'0.1', required=True)
+    
+    version = property(__version.value, __version.set, None, None)
+
+    
+    # Attribute format is restricted from parent
+    
+    # Attribute format uses Python identifier format
+    __format = pyxb.binding.content.AttributeUse(pyxb.namespace.ExpandedName(None, u'format'), 'format', '__httpeuclid_esa_orgschemabasfit_fitsFile_format', CommonDM.dm.bas.fit_stub.fitsFormatIdentifier, fixed=True, unicode_default=u'nis.transmission', required=True)
+    
+    format = property(__format.value, __format.set, None, None)
+
+
+    _ElementMap = CommonDM.dm.bas.fit_stub.fitsFile._ElementMap.copy()
+    _ElementMap.update({
+        
+    })
+    _AttributeMap = CommonDM.dm.bas.fit_stub.fitsFile._AttributeMap.copy()
+    _AttributeMap.update({
+        __version.name() : __version,
+        __format.name() : __format
+    })
+Namespace.addCategoryObject('typeBinding', u'transmissionFitsFile', transmissionFitsFile)
+
+
+# Complex type nipOpticsModel with content type ELEMENT_ONLY
+class nipOpticsModel (pyxb.binding.basis.complexTypeDefinition):
+    _TypeDefinition = None
+    _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
+    _Abstract = False
+    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'nipOpticsModel')
+    # Base type is pyxb.binding.datatypes.anyType
+    
+    # Element {http://euclid.esa.org/schema/ins/nis}FilterMode uses Python identifier FilterMode
+    __FilterMode = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'FilterMode'), 'FilterMode', '__httpeuclid_esa_orgschemainsnis_nipOpticsModel_httpeuclid_esa_orgschemainsnisFilterMode', True)
+
+    
+    FilterMode = property(__FilterMode.value, __FilterMode.set, None, None)
+
+
+    _ElementMap = {
+        __FilterMode.name() : __FilterMode
+    }
+    _AttributeMap = {
+        
+    }
+Namespace.addCategoryObject('typeBinding', u'nipOpticsModel', nipOpticsModel)
 
 
 # Complex type filterModeModel with content type ELEMENT_ONLY
@@ -646,36 +518,52 @@ class filterModeModel (pyxb.binding.basis.complexTypeDefinition):
 Namespace.addCategoryObject('typeBinding', u'filterModeModel', filterModeModel)
 
 
-# Complex type pixelPSF with content type ELEMENT_ONLY
-class pixelPSF (pyxb.binding.basis.complexTypeDefinition):
+# Complex type focalPlaneArrangement with content type ELEMENT_ONLY
+class focalPlaneArrangement (pyxb.binding.basis.complexTypeDefinition):
     _TypeDefinition = None
     _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
     _Abstract = False
-    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'pixelPSF')
+    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'focalPlaneArrangement')
     # Base type is pyxb.binding.datatypes.anyType
     
-    # Element {http://euclid.esa.org/schema/ins/nis}FitsCubeImage uses Python identifier FitsCubeImage
-    __FitsCubeImage = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'FitsCubeImage'), 'FitsCubeImage', '__httpeuclid_esa_orgschemainsnis_pixelPSF_httpeuclid_esa_orgschemainsnisFitsCubeImage', True)
+    # Element {http://euclid.esa.org/schema/ins/nis}NumberOfColumns uses Python identifier NumberOfColumns
+    __NumberOfColumns = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'NumberOfColumns'), 'NumberOfColumns', '__httpeuclid_esa_orgschemainsnis_focalPlaneArrangement_httpeuclid_esa_orgschemainsnisNumberOfColumns', False)
 
     
-    FitsCubeImage = property(__FitsCubeImage.value, __FitsCubeImage.set, None, None)
+    NumberOfColumns = property(__NumberOfColumns.value, __NumberOfColumns.set, None, u'Number of columns of detectors.')
 
     
-    # Element {http://euclid.esa.org/schema/ins/nis}ReferenceChip uses Python identifier ReferenceChip
-    __ReferenceChip = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'ReferenceChip'), 'ReferenceChip', '__httpeuclid_esa_orgschemainsnis_pixelPSF_httpeuclid_esa_orgschemainsnisReferenceChip', True)
+    # Element {http://euclid.esa.org/schema/ins/nis}DetectorPositionList uses Python identifier DetectorPositionList
+    __DetectorPositionList = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'DetectorPositionList'), 'DetectorPositionList', '__httpeuclid_esa_orgschemainsnis_focalPlaneArrangement_httpeuclid_esa_orgschemainsnisDetectorPositionList', False)
 
     
-    ReferenceChip = property(__ReferenceChip.value, __ReferenceChip.set, None, None)
+    DetectorPositionList = property(__DetectorPositionList.value, __DetectorPositionList.set, None, u'The detectors in the FPA.')
+
+    
+    # Element {http://euclid.esa.org/schema/ins/nis}Identifier uses Python identifier Identifier
+    __Identifier = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Identifier'), 'Identifier', '__httpeuclid_esa_orgschemainsnis_focalPlaneArrangement_httpeuclid_esa_orgschemainsnisIdentifier', False)
+
+    
+    Identifier = property(__Identifier.value, __Identifier.set, None, None)
+
+    
+    # Element {http://euclid.esa.org/schema/ins/nis}NumberOfRows uses Python identifier NumberOfRows
+    __NumberOfRows = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'NumberOfRows'), 'NumberOfRows', '__httpeuclid_esa_orgschemainsnis_focalPlaneArrangement_httpeuclid_esa_orgschemainsnisNumberOfRows', False)
+
+    
+    NumberOfRows = property(__NumberOfRows.value, __NumberOfRows.set, None, u'Number of rows of detectors.')
 
 
     _ElementMap = {
-        __FitsCubeImage.name() : __FitsCubeImage,
-        __ReferenceChip.name() : __ReferenceChip
+        __NumberOfColumns.name() : __NumberOfColumns,
+        __DetectorPositionList.name() : __DetectorPositionList,
+        __Identifier.name() : __Identifier,
+        __NumberOfRows.name() : __NumberOfRows
     }
     _AttributeMap = {
         
     }
-Namespace.addCategoryObject('typeBinding', u'pixelPSF', pixelPSF)
+Namespace.addCategoryObject('typeBinding', u'focalPlaneArrangement', focalPlaneArrangement)
 
 
 # Complex type nispNoiseModel with content type ELEMENT_ONLY
@@ -766,44 +654,6 @@ class straylightNoiseModel (pyxb.binding.basis.complexTypeDefinition):
 Namespace.addCategoryObject('typeBinding', u'straylightNoiseModel', straylightNoiseModel)
 
 
-# Complex type transmissionFitsFile with content type ELEMENT_ONLY
-class transmissionFitsFile (CommonDM.dm.bas.fit_stub.fitsFile):
-    _TypeDefinition = None
-    _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
-    _Abstract = False
-    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'transmissionFitsFile')
-    # Base type is CommonDM.dm.bas.fit_stub.fitsFile
-    
-    # Element DataContainer (DataContainer) inherited from {http://euclid.esa.org/schema/bas/fit}fitsFile
-    
-    # Attribute version is restricted from parent
-    
-    # Attribute version uses Python identifier version
-    __version = pyxb.binding.content.AttributeUse(pyxb.namespace.ExpandedName(None, u'version'), 'version', '__httpeuclid_esa_orgschemabasfit_fitsFile_version', CommonDM.dm.bas.fit_stub.fitsFormatVersion, fixed=True, unicode_default=u'0.1', required=True)
-    
-    version = property(__version.value, __version.set, None, None)
-
-    
-    # Attribute format is restricted from parent
-    
-    # Attribute format uses Python identifier format
-    __format = pyxb.binding.content.AttributeUse(pyxb.namespace.ExpandedName(None, u'format'), 'format', '__httpeuclid_esa_orgschemabasfit_fitsFile_format', CommonDM.dm.bas.fit_stub.fitsFormatIdentifier, fixed=True, unicode_default=u'nis.transmission', required=True)
-    
-    format = property(__format.value, __format.set, None, None)
-
-
-    _ElementMap = CommonDM.dm.bas.fit_stub.fitsFile._ElementMap.copy()
-    _ElementMap.update({
-        
-    })
-    _AttributeMap = CommonDM.dm.bas.fit_stub.fitsFile._AttributeMap.copy()
-    _AttributeMap.update({
-        __version.name() : __version,
-        __format.name() : __format
-    })
-Namespace.addCategoryObject('typeBinding', u'transmissionFitsFile', transmissionFitsFile)
-
-
 # Complex type thermalNoiseModel with content type ELEMENT_ONLY
 class thermalNoiseModel (pyxb.binding.basis.complexTypeDefinition):
     _TypeDefinition = None
@@ -860,76 +710,6 @@ class thermalNoiseModel (pyxb.binding.basis.complexTypeDefinition):
 Namespace.addCategoryObject('typeBinding', u'thermalNoiseModel', thermalNoiseModel)
 
 
-# Complex type detectorSize with content type ELEMENT_ONLY
-class detectorSize (pyxb.binding.basis.complexTypeDefinition):
-    _TypeDefinition = None
-    _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
-    _Abstract = False
-    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'detectorSize')
-    # Base type is pyxb.binding.datatypes.anyType
-    
-    # Element {http://euclid.esa.org/schema/ins/nis}NumberOfPixelsInX uses Python identifier NumberOfPixelsInX
-    __NumberOfPixelsInX = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'NumberOfPixelsInX'), 'NumberOfPixelsInX', '__httpeuclid_esa_orgschemainsnis_detectorSize_httpeuclid_esa_orgschemainsnisNumberOfPixelsInX', False)
-
-    
-    NumberOfPixelsInX = property(__NumberOfPixelsInX.value, __NumberOfPixelsInX.set, None, u'Number of pixels in X direction.')
-
-    
-    # Element {http://euclid.esa.org/schema/ins/nis}NumberOfPixelsInY uses Python identifier NumberOfPixelsInY
-    __NumberOfPixelsInY = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'NumberOfPixelsInY'), 'NumberOfPixelsInY', '__httpeuclid_esa_orgschemainsnis_detectorSize_httpeuclid_esa_orgschemainsnisNumberOfPixelsInY', False)
-
-    
-    NumberOfPixelsInY = property(__NumberOfPixelsInY.value, __NumberOfPixelsInY.set, None, u'Number of pixels in Y direction.')
-
-
-    _ElementMap = {
-        __NumberOfPixelsInX.name() : __NumberOfPixelsInX,
-        __NumberOfPixelsInY.name() : __NumberOfPixelsInY
-    }
-    _AttributeMap = {
-        
-    }
-Namespace.addCategoryObject('typeBinding', u'detectorSize', detectorSize)
-
-
-# Complex type readoutNoiseMap with content type ELEMENT_ONLY
-class readoutNoiseMap (CommonDM.dm.bas.fit_stub.fitsFile):
-    _TypeDefinition = None
-    _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
-    _Abstract = False
-    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'readoutNoiseMap')
-    # Base type is CommonDM.dm.bas.fit_stub.fitsFile
-    
-    # Element DataContainer (DataContainer) inherited from {http://euclid.esa.org/schema/bas/fit}fitsFile
-    
-    # Attribute version is restricted from parent
-    
-    # Attribute version uses Python identifier version
-    __version = pyxb.binding.content.AttributeUse(pyxb.namespace.ExpandedName(None, u'version'), 'version', '__httpeuclid_esa_orgschemabasfit_fitsFile_version', CommonDM.dm.bas.fit_stub.fitsFormatVersion, fixed=True, unicode_default=u'0.1', required=True)
-    
-    version = property(__version.value, __version.set, None, None)
-
-    
-    # Attribute format is restricted from parent
-    
-    # Attribute format uses Python identifier format
-    __format = pyxb.binding.content.AttributeUse(pyxb.namespace.ExpandedName(None, u'format'), 'format', '__httpeuclid_esa_orgschemabasfit_fitsFile_format', CommonDM.dm.bas.fit_stub.fitsFormatIdentifier, fixed=True, unicode_default=u'nis.detectorReadoutNoiseMap', required=True)
-    
-    format = property(__format.value, __format.set, None, None)
-
-
-    _ElementMap = CommonDM.dm.bas.fit_stub.fitsFile._ElementMap.copy()
-    _ElementMap.update({
-        
-    })
-    _AttributeMap = CommonDM.dm.bas.fit_stub.fitsFile._AttributeMap.copy()
-    _AttributeMap.update({
-        __version.name() : __version,
-        __format.name() : __format
-    })
-Namespace.addCategoryObject('typeBinding', u'readoutNoiseMap', readoutNoiseMap)
-
-
 # Complex type darkCurrentModel with content type ELEMENT_ONLY
 class darkCurrentModel (pyxb.binding.basis.complexTypeDefinition):
     _TypeDefinition = None
@@ -954,116 +734,42 @@ class darkCurrentModel (pyxb.binding.basis.complexTypeDefinition):
 Namespace.addCategoryObject('typeBinding', u'darkCurrentModel', darkCurrentModel)
 
 
-# Complex type quantumEfficiencyModel with content type ELEMENT_ONLY
-class quantumEfficiencyModel (pyxb.binding.basis.complexTypeDefinition):
+# Complex type quantumEfficiencyCube with content type ELEMENT_ONLY
+class quantumEfficiencyCube (CommonDM.dm.bas.fit_stub.fitsFile):
     _TypeDefinition = None
     _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
     _Abstract = False
-    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'quantumEfficiencyModel')
-    # Base type is pyxb.binding.datatypes.anyType
+    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'quantumEfficiencyCube')
+    # Base type is CommonDM.dm.bas.fit_stub.fitsFile
     
-    # Element {http://euclid.esa.org/schema/ins/nis}QuantumEfficiencyMap uses Python identifier QuantumEfficiencyMap
-    __QuantumEfficiencyMap = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'QuantumEfficiencyMap'), 'QuantumEfficiencyMap', '__httpeuclid_esa_orgschemainsnis_quantumEfficiencyModel_httpeuclid_esa_orgschemainsnisQuantumEfficiencyMap', False)
+    # Element DataContainer (DataContainer) inherited from {http://euclid.esa.org/schema/bas/fit}fitsFile
+    
+    # Attribute version is restricted from parent
+    
+    # Attribute version uses Python identifier version
+    __version = pyxb.binding.content.AttributeUse(pyxb.namespace.ExpandedName(None, u'version'), 'version', '__httpeuclid_esa_orgschemabasfit_fitsFile_version', CommonDM.dm.bas.fit_stub.fitsFormatVersion, fixed=True, unicode_default=u'0.1', required=True)
+    
+    version = property(__version.value, __version.set, None, None)
 
     
-    QuantumEfficiencyMap = property(__QuantumEfficiencyMap.value, __QuantumEfficiencyMap.set, None, None)
-
+    # Attribute format is restricted from parent
     
-    # Element {http://euclid.esa.org/schema/ins/nis}QuantumEfficiencyCube uses Python identifier QuantumEfficiencyCube
-    __QuantumEfficiencyCube = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'QuantumEfficiencyCube'), 'QuantumEfficiencyCube', '__httpeuclid_esa_orgschemainsnis_quantumEfficiencyModel_httpeuclid_esa_orgschemainsnisQuantumEfficiencyCube', False)
-
+    # Attribute format uses Python identifier format
+    __format = pyxb.binding.content.AttributeUse(pyxb.namespace.ExpandedName(None, u'format'), 'format', '__httpeuclid_esa_orgschemabasfit_fitsFile_format', CommonDM.dm.bas.fit_stub.fitsFormatIdentifier, fixed=True, unicode_default=u'nis.detectorQuantumEfficiencyCube', required=True)
     
-    QuantumEfficiencyCube = property(__QuantumEfficiencyCube.value, __QuantumEfficiencyCube.set, None, None)
+    format = property(__format.value, __format.set, None, None)
 
 
-    _ElementMap = {
-        __QuantumEfficiencyMap.name() : __QuantumEfficiencyMap,
-        __QuantumEfficiencyCube.name() : __QuantumEfficiencyCube
-    }
-    _AttributeMap = {
+    _ElementMap = CommonDM.dm.bas.fit_stub.fitsFile._ElementMap.copy()
+    _ElementMap.update({
         
-    }
-Namespace.addCategoryObject('typeBinding', u'quantumEfficiencyModel', quantumEfficiencyModel)
-
-
-# Complex type readoutNoiseModel with content type ELEMENT_ONLY
-class readoutNoiseModel (pyxb.binding.basis.complexTypeDefinition):
-    _TypeDefinition = None
-    _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
-    _Abstract = False
-    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'readoutNoiseModel')
-    # Base type is pyxb.binding.datatypes.anyType
-    
-    # Element {http://euclid.esa.org/schema/ins/nis}ReadoutNoiseMap uses Python identifier ReadoutNoiseMap
-    __ReadoutNoiseMap = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'ReadoutNoiseMap'), 'ReadoutNoiseMap', '__httpeuclid_esa_orgschemainsnis_readoutNoiseModel_httpeuclid_esa_orgschemainsnisReadoutNoiseMap', False)
-
-    
-    ReadoutNoiseMap = property(__ReadoutNoiseMap.value, __ReadoutNoiseMap.set, None, None)
-
-
-    _ElementMap = {
-        __ReadoutNoiseMap.name() : __ReadoutNoiseMap
-    }
-    _AttributeMap = {
-        
-    }
-Namespace.addCategoryObject('typeBinding', u'readoutNoiseModel', readoutNoiseModel)
-
-
-# Complex type exposureTime with content type ELEMENT_ONLY
-class exposureTime (pyxb.binding.basis.complexTypeDefinition):
-    _TypeDefinition = None
-    _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
-    _Abstract = False
-    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'exposureTime')
-    # Base type is pyxb.binding.datatypes.anyType
-    
-    # Element {http://euclid.esa.org/schema/ins/nis}Unit uses Python identifier Unit
-    __Unit = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Unit'), 'Unit', '__httpeuclid_esa_orgschemainsnis_exposureTime_httpeuclid_esa_orgschemainsnisUnit', False)
-
-    
-    Unit = property(__Unit.value, __Unit.set, None, None)
-
-    
-    # Element {http://euclid.esa.org/schema/ins/nis}Value uses Python identifier Value
-    __Value = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Value'), 'Value', '__httpeuclid_esa_orgschemainsnis_exposureTime_httpeuclid_esa_orgschemainsnisValue', False)
-
-    
-    Value = property(__Value.value, __Value.set, None, None)
-
-
-    _ElementMap = {
-        __Unit.name() : __Unit,
-        __Value.name() : __Value
-    }
-    _AttributeMap = {
-        
-    }
-Namespace.addCategoryObject('typeBinding', u'exposureTime', exposureTime)
-
-
-# Complex type cosmicRayModel with content type ELEMENT_ONLY
-class cosmicRayModel (pyxb.binding.basis.complexTypeDefinition):
-    _TypeDefinition = None
-    _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
-    _Abstract = False
-    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'cosmicRayModel')
-    # Base type is pyxb.binding.datatypes.anyType
-    
-    # Element {http://euclid.esa.org/schema/ins/nis}CosmicRayMap uses Python identifier CosmicRayMap
-    __CosmicRayMap = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'CosmicRayMap'), 'CosmicRayMap', '__httpeuclid_esa_orgschemainsnis_cosmicRayModel_httpeuclid_esa_orgschemainsnisCosmicRayMap', False)
-
-    
-    CosmicRayMap = property(__CosmicRayMap.value, __CosmicRayMap.set, None, None)
-
-
-    _ElementMap = {
-        __CosmicRayMap.name() : __CosmicRayMap
-    }
-    _AttributeMap = {
-        
-    }
-Namespace.addCategoryObject('typeBinding', u'cosmicRayModel', cosmicRayModel)
+    })
+    _AttributeMap = CommonDM.dm.bas.fit_stub.fitsFile._AttributeMap.copy()
+    _AttributeMap.update({
+        __version.name() : __version,
+        __format.name() : __format
+    })
+Namespace.addCategoryObject('typeBinding', u'quantumEfficiencyCube', quantumEfficiencyCube)
 
 
 # Complex type detector with content type ELEMENT_ONLY
@@ -1102,18 +808,18 @@ class detector (pyxb.binding.basis.complexTypeDefinition):
     CosmicRayModel = property(__CosmicRayModel.value, __CosmicRayModel.set, None, u'The simulated cosmic ray map of the detector.')
 
     
-    # Element {http://euclid.esa.org/schema/ins/nis}ReadoutNoiseModel uses Python identifier ReadoutNoiseModel
-    __ReadoutNoiseModel = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'ReadoutNoiseModel'), 'ReadoutNoiseModel', '__httpeuclid_esa_orgschemainsnis_detector_httpeuclid_esa_orgschemainsnisReadoutNoiseModel', False)
-
-    
-    ReadoutNoiseModel = property(__ReadoutNoiseModel.value, __ReadoutNoiseModel.set, None, u'The readout noise model of the detector.')
-
-    
     # Element {http://euclid.esa.org/schema/ins/nis}Identifier uses Python identifier Identifier
     __Identifier = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Identifier'), 'Identifier', '__httpeuclid_esa_orgschemainsnis_detector_httpeuclid_esa_orgschemainsnisIdentifier', False)
 
     
     Identifier = property(__Identifier.value, __Identifier.set, None, None)
+
+    
+    # Element {http://euclid.esa.org/schema/ins/nis}ReadoutNoiseModel uses Python identifier ReadoutNoiseModel
+    __ReadoutNoiseModel = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'ReadoutNoiseModel'), 'ReadoutNoiseModel', '__httpeuclid_esa_orgschemainsnis_detector_httpeuclid_esa_orgschemainsnisReadoutNoiseModel', False)
+
+    
+    ReadoutNoiseModel = property(__ReadoutNoiseModel.value, __ReadoutNoiseModel.set, None, u'The readout noise model of the detector.')
 
 
     _ElementMap = {
@@ -1121,13 +827,37 @@ class detector (pyxb.binding.basis.complexTypeDefinition):
         __DarkCurrentModel.name() : __DarkCurrentModel,
         __QuantumEfficiencyModel.name() : __QuantumEfficiencyModel,
         __CosmicRayModel.name() : __CosmicRayModel,
-        __ReadoutNoiseModel.name() : __ReadoutNoiseModel,
-        __Identifier.name() : __Identifier
+        __Identifier.name() : __Identifier,
+        __ReadoutNoiseModel.name() : __ReadoutNoiseModel
     }
     _AttributeMap = {
         
     }
 Namespace.addCategoryObject('typeBinding', u'detector', detector)
+
+
+# Complex type cosmicRayModel with content type ELEMENT_ONLY
+class cosmicRayModel (pyxb.binding.basis.complexTypeDefinition):
+    _TypeDefinition = None
+    _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
+    _Abstract = False
+    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'cosmicRayModel')
+    # Base type is pyxb.binding.datatypes.anyType
+    
+    # Element {http://euclid.esa.org/schema/ins/nis}CosmicRayMap uses Python identifier CosmicRayMap
+    __CosmicRayMap = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'CosmicRayMap'), 'CosmicRayMap', '__httpeuclid_esa_orgschemainsnis_cosmicRayModel_httpeuclid_esa_orgschemainsnisCosmicRayMap', False)
+
+    
+    CosmicRayMap = property(__CosmicRayMap.value, __CosmicRayMap.set, None, None)
+
+
+    _ElementMap = {
+        __CosmicRayMap.name() : __CosmicRayMap
+    }
+    _AttributeMap = {
+        
+    }
+Namespace.addCategoryObject('typeBinding', u'cosmicRayModel', cosmicRayModel)
 
 
 # Complex type CTD_ANON with content type ELEMENT_ONLY
@@ -1152,6 +882,76 @@ class CTD_ANON (pyxb.binding.basis.complexTypeDefinition):
         
     }
 
+
+
+# Complex type exposureTime with content type ELEMENT_ONLY
+class exposureTime (pyxb.binding.basis.complexTypeDefinition):
+    _TypeDefinition = None
+    _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
+    _Abstract = False
+    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'exposureTime')
+    # Base type is pyxb.binding.datatypes.anyType
+    
+    # Element {http://euclid.esa.org/schema/ins/nis}Unit uses Python identifier Unit
+    __Unit = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Unit'), 'Unit', '__httpeuclid_esa_orgschemainsnis_exposureTime_httpeuclid_esa_orgschemainsnisUnit', False)
+
+    
+    Unit = property(__Unit.value, __Unit.set, None, None)
+
+    
+    # Element {http://euclid.esa.org/schema/ins/nis}Value uses Python identifier Value
+    __Value = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Value'), 'Value', '__httpeuclid_esa_orgschemainsnis_exposureTime_httpeuclid_esa_orgschemainsnisValue', False)
+
+    
+    Value = property(__Value.value, __Value.set, None, None)
+
+
+    _ElementMap = {
+        __Unit.name() : __Unit,
+        __Value.name() : __Value
+    }
+    _AttributeMap = {
+        
+    }
+Namespace.addCategoryObject('typeBinding', u'exposureTime', exposureTime)
+
+
+# Complex type cosmicRayMap with content type ELEMENT_ONLY
+class cosmicRayMap (CommonDM.dm.bas.fit_stub.fitsFile):
+    _TypeDefinition = None
+    _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
+    _Abstract = False
+    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'cosmicRayMap')
+    # Base type is CommonDM.dm.bas.fit_stub.fitsFile
+    
+    # Element DataContainer (DataContainer) inherited from {http://euclid.esa.org/schema/bas/fit}fitsFile
+    
+    # Attribute version is restricted from parent
+    
+    # Attribute version uses Python identifier version
+    __version = pyxb.binding.content.AttributeUse(pyxb.namespace.ExpandedName(None, u'version'), 'version', '__httpeuclid_esa_orgschemabasfit_fitsFile_version', CommonDM.dm.bas.fit_stub.fitsFormatVersion, fixed=True, unicode_default=u'0.1', required=True)
+    
+    version = property(__version.value, __version.set, None, None)
+
+    
+    # Attribute format is restricted from parent
+    
+    # Attribute format uses Python identifier format
+    __format = pyxb.binding.content.AttributeUse(pyxb.namespace.ExpandedName(None, u'format'), 'format', '__httpeuclid_esa_orgschemabasfit_fitsFile_format', CommonDM.dm.bas.fit_stub.fitsFormatIdentifier, fixed=True, unicode_default=u'nis.cosmicRayMap', required=True)
+    
+    format = property(__format.value, __format.set, None, None)
+
+
+    _ElementMap = CommonDM.dm.bas.fit_stub.fitsFile._ElementMap.copy()
+    _ElementMap.update({
+        
+    })
+    _AttributeMap = CommonDM.dm.bas.fit_stub.fitsFile._AttributeMap.copy()
+    _AttributeMap.update({
+        __version.name() : __version,
+        __format.name() : __format
+    })
+Namespace.addCategoryObject('typeBinding', u'cosmicRayMap', cosmicRayMap)
 
 
 # Complex type FPA with content type ELEMENT_ONLY
@@ -1194,6 +994,210 @@ class FPA (pyxb.binding.basis.complexTypeDefinition):
 Namespace.addCategoryObject('typeBinding', u'FPA', FPA)
 
 
+# Complex type readoutNoiseMap with content type ELEMENT_ONLY
+class readoutNoiseMap (CommonDM.dm.bas.fit_stub.fitsFile):
+    _TypeDefinition = None
+    _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
+    _Abstract = False
+    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'readoutNoiseMap')
+    # Base type is CommonDM.dm.bas.fit_stub.fitsFile
+    
+    # Element DataContainer (DataContainer) inherited from {http://euclid.esa.org/schema/bas/fit}fitsFile
+    
+    # Attribute version is restricted from parent
+    
+    # Attribute version uses Python identifier version
+    __version = pyxb.binding.content.AttributeUse(pyxb.namespace.ExpandedName(None, u'version'), 'version', '__httpeuclid_esa_orgschemabasfit_fitsFile_version', CommonDM.dm.bas.fit_stub.fitsFormatVersion, fixed=True, unicode_default=u'0.1', required=True)
+    
+    version = property(__version.value, __version.set, None, None)
+
+    
+    # Attribute format is restricted from parent
+    
+    # Attribute format uses Python identifier format
+    __format = pyxb.binding.content.AttributeUse(pyxb.namespace.ExpandedName(None, u'format'), 'format', '__httpeuclid_esa_orgschemabasfit_fitsFile_format', CommonDM.dm.bas.fit_stub.fitsFormatIdentifier, fixed=True, unicode_default=u'nis.detectorReadoutNoiseMap', required=True)
+    
+    format = property(__format.value, __format.set, None, None)
+
+
+    _ElementMap = CommonDM.dm.bas.fit_stub.fitsFile._ElementMap.copy()
+    _ElementMap.update({
+        
+    })
+    _AttributeMap = CommonDM.dm.bas.fit_stub.fitsFile._AttributeMap.copy()
+    _AttributeMap.update({
+        __version.name() : __version,
+        __format.name() : __format
+    })
+Namespace.addCategoryObject('typeBinding', u'readoutNoiseMap', readoutNoiseMap)
+
+
+# Complex type darkCurrentMap with content type ELEMENT_ONLY
+class darkCurrentMap (CommonDM.dm.bas.fit_stub.fitsFile):
+    _TypeDefinition = None
+    _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
+    _Abstract = False
+    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'darkCurrentMap')
+    # Base type is CommonDM.dm.bas.fit_stub.fitsFile
+    
+    # Element DataContainer (DataContainer) inherited from {http://euclid.esa.org/schema/bas/fit}fitsFile
+    
+    # Attribute version is restricted from parent
+    
+    # Attribute version uses Python identifier version
+    __version = pyxb.binding.content.AttributeUse(pyxb.namespace.ExpandedName(None, u'version'), 'version', '__httpeuclid_esa_orgschemabasfit_fitsFile_version', CommonDM.dm.bas.fit_stub.fitsFormatVersion, fixed=True, unicode_default=u'0.1', required=True)
+    
+    version = property(__version.value, __version.set, None, None)
+
+    
+    # Attribute format is restricted from parent
+    
+    # Attribute format uses Python identifier format
+    __format = pyxb.binding.content.AttributeUse(pyxb.namespace.ExpandedName(None, u'format'), 'format', '__httpeuclid_esa_orgschemabasfit_fitsFile_format', CommonDM.dm.bas.fit_stub.fitsFormatIdentifier, fixed=True, unicode_default=u'nis.detectorDarkCurrentMap', required=True)
+    
+    format = property(__format.value, __format.set, None, None)
+
+
+    _ElementMap = CommonDM.dm.bas.fit_stub.fitsFile._ElementMap.copy()
+    _ElementMap.update({
+        
+    })
+    _AttributeMap = CommonDM.dm.bas.fit_stub.fitsFile._AttributeMap.copy()
+    _AttributeMap.update({
+        __version.name() : __version,
+        __format.name() : __format
+    })
+Namespace.addCategoryObject('typeBinding', u'darkCurrentMap', darkCurrentMap)
+
+
+# Complex type detectorSize with content type ELEMENT_ONLY
+class detectorSize (pyxb.binding.basis.complexTypeDefinition):
+    _TypeDefinition = None
+    _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
+    _Abstract = False
+    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'detectorSize')
+    # Base type is pyxb.binding.datatypes.anyType
+    
+    # Element {http://euclid.esa.org/schema/ins/nis}NumberOfPixelsInX uses Python identifier NumberOfPixelsInX
+    __NumberOfPixelsInX = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'NumberOfPixelsInX'), 'NumberOfPixelsInX', '__httpeuclid_esa_orgschemainsnis_detectorSize_httpeuclid_esa_orgschemainsnisNumberOfPixelsInX', False)
+
+    
+    NumberOfPixelsInX = property(__NumberOfPixelsInX.value, __NumberOfPixelsInX.set, None, u'Number of pixels in X direction.')
+
+    
+    # Element {http://euclid.esa.org/schema/ins/nis}NumberOfPixelsInY uses Python identifier NumberOfPixelsInY
+    __NumberOfPixelsInY = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'NumberOfPixelsInY'), 'NumberOfPixelsInY', '__httpeuclid_esa_orgschemainsnis_detectorSize_httpeuclid_esa_orgschemainsnisNumberOfPixelsInY', False)
+
+    
+    NumberOfPixelsInY = property(__NumberOfPixelsInY.value, __NumberOfPixelsInY.set, None, u'Number of pixels in Y direction.')
+
+
+    _ElementMap = {
+        __NumberOfPixelsInX.name() : __NumberOfPixelsInX,
+        __NumberOfPixelsInY.name() : __NumberOfPixelsInY
+    }
+    _AttributeMap = {
+        
+    }
+Namespace.addCategoryObject('typeBinding', u'detectorSize', detectorSize)
+
+
+# Complex type readoutNoiseModel with content type ELEMENT_ONLY
+class readoutNoiseModel (pyxb.binding.basis.complexTypeDefinition):
+    _TypeDefinition = None
+    _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
+    _Abstract = False
+    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'readoutNoiseModel')
+    # Base type is pyxb.binding.datatypes.anyType
+    
+    # Element {http://euclid.esa.org/schema/ins/nis}ReadoutNoiseMap uses Python identifier ReadoutNoiseMap
+    __ReadoutNoiseMap = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'ReadoutNoiseMap'), 'ReadoutNoiseMap', '__httpeuclid_esa_orgschemainsnis_readoutNoiseModel_httpeuclid_esa_orgschemainsnisReadoutNoiseMap', False)
+
+    
+    ReadoutNoiseMap = property(__ReadoutNoiseMap.value, __ReadoutNoiseMap.set, None, None)
+
+
+    _ElementMap = {
+        __ReadoutNoiseMap.name() : __ReadoutNoiseMap
+    }
+    _AttributeMap = {
+        
+    }
+Namespace.addCategoryObject('typeBinding', u'readoutNoiseModel', readoutNoiseModel)
+
+
+# Complex type dispersionFunction with content type ELEMENT_ONLY
+class dispersionFunction (pyxb.binding.basis.complexTypeDefinition):
+    _TypeDefinition = None
+    _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
+    _Abstract = False
+    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'dispersionFunction')
+    # Base type is pyxb.binding.datatypes.anyType
+    
+    # Element {http://euclid.esa.org/schema/ins/nis}Coefficients uses Python identifier Coefficients
+    __Coefficients = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Coefficients'), 'Coefficients', '__httpeuclid_esa_orgschemainsnis_dispersionFunction_httpeuclid_esa_orgschemainsnisCoefficients', True)
+
+    
+    Coefficients = property(__Coefficients.value, __Coefficients.set, None, u'The coefficients of the polynomial DL = a0 + a1 DX + a2 DX^2 + ..., where DX is the distance along the trace. Each coefficient (a0, a1, a2, etc) can be a constant or a 2D xy field dependent polynomial. ')
+
+    
+    # Element {http://euclid.esa.org/schema/ins/nis}ComputationDate uses Python identifier ComputationDate
+    __ComputationDate = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'ComputationDate'), 'ComputationDate', '__httpeuclid_esa_orgschemainsnis_dispersionFunction_httpeuclid_esa_orgschemainsnisComputationDate', False)
+
+    
+    ComputationDate = property(__ComputationDate.value, __ComputationDate.set, None, None)
+
+    
+    # Element {http://euclid.esa.org/schema/ins/nis}DXUnit uses Python identifier DXUnit
+    __DXUnit = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'DXUnit'), 'DXUnit', '__httpeuclid_esa_orgschemainsnis_dispersionFunction_httpeuclid_esa_orgschemainsnisDXUnit', False)
+
+    
+    DXUnit = property(__DXUnit.value, __DXUnit.set, None, u'The unit used for the displacement DX in the dispersion function. Default: um')
+
+    
+    # Element {http://euclid.esa.org/schema/ins/nis}CalibrationDataPath uses Python identifier CalibrationDataPath
+    __CalibrationDataPath = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'CalibrationDataPath'), 'CalibrationDataPath', '__httpeuclid_esa_orgschemainsnis_dispersionFunction_httpeuclid_esa_orgschemainsnisCalibrationDataPath', False)
+
+    
+    CalibrationDataPath = property(__CalibrationDataPath.value, __CalibrationDataPath.set, None, None)
+
+    
+    # Element {http://euclid.esa.org/schema/ins/nis}PolyOrder uses Python identifier PolyOrder
+    __PolyOrder = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'PolyOrder'), 'PolyOrder', '__httpeuclid_esa_orgschemainsnis_dispersionFunction_httpeuclid_esa_orgschemainsnisPolyOrder', False)
+
+    
+    PolyOrder = property(__PolyOrder.value, __PolyOrder.set, None, u'The order of the polynomial DL = a0 + a1 DX + a2 DX^2 + ..., where DX is the distance along the trace.')
+
+    
+    # Element {http://euclid.esa.org/schema/ins/nis}DLUnit uses Python identifier DLUnit
+    __DLUnit = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'DLUnit'), 'DLUnit', '__httpeuclid_esa_orgschemainsnis_dispersionFunction_httpeuclid_esa_orgschemainsnisDLUnit', False)
+
+    
+    DLUnit = property(__DLUnit.value, __DLUnit.set, None, u'The unit used for the dispersion DL in the dispersion function. Default: Angstrom')
+
+    
+    # Element {http://euclid.esa.org/schema/ins/nis}Version uses Python identifier Version
+    __Version = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Version'), 'Version', '__httpeuclid_esa_orgschemainsnis_dispersionFunction_httpeuclid_esa_orgschemainsnisVersion', False)
+
+    
+    Version = property(__Version.value, __Version.set, None, None)
+
+
+    _ElementMap = {
+        __Coefficients.name() : __Coefficients,
+        __ComputationDate.name() : __ComputationDate,
+        __DXUnit.name() : __DXUnit,
+        __CalibrationDataPath.name() : __CalibrationDataPath,
+        __PolyOrder.name() : __PolyOrder,
+        __DLUnit.name() : __DLUnit,
+        __Version.name() : __Version
+    }
+    _AttributeMap = {
+        
+    }
+Namespace.addCategoryObject('typeBinding', u'dispersionFunction', dispersionFunction)
+
+
 # Complex type detectorInFPA with content type ELEMENT_ONLY
 class detectorInFPA (pyxb.binding.basis.complexTypeDefinition):
     _TypeDefinition = None
@@ -1202,11 +1206,11 @@ class detectorInFPA (pyxb.binding.basis.complexTypeDefinition):
     _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'detectorInFPA')
     # Base type is pyxb.binding.datatypes.anyType
     
-    # Element {http://euclid.esa.org/schema/ins/nis}YFPA uses Python identifier YFPA
-    __YFPA = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'YFPA'), 'YFPA', '__httpeuclid_esa_orgschemainsnis_detectorInFPA_httpeuclid_esa_orgschemainsnisYFPA', False)
+    # Element {http://euclid.esa.org/schema/ins/nis}Elevation uses Python identifier Elevation
+    __Elevation = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Elevation'), 'Elevation', '__httpeuclid_esa_orgschemainsnis_detectorInFPA_httpeuclid_esa_orgschemainsnisElevation', False)
 
     
-    YFPA = property(__YFPA.value, __YFPA.set, None, u'Relative Y position of the detector in the FPA with respect to the FPA center, and in the North/East coordinate system.')
+    Elevation = property(__Elevation.value, __Elevation.set, None, u'Elevation of the detector above or below the reference plane of the FPA.')
 
     
     # Element {http://euclid.esa.org/schema/ins/nis}RotAngle uses Python identifier RotAngle
@@ -1216,18 +1220,18 @@ class detectorInFPA (pyxb.binding.basis.complexTypeDefinition):
     RotAngle = property(__RotAngle.value, __RotAngle.set, None, u'Rotation angle around the axis described by the vector normal to the FPA passing through the detector center. Angles are increasing CCW. Zero value means the detector is aligned with the North/East coordinate system. ')
 
     
+    # Element {http://euclid.esa.org/schema/ins/nis}YFPA uses Python identifier YFPA
+    __YFPA = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'YFPA'), 'YFPA', '__httpeuclid_esa_orgschemainsnis_detectorInFPA_httpeuclid_esa_orgschemainsnisYFPA', False)
+
+    
+    YFPA = property(__YFPA.value, __YFPA.set, None, u'Relative Y position of the detector in the FPA with respect to the FPA center, and in the North/East coordinate system.')
+
+    
     # Element {http://euclid.esa.org/schema/ins/nis}XFPA uses Python identifier XFPA
     __XFPA = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'XFPA'), 'XFPA', '__httpeuclid_esa_orgschemainsnis_detectorInFPA_httpeuclid_esa_orgschemainsnisXFPA', False)
 
     
     XFPA = property(__XFPA.value, __XFPA.set, None, u'Relative X position of the detector in the FPA with respect to the FPA center, and in the North/East coordinate system.')
-
-    
-    # Element {http://euclid.esa.org/schema/ins/nis}Elevation uses Python identifier Elevation
-    __Elevation = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Elevation'), 'Elevation', '__httpeuclid_esa_orgschemainsnis_detectorInFPA_httpeuclid_esa_orgschemainsnisElevation', False)
-
-    
-    Elevation = property(__Elevation.value, __Elevation.set, None, u'Elevation of the detector above or below the reference plane of the FPA.')
 
     
     # Element {http://euclid.esa.org/schema/ins/nis}Identifier uses Python identifier Identifier
@@ -1238,10 +1242,10 @@ class detectorInFPA (pyxb.binding.basis.complexTypeDefinition):
 
 
     _ElementMap = {
-        __YFPA.name() : __YFPA,
-        __RotAngle.name() : __RotAngle,
-        __XFPA.name() : __XFPA,
         __Elevation.name() : __Elevation,
+        __RotAngle.name() : __RotAngle,
+        __YFPA.name() : __YFPA,
+        __XFPA.name() : __XFPA,
         __Identifier.name() : __Identifier
     }
     _AttributeMap = {
@@ -1250,116 +1254,180 @@ class detectorInFPA (pyxb.binding.basis.complexTypeDefinition):
 Namespace.addCategoryObject('typeBinding', u'detectorInFPA', detectorInFPA)
 
 
-# Complex type focalPlaneArrangement with content type ELEMENT_ONLY
-class focalPlaneArrangement (pyxb.binding.basis.complexTypeDefinition):
+# Complex type spectrumRange with content type ELEMENT_ONLY
+class spectrumRange (pyxb.binding.basis.complexTypeDefinition):
     _TypeDefinition = None
     _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
     _Abstract = False
-    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'focalPlaneArrangement')
+    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'spectrumRange')
     # Base type is pyxb.binding.datatypes.anyType
     
-    # Element {http://euclid.esa.org/schema/ins/nis}NumberOfColumns uses Python identifier NumberOfColumns
-    __NumberOfColumns = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'NumberOfColumns'), 'NumberOfColumns', '__httpeuclid_esa_orgschemainsnis_focalPlaneArrangement_httpeuclid_esa_orgschemainsnisNumberOfColumns', False)
+    # Element {http://euclid.esa.org/schema/ins/nis}MinWavelengthValue uses Python identifier MinWavelengthValue
+    __MinWavelengthValue = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'MinWavelengthValue'), 'MinWavelengthValue', '__httpeuclid_esa_orgschemainsnis_spectrumRange_httpeuclid_esa_orgschemainsnisMinWavelengthValue', False)
 
     
-    NumberOfColumns = property(__NumberOfColumns.value, __NumberOfColumns.set, None, u'Number of columns of detectors.')
+    MinWavelengthValue = property(__MinWavelengthValue.value, __MinWavelengthValue.set, None, u'')
 
     
-    # Element {http://euclid.esa.org/schema/ins/nis}DetectorPositionList uses Python identifier DetectorPositionList
-    __DetectorPositionList = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'DetectorPositionList'), 'DetectorPositionList', '__httpeuclid_esa_orgschemainsnis_focalPlaneArrangement_httpeuclid_esa_orgschemainsnisDetectorPositionList', False)
+    # Element {http://euclid.esa.org/schema/ins/nis}MaxWavelengthValue uses Python identifier MaxWavelengthValue
+    __MaxWavelengthValue = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'MaxWavelengthValue'), 'MaxWavelengthValue', '__httpeuclid_esa_orgschemainsnis_spectrumRange_httpeuclid_esa_orgschemainsnisMaxWavelengthValue', False)
 
     
-    DetectorPositionList = property(__DetectorPositionList.value, __DetectorPositionList.set, None, u'The detectors in the FPA.')
+    MaxWavelengthValue = property(__MaxWavelengthValue.value, __MaxWavelengthValue.set, None, u'')
 
     
-    # Element {http://euclid.esa.org/schema/ins/nis}Identifier uses Python identifier Identifier
-    __Identifier = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Identifier'), 'Identifier', '__httpeuclid_esa_orgschemainsnis_focalPlaneArrangement_httpeuclid_esa_orgschemainsnisIdentifier', False)
+    # Element {http://euclid.esa.org/schema/ins/nis}RangeID uses Python identifier RangeID
+    __RangeID = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'RangeID'), 'RangeID', '__httpeuclid_esa_orgschemainsnis_spectrumRange_httpeuclid_esa_orgschemainsnisRangeID', False)
 
     
-    Identifier = property(__Identifier.value, __Identifier.set, None, None)
+    RangeID = property(__RangeID.value, __RangeID.set, None, u'Name or ID commonly used for this spectral band')
 
     
-    # Element {http://euclid.esa.org/schema/ins/nis}NumberOfRows uses Python identifier NumberOfRows
-    __NumberOfRows = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'NumberOfRows'), 'NumberOfRows', '__httpeuclid_esa_orgschemainsnis_focalPlaneArrangement_httpeuclid_esa_orgschemainsnisNumberOfRows', False)
+    # Element {http://euclid.esa.org/schema/ins/nis}Unit uses Python identifier Unit
+    __Unit = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Unit'), 'Unit', '__httpeuclid_esa_orgschemainsnis_spectrumRange_httpeuclid_esa_orgschemainsnisUnit', False)
 
     
-    NumberOfRows = property(__NumberOfRows.value, __NumberOfRows.set, None, u'Number of rows of detectors.')
+    Unit = property(__Unit.value, __Unit.set, None, None)
+
+    
+    # Element {http://euclid.esa.org/schema/ins/nis}Resolution uses Python identifier Resolution
+    __Resolution = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Resolution'), 'Resolution', '__httpeuclid_esa_orgschemainsnis_spectrumRange_httpeuclid_esa_orgschemainsnisResolution', False)
+
+    
+    Resolution = property(__Resolution.value, __Resolution.set, None, u'The number of samples is equal to : max - min divided by resolution + 2 ')
 
 
     _ElementMap = {
-        __NumberOfColumns.name() : __NumberOfColumns,
-        __DetectorPositionList.name() : __DetectorPositionList,
-        __Identifier.name() : __Identifier,
-        __NumberOfRows.name() : __NumberOfRows
+        __MinWavelengthValue.name() : __MinWavelengthValue,
+        __MaxWavelengthValue.name() : __MaxWavelengthValue,
+        __RangeID.name() : __RangeID,
+        __Unit.name() : __Unit,
+        __Resolution.name() : __Resolution
     }
     _AttributeMap = {
         
     }
-Namespace.addCategoryObject('typeBinding', u'focalPlaneArrangement', focalPlaneArrangement)
+Namespace.addCategoryObject('typeBinding', u'spectrumRange', spectrumRange)
 
 
-# Complex type grismOrderList with content type ELEMENT_ONLY
-class grismOrderList (pyxb.binding.basis.complexTypeDefinition):
+# Complex type quantumEfficiencyModel with content type ELEMENT_ONLY
+class quantumEfficiencyModel (pyxb.binding.basis.complexTypeDefinition):
     _TypeDefinition = None
     _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
     _Abstract = False
-    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'grismOrderList')
+    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'quantumEfficiencyModel')
     # Base type is pyxb.binding.datatypes.anyType
     
-    # Element {http://euclid.esa.org/schema/ins/nis}GrismOrder uses Python identifier GrismOrder
-    __GrismOrder = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'GrismOrder'), 'GrismOrder', '__httpeuclid_esa_orgschemainsnis_grismOrderList_httpeuclid_esa_orgschemainsnisGrismOrder', True)
+    # Element {http://euclid.esa.org/schema/ins/nis}QuantumEfficiencyMap uses Python identifier QuantumEfficiencyMap
+    __QuantumEfficiencyMap = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'QuantumEfficiencyMap'), 'QuantumEfficiencyMap', '__httpeuclid_esa_orgschemainsnis_quantumEfficiencyModel_httpeuclid_esa_orgschemainsnisQuantumEfficiencyMap', False)
 
     
-    GrismOrder = property(__GrismOrder.value, __GrismOrder.set, None, None)
+    QuantumEfficiencyMap = property(__QuantumEfficiencyMap.value, __QuantumEfficiencyMap.set, None, None)
+
+    
+    # Element {http://euclid.esa.org/schema/ins/nis}QuantumEfficiencyCube uses Python identifier QuantumEfficiencyCube
+    __QuantumEfficiencyCube = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'QuantumEfficiencyCube'), 'QuantumEfficiencyCube', '__httpeuclid_esa_orgschemainsnis_quantumEfficiencyModel_httpeuclid_esa_orgschemainsnisQuantumEfficiencyCube', False)
+
+    
+    QuantumEfficiencyCube = property(__QuantumEfficiencyCube.value, __QuantumEfficiencyCube.set, None, None)
 
 
     _ElementMap = {
-        __GrismOrder.name() : __GrismOrder
+        __QuantumEfficiencyMap.name() : __QuantumEfficiencyMap,
+        __QuantumEfficiencyCube.name() : __QuantumEfficiencyCube
     }
     _AttributeMap = {
         
     }
-Namespace.addCategoryObject('typeBinding', u'grismOrderList', grismOrderList)
+Namespace.addCategoryObject('typeBinding', u'quantumEfficiencyModel', quantumEfficiencyModel)
 
 
-# Complex type detectorPosition with content type ELEMENT_ONLY
-class detectorPosition (pyxb.binding.basis.complexTypeDefinition):
+# Complex type curvatureModel with content type ELEMENT_ONLY
+class curvatureModel (pyxb.binding.basis.complexTypeDefinition):
     _TypeDefinition = None
     _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
     _Abstract = False
-    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'detectorPosition')
+    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'curvatureModel')
     # Base type is pyxb.binding.datatypes.anyType
     
-    # Element {http://euclid.esa.org/schema/ins/nis}Column uses Python identifier Column
-    __Column = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Column'), 'Column', '__httpeuclid_esa_orgschemainsnis_detectorPosition_httpeuclid_esa_orgschemainsnisColumn', False)
+    # Element {http://euclid.esa.org/schema/ins/nis}Unit uses Python identifier Unit
+    __Unit = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Unit'), 'Unit', '__httpeuclid_esa_orgschemainsnis_curvatureModel_httpeuclid_esa_orgschemainsnisUnit', False)
 
     
-    Column = property(__Column.value, __Column.set, None, u'The column in which the detector is in. The numbering starts from the left and from 0.')
+    Unit = property(__Unit.value, __Unit.set, None, u'The unit used to describe the Start, End and polynomial coefficients of the trace. Default: um')
 
     
-    # Element {http://euclid.esa.org/schema/ins/nis}Identifier uses Python identifier Identifier
-    __Identifier = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Identifier'), 'Identifier', '__httpeuclid_esa_orgschemainsnis_detectorPosition_httpeuclid_esa_orgschemainsnisIdentifier', False)
+    # Element {http://euclid.esa.org/schema/ins/nis}DispAngle uses Python identifier DispAngle
+    __DispAngle = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'DispAngle'), 'DispAngle', '__httpeuclid_esa_orgschemainsnis_curvatureModel_httpeuclid_esa_orgschemainsnisDispAngle', False)
 
     
-    Identifier = property(__Identifier.value, __Identifier.set, None, u'The identifier of the detector. Can be used to retrieve the detectors model.')
+    DispAngle = property(__DispAngle.value, __DispAngle.set, None, u'The dispersion direction (0 or 90). Counter-clockwise in the FPA frame.')
 
     
-    # Element {http://euclid.esa.org/schema/ins/nis}Row uses Python identifier Row
-    __Row = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Row'), 'Row', '__httpeuclid_esa_orgschemainsnis_detectorPosition_httpeuclid_esa_orgschemainsnisRow', False)
+    # Element {http://euclid.esa.org/schema/ins/nis}PolyOrder uses Python identifier PolyOrder
+    __PolyOrder = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'PolyOrder'), 'PolyOrder', '__httpeuclid_esa_orgschemainsnis_curvatureModel_httpeuclid_esa_orgschemainsnisPolyOrder', False)
 
     
-    Row = property(__Row.value, __Row.set, None, u'The row in which the detector is in. The numbering starts from the bottom and from 0.')
+    PolyOrder = property(__PolyOrder.value, __PolyOrder.set, None, u'The order of the polynomial DY = a0 + a1 DX + a2 DX^2 + ...')
+
+    
+    # Element {http://euclid.esa.org/schema/ins/nis}Version uses Python identifier Version
+    __Version = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Version'), 'Version', '__httpeuclid_esa_orgschemainsnis_curvatureModel_httpeuclid_esa_orgschemainsnisVersion', False)
+
+    
+    Version = property(__Version.value, __Version.set, None, None)
+
+    
+    # Element {http://euclid.esa.org/schema/ins/nis}CalibrationDataPath uses Python identifier CalibrationDataPath
+    __CalibrationDataPath = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'CalibrationDataPath'), 'CalibrationDataPath', '__httpeuclid_esa_orgschemainsnis_curvatureModel_httpeuclid_esa_orgschemainsnisCalibrationDataPath', False)
+
+    
+    CalibrationDataPath = property(__CalibrationDataPath.value, __CalibrationDataPath.set, None, None)
+
+    
+    # Element {http://euclid.esa.org/schema/ins/nis}Start uses Python identifier Start
+    __Start = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Start'), 'Start', '__httpeuclid_esa_orgschemainsnis_curvatureModel_httpeuclid_esa_orgschemainsnisStart', False)
+
+    
+    Start = property(__Start.value, __Start.set, None, u'The position of the beginning of the spectrum in the dispersion direction, redward of the reference wavelength.')
+
+    
+    # Element {http://euclid.esa.org/schema/ins/nis}ComputationDate uses Python identifier ComputationDate
+    __ComputationDate = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'ComputationDate'), 'ComputationDate', '__httpeuclid_esa_orgschemainsnis_curvatureModel_httpeuclid_esa_orgschemainsnisComputationDate', False)
+
+    
+    ComputationDate = property(__ComputationDate.value, __ComputationDate.set, None, None)
+
+    
+    # Element {http://euclid.esa.org/schema/ins/nis}End uses Python identifier End
+    __End = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'End'), 'End', '__httpeuclid_esa_orgschemainsnis_curvatureModel_httpeuclid_esa_orgschemainsnisEnd', False)
+
+    
+    End = property(__End.value, __End.set, None, u'The position of the end of the spectrum in the dispersion direction, blueward of the reference wavelength.')
+
+    
+    # Element {http://euclid.esa.org/schema/ins/nis}Coefficients uses Python identifier Coefficients
+    __Coefficients = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Coefficients'), 'Coefficients', '__httpeuclid_esa_orgschemainsnis_curvatureModel_httpeuclid_esa_orgschemainsnisCoefficients', True)
+
+    
+    Coefficients = property(__Coefficients.value, __Coefficients.set, None, u'The coefficients of the polynomial DY = a0 + a1 DX + a2 DX^2 + ... Each coefficient (a0, a1, a2, etc) can be a constant or a 2D xy field dependent polynomial. ')
 
 
     _ElementMap = {
-        __Column.name() : __Column,
-        __Identifier.name() : __Identifier,
-        __Row.name() : __Row
+        __Unit.name() : __Unit,
+        __DispAngle.name() : __DispAngle,
+        __PolyOrder.name() : __PolyOrder,
+        __Version.name() : __Version,
+        __CalibrationDataPath.name() : __CalibrationDataPath,
+        __Start.name() : __Start,
+        __ComputationDate.name() : __ComputationDate,
+        __End.name() : __End,
+        __Coefficients.name() : __Coefficients
     }
     _AttributeMap = {
         
     }
-Namespace.addCategoryObject('typeBinding', u'detectorPosition', detectorPosition)
+Namespace.addCategoryObject('typeBinding', u'curvatureModel', curvatureModel)
 
 
 # Complex type pixelPsfFitsFile with content type ELEMENT_ONLY
@@ -1400,68 +1468,6 @@ class pixelPsfFitsFile (CommonDM.dm.bas.fit_stub.fitsFile):
 Namespace.addCategoryObject('typeBinding', u'pixelPsfFitsFile', pixelPsfFitsFile)
 
 
-# Complex type quantumEfficiencyMap with content type ELEMENT_ONLY
-class quantumEfficiencyMap (CommonDM.dm.bas.fit_stub.fitsFile):
-    _TypeDefinition = None
-    _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
-    _Abstract = False
-    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'quantumEfficiencyMap')
-    # Base type is CommonDM.dm.bas.fit_stub.fitsFile
-    
-    # Element DataContainer (DataContainer) inherited from {http://euclid.esa.org/schema/bas/fit}fitsFile
-    
-    # Attribute version is restricted from parent
-    
-    # Attribute version uses Python identifier version
-    __version = pyxb.binding.content.AttributeUse(pyxb.namespace.ExpandedName(None, u'version'), 'version', '__httpeuclid_esa_orgschemabasfit_fitsFile_version', CommonDM.dm.bas.fit_stub.fitsFormatVersion, fixed=True, unicode_default=u'0.1', required=True)
-    
-    version = property(__version.value, __version.set, None, None)
-
-    
-    # Attribute format is restricted from parent
-    
-    # Attribute format uses Python identifier format
-    __format = pyxb.binding.content.AttributeUse(pyxb.namespace.ExpandedName(None, u'format'), 'format', '__httpeuclid_esa_orgschemabasfit_fitsFile_format', CommonDM.dm.bas.fit_stub.fitsFormatIdentifier, fixed=True, unicode_default=u'nis.detectorQuantumEfficiencyMap', required=True)
-    
-    format = property(__format.value, __format.set, None, None)
-
-
-    _ElementMap = CommonDM.dm.bas.fit_stub.fitsFile._ElementMap.copy()
-    _ElementMap.update({
-        
-    })
-    _AttributeMap = CommonDM.dm.bas.fit_stub.fitsFile._AttributeMap.copy()
-    _AttributeMap.update({
-        __version.name() : __version,
-        __format.name() : __format
-    })
-Namespace.addCategoryObject('typeBinding', u'quantumEfficiencyMap', quantumEfficiencyMap)
-
-
-# Complex type nisOpticsModel with content type ELEMENT_ONLY
-class nisOpticsModel (pyxb.binding.basis.complexTypeDefinition):
-    _TypeDefinition = None
-    _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
-    _Abstract = False
-    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'nisOpticsModel')
-    # Base type is pyxb.binding.datatypes.anyType
-    
-    # Element {http://euclid.esa.org/schema/ins/nis}GrismMode uses Python identifier GrismMode
-    __GrismMode = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'GrismMode'), 'GrismMode', '__httpeuclid_esa_orgschemainsnis_nisOpticsModel_httpeuclid_esa_orgschemainsnisGrismMode', True)
-
-    
-    GrismMode = property(__GrismMode.value, __GrismMode.set, None, None)
-
-
-    _ElementMap = {
-        __GrismMode.name() : __GrismMode
-    }
-    _AttributeMap = {
-        
-    }
-Namespace.addCategoryObject('typeBinding', u'nisOpticsModel', nisOpticsModel)
-
-
 # Complex type pointSpreadFunction with content type ELEMENT_ONLY
 class pointSpreadFunction (pyxb.binding.basis.complexTypeDefinition):
     _TypeDefinition = None
@@ -1494,42 +1500,36 @@ class pointSpreadFunction (pyxb.binding.basis.complexTypeDefinition):
 Namespace.addCategoryObject('typeBinding', u'pointSpreadFunction', pointSpreadFunction)
 
 
-# Complex type quantumEfficiencyCube with content type ELEMENT_ONLY
-class quantumEfficiencyCube (CommonDM.dm.bas.fit_stub.fitsFile):
+# Complex type pixelPSF with content type ELEMENT_ONLY
+class pixelPSF (pyxb.binding.basis.complexTypeDefinition):
     _TypeDefinition = None
     _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
     _Abstract = False
-    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'quantumEfficiencyCube')
-    # Base type is CommonDM.dm.bas.fit_stub.fitsFile
+    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'pixelPSF')
+    # Base type is pyxb.binding.datatypes.anyType
     
-    # Element DataContainer (DataContainer) inherited from {http://euclid.esa.org/schema/bas/fit}fitsFile
-    
-    # Attribute version is restricted from parent
-    
-    # Attribute version uses Python identifier version
-    __version = pyxb.binding.content.AttributeUse(pyxb.namespace.ExpandedName(None, u'version'), 'version', '__httpeuclid_esa_orgschemabasfit_fitsFile_version', CommonDM.dm.bas.fit_stub.fitsFormatVersion, fixed=True, unicode_default=u'0.1', required=True)
-    
-    version = property(__version.value, __version.set, None, None)
+    # Element {http://euclid.esa.org/schema/ins/nis}FitsCubeImage uses Python identifier FitsCubeImage
+    __FitsCubeImage = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'FitsCubeImage'), 'FitsCubeImage', '__httpeuclid_esa_orgschemainsnis_pixelPSF_httpeuclid_esa_orgschemainsnisFitsCubeImage', True)
 
     
-    # Attribute format is restricted from parent
+    FitsCubeImage = property(__FitsCubeImage.value, __FitsCubeImage.set, None, None)
+
     
-    # Attribute format uses Python identifier format
-    __format = pyxb.binding.content.AttributeUse(pyxb.namespace.ExpandedName(None, u'format'), 'format', '__httpeuclid_esa_orgschemabasfit_fitsFile_format', CommonDM.dm.bas.fit_stub.fitsFormatIdentifier, fixed=True, unicode_default=u'nis.detectorQuantumEfficiencyCube', required=True)
+    # Element {http://euclid.esa.org/schema/ins/nis}ReferenceChip uses Python identifier ReferenceChip
+    __ReferenceChip = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'ReferenceChip'), 'ReferenceChip', '__httpeuclid_esa_orgschemainsnis_pixelPSF_httpeuclid_esa_orgschemainsnisReferenceChip', True)
+
     
-    format = property(__format.value, __format.set, None, None)
+    ReferenceChip = property(__ReferenceChip.value, __ReferenceChip.set, None, None)
 
 
-    _ElementMap = CommonDM.dm.bas.fit_stub.fitsFile._ElementMap.copy()
-    _ElementMap.update({
+    _ElementMap = {
+        __FitsCubeImage.name() : __FitsCubeImage,
+        __ReferenceChip.name() : __ReferenceChip
+    }
+    _AttributeMap = {
         
-    })
-    _AttributeMap = CommonDM.dm.bas.fit_stub.fitsFile._AttributeMap.copy()
-    _AttributeMap.update({
-        __version.name() : __version,
-        __format.name() : __format
-    })
-Namespace.addCategoryObject('typeBinding', u'quantumEfficiencyCube', quantumEfficiencyCube)
+    }
+Namespace.addCategoryObject('typeBinding', u'pixelPSF', pixelPSF)
 
 
 # Complex type dataCubeElement with content type ELEMENT_ONLY
@@ -1660,85 +1660,51 @@ class doubleGaussianPSF (pyxb.binding.basis.complexTypeDefinition):
 Namespace.addCategoryObject('typeBinding', u'doubleGaussianPSF', doubleGaussianPSF)
 
 
-# Complex type psf with content type ELEMENT_ONLY
-class psf (pyxb.binding.basis.complexTypeDefinition):
+# Complex type detectorPosition with content type ELEMENT_ONLY
+class detectorPosition (pyxb.binding.basis.complexTypeDefinition):
     _TypeDefinition = None
     _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
     _Abstract = False
-    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'psf')
+    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'detectorPosition')
     # Base type is pyxb.binding.datatypes.anyType
     
-    # Element {http://euclid.esa.org/schema/ins/nis}DoubleGaussian uses Python identifier DoubleGaussian
-    __DoubleGaussian = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'DoubleGaussian'), 'DoubleGaussian', '__httpeuclid_esa_orgschemainsnis_psf_httpeuclid_esa_orgschemainsnisDoubleGaussian', False)
+    # Element {http://euclid.esa.org/schema/ins/nis}Column uses Python identifier Column
+    __Column = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Column'), 'Column', '__httpeuclid_esa_orgschemainsnis_detectorPosition_httpeuclid_esa_orgschemainsnisColumn', False)
 
     
-    DoubleGaussian = property(__DoubleGaussian.value, __DoubleGaussian.set, None, None)
+    Column = property(__Column.value, __Column.set, None, u'The column in which the detector is in. The numbering starts from the left and from 0.')
 
     
-    # Element {http://euclid.esa.org/schema/ins/nis}AnalyticExpression uses Python identifier AnalyticExpression
-    __AnalyticExpression = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'AnalyticExpression'), 'AnalyticExpression', '__httpeuclid_esa_orgschemainsnis_psf_httpeuclid_esa_orgschemainsnisAnalyticExpression', False)
+    # Element {http://euclid.esa.org/schema/ins/nis}Identifier uses Python identifier Identifier
+    __Identifier = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Identifier'), 'Identifier', '__httpeuclid_esa_orgschemainsnis_detectorPosition_httpeuclid_esa_orgschemainsnisIdentifier', False)
 
     
-    AnalyticExpression = property(__AnalyticExpression.value, __AnalyticExpression.set, None, None)
+    Identifier = property(__Identifier.value, __Identifier.set, None, u'The identifier of the detector. Can be used to retrieve the detectors model.')
 
     
-    # Element {http://euclid.esa.org/schema/ins/nis}DataCube uses Python identifier DataCube
-    __DataCube = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'DataCube'), 'DataCube', '__httpeuclid_esa_orgschemainsnis_psf_httpeuclid_esa_orgschemainsnisDataCube', False)
+    # Element {http://euclid.esa.org/schema/ins/nis}Row uses Python identifier Row
+    __Row = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Row'), 'Row', '__httpeuclid_esa_orgschemainsnis_detectorPosition_httpeuclid_esa_orgschemainsnisRow', False)
 
     
-    DataCube = property(__DataCube.value, __DataCube.set, None, None)
+    Row = property(__Row.value, __Row.set, None, u'The row in which the detector is in. The numbering starts from the bottom and from 0.')
 
 
     _ElementMap = {
-        __DoubleGaussian.name() : __DoubleGaussian,
-        __AnalyticExpression.name() : __AnalyticExpression,
-        __DataCube.name() : __DataCube
+        __Column.name() : __Column,
+        __Identifier.name() : __Identifier,
+        __Row.name() : __Row
     }
     _AttributeMap = {
         
     }
-Namespace.addCategoryObject('typeBinding', u'psf', psf)
+Namespace.addCategoryObject('typeBinding', u'detectorPosition', detectorPosition)
 
 
 
-cosmicRayMap._GroupModel = pyxb.binding.content.GroupSequence(
-    pyxb.binding.content.ParticleModel(cosmicRayMap._UseForTag(pyxb.namespace.ExpandedName(None, u'DataContainer')), min_occurs=1, max_occurs=1)
+quantumEfficiencyMap._GroupModel = pyxb.binding.content.GroupSequence(
+    pyxb.binding.content.ParticleModel(quantumEfficiencyMap._UseForTag(pyxb.namespace.ExpandedName(None, u'DataContainer')), min_occurs=1, max_occurs=1)
     )
-cosmicRayMap._ContentModel = pyxb.binding.content.ParticleModel(cosmicRayMap._GroupModel, min_occurs=1, max_occurs=1)
-
-
-
-nipOpticsModel._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'FilterMode'), filterModeModel, scope=nipOpticsModel))
-nipOpticsModel._GroupModel = pyxb.binding.content.GroupSequence(
-    pyxb.binding.content.ParticleModel(nipOpticsModel._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'FilterMode')), min_occurs=1, max_occurs=None)
-    )
-nipOpticsModel._ContentModel = pyxb.binding.content.ParticleModel(nipOpticsModel._GroupModel, min_occurs=1, max_occurs=1)
-
-
-darkCurrentMap._GroupModel = pyxb.binding.content.GroupSequence(
-    pyxb.binding.content.ParticleModel(darkCurrentMap._UseForTag(pyxb.namespace.ExpandedName(None, u'DataContainer')), min_occurs=1, max_occurs=1)
-    )
-darkCurrentMap._ContentModel = pyxb.binding.content.ParticleModel(darkCurrentMap._GroupModel, min_occurs=1, max_occurs=1)
-
-
-
-spectrumRange._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'MinWavelengthValue'), pyxb.binding.datatypes.double, scope=spectrumRange, documentation=u''))
-
-spectrumRange._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'MaxWavelengthValue'), pyxb.binding.datatypes.double, scope=spectrumRange, documentation=u''))
-
-spectrumRange._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'RangeID'), CommonDM.dm.bas.spm_stub.spectralRangeId, scope=spectrumRange, documentation=u'Name or ID commonly used for this spectral band'))
-
-spectrumRange._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Unit'), CommonDM.dm.bas.utd_stub.unit, scope=spectrumRange))
-
-spectrumRange._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Resolution'), pyxb.binding.datatypes.double, scope=spectrumRange, documentation=u'The number of samples is equal to : max - min divided by resolution + 2 '))
-spectrumRange._GroupModel = pyxb.binding.content.GroupSequence(
-    pyxb.binding.content.ParticleModel(spectrumRange._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'RangeID')), min_occurs=1, max_occurs=1),
-    pyxb.binding.content.ParticleModel(spectrumRange._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'MinWavelengthValue')), min_occurs=1, max_occurs=1),
-    pyxb.binding.content.ParticleModel(spectrumRange._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'MaxWavelengthValue')), min_occurs=1, max_occurs=1),
-    pyxb.binding.content.ParticleModel(spectrumRange._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Resolution')), min_occurs=1, max_occurs=1),
-    pyxb.binding.content.ParticleModel(spectrumRange._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Unit')), min_occurs=1, max_occurs=1)
-    )
-spectrumRange._ContentModel = pyxb.binding.content.ParticleModel(spectrumRange._GroupModel, min_occurs=1, max_occurs=1)
+quantumEfficiencyMap._ContentModel = pyxb.binding.content.ParticleModel(quantumEfficiencyMap._GroupModel, min_occurs=1, max_occurs=1)
 
 
 
@@ -1753,6 +1719,14 @@ grismModeModel._GroupModel = pyxb.binding.content.GroupSequence(
     pyxb.binding.content.ParticleModel(grismModeModel._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'GrismOrderList')), min_occurs=1, max_occurs=1L)
     )
 grismModeModel._ContentModel = pyxb.binding.content.ParticleModel(grismModeModel._GroupModel, min_occurs=1, max_occurs=1)
+
+
+
+nisOpticsModel._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'GrismMode'), grismModeModel, scope=nisOpticsModel))
+nisOpticsModel._GroupModel = pyxb.binding.content.GroupSequence(
+    pyxb.binding.content.ParticleModel(nisOpticsModel._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'GrismMode')), min_occurs=1, max_occurs=None)
+    )
+nisOpticsModel._ContentModel = pyxb.binding.content.ParticleModel(nisOpticsModel._GroupModel, min_occurs=1, max_occurs=1)
 
 
 
@@ -1782,61 +1756,11 @@ grismOrderModel._ContentModel = pyxb.binding.content.ParticleModel(grismOrderMod
 
 
 
-curvatureModel._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Unit'), CommonDM.dm.bas.utd_stub.unit, scope=curvatureModel, documentation=u'The unit used to describe the Start, End and polynomial coefficients of the trace. Default: um'))
-
-curvatureModel._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'DispAngle'), CommonDM.dm.bas.dtd_stub.degAngle, scope=curvatureModel, documentation=u'The dispersion direction (0 or 90). Counter-clockwise in the FPA frame.'))
-
-curvatureModel._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'PolyOrder'), pyxb.binding.datatypes.int, scope=curvatureModel, documentation=u'The order of the polynomial DY = a0 + a1 DX + a2 DX^2 + ...'))
-
-curvatureModel._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Version'), CommonDM.dm.sys_stub.version, scope=curvatureModel))
-
-curvatureModel._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'End'), pyxb.binding.datatypes.double, scope=curvatureModel, documentation=u'The position of the end of the spectrum in the dispersion direction, blueward of the reference wavelength.'))
-
-curvatureModel._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Start'), pyxb.binding.datatypes.double, scope=curvatureModel, documentation=u'The position of the beginning of the spectrum in the dispersion direction, redward of the reference wavelength.'))
-
-curvatureModel._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'ComputationDate'), pyxb.binding.datatypes.dateTime, scope=curvatureModel))
-
-curvatureModel._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'CalibrationDataPath'), CommonDM.dm.sys.sgs_stub.dataContainer, scope=curvatureModel))
-
-curvatureModel._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Coefficients'), CommonDM.dm.bas.mat_stub.xyPolynome, scope=curvatureModel, documentation=u'The coefficients of the polynomial DY = a0 + a1 DX + a2 DX^2 + ... Each coefficient (a0, a1, a2, etc) can be a constant or a 2D xy field dependent polynomial. '))
-curvatureModel._GroupModel = pyxb.binding.content.GroupSequence(
-    pyxb.binding.content.ParticleModel(curvatureModel._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Version')), min_occurs=1, max_occurs=1),
-    pyxb.binding.content.ParticleModel(curvatureModel._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'ComputationDate')), min_occurs=1, max_occurs=1),
-    pyxb.binding.content.ParticleModel(curvatureModel._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'CalibrationDataPath')), min_occurs=0L, max_occurs=1),
-    pyxb.binding.content.ParticleModel(curvatureModel._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'DispAngle')), min_occurs=1, max_occurs=1),
-    pyxb.binding.content.ParticleModel(curvatureModel._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Start')), min_occurs=1, max_occurs=1),
-    pyxb.binding.content.ParticleModel(curvatureModel._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'End')), min_occurs=1, max_occurs=1),
-    pyxb.binding.content.ParticleModel(curvatureModel._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'PolyOrder')), min_occurs=1, max_occurs=1),
-    pyxb.binding.content.ParticleModel(curvatureModel._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Coefficients')), min_occurs=1, max_occurs=None),
-    pyxb.binding.content.ParticleModel(curvatureModel._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Unit')), min_occurs=1, max_occurs=1)
+grismOrderList._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'GrismOrder'), grismOrderModel, scope=grismOrderList))
+grismOrderList._GroupModel = pyxb.binding.content.GroupSequence(
+    pyxb.binding.content.ParticleModel(grismOrderList._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'GrismOrder')), min_occurs=1, max_occurs=None)
     )
-curvatureModel._ContentModel = pyxb.binding.content.ParticleModel(curvatureModel._GroupModel, min_occurs=1, max_occurs=1)
-
-
-
-dispersionFunction._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Coefficients'), CommonDM.dm.bas.mat_stub.xyPolynome, scope=dispersionFunction, documentation=u'The coefficients of the polynomial DL = a0 + a1 DX + a2 DX^2 + ..., where DX is the distance along the trace. Each coefficient (a0, a1, a2, etc) can be a constant or a 2D xy field dependent polynomial. '))
-
-dispersionFunction._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'ComputationDate'), pyxb.binding.datatypes.dateTime, scope=dispersionFunction))
-
-dispersionFunction._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'CalibrationDataPath'), CommonDM.dm.sys.sgs_stub.dataContainer, scope=dispersionFunction))
-
-dispersionFunction._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'DXUnit'), CommonDM.dm.bas.utd_stub.unit, scope=dispersionFunction, documentation=u'The unit used for the displacement DX in the dispersion function. Default: um'))
-
-dispersionFunction._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'PolyOrder'), pyxb.binding.datatypes.int, scope=dispersionFunction, documentation=u'The order of the polynomial DL = a0 + a1 DX + a2 DX^2 + ..., where DX is the distance along the trace.'))
-
-dispersionFunction._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'DLUnit'), CommonDM.dm.bas.utd_stub.unit, scope=dispersionFunction, documentation=u'The unit used for the dispersion DL in the dispersion function. Default: Angstrom'))
-
-dispersionFunction._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Version'), CommonDM.dm.sys_stub.version, scope=dispersionFunction))
-dispersionFunction._GroupModel = pyxb.binding.content.GroupSequence(
-    pyxb.binding.content.ParticleModel(dispersionFunction._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Version')), min_occurs=1, max_occurs=1),
-    pyxb.binding.content.ParticleModel(dispersionFunction._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'ComputationDate')), min_occurs=1, max_occurs=1),
-    pyxb.binding.content.ParticleModel(dispersionFunction._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'CalibrationDataPath')), min_occurs=0L, max_occurs=1),
-    pyxb.binding.content.ParticleModel(dispersionFunction._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'PolyOrder')), min_occurs=1, max_occurs=1),
-    pyxb.binding.content.ParticleModel(dispersionFunction._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Coefficients')), min_occurs=1, max_occurs=None),
-    pyxb.binding.content.ParticleModel(dispersionFunction._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'DXUnit')), min_occurs=1, max_occurs=1),
-    pyxb.binding.content.ParticleModel(dispersionFunction._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'DLUnit')), min_occurs=1, max_occurs=1)
-    )
-dispersionFunction._ContentModel = pyxb.binding.content.ParticleModel(dispersionFunction._GroupModel, min_occurs=1, max_occurs=1)
+grismOrderList._ContentModel = pyxb.binding.content.ParticleModel(grismOrderList._GroupModel, min_occurs=1, max_occurs=1)
 
 
 
@@ -1851,6 +1775,34 @@ distortionModel._GroupModel = pyxb.binding.content.GroupSequence(
     pyxb.binding.content.ParticleModel(distortionModel._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Unit')), min_occurs=1, max_occurs=1)
     )
 distortionModel._ContentModel = pyxb.binding.content.ParticleModel(distortionModel._GroupModel, min_occurs=1, max_occurs=1)
+
+
+
+psf._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'DoubleGaussian'), doubleGaussianPSF, scope=psf))
+
+psf._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'AnalyticExpression'), CommonDM.dm.bas.mat_stub.analyticExpression, scope=psf))
+
+psf._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'DataCube'), dataCube, scope=psf))
+psf._GroupModel = pyxb.binding.content.GroupChoice(
+    pyxb.binding.content.ParticleModel(psf._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'AnalyticExpression')), min_occurs=1, max_occurs=1),
+    pyxb.binding.content.ParticleModel(psf._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'DataCube')), min_occurs=1, max_occurs=1),
+    pyxb.binding.content.ParticleModel(psf._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'DoubleGaussian')), min_occurs=1, max_occurs=1)
+    )
+psf._ContentModel = pyxb.binding.content.ParticleModel(psf._GroupModel, min_occurs=1, max_occurs=1)
+
+
+transmissionFitsFile._GroupModel = pyxb.binding.content.GroupSequence(
+    pyxb.binding.content.ParticleModel(transmissionFitsFile._UseForTag(pyxb.namespace.ExpandedName(None, u'DataContainer')), min_occurs=1, max_occurs=1)
+    )
+transmissionFitsFile._ContentModel = pyxb.binding.content.ParticleModel(transmissionFitsFile._GroupModel, min_occurs=1, max_occurs=1)
+
+
+
+nipOpticsModel._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'FilterMode'), filterModeModel, scope=nipOpticsModel))
+nipOpticsModel._GroupModel = pyxb.binding.content.GroupSequence(
+    pyxb.binding.content.ParticleModel(nipOpticsModel._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'FilterMode')), min_occurs=1, max_occurs=None)
+    )
+nipOpticsModel._ContentModel = pyxb.binding.content.ParticleModel(nipOpticsModel._GroupModel, min_occurs=1, max_occurs=1)
 
 
 
@@ -1871,14 +1823,20 @@ filterModeModel._ContentModel = pyxb.binding.content.ParticleModel(filterModeMod
 
 
 
-pixelPSF._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'FitsCubeImage'), pixelPsfFitsFile, scope=pixelPSF))
+focalPlaneArrangement._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'NumberOfColumns'), pyxb.binding.datatypes.int, scope=focalPlaneArrangement, documentation=u'Number of columns of detectors.'))
 
-pixelPSF._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'ReferenceChip'), pyxb.binding.datatypes.int, scope=pixelPSF))
-pixelPSF._GroupModel = pyxb.binding.content.GroupSequence(
-    pyxb.binding.content.ParticleModel(pixelPSF._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'ReferenceChip')), min_occurs=1, max_occurs=None),
-    pyxb.binding.content.ParticleModel(pixelPSF._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'FitsCubeImage')), min_occurs=1, max_occurs=None)
+focalPlaneArrangement._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'DetectorPositionList'), CTD_ANON, scope=focalPlaneArrangement, documentation=u'The detectors in the FPA.'))
+
+focalPlaneArrangement._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Identifier'), pyxb.binding.datatypes.string, scope=focalPlaneArrangement))
+
+focalPlaneArrangement._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'NumberOfRows'), pyxb.binding.datatypes.int, scope=focalPlaneArrangement, documentation=u'Number of rows of detectors.'))
+focalPlaneArrangement._GroupModel = pyxb.binding.content.GroupSequence(
+    pyxb.binding.content.ParticleModel(focalPlaneArrangement._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Identifier')), min_occurs=1, max_occurs=1),
+    pyxb.binding.content.ParticleModel(focalPlaneArrangement._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'NumberOfRows')), min_occurs=1, max_occurs=1),
+    pyxb.binding.content.ParticleModel(focalPlaneArrangement._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'NumberOfColumns')), min_occurs=1, max_occurs=1),
+    pyxb.binding.content.ParticleModel(focalPlaneArrangement._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'DetectorPositionList')), min_occurs=1, max_occurs=1)
     )
-pixelPSF._ContentModel = pyxb.binding.content.ParticleModel(pixelPSF._GroupModel, min_occurs=1, max_occurs=1)
+focalPlaneArrangement._ContentModel = pyxb.binding.content.ParticleModel(focalPlaneArrangement._GroupModel, min_occurs=1, max_occurs=1)
 
 
 
@@ -1912,12 +1870,6 @@ straylightNoiseModel._GroupModel = pyxb.binding.content.GroupSequence(
 straylightNoiseModel._ContentModel = pyxb.binding.content.ParticleModel(straylightNoiseModel._GroupModel, min_occurs=1, max_occurs=1)
 
 
-transmissionFitsFile._GroupModel = pyxb.binding.content.GroupSequence(
-    pyxb.binding.content.ParticleModel(transmissionFitsFile._UseForTag(pyxb.namespace.ExpandedName(None, u'DataContainer')), min_occurs=1, max_occurs=1)
-    )
-transmissionFitsFile._ContentModel = pyxb.binding.content.ParticleModel(transmissionFitsFile._GroupModel, min_occurs=1, max_occurs=1)
-
-
 
 thermalNoiseModel._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Version'), CommonDM.dm.sys_stub.version, scope=thermalNoiseModel))
 
@@ -1939,23 +1891,6 @@ thermalNoiseModel._ContentModel = pyxb.binding.content.ParticleModel(thermalNois
 
 
 
-detectorSize._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'NumberOfPixelsInX'), pyxb.binding.datatypes.int, scope=detectorSize, documentation=u'Number of pixels in X direction.'))
-
-detectorSize._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'NumberOfPixelsInY'), pyxb.binding.datatypes.int, scope=detectorSize, documentation=u'Number of pixels in Y direction.'))
-detectorSize._GroupModel = pyxb.binding.content.GroupSequence(
-    pyxb.binding.content.ParticleModel(detectorSize._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'NumberOfPixelsInX')), min_occurs=1, max_occurs=1),
-    pyxb.binding.content.ParticleModel(detectorSize._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'NumberOfPixelsInY')), min_occurs=1, max_occurs=1)
-    )
-detectorSize._ContentModel = pyxb.binding.content.ParticleModel(detectorSize._GroupModel, min_occurs=1, max_occurs=1)
-
-
-readoutNoiseMap._GroupModel = pyxb.binding.content.GroupSequence(
-    pyxb.binding.content.ParticleModel(readoutNoiseMap._UseForTag(pyxb.namespace.ExpandedName(None, u'DataContainer')), min_occurs=1, max_occurs=1)
-    )
-readoutNoiseMap._ContentModel = pyxb.binding.content.ParticleModel(readoutNoiseMap._GroupModel, min_occurs=1, max_occurs=1)
-
-
-
 darkCurrentModel._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'DarkCurrentMap'), darkCurrentMap, scope=darkCurrentModel))
 darkCurrentModel._GroupModel = pyxb.binding.content.GroupChoice(
     pyxb.binding.content.ParticleModel(darkCurrentModel._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'DarkCurrentMap')), min_occurs=1, max_occurs=1)
@@ -1963,23 +1898,49 @@ darkCurrentModel._GroupModel = pyxb.binding.content.GroupChoice(
 darkCurrentModel._ContentModel = pyxb.binding.content.ParticleModel(darkCurrentModel._GroupModel, min_occurs=1, max_occurs=1)
 
 
-
-quantumEfficiencyModel._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'QuantumEfficiencyMap'), quantumEfficiencyMap, scope=quantumEfficiencyModel))
-
-quantumEfficiencyModel._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'QuantumEfficiencyCube'), quantumEfficiencyCube, scope=quantumEfficiencyModel))
-quantumEfficiencyModel._GroupModel = pyxb.binding.content.GroupChoice(
-    pyxb.binding.content.ParticleModel(quantumEfficiencyModel._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'QuantumEfficiencyMap')), min_occurs=1, max_occurs=1),
-    pyxb.binding.content.ParticleModel(quantumEfficiencyModel._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'QuantumEfficiencyCube')), min_occurs=1, max_occurs=1)
+quantumEfficiencyCube._GroupModel = pyxb.binding.content.GroupSequence(
+    pyxb.binding.content.ParticleModel(quantumEfficiencyCube._UseForTag(pyxb.namespace.ExpandedName(None, u'DataContainer')), min_occurs=1, max_occurs=1)
     )
-quantumEfficiencyModel._ContentModel = pyxb.binding.content.ParticleModel(quantumEfficiencyModel._GroupModel, min_occurs=1, max_occurs=1)
+quantumEfficiencyCube._ContentModel = pyxb.binding.content.ParticleModel(quantumEfficiencyCube._GroupModel, min_occurs=1, max_occurs=1)
 
 
 
-readoutNoiseModel._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'ReadoutNoiseMap'), readoutNoiseMap, scope=readoutNoiseModel))
-readoutNoiseModel._GroupModel = pyxb.binding.content.GroupChoice(
-    pyxb.binding.content.ParticleModel(readoutNoiseModel._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'ReadoutNoiseMap')), min_occurs=1, max_occurs=1)
+detector._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Size'), detectorSize, scope=detector, documentation=u'The size of the detector in pixels.'))
+
+detector._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'DarkCurrentModel'), darkCurrentModel, scope=detector, documentation=u'The dark current of the detector.'))
+
+detector._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'QuantumEfficiencyModel'), quantumEfficiencyModel, scope=detector, documentation=u'The QE model of the detector.'))
+
+detector._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'CosmicRayModel'), cosmicRayModel, scope=detector, documentation=u'The simulated cosmic ray map of the detector.'))
+
+detector._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Identifier'), pyxb.binding.datatypes.string, scope=detector))
+
+detector._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'ReadoutNoiseModel'), readoutNoiseModel, scope=detector, documentation=u'The readout noise model of the detector.'))
+detector._GroupModel = pyxb.binding.content.GroupSequence(
+    pyxb.binding.content.ParticleModel(detector._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Identifier')), min_occurs=1, max_occurs=1),
+    pyxb.binding.content.ParticleModel(detector._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Size')), min_occurs=1, max_occurs=1),
+    pyxb.binding.content.ParticleModel(detector._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'QuantumEfficiencyModel')), min_occurs=1, max_occurs=1),
+    pyxb.binding.content.ParticleModel(detector._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'ReadoutNoiseModel')), min_occurs=1, max_occurs=1),
+    pyxb.binding.content.ParticleModel(detector._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'DarkCurrentModel')), min_occurs=1, max_occurs=1),
+    pyxb.binding.content.ParticleModel(detector._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'CosmicRayModel')), min_occurs=0L, max_occurs=1)
     )
-readoutNoiseModel._ContentModel = pyxb.binding.content.ParticleModel(readoutNoiseModel._GroupModel, min_occurs=1, max_occurs=1)
+detector._ContentModel = pyxb.binding.content.ParticleModel(detector._GroupModel, min_occurs=1, max_occurs=1)
+
+
+
+cosmicRayModel._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'CosmicRayMap'), cosmicRayMap, scope=cosmicRayModel))
+cosmicRayModel._GroupModel = pyxb.binding.content.GroupChoice(
+    pyxb.binding.content.ParticleModel(cosmicRayModel._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'CosmicRayMap')), min_occurs=1, max_occurs=1)
+    )
+cosmicRayModel._ContentModel = pyxb.binding.content.ParticleModel(cosmicRayModel._GroupModel, min_occurs=1, max_occurs=1)
+
+
+
+CTD_ANON._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'DetectorPosition'), detectorPosition, scope=CTD_ANON))
+CTD_ANON._GroupModel = pyxb.binding.content.GroupSequence(
+    pyxb.binding.content.ParticleModel(CTD_ANON._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'DetectorPosition')), min_occurs=1L, max_occurs=None)
+    )
+CTD_ANON._ContentModel = pyxb.binding.content.ParticleModel(CTD_ANON._GroupModel, min_occurs=1, max_occurs=1)
 
 
 
@@ -1993,43 +1954,10 @@ exposureTime._GroupModel = pyxb.binding.content.GroupSequence(
 exposureTime._ContentModel = pyxb.binding.content.ParticleModel(exposureTime._GroupModel, min_occurs=1, max_occurs=1)
 
 
-
-cosmicRayModel._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'CosmicRayMap'), cosmicRayMap, scope=cosmicRayModel))
-cosmicRayModel._GroupModel = pyxb.binding.content.GroupChoice(
-    pyxb.binding.content.ParticleModel(cosmicRayModel._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'CosmicRayMap')), min_occurs=1, max_occurs=1)
+cosmicRayMap._GroupModel = pyxb.binding.content.GroupSequence(
+    pyxb.binding.content.ParticleModel(cosmicRayMap._UseForTag(pyxb.namespace.ExpandedName(None, u'DataContainer')), min_occurs=1, max_occurs=1)
     )
-cosmicRayModel._ContentModel = pyxb.binding.content.ParticleModel(cosmicRayModel._GroupModel, min_occurs=1, max_occurs=1)
-
-
-
-detector._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Size'), detectorSize, scope=detector, documentation=u'The size of the detector in pixels.'))
-
-detector._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'DarkCurrentModel'), darkCurrentModel, scope=detector, documentation=u'The dark current of the detector.'))
-
-detector._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'QuantumEfficiencyModel'), quantumEfficiencyModel, scope=detector, documentation=u'The QE model of the detector.'))
-
-detector._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'CosmicRayModel'), cosmicRayModel, scope=detector, documentation=u'The simulated cosmic ray map of the detector.'))
-
-detector._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'ReadoutNoiseModel'), readoutNoiseModel, scope=detector, documentation=u'The readout noise model of the detector.'))
-
-detector._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Identifier'), pyxb.binding.datatypes.string, scope=detector))
-detector._GroupModel = pyxb.binding.content.GroupSequence(
-    pyxb.binding.content.ParticleModel(detector._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Identifier')), min_occurs=1, max_occurs=1),
-    pyxb.binding.content.ParticleModel(detector._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Size')), min_occurs=1, max_occurs=1),
-    pyxb.binding.content.ParticleModel(detector._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'QuantumEfficiencyModel')), min_occurs=1, max_occurs=1),
-    pyxb.binding.content.ParticleModel(detector._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'ReadoutNoiseModel')), min_occurs=1, max_occurs=1),
-    pyxb.binding.content.ParticleModel(detector._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'DarkCurrentModel')), min_occurs=1, max_occurs=1),
-    pyxb.binding.content.ParticleModel(detector._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'CosmicRayModel')), min_occurs=0L, max_occurs=1)
-    )
-detector._ContentModel = pyxb.binding.content.ParticleModel(detector._GroupModel, min_occurs=1, max_occurs=1)
-
-
-
-CTD_ANON._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'DetectorPosition'), detectorPosition, scope=CTD_ANON))
-CTD_ANON._GroupModel = pyxb.binding.content.GroupSequence(
-    pyxb.binding.content.ParticleModel(CTD_ANON._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'DetectorPosition')), min_occurs=1L, max_occurs=None)
-    )
-CTD_ANON._ContentModel = pyxb.binding.content.ParticleModel(CTD_ANON._GroupModel, min_occurs=1, max_occurs=1)
+cosmicRayMap._ContentModel = pyxb.binding.content.ParticleModel(cosmicRayMap._GroupModel, min_occurs=1, max_occurs=1)
 
 
 
@@ -2046,14 +1974,71 @@ FPA._GroupModel = pyxb.binding.content.GroupSequence(
 FPA._ContentModel = pyxb.binding.content.ParticleModel(FPA._GroupModel, min_occurs=1, max_occurs=1)
 
 
+readoutNoiseMap._GroupModel = pyxb.binding.content.GroupSequence(
+    pyxb.binding.content.ParticleModel(readoutNoiseMap._UseForTag(pyxb.namespace.ExpandedName(None, u'DataContainer')), min_occurs=1, max_occurs=1)
+    )
+readoutNoiseMap._ContentModel = pyxb.binding.content.ParticleModel(readoutNoiseMap._GroupModel, min_occurs=1, max_occurs=1)
 
-detectorInFPA._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'YFPA'), CommonDM.dm.bas.dtd_stub.doubleUnit, scope=detectorInFPA, documentation=u'Relative Y position of the detector in the FPA with respect to the FPA center, and in the North/East coordinate system.'))
+
+darkCurrentMap._GroupModel = pyxb.binding.content.GroupSequence(
+    pyxb.binding.content.ParticleModel(darkCurrentMap._UseForTag(pyxb.namespace.ExpandedName(None, u'DataContainer')), min_occurs=1, max_occurs=1)
+    )
+darkCurrentMap._ContentModel = pyxb.binding.content.ParticleModel(darkCurrentMap._GroupModel, min_occurs=1, max_occurs=1)
+
+
+
+detectorSize._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'NumberOfPixelsInX'), pyxb.binding.datatypes.int, scope=detectorSize, documentation=u'Number of pixels in X direction.'))
+
+detectorSize._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'NumberOfPixelsInY'), pyxb.binding.datatypes.int, scope=detectorSize, documentation=u'Number of pixels in Y direction.'))
+detectorSize._GroupModel = pyxb.binding.content.GroupSequence(
+    pyxb.binding.content.ParticleModel(detectorSize._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'NumberOfPixelsInX')), min_occurs=1, max_occurs=1),
+    pyxb.binding.content.ParticleModel(detectorSize._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'NumberOfPixelsInY')), min_occurs=1, max_occurs=1)
+    )
+detectorSize._ContentModel = pyxb.binding.content.ParticleModel(detectorSize._GroupModel, min_occurs=1, max_occurs=1)
+
+
+
+readoutNoiseModel._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'ReadoutNoiseMap'), readoutNoiseMap, scope=readoutNoiseModel))
+readoutNoiseModel._GroupModel = pyxb.binding.content.GroupChoice(
+    pyxb.binding.content.ParticleModel(readoutNoiseModel._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'ReadoutNoiseMap')), min_occurs=1, max_occurs=1)
+    )
+readoutNoiseModel._ContentModel = pyxb.binding.content.ParticleModel(readoutNoiseModel._GroupModel, min_occurs=1, max_occurs=1)
+
+
+
+dispersionFunction._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Coefficients'), CommonDM.dm.bas.mat_stub.xyPolynome, scope=dispersionFunction, documentation=u'The coefficients of the polynomial DL = a0 + a1 DX + a2 DX^2 + ..., where DX is the distance along the trace. Each coefficient (a0, a1, a2, etc) can be a constant or a 2D xy field dependent polynomial. '))
+
+dispersionFunction._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'ComputationDate'), pyxb.binding.datatypes.dateTime, scope=dispersionFunction))
+
+dispersionFunction._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'DXUnit'), CommonDM.dm.bas.utd_stub.unit, scope=dispersionFunction, documentation=u'The unit used for the displacement DX in the dispersion function. Default: um'))
+
+dispersionFunction._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'CalibrationDataPath'), CommonDM.dm.sys.sgs_stub.dataContainer, scope=dispersionFunction))
+
+dispersionFunction._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'PolyOrder'), pyxb.binding.datatypes.int, scope=dispersionFunction, documentation=u'The order of the polynomial DL = a0 + a1 DX + a2 DX^2 + ..., where DX is the distance along the trace.'))
+
+dispersionFunction._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'DLUnit'), CommonDM.dm.bas.utd_stub.unit, scope=dispersionFunction, documentation=u'The unit used for the dispersion DL in the dispersion function. Default: Angstrom'))
+
+dispersionFunction._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Version'), CommonDM.dm.sys_stub.version, scope=dispersionFunction))
+dispersionFunction._GroupModel = pyxb.binding.content.GroupSequence(
+    pyxb.binding.content.ParticleModel(dispersionFunction._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Version')), min_occurs=1, max_occurs=1),
+    pyxb.binding.content.ParticleModel(dispersionFunction._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'ComputationDate')), min_occurs=1, max_occurs=1),
+    pyxb.binding.content.ParticleModel(dispersionFunction._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'CalibrationDataPath')), min_occurs=0L, max_occurs=1),
+    pyxb.binding.content.ParticleModel(dispersionFunction._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'PolyOrder')), min_occurs=1, max_occurs=1),
+    pyxb.binding.content.ParticleModel(dispersionFunction._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Coefficients')), min_occurs=1, max_occurs=None),
+    pyxb.binding.content.ParticleModel(dispersionFunction._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'DXUnit')), min_occurs=1, max_occurs=1),
+    pyxb.binding.content.ParticleModel(dispersionFunction._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'DLUnit')), min_occurs=1, max_occurs=1)
+    )
+dispersionFunction._ContentModel = pyxb.binding.content.ParticleModel(dispersionFunction._GroupModel, min_occurs=1, max_occurs=1)
+
+
+
+detectorInFPA._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Elevation'), CommonDM.dm.bas.dtd_stub.doubleUnit, scope=detectorInFPA, documentation=u'Elevation of the detector above or below the reference plane of the FPA.'))
 
 detectorInFPA._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'RotAngle'), CommonDM.dm.bas.dtd_stub.doubleUnit, scope=detectorInFPA, documentation=u'Rotation angle around the axis described by the vector normal to the FPA passing through the detector center. Angles are increasing CCW. Zero value means the detector is aligned with the North/East coordinate system. '))
 
-detectorInFPA._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'XFPA'), CommonDM.dm.bas.dtd_stub.doubleUnit, scope=detectorInFPA, documentation=u'Relative X position of the detector in the FPA with respect to the FPA center, and in the North/East coordinate system.'))
+detectorInFPA._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'YFPA'), CommonDM.dm.bas.dtd_stub.doubleUnit, scope=detectorInFPA, documentation=u'Relative Y position of the detector in the FPA with respect to the FPA center, and in the North/East coordinate system.'))
 
-detectorInFPA._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Elevation'), CommonDM.dm.bas.dtd_stub.doubleUnit, scope=detectorInFPA, documentation=u'Elevation of the detector above or below the reference plane of the FPA.'))
+detectorInFPA._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'XFPA'), CommonDM.dm.bas.dtd_stub.doubleUnit, scope=detectorInFPA, documentation=u'Relative X position of the detector in the FPA with respect to the FPA center, and in the North/East coordinate system.'))
 
 detectorInFPA._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Identifier'), CommonDM.dm.ins_stub.detectorId, scope=detectorInFPA))
 detectorInFPA._GroupModel = pyxb.binding.content.GroupSequence(
@@ -2067,62 +2052,72 @@ detectorInFPA._ContentModel = pyxb.binding.content.ParticleModel(detectorInFPA._
 
 
 
-focalPlaneArrangement._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'NumberOfColumns'), pyxb.binding.datatypes.int, scope=focalPlaneArrangement, documentation=u'Number of columns of detectors.'))
+spectrumRange._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'MinWavelengthValue'), pyxb.binding.datatypes.double, scope=spectrumRange, documentation=u''))
 
-focalPlaneArrangement._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'DetectorPositionList'), CTD_ANON, scope=focalPlaneArrangement, documentation=u'The detectors in the FPA.'))
+spectrumRange._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'MaxWavelengthValue'), pyxb.binding.datatypes.double, scope=spectrumRange, documentation=u''))
 
-focalPlaneArrangement._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Identifier'), pyxb.binding.datatypes.string, scope=focalPlaneArrangement))
+spectrumRange._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'RangeID'), CommonDM.dm.bas.spm_stub.spectralRangeId, scope=spectrumRange, documentation=u'Name or ID commonly used for this spectral band'))
 
-focalPlaneArrangement._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'NumberOfRows'), pyxb.binding.datatypes.int, scope=focalPlaneArrangement, documentation=u'Number of rows of detectors.'))
-focalPlaneArrangement._GroupModel = pyxb.binding.content.GroupSequence(
-    pyxb.binding.content.ParticleModel(focalPlaneArrangement._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Identifier')), min_occurs=1, max_occurs=1),
-    pyxb.binding.content.ParticleModel(focalPlaneArrangement._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'NumberOfRows')), min_occurs=1, max_occurs=1),
-    pyxb.binding.content.ParticleModel(focalPlaneArrangement._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'NumberOfColumns')), min_occurs=1, max_occurs=1),
-    pyxb.binding.content.ParticleModel(focalPlaneArrangement._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'DetectorPositionList')), min_occurs=1, max_occurs=1)
+spectrumRange._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Unit'), CommonDM.dm.bas.utd_stub.unit, scope=spectrumRange))
+
+spectrumRange._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Resolution'), pyxb.binding.datatypes.double, scope=spectrumRange, documentation=u'The number of samples is equal to : max - min divided by resolution + 2 '))
+spectrumRange._GroupModel = pyxb.binding.content.GroupSequence(
+    pyxb.binding.content.ParticleModel(spectrumRange._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'RangeID')), min_occurs=1, max_occurs=1),
+    pyxb.binding.content.ParticleModel(spectrumRange._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'MinWavelengthValue')), min_occurs=1, max_occurs=1),
+    pyxb.binding.content.ParticleModel(spectrumRange._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'MaxWavelengthValue')), min_occurs=1, max_occurs=1),
+    pyxb.binding.content.ParticleModel(spectrumRange._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Resolution')), min_occurs=1, max_occurs=1),
+    pyxb.binding.content.ParticleModel(spectrumRange._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Unit')), min_occurs=1, max_occurs=1)
     )
-focalPlaneArrangement._ContentModel = pyxb.binding.content.ParticleModel(focalPlaneArrangement._GroupModel, min_occurs=1, max_occurs=1)
+spectrumRange._ContentModel = pyxb.binding.content.ParticleModel(spectrumRange._GroupModel, min_occurs=1, max_occurs=1)
 
 
 
-grismOrderList._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'GrismOrder'), grismOrderModel, scope=grismOrderList))
-grismOrderList._GroupModel = pyxb.binding.content.GroupSequence(
-    pyxb.binding.content.ParticleModel(grismOrderList._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'GrismOrder')), min_occurs=1, max_occurs=None)
+quantumEfficiencyModel._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'QuantumEfficiencyMap'), quantumEfficiencyMap, scope=quantumEfficiencyModel))
+
+quantumEfficiencyModel._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'QuantumEfficiencyCube'), quantumEfficiencyCube, scope=quantumEfficiencyModel))
+quantumEfficiencyModel._GroupModel = pyxb.binding.content.GroupChoice(
+    pyxb.binding.content.ParticleModel(quantumEfficiencyModel._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'QuantumEfficiencyMap')), min_occurs=1, max_occurs=1),
+    pyxb.binding.content.ParticleModel(quantumEfficiencyModel._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'QuantumEfficiencyCube')), min_occurs=1, max_occurs=1)
     )
-grismOrderList._ContentModel = pyxb.binding.content.ParticleModel(grismOrderList._GroupModel, min_occurs=1, max_occurs=1)
+quantumEfficiencyModel._ContentModel = pyxb.binding.content.ParticleModel(quantumEfficiencyModel._GroupModel, min_occurs=1, max_occurs=1)
 
 
 
-detectorPosition._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Column'), pyxb.binding.datatypes.int, scope=detectorPosition, documentation=u'The column in which the detector is in. The numbering starts from the left and from 0.'))
+curvatureModel._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Unit'), CommonDM.dm.bas.utd_stub.unit, scope=curvatureModel, documentation=u'The unit used to describe the Start, End and polynomial coefficients of the trace. Default: um'))
 
-detectorPosition._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Identifier'), pyxb.binding.datatypes.string, scope=detectorPosition, documentation=u'The identifier of the detector. Can be used to retrieve the detectors model.'))
+curvatureModel._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'DispAngle'), CommonDM.dm.bas.dtd_stub.degAngle, scope=curvatureModel, documentation=u'The dispersion direction (0 or 90). Counter-clockwise in the FPA frame.'))
 
-detectorPosition._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Row'), pyxb.binding.datatypes.int, scope=detectorPosition, documentation=u'The row in which the detector is in. The numbering starts from the bottom and from 0.'))
-detectorPosition._GroupModel = pyxb.binding.content.GroupSequence(
-    pyxb.binding.content.ParticleModel(detectorPosition._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Identifier')), min_occurs=1, max_occurs=1),
-    pyxb.binding.content.ParticleModel(detectorPosition._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Row')), min_occurs=1, max_occurs=1),
-    pyxb.binding.content.ParticleModel(detectorPosition._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Column')), min_occurs=1, max_occurs=1)
+curvatureModel._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'PolyOrder'), pyxb.binding.datatypes.int, scope=curvatureModel, documentation=u'The order of the polynomial DY = a0 + a1 DX + a2 DX^2 + ...'))
+
+curvatureModel._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Version'), CommonDM.dm.sys_stub.version, scope=curvatureModel))
+
+curvatureModel._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'CalibrationDataPath'), CommonDM.dm.sys.sgs_stub.dataContainer, scope=curvatureModel))
+
+curvatureModel._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Start'), pyxb.binding.datatypes.double, scope=curvatureModel, documentation=u'The position of the beginning of the spectrum in the dispersion direction, redward of the reference wavelength.'))
+
+curvatureModel._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'ComputationDate'), pyxb.binding.datatypes.dateTime, scope=curvatureModel))
+
+curvatureModel._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'End'), pyxb.binding.datatypes.double, scope=curvatureModel, documentation=u'The position of the end of the spectrum in the dispersion direction, blueward of the reference wavelength.'))
+
+curvatureModel._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Coefficients'), CommonDM.dm.bas.mat_stub.xyPolynome, scope=curvatureModel, documentation=u'The coefficients of the polynomial DY = a0 + a1 DX + a2 DX^2 + ... Each coefficient (a0, a1, a2, etc) can be a constant or a 2D xy field dependent polynomial. '))
+curvatureModel._GroupModel = pyxb.binding.content.GroupSequence(
+    pyxb.binding.content.ParticleModel(curvatureModel._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Version')), min_occurs=1, max_occurs=1),
+    pyxb.binding.content.ParticleModel(curvatureModel._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'ComputationDate')), min_occurs=1, max_occurs=1),
+    pyxb.binding.content.ParticleModel(curvatureModel._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'CalibrationDataPath')), min_occurs=0L, max_occurs=1),
+    pyxb.binding.content.ParticleModel(curvatureModel._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'DispAngle')), min_occurs=1, max_occurs=1),
+    pyxb.binding.content.ParticleModel(curvatureModel._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Start')), min_occurs=1, max_occurs=1),
+    pyxb.binding.content.ParticleModel(curvatureModel._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'End')), min_occurs=1, max_occurs=1),
+    pyxb.binding.content.ParticleModel(curvatureModel._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'PolyOrder')), min_occurs=1, max_occurs=1),
+    pyxb.binding.content.ParticleModel(curvatureModel._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Coefficients')), min_occurs=1, max_occurs=None),
+    pyxb.binding.content.ParticleModel(curvatureModel._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Unit')), min_occurs=1, max_occurs=1)
     )
-detectorPosition._ContentModel = pyxb.binding.content.ParticleModel(detectorPosition._GroupModel, min_occurs=1, max_occurs=1)
+curvatureModel._ContentModel = pyxb.binding.content.ParticleModel(curvatureModel._GroupModel, min_occurs=1, max_occurs=1)
 
 
 pixelPsfFitsFile._GroupModel = pyxb.binding.content.GroupSequence(
     pyxb.binding.content.ParticleModel(pixelPsfFitsFile._UseForTag(pyxb.namespace.ExpandedName(None, u'DataContainer')), min_occurs=1, max_occurs=1)
     )
 pixelPsfFitsFile._ContentModel = pyxb.binding.content.ParticleModel(pixelPsfFitsFile._GroupModel, min_occurs=1, max_occurs=1)
-
-
-quantumEfficiencyMap._GroupModel = pyxb.binding.content.GroupSequence(
-    pyxb.binding.content.ParticleModel(quantumEfficiencyMap._UseForTag(pyxb.namespace.ExpandedName(None, u'DataContainer')), min_occurs=1, max_occurs=1)
-    )
-quantumEfficiencyMap._ContentModel = pyxb.binding.content.ParticleModel(quantumEfficiencyMap._GroupModel, min_occurs=1, max_occurs=1)
-
-
-
-nisOpticsModel._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'GrismMode'), grismModeModel, scope=nisOpticsModel))
-nisOpticsModel._GroupModel = pyxb.binding.content.GroupSequence(
-    pyxb.binding.content.ParticleModel(nisOpticsModel._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'GrismMode')), min_occurs=1, max_occurs=None)
-    )
-nisOpticsModel._ContentModel = pyxb.binding.content.ParticleModel(nisOpticsModel._GroupModel, min_occurs=1, max_occurs=1)
 
 
 
@@ -2136,10 +2131,15 @@ pointSpreadFunction._GroupModel = pyxb.binding.content.GroupChoice(
 pointSpreadFunction._ContentModel = pyxb.binding.content.ParticleModel(pointSpreadFunction._GroupModel, min_occurs=1, max_occurs=1)
 
 
-quantumEfficiencyCube._GroupModel = pyxb.binding.content.GroupSequence(
-    pyxb.binding.content.ParticleModel(quantumEfficiencyCube._UseForTag(pyxb.namespace.ExpandedName(None, u'DataContainer')), min_occurs=1, max_occurs=1)
+
+pixelPSF._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'FitsCubeImage'), pixelPsfFitsFile, scope=pixelPSF))
+
+pixelPSF._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'ReferenceChip'), pyxb.binding.datatypes.int, scope=pixelPSF))
+pixelPSF._GroupModel = pyxb.binding.content.GroupSequence(
+    pyxb.binding.content.ParticleModel(pixelPSF._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'ReferenceChip')), min_occurs=1, max_occurs=None),
+    pyxb.binding.content.ParticleModel(pixelPSF._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'FitsCubeImage')), min_occurs=1, max_occurs=None)
     )
-quantumEfficiencyCube._ContentModel = pyxb.binding.content.ParticleModel(quantumEfficiencyCube._GroupModel, min_occurs=1, max_occurs=1)
+pixelPSF._ContentModel = pyxb.binding.content.ParticleModel(pixelPSF._GroupModel, min_occurs=1, max_occurs=1)
 
 
 
@@ -2188,14 +2188,14 @@ doubleGaussianPSF._ContentModel = pyxb.binding.content.ParticleModel(doubleGauss
 
 
 
-psf._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'DoubleGaussian'), doubleGaussianPSF, scope=psf))
+detectorPosition._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Column'), pyxb.binding.datatypes.int, scope=detectorPosition, documentation=u'The column in which the detector is in. The numbering starts from the left and from 0.'))
 
-psf._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'AnalyticExpression'), CommonDM.dm.bas.mat_stub.analyticExpression, scope=psf))
+detectorPosition._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Identifier'), pyxb.binding.datatypes.string, scope=detectorPosition, documentation=u'The identifier of the detector. Can be used to retrieve the detectors model.'))
 
-psf._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'DataCube'), dataCube, scope=psf))
-psf._GroupModel = pyxb.binding.content.GroupChoice(
-    pyxb.binding.content.ParticleModel(psf._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'AnalyticExpression')), min_occurs=1, max_occurs=1),
-    pyxb.binding.content.ParticleModel(psf._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'DataCube')), min_occurs=1, max_occurs=1),
-    pyxb.binding.content.ParticleModel(psf._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'DoubleGaussian')), min_occurs=1, max_occurs=1)
+detectorPosition._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Row'), pyxb.binding.datatypes.int, scope=detectorPosition, documentation=u'The row in which the detector is in. The numbering starts from the bottom and from 0.'))
+detectorPosition._GroupModel = pyxb.binding.content.GroupSequence(
+    pyxb.binding.content.ParticleModel(detectorPosition._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Identifier')), min_occurs=1, max_occurs=1),
+    pyxb.binding.content.ParticleModel(detectorPosition._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Row')), min_occurs=1, max_occurs=1),
+    pyxb.binding.content.ParticleModel(detectorPosition._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Column')), min_occurs=1, max_occurs=1)
     )
-psf._ContentModel = pyxb.binding.content.ParticleModel(psf._GroupModel, min_occurs=1, max_occurs=1)
+detectorPosition._ContentModel = pyxb.binding.content.ParticleModel(detectorPosition._GroupModel, min_occurs=1, max_occurs=1)

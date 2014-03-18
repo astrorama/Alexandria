@@ -1,7 +1,7 @@
 # /home/nikoapos/ISDC/Projects/Alexandria/1.0/CommonDM/python/CommonDM/dm/ins/sky_stub.py
 # PyXB bindings for NamespaceModule
 # NSM:c511641e3e4c1554081270b88567f44db67597db
-# Generated 2014-03-17 11:53:47.256876 by PyXB version 1.1.2
+# Generated 2014-03-17 18:50:36.644968 by PyXB version 1.1.2
 import pyxb
 import pyxb.binding
 import pyxb.binding.saxer
@@ -11,14 +11,14 @@ import pyxb.utils.domutils
 import sys
 
 # Unique identifier for bindings created at the same time
-_GenerationUID = pyxb.utils.utility.UniqueIdentifier('urn:uuid:6923c468-adc2-11e3-8fb8-f01faf601f90')
+_GenerationUID = pyxb.utils.utility.UniqueIdentifier('urn:uuid:a3e7637c-adfc-11e3-9f2e-c4d98710dc86')
 
 # Import bindings for namespaces imported into schema
 import pyxb.binding.datatypes
 import CommonDM.dm.bas.utd_stub
-import CommonDM.dm.bas.img_stub
-import CommonDM.dm.ins_stub
 import CommonDM.dm.bas.dtd_stub
+import CommonDM.dm.ins_stub
+import CommonDM.dm.bas.img_stub
 import CommonDM.dm.bas.fit_stub
 
 Namespace = pyxb.namespace.NamespaceForURI(u'http://euclid.esa.org/schema/ins/sky', create_if_missing=True)
@@ -59,52 +59,124 @@ model.Aldering = model._CF_enumeration.addEnumeration(unicode_value=u'Aldering')
 model._InitializeFacetMap(model._CF_enumeration)
 Namespace.addCategoryObject('typeBinding', u'model', model)
 
-# Complex type galacticAbsorption with content type ELEMENT_ONLY
-class galacticAbsorption (pyxb.binding.basis.complexTypeDefinition):
+# Complex type skyCoordinate with content type ELEMENT_ONLY
+class skyCoordinate (pyxb.binding.basis.complexTypeDefinition):
     _TypeDefinition = None
     _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
     _Abstract = False
-    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'galacticAbsorption')
+    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'skyCoordinate')
     # Base type is pyxb.binding.datatypes.anyType
     
-    # Element {http://euclid.esa.org/schema/ins/sky}Model uses Python identifier Model
-    __Model = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Model'), 'Model', '__httpeuclid_esa_orgschemainssky_galacticAbsorption_httpeuclid_esa_orgschemainsskyModel', False)
+    # Element {http://euclid.esa.org/schema/ins/sky}Unit uses Python identifier Unit
+    __Unit = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Unit'), 'Unit', '__httpeuclid_esa_orgschemainssky_skyCoordinate_httpeuclid_esa_orgschemainsskyUnit', False)
 
     
-    Model = property(__Model.value, __Model.set, None, u'The name of the model used to compute the Galactic absorption.')
+    Unit = property(__Unit.value, __Unit.set, None, None)
 
     
-    # Element {http://euclid.esa.org/schema/ins/sky}AbsorptionFactors uses Python identifier AbsorptionFactors
-    __AbsorptionFactors = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'AbsorptionFactors'), 'AbsorptionFactors', '__httpeuclid_esa_orgschemainssky_galacticAbsorption_httpeuclid_esa_orgschemainsskyAbsorptionFactors', False)
+    # Element {http://euclid.esa.org/schema/ins/sky}Value uses Python identifier Value
+    __Value = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Value'), 'Value', '__httpeuclid_esa_orgschemainssky_skyCoordinate_httpeuclid_esa_orgschemainsskyValue', False)
 
     
-    AbsorptionFactors = property(__AbsorptionFactors.value, __AbsorptionFactors.set, None, u'A Binary FITS table containing the calculated absoption factors for different wavelengths. The factors get values from 0 to 1 (inclusive).')
-
-    
-    # Element {http://euclid.esa.org/schema/ins/sky}GalaxyLongitude uses Python identifier GalaxyLongitude
-    __GalaxyLongitude = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'GalaxyLongitude'), 'GalaxyLongitude', '__httpeuclid_esa_orgschemainssky_galacticAbsorption_httpeuclid_esa_orgschemainsskyGalaxyLongitude', False)
-
-    
-    GalaxyLongitude = property(__GalaxyLongitude.value, __GalaxyLongitude.set, None, u'The galaxy longitude parameter of the galactic model.')
-
-    
-    # Element {http://euclid.esa.org/schema/ins/sky}GalaxyLatitude uses Python identifier GalaxyLatitude
-    __GalaxyLatitude = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'GalaxyLatitude'), 'GalaxyLatitude', '__httpeuclid_esa_orgschemainssky_galacticAbsorption_httpeuclid_esa_orgschemainsskyGalaxyLatitude', False)
-
-    
-    GalaxyLatitude = property(__GalaxyLatitude.value, __GalaxyLatitude.set, None, u'The galaxy latitude parameter of the galactic model.')
+    Value = property(__Value.value, __Value.set, None, None)
 
 
     _ElementMap = {
-        __Model.name() : __Model,
-        __AbsorptionFactors.name() : __AbsorptionFactors,
-        __GalaxyLongitude.name() : __GalaxyLongitude,
-        __GalaxyLatitude.name() : __GalaxyLatitude
+        __Unit.name() : __Unit,
+        __Value.name() : __Value
     }
     _AttributeMap = {
         
     }
-Namespace.addCategoryObject('typeBinding', u'galacticAbsorption', galacticAbsorption)
+Namespace.addCategoryObject('typeBinding', u'skyCoordinate', skyCoordinate)
+
+
+# Complex type nPix with content type ELEMENT_ONLY
+class nPix (pyxb.binding.basis.complexTypeDefinition):
+    _TypeDefinition = None
+    _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
+    _Abstract = False
+    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'nPix')
+    # Base type is pyxb.binding.datatypes.anyType
+    
+    # Element {http://euclid.esa.org/schema/ins/sky}Unit uses Python identifier Unit
+    __Unit = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Unit'), 'Unit', '__httpeuclid_esa_orgschemainssky_nPix_httpeuclid_esa_orgschemainsskyUnit', False)
+
+    
+    Unit = property(__Unit.value, __Unit.set, None, None)
+
+    
+    # Element {http://euclid.esa.org/schema/ins/sky}NPix uses Python identifier NPix
+    __NPix = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'NPix'), 'NPix', '__httpeuclid_esa_orgschemainssky_nPix_httpeuclid_esa_orgschemainsskyNPix', False)
+
+    
+    NPix = property(__NPix.value, __NPix.set, None, None)
+
+
+    _ElementMap = {
+        __Unit.name() : __Unit,
+        __NPix.name() : __NPix
+    }
+    _AttributeMap = {
+        
+    }
+Namespace.addCategoryObject('typeBinding', u'nPix', nPix)
+
+
+# Complex type skyBackground with content type ELEMENT_ONLY
+class skyBackground (pyxb.binding.basis.complexTypeDefinition):
+    _TypeDefinition = None
+    _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
+    _Abstract = False
+    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'skyBackground')
+    # Base type is pyxb.binding.datatypes.anyType
+    
+    # Element {http://euclid.esa.org/schema/ins/sky}BackgroundList uses Python identifier BackgroundList
+    __BackgroundList = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'BackgroundList'), 'BackgroundList', '__httpeuclid_esa_orgschemainssky_skyBackground_httpeuclid_esa_orgschemainsskyBackgroundList', True)
+
+    
+    BackgroundList = property(__BackgroundList.value, __BackgroundList.set, None, u'A list with the sky backgrounds for the different detectors.')
+
+    
+    # Element {http://euclid.esa.org/schema/ins/sky}EclipticLatitude uses Python identifier EclipticLatitude
+    __EclipticLatitude = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'EclipticLatitude'), 'EclipticLatitude', '__httpeuclid_esa_orgschemainssky_skyBackground_httpeuclid_esa_orgschemainsskyEclipticLatitude', False)
+
+    
+    EclipticLatitude = property(__EclipticLatitude.value, __EclipticLatitude.set, None, u'The ecliptic latitude parameter of the sky background model.')
+
+    
+    # Element {http://euclid.esa.org/schema/ins/sky}EclipticLongitude uses Python identifier EclipticLongitude
+    __EclipticLongitude = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'EclipticLongitude'), 'EclipticLongitude', '__httpeuclid_esa_orgschemainssky_skyBackground_httpeuclid_esa_orgschemainsskyEclipticLongitude', False)
+
+    
+    EclipticLongitude = property(__EclipticLongitude.value, __EclipticLongitude.set, None, u'The ecliptic longitude parameter of the sky background model.')
+
+    
+    # Element {http://euclid.esa.org/schema/ins/sky}Model uses Python identifier Model
+    __Model = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Model'), 'Model', '__httpeuclid_esa_orgschemainssky_skyBackground_httpeuclid_esa_orgschemainsskyModel', False)
+
+    
+    Model = property(__Model.value, __Model.set, None, u'The name of the model used to compute the sky background.')
+
+    
+    # Element {http://euclid.esa.org/schema/ins/sky}WavelengthBand uses Python identifier WavelengthBand
+    __WavelengthBand = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'WavelengthBand'), 'WavelengthBand', '__httpeuclid_esa_orgschemainssky_skyBackground_httpeuclid_esa_orgschemainsskyWavelengthBand', False)
+
+    
+    WavelengthBand = property(__WavelengthBand.value, __WavelengthBand.set, None, None)
+
+
+    _ElementMap = {
+        __BackgroundList.name() : __BackgroundList,
+        __EclipticLatitude.name() : __EclipticLatitude,
+        __EclipticLongitude.name() : __EclipticLongitude,
+        __Model.name() : __Model,
+        __WavelengthBand.name() : __WavelengthBand
+    }
+    _AttributeMap = {
+        
+    }
+Namespace.addCategoryObject('typeBinding', u'skyBackground', skyBackground)
 
 
 # Complex type backgroundMap with content type ELEMENT_ONLY
@@ -137,94 +209,6 @@ class backgroundMap (pyxb.binding.basis.complexTypeDefinition):
         
     }
 Namespace.addCategoryObject('typeBinding', u'backgroundMap', backgroundMap)
-
-
-# Complex type skyBackground with content type ELEMENT_ONLY
-class skyBackground (pyxb.binding.basis.complexTypeDefinition):
-    _TypeDefinition = None
-    _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
-    _Abstract = False
-    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'skyBackground')
-    # Base type is pyxb.binding.datatypes.anyType
-    
-    # Element {http://euclid.esa.org/schema/ins/sky}EclipticLatitude uses Python identifier EclipticLatitude
-    __EclipticLatitude = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'EclipticLatitude'), 'EclipticLatitude', '__httpeuclid_esa_orgschemainssky_skyBackground_httpeuclid_esa_orgschemainsskyEclipticLatitude', False)
-
-    
-    EclipticLatitude = property(__EclipticLatitude.value, __EclipticLatitude.set, None, u'The ecliptic latitude parameter of the sky background model.')
-
-    
-    # Element {http://euclid.esa.org/schema/ins/sky}BackgroundList uses Python identifier BackgroundList
-    __BackgroundList = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'BackgroundList'), 'BackgroundList', '__httpeuclid_esa_orgschemainssky_skyBackground_httpeuclid_esa_orgschemainsskyBackgroundList', True)
-
-    
-    BackgroundList = property(__BackgroundList.value, __BackgroundList.set, None, u'A list with the sky backgrounds for the different detectors.')
-
-    
-    # Element {http://euclid.esa.org/schema/ins/sky}Model uses Python identifier Model
-    __Model = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Model'), 'Model', '__httpeuclid_esa_orgschemainssky_skyBackground_httpeuclid_esa_orgschemainsskyModel', False)
-
-    
-    Model = property(__Model.value, __Model.set, None, u'The name of the model used to compute the sky background.')
-
-    
-    # Element {http://euclid.esa.org/schema/ins/sky}EclipticLongitude uses Python identifier EclipticLongitude
-    __EclipticLongitude = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'EclipticLongitude'), 'EclipticLongitude', '__httpeuclid_esa_orgschemainssky_skyBackground_httpeuclid_esa_orgschemainsskyEclipticLongitude', False)
-
-    
-    EclipticLongitude = property(__EclipticLongitude.value, __EclipticLongitude.set, None, u'The ecliptic longitude parameter of the sky background model.')
-
-    
-    # Element {http://euclid.esa.org/schema/ins/sky}WavelengthBand uses Python identifier WavelengthBand
-    __WavelengthBand = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'WavelengthBand'), 'WavelengthBand', '__httpeuclid_esa_orgschemainssky_skyBackground_httpeuclid_esa_orgschemainsskyWavelengthBand', False)
-
-    
-    WavelengthBand = property(__WavelengthBand.value, __WavelengthBand.set, None, None)
-
-
-    _ElementMap = {
-        __EclipticLatitude.name() : __EclipticLatitude,
-        __BackgroundList.name() : __BackgroundList,
-        __Model.name() : __Model,
-        __EclipticLongitude.name() : __EclipticLongitude,
-        __WavelengthBand.name() : __WavelengthBand
-    }
-    _AttributeMap = {
-        
-    }
-Namespace.addCategoryObject('typeBinding', u'skyBackground', skyBackground)
-
-
-# Complex type skyCoordinate with content type ELEMENT_ONLY
-class skyCoordinate (pyxb.binding.basis.complexTypeDefinition):
-    _TypeDefinition = None
-    _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
-    _Abstract = False
-    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'skyCoordinate')
-    # Base type is pyxb.binding.datatypes.anyType
-    
-    # Element {http://euclid.esa.org/schema/ins/sky}Unit uses Python identifier Unit
-    __Unit = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Unit'), 'Unit', '__httpeuclid_esa_orgschemainssky_skyCoordinate_httpeuclid_esa_orgschemainsskyUnit', False)
-
-    
-    Unit = property(__Unit.value, __Unit.set, None, None)
-
-    
-    # Element {http://euclid.esa.org/schema/ins/sky}Value uses Python identifier Value
-    __Value = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Value'), 'Value', '__httpeuclid_esa_orgschemainssky_skyCoordinate_httpeuclid_esa_orgschemainsskyValue', False)
-
-    
-    Value = property(__Value.value, __Value.set, None, None)
-
-
-    _ElementMap = {
-        __Unit.name() : __Unit,
-        __Value.name() : __Value
-    }
-    _AttributeMap = {
-        
-    }
-Namespace.addCategoryObject('typeBinding', u'skyCoordinate', skyCoordinate)
 
 
 # Complex type background with content type ELEMENT_ONLY
@@ -275,36 +259,52 @@ class background (pyxb.binding.basis.complexTypeDefinition):
 Namespace.addCategoryObject('typeBinding', u'background', background)
 
 
-# Complex type nPix with content type ELEMENT_ONLY
-class nPix (pyxb.binding.basis.complexTypeDefinition):
+# Complex type galacticAbsorption with content type ELEMENT_ONLY
+class galacticAbsorption (pyxb.binding.basis.complexTypeDefinition):
     _TypeDefinition = None
     _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
     _Abstract = False
-    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'nPix')
+    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'galacticAbsorption')
     # Base type is pyxb.binding.datatypes.anyType
     
-    # Element {http://euclid.esa.org/schema/ins/sky}Unit uses Python identifier Unit
-    __Unit = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Unit'), 'Unit', '__httpeuclid_esa_orgschemainssky_nPix_httpeuclid_esa_orgschemainsskyUnit', False)
+    # Element {http://euclid.esa.org/schema/ins/sky}Model uses Python identifier Model
+    __Model = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Model'), 'Model', '__httpeuclid_esa_orgschemainssky_galacticAbsorption_httpeuclid_esa_orgschemainsskyModel', False)
 
     
-    Unit = property(__Unit.value, __Unit.set, None, None)
+    Model = property(__Model.value, __Model.set, None, u'The name of the model used to compute the Galactic absorption.')
 
     
-    # Element {http://euclid.esa.org/schema/ins/sky}NPix uses Python identifier NPix
-    __NPix = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'NPix'), 'NPix', '__httpeuclid_esa_orgschemainssky_nPix_httpeuclid_esa_orgschemainsskyNPix', False)
+    # Element {http://euclid.esa.org/schema/ins/sky}AbsorptionFactors uses Python identifier AbsorptionFactors
+    __AbsorptionFactors = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'AbsorptionFactors'), 'AbsorptionFactors', '__httpeuclid_esa_orgschemainssky_galacticAbsorption_httpeuclid_esa_orgschemainsskyAbsorptionFactors', False)
 
     
-    NPix = property(__NPix.value, __NPix.set, None, None)
+    AbsorptionFactors = property(__AbsorptionFactors.value, __AbsorptionFactors.set, None, u'A Binary FITS table containing the calculated absoption factors for different wavelengths. The factors get values from 0 to 1 (inclusive).')
+
+    
+    # Element {http://euclid.esa.org/schema/ins/sky}GalaxyLongitude uses Python identifier GalaxyLongitude
+    __GalaxyLongitude = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'GalaxyLongitude'), 'GalaxyLongitude', '__httpeuclid_esa_orgschemainssky_galacticAbsorption_httpeuclid_esa_orgschemainsskyGalaxyLongitude', False)
+
+    
+    GalaxyLongitude = property(__GalaxyLongitude.value, __GalaxyLongitude.set, None, u'The galaxy longitude parameter of the galactic model.')
+
+    
+    # Element {http://euclid.esa.org/schema/ins/sky}GalaxyLatitude uses Python identifier GalaxyLatitude
+    __GalaxyLatitude = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'GalaxyLatitude'), 'GalaxyLatitude', '__httpeuclid_esa_orgschemainssky_galacticAbsorption_httpeuclid_esa_orgschemainsskyGalaxyLatitude', False)
+
+    
+    GalaxyLatitude = property(__GalaxyLatitude.value, __GalaxyLatitude.set, None, u'The galaxy latitude parameter of the galactic model.')
 
 
     _ElementMap = {
-        __Unit.name() : __Unit,
-        __NPix.name() : __NPix
+        __Model.name() : __Model,
+        __AbsorptionFactors.name() : __AbsorptionFactors,
+        __GalaxyLongitude.name() : __GalaxyLongitude,
+        __GalaxyLatitude.name() : __GalaxyLatitude
     }
     _AttributeMap = {
         
     }
-Namespace.addCategoryObject('typeBinding', u'nPix', nPix)
+Namespace.addCategoryObject('typeBinding', u'galacticAbsorption', galacticAbsorption)
 
 
 # Complex type absorptionFactors with content type ELEMENT_ONLY
@@ -347,41 +347,35 @@ Namespace.addCategoryObject('typeBinding', u'absorptionFactors', absorptionFacto
 
 
 
-galacticAbsorption._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Model'), model, scope=galacticAbsorption, documentation=u'The name of the model used to compute the Galactic absorption.'))
+skyCoordinate._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Unit'), CommonDM.dm.bas.utd_stub.unit, scope=skyCoordinate))
 
-galacticAbsorption._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'AbsorptionFactors'), absorptionFactors, scope=galacticAbsorption, documentation=u'A Binary FITS table containing the calculated absoption factors for different wavelengths. The factors get values from 0 to 1 (inclusive).'))
-
-galacticAbsorption._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'GalaxyLongitude'), skyCoordinate, scope=galacticAbsorption, documentation=u'The galaxy longitude parameter of the galactic model.'))
-
-galacticAbsorption._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'GalaxyLatitude'), skyCoordinate, scope=galacticAbsorption, documentation=u'The galaxy latitude parameter of the galactic model.'))
-galacticAbsorption._GroupModel = pyxb.binding.content.GroupSequence(
-    pyxb.binding.content.ParticleModel(galacticAbsorption._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Model')), min_occurs=1, max_occurs=1),
-    pyxb.binding.content.ParticleModel(galacticAbsorption._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'GalaxyLatitude')), min_occurs=1, max_occurs=1),
-    pyxb.binding.content.ParticleModel(galacticAbsorption._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'GalaxyLongitude')), min_occurs=1, max_occurs=1),
-    pyxb.binding.content.ParticleModel(galacticAbsorption._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'AbsorptionFactors')), min_occurs=1, max_occurs=1)
+skyCoordinate._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Value'), CommonDM.dm.bas.dtd_stub.degAngle, scope=skyCoordinate))
+skyCoordinate._GroupModel = pyxb.binding.content.GroupSequence(
+    pyxb.binding.content.ParticleModel(skyCoordinate._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Value')), min_occurs=1, max_occurs=1),
+    pyxb.binding.content.ParticleModel(skyCoordinate._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Unit')), min_occurs=1, max_occurs=1)
     )
-galacticAbsorption._ContentModel = pyxb.binding.content.ParticleModel(galacticAbsorption._GroupModel, min_occurs=1, max_occurs=1)
+skyCoordinate._ContentModel = pyxb.binding.content.ParticleModel(skyCoordinate._GroupModel, min_occurs=1, max_occurs=1)
 
 
 
-backgroundMap._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Unit'), CommonDM.dm.bas.utd_stub.unit, scope=backgroundMap))
+nPix._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Unit'), CommonDM.dm.bas.utd_stub.unit, scope=nPix))
 
-backgroundMap._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Image'), CommonDM.dm.bas.img_stub.baseFrame, scope=backgroundMap))
-backgroundMap._GroupModel = pyxb.binding.content.GroupSequence(
-    pyxb.binding.content.ParticleModel(backgroundMap._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Image')), min_occurs=1, max_occurs=1),
-    pyxb.binding.content.ParticleModel(backgroundMap._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Unit')), min_occurs=1, max_occurs=1)
+nPix._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'NPix'), pyxb.binding.datatypes.short, scope=nPix))
+nPix._GroupModel = pyxb.binding.content.GroupSequence(
+    pyxb.binding.content.ParticleModel(nPix._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'NPix')), min_occurs=1, max_occurs=1),
+    pyxb.binding.content.ParticleModel(nPix._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Unit')), min_occurs=1, max_occurs=1)
     )
-backgroundMap._ContentModel = pyxb.binding.content.ParticleModel(backgroundMap._GroupModel, min_occurs=1, max_occurs=1)
+nPix._ContentModel = pyxb.binding.content.ParticleModel(nPix._GroupModel, min_occurs=1, max_occurs=1)
 
 
-
-skyBackground._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'EclipticLatitude'), skyCoordinate, scope=skyBackground, documentation=u'The ecliptic latitude parameter of the sky background model.'))
 
 skyBackground._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'BackgroundList'), background, scope=skyBackground, documentation=u'A list with the sky backgrounds for the different detectors.'))
 
-skyBackground._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Model'), model, scope=skyBackground, documentation=u'The name of the model used to compute the sky background.'))
+skyBackground._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'EclipticLatitude'), skyCoordinate, scope=skyBackground, documentation=u'The ecliptic latitude parameter of the sky background model.'))
 
 skyBackground._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'EclipticLongitude'), skyCoordinate, scope=skyBackground, documentation=u'The ecliptic longitude parameter of the sky background model.'))
+
+skyBackground._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Model'), model, scope=skyBackground, documentation=u'The name of the model used to compute the sky background.'))
 
 skyBackground._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'WavelengthBand'), CommonDM.dm.ins_stub.wavelengthBand, scope=skyBackground))
 skyBackground._GroupModel = pyxb.binding.content.GroupSequence(
@@ -395,14 +389,14 @@ skyBackground._ContentModel = pyxb.binding.content.ParticleModel(skyBackground._
 
 
 
-skyCoordinate._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Unit'), CommonDM.dm.bas.utd_stub.unit, scope=skyCoordinate))
+backgroundMap._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Unit'), CommonDM.dm.bas.utd_stub.unit, scope=backgroundMap))
 
-skyCoordinate._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Value'), CommonDM.dm.bas.dtd_stub.degAngle, scope=skyCoordinate))
-skyCoordinate._GroupModel = pyxb.binding.content.GroupSequence(
-    pyxb.binding.content.ParticleModel(skyCoordinate._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Value')), min_occurs=1, max_occurs=1),
-    pyxb.binding.content.ParticleModel(skyCoordinate._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Unit')), min_occurs=1, max_occurs=1)
+backgroundMap._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Image'), CommonDM.dm.bas.img_stub.baseFrame, scope=backgroundMap))
+backgroundMap._GroupModel = pyxb.binding.content.GroupSequence(
+    pyxb.binding.content.ParticleModel(backgroundMap._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Image')), min_occurs=1, max_occurs=1),
+    pyxb.binding.content.ParticleModel(backgroundMap._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Unit')), min_occurs=1, max_occurs=1)
     )
-skyCoordinate._ContentModel = pyxb.binding.content.ParticleModel(skyCoordinate._GroupModel, min_occurs=1, max_occurs=1)
+backgroundMap._ContentModel = pyxb.binding.content.ParticleModel(backgroundMap._GroupModel, min_occurs=1, max_occurs=1)
 
 
 
@@ -423,14 +417,20 @@ background._ContentModel = pyxb.binding.content.ParticleModel(background._GroupM
 
 
 
-nPix._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Unit'), CommonDM.dm.bas.utd_stub.unit, scope=nPix))
+galacticAbsorption._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Model'), model, scope=galacticAbsorption, documentation=u'The name of the model used to compute the Galactic absorption.'))
 
-nPix._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'NPix'), pyxb.binding.datatypes.short, scope=nPix))
-nPix._GroupModel = pyxb.binding.content.GroupSequence(
-    pyxb.binding.content.ParticleModel(nPix._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'NPix')), min_occurs=1, max_occurs=1),
-    pyxb.binding.content.ParticleModel(nPix._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Unit')), min_occurs=1, max_occurs=1)
+galacticAbsorption._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'AbsorptionFactors'), absorptionFactors, scope=galacticAbsorption, documentation=u'A Binary FITS table containing the calculated absoption factors for different wavelengths. The factors get values from 0 to 1 (inclusive).'))
+
+galacticAbsorption._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'GalaxyLongitude'), skyCoordinate, scope=galacticAbsorption, documentation=u'The galaxy longitude parameter of the galactic model.'))
+
+galacticAbsorption._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'GalaxyLatitude'), skyCoordinate, scope=galacticAbsorption, documentation=u'The galaxy latitude parameter of the galactic model.'))
+galacticAbsorption._GroupModel = pyxb.binding.content.GroupSequence(
+    pyxb.binding.content.ParticleModel(galacticAbsorption._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Model')), min_occurs=1, max_occurs=1),
+    pyxb.binding.content.ParticleModel(galacticAbsorption._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'GalaxyLatitude')), min_occurs=1, max_occurs=1),
+    pyxb.binding.content.ParticleModel(galacticAbsorption._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'GalaxyLongitude')), min_occurs=1, max_occurs=1),
+    pyxb.binding.content.ParticleModel(galacticAbsorption._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'AbsorptionFactors')), min_occurs=1, max_occurs=1)
     )
-nPix._ContentModel = pyxb.binding.content.ParticleModel(nPix._GroupModel, min_occurs=1, max_occurs=1)
+galacticAbsorption._ContentModel = pyxb.binding.content.ParticleModel(galacticAbsorption._GroupModel, min_occurs=1, max_occurs=1)
 
 
 absorptionFactors._GroupModel = pyxb.binding.content.GroupSequence(

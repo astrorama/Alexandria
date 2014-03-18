@@ -1,7 +1,7 @@
 # /home/nikoapos/ISDC/Projects/Alexandria/1.0/CommonDM/python/CommonDM/dm/ins/tel_stub.py
 # PyXB bindings for NamespaceModule
 # NSM:a659c9609d911b0b0de7dec344c20026ccc5f00c
-# Generated 2014-03-17 11:53:47.249522 by PyXB version 1.1.2
+# Generated 2014-03-17 18:50:36.638682 by PyXB version 1.1.2
 import pyxb
 import pyxb.binding
 import pyxb.binding.saxer
@@ -11,14 +11,14 @@ import pyxb.utils.domutils
 import sys
 
 # Unique identifier for bindings created at the same time
-_GenerationUID = pyxb.utils.utility.UniqueIdentifier('urn:uuid:6923c468-adc2-11e3-8fb8-f01faf601f90')
+_GenerationUID = pyxb.utils.utility.UniqueIdentifier('urn:uuid:a3e7637c-adfc-11e3-9f2e-c4d98710dc86')
 
 # Import bindings for namespaces imported into schema
 import pyxb.binding.datatypes
-import CommonDM.dm.bas.utd_stub
 import CommonDM.dm.ins_stub
 import CommonDM.dm.sys_stub
 import CommonDM.dm.sys.sgs_stub
+import CommonDM.dm.bas.utd_stub
 
 Namespace = pyxb.namespace.NamespaceForURI(u'http://euclid.esa.org/schema/ins/tel', create_if_missing=True)
 Namespace.configureCategories(['typeBinding', 'elementBinding'])
@@ -44,38 +44,6 @@ def CreateFromDOM (node, default_namespace=None):
     if default_namespace is None:
         default_namespace = Namespace.fallbackNamespace()
     return pyxb.binding.basis.element.AnyCreateFromDOM(node, _fallback_namespace=default_namespace)
-
-
-# Complex type diameter with content type ELEMENT_ONLY
-class diameter (pyxb.binding.basis.complexTypeDefinition):
-    _TypeDefinition = None
-    _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
-    _Abstract = False
-    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'diameter')
-    # Base type is pyxb.binding.datatypes.anyType
-    
-    # Element {http://euclid.esa.org/schema/ins/tel}Unit uses Python identifier Unit
-    __Unit = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Unit'), 'Unit', '__httpeuclid_esa_orgschemainstel_diameter_httpeuclid_esa_orgschemainstelUnit', False)
-
-    
-    Unit = property(__Unit.value, __Unit.set, None, None)
-
-    
-    # Element {http://euclid.esa.org/schema/ins/tel}Value uses Python identifier Value
-    __Value = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Value'), 'Value', '__httpeuclid_esa_orgschemainstel_diameter_httpeuclid_esa_orgschemainstelValue', False)
-
-    
-    Value = property(__Value.value, __Value.set, None, None)
-
-
-    _ElementMap = {
-        __Unit.name() : __Unit,
-        __Value.name() : __Value
-    }
-    _AttributeMap = {
-        
-    }
-Namespace.addCategoryObject('typeBinding', u'diameter', diameter)
 
 
 # Complex type telescopeNoiseModel with content type ELEMENT_ONLY
@@ -142,6 +110,13 @@ class scatteredNoiseModel (pyxb.binding.basis.complexTypeDefinition):
     _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'scatteredNoiseModel')
     # Base type is pyxb.binding.datatypes.anyType
     
+    # Element {http://euclid.esa.org/schema/ins/tel}Flux uses Python identifier Flux
+    __Flux = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Flux'), 'Flux', '__httpeuclid_esa_orgschemainstel_scatteredNoiseModel_httpeuclid_esa_orgschemainstelFlux', False)
+
+    
+    Flux = property(__Flux.value, __Flux.set, None, None)
+
+    
     # Element {http://euclid.esa.org/schema/ins/tel}ComputationDate uses Python identifier ComputationDate
     __ComputationDate = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'ComputationDate'), 'ComputationDate', '__httpeuclid_esa_orgschemainstel_scatteredNoiseModel_httpeuclid_esa_orgschemainstelComputationDate', False)
 
@@ -154,13 +129,6 @@ class scatteredNoiseModel (pyxb.binding.basis.complexTypeDefinition):
 
     
     Wavelength = property(__Wavelength.value, __Wavelength.set, None, None)
-
-    
-    # Element {http://euclid.esa.org/schema/ins/tel}Flux uses Python identifier Flux
-    __Flux = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Flux'), 'Flux', '__httpeuclid_esa_orgschemainstel_scatteredNoiseModel_httpeuclid_esa_orgschemainstelFlux', False)
-
-    
-    Flux = property(__Flux.value, __Flux.set, None, None)
 
     
     # Element {http://euclid.esa.org/schema/ins/tel}Version uses Python identifier Version
@@ -178,9 +146,9 @@ class scatteredNoiseModel (pyxb.binding.basis.complexTypeDefinition):
 
 
     _ElementMap = {
+        __Flux.name() : __Flux,
         __ComputationDate.name() : __ComputationDate,
         __Wavelength.name() : __Wavelength,
-        __Flux.name() : __Flux,
         __Version.name() : __Version,
         __CalibrationDataPath.name() : __CalibrationDataPath
     }
@@ -188,38 +156,6 @@ class scatteredNoiseModel (pyxb.binding.basis.complexTypeDefinition):
         
     }
 Namespace.addCategoryObject('typeBinding', u'scatteredNoiseModel', scatteredNoiseModel)
-
-
-# Complex type obscuration with content type ELEMENT_ONLY
-class obscuration (pyxb.binding.basis.complexTypeDefinition):
-    _TypeDefinition = None
-    _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
-    _Abstract = False
-    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'obscuration')
-    # Base type is pyxb.binding.datatypes.anyType
-    
-    # Element {http://euclid.esa.org/schema/ins/tel}Unit uses Python identifier Unit
-    __Unit = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Unit'), 'Unit', '__httpeuclid_esa_orgschemainstel_obscuration_httpeuclid_esa_orgschemainstelUnit', False)
-
-    
-    Unit = property(__Unit.value, __Unit.set, None, None)
-
-    
-    # Element {http://euclid.esa.org/schema/ins/tel}Value uses Python identifier Value
-    __Value = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Value'), 'Value', '__httpeuclid_esa_orgschemainstel_obscuration_httpeuclid_esa_orgschemainstelValue', False)
-
-    
-    Value = property(__Value.value, __Value.set, None, None)
-
-
-    _ElementMap = {
-        __Unit.name() : __Unit,
-        __Value.name() : __Value
-    }
-    _AttributeMap = {
-        
-    }
-Namespace.addCategoryObject('typeBinding', u'obscuration', obscuration)
 
 
 # Complex type telescopeOptics with content type ELEMENT_ONLY
@@ -270,16 +206,69 @@ class telescopeOptics (pyxb.binding.basis.complexTypeDefinition):
 Namespace.addCategoryObject('typeBinding', u'telescopeOptics', telescopeOptics)
 
 
+# Complex type diameter with content type ELEMENT_ONLY
+class diameter (pyxb.binding.basis.complexTypeDefinition):
+    _TypeDefinition = None
+    _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
+    _Abstract = False
+    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'diameter')
+    # Base type is pyxb.binding.datatypes.anyType
+    
+    # Element {http://euclid.esa.org/schema/ins/tel}Unit uses Python identifier Unit
+    __Unit = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Unit'), 'Unit', '__httpeuclid_esa_orgschemainstel_diameter_httpeuclid_esa_orgschemainstelUnit', False)
+
+    
+    Unit = property(__Unit.value, __Unit.set, None, None)
+
+    
+    # Element {http://euclid.esa.org/schema/ins/tel}Value uses Python identifier Value
+    __Value = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Value'), 'Value', '__httpeuclid_esa_orgschemainstel_diameter_httpeuclid_esa_orgschemainstelValue', False)
+
+    
+    Value = property(__Value.value, __Value.set, None, None)
 
 
-diameter._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Unit'), CommonDM.dm.bas.utd_stub.unit, scope=diameter))
+    _ElementMap = {
+        __Unit.name() : __Unit,
+        __Value.name() : __Value
+    }
+    _AttributeMap = {
+        
+    }
+Namespace.addCategoryObject('typeBinding', u'diameter', diameter)
 
-diameter._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Value'), pyxb.binding.datatypes.double, scope=diameter))
-diameter._GroupModel = pyxb.binding.content.GroupSequence(
-    pyxb.binding.content.ParticleModel(diameter._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Value')), min_occurs=1, max_occurs=1),
-    pyxb.binding.content.ParticleModel(diameter._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Unit')), min_occurs=1, max_occurs=1)
-    )
-diameter._ContentModel = pyxb.binding.content.ParticleModel(diameter._GroupModel, min_occurs=1, max_occurs=1)
+
+# Complex type obscuration with content type ELEMENT_ONLY
+class obscuration (pyxb.binding.basis.complexTypeDefinition):
+    _TypeDefinition = None
+    _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
+    _Abstract = False
+    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'obscuration')
+    # Base type is pyxb.binding.datatypes.anyType
+    
+    # Element {http://euclid.esa.org/schema/ins/tel}Unit uses Python identifier Unit
+    __Unit = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Unit'), 'Unit', '__httpeuclid_esa_orgschemainstel_obscuration_httpeuclid_esa_orgschemainstelUnit', False)
+
+    
+    Unit = property(__Unit.value, __Unit.set, None, None)
+
+    
+    # Element {http://euclid.esa.org/schema/ins/tel}Value uses Python identifier Value
+    __Value = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Value'), 'Value', '__httpeuclid_esa_orgschemainstel_obscuration_httpeuclid_esa_orgschemainstelValue', False)
+
+    
+    Value = property(__Value.value, __Value.set, None, None)
+
+
+    _ElementMap = {
+        __Unit.name() : __Unit,
+        __Value.name() : __Value
+    }
+    _AttributeMap = {
+        
+    }
+Namespace.addCategoryObject('typeBinding', u'obscuration', obscuration)
+
 
 
 
@@ -303,11 +292,11 @@ telescopeNoiseModel._ContentModel = pyxb.binding.content.ParticleModel(telescope
 
 
 
+scatteredNoiseModel._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Flux'), CommonDM.dm.ins_stub.flux, scope=scatteredNoiseModel))
+
 scatteredNoiseModel._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'ComputationDate'), pyxb.binding.datatypes.dateTime, scope=scatteredNoiseModel))
 
 scatteredNoiseModel._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Wavelength'), CommonDM.dm.ins_stub.wavelength, scope=scatteredNoiseModel))
-
-scatteredNoiseModel._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Flux'), CommonDM.dm.ins_stub.flux, scope=scatteredNoiseModel))
 
 scatteredNoiseModel._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Version'), CommonDM.dm.sys_stub.version, scope=scatteredNoiseModel))
 
@@ -320,17 +309,6 @@ scatteredNoiseModel._GroupModel = pyxb.binding.content.GroupSequence(
     pyxb.binding.content.ParticleModel(scatteredNoiseModel._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Flux')), min_occurs=1, max_occurs=1)
     )
 scatteredNoiseModel._ContentModel = pyxb.binding.content.ParticleModel(scatteredNoiseModel._GroupModel, min_occurs=1, max_occurs=1)
-
-
-
-obscuration._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Unit'), CommonDM.dm.bas.utd_stub.unit, scope=obscuration))
-
-obscuration._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Value'), pyxb.binding.datatypes.double, scope=obscuration))
-obscuration._GroupModel = pyxb.binding.content.GroupSequence(
-    pyxb.binding.content.ParticleModel(obscuration._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Value')), min_occurs=1, max_occurs=1),
-    pyxb.binding.content.ParticleModel(obscuration._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Unit')), min_occurs=1, max_occurs=1)
-    )
-obscuration._ContentModel = pyxb.binding.content.ParticleModel(obscuration._GroupModel, min_occurs=1, max_occurs=1)
 
 
 
@@ -348,3 +326,25 @@ telescopeOptics._GroupModel = pyxb.binding.content.GroupSequence(
     pyxb.binding.content.ParticleModel(telescopeOptics._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Obscuration')), min_occurs=1, max_occurs=1)
     )
 telescopeOptics._ContentModel = pyxb.binding.content.ParticleModel(telescopeOptics._GroupModel, min_occurs=1, max_occurs=1)
+
+
+
+diameter._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Unit'), CommonDM.dm.bas.utd_stub.unit, scope=diameter))
+
+diameter._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Value'), pyxb.binding.datatypes.double, scope=diameter))
+diameter._GroupModel = pyxb.binding.content.GroupSequence(
+    pyxb.binding.content.ParticleModel(diameter._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Value')), min_occurs=1, max_occurs=1),
+    pyxb.binding.content.ParticleModel(diameter._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Unit')), min_occurs=1, max_occurs=1)
+    )
+diameter._ContentModel = pyxb.binding.content.ParticleModel(diameter._GroupModel, min_occurs=1, max_occurs=1)
+
+
+
+obscuration._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Unit'), CommonDM.dm.bas.utd_stub.unit, scope=obscuration))
+
+obscuration._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Value'), pyxb.binding.datatypes.double, scope=obscuration))
+obscuration._GroupModel = pyxb.binding.content.GroupSequence(
+    pyxb.binding.content.ParticleModel(obscuration._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Value')), min_occurs=1, max_occurs=1),
+    pyxb.binding.content.ParticleModel(obscuration._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Unit')), min_occurs=1, max_occurs=1)
+    )
+obscuration._ContentModel = pyxb.binding.content.ParticleModel(obscuration._GroupModel, min_occurs=1, max_occurs=1)

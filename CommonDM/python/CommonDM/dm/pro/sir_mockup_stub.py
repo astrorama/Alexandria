@@ -1,7 +1,7 @@
-# /home/nikoapos/ISDC/Projects/Alexandria/1.0/CommonDM/python/CommonDM/dm/pro/sir-mockup_stub.py
+# /home/nikoapos/ISDC/Projects/Alexandria/1.0/CommonDM/python/CommonDM/dm/pro/sir_mockup_stub.py
 # PyXB bindings for NamespaceModule
 # NSM:7377929d2e4063e13e3254db56c66c4116c61fe3
-# Generated 2014-03-17 11:53:47.253995 by PyXB version 1.1.2
+# Generated 2014-03-17 18:50:36.641906 by PyXB version 1.1.2
 import pyxb
 import pyxb.binding
 import pyxb.binding.saxer
@@ -11,7 +11,7 @@ import pyxb.utils.domutils
 import sys
 
 # Unique identifier for bindings created at the same time
-_GenerationUID = pyxb.utils.utility.UniqueIdentifier('urn:uuid:6923c468-adc2-11e3-8fb8-f01faf601f90')
+_GenerationUID = pyxb.utils.utility.UniqueIdentifier('urn:uuid:a3e7637c-adfc-11e3-9f2e-c4d98710dc86')
 
 # Import bindings for namespaces imported into schema
 import pyxb.binding.datatypes
@@ -62,16 +62,6 @@ stellarSpectralType._InitializeFacetMap(stellarSpectralType._CF_enumeration)
 Namespace.addCategoryObject('typeBinding', u'stellarSpectralType', stellarSpectralType)
 
 # Atomic SimpleTypeDefinition
-class offset (pyxb.binding.datatypes.float):
-
-    """The zero-order expected offset"""
-
-    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'offset')
-    _Documentation = u'The zero-order expected offset'
-offset._InitializeFacetMap()
-Namespace.addCategoryObject('typeBinding', u'offset', offset)
-
-# Atomic SimpleTypeDefinition
 class border (pyxb.binding.datatypes.integer):
 
     """The extra pixels added to the search window"""
@@ -81,6 +71,16 @@ class border (pyxb.binding.datatypes.integer):
 border._InitializeFacetMap()
 Namespace.addCategoryObject('typeBinding', u'border', border)
 
+# Atomic SimpleTypeDefinition
+class offset (pyxb.binding.datatypes.float):
+
+    """The zero-order expected offset"""
+
+    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'offset')
+    _Documentation = u'The zero-order expected offset'
+offset._InitializeFacetMap()
+Namespace.addCategoryObject('typeBinding', u'offset', offset)
+
 # Complex type outputCatalog with content type ELEMENT_ONLY
 class outputCatalog (pyxb.binding.basis.complexTypeDefinition):
     _TypeDefinition = None
@@ -88,13 +88,6 @@ class outputCatalog (pyxb.binding.basis.complexTypeDefinition):
     _Abstract = False
     _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'outputCatalog')
     # Base type is pyxb.binding.datatypes.anyType
-    
-    # Element {http://euclid.esa.org/schema/pro/sir-mockup}Magnitude uses Python identifier Magnitude
-    __Magnitude = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Magnitude'), 'Magnitude', '__httpeuclid_esa_orgschemaprosir_mockup_outputCatalog_httpeuclid_esa_orgschemaprosir_mockupMagnitude', False)
-
-    
-    Magnitude = property(__Magnitude.value, __Magnitude.set, None, None)
-
     
     # Element {http://euclid.esa.org/schema/pro/sir-mockup}DataContainer uses Python identifier DataContainer
     __DataContainer = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'DataContainer'), 'DataContainer', '__httpeuclid_esa_orgschemaprosir_mockup_outputCatalog_httpeuclid_esa_orgschemaprosir_mockupDataContainer', False)
@@ -109,11 +102,18 @@ class outputCatalog (pyxb.binding.basis.complexTypeDefinition):
     
     StellarSpectralType = property(__StellarSpectralType.value, __StellarSpectralType.set, None, None)
 
+    
+    # Element {http://euclid.esa.org/schema/pro/sir-mockup}Magnitude uses Python identifier Magnitude
+    __Magnitude = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Magnitude'), 'Magnitude', '__httpeuclid_esa_orgschemaprosir_mockup_outputCatalog_httpeuclid_esa_orgschemaprosir_mockupMagnitude', False)
+
+    
+    Magnitude = property(__Magnitude.value, __Magnitude.set, None, None)
+
 
     _ElementMap = {
-        __Magnitude.name() : __Magnitude,
         __DataContainer.name() : __DataContainer,
-        __StellarSpectralType.name() : __StellarSpectralType
+        __StellarSpectralType.name() : __StellarSpectralType,
+        __Magnitude.name() : __Magnitude
     }
     _AttributeMap = {
         
@@ -203,11 +203,11 @@ Namespace.addCategoryObject('typeBinding', u'inputParameters', inputParameters)
 
 
 
-outputCatalog._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Magnitude'), pyxb.binding.datatypes.float, scope=outputCatalog))
-
 outputCatalog._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'DataContainer'), CommonDM.dm.sys.sgs_stub.dataContainer, scope=outputCatalog))
 
 outputCatalog._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'StellarSpectralType'), stellarSpectralType, scope=outputCatalog))
+
+outputCatalog._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Magnitude'), pyxb.binding.datatypes.float, scope=outputCatalog))
 outputCatalog._GroupModel = pyxb.binding.content.GroupSequence(
     pyxb.binding.content.ParticleModel(outputCatalog._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'DataContainer')), min_occurs=1, max_occurs=1),
     pyxb.binding.content.ParticleModel(outputCatalog._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'StellarSpectralType')), min_occurs=1, max_occurs=1),

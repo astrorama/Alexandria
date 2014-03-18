@@ -1,7 +1,7 @@
 # /home/nikoapos/ISDC/Projects/Alexandria/1.0/CommonDM/python/CommonDM/dm/Interfaces/pro/vis_stub.py
 # PyXB bindings for NamespaceModule
 # NSM:539c73c8f73a663b381cbefc2c790f5c063cac08
-# Generated 2014-03-17 11:53:47.256588 by PyXB version 1.1.2
+# Generated 2014-03-17 18:50:36.644375 by PyXB version 1.1.2
 import pyxb
 import pyxb.binding
 import pyxb.binding.saxer
@@ -11,7 +11,7 @@ import pyxb.utils.domutils
 import sys
 
 # Unique identifier for bindings created at the same time
-_GenerationUID = pyxb.utils.utility.UniqueIdentifier('urn:uuid:6923c468-adc2-11e3-8fb8-f01faf601f90')
+_GenerationUID = pyxb.utils.utility.UniqueIdentifier('urn:uuid:a3e7637c-adfc-11e3-9f2e-c4d98710dc86')
 
 # Import bindings for namespaces imported into schema
 import pyxb.binding.datatypes
@@ -79,14 +79,14 @@ Namespace.addCategoryObject('typeBinding', u'BiasInput', BiasInput)
 SimInputConfiguration = pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'SimInputConfiguration'), CommonDM.dm.pro.sim_stub.visInputConfiguration)
 Namespace.addCategoryObject('elementBinding', SimInputConfiguration.name().localName(), SimInputConfiguration)
 
-VisInputConfiguration = pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'VisInputConfiguration'), CommonDM.dm.pro.vis_stub.visBaseFrame)
-Namespace.addCategoryObject('elementBinding', VisInputConfiguration.name().localName(), VisInputConfiguration)
-
 GainLinearityInputConfiguration = pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'GainLinearityInputConfiguration'), CommonDM.dm.pro.vis_stub.gainLinearity)
 Namespace.addCategoryObject('elementBinding', GainLinearityInputConfiguration.name().localName(), GainLinearityInputConfiguration)
 
 BiasInputConfiguration = pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'BiasInputConfiguration'), BiasInput)
 Namespace.addCategoryObject('elementBinding', BiasInputConfiguration.name().localName(), BiasInputConfiguration)
+
+VisInputConfiguration = pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'VisInputConfiguration'), CommonDM.dm.pro.vis_stub.visBaseFrame)
+Namespace.addCategoryObject('elementBinding', VisInputConfiguration.name().localName(), VisInputConfiguration)
 
 
 

@@ -1,7 +1,7 @@
 # /home/nikoapos/ISDC/Projects/Alexandria/1.0/CommonDM/python/CommonDM/dm/sys/ial_stub.py
 # PyXB bindings for NamespaceModule
 # NSM:14b174fbf2463221ba40c6210b8bbc1f0cac46a0
-# Generated 2014-03-17 11:53:47.253777 by PyXB version 1.1.2
+# Generated 2014-03-17 18:50:36.643739 by PyXB version 1.1.2
 import pyxb
 import pyxb.binding
 import pyxb.binding.saxer
@@ -11,7 +11,7 @@ import pyxb.utils.domutils
 import sys
 
 # Unique identifier for bindings created at the same time
-_GenerationUID = pyxb.utils.utility.UniqueIdentifier('urn:uuid:6923c468-adc2-11e3-8fb8-f01faf601f90')
+_GenerationUID = pyxb.utils.utility.UniqueIdentifier('urn:uuid:a3e7637c-adfc-11e3-9f2e-c4d98710dc86')
 
 # Import bindings for namespaces imported into schema
 import pyxb.binding.datatypes
@@ -43,6 +43,25 @@ def CreateFromDOM (node, default_namespace=None):
         default_namespace = Namespace.fallbackNamespace()
     return pyxb.binding.basis.element.AnyCreateFromDOM(node, _fallback_namespace=default_namespace)
 
+
+# Atomic SimpleTypeDefinition
+class queryType (pyxb.binding.datatypes.string, pyxb.binding.basis.enumeration_mixin):
+
+    """
+                Enumeration for the supported query types.
+            """
+
+    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'queryType')
+    _Documentation = u'\n                Enumeration for the supported query types.\n            '
+queryType._CF_enumeration = pyxb.binding.facets.CF_enumeration(value_datatype=queryType, enum_prefix=None)
+queryType.PARAM_QUERY = queryType._CF_enumeration.addEnumeration(unicode_value=u'PARAM_QUERY')
+queryType.POLLING_PARAM_QUERY = queryType._CF_enumeration.addEnumeration(unicode_value=u'POLLING_PARAM_QUERY')
+queryType.VELOCITY_PARAM_QUERY = queryType._CF_enumeration.addEnumeration(unicode_value=u'VELOCITY_PARAM_QUERY')
+queryType.XQUERY = queryType._CF_enumeration.addEnumeration(unicode_value=u'XQUERY')
+queryType.LOCAL_SQL_QUERY = queryType._CF_enumeration.addEnumeration(unicode_value=u'LOCAL_SQL_QUERY')
+queryType.LOCAL_SELECTION = queryType._CF_enumeration.addEnumeration(unicode_value=u'LOCAL_SELECTION')
+queryType._InitializeFacetMap(queryType._CF_enumeration)
+Namespace.addCategoryObject('typeBinding', u'queryType', queryType)
 
 # Atomic SimpleTypeDefinition
 class processingOrderState (pyxb.binding.datatypes.string, pyxb.binding.basis.enumeration_mixin):
@@ -105,177 +124,6 @@ pipelineTaskRunState.SUSPENDED = pipelineTaskRunState._CF_enumeration.addEnumera
 pipelineTaskRunState.ABORTED = pipelineTaskRunState._CF_enumeration.addEnumeration(unicode_value=u'ABORTED')
 pipelineTaskRunState._InitializeFacetMap(pipelineTaskRunState._CF_enumeration)
 Namespace.addCategoryObject('typeBinding', u'pipelineTaskRunState', pipelineTaskRunState)
-
-# Atomic SimpleTypeDefinition
-class queryType (pyxb.binding.datatypes.string, pyxb.binding.basis.enumeration_mixin):
-
-    """
-                Enumeration for the supported query types.
-            """
-
-    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'queryType')
-    _Documentation = u'\n                Enumeration for the supported query types.\n            '
-queryType._CF_enumeration = pyxb.binding.facets.CF_enumeration(value_datatype=queryType, enum_prefix=None)
-queryType.PARAM_QUERY = queryType._CF_enumeration.addEnumeration(unicode_value=u'PARAM_QUERY')
-queryType.POLLING_PARAM_QUERY = queryType._CF_enumeration.addEnumeration(unicode_value=u'POLLING_PARAM_QUERY')
-queryType.VELOCITY_PARAM_QUERY = queryType._CF_enumeration.addEnumeration(unicode_value=u'VELOCITY_PARAM_QUERY')
-queryType.XQUERY = queryType._CF_enumeration.addEnumeration(unicode_value=u'XQUERY')
-queryType.LOCAL_SQL_QUERY = queryType._CF_enumeration.addEnumeration(unicode_value=u'LOCAL_SQL_QUERY')
-queryType.LOCAL_SELECTION = queryType._CF_enumeration.addEnumeration(unicode_value=u'LOCAL_SELECTION')
-queryType._InitializeFacetMap(queryType._CF_enumeration)
-Namespace.addCategoryObject('typeBinding', u'queryType', queryType)
-
-# Complex type pipelineTaskRun with content type ELEMENT_ONLY
-class pipelineTaskRun (pyxb.binding.basis.complexTypeDefinition):
-    _TypeDefinition = None
-    _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
-    _Abstract = False
-    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'pipelineTaskRun')
-    # Base type is pyxb.binding.datatypes.anyType
-    
-    # Element {http://euclid.esa.org/schema/sys/ial}PackageVersion uses Python identifier PackageVersion
-    __PackageVersion = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'PackageVersion'), 'PackageVersion', '__httpeuclid_esa_orgschemasysial_pipelineTaskRun_httpeuclid_esa_orgschemasysialPackageVersion', False)
-
-    
-    PackageVersion = property(__PackageVersion.value, __PackageVersion.set, None, None)
-
-    
-    # Element {http://euclid.esa.org/schema/sys/ial}PipelineRun uses Python identifier PipelineRun
-    __PipelineRun = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'PipelineRun'), 'PipelineRun', '__httpeuclid_esa_orgschemasysial_pipelineTaskRun_httpeuclid_esa_orgschemasysialPipelineRun', False)
-
-    
-    PipelineRun = property(__PipelineRun.value, __PipelineRun.set, None, None)
-
-    
-    # Element {http://euclid.esa.org/schema/sys/ial}ClusterConfiguration uses Python identifier ClusterConfiguration
-    __ClusterConfiguration = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'ClusterConfiguration'), 'ClusterConfiguration', '__httpeuclid_esa_orgschemasysial_pipelineTaskRun_httpeuclid_esa_orgschemasysialClusterConfiguration', False)
-
-    
-    ClusterConfiguration = property(__ClusterConfiguration.value, __ClusterConfiguration.set, None, None)
-
-    
-    # Element {http://euclid.esa.org/schema/sys/ial}ProcessingState uses Python identifier ProcessingState
-    __ProcessingState = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'ProcessingState'), 'ProcessingState', '__httpeuclid_esa_orgschemasysial_pipelineTaskRun_httpeuclid_esa_orgschemasysialProcessingState', False)
-
-    
-    ProcessingState = property(__ProcessingState.value, __ProcessingState.set, None, None)
-
-    
-    # Element {http://euclid.esa.org/schema/sys/ial}Input uses Python identifier Input
-    __Input = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Input'), 'Input', '__httpeuclid_esa_orgschemasysial_pipelineTaskRun_httpeuclid_esa_orgschemasysialInput', True)
-
-    
-    Input = property(__Input.value, __Input.set, None, None)
-
-    
-    # Element {http://euclid.esa.org/schema/sys/ial}LogFile uses Python identifier LogFile
-    __LogFile = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'LogFile'), 'LogFile', '__httpeuclid_esa_orgschemasysial_pipelineTaskRun_httpeuclid_esa_orgschemasysialLogFile', False)
-
-    
-    LogFile = property(__LogFile.value, __LogFile.set, None, None)
-
-    
-    # Element {http://euclid.esa.org/schema/sys/ial}PipelineTaskName uses Python identifier PipelineTaskName
-    __PipelineTaskName = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'PipelineTaskName'), 'PipelineTaskName', '__httpeuclid_esa_orgschemasysial_pipelineTaskRun_httpeuclid_esa_orgschemasysialPipelineTaskName', False)
-
-    
-    PipelineTaskName = property(__PipelineTaskName.value, __PipelineTaskName.set, None, None)
-
-    
-    # Element {http://euclid.esa.org/schema/sys/ial}ProcessStdout uses Python identifier ProcessStdout
-    __ProcessStdout = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'ProcessStdout'), 'ProcessStdout', '__httpeuclid_esa_orgschemasysial_pipelineTaskRun_httpeuclid_esa_orgschemasysialProcessStdout', False)
-
-    
-    ProcessStdout = property(__ProcessStdout.value, __ProcessStdout.set, None, None)
-
-    
-    # Element {http://euclid.esa.org/schema/sys/ial}ProcessStderr uses Python identifier ProcessStderr
-    __ProcessStderr = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'ProcessStderr'), 'ProcessStderr', '__httpeuclid_esa_orgschemasysial_pipelineTaskRun_httpeuclid_esa_orgschemasysialProcessStderr', False)
-
-    
-    ProcessStderr = property(__ProcessStderr.value, __ProcessStderr.set, None, None)
-
-    
-    # Element {http://euclid.esa.org/schema/sys/ial}ExecutableName uses Python identifier ExecutableName
-    __ExecutableName = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'ExecutableName'), 'ExecutableName', '__httpeuclid_esa_orgschemasysial_pipelineTaskRun_httpeuclid_esa_orgschemasysialExecutableName', False)
-
-    
-    ExecutableName = property(__ExecutableName.value, __ExecutableName.set, None, None)
-
-    
-    # Element {http://euclid.esa.org/schema/sys/ial}Output uses Python identifier Output
-    __Output = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Output'), 'Output', '__httpeuclid_esa_orgschemasysial_pipelineTaskRun_httpeuclid_esa_orgschemasysialOutput', True)
-
-    
-    Output = property(__Output.value, __Output.set, None, None)
-
-    
-    # Element {http://euclid.esa.org/schema/sys/ial}ProcessId uses Python identifier ProcessId
-    __ProcessId = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'ProcessId'), 'ProcessId', '__httpeuclid_esa_orgschemasysial_pipelineTaskRun_httpeuclid_esa_orgschemasysialProcessId', False)
-
-    
-    ProcessId = property(__ProcessId.value, __ProcessId.set, None, None)
-
-    
-    # Element {http://euclid.esa.org/schema/sys/ial}Id uses Python identifier Id
-    __Id = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Id'), 'Id', '__httpeuclid_esa_orgschemasysial_pipelineTaskRun_httpeuclid_esa_orgschemasysialId', False)
-
-    
-    Id = property(__Id.value, __Id.set, None, None)
-
-    
-    # Element {http://euclid.esa.org/schema/sys/ial}PackageName uses Python identifier PackageName
-    __PackageName = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'PackageName'), 'PackageName', '__httpeuclid_esa_orgschemasysial_pipelineTaskRun_httpeuclid_esa_orgschemasysialPackageName', False)
-
-    
-    PackageName = property(__PackageName.value, __PackageName.set, None, None)
-
-
-    _ElementMap = {
-        __PackageVersion.name() : __PackageVersion,
-        __PipelineRun.name() : __PipelineRun,
-        __ClusterConfiguration.name() : __ClusterConfiguration,
-        __ProcessingState.name() : __ProcessingState,
-        __Input.name() : __Input,
-        __LogFile.name() : __LogFile,
-        __PipelineTaskName.name() : __PipelineTaskName,
-        __ProcessStdout.name() : __ProcessStdout,
-        __ProcessStderr.name() : __ProcessStderr,
-        __ExecutableName.name() : __ExecutableName,
-        __Output.name() : __Output,
-        __ProcessId.name() : __ProcessId,
-        __Id.name() : __Id,
-        __PackageName.name() : __PackageName
-    }
-    _AttributeMap = {
-        
-    }
-Namespace.addCategoryObject('typeBinding', u'pipelineTaskRun', pipelineTaskRun)
-
-
-# Complex type taskProductList with content type ELEMENT_ONLY
-class taskProductList (pyxb.binding.basis.complexTypeDefinition):
-    _TypeDefinition = None
-    _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
-    _Abstract = False
-    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'taskProductList')
-    # Base type is pyxb.binding.datatypes.anyType
-    
-    # Element {http://euclid.esa.org/schema/sys/ial}TaskProduct uses Python identifier TaskProduct
-    __TaskProduct = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'TaskProduct'), 'TaskProduct', '__httpeuclid_esa_orgschemasysial_taskProductList_httpeuclid_esa_orgschemasysialTaskProduct', True)
-
-    
-    TaskProduct = property(__TaskProduct.value, __TaskProduct.set, None, None)
-
-
-    _ElementMap = {
-        __TaskProduct.name() : __TaskProduct
-    }
-    _AttributeMap = {
-        
-    }
-Namespace.addCategoryObject('typeBinding', u'taskProductList', taskProductList)
-
 
 # Complex type taskScheduler with content type ELEMENT_ONLY
 class taskScheduler (pyxb.binding.basis.complexTypeDefinition):
@@ -341,6 +189,250 @@ class taskScheduler (pyxb.binding.basis.complexTypeDefinition):
 Namespace.addCategoryObject('typeBinding', u'taskScheduler', taskScheduler)
 
 
+# Complex type logFile with content type ELEMENT_ONLY
+class logFile (pyxb.binding.basis.complexTypeDefinition):
+    _TypeDefinition = None
+    _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
+    _Abstract = False
+    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'logFile')
+    # Base type is pyxb.binding.datatypes.anyType
+    
+    # Element {http://euclid.esa.org/schema/sys/ial}PipelineTaskName uses Python identifier PipelineTaskName
+    __PipelineTaskName = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'PipelineTaskName'), 'PipelineTaskName', '__httpeuclid_esa_orgschemasysial_logFile_httpeuclid_esa_orgschemasysialPipelineTaskName', False)
+
+    
+    PipelineTaskName = property(__PipelineTaskName.value, __PipelineTaskName.set, None, None)
+
+    
+    # Element {http://euclid.esa.org/schema/sys/ial}Id uses Python identifier Id
+    __Id = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Id'), 'Id', '__httpeuclid_esa_orgschemasysial_logFile_httpeuclid_esa_orgschemasysialId', False)
+
+    
+    Id = property(__Id.value, __Id.set, None, None)
+
+    
+    # Element {http://euclid.esa.org/schema/sys/ial}File uses Python identifier File
+    __File = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'File'), 'File', '__httpeuclid_esa_orgschemasysial_logFile_httpeuclid_esa_orgschemasysialFile', False)
+
+    
+    File = property(__File.value, __File.set, None, None)
+
+    
+    # Element {http://euclid.esa.org/schema/sys/ial}PipelineTaskRunId uses Python identifier PipelineTaskRunId
+    __PipelineTaskRunId = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'PipelineTaskRunId'), 'PipelineTaskRunId', '__httpeuclid_esa_orgschemasysial_logFile_httpeuclid_esa_orgschemasysialPipelineTaskRunId', False)
+
+    
+    PipelineTaskRunId = property(__PipelineTaskRunId.value, __PipelineTaskRunId.set, None, None)
+
+
+    _ElementMap = {
+        __PipelineTaskName.name() : __PipelineTaskName,
+        __Id.name() : __Id,
+        __File.name() : __File,
+        __PipelineTaskRunId.name() : __PipelineTaskRunId
+    }
+    _AttributeMap = {
+        
+    }
+Namespace.addCategoryObject('typeBinding', u'logFile', logFile)
+
+
+# Complex type logFiles with content type ELEMENT_ONLY
+class logFiles (pyxb.binding.basis.complexTypeDefinition):
+    _TypeDefinition = None
+    _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
+    _Abstract = False
+    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'logFiles')
+    # Base type is pyxb.binding.datatypes.anyType
+    
+    # Element {http://euclid.esa.org/schema/sys/ial}LogFile uses Python identifier LogFile
+    __LogFile = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'LogFile'), 'LogFile', '__httpeuclid_esa_orgschemasysial_logFiles_httpeuclid_esa_orgschemasysialLogFile', True)
+
+    
+    LogFile = property(__LogFile.value, __LogFile.set, None, None)
+
+    
+    # Element {http://euclid.esa.org/schema/sys/ial}PipelineRunId uses Python identifier PipelineRunId
+    __PipelineRunId = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'PipelineRunId'), 'PipelineRunId', '__httpeuclid_esa_orgschemasysial_logFiles_httpeuclid_esa_orgschemasysialPipelineRunId', False)
+
+    
+    PipelineRunId = property(__PipelineRunId.value, __PipelineRunId.set, None, None)
+
+    
+    # Element {http://euclid.esa.org/schema/sys/ial}Id uses Python identifier Id
+    __Id = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Id'), 'Id', '__httpeuclid_esa_orgschemasysial_logFiles_httpeuclid_esa_orgschemasysialId', False)
+
+    
+    Id = property(__Id.value, __Id.set, None, None)
+
+
+    _ElementMap = {
+        __LogFile.name() : __LogFile,
+        __PipelineRunId.name() : __PipelineRunId,
+        __Id.name() : __Id
+    }
+    _AttributeMap = {
+        
+    }
+Namespace.addCategoryObject('typeBinding', u'logFiles', logFiles)
+
+
+# Complex type sgsProcessingOrder with content type ELEMENT_ONLY
+class sgsProcessingOrder (pyxb.binding.basis.complexTypeDefinition):
+    _TypeDefinition = None
+    _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
+    _Abstract = False
+    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'sgsProcessingOrder')
+    # Base type is pyxb.binding.datatypes.anyType
+    
+    # Element {http://euclid.esa.org/schema/sys/ial}TriggeringData uses Python identifier TriggeringData
+    __TriggeringData = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'TriggeringData'), 'TriggeringData', '__httpeuclid_esa_orgschemasysial_sgsProcessingOrder_httpeuclid_esa_orgschemasysialTriggeringData', False)
+
+    
+    TriggeringData = property(__TriggeringData.value, __TriggeringData.set, None, None)
+
+    
+    # Element {http://euclid.esa.org/schema/sys/ial}ProcessingCampaign uses Python identifier ProcessingCampaign
+    __ProcessingCampaign = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'ProcessingCampaign'), 'ProcessingCampaign', '__httpeuclid_esa_orgschemasysial_sgsProcessingOrder_httpeuclid_esa_orgschemasysialProcessingCampaign', False)
+
+    
+    ProcessingCampaign = property(__ProcessingCampaign.value, __ProcessingCampaign.set, None, None)
+
+    
+    # Element {http://euclid.esa.org/schema/sys/ial}Id uses Python identifier Id
+    __Id = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Id'), 'Id', '__httpeuclid_esa_orgschemasysial_sgsProcessingOrder_httpeuclid_esa_orgschemasysialId', False)
+
+    
+    Id = property(__Id.value, __Id.set, None, None)
+
+    
+    # Element {http://euclid.esa.org/schema/sys/ial}Author uses Python identifier Author
+    __Author = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Author'), 'Author', '__httpeuclid_esa_orgschemasysial_sgsProcessingOrder_httpeuclid_esa_orgschemasysialAuthor', False)
+
+    
+    Author = property(__Author.value, __Author.set, None, None)
+
+    
+    # Element {http://euclid.esa.org/schema/sys/ial}PipelineDescription uses Python identifier PipelineDescription
+    __PipelineDescription = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'PipelineDescription'), 'PipelineDescription', '__httpeuclid_esa_orgschemasysial_sgsProcessingOrder_httpeuclid_esa_orgschemasysialPipelineDescription', False)
+
+    
+    PipelineDescription = property(__PipelineDescription.value, __PipelineDescription.set, None, None)
+
+
+    _ElementMap = {
+        __TriggeringData.name() : __TriggeringData,
+        __ProcessingCampaign.name() : __ProcessingCampaign,
+        __Id.name() : __Id,
+        __Author.name() : __Author,
+        __PipelineDescription.name() : __PipelineDescription
+    }
+    _AttributeMap = {
+        
+    }
+Namespace.addCategoryObject('typeBinding', u'sgsProcessingOrder', sgsProcessingOrder)
+
+
+# Complex type clusterConfiguration with content type ELEMENT_ONLY
+class clusterConfiguration (pyxb.binding.basis.complexTypeDefinition):
+    _TypeDefinition = None
+    _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
+    _Abstract = False
+    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'clusterConfiguration')
+    # Base type is pyxb.binding.datatypes.anyType
+    
+    # Element {http://euclid.esa.org/schema/sys/ial}TaskScheduler uses Python identifier TaskScheduler
+    __TaskScheduler = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'TaskScheduler'), 'TaskScheduler', '__httpeuclid_esa_orgschemasysial_clusterConfiguration_httpeuclid_esa_orgschemasysialTaskScheduler', False)
+
+    
+    TaskScheduler = property(__TaskScheduler.value, __TaskScheduler.set, None, None)
+
+    
+    # Element {http://euclid.esa.org/schema/sys/ial}Workspace uses Python identifier Workspace
+    __Workspace = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Workspace'), 'Workspace', '__httpeuclid_esa_orgschemasysial_clusterConfiguration_httpeuclid_esa_orgschemasysialWorkspace', False)
+
+    
+    Workspace = property(__Workspace.value, __Workspace.set, None, None)
+
+    
+    # Element {http://euclid.esa.org/schema/sys/ial}Sdc uses Python identifier Sdc
+    __Sdc = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Sdc'), 'Sdc', '__httpeuclid_esa_orgschemasysial_clusterConfiguration_httpeuclid_esa_orgschemasysialSdc', False)
+
+    
+    Sdc = property(__Sdc.value, __Sdc.set, None, None)
+
+    
+    # Element {http://euclid.esa.org/schema/sys/ial}Id uses Python identifier Id
+    __Id = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Id'), 'Id', '__httpeuclid_esa_orgschemasysial_clusterConfiguration_httpeuclid_esa_orgschemasysialId', False)
+
+    
+    Id = property(__Id.value, __Id.set, None, None)
+
+
+    _ElementMap = {
+        __TaskScheduler.name() : __TaskScheduler,
+        __Workspace.name() : __Workspace,
+        __Sdc.name() : __Sdc,
+        __Id.name() : __Id
+    }
+    _AttributeMap = {
+        
+    }
+Namespace.addCategoryObject('typeBinding', u'clusterConfiguration', clusterConfiguration)
+
+
+# Complex type sdcProcessingOrder with content type ELEMENT_ONLY
+class sdcProcessingOrder (sgsProcessingOrder):
+    _TypeDefinition = None
+    _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
+    _Abstract = False
+    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'sdcProcessingOrder')
+    # Base type is sgsProcessingOrder
+    
+    # Element Author ({http://euclid.esa.org/schema/sys/ial}Author) inherited from {http://euclid.esa.org/schema/sys/ial}sgsProcessingOrder
+    
+    # Element {http://euclid.esa.org/schema/sys/ial}IalConfiguration uses Python identifier IalConfiguration
+    __IalConfiguration = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'IalConfiguration'), 'IalConfiguration', '__httpeuclid_esa_orgschemasysial_sdcProcessingOrder_httpeuclid_esa_orgschemasysialIalConfiguration', False)
+
+    
+    IalConfiguration = property(__IalConfiguration.value, __IalConfiguration.set, None, None)
+
+    
+    # Element TriggeringData ({http://euclid.esa.org/schema/sys/ial}TriggeringData) inherited from {http://euclid.esa.org/schema/sys/ial}sgsProcessingOrder
+    
+    # Element Id ({http://euclid.esa.org/schema/sys/ial}Id) inherited from {http://euclid.esa.org/schema/sys/ial}sgsProcessingOrder
+    
+    # Element {http://euclid.esa.org/schema/sys/ial}ProcessingState uses Python identifier ProcessingState
+    __ProcessingState = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'ProcessingState'), 'ProcessingState', '__httpeuclid_esa_orgschemasysial_sdcProcessingOrder_httpeuclid_esa_orgschemasysialProcessingState', False)
+
+    
+    ProcessingState = property(__ProcessingState.value, __ProcessingState.set, None, None)
+
+    
+    # Element PipelineDescription ({http://euclid.esa.org/schema/sys/ial}PipelineDescription) inherited from {http://euclid.esa.org/schema/sys/ial}sgsProcessingOrder
+    
+    # Element ProcessingCampaign ({http://euclid.esa.org/schema/sys/ial}ProcessingCampaign) inherited from {http://euclid.esa.org/schema/sys/ial}sgsProcessingOrder
+    
+    # Element {http://euclid.esa.org/schema/sys/ial}ClusterConfiguration uses Python identifier ClusterConfiguration
+    __ClusterConfiguration = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'ClusterConfiguration'), 'ClusterConfiguration', '__httpeuclid_esa_orgschemasysial_sdcProcessingOrder_httpeuclid_esa_orgschemasysialClusterConfiguration', False)
+
+    
+    ClusterConfiguration = property(__ClusterConfiguration.value, __ClusterConfiguration.set, None, None)
+
+
+    _ElementMap = sgsProcessingOrder._ElementMap.copy()
+    _ElementMap.update({
+        __IalConfiguration.name() : __IalConfiguration,
+        __ProcessingState.name() : __ProcessingState,
+        __ClusterConfiguration.name() : __ClusterConfiguration
+    })
+    _AttributeMap = sgsProcessingOrder._AttributeMap.copy()
+    _AttributeMap.update({
+        
+    })
+Namespace.addCategoryObject('typeBinding', u'sdcProcessingOrder', sdcProcessingOrder)
+
+
 # Complex type taskProduct with content type ELEMENT_ONLY
 class taskProduct (pyxb.binding.basis.complexTypeDefinition):
     _TypeDefinition = None
@@ -395,150 +487,6 @@ class taskProduct (pyxb.binding.basis.complexTypeDefinition):
         
     }
 Namespace.addCategoryObject('typeBinding', u'taskProduct', taskProduct)
-
-
-# Complex type clusterConfiguration with content type ELEMENT_ONLY
-class clusterConfiguration (pyxb.binding.basis.complexTypeDefinition):
-    _TypeDefinition = None
-    _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
-    _Abstract = False
-    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'clusterConfiguration')
-    # Base type is pyxb.binding.datatypes.anyType
-    
-    # Element {http://euclid.esa.org/schema/sys/ial}TaskScheduler uses Python identifier TaskScheduler
-    __TaskScheduler = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'TaskScheduler'), 'TaskScheduler', '__httpeuclid_esa_orgschemasysial_clusterConfiguration_httpeuclid_esa_orgschemasysialTaskScheduler', False)
-
-    
-    TaskScheduler = property(__TaskScheduler.value, __TaskScheduler.set, None, None)
-
-    
-    # Element {http://euclid.esa.org/schema/sys/ial}Workspace uses Python identifier Workspace
-    __Workspace = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Workspace'), 'Workspace', '__httpeuclid_esa_orgschemasysial_clusterConfiguration_httpeuclid_esa_orgschemasysialWorkspace', False)
-
-    
-    Workspace = property(__Workspace.value, __Workspace.set, None, None)
-
-    
-    # Element {http://euclid.esa.org/schema/sys/ial}Sdc uses Python identifier Sdc
-    __Sdc = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Sdc'), 'Sdc', '__httpeuclid_esa_orgschemasysial_clusterConfiguration_httpeuclid_esa_orgschemasysialSdc', False)
-
-    
-    Sdc = property(__Sdc.value, __Sdc.set, None, None)
-
-    
-    # Element {http://euclid.esa.org/schema/sys/ial}Id uses Python identifier Id
-    __Id = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Id'), 'Id', '__httpeuclid_esa_orgschemasysial_clusterConfiguration_httpeuclid_esa_orgschemasysialId', False)
-
-    
-    Id = property(__Id.value, __Id.set, None, None)
-
-
-    _ElementMap = {
-        __TaskScheduler.name() : __TaskScheduler,
-        __Workspace.name() : __Workspace,
-        __Sdc.name() : __Sdc,
-        __Id.name() : __Id
-    }
-    _AttributeMap = {
-        
-    }
-Namespace.addCategoryObject('typeBinding', u'clusterConfiguration', clusterConfiguration)
-
-
-# Complex type sgsProcessingOrder with content type ELEMENT_ONLY
-class sgsProcessingOrder (pyxb.binding.basis.complexTypeDefinition):
-    _TypeDefinition = None
-    _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
-    _Abstract = False
-    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'sgsProcessingOrder')
-    # Base type is pyxb.binding.datatypes.anyType
-    
-    # Element {http://euclid.esa.org/schema/sys/ial}PipelineDescription uses Python identifier PipelineDescription
-    __PipelineDescription = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'PipelineDescription'), 'PipelineDescription', '__httpeuclid_esa_orgschemasysial_sgsProcessingOrder_httpeuclid_esa_orgschemasysialPipelineDescription', False)
-
-    
-    PipelineDescription = property(__PipelineDescription.value, __PipelineDescription.set, None, None)
-
-    
-    # Element {http://euclid.esa.org/schema/sys/ial}TriggeringData uses Python identifier TriggeringData
-    __TriggeringData = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'TriggeringData'), 'TriggeringData', '__httpeuclid_esa_orgschemasysial_sgsProcessingOrder_httpeuclid_esa_orgschemasysialTriggeringData', False)
-
-    
-    TriggeringData = property(__TriggeringData.value, __TriggeringData.set, None, None)
-
-    
-    # Element {http://euclid.esa.org/schema/sys/ial}Id uses Python identifier Id
-    __Id = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Id'), 'Id', '__httpeuclid_esa_orgschemasysial_sgsProcessingOrder_httpeuclid_esa_orgschemasysialId', False)
-
-    
-    Id = property(__Id.value, __Id.set, None, None)
-
-    
-    # Element {http://euclid.esa.org/schema/sys/ial}Author uses Python identifier Author
-    __Author = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Author'), 'Author', '__httpeuclid_esa_orgschemasysial_sgsProcessingOrder_httpeuclid_esa_orgschemasysialAuthor', False)
-
-    
-    Author = property(__Author.value, __Author.set, None, None)
-
-    
-    # Element {http://euclid.esa.org/schema/sys/ial}ProcessingCampaign uses Python identifier ProcessingCampaign
-    __ProcessingCampaign = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'ProcessingCampaign'), 'ProcessingCampaign', '__httpeuclid_esa_orgschemasysial_sgsProcessingOrder_httpeuclid_esa_orgschemasysialProcessingCampaign', False)
-
-    
-    ProcessingCampaign = property(__ProcessingCampaign.value, __ProcessingCampaign.set, None, None)
-
-
-    _ElementMap = {
-        __PipelineDescription.name() : __PipelineDescription,
-        __TriggeringData.name() : __TriggeringData,
-        __Id.name() : __Id,
-        __Author.name() : __Author,
-        __ProcessingCampaign.name() : __ProcessingCampaign
-    }
-    _AttributeMap = {
-        
-    }
-Namespace.addCategoryObject('typeBinding', u'sgsProcessingOrder', sgsProcessingOrder)
-
-
-# Complex type logFiles with content type ELEMENT_ONLY
-class logFiles (pyxb.binding.basis.complexTypeDefinition):
-    _TypeDefinition = None
-    _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
-    _Abstract = False
-    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'logFiles')
-    # Base type is pyxb.binding.datatypes.anyType
-    
-    # Element {http://euclid.esa.org/schema/sys/ial}LogFile uses Python identifier LogFile
-    __LogFile = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'LogFile'), 'LogFile', '__httpeuclid_esa_orgschemasysial_logFiles_httpeuclid_esa_orgschemasysialLogFile', True)
-
-    
-    LogFile = property(__LogFile.value, __LogFile.set, None, None)
-
-    
-    # Element {http://euclid.esa.org/schema/sys/ial}PipelineRunId uses Python identifier PipelineRunId
-    __PipelineRunId = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'PipelineRunId'), 'PipelineRunId', '__httpeuclid_esa_orgschemasysial_logFiles_httpeuclid_esa_orgschemasysialPipelineRunId', False)
-
-    
-    PipelineRunId = property(__PipelineRunId.value, __PipelineRunId.set, None, None)
-
-    
-    # Element {http://euclid.esa.org/schema/sys/ial}Id uses Python identifier Id
-    __Id = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Id'), 'Id', '__httpeuclid_esa_orgschemasysial_logFiles_httpeuclid_esa_orgschemasysialId', False)
-
-    
-    Id = property(__Id.value, __Id.set, None, None)
-
-
-    _ElementMap = {
-        __LogFile.name() : __LogFile,
-        __PipelineRunId.name() : __PipelineRunId,
-        __Id.name() : __Id
-    }
-    _AttributeMap = {
-        
-    }
-Namespace.addCategoryObject('typeBinding', u'logFiles', logFiles)
 
 
 # Complex type ialConfiguration with content type ELEMENT_ONLY
@@ -629,56 +577,180 @@ class triggeringData (pyxb.binding.basis.complexTypeDefinition):
 Namespace.addCategoryObject('typeBinding', u'triggeringData', triggeringData)
 
 
-# Complex type sdcProcessingOrder with content type ELEMENT_ONLY
-class sdcProcessingOrder (sgsProcessingOrder):
+# Complex type queryParameters with content type ELEMENT_ONLY
+class queryParameters (pyxb.binding.basis.complexTypeDefinition):
     _TypeDefinition = None
     _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
     _Abstract = False
-    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'sdcProcessingOrder')
-    # Base type is sgsProcessingOrder
+    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'queryParameters')
+    # Base type is pyxb.binding.datatypes.anyType
     
-    # Element Author ({http://euclid.esa.org/schema/sys/ial}Author) inherited from {http://euclid.esa.org/schema/sys/ial}sgsProcessingOrder
-    
-    # Element {http://euclid.esa.org/schema/sys/ial}IalConfiguration uses Python identifier IalConfiguration
-    __IalConfiguration = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'IalConfiguration'), 'IalConfiguration', '__httpeuclid_esa_orgschemasysial_sdcProcessingOrder_httpeuclid_esa_orgschemasysialIalConfiguration', False)
+    # Element {http://euclid.esa.org/schema/sys/ial}Param uses Python identifier Param
+    __Param = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Param'), 'Param', '__httpeuclid_esa_orgschemasysial_queryParameters_httpeuclid_esa_orgschemasysialParam', True)
 
     
-    IalConfiguration = property(__IalConfiguration.value, __IalConfiguration.set, None, None)
+    Param = property(__Param.value, __Param.set, None, None)
+
+
+    _ElementMap = {
+        __Param.name() : __Param
+    }
+    _AttributeMap = {
+        
+    }
+Namespace.addCategoryObject('typeBinding', u'queryParameters', queryParameters)
+
+
+# Complex type pipelineTaskRun with content type ELEMENT_ONLY
+class pipelineTaskRun (pyxb.binding.basis.complexTypeDefinition):
+    _TypeDefinition = None
+    _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
+    _Abstract = False
+    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'pipelineTaskRun')
+    # Base type is pyxb.binding.datatypes.anyType
+    
+    # Element {http://euclid.esa.org/schema/sys/ial}Id uses Python identifier Id
+    __Id = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Id'), 'Id', '__httpeuclid_esa_orgschemasysial_pipelineTaskRun_httpeuclid_esa_orgschemasysialId', False)
 
     
-    # Element TriggeringData ({http://euclid.esa.org/schema/sys/ial}TriggeringData) inherited from {http://euclid.esa.org/schema/sys/ial}sgsProcessingOrder
+    Id = property(__Id.value, __Id.set, None, None)
+
+    
+    # Element {http://euclid.esa.org/schema/sys/ial}PackageVersion uses Python identifier PackageVersion
+    __PackageVersion = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'PackageVersion'), 'PackageVersion', '__httpeuclid_esa_orgschemasysial_pipelineTaskRun_httpeuclid_esa_orgschemasysialPackageVersion', False)
+
+    
+    PackageVersion = property(__PackageVersion.value, __PackageVersion.set, None, None)
+
+    
+    # Element {http://euclid.esa.org/schema/sys/ial}ProcessStdout uses Python identifier ProcessStdout
+    __ProcessStdout = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'ProcessStdout'), 'ProcessStdout', '__httpeuclid_esa_orgschemasysial_pipelineTaskRun_httpeuclid_esa_orgschemasysialProcessStdout', False)
+
+    
+    ProcessStdout = property(__ProcessStdout.value, __ProcessStdout.set, None, None)
+
+    
+    # Element {http://euclid.esa.org/schema/sys/ial}ExecutableName uses Python identifier ExecutableName
+    __ExecutableName = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'ExecutableName'), 'ExecutableName', '__httpeuclid_esa_orgschemasysial_pipelineTaskRun_httpeuclid_esa_orgschemasysialExecutableName', False)
+
+    
+    ExecutableName = property(__ExecutableName.value, __ExecutableName.set, None, None)
+
     
     # Element {http://euclid.esa.org/schema/sys/ial}ProcessingState uses Python identifier ProcessingState
-    __ProcessingState = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'ProcessingState'), 'ProcessingState', '__httpeuclid_esa_orgschemasysial_sdcProcessingOrder_httpeuclid_esa_orgschemasysialProcessingState', False)
+    __ProcessingState = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'ProcessingState'), 'ProcessingState', '__httpeuclid_esa_orgschemasysial_pipelineTaskRun_httpeuclid_esa_orgschemasysialProcessingState', False)
 
     
     ProcessingState = property(__ProcessingState.value, __ProcessingState.set, None, None)
 
     
-    # Element PipelineDescription ({http://euclid.esa.org/schema/sys/ial}PipelineDescription) inherited from {http://euclid.esa.org/schema/sys/ial}sgsProcessingOrder
+    # Element {http://euclid.esa.org/schema/sys/ial}Input uses Python identifier Input
+    __Input = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Input'), 'Input', '__httpeuclid_esa_orgschemasysial_pipelineTaskRun_httpeuclid_esa_orgschemasysialInput', True)
+
     
-    # Element Id ({http://euclid.esa.org/schema/sys/ial}Id) inherited from {http://euclid.esa.org/schema/sys/ial}sgsProcessingOrder
+    Input = property(__Input.value, __Input.set, None, None)
+
     
     # Element {http://euclid.esa.org/schema/sys/ial}ClusterConfiguration uses Python identifier ClusterConfiguration
-    __ClusterConfiguration = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'ClusterConfiguration'), 'ClusterConfiguration', '__httpeuclid_esa_orgschemasysial_sdcProcessingOrder_httpeuclid_esa_orgschemasysialClusterConfiguration', False)
+    __ClusterConfiguration = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'ClusterConfiguration'), 'ClusterConfiguration', '__httpeuclid_esa_orgschemasysial_pipelineTaskRun_httpeuclid_esa_orgschemasysialClusterConfiguration', False)
 
     
     ClusterConfiguration = property(__ClusterConfiguration.value, __ClusterConfiguration.set, None, None)
 
     
-    # Element ProcessingCampaign ({http://euclid.esa.org/schema/sys/ial}ProcessingCampaign) inherited from {http://euclid.esa.org/schema/sys/ial}sgsProcessingOrder
+    # Element {http://euclid.esa.org/schema/sys/ial}PipelineRun uses Python identifier PipelineRun
+    __PipelineRun = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'PipelineRun'), 'PipelineRun', '__httpeuclid_esa_orgschemasysial_pipelineTaskRun_httpeuclid_esa_orgschemasysialPipelineRun', False)
 
-    _ElementMap = sgsProcessingOrder._ElementMap.copy()
-    _ElementMap.update({
-        __IalConfiguration.name() : __IalConfiguration,
+    
+    PipelineRun = property(__PipelineRun.value, __PipelineRun.set, None, None)
+
+    
+    # Element {http://euclid.esa.org/schema/sys/ial}Output uses Python identifier Output
+    __Output = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Output'), 'Output', '__httpeuclid_esa_orgschemasysial_pipelineTaskRun_httpeuclid_esa_orgschemasysialOutput', True)
+
+    
+    Output = property(__Output.value, __Output.set, None, None)
+
+    
+    # Element {http://euclid.esa.org/schema/sys/ial}ProcessId uses Python identifier ProcessId
+    __ProcessId = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'ProcessId'), 'ProcessId', '__httpeuclid_esa_orgschemasysial_pipelineTaskRun_httpeuclid_esa_orgschemasysialProcessId', False)
+
+    
+    ProcessId = property(__ProcessId.value, __ProcessId.set, None, None)
+
+    
+    # Element {http://euclid.esa.org/schema/sys/ial}ProcessStderr uses Python identifier ProcessStderr
+    __ProcessStderr = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'ProcessStderr'), 'ProcessStderr', '__httpeuclid_esa_orgschemasysial_pipelineTaskRun_httpeuclid_esa_orgschemasysialProcessStderr', False)
+
+    
+    ProcessStderr = property(__ProcessStderr.value, __ProcessStderr.set, None, None)
+
+    
+    # Element {http://euclid.esa.org/schema/sys/ial}PipelineTaskName uses Python identifier PipelineTaskName
+    __PipelineTaskName = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'PipelineTaskName'), 'PipelineTaskName', '__httpeuclid_esa_orgschemasysial_pipelineTaskRun_httpeuclid_esa_orgschemasysialPipelineTaskName', False)
+
+    
+    PipelineTaskName = property(__PipelineTaskName.value, __PipelineTaskName.set, None, None)
+
+    
+    # Element {http://euclid.esa.org/schema/sys/ial}LogFile uses Python identifier LogFile
+    __LogFile = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'LogFile'), 'LogFile', '__httpeuclid_esa_orgschemasysial_pipelineTaskRun_httpeuclid_esa_orgschemasysialLogFile', False)
+
+    
+    LogFile = property(__LogFile.value, __LogFile.set, None, None)
+
+    
+    # Element {http://euclid.esa.org/schema/sys/ial}PackageName uses Python identifier PackageName
+    __PackageName = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'PackageName'), 'PackageName', '__httpeuclid_esa_orgschemasysial_pipelineTaskRun_httpeuclid_esa_orgschemasysialPackageName', False)
+
+    
+    PackageName = property(__PackageName.value, __PackageName.set, None, None)
+
+
+    _ElementMap = {
+        __Id.name() : __Id,
+        __PackageVersion.name() : __PackageVersion,
+        __ProcessStdout.name() : __ProcessStdout,
+        __ExecutableName.name() : __ExecutableName,
         __ProcessingState.name() : __ProcessingState,
-        __ClusterConfiguration.name() : __ClusterConfiguration
-    })
-    _AttributeMap = sgsProcessingOrder._AttributeMap.copy()
-    _AttributeMap.update({
+        __Input.name() : __Input,
+        __ClusterConfiguration.name() : __ClusterConfiguration,
+        __PipelineRun.name() : __PipelineRun,
+        __Output.name() : __Output,
+        __ProcessId.name() : __ProcessId,
+        __ProcessStderr.name() : __ProcessStderr,
+        __PipelineTaskName.name() : __PipelineTaskName,
+        __LogFile.name() : __LogFile,
+        __PackageName.name() : __PackageName
+    }
+    _AttributeMap = {
         
-    })
-Namespace.addCategoryObject('typeBinding', u'sdcProcessingOrder', sdcProcessingOrder)
+    }
+Namespace.addCategoryObject('typeBinding', u'pipelineTaskRun', pipelineTaskRun)
+
+
+# Complex type taskProductList with content type ELEMENT_ONLY
+class taskProductList (pyxb.binding.basis.complexTypeDefinition):
+    _TypeDefinition = None
+    _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
+    _Abstract = False
+    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'taskProductList')
+    # Base type is pyxb.binding.datatypes.anyType
+    
+    # Element {http://euclid.esa.org/schema/sys/ial}TaskProduct uses Python identifier TaskProduct
+    __TaskProduct = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'TaskProduct'), 'TaskProduct', '__httpeuclid_esa_orgschemasysial_taskProductList_httpeuclid_esa_orgschemasysialTaskProduct', True)
+
+    
+    TaskProduct = property(__TaskProduct.value, __TaskProduct.set, None, None)
+
+
+    _ElementMap = {
+        __TaskProduct.name() : __TaskProduct
+    }
+    _AttributeMap = {
+        
+    }
+Namespace.addCategoryObject('typeBinding', u'taskProductList', taskProductList)
 
 
 # Complex type query with content type ELEMENT_ONLY
@@ -729,182 +801,6 @@ class query (pyxb.binding.basis.complexTypeDefinition):
 Namespace.addCategoryObject('typeBinding', u'query', query)
 
 
-# Complex type pipelineRun with content type ELEMENT_ONLY
-class pipelineRun (pyxb.binding.basis.complexTypeDefinition):
-    _TypeDefinition = None
-    _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
-    _Abstract = False
-    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'pipelineRun')
-    # Base type is pyxb.binding.datatypes.anyType
-    
-    # Element {http://euclid.esa.org/schema/sys/ial}EndDate uses Python identifier EndDate
-    __EndDate = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'EndDate'), 'EndDate', '__httpeuclid_esa_orgschemasysial_pipelineRun_httpeuclid_esa_orgschemasysialEndDate', False)
-
-    
-    EndDate = property(__EndDate.value, __EndDate.set, None, None)
-
-    
-    # Element {http://euclid.esa.org/schema/sys/ial}ClusterConfiguration uses Python identifier ClusterConfiguration
-    __ClusterConfiguration = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'ClusterConfiguration'), 'ClusterConfiguration', '__httpeuclid_esa_orgschemasysial_pipelineRun_httpeuclid_esa_orgschemasysialClusterConfiguration', False)
-
-    
-    ClusterConfiguration = property(__ClusterConfiguration.value, __ClusterConfiguration.set, None, None)
-
-    
-    # Element {http://euclid.esa.org/schema/sys/ial}CompletedPipelineTasks uses Python identifier CompletedPipelineTasks
-    __CompletedPipelineTasks = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'CompletedPipelineTasks'), 'CompletedPipelineTasks', '__httpeuclid_esa_orgschemasysial_pipelineRun_httpeuclid_esa_orgschemasysialCompletedPipelineTasks', True)
-
-    
-    CompletedPipelineTasks = property(__CompletedPipelineTasks.value, __CompletedPipelineTasks.set, None, None)
-
-    
-    # Element {http://euclid.esa.org/schema/sys/ial}Id uses Python identifier Id
-    __Id = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Id'), 'Id', '__httpeuclid_esa_orgschemasysial_pipelineRun_httpeuclid_esa_orgschemasysialId', False)
-
-    
-    Id = property(__Id.value, __Id.set, None, None)
-
-    
-    # Element {http://euclid.esa.org/schema/sys/ial}StartDate uses Python identifier StartDate
-    __StartDate = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'StartDate'), 'StartDate', '__httpeuclid_esa_orgschemasysial_pipelineRun_httpeuclid_esa_orgschemasysialStartDate', False)
-
-    
-    StartDate = property(__StartDate.value, __StartDate.set, None, None)
-
-    
-    # Element {http://euclid.esa.org/schema/sys/ial}ProcessingOrder uses Python identifier ProcessingOrder
-    __ProcessingOrder = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'ProcessingOrder'), 'ProcessingOrder', '__httpeuclid_esa_orgschemasysial_pipelineRun_httpeuclid_esa_orgschemasysialProcessingOrder', False)
-
-    
-    ProcessingOrder = property(__ProcessingOrder.value, __ProcessingOrder.set, None, None)
-
-    
-    # Element {http://euclid.esa.org/schema/sys/ial}Output uses Python identifier Output
-    __Output = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Output'), 'Output', '__httpeuclid_esa_orgschemasysial_pipelineRun_httpeuclid_esa_orgschemasysialOutput', True)
-
-    
-    Output = property(__Output.value, __Output.set, None, None)
-
-    
-    # Element {http://euclid.esa.org/schema/sys/ial}LogFiles uses Python identifier LogFiles
-    __LogFiles = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'LogFiles'), 'LogFiles', '__httpeuclid_esa_orgschemasysial_pipelineRun_httpeuclid_esa_orgschemasysialLogFiles', False)
-
-    
-    LogFiles = property(__LogFiles.value, __LogFiles.set, None, None)
-
-    
-    # Element {http://euclid.esa.org/schema/sys/ial}Input uses Python identifier Input
-    __Input = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Input'), 'Input', '__httpeuclid_esa_orgschemasysial_pipelineRun_httpeuclid_esa_orgschemasysialInput', True)
-
-    
-    Input = property(__Input.value, __Input.set, None, None)
-
-    
-    # Element {http://euclid.esa.org/schema/sys/ial}ProcessingState uses Python identifier ProcessingState
-    __ProcessingState = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'ProcessingState'), 'ProcessingState', '__httpeuclid_esa_orgschemasysial_pipelineRun_httpeuclid_esa_orgschemasysialProcessingState', False)
-
-    
-    ProcessingState = property(__ProcessingState.value, __ProcessingState.set, None, None)
-
-    
-    # Element {http://euclid.esa.org/schema/sys/ial}IalConfiguration uses Python identifier IalConfiguration
-    __IalConfiguration = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'IalConfiguration'), 'IalConfiguration', '__httpeuclid_esa_orgschemasysial_pipelineRun_httpeuclid_esa_orgschemasysialIalConfiguration', False)
-
-    
-    IalConfiguration = property(__IalConfiguration.value, __IalConfiguration.set, None, None)
-
-
-    _ElementMap = {
-        __EndDate.name() : __EndDate,
-        __ClusterConfiguration.name() : __ClusterConfiguration,
-        __CompletedPipelineTasks.name() : __CompletedPipelineTasks,
-        __Id.name() : __Id,
-        __StartDate.name() : __StartDate,
-        __ProcessingOrder.name() : __ProcessingOrder,
-        __Output.name() : __Output,
-        __LogFiles.name() : __LogFiles,
-        __Input.name() : __Input,
-        __ProcessingState.name() : __ProcessingState,
-        __IalConfiguration.name() : __IalConfiguration
-    }
-    _AttributeMap = {
-        
-    }
-Namespace.addCategoryObject('typeBinding', u'pipelineRun', pipelineRun)
-
-
-# Complex type logFile with content type ELEMENT_ONLY
-class logFile (pyxb.binding.basis.complexTypeDefinition):
-    _TypeDefinition = None
-    _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
-    _Abstract = False
-    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'logFile')
-    # Base type is pyxb.binding.datatypes.anyType
-    
-    # Element {http://euclid.esa.org/schema/sys/ial}PipelineTaskName uses Python identifier PipelineTaskName
-    __PipelineTaskName = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'PipelineTaskName'), 'PipelineTaskName', '__httpeuclid_esa_orgschemasysial_logFile_httpeuclid_esa_orgschemasysialPipelineTaskName', False)
-
-    
-    PipelineTaskName = property(__PipelineTaskName.value, __PipelineTaskName.set, None, None)
-
-    
-    # Element {http://euclid.esa.org/schema/sys/ial}Id uses Python identifier Id
-    __Id = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Id'), 'Id', '__httpeuclid_esa_orgschemasysial_logFile_httpeuclid_esa_orgschemasysialId', False)
-
-    
-    Id = property(__Id.value, __Id.set, None, None)
-
-    
-    # Element {http://euclid.esa.org/schema/sys/ial}File uses Python identifier File
-    __File = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'File'), 'File', '__httpeuclid_esa_orgschemasysial_logFile_httpeuclid_esa_orgschemasysialFile', False)
-
-    
-    File = property(__File.value, __File.set, None, None)
-
-    
-    # Element {http://euclid.esa.org/schema/sys/ial}PipelineTaskRunId uses Python identifier PipelineTaskRunId
-    __PipelineTaskRunId = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'PipelineTaskRunId'), 'PipelineTaskRunId', '__httpeuclid_esa_orgschemasysial_logFile_httpeuclid_esa_orgschemasysialPipelineTaskRunId', False)
-
-    
-    PipelineTaskRunId = property(__PipelineTaskRunId.value, __PipelineTaskRunId.set, None, None)
-
-
-    _ElementMap = {
-        __PipelineTaskName.name() : __PipelineTaskName,
-        __Id.name() : __Id,
-        __File.name() : __File,
-        __PipelineTaskRunId.name() : __PipelineTaskRunId
-    }
-    _AttributeMap = {
-        
-    }
-Namespace.addCategoryObject('typeBinding', u'logFile', logFile)
-
-
-# Complex type queryParameters with content type ELEMENT_ONLY
-class queryParameters (pyxb.binding.basis.complexTypeDefinition):
-    _TypeDefinition = None
-    _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
-    _Abstract = False
-    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'queryParameters')
-    # Base type is pyxb.binding.datatypes.anyType
-    
-    # Element {http://euclid.esa.org/schema/sys/ial}Param uses Python identifier Param
-    __Param = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Param'), 'Param', '__httpeuclid_esa_orgschemasysial_queryParameters_httpeuclid_esa_orgschemasysialParam', True)
-
-    
-    Param = property(__Param.value, __Param.set, None, None)
-
-
-    _ElementMap = {
-        __Param.name() : __Param
-    }
-    _AttributeMap = {
-        
-    }
-Namespace.addCategoryObject('typeBinding', u'queryParameters', queryParameters)
-
-
 # Complex type CTD_ANON with content type EMPTY
 class CTD_ANON (pyxb.binding.basis.complexTypeDefinition):
     _TypeDefinition = None
@@ -935,60 +831,109 @@ class CTD_ANON (pyxb.binding.basis.complexTypeDefinition):
 
 
 
+# Complex type pipelineRun with content type ELEMENT_ONLY
+class pipelineRun (pyxb.binding.basis.complexTypeDefinition):
+    _TypeDefinition = None
+    _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
+    _Abstract = False
+    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'pipelineRun')
+    # Base type is pyxb.binding.datatypes.anyType
+    
+    # Element {http://euclid.esa.org/schema/sys/ial}EndDate uses Python identifier EndDate
+    __EndDate = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'EndDate'), 'EndDate', '__httpeuclid_esa_orgschemasysial_pipelineRun_httpeuclid_esa_orgschemasysialEndDate', False)
+
+    
+    EndDate = property(__EndDate.value, __EndDate.set, None, None)
+
+    
+    # Element {http://euclid.esa.org/schema/sys/ial}Input uses Python identifier Input
+    __Input = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Input'), 'Input', '__httpeuclid_esa_orgschemasysial_pipelineRun_httpeuclid_esa_orgschemasysialInput', True)
+
+    
+    Input = property(__Input.value, __Input.set, None, None)
+
+    
+    # Element {http://euclid.esa.org/schema/sys/ial}StartDate uses Python identifier StartDate
+    __StartDate = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'StartDate'), 'StartDate', '__httpeuclid_esa_orgschemasysial_pipelineRun_httpeuclid_esa_orgschemasysialStartDate', False)
+
+    
+    StartDate = property(__StartDate.value, __StartDate.set, None, None)
+
+    
+    # Element {http://euclid.esa.org/schema/sys/ial}Id uses Python identifier Id
+    __Id = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Id'), 'Id', '__httpeuclid_esa_orgschemasysial_pipelineRun_httpeuclid_esa_orgschemasysialId', False)
+
+    
+    Id = property(__Id.value, __Id.set, None, None)
+
+    
+    # Element {http://euclid.esa.org/schema/sys/ial}Output uses Python identifier Output
+    __Output = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Output'), 'Output', '__httpeuclid_esa_orgschemasysial_pipelineRun_httpeuclid_esa_orgschemasysialOutput', True)
+
+    
+    Output = property(__Output.value, __Output.set, None, None)
+
+    
+    # Element {http://euclid.esa.org/schema/sys/ial}CompletedPipelineTasks uses Python identifier CompletedPipelineTasks
+    __CompletedPipelineTasks = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'CompletedPipelineTasks'), 'CompletedPipelineTasks', '__httpeuclid_esa_orgschemasysial_pipelineRun_httpeuclid_esa_orgschemasysialCompletedPipelineTasks', True)
+
+    
+    CompletedPipelineTasks = property(__CompletedPipelineTasks.value, __CompletedPipelineTasks.set, None, None)
+
+    
+    # Element {http://euclid.esa.org/schema/sys/ial}IalConfiguration uses Python identifier IalConfiguration
+    __IalConfiguration = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'IalConfiguration'), 'IalConfiguration', '__httpeuclid_esa_orgschemasysial_pipelineRun_httpeuclid_esa_orgschemasysialIalConfiguration', False)
+
+    
+    IalConfiguration = property(__IalConfiguration.value, __IalConfiguration.set, None, None)
+
+    
+    # Element {http://euclid.esa.org/schema/sys/ial}ProcessingOrder uses Python identifier ProcessingOrder
+    __ProcessingOrder = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'ProcessingOrder'), 'ProcessingOrder', '__httpeuclid_esa_orgschemasysial_pipelineRun_httpeuclid_esa_orgschemasysialProcessingOrder', False)
+
+    
+    ProcessingOrder = property(__ProcessingOrder.value, __ProcessingOrder.set, None, None)
+
+    
+    # Element {http://euclid.esa.org/schema/sys/ial}ProcessingState uses Python identifier ProcessingState
+    __ProcessingState = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'ProcessingState'), 'ProcessingState', '__httpeuclid_esa_orgschemasysial_pipelineRun_httpeuclid_esa_orgschemasysialProcessingState', False)
+
+    
+    ProcessingState = property(__ProcessingState.value, __ProcessingState.set, None, None)
+
+    
+    # Element {http://euclid.esa.org/schema/sys/ial}ClusterConfiguration uses Python identifier ClusterConfiguration
+    __ClusterConfiguration = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'ClusterConfiguration'), 'ClusterConfiguration', '__httpeuclid_esa_orgschemasysial_pipelineRun_httpeuclid_esa_orgschemasysialClusterConfiguration', False)
+
+    
+    ClusterConfiguration = property(__ClusterConfiguration.value, __ClusterConfiguration.set, None, None)
+
+    
+    # Element {http://euclid.esa.org/schema/sys/ial}LogFiles uses Python identifier LogFiles
+    __LogFiles = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'LogFiles'), 'LogFiles', '__httpeuclid_esa_orgschemasysial_pipelineRun_httpeuclid_esa_orgschemasysialLogFiles', False)
+
+    
+    LogFiles = property(__LogFiles.value, __LogFiles.set, None, None)
 
 
-pipelineTaskRun._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'PackageVersion'), pyxb.binding.datatypes.string, scope=pipelineTaskRun))
+    _ElementMap = {
+        __EndDate.name() : __EndDate,
+        __Input.name() : __Input,
+        __StartDate.name() : __StartDate,
+        __Id.name() : __Id,
+        __Output.name() : __Output,
+        __CompletedPipelineTasks.name() : __CompletedPipelineTasks,
+        __IalConfiguration.name() : __IalConfiguration,
+        __ProcessingOrder.name() : __ProcessingOrder,
+        __ProcessingState.name() : __ProcessingState,
+        __ClusterConfiguration.name() : __ClusterConfiguration,
+        __LogFiles.name() : __LogFiles
+    }
+    _AttributeMap = {
+        
+    }
+Namespace.addCategoryObject('typeBinding', u'pipelineRun', pipelineRun)
 
-pipelineTaskRun._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'PipelineRun'), pyxb.binding.datatypes.IDREF, scope=pipelineTaskRun))
-
-pipelineTaskRun._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'ClusterConfiguration'), clusterConfiguration, scope=pipelineTaskRun))
-
-pipelineTaskRun._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'ProcessingState'), pipelineTaskRunState, scope=pipelineTaskRun))
-
-pipelineTaskRun._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Input'), taskProduct, scope=pipelineTaskRun))
-
-pipelineTaskRun._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'LogFile'), logFile, scope=pipelineTaskRun))
-
-pipelineTaskRun._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'PipelineTaskName'), pyxb.binding.datatypes.string, scope=pipelineTaskRun))
-
-pipelineTaskRun._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'ProcessStdout'), pyxb.binding.datatypes.string, scope=pipelineTaskRun))
-
-pipelineTaskRun._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'ProcessStderr'), pyxb.binding.datatypes.string, scope=pipelineTaskRun))
-
-pipelineTaskRun._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'ExecutableName'), pyxb.binding.datatypes.string, scope=pipelineTaskRun))
-
-pipelineTaskRun._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Output'), taskProduct, scope=pipelineTaskRun))
-
-pipelineTaskRun._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'ProcessId'), pyxb.binding.datatypes.string, scope=pipelineTaskRun))
-
-pipelineTaskRun._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Id'), pyxb.binding.datatypes.ID, scope=pipelineTaskRun))
-
-pipelineTaskRun._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'PackageName'), pyxb.binding.datatypes.string, scope=pipelineTaskRun))
-pipelineTaskRun._GroupModel = pyxb.binding.content.GroupSequence(
-    pyxb.binding.content.ParticleModel(pipelineTaskRun._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Id')), min_occurs=0L, max_occurs=1),
-    pyxb.binding.content.ParticleModel(pipelineTaskRun._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'PipelineRun')), min_occurs=1, max_occurs=1),
-    pyxb.binding.content.ParticleModel(pipelineTaskRun._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'PipelineTaskName')), min_occurs=1, max_occurs=1),
-    pyxb.binding.content.ParticleModel(pipelineTaskRun._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'PackageName')), min_occurs=0L, max_occurs=1),
-    pyxb.binding.content.ParticleModel(pipelineTaskRun._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'PackageVersion')), min_occurs=0L, max_occurs=1),
-    pyxb.binding.content.ParticleModel(pipelineTaskRun._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'ExecutableName')), min_occurs=1, max_occurs=1),
-    pyxb.binding.content.ParticleModel(pipelineTaskRun._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Input')), min_occurs=0L, max_occurs=None),
-    pyxb.binding.content.ParticleModel(pipelineTaskRun._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Output')), min_occurs=0L, max_occurs=None),
-    pyxb.binding.content.ParticleModel(pipelineTaskRun._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'ClusterConfiguration')), min_occurs=1, max_occurs=1),
-    pyxb.binding.content.ParticleModel(pipelineTaskRun._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'ProcessId')), min_occurs=0L, max_occurs=1),
-    pyxb.binding.content.ParticleModel(pipelineTaskRun._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'ProcessStdout')), min_occurs=0L, max_occurs=1),
-    pyxb.binding.content.ParticleModel(pipelineTaskRun._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'ProcessStderr')), min_occurs=0L, max_occurs=1),
-    pyxb.binding.content.ParticleModel(pipelineTaskRun._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'LogFile')), min_occurs=0L, max_occurs=1),
-    pyxb.binding.content.ParticleModel(pipelineTaskRun._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'ProcessingState')), min_occurs=1, max_occurs=1)
-    )
-pipelineTaskRun._ContentModel = pyxb.binding.content.ParticleModel(pipelineTaskRun._GroupModel, min_occurs=1, max_occurs=1)
-
-
-
-taskProductList._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'TaskProduct'), taskProduct, scope=taskProductList))
-taskProductList._GroupModel = pyxb.binding.content.GroupSequence(
-    pyxb.binding.content.ParticleModel(taskProductList._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'TaskProduct')), min_occurs=0L, max_occurs=None)
-    )
-taskProductList._ContentModel = pyxb.binding.content.ParticleModel(taskProductList._GroupModel, min_occurs=1, max_occurs=1)
 
 
 
@@ -1015,23 +960,54 @@ taskScheduler._ContentModel = pyxb.binding.content.ParticleModel(taskScheduler._
 
 
 
-taskProduct._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'ProductId'), pyxb.binding.datatypes.string, scope=taskProduct))
+logFile._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'PipelineTaskName'), pyxb.binding.datatypes.string, scope=logFile))
 
-taskProduct._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'ProductType'), pyxb.binding.datatypes.string, scope=taskProduct))
+logFile._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Id'), pyxb.binding.datatypes.string, scope=logFile))
 
-taskProduct._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Id'), pyxb.binding.datatypes.string, scope=taskProduct))
+logFile._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'File'), CommonDM.dm.sys.sgs_stub.dataContainer, scope=logFile))
 
-taskProduct._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'PortName'), pyxb.binding.datatypes.string, scope=taskProduct))
-
-taskProduct._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'ProductRef'), CommonDM.dm.sys.sgs_stub.fileDescriptor, scope=taskProduct))
-taskProduct._GroupModel = pyxb.binding.content.GroupSequence(
-    pyxb.binding.content.ParticleModel(taskProduct._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Id')), min_occurs=1, max_occurs=1),
-    pyxb.binding.content.ParticleModel(taskProduct._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'PortName')), min_occurs=1, max_occurs=1),
-    pyxb.binding.content.ParticleModel(taskProduct._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'ProductId')), min_occurs=0L, max_occurs=1),
-    pyxb.binding.content.ParticleModel(taskProduct._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'ProductType')), min_occurs=0L, max_occurs=1),
-    pyxb.binding.content.ParticleModel(taskProduct._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'ProductRef')), min_occurs=0L, max_occurs=1)
+logFile._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'PipelineTaskRunId'), pyxb.binding.datatypes.string, scope=logFile))
+logFile._GroupModel = pyxb.binding.content.GroupSequence(
+    pyxb.binding.content.ParticleModel(logFile._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Id')), min_occurs=1, max_occurs=1),
+    pyxb.binding.content.ParticleModel(logFile._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'PipelineTaskName')), min_occurs=1, max_occurs=1),
+    pyxb.binding.content.ParticleModel(logFile._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'PipelineTaskRunId')), min_occurs=1, max_occurs=1),
+    pyxb.binding.content.ParticleModel(logFile._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'File')), min_occurs=1, max_occurs=1)
     )
-taskProduct._ContentModel = pyxb.binding.content.ParticleModel(taskProduct._GroupModel, min_occurs=1, max_occurs=1)
+logFile._ContentModel = pyxb.binding.content.ParticleModel(logFile._GroupModel, min_occurs=1, max_occurs=1)
+
+
+
+logFiles._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'LogFile'), logFile, scope=logFiles))
+
+logFiles._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'PipelineRunId'), pyxb.binding.datatypes.string, scope=logFiles))
+
+logFiles._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Id'), pyxb.binding.datatypes.string, scope=logFiles))
+logFiles._GroupModel = pyxb.binding.content.GroupSequence(
+    pyxb.binding.content.ParticleModel(logFiles._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Id')), min_occurs=1, max_occurs=1),
+    pyxb.binding.content.ParticleModel(logFiles._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'PipelineRunId')), min_occurs=1, max_occurs=1),
+    pyxb.binding.content.ParticleModel(logFiles._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'LogFile')), min_occurs=0L, max_occurs=None)
+    )
+logFiles._ContentModel = pyxb.binding.content.ParticleModel(logFiles._GroupModel, min_occurs=1, max_occurs=1)
+
+
+
+sgsProcessingOrder._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'TriggeringData'), triggeringData, scope=sgsProcessingOrder))
+
+sgsProcessingOrder._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'ProcessingCampaign'), pyxb.binding.datatypes.string, scope=sgsProcessingOrder))
+
+sgsProcessingOrder._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Id'), pyxb.binding.datatypes.ID, scope=sgsProcessingOrder))
+
+sgsProcessingOrder._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Author'), pyxb.binding.datatypes.string, scope=sgsProcessingOrder))
+
+sgsProcessingOrder._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'PipelineDescription'), CommonDM.dm.sys.sgs_stub.dataContainer, scope=sgsProcessingOrder))
+sgsProcessingOrder._GroupModel = pyxb.binding.content.GroupSequence(
+    pyxb.binding.content.ParticleModel(sgsProcessingOrder._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Id')), min_occurs=0L, max_occurs=1),
+    pyxb.binding.content.ParticleModel(sgsProcessingOrder._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'TriggeringData')), min_occurs=1, max_occurs=1),
+    pyxb.binding.content.ParticleModel(sgsProcessingOrder._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'PipelineDescription')), min_occurs=1, max_occurs=1),
+    pyxb.binding.content.ParticleModel(sgsProcessingOrder._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'ProcessingCampaign')), min_occurs=1, max_occurs=1),
+    pyxb.binding.content.ParticleModel(sgsProcessingOrder._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Author')), min_occurs=1, max_occurs=1)
+    )
+sgsProcessingOrder._ContentModel = pyxb.binding.content.ParticleModel(sgsProcessingOrder._GroupModel, min_occurs=1, max_occurs=1)
 
 
 
@@ -1052,37 +1028,48 @@ clusterConfiguration._ContentModel = pyxb.binding.content.ParticleModel(clusterC
 
 
 
-sgsProcessingOrder._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'PipelineDescription'), CommonDM.dm.sys.sgs_stub.dataContainer, scope=sgsProcessingOrder))
+sdcProcessingOrder._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'IalConfiguration'), ialConfiguration, scope=sdcProcessingOrder))
 
-sgsProcessingOrder._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'TriggeringData'), triggeringData, scope=sgsProcessingOrder))
+sdcProcessingOrder._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'ProcessingState'), processingOrderState, scope=sdcProcessingOrder))
 
-sgsProcessingOrder._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Id'), pyxb.binding.datatypes.ID, scope=sgsProcessingOrder))
-
-sgsProcessingOrder._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Author'), pyxb.binding.datatypes.string, scope=sgsProcessingOrder))
-
-sgsProcessingOrder._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'ProcessingCampaign'), pyxb.binding.datatypes.string, scope=sgsProcessingOrder))
-sgsProcessingOrder._GroupModel = pyxb.binding.content.GroupSequence(
-    pyxb.binding.content.ParticleModel(sgsProcessingOrder._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Id')), min_occurs=0L, max_occurs=1),
-    pyxb.binding.content.ParticleModel(sgsProcessingOrder._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'TriggeringData')), min_occurs=1, max_occurs=1),
-    pyxb.binding.content.ParticleModel(sgsProcessingOrder._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'PipelineDescription')), min_occurs=1, max_occurs=1),
-    pyxb.binding.content.ParticleModel(sgsProcessingOrder._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'ProcessingCampaign')), min_occurs=1, max_occurs=1),
-    pyxb.binding.content.ParticleModel(sgsProcessingOrder._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Author')), min_occurs=1, max_occurs=1)
+sdcProcessingOrder._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'ClusterConfiguration'), clusterConfiguration, scope=sdcProcessingOrder))
+sdcProcessingOrder._GroupModel_ = pyxb.binding.content.GroupSequence(
+    pyxb.binding.content.ParticleModel(sdcProcessingOrder._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Id')), min_occurs=0L, max_occurs=1),
+    pyxb.binding.content.ParticleModel(sdcProcessingOrder._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'TriggeringData')), min_occurs=1, max_occurs=1),
+    pyxb.binding.content.ParticleModel(sdcProcessingOrder._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'PipelineDescription')), min_occurs=1, max_occurs=1),
+    pyxb.binding.content.ParticleModel(sdcProcessingOrder._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'ProcessingCampaign')), min_occurs=1, max_occurs=1),
+    pyxb.binding.content.ParticleModel(sdcProcessingOrder._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Author')), min_occurs=1, max_occurs=1)
     )
-sgsProcessingOrder._ContentModel = pyxb.binding.content.ParticleModel(sgsProcessingOrder._GroupModel, min_occurs=1, max_occurs=1)
-
-
-
-logFiles._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'LogFile'), logFile, scope=logFiles))
-
-logFiles._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'PipelineRunId'), pyxb.binding.datatypes.string, scope=logFiles))
-
-logFiles._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Id'), pyxb.binding.datatypes.string, scope=logFiles))
-logFiles._GroupModel = pyxb.binding.content.GroupSequence(
-    pyxb.binding.content.ParticleModel(logFiles._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Id')), min_occurs=1, max_occurs=1),
-    pyxb.binding.content.ParticleModel(logFiles._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'PipelineRunId')), min_occurs=1, max_occurs=1),
-    pyxb.binding.content.ParticleModel(logFiles._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'LogFile')), min_occurs=0L, max_occurs=None)
+sdcProcessingOrder._GroupModel_2 = pyxb.binding.content.GroupSequence(
+    pyxb.binding.content.ParticleModel(sdcProcessingOrder._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'ClusterConfiguration')), min_occurs=1, max_occurs=1),
+    pyxb.binding.content.ParticleModel(sdcProcessingOrder._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'IalConfiguration')), min_occurs=1, max_occurs=1),
+    pyxb.binding.content.ParticleModel(sdcProcessingOrder._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'ProcessingState')), min_occurs=1, max_occurs=1)
     )
-logFiles._ContentModel = pyxb.binding.content.ParticleModel(logFiles._GroupModel, min_occurs=1, max_occurs=1)
+sdcProcessingOrder._GroupModel = pyxb.binding.content.GroupSequence(
+    pyxb.binding.content.ParticleModel(sdcProcessingOrder._GroupModel_, min_occurs=1, max_occurs=1),
+    pyxb.binding.content.ParticleModel(sdcProcessingOrder._GroupModel_2, min_occurs=1, max_occurs=1)
+    )
+sdcProcessingOrder._ContentModel = pyxb.binding.content.ParticleModel(sdcProcessingOrder._GroupModel, min_occurs=1, max_occurs=1)
+
+
+
+taskProduct._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'ProductId'), pyxb.binding.datatypes.string, scope=taskProduct))
+
+taskProduct._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'ProductType'), pyxb.binding.datatypes.string, scope=taskProduct))
+
+taskProduct._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Id'), pyxb.binding.datatypes.string, scope=taskProduct))
+
+taskProduct._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'PortName'), pyxb.binding.datatypes.string, scope=taskProduct))
+
+taskProduct._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'ProductRef'), CommonDM.dm.sys.sgs_stub.fileDescriptor, scope=taskProduct))
+taskProduct._GroupModel = pyxb.binding.content.GroupSequence(
+    pyxb.binding.content.ParticleModel(taskProduct._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Id')), min_occurs=1, max_occurs=1),
+    pyxb.binding.content.ParticleModel(taskProduct._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'PortName')), min_occurs=1, max_occurs=1),
+    pyxb.binding.content.ParticleModel(taskProduct._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'ProductId')), min_occurs=0L, max_occurs=1),
+    pyxb.binding.content.ParticleModel(taskProduct._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'ProductType')), min_occurs=0L, max_occurs=1),
+    pyxb.binding.content.ParticleModel(taskProduct._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'ProductRef')), min_occurs=0L, max_occurs=1)
+    )
+taskProduct._ContentModel = pyxb.binding.content.ParticleModel(taskProduct._GroupModel, min_occurs=1, max_occurs=1)
 
 
 
@@ -1117,28 +1104,66 @@ triggeringData._ContentModel = pyxb.binding.content.ParticleModel(triggeringData
 
 
 
-sdcProcessingOrder._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'IalConfiguration'), ialConfiguration, scope=sdcProcessingOrder))
+queryParameters._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Param'), CTD_ANON, scope=queryParameters))
+queryParameters._GroupModel = pyxb.binding.content.GroupSequence(
+    pyxb.binding.content.ParticleModel(queryParameters._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Param')), min_occurs=1, max_occurs=1)
+    )
+queryParameters._ContentModel = pyxb.binding.content.ParticleModel(queryParameters._GroupModel, min_occurs=0L, max_occurs=None)
 
-sdcProcessingOrder._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'ProcessingState'), processingOrderState, scope=sdcProcessingOrder))
 
-sdcProcessingOrder._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'ClusterConfiguration'), clusterConfiguration, scope=sdcProcessingOrder))
-sdcProcessingOrder._GroupModel_ = pyxb.binding.content.GroupSequence(
-    pyxb.binding.content.ParticleModel(sdcProcessingOrder._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Id')), min_occurs=0L, max_occurs=1),
-    pyxb.binding.content.ParticleModel(sdcProcessingOrder._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'TriggeringData')), min_occurs=1, max_occurs=1),
-    pyxb.binding.content.ParticleModel(sdcProcessingOrder._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'PipelineDescription')), min_occurs=1, max_occurs=1),
-    pyxb.binding.content.ParticleModel(sdcProcessingOrder._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'ProcessingCampaign')), min_occurs=1, max_occurs=1),
-    pyxb.binding.content.ParticleModel(sdcProcessingOrder._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Author')), min_occurs=1, max_occurs=1)
+
+pipelineTaskRun._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Id'), pyxb.binding.datatypes.ID, scope=pipelineTaskRun))
+
+pipelineTaskRun._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'PackageVersion'), pyxb.binding.datatypes.string, scope=pipelineTaskRun))
+
+pipelineTaskRun._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'ProcessStdout'), pyxb.binding.datatypes.string, scope=pipelineTaskRun))
+
+pipelineTaskRun._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'ExecutableName'), pyxb.binding.datatypes.string, scope=pipelineTaskRun))
+
+pipelineTaskRun._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'ProcessingState'), pipelineTaskRunState, scope=pipelineTaskRun))
+
+pipelineTaskRun._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Input'), taskProduct, scope=pipelineTaskRun))
+
+pipelineTaskRun._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'ClusterConfiguration'), clusterConfiguration, scope=pipelineTaskRun))
+
+pipelineTaskRun._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'PipelineRun'), pyxb.binding.datatypes.IDREF, scope=pipelineTaskRun))
+
+pipelineTaskRun._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Output'), taskProduct, scope=pipelineTaskRun))
+
+pipelineTaskRun._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'ProcessId'), pyxb.binding.datatypes.string, scope=pipelineTaskRun))
+
+pipelineTaskRun._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'ProcessStderr'), pyxb.binding.datatypes.string, scope=pipelineTaskRun))
+
+pipelineTaskRun._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'PipelineTaskName'), pyxb.binding.datatypes.string, scope=pipelineTaskRun))
+
+pipelineTaskRun._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'LogFile'), logFile, scope=pipelineTaskRun))
+
+pipelineTaskRun._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'PackageName'), pyxb.binding.datatypes.string, scope=pipelineTaskRun))
+pipelineTaskRun._GroupModel = pyxb.binding.content.GroupSequence(
+    pyxb.binding.content.ParticleModel(pipelineTaskRun._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Id')), min_occurs=0L, max_occurs=1),
+    pyxb.binding.content.ParticleModel(pipelineTaskRun._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'PipelineRun')), min_occurs=1, max_occurs=1),
+    pyxb.binding.content.ParticleModel(pipelineTaskRun._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'PipelineTaskName')), min_occurs=1, max_occurs=1),
+    pyxb.binding.content.ParticleModel(pipelineTaskRun._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'PackageName')), min_occurs=0L, max_occurs=1),
+    pyxb.binding.content.ParticleModel(pipelineTaskRun._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'PackageVersion')), min_occurs=0L, max_occurs=1),
+    pyxb.binding.content.ParticleModel(pipelineTaskRun._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'ExecutableName')), min_occurs=1, max_occurs=1),
+    pyxb.binding.content.ParticleModel(pipelineTaskRun._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Input')), min_occurs=0L, max_occurs=None),
+    pyxb.binding.content.ParticleModel(pipelineTaskRun._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Output')), min_occurs=0L, max_occurs=None),
+    pyxb.binding.content.ParticleModel(pipelineTaskRun._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'ClusterConfiguration')), min_occurs=1, max_occurs=1),
+    pyxb.binding.content.ParticleModel(pipelineTaskRun._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'ProcessId')), min_occurs=0L, max_occurs=1),
+    pyxb.binding.content.ParticleModel(pipelineTaskRun._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'ProcessStdout')), min_occurs=0L, max_occurs=1),
+    pyxb.binding.content.ParticleModel(pipelineTaskRun._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'ProcessStderr')), min_occurs=0L, max_occurs=1),
+    pyxb.binding.content.ParticleModel(pipelineTaskRun._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'LogFile')), min_occurs=0L, max_occurs=1),
+    pyxb.binding.content.ParticleModel(pipelineTaskRun._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'ProcessingState')), min_occurs=1, max_occurs=1)
     )
-sdcProcessingOrder._GroupModel_2 = pyxb.binding.content.GroupSequence(
-    pyxb.binding.content.ParticleModel(sdcProcessingOrder._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'ClusterConfiguration')), min_occurs=1, max_occurs=1),
-    pyxb.binding.content.ParticleModel(sdcProcessingOrder._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'IalConfiguration')), min_occurs=1, max_occurs=1),
-    pyxb.binding.content.ParticleModel(sdcProcessingOrder._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'ProcessingState')), min_occurs=1, max_occurs=1)
+pipelineTaskRun._ContentModel = pyxb.binding.content.ParticleModel(pipelineTaskRun._GroupModel, min_occurs=1, max_occurs=1)
+
+
+
+taskProductList._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'TaskProduct'), taskProduct, scope=taskProductList))
+taskProductList._GroupModel = pyxb.binding.content.GroupSequence(
+    pyxb.binding.content.ParticleModel(taskProductList._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'TaskProduct')), min_occurs=0L, max_occurs=None)
     )
-sdcProcessingOrder._GroupModel = pyxb.binding.content.GroupSequence(
-    pyxb.binding.content.ParticleModel(sdcProcessingOrder._GroupModel_, min_occurs=1, max_occurs=1),
-    pyxb.binding.content.ParticleModel(sdcProcessingOrder._GroupModel_2, min_occurs=1, max_occurs=1)
-    )
-sdcProcessingOrder._ContentModel = pyxb.binding.content.ParticleModel(sdcProcessingOrder._GroupModel, min_occurs=1, max_occurs=1)
+taskProductList._ContentModel = pyxb.binding.content.ParticleModel(taskProductList._GroupModel, min_occurs=1, max_occurs=1)
 
 
 
@@ -1161,25 +1186,25 @@ query._ContentModel = pyxb.binding.content.ParticleModel(query._GroupModel, min_
 
 pipelineRun._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'EndDate'), CommonDM.dm.sys_stub.systemDateTime, scope=pipelineRun))
 
-pipelineRun._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'ClusterConfiguration'), clusterConfiguration, scope=pipelineRun))
-
-pipelineRun._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'CompletedPipelineTasks'), pyxb.binding.datatypes.string, scope=pipelineRun))
-
-pipelineRun._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Id'), pyxb.binding.datatypes.ID, scope=pipelineRun))
+pipelineRun._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Input'), taskProduct, scope=pipelineRun))
 
 pipelineRun._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'StartDate'), CommonDM.dm.sys_stub.systemDateTime, scope=pipelineRun))
 
-pipelineRun._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'ProcessingOrder'), pyxb.binding.datatypes.IDREF, scope=pipelineRun))
+pipelineRun._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Id'), pyxb.binding.datatypes.ID, scope=pipelineRun))
 
 pipelineRun._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Output'), taskProduct, scope=pipelineRun))
 
-pipelineRun._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'LogFiles'), logFiles, scope=pipelineRun))
+pipelineRun._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'CompletedPipelineTasks'), pyxb.binding.datatypes.string, scope=pipelineRun))
 
-pipelineRun._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Input'), taskProduct, scope=pipelineRun))
+pipelineRun._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'IalConfiguration'), ialConfiguration, scope=pipelineRun))
+
+pipelineRun._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'ProcessingOrder'), pyxb.binding.datatypes.IDREF, scope=pipelineRun))
 
 pipelineRun._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'ProcessingState'), pipelineRunState, scope=pipelineRun))
 
-pipelineRun._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'IalConfiguration'), ialConfiguration, scope=pipelineRun))
+pipelineRun._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'ClusterConfiguration'), clusterConfiguration, scope=pipelineRun))
+
+pipelineRun._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'LogFiles'), logFiles, scope=pipelineRun))
 pipelineRun._GroupModel = pyxb.binding.content.GroupSequence(
     pyxb.binding.content.ParticleModel(pipelineRun._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Id')), min_occurs=0L, max_occurs=1),
     pyxb.binding.content.ParticleModel(pipelineRun._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'ProcessingOrder')), min_occurs=0L, max_occurs=1),
@@ -1194,28 +1219,3 @@ pipelineRun._GroupModel = pyxb.binding.content.GroupSequence(
     pyxb.binding.content.ParticleModel(pipelineRun._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'ProcessingState')), min_occurs=0L, max_occurs=1)
     )
 pipelineRun._ContentModel = pyxb.binding.content.ParticleModel(pipelineRun._GroupModel, min_occurs=1, max_occurs=1)
-
-
-
-logFile._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'PipelineTaskName'), pyxb.binding.datatypes.string, scope=logFile))
-
-logFile._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Id'), pyxb.binding.datatypes.string, scope=logFile))
-
-logFile._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'File'), CommonDM.dm.sys.sgs_stub.dataContainer, scope=logFile))
-
-logFile._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'PipelineTaskRunId'), pyxb.binding.datatypes.string, scope=logFile))
-logFile._GroupModel = pyxb.binding.content.GroupSequence(
-    pyxb.binding.content.ParticleModel(logFile._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Id')), min_occurs=1, max_occurs=1),
-    pyxb.binding.content.ParticleModel(logFile._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'PipelineTaskName')), min_occurs=1, max_occurs=1),
-    pyxb.binding.content.ParticleModel(logFile._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'PipelineTaskRunId')), min_occurs=1, max_occurs=1),
-    pyxb.binding.content.ParticleModel(logFile._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'File')), min_occurs=1, max_occurs=1)
-    )
-logFile._ContentModel = pyxb.binding.content.ParticleModel(logFile._GroupModel, min_occurs=1, max_occurs=1)
-
-
-
-queryParameters._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Param'), CTD_ANON, scope=queryParameters))
-queryParameters._GroupModel = pyxb.binding.content.GroupSequence(
-    pyxb.binding.content.ParticleModel(queryParameters._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Param')), min_occurs=1, max_occurs=1)
-    )
-queryParameters._ContentModel = pyxb.binding.content.ParticleModel(queryParameters._GroupModel, min_occurs=0L, max_occurs=None)

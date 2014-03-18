@@ -1,7 +1,7 @@
-# /home/nikoapos/ISDC/Projects/Alexandria/1.0/CommonDM/python/CommonDM/dm/Interfaces/pro/le3_stub.py
+# /home/nikoapos/ISDC/Projects/Alexandria/1.0/CommonDM/python/CommonDM/dm/sys/sgs_schema_stub.py
 # PyXB bindings for NamespaceModule
-# NSM:6c0ee1bd808fc15617f67198260239ed1a8de09d
-# Generated 2014-03-17 18:50:36.645553 by PyXB version 1.1.2
+# NSM:f70e6b6e888f21e7b8901f8b39af81a0e0071061
+# Generated 2014-03-17 18:50:36.642153 by PyXB version 1.1.2
 import pyxb
 import pyxb.binding
 import pyxb.binding.saxer
@@ -14,9 +14,9 @@ import sys
 _GenerationUID = pyxb.utils.utility.UniqueIdentifier('urn:uuid:a3e7637c-adfc-11e3-9f2e-c4d98710dc86')
 
 # Import bindings for namespaces imported into schema
-import CommonDM.dm.pro.le3_stub
+import CommonDM.dm.sys.sgs_stub
 
-Namespace = pyxb.namespace.NamespaceForURI(u'http://euclid.esa.org/schema/Interfaces/pro/le3', create_if_missing=True)
+Namespace = pyxb.namespace.NamespaceForURI(u'http://euclid.esa.org/schema/sys/sgs-schema', create_if_missing=True)
 Namespace.configureCategories(['typeBinding', 'elementBinding'])
 #ModuleRecord = Namespace.lookupModuleRecordByUID(_GenerationUID, create_if_missing=True)
 #ModuleRecord._setModule(sys.modules[__name__])
@@ -42,11 +42,5 @@ def CreateFromDOM (node, default_namespace=None):
     return pyxb.binding.basis.element.AnyCreateFromDOM(node, _fallback_namespace=default_namespace)
 
 
-athenaOutputShearShear2D = pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'athenaOutputShearShear2D'), CommonDM.dm.pro.le3_stub.athenaOutputShearShear2D)
-Namespace.addCategoryObject('elementBinding', athenaOutputShearShear2D.name().localName(), athenaOutputShearShear2D)
-
-athenaInputShearShear2D = pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'athenaInputShearShear2D'), CommonDM.dm.pro.le3_stub.athenaParamsShearShear2D)
-Namespace.addCategoryObject('elementBinding', athenaInputShearShear2D.name().localName(), athenaInputShearShear2D)
-
-pallasOutputShearShear2D = pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'pallasOutputShearShear2D'), CommonDM.dm.pro.le3_stub.pallasOutputShearShearPspec2D)
-Namespace.addCategoryObject('elementBinding', pallasOutputShearShear2D.name().localName(), pallasOutputShearShear2D)
+Storage = pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Storage'), CommonDM.dm.sys.sgs_stub.storageNode)
+Namespace.addCategoryObject('elementBinding', Storage.name().localName(), Storage)
