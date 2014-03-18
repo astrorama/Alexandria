@@ -1,0 +1,35 @@
+# Filter name      File name
+#---------------------------
+# u_CFHT           u_cfht.res
+# B_Subaru         B_subaru.res
+# V_Subaru         V_subaru.res
+# g_Subaru         g_subaru.res
+# r_Subaru         r_subaru.res
+# i_Subaru         i_subaru.res
+# z_Subaru         z_subaru.res
+# Ks_KPNO_CTIO     flamingos_Ks.res
+# i_CFHT           i_cfht.res
+# u_SDSS           u_SDSS.res
+# g_SDSS           g_SDSS.res
+# r_SDSS           r_SDSS.res
+# i_SDSS           i_SDSS.res
+# z_SDSS           z_SDSS.res
+# F814W_HST        f814.pb
+# NB816_Subaru     NB816.pb
+# IA427_Subaru     IA427.res
+# IA464_Subaru     IA464.res
+# IA505_Subaru     IA505.res
+# IA574_Subaru     IA574.res
+# IA709_Subaru     IA709.res
+# IA827_Subaru     IA827.res
+# NB711_Subaru     NB711.pb
+# Ks_CFHT          wircam_Ks.res
+# J_UKIRT          J_wfcam.res
+# IA484_Subaru     IA484.res
+# IA527_Subaru     IA527.res
+# IA624_Subaru     IA624.res
+# IA679_Subaru     IA679.res
+# IA738_Subaru     IA738.res
+# IA767_Subaru     IA767.res
+# FUV_GALEX        galex1500.res
+# NUV_GALEX        galex2500.res

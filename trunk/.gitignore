@@ -1,0 +1,6 @@
+.cproject
+.project
+InstallArea
+build.*
+.settings
+/.pydevproject

@@ -1,0 +1,152 @@
+/** 
+ * @file Matrix.icpp
+ * @date December 11, 2013
+ * @author Nikolaos Apostolakos
+ */
+
+#ifdef MATRIX_IMPL
+
+#include <stdexcept>
+#include <sstream>
+
+namespace ProtoZ {
+namespace matrix {
+
+// This class is used as a counter for template loops
+template<int>
+struct TemplateLoopCounter { };
+
+// Class which implements template loops for initializing the matrix members
+template<typename... Axes>
+class MatrixConstructionHelper;
+
+// The constructor delegates to the MatrixConstructionHelper class the member
+// initialization which requires variadic template loops
+template<typename T, typename... Axes>
+Matrix<T, Axes...>::Matrix(const AxisInfo<Axes>&... axes) : 
+        m_axes{axes...}, m_data(multiplySizes(axes...)),
+        m_axis_sizes{MatrixConstructionHelper<Axes...>::createAxisSizesVector(
+                     m_axes, TemplateLoopCounter<sizeof...(Axes)>{})},
+        m_axis_index_factors{MatrixConstructionHelper<Axes...>::createAxisIndexFactorVector(
+                     m_axes, TemplateLoopCounter<sizeof...(Axes)>{})} { }
+
+template<typename T, typename... Axes>
+uint32_t Matrix<T, Axes...>::rank() const {
+  return std::tuple_size<decltype(m_axes)>::value;
+}
+
+template<typename T, typename... Axes>
+const std::tuple<AxisInfo<Axes>...>& Matrix<T, Axes...>::axesInfo() const {
+  return m_axes;
+}
+
+template<typename T, typename... Axes>
+void Matrix<T, Axes...>::setValue(const uint32_t (&coords)[sizeof...(Axes)],
+                                  const T& value) {
+  m_data[MatrixIndexHelper::getVectorIndex(coords, *this)] = value;
+}
+
+template<typename T, typename... Axes>
+const T& Matrix<T, Axes...>::getValue(const uint32_t (&coords)[sizeof...(Axes)]) const {
+  return m_data[MatrixIndexHelper::getVectorIndex(coords, *this)];
+}
+
+// The MatrixIndexHelper class is responsible for the variadic template loops
+// for calculating the index of the vector where the data are stored. It is
+// an internal class of the Matrix to have direct access to its members.
+template<typename T, typename... Axes>
+class Matrix<T, Axes...>::MatrixIndexHelper {
+public:
+  
+  static uint64_t getVectorIndex(const uint32_t (&coords)[sizeof...(Axes)],
+                                 const Matrix<T, Axes...>& matrix) {
+    return getVectorIndex(coords, matrix, TemplateLoopCounter<sizeof...(Axes)-1>{});
+  }
+  
+  template<int I>
+  static uint64_t getVectorIndex(const uint32_t (&coords)[sizeof...(Axes)],
+                                 const Matrix<T, Axes...>& matrix,
+                                 const TemplateLoopCounter<I>&) {
+    if (coords[I] >= matrix.m_axis_sizes[I]) {
+      std::stringstream message;
+      message << "Matrix::getVectorIndex : index " << coords[I] << " for axis ";
+      message << std::get<I>(matrix.m_axes).name() << " (size " << matrix.m_axis_sizes[I] << ")";
+      throw std::out_of_range (message.str());
+    }
+    return coords[I]*matrix.m_axis_index_factors[I] +
+        getVectorIndex(coords, matrix, TemplateLoopCounter<I-1>{});
+  }
+  
+  static uint64_t getVectorIndex(const uint32_t (&)[sizeof...(Axes)],
+                                 const Matrix<T, Axes...>&,
+                                 const TemplateLoopCounter<-1>&) {
+    return 0;
+  }
+};
+
+// The multiplySizes methods implement a variadic template loop which returns
+// the product of the sizes of its arguments. It requires that all the arguments
+// provide the method size()
+template<typename A, typename... Args>
+uint64_t multiplySizes(A& t, Args&... args) {
+  return t.size() * multiplySizes(args...);
+}
+
+template<typename A>
+uint64_t multiplySizes(A& t) {
+  return t.size();
+}
+
+template<typename... Axes>
+class MatrixConstructionHelper {
+public:
+  
+  // The createAxisSizesVector functions implement a variadic template loop which
+  // produces a vector containing all the axes sizes.
+  template<int I>
+  static std::vector<uint32_t> createAxisSizesVector(const std::tuple<AxisInfo<Axes>...>& axes,
+                                                     const TemplateLoopCounter<I>&) {
+    std::vector<uint32_t> result {createAxisSizesVector(axes, TemplateLoopCounter<I-1>{})};
+    result.push_back(std::get<I-1>(axes).size());
+    return result;
+  }
+
+  static std::vector<uint32_t> createAxisSizesVector(const std::tuple<AxisInfo<Axes>...>&,
+                                                     const TemplateLoopCounter<0>&) {
+    return std::vector<uint32_t>{};
+  }
+  
+  // The getAxisIndexFactor methods implement a variadic template loop which
+  // calculates the factor which which the index of an
+  // axis must be multiplied when calculating the index of the data vector
+  template<int I>
+  static uint64_t getAxisIndexFactor(const std::tuple<AxisInfo<Axes>...>& axes,
+                                    const TemplateLoopCounter<I>&) {
+    return std::get<I>(axes).size() * getAxisIndexFactor(axes, TemplateLoopCounter<I-1>{});
+  }
+  
+  static uint64_t getAxisIndexFactor(const std::tuple<AxisInfo<Axes>...>&,
+                                    const TemplateLoopCounter<-1>&) {
+    return 1;
+  }
+  
+  // The createAxisIndexFactorVector methods implement a variadic template loop
+  // which produces a vector containing the axis index factors (see getAxisIndexFactor)
+  template<int I>
+  static std::vector<uint64_t> createAxisIndexFactorVector(
+            const std::tuple<AxisInfo<Axes>...>& axes,const TemplateLoopCounter<I>&) {
+    std::vector<uint64_t> result {createAxisIndexFactorVector(axes, TemplateLoopCounter<I-1>{})};
+    result.push_back(getAxisIndexFactor(axes, TemplateLoopCounter<I-1>{}));
+    return result;
+  }
+  
+  static std::vector<uint64_t> createAxisIndexFactorVector(
+            const std::tuple<AxisInfo<Axes>...>&,const TemplateLoopCounter<0>&) {
+    return std::vector<uint64_t> {1};
+  }
+};
+
+} /* namespace matrix */
+} /* namespace ProtoZ */
+
+#endif /* MATRIX_IMPL */
