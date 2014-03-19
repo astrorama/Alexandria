@@ -45,7 +45,9 @@ if __name__ == '__main__':
     parser.add_argument("-e", "--ebv", type=float, help=
         'The E(B-V) value to use for reddening', metavar='FILE')
     parser.add_argument("-f", "--fillFilter", help='''The name of the filter to fill 
-        its area multiplied with the SED. Defaults to all.''', default='all', metavar='NAME')
+        its area multiplied with the SED or "all" for all filters''', metavar='NAME')
+    parser.add_argument("-g", "--sedGray", nargs=2, type=float, help=
+        'A range in wavelength in which the restframe SED values will be filled with gray')
     args = parser.parse_args()
     
     # Get from the configuration file all the information we need
@@ -123,16 +125,30 @@ if __name__ == '__main__':
         sedAxes.set_ylabel(u'F\u03bb')
         
         # Fill the area of the SED multiplied by each filter
-        for line in filterAxes.lines:
-            if args.fillFilter == 'all' or line.get_label() == args.fillFilter:
-                if args.fillFilter == 'all':
-                    color = line.get_color()
-                else:
-                    color = 'k'
-                filteredSed = _multiplySedWithFilter(redshiftedSed, filterMap[line.get_label()])
-                phzPlt.fill_2d_table(sedAxes, '', filteredSed)
-                sedAxes.collections[-1].set_color(color)
-                sedAxes.collections[-1].set_alpha(0.3)
+        if args.fillFilter:
+            for line in filterAxes.lines:
+                if args.fillFilter == 'all' or line.get_label() == args.fillFilter:
+                    if args.fillFilter == 'all':
+                        color = line.get_color()
+                    else:
+                        color = 'k'
+                    filteredSed = _multiplySedWithFilter(redshiftedSed, filterMap[line.get_label()])
+                    phzPlt.fill_2d_table(sedAxes, '', filteredSed)
+                    sedAxes.collections[-1].set_color(color)
+                    sedAxes.collections[-1].set_alpha(0.3)
+        
+        # Fill the area under the SED
+        if args.sedGray:
+            min = 0
+            max = 0
+            for i in range(len(sed)):
+                if sed[i][0] < args.sedGray[0]:
+                    min = i
+                if sed[i][0] < args.sedGray[1]:
+                    max = i
+            phzPlt.fill_2d_table(sedAxes, '', redshiftedSed[min:max])
+            sedAxes.collections[-1].set_color('k')
+            sedAxes.collections[-1].set_alpha(0.3)
         
         # Set the SED axis to cover only the filters
         sedAxes.set_xlim(xlim)
