@@ -6,6 +6,11 @@ def plot_2d_table(axes, name, table):
     y = table[table.keys()[1]].data
     axes.plot(x, y, label=name)
 
+def fill_2d_table(axes, name, table):
+    x = table[table.keys()[0]].data
+    y = table[table.keys()[1]].data
+    axes.fill_between(x, y, label=name)
+
 def plot_2d_table_show(table):
     fig, axes = plt.subplots()
     plot_2d_table(axes, '', table)
