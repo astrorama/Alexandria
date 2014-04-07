@@ -1,0 +1,117 @@
+/** 
+ * @file ColumnInfo_test.cpp
+ * @date April 7, 2014
+ * @author Nikolaos Apostolakos
+ */
+
+#include <boost/test/unit_test.hpp>
+#include "ElementsKernel/ElementsException.h"
+#include "AsciiTable/ColumnInfo.h"
+
+//-----------------------------------------------------------------------------
+
+BOOST_AUTO_TEST_SUITE (ColumnInfo_test)
+
+//-----------------------------------------------------------------------------
+// Test the constructor throws an exception for duplicated column names
+//-----------------------------------------------------------------------------
+
+BOOST_AUTO_TEST_CASE(ConstructorDuplicateNames) {
+  
+  // Given
+  std::vector<std::string> names {"First", "Second", "Third", "Second", "Fifth"};
+  
+  // Then
+  BOOST_CHECK_THROW(AsciiTable::ColumnInfo {names}, ElementsException);
+  
+}
+
+//-----------------------------------------------------------------------------
+// Test the size method
+//-----------------------------------------------------------------------------
+
+BOOST_AUTO_TEST_CASE(size) {
+  
+  // Given
+  std::vector<std::string> names {"First", "Second", "Third", "Fourth", "Fifth"};
+  AsciiTable::ColumnInfo columnInfo {names};
+  
+  // When
+  std::size_t size = columnInfo.size();
+  
+  // Then
+  BOOST_CHECK_EQUAL(size, 5);
+  
+}
+
+//-----------------------------------------------------------------------------
+// Test the getName method
+//-----------------------------------------------------------------------------
+
+BOOST_AUTO_TEST_CASE(getName) {
+  
+  // Given
+  std::vector<std::string> names {"First", "Second", "Third", "Fourth", "Fifth"};
+  AsciiTable::ColumnInfo columnInfo {names};
+  
+  // When
+  std::unique_ptr<std::string> name0  = columnInfo.getName(0);
+  std::unique_ptr<std::string> name1  = columnInfo.getName(1);
+  std::unique_ptr<std::string> name2  = columnInfo.getName(2);
+  std::unique_ptr<std::string> name3  = columnInfo.getName(3);
+  std::unique_ptr<std::string> name4  = columnInfo.getName(4);
+  std::unique_ptr<std::string> name5  = columnInfo.getName(5);
+  std::unique_ptr<std::string> name6  = columnInfo.getName(10);
+  
+  // Then
+  BOOST_CHECK(name0);
+  BOOST_CHECK_EQUAL(*name0, "First");
+  BOOST_CHECK(name1);
+  BOOST_CHECK_EQUAL(*name1, "Second");
+  BOOST_CHECK(name2);
+  BOOST_CHECK_EQUAL(*name2, "Third");
+  BOOST_CHECK(name3);
+  BOOST_CHECK_EQUAL(*name3, "Fourth");
+  BOOST_CHECK(name4);
+  BOOST_CHECK_EQUAL(*name4, "Fifth");
+  BOOST_CHECK(!name5);
+  BOOST_CHECK(!name6);
+  
+}
+
+//-----------------------------------------------------------------------------
+// Test the getIndex method
+//-----------------------------------------------------------------------------
+
+BOOST_AUTO_TEST_CASE(getIndex) {
+  
+  // Given
+  std::vector<std::string> names {"First", "Second", "Third", "Fourth", "Fifth"};
+  AsciiTable::ColumnInfo columnInfo {names};
+  
+  // When
+  std::unique_ptr<size_t> index0  = columnInfo.getIndex("First");
+  std::unique_ptr<size_t> index1  = columnInfo.getIndex("Second");
+  std::unique_ptr<size_t> index2  = columnInfo.getIndex("Third");
+  std::unique_ptr<size_t> index3  = columnInfo.getIndex("Fourth");
+  std::unique_ptr<size_t> index4  = columnInfo.getIndex("Fifth");
+  std::unique_ptr<size_t> index5  = columnInfo.getIndex("NotThere");
+  
+  // Then
+  BOOST_CHECK(index0);
+  BOOST_CHECK_EQUAL(*index0, 0);
+  BOOST_CHECK(index1);
+  BOOST_CHECK_EQUAL(*index1, 1);
+  BOOST_CHECK(index2);
+  BOOST_CHECK_EQUAL(*index2, 2);
+  BOOST_CHECK(index3);
+  BOOST_CHECK_EQUAL(*index3, 3);
+  BOOST_CHECK(index4);
+  BOOST_CHECK_EQUAL(*index4, 4);
+  BOOST_CHECK(!index5);
+  
+}
+
+//-----------------------------------------------------------------------------
+
+BOOST_AUTO_TEST_SUITE_END ()
