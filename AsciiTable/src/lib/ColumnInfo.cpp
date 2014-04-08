@@ -18,23 +18,23 @@ ColumnInfo::ColumnInfo(std::vector<std::string> name_list)
   std::set<std::string> set {};
   for (auto name : m_name_list) {
     if (!set.insert(name).second) {
-      throw ElementsException("Duplicate column name "+name) << "Duplicate column name " << name;
+      throw ElementsException() << "Duplicate column name " << name;
     }
   }
 }
 
-std::size_t ColumnInfo::size() {
+std::size_t ColumnInfo::size() const {
   return m_name_list.size();
 }
 
-std::unique_ptr<std::string> ColumnInfo::getName(std::size_t index) {
+std::unique_ptr<std::string> ColumnInfo::getName(std::size_t index) const {
   if (index < size()) {
     return std::unique_ptr<std::string> {new std::string {m_name_list[index]}};
   }
   return std::unique_ptr<std::string> {};
 }
 
-std::unique_ptr<size_t> ColumnInfo::getIndex(std::string name) {
+std::unique_ptr<size_t> ColumnInfo::getIndex(const std::string& name) const {
   auto begin = m_name_list.begin();
   auto end = m_name_list.end();
   auto iter = std::find(begin, end, name);

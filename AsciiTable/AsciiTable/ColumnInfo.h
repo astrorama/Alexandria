@@ -19,11 +19,11 @@ public:
   
   ColumnInfo(std::vector<std::string> name_list);
   
-  std::size_t size();
+  std::size_t size() const;
   
-  std::unique_ptr<std::string> getName(std::size_t index);
+  std::unique_ptr<std::string> getName(std::size_t index) const;
   
-  std::unique_ptr<std::size_t> getIndex(std::string name);
+  std::unique_ptr<std::size_t> getIndex(const std::string& name) const;
   
 private:
   std::vector<std::string> m_name_list;

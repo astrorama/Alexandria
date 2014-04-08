@@ -13,3 +13,6 @@ elements_add_library(AsciiTable src/lib/*.cpp
 
 elements_add_unit_test(ColumnInfo_test tests/src/ColumnInfo_test.cpp tests/src/TestMain.cpp
                        LINK_LIBRARIES AsciiTable TYPE Boost)
+
+elements_add_unit_test(Row_test tests/src/Row_test.cpp tests/src/TestMain.cpp
+                       LINK_LIBRARIES AsciiTable TYPE Boost)
