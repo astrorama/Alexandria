@@ -16,3 +16,6 @@ elements_add_unit_test(ColumnInfo_test tests/src/ColumnInfo_test.cpp tests/src/T
 
 elements_add_unit_test(Row_test tests/src/Row_test.cpp tests/src/TestMain.cpp
                        LINK_LIBRARIES AsciiTable TYPE Boost)
+
+elements_add_unit_test(Table_test tests/src/Table_test.cpp tests/src/TestMain.cpp
+                       LINK_LIBRARIES AsciiTable TYPE Boost)

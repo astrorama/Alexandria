@@ -148,7 +148,7 @@ BOOST_FIXTURE_TEST_CASE(Iterator, Row_Fixture) {
   auto valuesIter = values.cbegin();
   
   // When
-  for (auto cell  : row) {
+  for (auto cell : row) {
     // Then
     BOOST_CHECK_EQUAL(cell, *valuesIter);
     ++valuesIter;
