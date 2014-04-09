@@ -37,6 +37,13 @@ public:
   
   /**
    * @brief
+   * Returns the number of cells in the row
+   * @return the number of cells
+   */
+  size_t size() const;
+  
+  /**
+   * @brief
    * Returns the value of the column with the given index (zero based)
    * @param index The index of the column (zero based)
    * @return The value of the column
@@ -60,14 +67,14 @@ public:
    * Returns a const iterator to the first cell of the row
    * @return An iterator to the first cell
    */
-  const_iterator cbegin() const;
+  const_iterator begin() const;
   
   /**
    * @brief
    * Returns a const iterator to the past-the-end cell of the row
    * @return An iterator to the cell past the end of the row
    */
-  const_iterator cend() const;
+  const_iterator end() const;
   
 private:
   std::vector<std::string> m_values;

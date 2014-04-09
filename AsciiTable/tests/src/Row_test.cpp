@@ -47,6 +47,24 @@ BOOST_FIXTURE_TEST_CASE(ConstructorNullColumnInfo, Row_Fixture) {
 }
 
 //-----------------------------------------------------------------------------
+// Test the size
+//-----------------------------------------------------------------------------
+
+BOOST_FIXTURE_TEST_CASE(Size, Row_Fixture) {
+  
+  // Given
+  std::vector<std::string> values {"One", "Two", "Three", "Four", "Five"};
+  AsciiTable::Row row {values, column_info};
+  
+  // When
+  std::size_t size = row.size();
+  
+  // Then
+  BOOST_CHECK_EQUAL(size, values.size());
+  
+}
+
+//-----------------------------------------------------------------------------
 // Test the operator[size_t]
 //-----------------------------------------------------------------------------
 
@@ -112,9 +130,9 @@ BOOST_FIXTURE_TEST_CASE(Iterator, Row_Fixture) {
   auto valuesIter = values.cbegin();
   
   // When
-  for (auto iter = row.cbegin(); iter != row.cend(); iter++) {
+  for (auto cell  : row) {
     // Then
-    BOOST_CHECK_EQUAL(*iter, *valuesIter);
+    BOOST_CHECK_EQUAL(cell, *valuesIter);
     ++valuesIter;
   }
   BOOST_CHECK(valuesIter == values.cend());

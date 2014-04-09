@@ -22,6 +22,10 @@ Row::Row(std::vector<std::string> values, std::shared_ptr<ColumnInfo> column_inf
   }
 }
 
+size_t Row::size() const {
+  return m_values.size();
+}
+
 const std::string& Row::operator [](const size_t index) const {
   if (index >= m_values.size()) {
     throw ElementsException("Index out of bounds");
@@ -37,11 +41,11 @@ const std::string& Row::operator [](const std::string& column) const {
   return m_values[*index];
 }
 
-Row::const_iterator Row::cbegin() const {
+Row::const_iterator Row::begin() const {
   return m_values.cbegin();
 }
 
-Row::const_iterator Row::cend() const {
+Row::const_iterator Row::end() const {
   return m_values.cend();
 }
 
