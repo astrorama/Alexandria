@@ -35,6 +35,8 @@ public:
    */
   Row(std::vector<std::string> values, std::shared_ptr<ColumnInfo> column_info);
   
+  std::shared_ptr<ColumnInfo> getColumnInfo() const;
+  
   /**
    * @brief
    * Returns the number of cells in the row

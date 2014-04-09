@@ -15,7 +15,7 @@ struct Row_Fixture {
 
 //-----------------------------------------------------------------------------
 
-BOOST_AUTO_TEST_SUITE (ColumnInfo_test)
+BOOST_AUTO_TEST_SUITE (Row_test)
 
 //-----------------------------------------------------------------------------
 // Test the constructor throws an exception for number of values
@@ -43,6 +43,24 @@ BOOST_FIXTURE_TEST_CASE(ConstructorNullColumnInfo, Row_Fixture) {
   
   // Then
   BOOST_CHECK_THROW(AsciiTable::Row(values, null_col_info), ElementsException);
+  
+}
+
+//-----------------------------------------------------------------------------
+// Test the getColumnInfo method
+//-----------------------------------------------------------------------------
+
+BOOST_FIXTURE_TEST_CASE(getColumnInfo, Row_Fixture) {
+  
+  // Given
+  std::vector<std::string> values {"One", "Two", "Three", "Four", "Five"};
+  AsciiTable::Row row {values, column_info};
+  
+  // When
+  auto result = row.getColumnInfo();
+  
+  // Then
+  BOOST_CHECK(*result == *column_info);
   
 }
 

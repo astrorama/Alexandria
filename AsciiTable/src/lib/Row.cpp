@@ -22,6 +22,10 @@ Row::Row(std::vector<std::string> values, std::shared_ptr<ColumnInfo> column_inf
   }
 }
 
+std::shared_ptr<ColumnInfo> Row::getColumnInfo() const {
+  return m_column_info;
+}
+
 size_t Row::size() const {
   return m_values.size();
 }
