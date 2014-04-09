@@ -19,6 +19,10 @@ public:
   
   ColumnInfo(std::vector<std::string> name_list);
   
+  bool operator==(const ColumnInfo& other) const;
+  
+  bool operator!=(const ColumnInfo& other) const;
+  
   std::size_t size() const;
   
   std::unique_ptr<std::string> getName(std::size_t index) const;

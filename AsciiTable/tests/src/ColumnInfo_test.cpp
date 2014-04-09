@@ -27,6 +27,46 @@ BOOST_AUTO_TEST_CASE(ConstructorDuplicateNames) {
 }
 
 //-----------------------------------------------------------------------------
+// Test the equality operators
+//-----------------------------------------------------------------------------
+
+BOOST_AUTO_TEST_CASE(equalityOperators) {
+  
+  // Given
+  std::vector<std::string> names1 {"First", "Second", "Third", "Fourth", "Fifth"};
+  std::vector<std::string> names2 {"First", "Second", "Third", "Fourth", "Fifth"};
+  
+  // When
+  AsciiTable::ColumnInfo columnInfo1 {names1};
+  AsciiTable::ColumnInfo columnInfo2 {names2};
+  
+  // Then
+  BOOST_CHECK(columnInfo1 == columnInfo2);
+  BOOST_CHECK(!(columnInfo1 != columnInfo2));
+  
+  // Given
+  std::vector<std::string> names3 {"First", "Second", "Third", "Fourth"};
+  
+  // When
+  AsciiTable::ColumnInfo columnInfo3 {names3};
+  
+  // Then
+  BOOST_CHECK(!(columnInfo1 == columnInfo3));
+  BOOST_CHECK(columnInfo1 != columnInfo3);
+  
+  // Given
+  std::vector<std::string> names4 {"First", "Second", "WRONG", "Fourth", "Fifth"};
+  
+  // When
+  AsciiTable::ColumnInfo columnInfo4 {names4};
+  
+  // Then
+  BOOST_CHECK(!(columnInfo1 == columnInfo4));
+  BOOST_CHECK(columnInfo1 != columnInfo4);
+  
+}
+
+//-----------------------------------------------------------------------------
 // Test the size method
 //-----------------------------------------------------------------------------
 

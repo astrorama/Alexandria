@@ -23,6 +23,17 @@ ColumnInfo::ColumnInfo(std::vector<std::string> name_list)
   }
 }
 
+bool ColumnInfo::operator==(const ColumnInfo& other) const {
+  if (this->m_name_list.size() != other.m_name_list.size()) {
+    return false;
+  }
+  return std::equal(this->m_name_list.cbegin(), this->m_name_list.cend(), other.m_name_list.cbegin());
+}
+
+bool ColumnInfo::operator !=(const ColumnInfo& other) const {
+  return !(*this == other);
+}
+
 std::size_t ColumnInfo::size() const {
   return m_name_list.size();
 }
