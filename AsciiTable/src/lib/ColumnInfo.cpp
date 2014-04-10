@@ -7,6 +7,13 @@
 #include <algorithm>
 #include <iterator>
 #include <set>
+// The std regex library is not fully implemented in GCC 4.8. The following lines
+// make use of the BOOST library and can be modified if GCC 4.9 will be used in
+// the future.
+// #include <regex>
+#include <boost/regex.hpp>
+using boost::regex;
+using boost::regex_match;
 #include "ElementsKernel/ElementsException.h"
 #include "AsciiTable/ColumnInfo.h"
 
@@ -14,10 +21,20 @@ namespace AsciiTable {
 
 ColumnInfo::ColumnInfo(std::vector<std::string> name_list)
         : m_name_list{std::move(name_list)} {
-  // We use a set to check for duplicate column names
+  if (m_name_list.empty()) {
+    throw ElementsException() << "Empty name_list is not allowed";
+  }
   std::set<std::string> set {};
+  regex whitespace {".*\\s.*"}; // Checks if input contains any whitespace characters
   for (auto name : m_name_list) {
-    if (!set.insert(name).second) {
+    if (name.empty()) {
+      throw ElementsException() << "Empty string column names are not allowed";
+    }
+    if (regex_match(name, whitespace)) {
+      throw ElementsException() << "Column name '" << name << "' contains "
+                                << "whitespace characters";
+    }
+    if (!set.insert(name).second) {  // Check for duplicate names
       throw ElementsException() << "Duplicate column name " << name;
     }
   }

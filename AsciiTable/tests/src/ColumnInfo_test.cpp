@@ -13,6 +13,20 @@
 BOOST_AUTO_TEST_SUITE (ColumnInfo_test)
 
 //-----------------------------------------------------------------------------
+// Test the constructor throws an exception for empty names list
+//-----------------------------------------------------------------------------
+
+BOOST_AUTO_TEST_CASE(ConstructorEmptyNamesList) {
+  
+  // Given
+  std::vector<std::string> names {};
+  
+  // Then
+  BOOST_CHECK_THROW(AsciiTable::ColumnInfo {names}, ElementsException);
+  
+}
+
+//-----------------------------------------------------------------------------
 // Test the constructor throws an exception for duplicated column names
 //-----------------------------------------------------------------------------
 
@@ -23,6 +37,42 @@ BOOST_AUTO_TEST_CASE(ConstructorDuplicateNames) {
   
   // Then
   BOOST_CHECK_THROW(AsciiTable::ColumnInfo {names}, ElementsException);
+  
+}
+
+//-----------------------------------------------------------------------------
+// Test the constructor throws an exception for empty string name
+//-----------------------------------------------------------------------------
+
+BOOST_AUTO_TEST_CASE(ConstructorEmptyStringName) {
+  
+  // Given
+  std::vector<std::string> names {"First", "Second", "Third", "", "Fifth"};
+  
+  // Then
+  BOOST_CHECK_THROW(AsciiTable::ColumnInfo {names}, ElementsException);
+  
+}
+
+//-----------------------------------------------------------------------------
+// Test the constructor throws an exception for names with whitespace characters
+//-----------------------------------------------------------------------------
+
+BOOST_AUTO_TEST_CASE(ConstructorNameWithWhitespaceChars) {
+  
+  // Given
+  std::vector<std::string> space {"Sp ace"};
+  std::vector<std::string> tab {"Ta\tb"};
+  std::vector<std::string> carriage_return {"Carriage\rReturn"};
+  std::vector<std::string> new_line {"New\nLine"};
+  std::vector<std::string> new_page {"New\fPage"};
+  
+  // Then
+  BOOST_CHECK_THROW(AsciiTable::ColumnInfo {space}, ElementsException);
+  BOOST_CHECK_THROW(AsciiTable::ColumnInfo {tab}, ElementsException);
+  BOOST_CHECK_THROW(AsciiTable::ColumnInfo {carriage_return}, ElementsException);
+  BOOST_CHECK_THROW(AsciiTable::ColumnInfo {new_line}, ElementsException);
+  BOOST_CHECK_THROW(AsciiTable::ColumnInfo {new_page}, ElementsException);
   
 }
 

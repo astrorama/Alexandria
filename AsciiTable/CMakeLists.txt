@@ -2,6 +2,8 @@ elements_subdir(AsciiTable 0.1)
 
 elements_depends_on_subdirs(ElementsKernel)
 
+find_package(Boost REQUIRED COMPONENTS regex)
+
 #===== Libraries ===============================================================
 
 elements_add_library(AsciiTable src/lib/*.cpp

@@ -13,10 +13,50 @@
 
 namespace AsciiTable {
 
+/**
+ * @class ColumnInfo
+ * 
+ * @brief Provides information about the columns of a Table
+ * 
+ * @details
+ * The ColumnInfo is an immutable class which provides information about
+ * the columns of a Table. Each column has a name and this class can be
+ * used for converting the name of a column to its index (zero based) and vice
+ * versa.
+ * 
+ * The names of the columns must by unique, they cannot be the empty string and
+ * they cannot contain any whitespace characters. 
+ * 
+ * The ColumnInfo implements the comparisson operators "==" and "!=" in a way
+ * that if they describe the same number of columns with the same names they
+ * are equal.
+ */
 class ColumnInfo {
 
 public:
   
+  /**
+   * @brief
+   * Constructs a ColumnInfo representing the given column names
+   * @details
+   * The order of the columns is assumed to be the same with their order in the
+   * passed parameter. Because the ColumnInfo is immutable the name_list cannot
+   * be empty.
+   * 
+   * Note that the name_list is passed by value to allow the caller to optimize
+   * for performance, meaning that the constructor will take advantage of move
+   * semantics if the passed object is an rvalue.
+   * 
+   * @param name_list A vector containing the names of the columns
+   * @throws Elements::ElementsException
+   *    if the name_list is empty
+   * @throws Elements::ElementsException
+   *    if the name_list contains duplicate entries
+   * @throws Elements::ElementsException
+   *    if the name_list contains the empty string
+   * @throws Elements::ElementsException
+   *    if any of the given names contains whitespace characters
+   */
   ColumnInfo(std::vector<std::string> name_list);
   
   bool operator==(const ColumnInfo& other) const;
