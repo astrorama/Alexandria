@@ -78,7 +78,7 @@ public:
    * 
    * @param index The index of the column (zero based)
    * @return The value of the column
-   * @throws ElementsKernel::ElementsException
+   * @throws ElementsException
    *    if the index is out of range
    */
   const std::string& operator[](const size_t index) const;
@@ -89,7 +89,7 @@ public:
    * 
    * @param column The name of the column
    * @return The value of the row for the column
-   * @throws ElementsKernel::ElementsException
+   * @throws ElementsException
    *    if there is no column with such name
    */
   const std::string& operator[](const std::string& column) const;
