@@ -59,14 +59,50 @@ public:
    */
   ColumnInfo(std::vector<std::string> name_list);
   
+  /**
+   * @brief
+   * Returns true if this ColumnInfo represents the same columns with the given one
+   * 
+   * @param other the ColumnInfo to compare with
+   * @return true if the two ColumnInfos represent the same columns, false otherwise
+   */
   bool operator==(const ColumnInfo& other) const;
   
+  /**
+   * @brief
+   * Returns false if this ColumnInfo represents the same columns with the given one
+   * 
+   * @param other the ColumnInfo to compare with
+   * @return false if the two ColumnInfos represent the same columns, true otherwise
+   */
   bool operator!=(const ColumnInfo& other) const;
   
+  /**
+   * @brief
+   * Returns the number of columns represented by this ColumnInfo
+   * 
+   * @return the number of columns
+   */
   std::size_t size() const;
   
+  /**
+   * @brief
+   * Returns the name of the column with the given index or nullptr if the
+   * index is bigger than the size of the ColumnInfo
+   * 
+   * @param index The index to search for
+   * @return The name of the column or nullptr if there is no such column
+   */
   std::unique_ptr<std::string> getName(std::size_t index) const;
   
+  /**
+   * @brief
+   * Returns the index of a column, given the name of it, or nullptr if there is
+   * no column with this name
+   * 
+   * @param name The name to search for
+   * @return The index of the column or nullptr if there is no such column
+   */
   std::unique_ptr<std::size_t> getIndex(const std::string& name) const;
   
 private:
