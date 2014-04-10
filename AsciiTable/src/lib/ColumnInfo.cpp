@@ -5,7 +5,6 @@
  */
 
 #include <algorithm>
-#include <iterator>
 #include <set>
 // The std regex library is not fully implemented in GCC 4.8. The following lines
 // make use of the BOOST library and can be modified if GCC 4.9 will be used in

@@ -18,7 +18,7 @@ struct Row_Fixture {
 BOOST_AUTO_TEST_SUITE (Row_test)
 
 //-----------------------------------------------------------------------------
-// Test the constructor throws an exception for number of values
+// Test the constructor throws an exception for wrong number of cell values
 //-----------------------------------------------------------------------------
 
 BOOST_FIXTURE_TEST_CASE(ConstructorWrongNumberOfValues, Row_Fixture) {
@@ -43,6 +43,42 @@ BOOST_FIXTURE_TEST_CASE(ConstructorNullColumnInfo, Row_Fixture) {
   
   // Then
   BOOST_CHECK_THROW(AsciiTable::Row(values, null_col_info), ElementsException);
+  
+}
+
+//-----------------------------------------------------------------------------
+// Test the constructor throws an exception for empty string cell values
+//-----------------------------------------------------------------------------
+
+BOOST_FIXTURE_TEST_CASE(ConstructorEmptyCellValue, Row_Fixture) {
+  
+  // Given
+  std::vector<std::string> values {"One", "", "Three", "Four", "Five"};
+  
+  // Then
+  BOOST_CHECK_THROW(AsciiTable::Row(values, column_info), ElementsException);
+  
+}
+
+//-----------------------------------------------------------------------------
+// Test the constructor throws an exception for cell values with whitespace chars
+//-----------------------------------------------------------------------------
+
+BOOST_FIXTURE_TEST_CASE(ConstructorCellValueWithWhitespace, Row_Fixture) {
+  
+  // Given
+  std::vector<std::string> space {"One", "Sp ace", "Three", "Four", "Five"};
+  std::vector<std::string> tab {"One", "Ta\tb", "Three", "Four", "Five"};
+  std::vector<std::string> carriage_return {"One", "Carriage\rReturn", "Three", "Four", "Five"};
+  std::vector<std::string> new_line {"One", "New\nLine", "Three", "Four", "Five"};
+  std::vector<std::string> new_page {"One", "New\fPage", "Three", "Four", "Five"};
+  
+  // Then
+  BOOST_CHECK_THROW(AsciiTable::Row(space, column_info), ElementsException);
+  BOOST_CHECK_THROW(AsciiTable::Row(tab, column_info), ElementsException);
+  BOOST_CHECK_THROW(AsciiTable::Row(carriage_return, column_info), ElementsException);
+  BOOST_CHECK_THROW(AsciiTable::Row(new_line, column_info), ElementsException);
+  BOOST_CHECK_THROW(AsciiTable::Row(new_page, column_info), ElementsException);
   
 }
 

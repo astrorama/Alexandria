@@ -48,13 +48,13 @@ public:
    * semantics if the passed object is an rvalue.
    * 
    * @param name_list A vector containing the names of the columns
-   * @throws Elements::ElementsException
+   * @throws ElementsException
    *    if the name_list is empty
-   * @throws Elements::ElementsException
+   * @throws ElementsException
    *    if the name_list contains duplicate entries
-   * @throws Elements::ElementsException
+   * @throws ElementsException
    *    if the name_list contains the empty string
-   * @throws Elements::ElementsException
+   * @throws ElementsException
    *    if any of the given names contains whitespace characters
    */
   ColumnInfo(std::vector<std::string> name_list);
