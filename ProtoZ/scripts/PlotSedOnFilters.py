@@ -18,7 +18,7 @@ def _reddenSed(sed, redLaw, ebv):
 def _redshiftSed(sed, z):
     redshiftedSed = Table(names=['Wavelength','Flux'])
     for row in sed:
-        redshiftedSed.add_row((row[0]*(1+z),row[1]))
+        redshiftedSed.add_row((row[0]*(1+z),row[1]/(1+z)^2))
     return redshiftedSed
 
 def _multiplySedWithFilter(sed, filter):
@@ -152,7 +152,9 @@ if __name__ == '__main__':
         
         # Set the SED axis to cover only the filters
         sedAxes.set_xlim(xlim)
-        sedAxes.set_ylim(0, sedAxes.get_ylim()[1])
+        if i == 0:
+            sedYmax = sedAxes.get_ylim()[1]
+        sedAxes.set_ylim(0, sedYMax)
     
     # Add the X axis labels only for the last plot
     axes[-1].set_xlabel('Wavelength [Ang]')
