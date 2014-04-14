@@ -18,14 +18,15 @@ using boost::regex_match;
 
 namespace AsciiTable {
 
-ColumnInfo::ColumnInfo(std::vector<std::string> name_list)
-        : m_name_list{std::move(name_list)} {
-  if (m_name_list.empty()) {
-    throw ElementsException() << "Empty name_list is not allowed";
+ColumnInfo::ColumnInfo(std::vector<info_type> info_list)
+        : m_info_list{std::move(info_list)} {
+  if (m_info_list.empty()) {
+    throw ElementsException() << "Empty info_list is not allowed";
   }
   std::set<std::string> set {};
   regex whitespace {".*\\s.*"}; // Checks if input contains any whitespace characters
-  for (auto name : m_name_list) {
+  for (const auto& info_pair : m_info_list) {
+    const auto& name = info_pair.first;
     if (name.empty()) {
       throw ElementsException() << "Empty string column names are not allowed";
     }
@@ -40,10 +41,10 @@ ColumnInfo::ColumnInfo(std::vector<std::string> name_list)
 }
 
 bool ColumnInfo::operator==(const ColumnInfo& other) const {
-  if (this->m_name_list.size() != other.m_name_list.size()) {
+  if (this->m_info_list.size() != other.m_info_list.size()) {
     return false;
   }
-  return std::equal(this->m_name_list.cbegin(), this->m_name_list.cend(), other.m_name_list.cbegin());
+  return std::equal(this->m_info_list.cbegin(), this->m_info_list.cend(), other.m_info_list.cbegin());
 }
 
 bool ColumnInfo::operator !=(const ColumnInfo& other) const {
@@ -51,26 +52,32 @@ bool ColumnInfo::operator !=(const ColumnInfo& other) const {
 }
 
 std::size_t ColumnInfo::size() const {
-  return m_name_list.size();
+  return m_info_list.size();
 }
 
-std::unique_ptr<std::string> ColumnInfo::getName(std::size_t index) const {
-  if (index < size()) {
-    return std::unique_ptr<std::string> {new std::string {m_name_list[index]}};
+const std::string& ColumnInfo::getName(std::size_t index) const {
+  if (index >= size()) {
+    throw ElementsException("Index out of bounds");
   }
-  return std::unique_ptr<std::string> {};
+  return m_info_list[index].first;
 }
 
-std::unique_ptr<size_t> ColumnInfo::getIndex(const std::string& name) const {
-  auto begin = m_name_list.begin();
-  auto end = m_name_list.end();
-  auto iter = std::find(begin, end, name);
+const std::type_index& ColumnInfo::getType(std::size_t index) const {
+  if (index >= size()) {
+    throw ElementsException("Index out of bounds");
+  }
+  return m_info_list[index].second;
+}
+
+std::unique_ptr<size_t> ColumnInfo::find(const std::string& name) const {
+  auto begin = m_info_list.begin();
+  auto end = m_info_list.end();
+  auto iter = std::find_if(begin, end, [&name](const info_type& pair){return pair.first == name;});
   if (iter != end) {
     size_t index {static_cast<size_t>(std::distance(begin, iter))};
     return std::unique_ptr<size_t> {new size_t {index}}; 
   }
   return std::unique_ptr<size_t> {};
 }
-
 
 }

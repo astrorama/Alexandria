@@ -19,10 +19,10 @@ BOOST_AUTO_TEST_SUITE (ColumnInfo_test)
 BOOST_AUTO_TEST_CASE(ConstructorEmptyNamesList) {
   
   // Given
-  std::vector<std::string> names {};
+  std::vector<AsciiTable::ColumnInfo::info_type> info_list {};
   
   // Then
-  BOOST_CHECK_THROW(AsciiTable::ColumnInfo {names}, ElementsException);
+  BOOST_CHECK_THROW(AsciiTable::ColumnInfo {info_list}, ElementsException);
   
 }
 
@@ -33,10 +33,15 @@ BOOST_AUTO_TEST_CASE(ConstructorEmptyNamesList) {
 BOOST_AUTO_TEST_CASE(ConstructorDuplicateNames) {
   
   // Given
-  std::vector<std::string> names {"First", "Second", "Third", "Second", "Fifth"};
+  std::vector<AsciiTable::ColumnInfo::info_type> info_list {};
+  info_list.push_back(AsciiTable::ColumnInfo::info_type("First", typeid(std::string)));
+  info_list.push_back(AsciiTable::ColumnInfo::info_type("Second", typeid(std::string)));
+  info_list.push_back(AsciiTable::ColumnInfo::info_type("Third", typeid(double)));
+  info_list.push_back(AsciiTable::ColumnInfo::info_type("Second", typeid(double)));
+  info_list.push_back(AsciiTable::ColumnInfo::info_type("Fifth", typeid(int)));
   
   // Then
-  BOOST_CHECK_THROW(AsciiTable::ColumnInfo {names}, ElementsException);
+  BOOST_CHECK_THROW(AsciiTable::ColumnInfo {info_list}, ElementsException);
   
 }
 
@@ -47,10 +52,15 @@ BOOST_AUTO_TEST_CASE(ConstructorDuplicateNames) {
 BOOST_AUTO_TEST_CASE(ConstructorEmptyStringName) {
   
   // Given
-  std::vector<std::string> names {"First", "Second", "Third", "", "Fifth"};
+  std::vector<AsciiTable::ColumnInfo::info_type> info_list {};
+  info_list.push_back(AsciiTable::ColumnInfo::info_type("First", typeid(std::string)));
+  info_list.push_back(AsciiTable::ColumnInfo::info_type("Second", typeid(std::string)));
+  info_list.push_back(AsciiTable::ColumnInfo::info_type("Third", typeid(double)));
+  info_list.push_back(AsciiTable::ColumnInfo::info_type("", typeid(double)));
+  info_list.push_back(AsciiTable::ColumnInfo::info_type("Fifth", typeid(int)));
   
   // Then
-  BOOST_CHECK_THROW(AsciiTable::ColumnInfo {names}, ElementsException);
+  BOOST_CHECK_THROW(AsciiTable::ColumnInfo {info_list}, ElementsException);
   
 }
 
@@ -61,11 +71,11 @@ BOOST_AUTO_TEST_CASE(ConstructorEmptyStringName) {
 BOOST_AUTO_TEST_CASE(ConstructorNameWithWhitespaceChars) {
   
   // Given
-  std::vector<std::string> space {"Sp ace"};
-  std::vector<std::string> tab {"Ta\tb"};
-  std::vector<std::string> carriage_return {"Carriage\rReturn"};
-  std::vector<std::string> new_line {"New\nLine"};
-  std::vector<std::string> new_page {"New\fPage"};
+  std::vector<AsciiTable::ColumnInfo::info_type> space {AsciiTable::ColumnInfo::info_type("Sp ace", typeid(std::string))};
+  std::vector<AsciiTable::ColumnInfo::info_type> tab {AsciiTable::ColumnInfo::info_type("Ta\tb", typeid(std::string))};
+  std::vector<AsciiTable::ColumnInfo::info_type> carriage_return {AsciiTable::ColumnInfo::info_type("Carriage\rReturn", typeid(double))};
+  std::vector<AsciiTable::ColumnInfo::info_type> new_line {AsciiTable::ColumnInfo::info_type("New\nLine", typeid(double))};
+  std::vector<AsciiTable::ColumnInfo::info_type> new_page {AsciiTable::ColumnInfo::info_type("New\fPage", typeid(int))};
   
   // Then
   BOOST_CHECK_THROW(AsciiTable::ColumnInfo {space}, ElementsException);
@@ -83,32 +93,51 @@ BOOST_AUTO_TEST_CASE(ConstructorNameWithWhitespaceChars) {
 BOOST_AUTO_TEST_CASE(equalityOperators) {
   
   // Given
-  std::vector<std::string> names1 {"First", "Second", "Third", "Fourth", "Fifth"};
-  std::vector<std::string> names2 {"First", "Second", "Third", "Fourth", "Fifth"};
+  std::vector<AsciiTable::ColumnInfo::info_type> info_list_1 {};
+  info_list_1.push_back(AsciiTable::ColumnInfo::info_type("First", typeid(std::string)));
+  info_list_1.push_back(AsciiTable::ColumnInfo::info_type("Second", typeid(std::string)));
+  info_list_1.push_back(AsciiTable::ColumnInfo::info_type("Third", typeid(double)));
+  info_list_1.push_back(AsciiTable::ColumnInfo::info_type("Fourth", typeid(double)));
+  info_list_1.push_back(AsciiTable::ColumnInfo::info_type("Fifth", typeid(int)));
+  std::vector<AsciiTable::ColumnInfo::info_type> info_list_2 {};
+  info_list_2.push_back(AsciiTable::ColumnInfo::info_type("First", typeid(std::string)));
+  info_list_2.push_back(AsciiTable::ColumnInfo::info_type("Second", typeid(std::string)));
+  info_list_2.push_back(AsciiTable::ColumnInfo::info_type("Third", typeid(double)));
+  info_list_2.push_back(AsciiTable::ColumnInfo::info_type("Fourth", typeid(double)));
+  info_list_2.push_back(AsciiTable::ColumnInfo::info_type("Fifth", typeid(int)));
   
   // When
-  AsciiTable::ColumnInfo columnInfo1 {names1};
-  AsciiTable::ColumnInfo columnInfo2 {names2};
+  AsciiTable::ColumnInfo columnInfo1 {info_list_1};
+  AsciiTable::ColumnInfo columnInfo2 {info_list_2};
   
   // Then
   BOOST_CHECK(columnInfo1 == columnInfo2);
   BOOST_CHECK(!(columnInfo1 != columnInfo2));
   
   // Given
-  std::vector<std::string> names3 {"First", "Second", "Third", "Fourth"};
+  std::vector<AsciiTable::ColumnInfo::info_type> info_list_3 {};
+  info_list_3.push_back(AsciiTable::ColumnInfo::info_type("First", typeid(std::string)));
+  info_list_3.push_back(AsciiTable::ColumnInfo::info_type("Second", typeid(std::string)));
+  info_list_3.push_back(AsciiTable::ColumnInfo::info_type("Third", typeid(double)));
+  info_list_3.push_back(AsciiTable::ColumnInfo::info_type("Fourth", typeid(double)));
   
   // When
-  AsciiTable::ColumnInfo columnInfo3 {names3};
+  AsciiTable::ColumnInfo columnInfo3 {info_list_3};
   
   // Then
   BOOST_CHECK(!(columnInfo1 == columnInfo3));
   BOOST_CHECK(columnInfo1 != columnInfo3);
   
   // Given
-  std::vector<std::string> names4 {"First", "Second", "WRONG", "Fourth", "Fifth"};
+  std::vector<AsciiTable::ColumnInfo::info_type> info_list_4 {};
+  info_list_4.push_back(AsciiTable::ColumnInfo::info_type("First", typeid(std::string)));
+  info_list_4.push_back(AsciiTable::ColumnInfo::info_type("Second", typeid(std::string)));
+  info_list_4.push_back(AsciiTable::ColumnInfo::info_type("WRONG", typeid(double)));
+  info_list_4.push_back(AsciiTable::ColumnInfo::info_type("Fourth", typeid(double)));
+  info_list_4.push_back(AsciiTable::ColumnInfo::info_type("Fifth", typeid(int)));
   
   // When
-  AsciiTable::ColumnInfo columnInfo4 {names4};
+  AsciiTable::ColumnInfo columnInfo4 {info_list_4};
   
   // Then
   BOOST_CHECK(!(columnInfo1 == columnInfo4));
@@ -123,8 +152,13 @@ BOOST_AUTO_TEST_CASE(equalityOperators) {
 BOOST_AUTO_TEST_CASE(size) {
   
   // Given
-  std::vector<std::string> names {"First", "Second", "Third", "Fourth", "Fifth"};
-  AsciiTable::ColumnInfo columnInfo {names};
+  std::vector<AsciiTable::ColumnInfo::info_type> info_list {};
+  info_list.push_back(AsciiTable::ColumnInfo::info_type("First", typeid(std::string)));
+  info_list.push_back(AsciiTable::ColumnInfo::info_type("Second", typeid(std::string)));
+  info_list.push_back(AsciiTable::ColumnInfo::info_type("Third", typeid(double)));
+  info_list.push_back(AsciiTable::ColumnInfo::info_type("Fourth", typeid(double)));
+  info_list.push_back(AsciiTable::ColumnInfo::info_type("Fifth", typeid(int)));
+  AsciiTable::ColumnInfo columnInfo {info_list};
   
   // When
   std::size_t size = columnInfo.size();
@@ -141,51 +175,85 @@ BOOST_AUTO_TEST_CASE(size) {
 BOOST_AUTO_TEST_CASE(getName) {
   
   // Given
-  std::vector<std::string> names {"First", "Second", "Third", "Fourth", "Fifth"};
-  AsciiTable::ColumnInfo columnInfo {names};
+  std::vector<AsciiTable::ColumnInfo::info_type> info_list {};
+  info_list.push_back(AsciiTable::ColumnInfo::info_type("First", typeid(std::string)));
+  info_list.push_back(AsciiTable::ColumnInfo::info_type("Second", typeid(std::string)));
+  info_list.push_back(AsciiTable::ColumnInfo::info_type("Third", typeid(double)));
+  info_list.push_back(AsciiTable::ColumnInfo::info_type("Fourth", typeid(double)));
+  info_list.push_back(AsciiTable::ColumnInfo::info_type("Fifth", typeid(int)));
+  AsciiTable::ColumnInfo columnInfo {info_list};
   
   // When
-  std::unique_ptr<std::string> name0  = columnInfo.getName(0);
-  std::unique_ptr<std::string> name1  = columnInfo.getName(1);
-  std::unique_ptr<std::string> name2  = columnInfo.getName(2);
-  std::unique_ptr<std::string> name3  = columnInfo.getName(3);
-  std::unique_ptr<std::string> name4  = columnInfo.getName(4);
-  std::unique_ptr<std::string> name5  = columnInfo.getName(5);
-  std::unique_ptr<std::string> name6  = columnInfo.getName(10);
+  const std::string& name0  = columnInfo.getName(0);
+  const std::string& name1  = columnInfo.getName(1);
+  const std::string& name2  = columnInfo.getName(2);
+  const std::string& name3  = columnInfo.getName(3);
+  const std::string& name4  = columnInfo.getName(4);
   
   // Then
-  BOOST_CHECK(name0);
-  BOOST_CHECK_EQUAL(*name0, "First");
-  BOOST_CHECK(name1);
-  BOOST_CHECK_EQUAL(*name1, "Second");
-  BOOST_CHECK(name2);
-  BOOST_CHECK_EQUAL(*name2, "Third");
-  BOOST_CHECK(name3);
-  BOOST_CHECK_EQUAL(*name3, "Fourth");
-  BOOST_CHECK(name4);
-  BOOST_CHECK_EQUAL(*name4, "Fifth");
-  BOOST_CHECK(!name5);
-  BOOST_CHECK(!name6);
+  BOOST_CHECK_EQUAL(name0, "First");
+  BOOST_CHECK_EQUAL(name1, "Second");
+  BOOST_CHECK_EQUAL(name2, "Third");
+  BOOST_CHECK_EQUAL(name3, "Fourth");
+  BOOST_CHECK_EQUAL(name4, "Fifth");
+  BOOST_CHECK_THROW(columnInfo.getName(5), ElementsException);
   
 }
 
 //-----------------------------------------------------------------------------
-// Test the getIndex method
+// Test the getType method
 //-----------------------------------------------------------------------------
 
-BOOST_AUTO_TEST_CASE(getIndex) {
+BOOST_AUTO_TEST_CASE(getType) {
   
   // Given
-  std::vector<std::string> names {"First", "Second", "Third", "Fourth", "Fifth"};
-  AsciiTable::ColumnInfo columnInfo {names};
+  std::vector<AsciiTable::ColumnInfo::info_type> info_list {};
+  info_list.push_back(AsciiTable::ColumnInfo::info_type("First", typeid(std::string)));
+  info_list.push_back(AsciiTable::ColumnInfo::info_type("Second", typeid(std::string)));
+  info_list.push_back(AsciiTable::ColumnInfo::info_type("Third", typeid(double)));
+  info_list.push_back(AsciiTable::ColumnInfo::info_type("Fourth", typeid(double)));
+  info_list.push_back(AsciiTable::ColumnInfo::info_type("Fifth", typeid(int)));
+  AsciiTable::ColumnInfo columnInfo {info_list};
   
   // When
-  std::unique_ptr<size_t> index0  = columnInfo.getIndex("First");
-  std::unique_ptr<size_t> index1  = columnInfo.getIndex("Second");
-  std::unique_ptr<size_t> index2  = columnInfo.getIndex("Third");
-  std::unique_ptr<size_t> index3  = columnInfo.getIndex("Fourth");
-  std::unique_ptr<size_t> index4  = columnInfo.getIndex("Fifth");
-  std::unique_ptr<size_t> index5  = columnInfo.getIndex("NotThere");
+  const std::type_index& type0  = columnInfo.getType(0);
+  const std::type_index& type1  = columnInfo.getType(1);
+  const std::type_index& type2  = columnInfo.getType(2);
+  const std::type_index& type3  = columnInfo.getType(3);
+  const std::type_index& type4  = columnInfo.getType(4);
+  
+  // Then
+  BOOST_CHECK(type0 == typeid(std::string));
+  BOOST_CHECK(type1 == typeid(std::string));
+  BOOST_CHECK(type2 == typeid(double));
+  BOOST_CHECK(type3 == typeid(double));
+  BOOST_CHECK(type4 == typeid(int));
+  BOOST_CHECK_THROW(columnInfo.getType(5), ElementsException);
+  
+}
+
+//-----------------------------------------------------------------------------
+// Test the find method
+//-----------------------------------------------------------------------------
+
+BOOST_AUTO_TEST_CASE(find) {
+  
+  // Given
+  std::vector<AsciiTable::ColumnInfo::info_type> info_list {};
+  info_list.push_back(AsciiTable::ColumnInfo::info_type("First", typeid(std::string)));
+  info_list.push_back(AsciiTable::ColumnInfo::info_type("Second", typeid(std::string)));
+  info_list.push_back(AsciiTable::ColumnInfo::info_type("Third", typeid(double)));
+  info_list.push_back(AsciiTable::ColumnInfo::info_type("Fourth", typeid(double)));
+  info_list.push_back(AsciiTable::ColumnInfo::info_type("Fifth", typeid(int)));
+  AsciiTable::ColumnInfo columnInfo {info_list};
+  
+  // When
+  std::unique_ptr<size_t> index0  = columnInfo.find("First");
+  std::unique_ptr<size_t> index1  = columnInfo.find("Second");
+  std::unique_ptr<size_t> index2  = columnInfo.find("Third");
+  std::unique_ptr<size_t> index3  = columnInfo.find("Fourth");
+  std::unique_ptr<size_t> index4  = columnInfo.find("Fifth");
+  std::unique_ptr<size_t> index5  = columnInfo.find("NotThere");
   
   // Then
   BOOST_CHECK(index0);

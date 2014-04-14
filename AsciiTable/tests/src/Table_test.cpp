@@ -9,13 +9,19 @@
 #include "AsciiTable/Table.h"
 
 struct Table_Fixture {
-  std::vector<std::string> column_names {"First", "Second", "Third", "Fourth", "Fifth"};
-  std::shared_ptr<AsciiTable::ColumnInfo> column_info {new AsciiTable::ColumnInfo {column_names}};
-  std::vector<std::string> values0 {"1-One", "1-Two", "1-Three", "1-Four", "1-Five"};
+  std::vector<AsciiTable::ColumnInfo::info_type> info_list {
+      AsciiTable::ColumnInfo::info_type("First", typeid(std::string)),
+      AsciiTable::ColumnInfo::info_type("Second", typeid(std::string)),
+      AsciiTable::ColumnInfo::info_type("Third", typeid(double)),
+      AsciiTable::ColumnInfo::info_type("Fourth", typeid(double)),
+      AsciiTable::ColumnInfo::info_type("Fifth", typeid(int))
+  };
+  std::shared_ptr<AsciiTable::ColumnInfo> column_info {new AsciiTable::ColumnInfo {info_list}};
+  std::vector<AsciiTable::Row::cell_type> values0 {std::string{"One-1"}, std::string{"Two-1"}, 3.1, 4.1, 51};
   AsciiTable::Row row0 {values0, column_info};
-  std::vector<std::string> values1 {"2-One", "2-Two", "2-Three", "2-Four", "2-Five"};
+  std::vector<AsciiTable::Row::cell_type> values1 {std::string{"One-2"}, std::string{"Two-2"}, 3.2, 4.2, 52};
   AsciiTable::Row row1 {values1, column_info};
-  std::vector<std::string> values2 {"3-One", "3-Two", "3-Three", "3-Four", "3-Five"};
+  std::vector<AsciiTable::Row::cell_type> values2 {std::string{"One-3"}, std::string{"Two-3"}, 3.3, 4.3, 53};
   AsciiTable::Row row2 {values2, column_info};
   std::vector<AsciiTable::Row> row_list {row0, row1, row2};
 };
@@ -31,8 +37,11 @@ BOOST_AUTO_TEST_SUITE (ColumnInfo_test)
 BOOST_FIXTURE_TEST_CASE(ConstructorDifferentColumnInfo, Table_Fixture) {
   
   // Given
-  std::shared_ptr<AsciiTable::ColumnInfo> wrong_column_info {new AsciiTable::ColumnInfo({"Wrong"})};
-  AsciiTable::Row wrong_row ({"Test"}, wrong_column_info);
+  std::vector<AsciiTable::ColumnInfo::info_type> wrong_info_list {
+      AsciiTable::ColumnInfo::info_type("First", typeid(std::string))
+  };
+  std::shared_ptr<AsciiTable::ColumnInfo> wrong_column_info {new AsciiTable::ColumnInfo(wrong_info_list)};
+  AsciiTable::Row wrong_row ({std::string{"Test"}}, wrong_column_info);
   std::vector<AsciiTable::Row> wrong_row_list {row_list.cbegin(), row_list.cend()};
   wrong_row_list.push_back(wrong_row);
   

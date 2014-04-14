@@ -9,8 +9,14 @@
 #include "AsciiTable/Row.h"
 
 struct Row_Fixture {
-  std::vector<std::string> column_names {"First", "Second", "Third", "Fourth", "Fifth"};
-  std::shared_ptr<AsciiTable::ColumnInfo> column_info {new AsciiTable::ColumnInfo {column_names}};
+  std::vector<AsciiTable::ColumnInfo::info_type> info_list {
+      AsciiTable::ColumnInfo::info_type("First", typeid(std::string)),
+      AsciiTable::ColumnInfo::info_type("Second", typeid(std::string)),
+      AsciiTable::ColumnInfo::info_type("Third", typeid(double)),
+      AsciiTable::ColumnInfo::info_type("Fourth", typeid(double)),
+      AsciiTable::ColumnInfo::info_type("Fifth", typeid(int))
+  };
+  std::shared_ptr<AsciiTable::ColumnInfo> column_info {new AsciiTable::ColumnInfo {info_list}};
 };
 
 //-----------------------------------------------------------------------------
@@ -24,7 +30,7 @@ BOOST_AUTO_TEST_SUITE (Row_test)
 BOOST_FIXTURE_TEST_CASE(ConstructorWrongNumberOfValues, Row_Fixture) {
   
   // Given
-  std::vector<std::string> values {"One", "Two", "Three"};
+  std::vector<AsciiTable::Row::cell_type> values {std::string{"One"}, std::string{"Two"}, 3.};
   
   // Then
   BOOST_CHECK_THROW(AsciiTable::Row(values, column_info), ElementsException);
@@ -38,11 +44,25 @@ BOOST_FIXTURE_TEST_CASE(ConstructorWrongNumberOfValues, Row_Fixture) {
 BOOST_FIXTURE_TEST_CASE(ConstructorNullColumnInfo, Row_Fixture) {
   
   // Given
-  std::vector<std::string> values {"One", "Two", "Three", "Four", "Five"};
+  std::vector<AsciiTable::Row::cell_type> values {std::string{"One"}, std::string{"Two"}, 3., 4., 5};
   std::shared_ptr<AsciiTable::ColumnInfo> null_col_info {};
   
   // Then
   BOOST_CHECK_THROW(AsciiTable::Row(values, null_col_info), ElementsException);
+  
+}
+
+//-----------------------------------------------------------------------------
+// Test the constructor throws an exception for wrong cell type
+//-----------------------------------------------------------------------------
+
+BOOST_FIXTURE_TEST_CASE(ConstructorWrongCellType, Row_Fixture) {
+  
+  // Given
+  std::vector<AsciiTable::Row::cell_type> values {std::string{"One"}, std::string{"Two"}, std::string{"Three"}, 4., 5};
+
+  // Then
+  BOOST_CHECK_THROW(AsciiTable::Row(values, column_info), ElementsException);
   
 }
 
@@ -53,7 +73,7 @@ BOOST_FIXTURE_TEST_CASE(ConstructorNullColumnInfo, Row_Fixture) {
 BOOST_FIXTURE_TEST_CASE(ConstructorEmptyCellValue, Row_Fixture) {
   
   // Given
-  std::vector<std::string> values {"One", "", "Three", "Four", "Five"};
+  std::vector<AsciiTable::Row::cell_type> values {std::string{"One"}, std::string{""}, 3., 4., 5};
   
   // Then
   BOOST_CHECK_THROW(AsciiTable::Row(values, column_info), ElementsException);
@@ -67,11 +87,11 @@ BOOST_FIXTURE_TEST_CASE(ConstructorEmptyCellValue, Row_Fixture) {
 BOOST_FIXTURE_TEST_CASE(ConstructorCellValueWithWhitespace, Row_Fixture) {
   
   // Given
-  std::vector<std::string> space {"One", "Sp ace", "Three", "Four", "Five"};
-  std::vector<std::string> tab {"One", "Ta\tb", "Three", "Four", "Five"};
-  std::vector<std::string> carriage_return {"One", "Carriage\rReturn", "Three", "Four", "Five"};
-  std::vector<std::string> new_line {"One", "New\nLine", "Three", "Four", "Five"};
-  std::vector<std::string> new_page {"One", "New\fPage", "Three", "Four", "Five"};
+  std::vector<AsciiTable::Row::cell_type> space {std::string{"One"}, std::string{"Sp ace"}, 3., 4., 5};
+  std::vector<AsciiTable::Row::cell_type> tab {std::string{"One"}, std::string{"T\tab"}, 3., 4., 5};
+  std::vector<AsciiTable::Row::cell_type> carriage_return {std::string{"One"}, std::string{"Carriage\rReturn"}, 3., 4., 5};
+  std::vector<AsciiTable::Row::cell_type> new_line {std::string{"One"}, std::string{"New\nLine"}, 3., 4., 5};
+  std::vector<AsciiTable::Row::cell_type> new_page {std::string{"One"}, std::string{"New\fPage"}, 3., 4., 5};
   
   // Then
   BOOST_CHECK_THROW(AsciiTable::Row(space, column_info), ElementsException);
@@ -89,7 +109,7 @@ BOOST_FIXTURE_TEST_CASE(ConstructorCellValueWithWhitespace, Row_Fixture) {
 BOOST_FIXTURE_TEST_CASE(getColumnInfo, Row_Fixture) {
   
   // Given
-  std::vector<std::string> values {"One", "Two", "Three", "Four", "Five"};
+  std::vector<AsciiTable::Row::cell_type> values {std::string{"One"}, std::string{"Two"}, 3., 4., 5};
   AsciiTable::Row row {values, column_info};
   
   // When
@@ -107,7 +127,7 @@ BOOST_FIXTURE_TEST_CASE(getColumnInfo, Row_Fixture) {
 BOOST_FIXTURE_TEST_CASE(Size, Row_Fixture) {
   
   // Given
-  std::vector<std::string> values {"One", "Two", "Three", "Four", "Five"};
+  std::vector<AsciiTable::Row::cell_type> values {std::string{"One"}, std::string{"Two"}, 3., 4., 5};
   AsciiTable::Row row {values, column_info};
   
   // When
@@ -125,15 +145,15 @@ BOOST_FIXTURE_TEST_CASE(Size, Row_Fixture) {
 BOOST_FIXTURE_TEST_CASE(IndexBracketOperator, Row_Fixture) {
   
   // Given
-  std::vector<std::string> values {"One", "Two", "Three", "Four", "Five"};
+  std::vector<AsciiTable::Row::cell_type> values {std::string{"One"}, std::string{"Two"}, 3., 4., 5};
   AsciiTable::Row row {values, column_info};
   
   // When
-  std::string value0 = row[0];
-  std::string value1 = row[1];
-  std::string value2 = row[2];
-  std::string value3 = row[3];
-  std::string value4 = row[4];
+  AsciiTable::Row::cell_type value0 = row[0];
+  AsciiTable::Row::cell_type value1 = row[1];
+  AsciiTable::Row::cell_type value2 = row[2];
+  AsciiTable::Row::cell_type value3 = row[3];
+  AsciiTable::Row::cell_type value4 = row[4];
   
   // Then
   BOOST_CHECK_EQUAL(value0, values[0]);
@@ -152,15 +172,15 @@ BOOST_FIXTURE_TEST_CASE(IndexBracketOperator, Row_Fixture) {
 BOOST_FIXTURE_TEST_CASE(StringBracketOperator, Row_Fixture) {
   
   // Given
-  std::vector<std::string> values {"One", "Two", "Three", "Four", "Five"};
+  std::vector<AsciiTable::Row::cell_type> values {std::string{"One"}, std::string{"Two"}, 3., 4., 5};
   AsciiTable::Row row {values, column_info};
   
   // When
-  std::string value0 = row["First"];
-  std::string value1 = row["Second"];
-  std::string value2 = row["Third"];
-  std::string value3 = row["Fourth"];
-  std::string value4 = row["Fifth"];
+  AsciiTable::Row::cell_type value0 = row["First"];
+  AsciiTable::Row::cell_type value1 = row["Second"];
+  AsciiTable::Row::cell_type value2 = row["Third"];
+  AsciiTable::Row::cell_type value3 = row["Fourth"];
+  AsciiTable::Row::cell_type value4 = row["Fifth"];
   
   // Then
   BOOST_CHECK_EQUAL(value0, values[0]);
@@ -179,7 +199,7 @@ BOOST_FIXTURE_TEST_CASE(StringBracketOperator, Row_Fixture) {
 BOOST_FIXTURE_TEST_CASE(Iterator, Row_Fixture) {
   
   // Given
-  std::vector<std::string> values {"One", "Two", "Three", "Four", "Five"};
+  std::vector<AsciiTable::Row::cell_type> values {std::string{"One"}, std::string{"Two"}, 3., 4., 5};
   AsciiTable::Row row {values, column_info};
   auto valuesIter = values.cbegin();
   
