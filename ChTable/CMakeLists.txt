@@ -22,5 +22,8 @@ elements_add_unit_test(Row_test tests/src/Row_test.cpp tests/src/TestMain.cpp
 elements_add_unit_test(Table_test tests/src/Table_test.cpp tests/src/TestMain.cpp
                        LINK_LIBRARIES ChTable TYPE Boost)
 
-#elements_add_unit_test(Reader_test tests/src/Reader_test.cpp tests/src/TestMain.cpp
-#                       LINK_LIBRARIES ChTable TYPE Boost)
+elements_add_unit_test(AsciiReader_test tests/src/AsciiReader_test.cpp tests/src/TestMain.cpp
+                       LINK_LIBRARIES ChTable TYPE Boost)
+
+elements_add_unit_test(AsciiReaderHelper_test tests/src/AsciiReaderHelper_test.cpp tests/src/TestMain.cpp
+                       LINK_LIBRARIES ChTable TYPE Boost)
