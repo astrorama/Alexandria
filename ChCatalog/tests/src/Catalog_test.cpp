@@ -6,16 +6,16 @@
  */
 
 #include <boost/test/unit_test.hpp>
-#include "ChDataModel/Enumerations/SurveyNames.h"
-#include "ChDataModel/Source.h"
-#include "ChDataModel/Catalog.h"
+#include "ChCatalog/Enumerations/SurveyNames.h"
+#include "ChCatalog/Source.h"
+#include "ChCatalog/Catalog.h"
 
 #include "ElementsKernel/ElementsException.h"
 
 #include <iostream>
 #include <map>
 
-using namespace ChDataModel;
+using namespace ChCatalog;
 using namespace std;
 
 

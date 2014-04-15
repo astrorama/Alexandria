@@ -9,7 +9,7 @@
 #include <stdexcept>
 #include <boost/test/unit_test.hpp>
 
-#include "ChDataModel/FilterName.h"
+#include "ChCatalog/FilterName.h"
 
 //-----------------------------------------------------------------------------
 
@@ -21,10 +21,10 @@ BOOST_AUTO_TEST_SUITE (FilterName_test)
 
 BOOST_AUTO_TEST_CASE(constructorExceptions_test) {
   
-  BOOST_CHECK_THROW((ChDataModel::FilterName{"", "b"}), std::invalid_argument);
-  BOOST_CHECK_THROW((ChDataModel::FilterName{"asd/sad", "b"}), std::invalid_argument);
-  BOOST_CHECK_THROW((ChDataModel::FilterName{"a", ""}), std::invalid_argument);
-  BOOST_CHECK_THROW((ChDataModel::FilterName{"a", "bdf/sdf"}), std::invalid_argument);
+  BOOST_CHECK_THROW((ChCatalog::FilterName{"", "b"}), std::invalid_argument);
+  BOOST_CHECK_THROW((ChCatalog::FilterName{"asd/sad", "b"}), std::invalid_argument);
+  BOOST_CHECK_THROW((ChCatalog::FilterName{"a", ""}), std::invalid_argument);
+  BOOST_CHECK_THROW((ChCatalog::FilterName{"a", "bdf/sdf"}), std::invalid_argument);
   
 }
 
@@ -39,7 +39,7 @@ BOOST_AUTO_TEST_CASE(nameMethods_test) {
   std::string name = "TestName";
   
   // When
-  ChDataModel::FilterName filterName {group, name};
+  ChCatalog::FilterName filterName {group, name};
   
   // Then
   BOOST_CHECK_EQUAL(filterName.group(), group);
@@ -55,35 +55,35 @@ BOOST_AUTO_TEST_CASE(nameMethods_test) {
 BOOST_AUTO_TEST_CASE(hashMethod_test) {
   
   // Given
-  ChDataModel::FilterName filterName1 {"group", "name"};
-  ChDataModel::FilterName filterName2 {"group", "name"};
+  ChCatalog::FilterName filterName1 {"group", "name"};
+  ChCatalog::FilterName filterName2 {"group", "name"};
   
   // Then
   BOOST_CHECK_EQUAL(filterName1.hash(), filterName2.hash());
   
   // Given
-  filterName1 = ChDataModel::FilterName {"group", "name"};
-  filterName2 = ChDataModel::FilterName {"group", "name2"};
+  filterName1 = ChCatalog::FilterName {"group", "name"};
+  filterName2 = ChCatalog::FilterName {"group", "name2"};
   
   // Then
   BOOST_CHECK_NE(filterName1.hash(), filterName2.hash());
   
   // Given
-  filterName1 = ChDataModel::FilterName {"group", "name"};
-  filterName2 = ChDataModel::FilterName {"grou2", "name"};
+  filterName1 = ChCatalog::FilterName {"group", "name"};
+  filterName2 = ChCatalog::FilterName {"grou2", "name"};
   
   // Then
   BOOST_CHECK_NE(filterName1.hash(), filterName2.hash());
   
   // Given
-  filterName1 = ChDataModel::FilterName {"group", "name"};
-  filterName2 = ChDataModel::FilterName {"group2", "name2"};
+  filterName1 = ChCatalog::FilterName {"group", "name"};
+  filterName2 = ChCatalog::FilterName {"group2", "name2"};
   
   // Then
   BOOST_CHECK_NE(filterName1.hash(), filterName2.hash());
   
   // Given
-  std::hash<ChDataModel::FilterName> stdHashFunction;
+  std::hash<ChCatalog::FilterName> stdHashFunction;
   
   // Then
   BOOST_CHECK_EQUAL(filterName1.hash(), stdHashFunction(filterName1));
@@ -96,17 +96,17 @@ BOOST_AUTO_TEST_CASE(hashMethod_test) {
 BOOST_AUTO_TEST_CASE(comparison_test) {
   
   // Given
-  ChDataModel::FilterName filterName1 {"group", "name"};
-  ChDataModel::FilterName filterName2 {"group", "name"};
+  ChCatalog::FilterName filterName1 {"group", "name"};
+  ChCatalog::FilterName filterName2 {"group", "name"};
   
   // Then
   BOOST_CHECK(!(filterName1 < filterName2));
   BOOST_CHECK(!(filterName2 < filterName1));
   
   // Given
-  filterName1 = ChDataModel::FilterName {"agroup", "aname"};
-  filterName2 = ChDataModel::FilterName {"bgroup", "aname"};
-  ChDataModel::FilterName filterName3 {"bgroup", "bname"};
+  filterName1 = ChCatalog::FilterName {"agroup", "aname"};
+  filterName2 = ChCatalog::FilterName {"bgroup", "aname"};
+  ChCatalog::FilterName filterName3 {"bgroup", "bname"};
   
   // Then
   BOOST_CHECK_EQUAL(filterName1 < filterName2, filterName1.hash() < filterName2.hash());
@@ -123,16 +123,16 @@ BOOST_AUTO_TEST_CASE(equality_test) {
   
   
   // Given
-  ChDataModel::FilterName filterName1 {"group", "name"};
-  ChDataModel::FilterName filterName2 {"group", "name"};
+  ChCatalog::FilterName filterName1 {"group", "name"};
+  ChCatalog::FilterName filterName2 {"group", "name"};
   
   // Then
   BOOST_CHECK(filterName1 == filterName2);
   
   // Given
-  filterName1 = ChDataModel::FilterName {"agroup", "aname"};
-  filterName2 = ChDataModel::FilterName {"bgroup", "aname"};
-  ChDataModel::FilterName filterName3 {"bgroup", "bname"};
+  filterName1 = ChCatalog::FilterName {"agroup", "aname"};
+  filterName2 = ChCatalog::FilterName {"bgroup", "aname"};
+  ChCatalog::FilterName filterName3 {"bgroup", "bname"};
   
   // Then
   BOOST_CHECK(!(filterName1 == filterName2));
@@ -148,12 +148,12 @@ BOOST_AUTO_TEST_CASE(equality_test) {
 BOOST_AUTO_TEST_CASE(hashOrdering_test) {
   
   // Given
-  ChDataModel::FilterName filterName1 {"SDSS", "g"};
-  ChDataModel::FilterName filterName2 {"COSMOS", "g"};
-  ChDataModel::FilterName filterName3 {"COSMOS", "z"};
+  ChCatalog::FilterName filterName1 {"SDSS", "g"};
+  ChCatalog::FilterName filterName2 {"COSMOS", "g"};
+  ChCatalog::FilterName filterName3 {"COSMOS", "z"};
   
   // When
-  std::set<ChDataModel::FilterName> filterSet {};
+  std::set<ChCatalog::FilterName> filterSet {};
   filterSet.insert(filterName1);
   filterSet.insert(filterName2);
   filterSet.insert(filterName3);
@@ -178,12 +178,12 @@ BOOST_AUTO_TEST_CASE(hashOrdering_test) {
 BOOST_AUTO_TEST_CASE(alphabeticalOrdering_test) {
   
   // Given
-  ChDataModel::FilterName filterName1 {"SDSS", "g"};
-  ChDataModel::FilterName filterName2 {"COSMOS", "g"};
-  ChDataModel::FilterName filterName3 {"COSMOS", "z"};
+  ChCatalog::FilterName filterName1 {"SDSS", "g"};
+  ChCatalog::FilterName filterName2 {"COSMOS", "g"};
+  ChCatalog::FilterName filterName3 {"COSMOS", "z"};
   
   // When
-  std::set<ChDataModel::FilterName, ChDataModel::FilterName::AlphabeticalComparator> filterSet {};
+  std::set<ChCatalog::FilterName, ChCatalog::FilterName::AlphabeticalComparator> filterSet {};
   filterSet.insert(filterName1);
   filterSet.insert(filterName2);
   filterSet.insert(filterName3);

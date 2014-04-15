@@ -7,10 +7,10 @@
 #include <boost/test/unit_test.hpp>
 #include <iostream>
 
-#include "ChDataModel/SourceAttributes/Photometry.h"
-#include "ChDataModel/FilterName.h"
+#include "ChCatalog/SourceAttributes/Photometry.h"
+#include "ChCatalog/FilterName.h"
 
-using namespace ChDataModel;
+using namespace ChCatalog;
 using namespace std;
 
 //-----------------------------------------------------------------------------

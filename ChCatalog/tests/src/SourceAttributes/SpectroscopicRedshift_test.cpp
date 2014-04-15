@@ -8,9 +8,9 @@
 
 #include <boost/test/unit_test.hpp>
 #include <iostream>
-#include "ChDataModel/SourceAttributes/SpectroscopicRedshift.h"
+#include "ChCatalog/SourceAttributes/SpectroscopicRedshift.h"
 
-using namespace ChDataModel;
+using namespace ChCatalog;
 using namespace std;
 
 //-----------------------------------------------------------------------------

@@ -12,7 +12,7 @@
 #include "ChMath/interpolation/interpolation.h"
 
 struct Spline_Fixture {
-  double close_tolerance {1E-2};
+  double close_tolerance {1.2E-2};
   double small_tolerance {1E-20};
 };
 

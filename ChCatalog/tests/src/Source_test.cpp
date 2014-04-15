@@ -6,18 +6,18 @@
  */
 
 #include <boost/test/unit_test.hpp>
-#include "ChDataModel/Source.h"
-#include "ChDataModel/Attribute.h"
-#include "ChDataModel/SourceAttributes/Coordinates.h"
-#include "ChDataModel/SourceAttributes/Photometry.h"
-#include "ChDataModel/SourceAttributes/SpectroscopicRedshift.h"
+#include "ChCatalog/Source.h"
+#include "ChCatalog/Attribute.h"
+#include "ChCatalog/SourceAttributes/Coordinates.h"
+#include "ChCatalog/SourceAttributes/Photometry.h"
+#include "ChCatalog/SourceAttributes/SpectroscopicRedshift.h"
 
 #include "ElementsKernel/ElementsException.h"
 
 #include <iostream>
 #include <map>
 
-using namespace ChDataModel;
+using namespace ChCatalog;
 using namespace std;
 
 
