@@ -4,8 +4,8 @@
  * @author Nikolaos Apostolakos
  */
 
-#ifndef ASCIITABLE_COLUMNINFO_H
-#define	ASCIITABLE_COLUMNINFO_H
+#ifndef CHTABLE_COLUMNINFO_H
+#define	CHTABLE_COLUMNINFO_H
 
 #include <string>
 #include <vector>
@@ -13,7 +13,7 @@
 #include <typeindex>
 #include <utility>
 
-namespace AsciiTable {
+namespace ChTable {
 
 /**
  * @class ColumnInfo
@@ -130,5 +130,5 @@ private:
 
 }
 
-#endif	/* ASCIITABLE_COLUMNINFO_H */
+#endif	/* CHTABLE_COLUMNINFO_H */
 

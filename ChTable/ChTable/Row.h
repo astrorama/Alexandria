@@ -4,17 +4,17 @@
  * @author Nikolaos Apostolakos
  */
 
-#ifndef ASCIITABLE_ROW_H
-#define	ASCIITABLE_ROW_H
+#ifndef CHTABLE_ROW_H
+#define	CHTABLE_ROW_H
 
 #include <memory>
 #include <vector>
 #include <string>
 #include <iterator>
 #include <boost/variant.hpp>
-#include "AsciiTable/ColumnInfo.h"
+#include "ChTable/ColumnInfo.h"
 
-namespace AsciiTable {
+namespace ChTable {
 
 /**
  * @class Row
@@ -124,5 +124,5 @@ private:
 
 }
 
-#endif	/* ASCIITABLE_ROW_H */
+#endif	/* CHTABLE_ROW_H */
 

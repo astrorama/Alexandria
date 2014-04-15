@@ -4,15 +4,15 @@
  * @author Nikolaos Apostolakos
  */
 
-#ifndef ASCIITABLE_TABLE_H
-#define	ASCIITABLE_TABLE_H
+#ifndef CHTABLE_TABLE_H
+#define	CHTABLE_TABLE_H
 
 #include <memory>
 #include <vector>
-#include "AsciiTable/ColumnInfo.h"
-#include "AsciiTable/Row.h"
+#include "ChTable/ColumnInfo.h"
+#include "ChTable/Row.h"
 
-namespace AsciiTable {
+namespace ChTable {
 
 /**
  * @class Table
@@ -94,5 +94,5 @@ private:
 
 }
 
-#endif	/* ASCIITABLE_TABLE_H */
+#endif	/* CHTABLE_TABLE_H */
 

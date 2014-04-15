@@ -14,9 +14,9 @@
 using boost::regex;
 using boost::regex_match;
 #include "ElementsKernel/ElementsException.h"
-#include "AsciiTable/ColumnInfo.h"
+#include "ChTable/ColumnInfo.h"
 
-namespace AsciiTable {
+namespace ChTable {
 
 ColumnInfo::ColumnInfo(std::vector<info_type> info_list)
         : m_info_list{std::move(info_list)} {

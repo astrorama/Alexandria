@@ -13,9 +13,9 @@
 using boost::regex;
 using boost::regex_match;
 #include "ElementsKernel/ElementsException.h"
-#include "AsciiTable/Row.h"
+#include "ChTable/Row.h"
 
-namespace AsciiTable {
+namespace ChTable {
 
 Row::Row(std::vector<cell_type> values, std::shared_ptr<ColumnInfo> column_info)
         : m_values(std::move(values)), m_column_info{column_info} {

@@ -5,9 +5,9 @@
  */
 
 #include "ElementsKernel/ElementsException.h"
-#include "AsciiTable/Table.h"
+#include "ChTable/Table.h"
 
-namespace AsciiTable {
+namespace ChTable {
 
 Table::Table(std::vector<Row> row_list) : m_row_list {std::move(row_list)} ,
                                           m_column_info {} {

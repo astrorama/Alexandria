@@ -6,7 +6,7 @@
 
 #include <boost/test/unit_test.hpp>
 #include "ElementsKernel/ElementsException.h"
-#include "AsciiTable/ColumnInfo.h"
+#include "ChTable/ColumnInfo.h"
 
 //-----------------------------------------------------------------------------
 
@@ -19,10 +19,10 @@ BOOST_AUTO_TEST_SUITE (ColumnInfo_test)
 BOOST_AUTO_TEST_CASE(ConstructorEmptyNamesList) {
   
   // Given
-  std::vector<AsciiTable::ColumnInfo::info_type> info_list {};
+  std::vector<ChTable::ColumnInfo::info_type> info_list {};
   
   // Then
-  BOOST_CHECK_THROW(AsciiTable::ColumnInfo {info_list}, ElementsException);
+  BOOST_CHECK_THROW(ChTable::ColumnInfo {info_list}, ElementsException);
   
 }
 
@@ -33,15 +33,15 @@ BOOST_AUTO_TEST_CASE(ConstructorEmptyNamesList) {
 BOOST_AUTO_TEST_CASE(ConstructorDuplicateNames) {
   
   // Given
-  std::vector<AsciiTable::ColumnInfo::info_type> info_list {};
-  info_list.push_back(AsciiTable::ColumnInfo::info_type("First", typeid(std::string)));
-  info_list.push_back(AsciiTable::ColumnInfo::info_type("Second", typeid(std::string)));
-  info_list.push_back(AsciiTable::ColumnInfo::info_type("Third", typeid(double)));
-  info_list.push_back(AsciiTable::ColumnInfo::info_type("Second", typeid(double)));
-  info_list.push_back(AsciiTable::ColumnInfo::info_type("Fifth", typeid(int)));
+  std::vector<ChTable::ColumnInfo::info_type> info_list {};
+  info_list.push_back(ChTable::ColumnInfo::info_type("First", typeid(std::string)));
+  info_list.push_back(ChTable::ColumnInfo::info_type("Second", typeid(std::string)));
+  info_list.push_back(ChTable::ColumnInfo::info_type("Third", typeid(double)));
+  info_list.push_back(ChTable::ColumnInfo::info_type("Second", typeid(double)));
+  info_list.push_back(ChTable::ColumnInfo::info_type("Fifth", typeid(int)));
   
   // Then
-  BOOST_CHECK_THROW(AsciiTable::ColumnInfo {info_list}, ElementsException);
+  BOOST_CHECK_THROW(ChTable::ColumnInfo {info_list}, ElementsException);
   
 }
 
@@ -52,15 +52,15 @@ BOOST_AUTO_TEST_CASE(ConstructorDuplicateNames) {
 BOOST_AUTO_TEST_CASE(ConstructorEmptyStringName) {
   
   // Given
-  std::vector<AsciiTable::ColumnInfo::info_type> info_list {};
-  info_list.push_back(AsciiTable::ColumnInfo::info_type("First", typeid(std::string)));
-  info_list.push_back(AsciiTable::ColumnInfo::info_type("Second", typeid(std::string)));
-  info_list.push_back(AsciiTable::ColumnInfo::info_type("Third", typeid(double)));
-  info_list.push_back(AsciiTable::ColumnInfo::info_type("", typeid(double)));
-  info_list.push_back(AsciiTable::ColumnInfo::info_type("Fifth", typeid(int)));
+  std::vector<ChTable::ColumnInfo::info_type> info_list {};
+  info_list.push_back(ChTable::ColumnInfo::info_type("First", typeid(std::string)));
+  info_list.push_back(ChTable::ColumnInfo::info_type("Second", typeid(std::string)));
+  info_list.push_back(ChTable::ColumnInfo::info_type("Third", typeid(double)));
+  info_list.push_back(ChTable::ColumnInfo::info_type("", typeid(double)));
+  info_list.push_back(ChTable::ColumnInfo::info_type("Fifth", typeid(int)));
   
   // Then
-  BOOST_CHECK_THROW(AsciiTable::ColumnInfo {info_list}, ElementsException);
+  BOOST_CHECK_THROW(ChTable::ColumnInfo {info_list}, ElementsException);
   
 }
 
@@ -71,18 +71,18 @@ BOOST_AUTO_TEST_CASE(ConstructorEmptyStringName) {
 BOOST_AUTO_TEST_CASE(ConstructorNameWithWhitespaceChars) {
   
   // Given
-  std::vector<AsciiTable::ColumnInfo::info_type> space {AsciiTable::ColumnInfo::info_type("Sp ace", typeid(std::string))};
-  std::vector<AsciiTable::ColumnInfo::info_type> tab {AsciiTable::ColumnInfo::info_type("Ta\tb", typeid(std::string))};
-  std::vector<AsciiTable::ColumnInfo::info_type> carriage_return {AsciiTable::ColumnInfo::info_type("Carriage\rReturn", typeid(double))};
-  std::vector<AsciiTable::ColumnInfo::info_type> new_line {AsciiTable::ColumnInfo::info_type("New\nLine", typeid(double))};
-  std::vector<AsciiTable::ColumnInfo::info_type> new_page {AsciiTable::ColumnInfo::info_type("New\fPage", typeid(int))};
+  std::vector<ChTable::ColumnInfo::info_type> space {ChTable::ColumnInfo::info_type("Sp ace", typeid(std::string))};
+  std::vector<ChTable::ColumnInfo::info_type> tab {ChTable::ColumnInfo::info_type("Ta\tb", typeid(std::string))};
+  std::vector<ChTable::ColumnInfo::info_type> carriage_return {ChTable::ColumnInfo::info_type("Carriage\rReturn", typeid(double))};
+  std::vector<ChTable::ColumnInfo::info_type> new_line {ChTable::ColumnInfo::info_type("New\nLine", typeid(double))};
+  std::vector<ChTable::ColumnInfo::info_type> new_page {ChTable::ColumnInfo::info_type("New\fPage", typeid(int))};
   
   // Then
-  BOOST_CHECK_THROW(AsciiTable::ColumnInfo {space}, ElementsException);
-  BOOST_CHECK_THROW(AsciiTable::ColumnInfo {tab}, ElementsException);
-  BOOST_CHECK_THROW(AsciiTable::ColumnInfo {carriage_return}, ElementsException);
-  BOOST_CHECK_THROW(AsciiTable::ColumnInfo {new_line}, ElementsException);
-  BOOST_CHECK_THROW(AsciiTable::ColumnInfo {new_page}, ElementsException);
+  BOOST_CHECK_THROW(ChTable::ColumnInfo {space}, ElementsException);
+  BOOST_CHECK_THROW(ChTable::ColumnInfo {tab}, ElementsException);
+  BOOST_CHECK_THROW(ChTable::ColumnInfo {carriage_return}, ElementsException);
+  BOOST_CHECK_THROW(ChTable::ColumnInfo {new_line}, ElementsException);
+  BOOST_CHECK_THROW(ChTable::ColumnInfo {new_page}, ElementsException);
   
 }
 
@@ -93,51 +93,51 @@ BOOST_AUTO_TEST_CASE(ConstructorNameWithWhitespaceChars) {
 BOOST_AUTO_TEST_CASE(equalityOperators) {
   
   // Given
-  std::vector<AsciiTable::ColumnInfo::info_type> info_list_1 {};
-  info_list_1.push_back(AsciiTable::ColumnInfo::info_type("First", typeid(std::string)));
-  info_list_1.push_back(AsciiTable::ColumnInfo::info_type("Second", typeid(std::string)));
-  info_list_1.push_back(AsciiTable::ColumnInfo::info_type("Third", typeid(double)));
-  info_list_1.push_back(AsciiTable::ColumnInfo::info_type("Fourth", typeid(double)));
-  info_list_1.push_back(AsciiTable::ColumnInfo::info_type("Fifth", typeid(int)));
-  std::vector<AsciiTable::ColumnInfo::info_type> info_list_2 {};
-  info_list_2.push_back(AsciiTable::ColumnInfo::info_type("First", typeid(std::string)));
-  info_list_2.push_back(AsciiTable::ColumnInfo::info_type("Second", typeid(std::string)));
-  info_list_2.push_back(AsciiTable::ColumnInfo::info_type("Third", typeid(double)));
-  info_list_2.push_back(AsciiTable::ColumnInfo::info_type("Fourth", typeid(double)));
-  info_list_2.push_back(AsciiTable::ColumnInfo::info_type("Fifth", typeid(int)));
+  std::vector<ChTable::ColumnInfo::info_type> info_list_1 {};
+  info_list_1.push_back(ChTable::ColumnInfo::info_type("First", typeid(std::string)));
+  info_list_1.push_back(ChTable::ColumnInfo::info_type("Second", typeid(std::string)));
+  info_list_1.push_back(ChTable::ColumnInfo::info_type("Third", typeid(double)));
+  info_list_1.push_back(ChTable::ColumnInfo::info_type("Fourth", typeid(double)));
+  info_list_1.push_back(ChTable::ColumnInfo::info_type("Fifth", typeid(int)));
+  std::vector<ChTable::ColumnInfo::info_type> info_list_2 {};
+  info_list_2.push_back(ChTable::ColumnInfo::info_type("First", typeid(std::string)));
+  info_list_2.push_back(ChTable::ColumnInfo::info_type("Second", typeid(std::string)));
+  info_list_2.push_back(ChTable::ColumnInfo::info_type("Third", typeid(double)));
+  info_list_2.push_back(ChTable::ColumnInfo::info_type("Fourth", typeid(double)));
+  info_list_2.push_back(ChTable::ColumnInfo::info_type("Fifth", typeid(int)));
   
   // When
-  AsciiTable::ColumnInfo columnInfo1 {info_list_1};
-  AsciiTable::ColumnInfo columnInfo2 {info_list_2};
+  ChTable::ColumnInfo columnInfo1 {info_list_1};
+  ChTable::ColumnInfo columnInfo2 {info_list_2};
   
   // Then
   BOOST_CHECK(columnInfo1 == columnInfo2);
   BOOST_CHECK(!(columnInfo1 != columnInfo2));
   
   // Given
-  std::vector<AsciiTable::ColumnInfo::info_type> info_list_3 {};
-  info_list_3.push_back(AsciiTable::ColumnInfo::info_type("First", typeid(std::string)));
-  info_list_3.push_back(AsciiTable::ColumnInfo::info_type("Second", typeid(std::string)));
-  info_list_3.push_back(AsciiTable::ColumnInfo::info_type("Third", typeid(double)));
-  info_list_3.push_back(AsciiTable::ColumnInfo::info_type("Fourth", typeid(double)));
+  std::vector<ChTable::ColumnInfo::info_type> info_list_3 {};
+  info_list_3.push_back(ChTable::ColumnInfo::info_type("First", typeid(std::string)));
+  info_list_3.push_back(ChTable::ColumnInfo::info_type("Second", typeid(std::string)));
+  info_list_3.push_back(ChTable::ColumnInfo::info_type("Third", typeid(double)));
+  info_list_3.push_back(ChTable::ColumnInfo::info_type("Fourth", typeid(double)));
   
   // When
-  AsciiTable::ColumnInfo columnInfo3 {info_list_3};
+  ChTable::ColumnInfo columnInfo3 {info_list_3};
   
   // Then
   BOOST_CHECK(!(columnInfo1 == columnInfo3));
   BOOST_CHECK(columnInfo1 != columnInfo3);
   
   // Given
-  std::vector<AsciiTable::ColumnInfo::info_type> info_list_4 {};
-  info_list_4.push_back(AsciiTable::ColumnInfo::info_type("First", typeid(std::string)));
-  info_list_4.push_back(AsciiTable::ColumnInfo::info_type("Second", typeid(std::string)));
-  info_list_4.push_back(AsciiTable::ColumnInfo::info_type("WRONG", typeid(double)));
-  info_list_4.push_back(AsciiTable::ColumnInfo::info_type("Fourth", typeid(double)));
-  info_list_4.push_back(AsciiTable::ColumnInfo::info_type("Fifth", typeid(int)));
+  std::vector<ChTable::ColumnInfo::info_type> info_list_4 {};
+  info_list_4.push_back(ChTable::ColumnInfo::info_type("First", typeid(std::string)));
+  info_list_4.push_back(ChTable::ColumnInfo::info_type("Second", typeid(std::string)));
+  info_list_4.push_back(ChTable::ColumnInfo::info_type("WRONG", typeid(double)));
+  info_list_4.push_back(ChTable::ColumnInfo::info_type("Fourth", typeid(double)));
+  info_list_4.push_back(ChTable::ColumnInfo::info_type("Fifth", typeid(int)));
   
   // When
-  AsciiTable::ColumnInfo columnInfo4 {info_list_4};
+  ChTable::ColumnInfo columnInfo4 {info_list_4};
   
   // Then
   BOOST_CHECK(!(columnInfo1 == columnInfo4));
@@ -152,13 +152,13 @@ BOOST_AUTO_TEST_CASE(equalityOperators) {
 BOOST_AUTO_TEST_CASE(size) {
   
   // Given
-  std::vector<AsciiTable::ColumnInfo::info_type> info_list {};
-  info_list.push_back(AsciiTable::ColumnInfo::info_type("First", typeid(std::string)));
-  info_list.push_back(AsciiTable::ColumnInfo::info_type("Second", typeid(std::string)));
-  info_list.push_back(AsciiTable::ColumnInfo::info_type("Third", typeid(double)));
-  info_list.push_back(AsciiTable::ColumnInfo::info_type("Fourth", typeid(double)));
-  info_list.push_back(AsciiTable::ColumnInfo::info_type("Fifth", typeid(int)));
-  AsciiTable::ColumnInfo columnInfo {info_list};
+  std::vector<ChTable::ColumnInfo::info_type> info_list {};
+  info_list.push_back(ChTable::ColumnInfo::info_type("First", typeid(std::string)));
+  info_list.push_back(ChTable::ColumnInfo::info_type("Second", typeid(std::string)));
+  info_list.push_back(ChTable::ColumnInfo::info_type("Third", typeid(double)));
+  info_list.push_back(ChTable::ColumnInfo::info_type("Fourth", typeid(double)));
+  info_list.push_back(ChTable::ColumnInfo::info_type("Fifth", typeid(int)));
+  ChTable::ColumnInfo columnInfo {info_list};
   
   // When
   std::size_t size = columnInfo.size();
@@ -175,13 +175,13 @@ BOOST_AUTO_TEST_CASE(size) {
 BOOST_AUTO_TEST_CASE(getName) {
   
   // Given
-  std::vector<AsciiTable::ColumnInfo::info_type> info_list {};
-  info_list.push_back(AsciiTable::ColumnInfo::info_type("First", typeid(std::string)));
-  info_list.push_back(AsciiTable::ColumnInfo::info_type("Second", typeid(std::string)));
-  info_list.push_back(AsciiTable::ColumnInfo::info_type("Third", typeid(double)));
-  info_list.push_back(AsciiTable::ColumnInfo::info_type("Fourth", typeid(double)));
-  info_list.push_back(AsciiTable::ColumnInfo::info_type("Fifth", typeid(int)));
-  AsciiTable::ColumnInfo columnInfo {info_list};
+  std::vector<ChTable::ColumnInfo::info_type> info_list {};
+  info_list.push_back(ChTable::ColumnInfo::info_type("First", typeid(std::string)));
+  info_list.push_back(ChTable::ColumnInfo::info_type("Second", typeid(std::string)));
+  info_list.push_back(ChTable::ColumnInfo::info_type("Third", typeid(double)));
+  info_list.push_back(ChTable::ColumnInfo::info_type("Fourth", typeid(double)));
+  info_list.push_back(ChTable::ColumnInfo::info_type("Fifth", typeid(int)));
+  ChTable::ColumnInfo columnInfo {info_list};
   
   // When
   const std::string& name0  = columnInfo.getName(0);
@@ -207,13 +207,13 @@ BOOST_AUTO_TEST_CASE(getName) {
 BOOST_AUTO_TEST_CASE(getType) {
   
   // Given
-  std::vector<AsciiTable::ColumnInfo::info_type> info_list {};
-  info_list.push_back(AsciiTable::ColumnInfo::info_type("First", typeid(std::string)));
-  info_list.push_back(AsciiTable::ColumnInfo::info_type("Second", typeid(std::string)));
-  info_list.push_back(AsciiTable::ColumnInfo::info_type("Third", typeid(double)));
-  info_list.push_back(AsciiTable::ColumnInfo::info_type("Fourth", typeid(double)));
-  info_list.push_back(AsciiTable::ColumnInfo::info_type("Fifth", typeid(int)));
-  AsciiTable::ColumnInfo columnInfo {info_list};
+  std::vector<ChTable::ColumnInfo::info_type> info_list {};
+  info_list.push_back(ChTable::ColumnInfo::info_type("First", typeid(std::string)));
+  info_list.push_back(ChTable::ColumnInfo::info_type("Second", typeid(std::string)));
+  info_list.push_back(ChTable::ColumnInfo::info_type("Third", typeid(double)));
+  info_list.push_back(ChTable::ColumnInfo::info_type("Fourth", typeid(double)));
+  info_list.push_back(ChTable::ColumnInfo::info_type("Fifth", typeid(int)));
+  ChTable::ColumnInfo columnInfo {info_list};
   
   // When
   const std::type_index& type0  = columnInfo.getType(0);
@@ -239,13 +239,13 @@ BOOST_AUTO_TEST_CASE(getType) {
 BOOST_AUTO_TEST_CASE(find) {
   
   // Given
-  std::vector<AsciiTable::ColumnInfo::info_type> info_list {};
-  info_list.push_back(AsciiTable::ColumnInfo::info_type("First", typeid(std::string)));
-  info_list.push_back(AsciiTable::ColumnInfo::info_type("Second", typeid(std::string)));
-  info_list.push_back(AsciiTable::ColumnInfo::info_type("Third", typeid(double)));
-  info_list.push_back(AsciiTable::ColumnInfo::info_type("Fourth", typeid(double)));
-  info_list.push_back(AsciiTable::ColumnInfo::info_type("Fifth", typeid(int)));
-  AsciiTable::ColumnInfo columnInfo {info_list};
+  std::vector<ChTable::ColumnInfo::info_type> info_list {};
+  info_list.push_back(ChTable::ColumnInfo::info_type("First", typeid(std::string)));
+  info_list.push_back(ChTable::ColumnInfo::info_type("Second", typeid(std::string)));
+  info_list.push_back(ChTable::ColumnInfo::info_type("Third", typeid(double)));
+  info_list.push_back(ChTable::ColumnInfo::info_type("Fourth", typeid(double)));
+  info_list.push_back(ChTable::ColumnInfo::info_type("Fifth", typeid(int)));
+  ChTable::ColumnInfo columnInfo {info_list};
   
   // When
   std::unique_ptr<size_t> index0  = columnInfo.find("First");
