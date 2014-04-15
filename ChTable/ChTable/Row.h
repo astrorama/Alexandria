@@ -35,7 +35,7 @@ class Row {
   
 public:
   
-  typedef boost::variant<bool, int, long, float, double, std::string> cell_type;
+  typedef boost::variant<bool, int32_t, int64_t, float, double, std::string> cell_type;
   
   typedef std::vector<cell_type>::const_iterator const_iterator;
   
