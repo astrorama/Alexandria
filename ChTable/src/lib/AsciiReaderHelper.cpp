@@ -146,6 +146,7 @@ std::vector<std::type_index> autoDetectColumnTypes(std::istream& in,
             for (auto keyword : keywords) {
               types.push_back(keywordToType(keyword));
             }
+            break;
           } else {
             names_found = true;
           }
