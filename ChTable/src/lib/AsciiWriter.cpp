@@ -33,7 +33,7 @@ void AsciiWriter::write(std::ostream& out, const Table& table) const {
   for (size_t i=0; i<column_info->size(); ++i) {
     out << std::setw(column_lengths[i]) << typeToKeyword(column_info->getType(i));
   }
-  out << "\n";
+  out << "\n\n";
   // The data lines are not prefixed with the comment string, so we need to fix
   // the length of the first column to get the alignment correctly
   column_lengths[0] = column_lengths[0] + m_comment.size();

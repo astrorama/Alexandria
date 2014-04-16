@@ -66,6 +66,7 @@ BOOST_FIXTURE_TEST_CASE(write, AsciiWriter_Fixture) {
   BOOST_CHECK_EQUAL(stream_hash.str(),
     "# Boolean ThisIsAVeryLongColumnName    Integer       D     F\n"
     "#    bool                    string        int  double float\n"
+    "\n"
     "        1                     Two-1          1     4.1     0\n"
     "        0                     Two-2 1234567890 4.2e-15     0\n"
     "        1                     Two-3        234     4.3     0\n"
@@ -73,6 +74,7 @@ BOOST_FIXTURE_TEST_CASE(write, AsciiWriter_Fixture) {
   BOOST_CHECK_EQUAL(stream_double_slash.str(),
     "// Boolean ThisIsAVeryLongColumnName    Integer       D     F\n"
     "//    bool                    string        int  double float\n"
+    "\n"
     "         1                     Two-1          1     4.1     0\n"
     "         0                     Two-2 1234567890 4.2e-15     0\n"
     "         1                     Two-3        234     4.3     0\n"
