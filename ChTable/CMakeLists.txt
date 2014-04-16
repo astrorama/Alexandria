@@ -27,3 +27,9 @@ elements_add_unit_test(AsciiReader_test tests/src/AsciiReader_test.cpp tests/src
 
 elements_add_unit_test(AsciiReaderHelper_test tests/src/AsciiReaderHelper_test.cpp tests/src/TestMain.cpp
                        LINK_LIBRARIES ChTable TYPE Boost)
+
+elements_add_unit_test(AsciiWriter_test tests/src/AsciiWriter_test.cpp tests/src/TestMain.cpp
+                       LINK_LIBRARIES ChTable TYPE Boost)
+
+elements_add_unit_test(AsciiWriterHelper_test tests/src/AsciiWriterHelper_test.cpp tests/src/TestMain.cpp
+                       LINK_LIBRARIES ChTable TYPE Boost)
