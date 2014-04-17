@@ -1,5 +1,7 @@
 elements_subdir(ChCatalog 1.0)
 
+elements_depends_on_subdirs(ChTable)
+
 find_package(Boost REQUIRED COMPONENTS filesystem thread system)
 find_package(Eigen3)
 
@@ -7,8 +9,8 @@ find_package(Eigen3)
 #===== Libraries ===============================================================
 
 elements_add_library(ChCatalog src/lib/*.cpp
-                  LINK_LIBRARIES ${CMAKE_DL_LIBS} Boost 
-                  INCLUDE_DIRS Eigen3 Boost 
+                  LINK_LIBRARIES ${CMAKE_DL_LIBS} Boost ChTable
+                  INCLUDE_DIRS Eigen3 Boost ChTable
                   PUBLIC_HEADERS ChCatalog)
 
 
