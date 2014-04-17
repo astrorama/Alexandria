@@ -13,14 +13,14 @@
 #include <string>
 #include "XYDataset/XYDataset.h"
 
-namespace XYdataset {
+namespace XYDataset {
 
 /**
  * The XYDatasetProvider template class provides the dataset following
  * an identifier object
  */
 
-template <class T>
+template <typename T>
 
 class XYDatasetProvider
 {
@@ -29,23 +29,24 @@ class XYDatasetProvider
    * @brief
    * Virtual function to list all files contents in the "group" path
    * @details
-   * let's take the folleoing example. if you have a group sets to "/A/B/C" and
+   * let's take the folleoing example. if you have a group sets to "A/B/C" and
    * under the "C" repository there is the following structure :
    * C/file1
    * C/file2
    * C/D/file3
    * etc...
    * then the vector of strings returned will contain the following elements:
-   * vector[0] = "/A/B/C/file1"
-   * vector[1] = "/A/B/C/file2"
-   * vector[3] = "/A/B/C/D/file3"
+   * vector[0] = "A/B/C/file1"
+   * vector[1] = "A/B/C/file2"
+   * vector[3] = "A/B/C/D/file3"
    * etc...
+   * Note: The empty string for the group means the root group
    * @param group
    * Name of the dataset group
    * @return
    * A vector of strings of all files included their path
    */
-  virtual std::vector<std::string>   listContents(std::string group) = 0;
+   virtual std::vector<std::string> listContents(const std::string& group) = 0;
 
   /**
    * @brief
@@ -56,11 +57,11 @@ class XYDatasetProvider
    * @return
    * A unique pointer of XYDataset type to the dataset
    */
-virtual std::unique_ptr<XYDataset> getDataset(T identifier)  = 0;
+   virtual std::unique_ptr<XYDataset> getDataset(const T &identifier) = 0;
 
  private:
 
-}
+};
 
 } /* namespace XYDataset */
 

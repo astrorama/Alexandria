@@ -17,6 +17,9 @@ elements_add_library(XYDataset src/lib/*.cpp
 elements_add_unit_test(XYDataset_test tests/src/XYDataset_test.cpp tests/src/TestMain.cpp
                        LINK_LIBRARIES XYDataset TYPE Boost)
 
+elements_add_unit_test(FileSystemProvider_test tests/src/FileSystemProvider_test.cpp tests/src/TestMain.cpp
+                       LINK_LIBRARIES XYDataset TYPE Boost)
+
 
 #-------------------------------------------------------------------------------
 

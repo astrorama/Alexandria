@@ -13,7 +13,7 @@
 #include <string>
 #include "XYDataset/XYDataset.h"
 
-namespace XYdataset {
+namespace XYDataset {
 
 /**
  * The XYDatasetIdentifierTraits Trait class converts a given identifier

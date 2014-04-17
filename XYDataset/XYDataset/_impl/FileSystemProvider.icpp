@@ -1,0 +1,68 @@
+/**
+ * @file FileSytemProvider.icpp
+ *
+ * @date Apr 14, 2014
+ * @author Nicolas Morisset
+ */
+
+#ifdef FILESYSTEMPROVIDER_IMPL
+
+#include <boost/filesystem.hpp>
+
+namespace fs = boost::filesystem;
+
+namespace XYDataset {
+
+template <typename T>
+
+std::unique_ptr<XYDataset> FileSystemProvider<T>::getDataset(const T & identifier)
+{
+  std::unique_ptr<XYDataset> xy_ptr {};
+  return (std::move(xy_ptr));
+}
+
+template <typename T>
+std::vector<std::string> FileSystemProvider<T>::listContents(const std::string& group)
+{
+
+ std::vector<std::string> string_vector;
+ // Add root path
+ std::string full_path = m_root_path + "/" + group + "/";
+ // Convert path to boost filesytem object
+ fs::path fspath(full_path);
+
+ if (!fs::exists(fspath)) {
+   throw ElementsException() << "FileSystemProvider::listContents: "
+                             << group << ", path not found!";
+ }
+
+ // Get all files below the group directory
+ if (fs::is_directory(fspath)) {
+   std::cout<<"zzzfull_path "<<full_path<<" group: "<<group<<std::endl;
+   std::cout<<"zzz fspath "<<fspath<<std::endl;
+   fs::recursive_directory_iterator it(fspath);
+   std::cout<<"zzz 2 fspath "<<fspath<<std::endl;
+   fs::recursive_directory_iterator endit;
+   std::cout<<"zzzfull_path "<<full_path<<" group: "<<group<<std::endl;
+   while(it != endit)
+   {
+     if (fs::is_regular_file(*it))
+     {
+       std::cout<<"it->path().filename()"<<it->path().filename()<<std::endl;
+       string_vector.push_back(it->path().filename().string());
+     }
+     ++it;
+   }
+ }
+ else {
+   throw ElementsException() << "FileSystemProvider::listContents: "
+                             << group << ", the group is not a directory!";
+
+ }
+
+ return string_vector;
+}
+
+} /* namespace XYDataset */
+
+#endif /* FILESYSTEMPROVIDER_IMPL */
