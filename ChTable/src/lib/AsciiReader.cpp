@@ -53,12 +53,20 @@ const Table AsciiReader::read(std::istream& in) const {
   std::vector<std::string> names {};
   if (m_column_names.empty()) {
     names = autoDetectColumnNames(in, m_comment, columns_number);
+  } else if (m_column_names.size() != columns_number) {
+      throw ElementsException() << "Columns number in stream (" << columns_number
+                                << ") does not match the column names number ("
+                                << m_column_names.size() << ")";
   } else {
     names = m_column_names;
   }
   std::vector<std::type_index> types {};
   if (m_column_types.empty()) {
     types = autoDetectColumnTypes(in, m_comment, columns_number);
+  } else if (m_column_types.size() != columns_number) {
+      throw ElementsException() << "Columns number in stream (" << columns_number
+                                << ") does not match the column types number ("
+                                << m_column_types.size() << ")";
   } else {
     types = m_column_types;
   }

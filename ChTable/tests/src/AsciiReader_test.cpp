@@ -280,6 +280,48 @@ BOOST_FIXTURE_TEST_CASE(ReadNoData, AsciiReader_Fixture) {
 }
 
 //-----------------------------------------------------------------------------
+// Test the read throws an exception for wrong number of column names
+//-----------------------------------------------------------------------------
+
+BOOST_FIXTURE_TEST_CASE(ReadWrongColumnNamesNumber, AsciiReader_Fixture) {
+  
+  // Given
+  std::vector<std::string> wrong_names_less {"1","2","3"};
+  std::vector<std::string> wrong_names_more {"1","2","3","4","5","6","7","8","9","10"};
+  ChTable::AsciiReader lessReader {{}, wrong_names_less};
+  ChTable::AsciiReader moreReader {{}, wrong_names_more};
+  std::stringstream inless {all_types};
+  std::stringstream inmore {all_types};
+  
+  // Then
+  BOOST_CHECK_THROW(lessReader.read(inless), ElementsException);
+  BOOST_CHECK_THROW(moreReader.read(inmore), ElementsException);
+  
+}
+
+//-----------------------------------------------------------------------------
+// Test the read throws an exception for wrong number of column types
+//-----------------------------------------------------------------------------
+
+BOOST_FIXTURE_TEST_CASE(ReadWrongColumnTypesNumber, AsciiReader_Fixture) {
+  
+  // Given
+  std::vector<std::type_index> wrong_types_less {typeid(bool),typeid(bool),typeid(bool)};
+  std::vector<std::type_index> wrong_types_more {typeid(bool),typeid(bool),typeid(bool),typeid(bool),
+                                                 typeid(bool),typeid(bool),typeid(bool),typeid(bool),
+                                                 typeid(bool),typeid(bool),typeid(bool),typeid(bool)};
+  ChTable::AsciiReader lessReader {wrong_types_less};
+  ChTable::AsciiReader moreReader {wrong_types_more};
+  std::stringstream inless {all_types};
+  std::stringstream inmore {all_types};
+  
+  // Then
+  BOOST_CHECK_THROW(lessReader.read(inless), ElementsException);
+  BOOST_CHECK_THROW(moreReader.read(inmore), ElementsException);
+  
+}
+
+//-----------------------------------------------------------------------------
 // Test the read throws an exception for rows with different number of columns
 //-----------------------------------------------------------------------------
 

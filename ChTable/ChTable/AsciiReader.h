@@ -97,6 +97,12 @@ public:
    * @throws ElementsException
    *    if the stream does not contain any non comment lines
    * @throws ElementsException
+   *    if column names are given to the constructor and the stream contains
+   *    data with different number of columns
+   * @throws ElementsException
+   *    if column types are given to the constructor and the stream contains
+   *    data with different number of columns
+   * @throws ElementsException
    *    if the stream contains lines with different number of columns
    * @throws ElementsException
    *    if column name auto-detection is enabled and there are duplicate names
