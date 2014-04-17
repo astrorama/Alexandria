@@ -14,15 +14,15 @@ using namespace std;
 
 namespace XYDataset {
 
-//struct FileSystemProvider_Fixture {
-//  string group = "PhotZAuxData/Filter";
-//  unique_ptr<FileParser> fp {};
-//  FileSystemProvider<string> fsp {"/Users/admin/Eclipse/Alexandria/", std::move(fp)};
-//};
-//
-////-----------------------------------------------------------------------------
-//
-//BOOST_AUTO_TEST_SUITE (FileSystemProvider_test)
+struct FileSystemProvider_Fixture {
+  string group = "PhotZAuxData/Filter";
+  unique_ptr<FileParser> fp {};
+  FileSystemProvider<string> fsp {"/Users/admin/Eclipse/Alexandria/", std::move(fp)};
+};
+
+//-----------------------------------------------------------------------------
+
+BOOST_AUTO_TEST_SUITE (FileSystemProvider_test)
 //
 ////-----------------------------------------------------------------------------
 ////            Test the listContents function
@@ -43,7 +43,7 @@ namespace XYDataset {
 //
 ////-----------------------------------------------------------------------------
 //
-//BOOST_AUTO_TEST_SUITE_END ()
+BOOST_AUTO_TEST_SUITE_END ()
 
 }
 
