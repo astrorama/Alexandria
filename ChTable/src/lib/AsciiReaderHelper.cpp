@@ -95,7 +95,7 @@ std::vector<std::string> autoDetectColumnNames(std::istream& in,
   return names;
 }
 
-std::type_index keywordToType(std::string keyword) {
+std::type_index keywordToType(const std::string& keyword) {
   if (keyword == "bool" || keyword == "boolean") {
     return typeid(bool);
   } else if (keyword == "int" || keyword == "int32") {
@@ -162,15 +162,6 @@ std::vector<std::type_index> autoDetectColumnTypes(std::istream& in,
     }
   }
   return types;
-}
-
-std::shared_ptr<ColumnInfo> createColumnInfo(const std::vector<std::string>& names,
-                                             const std::vector<std::type_index>& types) {
-  std::vector<ColumnInfo::info_type> info_list {};
-  for (size_t i=0; i< names.size(); ++i) {
-    info_list.push_back({names[i], types[i]});
-  }
-  return std::shared_ptr<ColumnInfo>(new ColumnInfo{std::move(info_list)});
 }
 
 Row::cell_type convertToCellType(const std::string& value, std::type_index type) {

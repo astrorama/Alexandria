@@ -16,6 +16,7 @@ using boost::regex_match;
 #include <boost/algorithm/string.hpp>
 #include "ElementsKernel/ElementsException.h"
 #include "ChTable/AsciiReader.h"
+#include "ReaderHelper.h"
 #include "AsciiReaderHelper.h"
 
 namespace ChTable {
