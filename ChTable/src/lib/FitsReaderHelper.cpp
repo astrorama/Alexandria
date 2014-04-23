@@ -4,7 +4,6 @@
  * @author Nikolaos Apostolakos
  */
 
-#include <valarray>
 #include <CCfits/CCfits>
 #include "ElementsKernel/ElementsException.h"
 #include "FitsReaderHelper.h"
