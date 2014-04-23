@@ -15,8 +15,8 @@ namespace ChCatalog {
 
 class AttributeHandler {
 public:
-  AttributeHandler();
-  virtual ~AttributeHandler();
+  AttributeHandler() = default;
+  virtual ~AttributeHandler() = default;
 
   virtual std::unique_ptr<Attribute> createAttribute(const ChTable::Row& row) = 0;
 
