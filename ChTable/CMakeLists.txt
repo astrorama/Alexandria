@@ -41,3 +41,9 @@ elements_add_unit_test(FitsReader_test tests/src/FitsReader_test.cpp tests/src/T
 
 elements_add_unit_test(FitsReaderHelper_test tests/src/FitsReaderHelper_test.cpp tests/src/TestMain.cpp
                        LINK_LIBRARIES ChTable TYPE Boost)
+
+elements_add_unit_test(FitsWriter_test tests/src/FitsWriter_test.cpp tests/src/TestMain.cpp
+                       LINK_LIBRARIES ChTable TYPE Boost)
+
+elements_add_unit_test(FitsWriterHelper_test tests/src/FitsWriterHelper_test.cpp tests/src/TestMain.cpp
+                       LINK_LIBRARIES ChTable TYPE Boost)
