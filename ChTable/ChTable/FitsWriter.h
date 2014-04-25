@@ -56,7 +56,7 @@ public:
    * - int32_t, int64_t<br>
    *   Iw, where w is the length required for the data of the column
    * - float, double<br>
-   *   Ew.d, where w and d are the lengths required for the data of the column
+   *   E12 (at the moment the length is is not modifiable)<br>
    * - std::string<br>
    *   Aw, where w is the length required for the data of the column
    * 

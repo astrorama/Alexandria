@@ -15,8 +15,30 @@
 
 namespace ChTable {
 
+/**
+ * @biref
+ * Returns a vector with strings representing the FITS ASCII table formats for
+ * the given table
+ * @details
+ * For more details on the conversions between the table formats and the FITS
+ * ASCII formats see the documentation of the FitsWriter::write() method.
+ * 
+ * @param table The table
+ * @return The list of FITS ASCII table formats
+ */
 std::vector<std::string> getAsciiFormatList(const Table& table);
 
+/**
+ * @biref
+ * Returns a vector with strings representing the FITS binary table formats for
+ * the given table
+ * @details
+ * For more details on the conversions between the table formats and the FITS
+ * binary formats see the documentation of the FitsWriter::write() method.
+ * 
+ * @param table The table
+ * @return The list of FITS binary table formats
+ */
 std::vector<std::string> getBinaryFormatList(const Table& table);
 
 void populateColumn(const Table& table, size_t column_index, CCfits::Table* table_hdu);
