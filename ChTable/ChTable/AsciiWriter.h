@@ -37,6 +37,9 @@ public:
    */
   AsciiWriter(std::string comment = "#");
   
+  /// Default destructor
+  virtual ~AsciiWriter() = default;
+  
   /**
    * @brief
    * Writes a Table in the given stream

@@ -44,6 +44,9 @@ public:
    */
   FitsReader(std::vector<std::string> column_names = {});
   
+  /// Default destructor
+  virtual ~FitsReader() = default;
+  
   /**
    * @brief
    * Reads a Table from the given FITS HDU

@@ -43,6 +43,9 @@ public:
    */
   FitsWriter(Format format = Format::BINARY);
   
+  /// Default destructor
+  virtual ~FitsWriter() = default;
+  
   /**
    * @brief
    * Adds a table HDU to a FITS object

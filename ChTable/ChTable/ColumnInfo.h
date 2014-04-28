@@ -63,6 +63,9 @@ public:
    */
   ColumnInfo(std::vector<info_type> info_list);
   
+  /// Default destructor
+  virtual ~ColumnInfo() = default;
+  
   /**
    * @brief
    * Returns true if this ColumnInfo represents the same columns with the given one

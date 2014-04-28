@@ -63,6 +63,9 @@ public:
    */
   Row(std::vector<cell_type> values, std::shared_ptr<ColumnInfo> column_info);
   
+  /// Default destructor
+  virtual ~Row() = default;
+  
   /**
    * @brief
    * Returns a ColumnInfo object describing the columns of the Row

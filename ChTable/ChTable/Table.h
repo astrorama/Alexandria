@@ -45,6 +45,9 @@ public:
    */
   Table(std::vector<Row> row_list);
   
+  /// Default destructor
+  virtual ~Table() = default;
+  
   /**
    * @brief
    * Returns a ColumnInfo object describing the columns of the table

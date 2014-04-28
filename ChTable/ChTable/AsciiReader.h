@@ -78,6 +78,9 @@ public:
               std::vector<std::string> column_names = {},
               std::string comment = "#");
   
+  /// Default destructor
+  virtual ~AsciiReader() = default;
+  
   /**
    * @brief
    * Reads a Table from the given stream
