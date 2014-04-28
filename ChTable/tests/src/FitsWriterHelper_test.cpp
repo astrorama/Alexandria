@@ -21,9 +21,9 @@ struct FitsWriterHelper_Fixture {
       ChTable::ColumnInfo::info_type("String", typeid(std::string))
   };
   std::shared_ptr<ChTable::ColumnInfo> column_info {new ChTable::ColumnInfo {info_list}};
-  std::vector<ChTable::Row::cell_type> values0 {true, 1, 123L, 0.f, 0., std::string{"first"}};
+  std::vector<ChTable::Row::cell_type> values0 {true, 1, int64_t{123}, 0.f, 0., std::string{"first"}};
   ChTable::Row row0 {values0, column_info};
-  std::vector<ChTable::Row::cell_type> values1 {false, 12345, 123456789L, 2.3e-2f, 1.12345e-18, std::string{"second"}};
+  std::vector<ChTable::Row::cell_type> values1 {false, 12345, int64_t{123456789}, 2.3e-2f, 1.12345e-18, std::string{"second"}};
   ChTable::Row row1 {values1, column_info};
   std::vector<ChTable::Row> row_list {row0, row1};
   ChTable::Table table {row_list};
@@ -38,10 +38,10 @@ BOOST_AUTO_TEST_SUITE (FitsWriterHelper_test)
 //-----------------------------------------------------------------------------
 
 BOOST_FIXTURE_TEST_CASE(getAsciiFormatList, FitsWriterHelper_Fixture) {
-  
+
   // When
   auto format_list = ChTable::getAsciiFormatList(table);
-  
+
   // Then
   BOOST_CHECK_EQUAL(format_list.size(), 6);
   BOOST_CHECK_EQUAL(format_list[0], "I1");
@@ -50,7 +50,7 @@ BOOST_FIXTURE_TEST_CASE(getAsciiFormatList, FitsWriterHelper_Fixture) {
   BOOST_CHECK_EQUAL(format_list[3], "E12");
   BOOST_CHECK_EQUAL(format_list[4], "E12");
   BOOST_CHECK_EQUAL(format_list[5], "A6");
-  
+
 }
 
 //-----------------------------------------------------------------------------
@@ -58,10 +58,10 @@ BOOST_FIXTURE_TEST_CASE(getAsciiFormatList, FitsWriterHelper_Fixture) {
 //-----------------------------------------------------------------------------
 
 BOOST_FIXTURE_TEST_CASE(getBinaryFormatList, FitsWriterHelper_Fixture) {
-  
+
   // When
   auto format_list = ChTable::getBinaryFormatList(table);
-  
+
   // Then
   BOOST_CHECK_EQUAL(format_list.size(), 6);
   BOOST_CHECK_EQUAL(format_list[0], "L");
@@ -70,7 +70,7 @@ BOOST_FIXTURE_TEST_CASE(getBinaryFormatList, FitsWriterHelper_Fixture) {
   BOOST_CHECK_EQUAL(format_list[3], "E");
   BOOST_CHECK_EQUAL(format_list[4], "D");
   BOOST_CHECK_EQUAL(format_list[5], "6A");
-  
+
 }
 
 //-----------------------------------------------------------------------------
