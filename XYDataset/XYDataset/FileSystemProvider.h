@@ -54,9 +54,15 @@ class FileSystemProvider : public XYDatasetProvider<T>
    * @param identifier : dataset's identifier
    */
   std::unique_ptr<XYDataset> getDataset(const T & identifier) override;
+
   /**
-   * @brief List the files contained into a directory
-   * @param group : path to a set of directories/files
+   * @brief List the files contained into a directory (group)
+   * @param group
+   *  path to a set of directories/files
+   * @return
+   * A vector of strings of the filenames found including the path
+   * @throw ElementsException: Path to the files not found
+   * @throw ElementsException: The group is not a directory
    */
   std::vector<std::string> listContents(const std::string& group) override;
 
