@@ -11,6 +11,31 @@ using namespace std;
 
 namespace ChCatalog {
 
+Photometry::const_iterator::const_iterator(const std::vector<FilterName>::const_iterator& filters_iter,
+                                           const std::vector<std::pair<double,double> >::const_iterator& values_iter)
+                : m_filters_iter{filters_iter}, m_values_iter{values_iter} { }
+                
+auto Photometry::const_iterator::operator ++() -> const_iterator& {
+  ++m_filters_iter;
+  ++m_values_iter;
+  return *this;
+}
+
+auto Photometry::const_iterator::operator *() -> reference {
+  return *m_values_iter;
+}
+
+bool Photometry::const_iterator::operator ==(const const_iterator& other) const {
+  return m_filters_iter == other.m_filters_iter;
+}
+
+bool Photometry::const_iterator::operator !=(const const_iterator& other) const {
+  return m_filters_iter != other.m_filters_iter;
+}
+
+const FilterName& Photometry::const_iterator::filterName() const {
+  return *m_filters_iter;
+}
 
 //-----------------------------------------------------------------------------
 // find the value and error in the map for a specific filter name

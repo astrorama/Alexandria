@@ -10,6 +10,7 @@
 
 #include <memory>
 #include <vector>
+#include <iterator>
 #include "ElementsKernel/ElementsException.h"
 #include "ChCatalog/Attribute.h"
 #include "ChCatalog/FilterName.h"
@@ -23,6 +24,20 @@ namespace ChCatalog {
 class Photometry: public Attribute {
 
 public:
+  
+  class const_iterator : public std::iterator<std::forward_iterator_tag, const std::pair<double, double>> {
+  public:
+    const_iterator(const std::vector<FilterName>::const_iterator& filters_iter,
+                   const std::vector<std::pair<double, double>>::const_iterator& values_iter);
+    const_iterator& operator++();
+    reference operator*();
+    bool operator==(const const_iterator& other) const;
+    bool operator!=(const const_iterator& other) const;
+    const FilterName& filterName() const;
+  private:
+    std::vector<FilterName>::const_iterator m_filters_iter;
+    std::vector<std::pair<double, double>>::const_iterator m_values_iter;
+  };
 
   Photometry(std::shared_ptr<std::vector<FilterName>> filter_name_vector_ptr,
         std::vector<std::pair<double, double>> photometry_vector)
@@ -34,6 +49,14 @@ public:
 
   /// default destructor
   virtual ~Photometry() { }
+  
+  const_iterator begin() const {
+    return const_iterator {m_filter_name_vector_ptr->cbegin(), m_photometry_vector.cbegin()};
+  }
+  
+  const_iterator end() const {
+    return const_iterator {m_filter_name_vector_ptr->cend(), m_photometry_vector.cend()};
+  }
 
   /**
    * @brief
