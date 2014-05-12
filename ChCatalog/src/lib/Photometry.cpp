@@ -16,15 +16,24 @@ namespace ChCatalog {
 // find the value and error in the map for a specific filter name
 // return a pair(value, error) otherwise null pointer
 
-shared_ptr<pair<double, double>> Photometry::find(FilterName filter_name) const
+unique_ptr<pair<double, double>> Photometry::find(FilterName filter_name) const
 {
-  shared_ptr<pair<double, double>> ptr(nullptr);
-  auto it = m_photometry_map.find(filter_name);
-  if (it != m_photometry_map.end()) {
-    ptr = make_shared<pair<double, double>>(it->second);
+
+  unique_ptr<pair<double, double>> flux_found_ptr {};
+  auto filter_iter = m_filter_name_vector_ptr->begin();
+  auto photometry_iter = m_photometry_vector.begin();
+  while (filter_iter != m_filter_name_vector_ptr->end()) {
+    if (*filter_iter == filter_name) {
+      break;
+    }
+    ++filter_iter;
+    ++photometry_iter;
+  }
+  if (filter_iter != m_filter_name_vector_ptr->end()) {
+    flux_found_ptr = unique_ptr<pair<double, double>>{new pair<double, double>{*photometry_iter} };
   }
 
-  return (ptr);
+  return flux_found_ptr;
 } // Eof Photometry::find
 
 
