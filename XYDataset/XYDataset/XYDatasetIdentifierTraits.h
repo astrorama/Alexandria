@@ -41,7 +41,7 @@ class XYDatasetIdentifierTraits
 
  private:
 
-}
+};
 
 
 /**
@@ -52,7 +52,7 @@ class XYDatasetIdentifierTraits
 
 template <>
 
-class XYDatasetIdentifierTraits
+class XYDatasetIdentifierTraits<std::string>
 {
  public:
   /**
@@ -64,13 +64,13 @@ class XYDatasetIdentifierTraits
    * String of the qualified name
    *
    */
-  static std::string getQualifiedName(const string& identifier) {
-                     return identifier.getID();
+  static std::string getQualifiedName(const std::string& identifier) {
+                     return identifier;
                     }
 
  private:
 
-}
+};
 
 } /* namespace XYDataset */
 

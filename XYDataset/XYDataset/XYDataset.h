@@ -73,7 +73,6 @@ namespace XYDataset {
       */
      size_t size() const { return m_values.size();}
 
-   private:
 
      /**
       * @brief
@@ -89,6 +88,8 @@ namespace XYDataset {
       */
      XYDataset(std::vector<std::pair<double, double>> values)
                : m_values(values) {  };
+
+   private:
 
      std::vector<std::pair<double, double>> m_values { };
 

@@ -27,8 +27,8 @@ class FileParser
    * @return
    *
    */
-   virtual std::string getName(const std::string& filename) = 0;
-   virtual std::unique_ptr<XYDataset> getDataSet(const std::string& filename) = 0;
+   virtual std::string getName(const std::string& file) = 0;
+   virtual std::unique_ptr<XYDataset> getDataset(const std::string& file) = 0;
 
  private:
 

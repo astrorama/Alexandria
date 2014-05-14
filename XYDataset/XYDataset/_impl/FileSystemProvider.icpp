@@ -7,8 +7,9 @@
 
 #ifdef FILESYSTEMPROVIDER_IMPL
 
-#include <boost/filesystem.hpp>
 #include <exception>
+#include <boost/filesystem.hpp>
+#include "XYDataset/XYDatasetIdentifierTraits.h"
 
 namespace fs = boost::filesystem;
 
@@ -16,48 +17,88 @@ namespace XYDataset {
 
 template <typename T>
 
-std::unique_ptr<XYDataset> FileSystemProvider<T>::getDataset(const T & identifier)
-{
-  std::unique_ptr<XYDataset> xy_ptr {};
-  return (std::move(xy_ptr));
+FileSystemProvider<T>::FileSystemProvider(const std::string& root_path, std::unique_ptr<FileParser> parser)
+                   : XYDatasetProvider<T>(), m_root_path(root_path), m_parser(std::move(parser)) {
+
+  std::vector<std::string> string_vector{};
+
+  // Convert path to boost filesytem object
+  fs::path fspath(m_root_path);
+  if (!fs::exists(fspath)) {
+    throw ElementsException() << "Path not found : " << fspath;
+  }
+
+  // Get all files below the root directory
+  if (fs::is_directory(fspath)) {
+    fs::recursive_directory_iterator it {m_root_path};
+    fs::recursive_directory_iterator endit;
+    while(it != endit)
+    {
+      if (fs::is_regular_file(*it))
+      {
+        // Fill up a map
+        std::cout<< "zzz it->path().string() "<<it->path().string()<<std::endl;
+
+        std::string dataset_name = m_parser->getName(it->path().string());
+        std::cout<< "zzz dataset_name "<<dataset_name<<std::endl;
+       std::string qualified_name = m_root_path + dataset_name;
+        std::cout<< "zzz qualified_name "<<qualified_name<<std::endl;
+
+        auto ret = m_map.insert(make_pair(qualified_name, it->path().string()));
+        // Check for unique record
+        if (!ret.second) {
+          throw ElementsException() << "Element can not be inserted in the map : "
+                                    << " Qualify name : " << qualified_name
+                                    << " Path :" << it->path().string();
+        }
+      }
+      ++it;
+    }
+  }
+  else {
+    throw ElementsException() << " Path : " << fspath.string() << " is not a directory!";
+  }
+//zzzz
+  std::cout<< "zzz m_map.size() "<<m_map.size()<<std::endl;
 }
 
 template <typename T>
-std::vector<std::string> FileSystemProvider<T>::listContents(const std::string& group)
-{
 
- std::vector<std::string> string_vector;
- // Add root path
+std::unique_ptr<XYDataset> FileSystemProvider<T>::getDataset(const T & identifier) {
+
+ std::string filename {};
+ std::string qualifiedName = XYDatasetIdentifierTraits<T>::getQualifiedName(identifier);
+
+ auto it = m_map.find(qualifiedName);
+ if (it != m_map.end()) {
+    filename = it->second;
+ }
+
+ return (m_parser->getDataset(filename));
+}
+
+template <typename T>
+std::vector<std::string> FileSystemProvider<T>::listContents(const std::string& group) {
+
+ std::vector<std::string> qualified_name_vector{};
  std::string full_path = m_root_path + group;
- // Convert path to boost filesytem object
- fs::path fspath(full_path);
 
- if (!fs::exists(fspath)) {
-   throw ElementsException() << "Path not found : " << fspath
-                             << " Group         : " << group
-                             << " root path     : " << m_root_path;
- }
+ // Fill up vector with qualified name from the map
+ for (auto it : m_map ) {
+     auto path_from_map = it.second;
+     std::cout<< "zzz path_from_map "<<path_from_map<<std::endl;
 
- // Get all files below the group directory
- if (fs::is_directory(fspath)) {
-   fs::recursive_directory_iterator it {full_path};
-   fs::recursive_directory_iterator endit;
-   while(it != endit)
-   {
-     if (fs::is_regular_file(*it))
-     {
-       // Store the filename including the full path
-       string_vector.push_back(it->path().string());
+     // Insert all paths containing the group name
+     if (path_from_map.find(group) != std::string::npos) {
+       // Remove the full path
+       std::string removed_path = path_from_map.substr(full_path.size());
+       qualified_name_vector.push_back(removed_path);
+       std::cout<< "zzz removed_path "<<removed_path<<std::endl;
+
      }
-     ++it;
-   }
- }
- else {
-   throw ElementsException() << "Group : " << group << " is not a directory!";
-
  }
 
- return (string_vector);
+ return (qualified_name_vector);
 }
 
 } /* namespace XYDataset */

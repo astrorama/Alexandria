@@ -12,6 +12,8 @@
 #include <memory>
 #include <vector>
 #include <string>
+#include <map>
+
 #include "XYDataset/XYDataset.h"
 #include "XYDataset/XYDatasetProvider.h"
 #include "XYDataset/FileParser.h"
@@ -46,8 +48,7 @@ class FileSystemProvider : public XYDatasetProvider<T>
    * @param root_path : path to the dataset
    * @param parser : FileParser object
    */
-  FileSystemProvider(const std::string& root_path, std::unique_ptr<FileParser> parser) :
-                     m_root_path(root_path), m_parser(std::move(parser)) { }
+  FileSystemProvider(const std::string& root_path, std::unique_ptr<FileParser> parser);
 
   /**
    * @brief Get a dataset from an identifier
@@ -69,8 +70,9 @@ class FileSystemProvider : public XYDatasetProvider<T>
 
  private:
 
-  std::string                  m_root_path;
-  std::unique_ptr<FileParser>  m_parser;
+  std::string                        m_root_path;
+  std::unique_ptr<FileParser>        m_parser;
+  std::map<std::string, std::string> m_map;
 
 };
 
