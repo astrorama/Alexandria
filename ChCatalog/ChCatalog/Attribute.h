@@ -11,10 +11,7 @@ namespace ChCatalog {
 
 class Attribute {
 public:
-  Attribute() {
-  }
-  virtual ~Attribute() {
-  }
+  virtual ~Attribute() { }
 
 };
 

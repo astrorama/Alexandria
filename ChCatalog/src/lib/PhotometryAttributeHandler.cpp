@@ -14,28 +14,34 @@ using namespace std;
 namespace ChCatalog {
 
 PhotometryAttributeHandler::PhotometryAttributeHandler(
-    const ChTable::ColumnInfo column_info,
+    std::shared_ptr<ChTable::ColumnInfo> column_info_ptr,
     const map<FilterName, std::pair<string, string>> filter_name_mapping) {
-  // @todo Auto-generated constructor stub
 
   unique_ptr<size_t> flux_column_index_ptr;
   unique_ptr<size_t> error_column_index_ptr;
 
   for (auto filter_name_pair : filter_name_mapping) {
-    flux_column_index_ptr = column_info.find(
+    flux_column_index_ptr = column_info_ptr->find(
         filter_name_pair.second.first);
-    error_column_index_ptr = column_info.find(
+    error_column_index_ptr = column_info_ptr->find(
         filter_name_pair.second.second);
 
-    if (flux_column_index_ptr == nullptr || type_index(typeid(double)) != column_info.getType(*(flux_column_index_ptr)) ) {
+    if (flux_column_index_ptr == nullptr || type_index(typeid(double)) != column_info_ptr->getType(*(flux_column_index_ptr)) ) {
       throw ElementsException() << "Column info does not have the expected flux column of double type";
     }
-    if (error_column_index_ptr == nullptr || type_index(typeid(double)) != column_info.getType(*(error_column_index_ptr)) ) {
+    if (error_column_index_ptr == nullptr || type_index(typeid(double)) != column_info_ptr->getType(*(error_column_index_ptr)) ) {
       throw ElementsException() << "Column info does not have the expected flux column of double type";
     }
     m_filter_index_mapping.emplace(filter_name_pair.first,
         make_pair(*(flux_column_index_ptr), *(error_column_index_ptr)));
   }
+
+  // create and filled the shared pointer to the filter name vector
+   m_filter_name_vector_ptr = shared_ptr<vector<FilterName>>{new vector<FilterName>{} };
+  for(auto a_filter_name_map: filter_name_mapping) {
+    m_filter_name_vector_ptr->push_back(a_filter_name_map.first);
+  }
+
 }
 
 PhotometryAttributeHandler::~PhotometryAttributeHandler() {
@@ -45,18 +51,19 @@ PhotometryAttributeHandler::~PhotometryAttributeHandler() {
 unique_ptr<Attribute> PhotometryAttributeHandler::createAttribute(
     const ChTable::Row& row) {
 
-  map<FilterName, pair<double, double>> photometry_map;
+  vector<Photometry::ValuePair> photometry_vector;
   ChTable::Row::cell_type flux_cell;
   ChTable::Row::cell_type error_cell;
 
   for (auto filter_index_pair : m_filter_index_mapping) {
     flux_cell = row[filter_index_pair.second.first];
     error_cell = row[filter_index_pair.second.second];
-    photometry_map[filter_index_pair.first] = make_pair(
-        boost::get<double>(flux_cell), boost::get<double>(error_cell));
+    photometry_vector.push_back(Photometry::ValuePair {boost::get<double>(flux_cell), boost::get<double>(error_cell) } );
   }
-  unique_ptr<Attribute> photometry_ptr(new Photometry(photometry_map));
-  return photometry_ptr;
+
+  unique_ptr<Attribute> photometry_ptr { new Photometry{m_filter_name_vector_ptr, photometry_vector } };
+
+  return move(photometry_ptr);
 }
 
 } // namespace ChCatalog

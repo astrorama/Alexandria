@@ -2,7 +2,7 @@
  * @file Catalog_test.cpp
  *
  *  Created on: March 1, 2013
- *      Author: dubath
+ *      Author: Pierre Dubath
  */
 
 #include <boost/test/unit_test.hpp>

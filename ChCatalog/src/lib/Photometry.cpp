@@ -12,7 +12,7 @@ using namespace std;
 namespace ChCatalog {
 
 Photometry::const_iterator::const_iterator(const std::vector<FilterName>::const_iterator& filters_iter,
-                                           const std::vector<std::pair<double,double> >::const_iterator& values_iter)
+                                           const std::vector<ValuePair>::const_iterator& values_iter)
                 : m_filters_iter{filters_iter}, m_values_iter{values_iter} { }
                 
 auto Photometry::const_iterator::operator ++() -> const_iterator& {
@@ -41,10 +41,10 @@ const FilterName& Photometry::const_iterator::filterName() const {
 // find the value and error in the map for a specific filter name
 // return a pair(value, error) otherwise null pointer
 
-unique_ptr<pair<double, double>> Photometry::find(FilterName filter_name) const
+unique_ptr<Photometry::ValuePair> Photometry::find(FilterName filter_name) const
 {
 
-  unique_ptr<pair<double, double>> flux_found_ptr {};
+  unique_ptr<ValuePair> flux_found_ptr {};
   auto filter_iter = m_filter_name_vector_ptr->begin();
   auto photometry_iter = m_photometry_vector.begin();
   while (filter_iter != m_filter_name_vector_ptr->end()) {
@@ -55,10 +55,10 @@ unique_ptr<pair<double, double>> Photometry::find(FilterName filter_name) const
     ++photometry_iter;
   }
   if (filter_iter != m_filter_name_vector_ptr->end()) {
-    flux_found_ptr = unique_ptr<pair<double, double>>{new pair<double, double>{*photometry_iter} };
+    flux_found_ptr = unique_ptr<ValuePair>{new ValuePair{(*photometry_iter).flux, (*photometry_iter).error} };
   }
 
-  return flux_found_ptr;
+  return move(flux_found_ptr);
 } // Eof Photometry::find
 
 

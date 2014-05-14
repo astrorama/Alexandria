@@ -25,10 +25,16 @@ class Photometry: public Attribute {
 
 public:
   
-  class const_iterator : public std::iterator<std::forward_iterator_tag, const std::pair<double, double>> {
+  struct ValuePair {
+    double flux;
+    double error;
+    ValuePair(double flux, double error) : flux(flux), error(error) {}
+  };
+
+  class const_iterator : public std::iterator<std::forward_iterator_tag, const ValuePair> {
   public:
     const_iterator(const std::vector<FilterName>::const_iterator& filters_iter,
-                   const std::vector<std::pair<double, double>>::const_iterator& values_iter);
+                   const std::vector<ValuePair>::const_iterator& values_iter);
     const_iterator& operator++();
     reference operator*();
     bool operator==(const const_iterator& other) const;
@@ -36,14 +42,15 @@ public:
     const FilterName& filterName() const;
   private:
     std::vector<FilterName>::const_iterator m_filters_iter;
-    std::vector<std::pair<double, double>>::const_iterator m_values_iter;
+    std::vector<ValuePair>::const_iterator m_values_iter;
   };
 
   Photometry(std::shared_ptr<std::vector<FilterName>> filter_name_vector_ptr,
-        std::vector<std::pair<double, double>> photometry_vector)
+        std::vector<ValuePair> photometry_vector)
             : m_filter_name_vector_ptr(filter_name_vector_ptr), m_photometry_vector( std::move(photometry_vector) ) {
+
     if( m_filter_name_vector_ptr->size() != m_photometry_vector.size() ) {
-      throw ElementsException() << "The sizes of the FilterName and the flux vectors are not identical";
+      throw ElementsException() << "The FilterName and the flux vectors have different size";
     }
   }
 
@@ -72,33 +79,14 @@ public:
    * @return
    *  A pair containing a value and the corresponding error
    */
-  std::unique_ptr<std::pair<double, double>> find(FilterName filter_name) const;
-
-  /**
-//   * @brief
-//   *  Get a const_iterator pointing to the first element in the map container
-//   * @return
-//   *  Returns a const_iterator pointing to the first element in the map container
-//   */
-//  std::map< FilterName, std::pair<double, double>>::const_iterator begin()
-//      { return m_photometry_vector.begin() ; }
-//
-//  /**
-//   * @brief
-//   *  Get an const_iterator pointing to the last element in the map container
-//   * @return
-//   *  Returns a const_iterator pointing to the past-the-end element in the
-//   *  map container
-//   */
-//  std::map< FilterName, std::pair<double, double>>::const_iterator end()
-//      { return m_photometry_vector.end() ; }
+  std::unique_ptr<ValuePair> find(FilterName filter_name) const;
 
 private:
 
   std::shared_ptr<std::vector<FilterName>> m_filter_name_vector_ptr;
 
   /// The photometry map
-  std::vector<std::pair<double, double>> m_photometry_vector;
+  std::vector<ValuePair> m_photometry_vector;
 
 }; // Eof class Photometry
 
