@@ -11,8 +11,12 @@
 #include <memory>
 #include <vector>
 #include <utility>
+#include "ChCatalog/Source.h"
 #include "ChCatalog/SourceAttributes/Photometry.h"
+#include "ChCatalog/SourceAttributes/Coordinates.h"
+#include "ChCatalog/SourceAttributes/SpectroscopicRedshift.h"
 #include "ChCatalog/FilterName.h"
+#include "ChCatalog/Catalog.h"
 
 using namespace ChCatalog;
 using namespace std;
@@ -20,16 +24,9 @@ using namespace std;
 struct CatalogFixture {
 
   double tolerence = 1e-8;
-
-//  Source* sourcePtr1{};
-//  Source* sourcePtr2{};
-//
-//  size_t expected_cat_size = 2;
-//
-
-//
-// Building a photometry mock object
-//
+  //
+  // Building a photometry attribute mock object
+  //
   // Values for building a Photometry object
   const FilterName expected_filter_name_1 { "COSMOS", "g_SDSS" };
   const FilterName expected_filter_name_2 { "COSMOS", "r_SDSS" };
@@ -49,27 +46,38 @@ struct CatalogFixture {
   // Photometry
   Photometry photometry {filter_name_vector_ptr, photometry_vector};
 
+  //
+  // Building coordinates and spectroscopic redshift attribute mock objects
+  //
+  double expected_ra_1     = 181.4657;
+  double expected_dec_1     = -36.27363;
+  double expected_ra_2  = 281.4657;
+  double expected_dec_2 = -26.27363;
 
-//
-//  int64_t expectedSourceId1 = 1273684;
-//  int64_t expectedSourceId2 = 2345678;
-//
-//  double expectedRa1  = 181.4657;
-//  double expectedDec1 = -36.27363;
-//  double expectedRa2  = 281.4657;
-//  double expectedDec2 = -26.27363;
-//
-//  double expectedZvalue1 = 3.;
-//  double expectedZerror1 = 0.01;
-//  double expectedZvalue2 = 2.;
-//  double expectedZerror2 = 0.01;
-//
-//  vector<shared_ptr<Attribute>> attribute_vector1 {};
-//  vector<shared_ptr<Attribute>> attribute_vector2 {};
-//
-//  vector<Source> source_vector {};
-//
-//  Catalog* catPtr {};
+  double expected_z_value = 3.;
+  double expected_z_error = 0.01;
+
+  shared_ptr<Coordinates> coordinates_1_ptr{new Coordinates{expected_ra_1, expected_dec_1}};
+  shared_ptr<Coordinates> coordinates_2_ptr{new Coordinates{expected_ra_2, expected_dec_2}};
+
+  shared_ptr<SpectroscopicRedshift> spec_redshift_ptr{new SpectroscopicRedshift{expected_z_value, expected_z_error}};
+  shared_ptr<Photometry> photometry_ptr{new Photometry{filter_name_vector_ptr, photometry_vector}};
+  vector<shared_ptr<Attribute>> attribute_vector_1 {coordinates_1_ptr, spec_redshift_ptr, photometry_ptr};
+  vector<shared_ptr<Attribute>> attribute_vector_2 {coordinates_2_ptr, spec_redshift_ptr};
+
+  int64_t expected_source_id_1     = 1273684;
+  int64_t expected_source_id_2 = 2345678;
+
+  Source source_1{expected_source_id_1, attribute_vector_1};
+  Source source_2{expected_source_id_2, attribute_vector_2};
+
+  // Store sources in a vector
+  vector<Source>    source_vector{source_1, source_2};
+
+  // create the catalog
+  Catalog catalog{source_vector};
+
+
 
   CatalogFixture() {
 
