@@ -57,16 +57,16 @@ struct CatalogFixture {
   double expected_z_value = 3.;
   double expected_z_error = 0.01;
 
-  shared_ptr<Coordinates> coordinates_1_ptr{new Coordinates{expected_ra_1, expected_dec_1}};
-  shared_ptr<Coordinates> coordinates_2_ptr{new Coordinates{expected_ra_2, expected_dec_2}};
+  shared_ptr<Attribute> coordinates_1_ptr{new Coordinates{expected_ra_1, expected_dec_1}};
+  shared_ptr<Attribute> coordinates_2_ptr{new Coordinates{expected_ra_2, expected_dec_2}};
 
-  shared_ptr<SpectroscopicRedshift> spec_redshift_ptr{new SpectroscopicRedshift{expected_z_value, expected_z_error}};
-  shared_ptr<Photometry> photometry_ptr{new Photometry{filter_name_vector_ptr, photometry_vector}};
+  shared_ptr<Attribute> spec_redshift_ptr{new SpectroscopicRedshift{expected_z_value, expected_z_error}};
+  shared_ptr<Attribute> photometry_ptr{new Photometry{filter_name_vector_ptr, photometry_vector}};
   vector<shared_ptr<Attribute>> attribute_vector_1 {coordinates_1_ptr, spec_redshift_ptr, photometry_ptr};
   vector<shared_ptr<Attribute>> attribute_vector_2 {coordinates_2_ptr, spec_redshift_ptr};
 
-  int64_t expected_source_id_1     = 1273684;
-  int64_t expected_source_id_2 = 2345678;
+  uint64_t expected_source_id_1     = 1273684;
+  uint64_t expected_source_id_2 = 2345678;
 
   Source source_1{expected_source_id_1, attribute_vector_1};
   Source source_2{expected_source_id_2, attribute_vector_2};

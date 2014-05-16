@@ -6,14 +6,14 @@
  */
 
 #include <typeindex>
-#include "ChCatalog/SourceAttributes/PhotometryAttributeHandler.h"
+#include "ChCatalog/SourceAttributes/PhotometryAttributeFromTable.h"
 #include "ElementsKernel/ElementsException.h"
 
 using namespace std;
 
 namespace ChCatalog {
 
-PhotometryAttributeHandler::PhotometryAttributeHandler(
+PhotometryAttributeFromTable::PhotometryAttributeFromTable(
     std::shared_ptr<ChTable::ColumnInfo> column_info_ptr,
     const map<FilterName, std::pair<string, string>> filter_name_mapping) {
 
@@ -44,11 +44,11 @@ PhotometryAttributeHandler::PhotometryAttributeHandler(
 
 }
 
-PhotometryAttributeHandler::~PhotometryAttributeHandler() {
+PhotometryAttributeFromTable::~PhotometryAttributeFromTable() {
   // @todo Auto-generated destructor stub
 }
 
-unique_ptr<Attribute> PhotometryAttributeHandler::createAttribute(
+unique_ptr<Attribute> PhotometryAttributeFromTable::createAttribute(
     const ChTable::Row& row) {
 
   vector<Photometry::ValuePair> photometry_vector;

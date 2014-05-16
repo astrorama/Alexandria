@@ -23,9 +23,9 @@ namespace ChCatalog {
  * source, i.e., for each row of the Table.
  *
  */
-class AttributeHandler {
+class AttributeFromTable {
 public:
-  virtual ~AttributeHandler() {
+  virtual ~AttributeFromTable() {
   }
 
   /**

@@ -23,7 +23,7 @@ CatalogFactory::~CatalogFactory() {
 
 ChCatalog::Catalog CatalogFactory::createCatalog(
     const ChTable::Table& input_table, string source_id_name,
-    std::vector<std::unique_ptr<AttributeHandler>> attribute_handler_ptr_vector) {
+    std::vector<std::unique_ptr<AttributeFromTable>> attribute_handler_ptr_vector) {
 
   vector<Source> source_vector;
   unsigned long source_id_index = *(input_table.getColumnInfo()->find(

@@ -79,7 +79,6 @@ BOOST_FIXTURE_TEST_CASE( identical_sources_test, CatalogFixture ) {
   source_vector_identical.push_back(Source(expected_source_id_1, attribute_vector_1));
 
   bool identical = false;
-  Catalog* catidenticalPtr {};
 
   try {
     Catalog catalog {source_vector_identical};

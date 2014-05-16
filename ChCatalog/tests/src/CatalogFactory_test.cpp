@@ -2,7 +2,7 @@
  * @file CatalogFactory_test.cpp
  *
  * @date Apr 15, 2014
- * @author dubath
+ * @author Pierre Dubath
  */
 
 #include "ChCatalog/CatalogFactory.h"

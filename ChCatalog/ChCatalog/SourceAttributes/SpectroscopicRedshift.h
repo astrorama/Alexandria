@@ -2,7 +2,7 @@
  * @file SpectroscopicRedshift.h
  *
  * @date Jan 16, 2014
- * @author dubath
+ * @author Pierre Dubath
  */
 
 #ifndef SPECTROSCOPICREDSHIFT_H_

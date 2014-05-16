@@ -2,7 +2,7 @@
  * @file Photometry.cpp
  *
  * @date Feb 5, 2014
- * @author admin
+ * @author Pierre Dubath
  */
 
 #include "ChCatalog/SourceAttributes/Photometry.h"
@@ -39,8 +39,7 @@ const FilterName& Photometry::const_iterator::filterName() const {
 
 //-----------------------------------------------------------------------------
 // find the value and error in the map for a specific filter name
-// return a pair(value, error) otherwise null pointer
-
+// return a ptr to a ValuePair(value, error) and null pointer otherwise
 unique_ptr<Photometry::ValuePair> Photometry::find(FilterName filter_name) const
 {
 

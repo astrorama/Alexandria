@@ -19,9 +19,9 @@ namespace ChCatalog {
 // Constructor
 Catalog::Catalog(vector<Source> source_vector): m_source_vector(source_vector)
 {
-  // Set the m_indeces_map map
+  // Set the m_indices_map map
   for (size_t index=0; index < m_source_vector.size(); ++index) {
-     auto it = m_indeces_map.emplace(m_source_vector[index].getId(), index);
+     auto it = m_indices_map.emplace(m_source_vector[index].getId(), index);
      // Make sure the element does not already exist
      if (!it.second)
      {
@@ -39,8 +39,8 @@ Catalog::Catalog(vector<Source> source_vector): m_source_vector(source_vector)
 shared_ptr<Source> Catalog::find(const uint64_t source_id) const
 {
   shared_ptr<Source> ptr(nullptr);
-  auto it = m_indeces_map.find(source_id);
-  if (it != m_indeces_map.end()) {
+  auto it = m_indices_map.find(source_id);
+  if (it != m_indices_map.end()) {
     ptr = make_shared<Source>(m_source_vector[it->second]);
   }
 

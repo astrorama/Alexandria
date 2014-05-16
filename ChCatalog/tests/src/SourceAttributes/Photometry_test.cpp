@@ -12,7 +12,8 @@
 
 
 //-----------------------------------------------------------------------------
-// Include the CatalogFixture which include a photometry mock object we use here for the test
+// Include the CatalogFixture which comprises a photometry mock object use here
+// as a test reference
 #include "tests/src/CatalogFixture.h"
 
 using namespace ChCatalog;
@@ -43,6 +44,7 @@ BOOST_FIXTURE_TEST_CASE( not_found_test, CatalogFixture ) {
   BOOST_CHECK(ptr1 == nullptr);
 }
 
+
 BOOST_FIXTURE_TEST_CASE( iterator_test, CatalogFixture ) {
 
   BOOST_TEST_MESSAGE("--> iterator test ");
@@ -63,12 +65,11 @@ BOOST_FIXTURE_TEST_CASE( iterator_test, CatalogFixture ) {
 
 }
 
+// This is how to iterate through the photometry values in most cases
 BOOST_FIXTURE_TEST_CASE( iterator_getter_test, CatalogFixture ) {
 
   BOOST_TEST_MESSAGE("--> iterator getter test ");
 
-  // This is to get the expected filter name from the fixture for comparison
-  auto expected_filter_name_iter = filter_name_vector_ptr->cbegin();
   // This is to get the expected fluxes and errors from the fixture for comparison
   auto expected_photo_iter = photometry_vector.cbegin();
 

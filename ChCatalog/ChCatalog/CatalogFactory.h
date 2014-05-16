@@ -13,7 +13,7 @@
 
 
 #include "ChCatalog/Catalog.h"
-#include "ChCatalog/AttributeHandler.h"
+#include "ChCatalog/AttributeFromTable.h"
 #include "ChTable/Table.h"
 
 
@@ -25,7 +25,7 @@ public:
   virtual ~CatalogFactory();
 
   ChCatalog::Catalog createCatalog(const ChTable::Table& input_table, std::string source_id_name,
-        std::vector<std::unique_ptr<AttributeHandler>> attribute_handler_vector_ptr);
+        std::vector<std::unique_ptr<AttributeFromTable>> attribute_handler_vector_ptr);
 
 };
 

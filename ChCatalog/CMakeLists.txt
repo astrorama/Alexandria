@@ -36,11 +36,14 @@ elements_add_unit_test(Source_test tests/src/Source_test.cpp tests/src/TestMain.
 elements_add_unit_test(FilterName_test tests/src/FilterName_test.cpp tests/src/TestMain.cpp
                        LINK_LIBRARIES ChCatalog TYPE Boost)
 
-elements_add_unit_test(PhotometryAttributeHandler_test tests/src/PhotometryAttributeHandler_test.cpp tests/src/TestMain.cpp
+elements_add_unit_test(PhotometryAttributeHandler_test tests/src/SourceAttributes/PhotometryAttributeHandler_test.cpp tests/src/TestMain.cpp
                        LINK_LIBRARIES ChCatalog TYPE Boost)
 
 #-------------------------------------------------------------------------------
 
+elements_add_unit_test(ChCatalog_all_attribute_tests tests/src/SourceAttributes/*_test.cpp tests/src/TestMain.cpp
+                       LINK_LIBRARIES ChCatalog TYPE Boost)
+                       
 elements_add_unit_test(ChCatalog_all_tests tests/src/*_test.cpp tests/src/TestMain.cpp
                        LINK_LIBRARIES ChCatalog TYPE Boost)
 

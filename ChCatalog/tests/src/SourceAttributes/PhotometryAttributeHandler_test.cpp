@@ -8,10 +8,10 @@
 #include <boost/test/unit_test.hpp>
 #include <memory>
 #include <map>
-#include "ChCatalog/SourceAttributes/PhotometryAttributeHandler.h"
+#include "ChCatalog/SourceAttributes/PhotometryAttributeFromTable.h"
 #include "ChCatalog/SourceAttributes/Photometry.h"
 #include "ElementsKernel/ElementsException.h"
-#include "ChCatalog/AttributeHandler.h"
+#include "ChCatalog/AttributeFromTable.h"
 //#include "ChCatalog/Catalog.h"
 #include "ChCatalog/FilterName.h"
 #include "ChTable/ColumnInfo.h"
@@ -28,7 +28,7 @@ using namespace std;
 // }
 
 
-struct PhotometryAttributeHandlerFix {
+struct PhotometryAttributeFromTableFix {
 
   double tolerance = 1e-12;
 
@@ -66,12 +66,12 @@ struct PhotometryAttributeHandlerFix {
   map<FilterName, pair<string, string>> filter_name_mapping;
 
 
-  PhotometryAttributeHandlerFix() {
+  PhotometryAttributeFromTableFix() {
     // This is how the mapping must be defined
      filter_name_mapping[vFilterName] = make_pair<string, string>("Double_flux1","Double_error1");
      filter_name_mapping[rFilterName] = make_pair<string, string>("Double_flux2","Double_error2");
   }
-  ~PhotometryAttributeHandlerFix() {
+  ~PhotometryAttributeFromTableFix() {
     // teardown
   }
 };
@@ -79,15 +79,15 @@ struct PhotometryAttributeHandlerFix {
 //-----------------------------------------------------------------------------
 //
 
-BOOST_AUTO_TEST_SUITE (PhotometryAttributeHandler_test)
+BOOST_AUTO_TEST_SUITE (PhotometryAttributeFromTable_test)
 
 //-----------------------------------------------------------------------------
 
-BOOST_FIXTURE_TEST_CASE( constructor_test, PhotometryAttributeHandlerFix ) {
+BOOST_FIXTURE_TEST_CASE( constructor_test, PhotometryAttributeFromTableFix ) {
 
   BOOST_TEST_MESSAGE("--> constructor test ");
 
-  PhotometryAttributeHandler pah {column_info_ptr, filter_name_mapping};
+  PhotometryAttributeFromTable pah {column_info_ptr, filter_name_mapping};
 
   map<ChCatalog::FilterName, pair<size_t, size_t>> map = pah.getFilterIndexMapping();
   BOOST_CHECK_EQUAL(map[vFilterName].first, 4);
@@ -100,11 +100,11 @@ BOOST_FIXTURE_TEST_CASE( constructor_test, PhotometryAttributeHandlerFix ) {
 
 //-----------------------------------------------------------------------------
 
-BOOST_FIXTURE_TEST_CASE( createAttribute_test, PhotometryAttributeHandlerFix ) {
+BOOST_FIXTURE_TEST_CASE( createAttribute_test, PhotometryAttributeFromTableFix ) {
 
   BOOST_TEST_MESSAGE("--> createAttribute test ");
 
-  PhotometryAttributeHandler pah {column_info_ptr, filter_name_mapping};
+  PhotometryAttributeFromTable pah {column_info_ptr, filter_name_mapping};
 
   unique_ptr<ChCatalog::Attribute> attribute_ptr = pah.createAttribute(row1);
 

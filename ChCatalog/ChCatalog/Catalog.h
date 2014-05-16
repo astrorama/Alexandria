@@ -91,7 +91,7 @@ private:
   std::vector<Source>        m_source_vector { };
   /// Map of the Source identification and their location
   /// in the Source vector
-  std::map<uint64_t, size_t> m_indeces_map { };
+  std::map<uint64_t, size_t> m_indices_map { };
 
 };
 

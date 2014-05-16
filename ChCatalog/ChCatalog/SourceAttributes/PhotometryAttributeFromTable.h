@@ -13,7 +13,7 @@
 #include <memory>
 
 
-#include "ChCatalog/AttributeHandler.h"
+#include "ChCatalog/AttributeFromTable.h"
 #include "ChCatalog/Catalog.h"
 #include "ChCatalog/FilterName.h"
 #include "ChTable/Table.h"
@@ -22,10 +22,12 @@ namespace ChCatalog {
 
 /**
  * @class PhotometryAttributeHandler
- * @brief Implementation of the AttributeHandler for a photometry attribute
+ * @brief Implementation of the AttributeHandler for a photometry attribute.
+ * This class implements the createAttribute method that must be used to
+ * create Photometry objects.
  *
  */
-class PhotometryAttributeHandler : public AttributeHandler {
+class PhotometryAttributeFromTable : public AttributeFromTable {
 public:
   /**
    * @brief Create a PhotometryAttributeHandler object
@@ -48,10 +50,10 @@ public:
    * @exception
    *  An exception is thrown if the names provided in the mapping are not present in the columnInfo.
    */
-  PhotometryAttributeHandler(std::shared_ptr<ChTable::ColumnInfo> column_info_ptr,
+  PhotometryAttributeFromTable(std::shared_ptr<ChTable::ColumnInfo> column_info_ptr,
       const std::map<FilterName, std::pair<std::string, std::string>> filter_name_mapping);
 
-  virtual ~PhotometryAttributeHandler();
+  virtual ~PhotometryAttributeFromTable();
 
   /**
    * @brief Create a photometricAttribute from a Table row
@@ -70,11 +72,14 @@ public:
   }
 
 private:
-  /**
-   * Map string the correspondence between the FilterName and the names used for the Table columns
+  /*
+   * Map the correspondence between the FilterName and the indexes used in the Table columns
    */
   std::map<ChCatalog::FilterName, std::pair<size_t, size_t> > m_filter_index_mapping;
 
+  /*
+   * Pointer to the shared filter name vector
+   */
   std::shared_ptr<std::vector<FilterName>> m_filter_name_vector_ptr;
 
 };
