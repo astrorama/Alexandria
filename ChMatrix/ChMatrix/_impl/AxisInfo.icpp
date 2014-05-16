@@ -4,8 +4,6 @@
  * @author Nikolaos Apostolakos
  */
 
-#include "AxisInfo.h"
-
 namespace ChMatrix {
 
 template<typename T>

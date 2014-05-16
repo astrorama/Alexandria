@@ -5,7 +5,6 @@
  */
 
 #include "ElementsKernel/ElementsException.h"
-#include "Matrix.h"
 
 namespace ChMatrix {
 
