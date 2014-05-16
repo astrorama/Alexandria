@@ -1,0 +1,41 @@
+/** 
+ * @file AxisInfo.icpp
+ * @date May 12, 2014
+ * @author Nikolaos Apostolakos
+ */
+
+#include "AxisInfo.h"
+
+namespace ChMatrix {
+
+template<typename T>
+AxisInfo<T>::AxisInfo(std::string name, std::vector<T> values)
+        : m_name(std::move(name)), m_values(std::move(values)) {
+}
+
+template<typename T>
+size_t AxisInfo<T>::size() const {
+  return m_values.size();
+}
+
+template<typename T>
+const std::string& AxisInfo<T>::name() const {
+  return m_name;
+}
+
+template<typename T>
+const T& AxisInfo<T>::operator[](size_t index) const {
+  return m_values[index];
+}
+
+template<typename T>
+auto AxisInfo<T>::begin() const -> const_iterator {
+  return m_values.cbegin();
+}
+
+template<typename T>
+auto AxisInfo<T>::end() const -> const_iterator {
+  return m_values.end();
+}
+
+} // end of namespace ChMatrix

@@ -1,0 +1,75 @@
+/** 
+ * @file Matrix.icpp
+ * @date May 13, 2014
+ * @author Nikolaos Apostolakos
+ */
+
+#include "ElementsKernel/ElementsException.h"
+
+namespace ChMatrix {
+
+template<typename DataManager, typename... AxesTypes>
+Matrix<DataManager, AxesTypes...>::Matrix(AxisInfo<AxesTypes>... axes)
+      : m_axes{std::move(axes)...} { }
+
+template<typename DataManager, typename... AxesTypes>
+Matrix<DataManager, AxesTypes...>::Matrix(std::unique_ptr<DataManager> data_manager,
+                                          AxisInfo<AxesTypes>... axes)
+      : m_axes{std::move(axes)...}, m_data_manager{std::move(data_manager)} {
+  size_t manager_size = DataManagerTraits<DataManager>::size(*m_data_manager);
+  size_t matrix_size = m_index_helper.m_axes_index_factors.back();
+  if (manager_size != matrix_size) {
+    throw ElementsException() << "DataManager size (" << manager_size << ") and "
+                              << "Matrix size (" << matrix_size << ") do not match";
+  }
+}
+
+template<typename DataManager, typename... AxesTypes>
+Matrix<DataManager, AxesTypes...>::Matrix(std::tuple<AxisInfo<AxesTypes>...> axes_tuple)
+      : m_axes{std::move(axes_tuple)} { }
+
+template<typename DataManager, typename... AxesTypes>
+Matrix<DataManager, AxesTypes...>::Matrix(std::unique_ptr<DataManager> data_manager,
+                                          std::tuple<AxisInfo<AxesTypes>...> axes_tuple)
+      : m_axes{std::move(axes_tuple)}, m_data_manager{std::move(data_manager)} {
+  size_t manager_size = DataManagerTraits<DataManager>::size(*m_data_manager);
+  size_t matrix_size = m_index_helper.m_axes_index_factors.back();
+  if (manager_size != matrix_size) {
+    throw ElementsException() << "DataManager size (" << manager_size << ") and "
+                              << "Matrix size (" << matrix_size << ") do not match";
+  }
+}
+                     
+template<typename DataManager, typename... AxesTypes>
+size_t Matrix<DataManager, AxesTypes...>::rank() const {
+  return std::tuple_size<decltype(m_axes)>::value;
+}
+
+template<typename DataManager, typename... AxesTypes>
+template<int I>
+auto Matrix<DataManager, AxesTypes...>::axisInfo() const -> const AxisInfo<axis_type<I>>& {
+    return std::get<I>(m_axes);
+}
+
+template<typename DataManager, typename... AxesTypes>
+const std::tuple<AxisInfo<AxesTypes>...>& Matrix<DataManager, AxesTypes...>::axisInfoTuple() const {
+  return m_axes;
+}
+
+template<typename DataManager, typename... AxesTypes>
+auto Matrix<DataManager, AxesTypes...>::begin() -> iterator {
+  return iterator{*this, DataManagerTraits<DataManager>::begin(*m_data_manager)};
+}
+
+template<typename DataManager, typename... AxesTypes>
+auto Matrix<DataManager, AxesTypes...>::end() -> iterator {
+  return iterator{*this, DataManagerTraits<DataManager>::end(*m_data_manager)};
+}
+
+template<typename DataManager, typename... AxesTypes>
+auto Matrix<DataManager, AxesTypes...>::operator()(decltype(std::declval<AxisInfo<AxesTypes>>().size())... indices) -> data_type& {
+  size_t total_index = m_index_helper.totalIndex({indices...});
+  return (*m_data_manager)[total_index];
+}
+
+} // end of namespace ChMatrix
