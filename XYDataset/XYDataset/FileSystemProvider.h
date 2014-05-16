@@ -21,20 +21,17 @@
 namespace XYDataset {
 
 /**
- *
- *
- */
-/**
  * @class FileSystemProvider
  *
- * @brief The FileSystemProvider handles files in a directory tree
+ * @brief
+ * The FileSystemProvider handles files in a directory tree
  *
  * @details
  * It handles files in a directory tree of the file system. The directory path
  * of the files and the name of the dataset are used for constructing the
  * qualified name to match with the identifier. To support different file
- * formats the work is delegated to the FileParser interface for file related
- * operations (gets dataset name and data)
+ * formats the work is delegated to the FileParser interface about file related
+ * operations (it gets dataset name and data)
  */
 
 template <typename T>
@@ -47,23 +44,39 @@ class FileSystemProvider : public XYDatasetProvider<T>
    * @brief constructor
    * @param root_path : path to the dataset
    * @param parser : FileParser object
+   * @throw ElementsException
+   *  Path to the files not found
+   * @throw ElementsException
+   *  Root path not found
+   * @throw ElementsException
+   *  Root path is not a directory
+   * @throw ElementsException
+   *  Qualified name can not be inserted
    */
   FileSystemProvider(const std::string& root_path, std::unique_ptr<FileParser> parser);
 
   /**
-   * @brief Get a dataset from an identifier
+   * @brief
+   * Get a dataset corresponding to an unique identifier
+   *
    * @param identifier : dataset's identifier
+   * @return
+   * A XYDataset unique pointer or null pointer
    */
   std::unique_ptr<XYDataset> getDataset(const T & identifier) override;
 
   /**
-   * @brief List the files contained into a directory (group)
+   * @brief
+   * List the files which belong to a group.
+   * @details
+   * As an example
    * @param group
-   *  path to a set of directories/files
+   *  It is a string which represents a group as for instance: "filter/MER" if
+   *  you want all MER filters.
    * @return
-   * A vector of strings of the filenames found including the path
-   * @throw ElementsException: Path to the files not found
-   * @throw ElementsException: The group is not a directory
+   * A vector of strings of the filenames (including the path) or an empty
+   * vector in case of no files for the group
+   *
    */
   std::vector<std::string> listContents(const std::string& group) override;
 

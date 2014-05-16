@@ -71,14 +71,12 @@ BOOST_AUTO_TEST_SUITE (AsciiParser_test)
 BOOST_FIXTURE_TEST_CASE(exception_getName_function_test, AsciiParser_Fixture) {
 
   BOOST_TEST_MESSAGE(" ");
-  BOOST_TEST_MESSAGE("--> Testing the exception of getName & getDataset functions");
+  BOOST_TEST_MESSAGE("--> Testing the exception of getName function");
   BOOST_TEST_MESSAGE(" ");
 
   AsciiParser parser{};
 
   BOOST_CHECK_THROW(parser.getName(base_directory + no_file), ElementsException);
-  BOOST_CHECK_THROW(parser.getDataset(base_directory + no_file), ElementsException);
-
 }
 
 //-----------------------------------------------------------------------------

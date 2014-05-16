@@ -64,9 +64,7 @@ class AsciiParser : public FileParser
    * @param file
    *  Filename of the file to be read including the absolute path
    * @return
-   * A unique pointer to a XYDatatset object.
-   * @throw
-   * ElementException : File not found
+   * A unique pointer to a XYDatatset object or null pointer.
    */
   std::unique_ptr<XYDataset> getDataset(const std::string& file) override;
 

@@ -30,9 +30,9 @@ std::string AsciiParser::getName(const std::string& file) {
   std::string dataset_name{};
   // Check dataset name is in the file
   // Convention: read until found first non empty line, removing empty lines.
-  do {
+  while (line.empty() && sfile.good()) {
     std::getline( sfile, line );
-  } while (line.empty());
+  }
 
   boost::regex expression(m_regex_name);
   boost::smatch s_match;
@@ -55,20 +55,20 @@ std::string AsciiParser::getName(const std::string& file) {
 
 std::unique_ptr<XYDataset> AsciiParser::getDataset(const std::string& file) {
 
+  std::unique_ptr<XYDataset> dataset_ptr {};
   std::ifstream sfile(file);
   // Check file exists
-  if (!sfile) {
-    throw ElementsException() << "File does not exist : " << file;
+  if (sfile) {
+    // Read file into a Table object
+    ChTable::AsciiReader ascii_reader {{typeid(double), typeid(double)}};
+    auto table = ascii_reader.read(sfile);
+    // Put the Table data into vector pair
+    std::vector<std::pair<double, double>> vector_pair;
+    for (auto row : table) {
+        vector_pair.push_back(std::make_pair( boost::get<double>(row[0]), boost::get<double>(row[1]) ));
+    }
+    dataset_ptr = std::unique_ptr<XYDataset> { new XYDataset(vector_pair) };
   }
-  // Read file into a Table object
-  ChTable::AsciiReader ascii_reader {{typeid(double), typeid(double)}};
-  auto table = ascii_reader.read(sfile);
-  // Put the Table data into vector pair
-  std::vector<std::pair<double, double>> vector_pair;
-  for (auto row : table) {
-      vector_pair.push_back(std::make_pair( boost::get<double>(row[0]), boost::get<double>(row[1]) ));
-  }
-  std::unique_ptr<XYDataset> dataset_ptr( new XYDataset(vector_pair) );
 
  return(dataset_ptr);
 }

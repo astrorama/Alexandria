@@ -35,8 +35,8 @@ unique_ptr<XYDataset> XYDataset::factory(std::vector<double> x_vector, std::vect
   size_t y_size = y_vector.size();
   // Vector must have the same size
   if ( x_size != y_size) {
-    throw ElementsException() << "XYDataset::factory: Vectors must have "
-                              <<"the same size! x size: %d" <<x_size
+    throw ElementsException() << " Vectors must have "
+                              << "the same size! x size: %d" <<x_size
                               <<"  y_size : %d"<< y_size;
   }
 

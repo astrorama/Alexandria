@@ -15,6 +15,10 @@ namespace fs = boost::filesystem;
 
 namespace XYDataset {
 
+//-----------------------------------------------------------------------------
+//                              Constructor
+//-----------------------------------------------------------------------------
+
 template <typename T>
 
 FileSystemProvider<T>::FileSystemProvider(const std::string& root_path, std::unique_ptr<FileParser> parser)
@@ -22,10 +26,16 @@ FileSystemProvider<T>::FileSystemProvider(const std::string& root_path, std::uni
 
   std::vector<std::string> string_vector{};
 
+  // Make sure the group finishes with a "/" and only one
+  size_t pos = m_root_path.find_last_not_of("/");
+  if (  pos != m_root_path.length()-1) {
+    m_root_path = m_root_path.substr(0, pos+1) + "/";
+  }
+
   // Convert path to boost filesytem object
   fs::path fspath(m_root_path);
   if (!fs::exists(fspath)) {
-    throw ElementsException() << "Path not found : " << fspath;
+    throw ElementsException() << "Root path not found : " << fspath;
   }
 
   // Get all files below the root directory
@@ -36,19 +46,21 @@ FileSystemProvider<T>::FileSystemProvider(const std::string& root_path, std::uni
     {
       if (fs::is_regular_file(*it))
       {
-        // Fill up a map
-        std::cout<< "zzz it->path().string() "<<it->path().string()<<std::endl;
-
         std::string dataset_name = m_parser->getName(it->path().string());
-        std::cout<< "zzz dataset_name "<<dataset_name<<std::endl;
-       std::string qualified_name = m_root_path + dataset_name;
-        std::cout<< "zzz qualified_name "<<qualified_name<<std::endl;
-
+        // Remove the root part
+        std::string str = it->path().string();
+        str = str.substr(m_root_path.length(), str.length());
+        // Remove filename
+        size_t pos = str.find_last_of("/");
+        std::string group = str.substr(0, pos+1);
+        std::string qualified_name = group + dataset_name;
+        // Fill up a map
         auto ret = m_map.insert(make_pair(qualified_name, it->path().string()));
         // Check for unique record
         if (!ret.second) {
-          throw ElementsException() << "Element can not be inserted in the map : "
-                                    << " Qualify name : " << qualified_name
+          throw ElementsException() << "Qualified name can not be inserted "
+                                    << "in the map. Qualify name : "
+                                    << qualified_name
                                     << " Path :" << it->path().string();
         }
       }
@@ -56,11 +68,49 @@ FileSystemProvider<T>::FileSystemProvider(const std::string& root_path, std::uni
     }
   }
   else {
-    throw ElementsException() << " Path : " << fspath.string() << " is not a directory!";
+    throw ElementsException() << " Root path : " << fspath.string() << " is not a directory!";
   }
-//zzzz
-  std::cout<< "zzz m_map.size() "<<m_map.size()<<std::endl;
+
 }
+
+//-----------------------------------------------------------------------------
+//                             listContents function
+//-----------------------------------------------------------------------------
+
+template <typename T>
+std::vector<std::string> FileSystemProvider<T>::listContents(const std::string& group) {
+
+ std::string my_group = group;
+ // Make sure the group finishes with a "/" and only one
+ size_t pos = my_group.find_last_not_of("/");
+ if (  pos != my_group.length()-1) {
+   my_group = my_group.substr(0, pos+1) + "/";
+ }
+ // Make sure the group do not start with a "/"
+ pos = my_group.find_first_not_of("/") ;
+ if ( pos != 0) {
+   my_group = my_group.substr(pos);
+ }
+
+ std::vector<std::string> qualified_name_vector{};
+ std::string full_path = m_root_path + my_group;
+
+ // Fill up vector with qualified name from the map
+ // Insert all qualified name where path contains the group name at the
+ // first position
+ for (auto it : m_map ) {
+     auto qualified_name = it.first;
+      if (! qualified_name.find(my_group)) {
+         qualified_name_vector.push_back(qualified_name);
+     }
+ } // Eof for
+
+ return (qualified_name_vector);
+}
+
+//-----------------------------------------------------------------------------
+//                             getDataset function
+//-----------------------------------------------------------------------------
 
 template <typename T>
 
@@ -75,30 +125,6 @@ std::unique_ptr<XYDataset> FileSystemProvider<T>::getDataset(const T & identifie
  }
 
  return (m_parser->getDataset(filename));
-}
-
-template <typename T>
-std::vector<std::string> FileSystemProvider<T>::listContents(const std::string& group) {
-
- std::vector<std::string> qualified_name_vector{};
- std::string full_path = m_root_path + group;
-
- // Fill up vector with qualified name from the map
- for (auto it : m_map ) {
-     auto path_from_map = it.second;
-     std::cout<< "zzz path_from_map "<<path_from_map<<std::endl;
-
-     // Insert all paths containing the group name
-     if (path_from_map.find(group) != std::string::npos) {
-       // Remove the full path
-       std::string removed_path = path_from_map.substr(full_path.size());
-       qualified_name_vector.push_back(removed_path);
-       std::cout<< "zzz removed_path "<<removed_path<<std::endl;
-
-     }
- }
-
- return (qualified_name_vector);
 }
 
 } /* namespace XYDataset */

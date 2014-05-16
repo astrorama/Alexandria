@@ -14,15 +14,18 @@
 
 #include "ElementsKernel/ElementsException.h"
 #include "XYDataset/FileSystemProvider.h"
+#include "XYDataset/AsciiParser.h"
 
 using namespace XYDataset;
 
-std::string makeDir(std::string name) {
+// Create a directory on disk
+void makeDirectory(const std::string name) {
   boost::filesystem::path d {name};
   boost::filesystem::create_directories(d);
-  return name;
 }
-void removeDir(std::string base_dir) {
+
+// Remove a directory on disk
+void removeDir(const std::string base_dir) {
   boost::filesystem::path bd {base_dir};
   boost::filesystem::remove_all(bd);
 }
@@ -31,24 +34,35 @@ struct FileSystemProvider_Fixture {
 
   std::string group { "filter/MER" };
   // Do not forget the "/" at the end of the base directory
-  std::string base_directory   = makeDir("/tmp/euclid/");
-  std::string directory_mer    = makeDir(base_directory + "filter/MER");
-  std::string directory_cosmos = makeDir(base_directory + "filter/COSMOS");
+  std::string base_directory { "/tmp/euclid/" };
+  std::string mer_directory    = base_directory + "filter/MER";
+  std::string cosmos_directory = base_directory + "filter/COSMOS";
 
-  //std::unique_ptr<FileParser> fp {};
-  //FileSystemProvider<std::string> fsp {base_directory, std::move(fp)};
 
   FileSystemProvider_Fixture() {
+    makeDirectory(base_directory);
+    makeDirectory(mer_directory);
+    makeDirectory(cosmos_directory);
     // Create files
-    std::ofstream file1_mer(directory_mer+"/Gext_ACSf435w.txt");
-    std::ofstream file2_mer(directory_mer+"/Hnir_WFC3f160w.txt");
-    std::ofstream file_cosmos(directory_cosmos+"/cosmos_filter.txt");
+    std::ofstream file1_mer(mer_directory + "/file1.txt");
+    std::ofstream file2_mer(mer_directory + "/file2.txt");
+    // Fill up file
+    file1_mer << "\n";
+    file1_mer << "# Dataset_name_for_file1\n";
+    file1_mer << "1234. 569.6\n";
+    file1_mer.close();
+    // Fill up 2nd file
+    file2_mer << "\n";
+    file2_mer << "111.1 111.1\n";
+    file2_mer << "222.2 222.2\n";
+    file2_mer.close();
   }
 
   ~FileSystemProvider_Fixture() {
-   // removeDir(base_directory);
+   removeDir(base_directory);
   }
 
+  std::unique_ptr<FileParser> fp { new AsciiParser{} };
 
 };
 
@@ -56,44 +70,94 @@ struct FileSystemProvider_Fixture {
 
 BOOST_AUTO_TEST_SUITE (FileSystemProvider_test)
 
+
 //-----------------------------------------------------------------------------
 //                            Test the exceptions
 //-----------------------------------------------------------------------------
 
 BOOST_FIXTURE_TEST_CASE(exceptions_test, FileSystemProvider_Fixture) {
 
-//  BOOST_TEST_MESSAGE(" ");
-//  BOOST_TEST_MESSAGE("--> Testing the exceptions");
-//  BOOST_TEST_MESSAGE(" ");
-//
-//  // Group not valid
-//  group = "NO_VALID_GROUP";
-//  BOOST_CHECK_THROW(fsp.listContents(group), ElementsException);
-//
-//  // Group should not be a file
-//  group = "PhotZAuxData/Filter/MER/Gext_ACSf435w.txt";
-//  BOOST_CHECK_THROW(fsp.listContents(group), ElementsException);
+  BOOST_TEST_MESSAGE(" ");
+  BOOST_TEST_MESSAGE("--> Testing the exceptions");
+  BOOST_TEST_MESSAGE(" ");
+
+  // Path is not valid
+  base_directory = "/tmp/PATH_DOES_NOT_EXIST";
+  BOOST_CHECK_THROW( FileSystemProvider<std::string> fsp (base_directory, std::move(fp)),
+                     ElementsException);
+
+  // Path as a file is not valid
+  base_directory = base_directory + "filter/MER/Gext_ACSf435w.txt";
+  BOOST_CHECK_THROW( FileSystemProvider<std::string> fsp (base_directory, std::move(fp)),
+                     ElementsException);
+
+  // Fill up a new file with dataset name already existing
+  // We must have only unique qualify name
+  std::ofstream file3_mer("/tmp/euclid/filter/MER/file3.txt");
+  file3_mer << "\n";
+  file3_mer << "# Dataset_name_for_file1\n";
+  file3_mer << "0.1111 1.0000 \n";
+  file3_mer.close();
+
+  BOOST_CHECK_THROW( FileSystemProvider<std::string> fsp (base_directory, std::move(fp)),
+                     ElementsException);
+
+  // Remove file3 to avoid exception in the next test
+  removeDir("/tmp/euclid/filter/MER/file3.txt");
 }
 
 //-----------------------------------------------------------------------------
 //            Test the listContents function
 //-----------------------------------------------------------------------------
 
-//BOOST_FIXTURE_TEST_CASE(ListContent_test, FileSystemProvider_Fixture) {
-//
-//  BOOST_TEST_MESSAGE(" ");
-//  BOOST_TEST_MESSAGE("--> Testing the list contents function");
-//  BOOST_TEST_MESSAGE(" ");
-//
-//  std::vector<std::string> result_vector = fsp.listContents(group);
-//
-//  for (unsigned int i=0; i<= result_vector.size(); ++i )
-//      std::cout<<result_vector[i]<<std::endl;
+BOOST_FIXTURE_TEST_CASE(listContent_test, FileSystemProvider_Fixture) {
 
-//  BOOST_CHECK_EQUAL(2, result_vector.size());
+  BOOST_TEST_MESSAGE(" ");
+  BOOST_TEST_MESSAGE("--> Testing the listContents function");
+  BOOST_TEST_MESSAGE(" ");
 
-//}
+  FileSystemProvider<std::string> fsp {"/tmp/euclid/", std::move(fp)};
 
+  // Even with two slashes in the group it must work
+  group = { "filter/MER//" };
+  std::vector<std::string> result_vector = fsp.listContents(group);
+
+  BOOST_CHECK_EQUAL(2, result_vector.size());
+  BOOST_CHECK_EQUAL("filter/MER/Dataset_name_for_file1", result_vector[0]);
+  BOOST_CHECK_EQUAL("filter/MER/file2", result_vector[1]);
+
+  // With this group the vector must be empty
+  group = { "MER" };
+  std::vector<std::string> result_vector2 = fsp.listContents(group);
+  BOOST_CHECK_EQUAL(0, result_vector2.size());
+
+}
+
+//-----------------------------------------------------------------------------
+//            Test the listContents function
+//-----------------------------------------------------------------------------
+
+BOOST_FIXTURE_TEST_CASE(getDataset_test, FileSystemProvider_Fixture) {
+
+  BOOST_TEST_MESSAGE(" ");
+  BOOST_TEST_MESSAGE("--> Testing the getDataset function");
+  BOOST_TEST_MESSAGE(" ");
+
+  FileSystemProvider<std::string> fsp {"/tmp/euclid/", std::move(fp)};
+
+  // Check a no null pointer must be return
+  std::string identifier { "filter/MER/Dataset_name_for_file1" };
+  std::unique_ptr<XYDataset::XYDataset> dataset_ptr = fsp.getDataset(identifier);
+
+  BOOST_CHECK(dataset_ptr);
+
+  // Check a nullptr must be returned
+  identifier = "filter/DOES_NOT_EXIST";
+  dataset_ptr = fsp.getDataset(identifier);
+
+  BOOST_CHECK(!dataset_ptr);
+
+}
 
 //-----------------------------------------------------------------------------
 
