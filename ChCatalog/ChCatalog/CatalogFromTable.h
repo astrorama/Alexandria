@@ -19,13 +19,19 @@
 
 namespace ChCatalog {
 
-class CatalogFactory {
+class CatalogFromTable {
 public:
-  CatalogFactory();
-  virtual ~CatalogFactory();
+  CatalogFromTable(const std::size_t source_id_index,
+      std::vector<std::unique_ptr<AttributeFromTable>> attribute_from_table_ptr_vector);
 
-  ChCatalog::Catalog createCatalog(const ChTable::Table& input_table, std::string source_id_name,
-        std::vector<std::unique_ptr<AttributeFromTable>> attribute_handler_vector_ptr);
+  virtual ~CatalogFromTable();
+
+  ChCatalog::Catalog createCatalog(const ChTable::Table& input_table);
+
+private:
+  size_t m_source_id_index;
+
+  std::vector<std::unique_ptr<AttributeFromTable>> m_attribute_from_table_ptr_vector;
 
 };
 

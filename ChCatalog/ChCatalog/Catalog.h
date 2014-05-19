@@ -76,7 +76,7 @@ public:
    * A shared pointer to the Source object or a null pointer in case of
    * no object was found for this source_id
    */
-  std::shared_ptr<Source> find(const uint64_t source_id) const;
+  std::shared_ptr<Source> find(const int64_t source_id) const;
 
   /**
    * @brief
@@ -91,7 +91,7 @@ private:
   std::vector<Source>        m_source_vector { };
   /// Map of the Source identification and their location
   /// in the Source vector
-  std::map<uint64_t, size_t> m_indices_map { };
+  std::map<int64_t, size_t> m_indices_map { };
 
 };
 

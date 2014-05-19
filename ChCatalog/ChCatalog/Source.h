@@ -34,7 +34,7 @@ public:
    * @param  vector<std::shared_ptr<Attribute>>
    * Vector of shared pointer on Attribute objects
    */
-  Source(uint64_t source_id, std::vector<std::shared_ptr<Attribute>> attibuteVector)
+  Source(int64_t source_id, std::vector<std::shared_ptr<Attribute>> attibuteVector)
         : m_source_id(source_id), m_attribute_vector(attibuteVector) {
   }
 
@@ -45,16 +45,19 @@ public:
    * @brief Get the source ID
    * @return The source ID
    */
-  uint64_t getId() const {
+  int64_t getId() const {
     return m_source_id;
   }
 
   /**
    * @brief Get a pointer to source attribute of type T or a null pointer
-   *    if the source do not contain
-   *    an attribute of type T
-   * @return The pointer to the attribute or nullptr if
-   *    the attribute is not found
+   *    if the source do not contain an attribute of type T
+   *
+   * @details Typical usage is std::shared_ptr<Photometry>
+   *  a_photometric_attribute = source.getAttribute<Photometry>(), where Photometry can be replaced
+   *  by any other attributes
+   * @return The pointer to the attribute or nullptr if the attribute is
+   *  not found
    */
   template<typename T>
   std::shared_ptr<T> getAttribute();
@@ -63,7 +66,7 @@ public:
  private:
 
   /// Source identification
-  uint64_t m_source_id { };
+  int64_t m_source_id { };
 
   /// Vector of shared pointers to attribute
   std::vector<std::shared_ptr<Attribute>> m_attribute_vector;

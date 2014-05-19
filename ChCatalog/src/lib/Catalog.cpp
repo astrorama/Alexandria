@@ -36,7 +36,7 @@ Catalog::Catalog(vector<Source> source_vector): m_source_vector(source_vector)
 //-----------------------------------------------------------------------------
 // find source in the map
 // return source otherwise null pointer
-shared_ptr<Source> Catalog::find(const uint64_t source_id) const
+shared_ptr<Source> Catalog::find(const int64_t source_id) const
 {
   shared_ptr<Source> ptr(nullptr);
   auto it = m_indices_map.find(source_id);

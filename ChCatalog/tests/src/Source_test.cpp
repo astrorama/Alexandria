@@ -64,7 +64,7 @@ BOOST_FIXTURE_TEST_CASE( getAttribute_test, CatalogFixture ) {
 BOOST_FIXTURE_TEST_CASE( getId_test, CatalogFixture ) {
 
    BOOST_TEST_MESSAGE("--> getId test ");
-   uint64_t sourceId = source_1.getId();
+   int64_t sourceId = source_1.getId();
    BOOST_CHECK_EQUAL(expected_source_id_1, sourceId);
 
 }

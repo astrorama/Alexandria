@@ -65,8 +65,8 @@ struct CatalogFixture {
   vector<shared_ptr<Attribute>> attribute_vector_1 {coordinates_1_ptr, spec_redshift_ptr, photometry_ptr};
   vector<shared_ptr<Attribute>> attribute_vector_2 {coordinates_2_ptr, spec_redshift_ptr};
 
-  uint64_t expected_source_id_1     = 1273684;
-  uint64_t expected_source_id_2 = 2345678;
+  int64_t expected_source_id_1     = 1273684;
+  int64_t expected_source_id_2 = 2345678;
 
   Source source_1{expected_source_id_1, attribute_vector_1};
   Source source_2{expected_source_id_2, attribute_vector_2};
