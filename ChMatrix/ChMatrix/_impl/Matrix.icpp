@@ -57,6 +57,11 @@ const std::tuple<AxisInfo<AxesTypes>...>& Matrix<DataManager, AxesTypes...>::axi
 }
 
 template<typename DataManager, typename... AxesTypes>
+const DataManager& Matrix<DataManager, AxesTypes...>::dataManager() const {
+  return *m_data_manager;
+}
+
+template<typename DataManager, typename... AxesTypes>
 auto Matrix<DataManager, AxesTypes...>::begin() -> iterator {
   return iterator{*this, DataManagerTraits<DataManager>::begin(*m_data_manager)};
 }

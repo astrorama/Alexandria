@@ -21,6 +21,7 @@ public:
   static size_t size(const DataManager& data_manager);
   static iterator begin(DataManager& data_manager);
   static iterator end(DataManager& data_manager);
+  static const bool enable_boost_serialize = false;
 };
 
 template<typename T>
@@ -32,6 +33,7 @@ public:
   static size_t size(const std::vector<T>& vector);
   static iterator begin(std::vector<T>& vector);
   static iterator end(std::vector<T>& vector);
+  static const bool enable_boost_serialize = true;
 };
 
 } // end of namespace ChMatrix

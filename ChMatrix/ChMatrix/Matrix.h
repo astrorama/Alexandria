@@ -67,6 +67,8 @@ public:
   
   const std::tuple<AxisInfo<AxesTypes>...>& axisInfoTuple() const;
   
+  const DataManager& dataManager() const;
+  
   iterator begin();
   
   iterator end();
