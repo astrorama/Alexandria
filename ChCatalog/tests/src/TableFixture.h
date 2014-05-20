@@ -15,7 +15,6 @@
 //#include "ChCatalog/SourceAttributes/Photometry.h"
 //#include "ChCatalog/SourceAttributes/Coordinates.h"
 //#include "ChCatalog/SourceAttributes/SpectroscopicRedshift.h"
-#include "ChCatalog/FilterName.h"
 #include "ChTable/Row.h"
 #include "ChTable/Table.h"
 #include "ChTable/ColumnInfo.h"
@@ -61,11 +60,11 @@ struct TableFixture {
   const ChTable::Table table {row_list};
 
   // Two filter names
-  const ChCatalog::FilterName v_filter_name {"TestGroup", "VtestName"};
-  const ChCatalog::FilterName r_filter_name {"TestGroup", "RtestName"};
+  const string v_filter_name {"TestGroup/VtestName"};
+  const string r_filter_name {"TestGroup/RtestName"};
 
   // the mapping variable
-  map<FilterName, pair<string, string>> filter_name_mapping;
+  map<string, pair<string, string>> filter_name_mapping;
 
 
   TableFixture() {

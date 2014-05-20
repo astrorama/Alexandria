@@ -35,7 +35,7 @@ BOOST_FIXTURE_TEST_CASE(constructor_test, TableFixture) {
 
   PhotometryAttributeFromTable paft {column_info_ptr, filter_name_mapping};
 
-  map<ChCatalog::FilterName, pair<size_t, size_t>> map = paft.getFilterIndexMapping();
+  map<string, pair<size_t, size_t>> map = paft.getFilterIndexMapping();
   BOOST_CHECK_EQUAL(map[v_filter_name].first, 5);
   BOOST_CHECK_EQUAL(map[v_filter_name].second, 7);
   BOOST_CHECK_EQUAL(map[r_filter_name].first, 6);

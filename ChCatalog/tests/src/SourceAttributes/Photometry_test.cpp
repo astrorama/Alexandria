@@ -27,8 +27,8 @@ BOOST_FIXTURE_TEST_CASE( find_test, CatalogFixture ) {
 
   BOOST_TEST_MESSAGE("--> find test ");
 
-  shared_ptr<Photometry::ValuePair> ptr1 = photometry.find(expected_filter_name_1);
-  shared_ptr<Photometry::ValuePair> ptr2 = photometry.find(expected_filter_name_2);
+  shared_ptr<FluxErrorPair> ptr1 = photometry.find(expected_filter_name_1);
+  shared_ptr<FluxErrorPair> ptr2 = photometry.find(expected_filter_name_2);
 
   BOOST_CHECK_CLOSE(expected_flux_1, ptr1->flux, tolerence);
   BOOST_CHECK_CLOSE(expected_error_1, ptr1->error, tolerence);
@@ -40,7 +40,7 @@ BOOST_FIXTURE_TEST_CASE( not_found_test, CatalogFixture ) {
 
   BOOST_TEST_MESSAGE("--> not found find test! ");
 
-  unique_ptr<Photometry::ValuePair> ptr1 = photometry.find(FilterName{"AnotherFilterGroup","AnotherFilterName"});
+  unique_ptr<FluxErrorPair> ptr1 = photometry.find("AnotherFilterGroup/AnotherFilterName");
   BOOST_CHECK(ptr1 == nullptr);
 }
 
@@ -74,9 +74,9 @@ BOOST_FIXTURE_TEST_CASE( iterator_getter_test, CatalogFixture ) {
   auto expected_photo_iter = photometry_vector.cbegin();
 
   // loop over the photometry object to check the different values and errors
-  for (auto valuePair :  photometry) {
-    BOOST_CHECK_CLOSE( valuePair.flux, expected_photo_iter->flux, tolerence);
-    BOOST_CHECK_CLOSE( valuePair.error, expected_photo_iter->error, tolerence);
+  for (auto FluxErrorPair :  photometry) {
+    BOOST_CHECK_CLOSE( FluxErrorPair.flux, expected_photo_iter->flux, tolerence);
+    BOOST_CHECK_CLOSE( FluxErrorPair.error, expected_photo_iter->error, tolerence);
     ++expected_photo_iter;
   }
 

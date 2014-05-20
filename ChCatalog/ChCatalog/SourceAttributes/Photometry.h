@@ -17,6 +17,14 @@
 
 namespace ChCatalog {
 
+struct FluxErrorPair {
+  double flux;
+  double error;
+  FluxErrorPair(double flux, double error) :
+      flux(flux), error(error) {
+  }
+};
+
 /**
  * The Photometry class is design to store a set of photometric flux measurements
  * obtained through different filters (filterName). The flux and value and the
@@ -35,31 +43,23 @@ class Photometry: public Attribute {
 
 public:
 
-  struct ValuePair {
-    double flux;
-    double error;
-    ValuePair(double flux, double error) :
-        flux(flux), error(error) {
-    }
-  };
-
   /**
    * Iterator for the photometry flux and error values. See the Photometry_test to see
    * how this can be used to iterate through the flux and error the different filters.
    */
   class const_iterator: public std::iterator<std::forward_iterator_tag,
-      const ValuePair> {
+      const FluxErrorPair> {
   public:
-    const_iterator(const std::vector<FilterName>::const_iterator& filters_iter,
-        const std::vector<ValuePair>::const_iterator& values_iter);
+    const_iterator(const std::vector<std::string>::const_iterator& filters_iter,
+        const std::vector<FluxErrorPair>::const_iterator& values_iter);
     const_iterator& operator++();
     reference operator*();
     bool operator==(const const_iterator& other) const;
     bool operator!=(const const_iterator& other) const;
-    const FilterName& filterName() const;
+    const std::string& filterName() const;
   private:
-    std::vector<FilterName>::const_iterator m_filters_iter;
-    std::vector<ValuePair>::const_iterator m_values_iter;
+    std::vector<std::string>::const_iterator m_filters_iter;
+    std::vector<FluxErrorPair>::const_iterator m_values_iter;
   };
 
 
@@ -73,14 +73,14 @@ public:
    *  the vector of ValuePair, i..e, the flux values with their errors
    *
    */
-  Photometry(std::shared_ptr<std::vector<FilterName>> filter_name_vector_ptr,
-      std::vector<ValuePair> photometry_vector) :
+  Photometry(std::shared_ptr<std::vector<std::string>> filter_name_vector_ptr,
+      std::vector<FluxErrorPair> photometry_vector) :
       m_filter_name_vector_ptr(filter_name_vector_ptr), m_photometry_vector(
           std::move(photometry_vector)) {
     // Only check the size, but not the consistency
     if (m_filter_name_vector_ptr->size() != m_photometry_vector.size()) {
       throw ElementsException()
-          << "The FilterName and the flux vectors have different size";
+          << "The std::string and the flux vectors have different size";
     }
   }
 
@@ -115,15 +115,15 @@ public:
    * @return
    *  A pair containing a value and the corresponding error
    */
-  std::unique_ptr<ValuePair> find(FilterName filter_name) const;
+  std::unique_ptr<FluxErrorPair> find(std::string filter_name) const;
 
 private:
 
   /// Shared pointer to the common list of filter names
-  std::shared_ptr<std::vector<FilterName>> m_filter_name_vector_ptr;
+  std::shared_ptr<std::vector<std::string>> m_filter_name_vector_ptr;
 
   /// The photometry map
-  std::vector<ValuePair> m_photometry_vector;
+  std::vector<FluxErrorPair> m_photometry_vector;
 
 };
 // Eof class Photometry

@@ -15,7 +15,6 @@
 #include "ChCatalog/SourceAttributes/Photometry.h"
 #include "ChCatalog/SourceAttributes/Coordinates.h"
 #include "ChCatalog/SourceAttributes/SpectroscopicRedshift.h"
-#include "ChCatalog/FilterName.h"
 #include "ChCatalog/Catalog.h"
 
 using namespace ChCatalog;
@@ -28,20 +27,20 @@ struct CatalogFixture {
   // Building a photometry attribute mock object
   //
   // Values for building a Photometry object
-  const FilterName expected_filter_name_1 { "COSMOS", "g_SDSS" };
-  const FilterName expected_filter_name_2 { "COSMOS", "r_SDSS" };
+  const std::string expected_filter_name_1 { "COSMOS/g_SDSS" };
+  const std::string expected_filter_name_2 { "COSMOS/r_SDSS" };
   const double expected_flux_1 = 0.46575674;
   const double expected_error_1 = 0.00001534;
   const double expected_flux_2 = 0.01537575674;
   const double expected_error_2 = 0.00354616;
 
   // Shared pointer of filter name vector
-  shared_ptr<vector<FilterName>> filter_name_vector_ptr {
-      new vector<FilterName> { expected_filter_name_1, expected_filter_name_2 } };
+  shared_ptr<vector<std::string>> filter_name_vector_ptr {
+      new vector<std::string> { expected_filter_name_1, expected_filter_name_2 } };
 
   // photometry values vector
-  vector<Photometry::ValuePair> photometry_vector { Photometry::ValuePair(expected_flux_1,
-      expected_error_1), Photometry::ValuePair(expected_flux_2, expected_error_2) };
+  vector<FluxErrorPair> photometry_vector { FluxErrorPair(expected_flux_1,
+      expected_error_1), FluxErrorPair(expected_flux_2, expected_error_2) };
 
   // Photometry
   Photometry photometry {filter_name_vector_ptr, photometry_vector};
@@ -107,11 +106,6 @@ struct CatalogFixture {
     //delete catPtr;
   }
 
-//  map< FilterName, pair<double, double> > createPhotometryMap() {
-//    map< FilterName, pair<double, double> > phot_map {};
-//    phot_map.insert(make_pair(expectedFilterName, make_pair(expectedFlux, expectedError)));
-//    return phot_map;
-//  }
 
 };
 
