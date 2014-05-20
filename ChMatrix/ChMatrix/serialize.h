@@ -12,6 +12,7 @@
 #include <boost/archive/binary_iarchive.hpp>
 #include <boost/archive/binary_oarchive.hpp>
 #include "ChMatrix/Matrix.h"
+#include "ChMatrix/serialization/Matrix.h"
 
 namespace ChMatrix {
 

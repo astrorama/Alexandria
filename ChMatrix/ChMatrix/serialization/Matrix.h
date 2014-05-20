@@ -9,8 +9,10 @@
 
 #include <type_traits>
 #include <memory>
+#include <boost/serialization/vector.hpp>
 #include "ChMatrix/AxisInfo.h"
 #include "ChMatrix/Matrix.h"
+#include "ChMatrix/serialization/tuple.h"
 #include "ChMatrix/serialization/AxisInfo.h"
 
 namespace boost {
