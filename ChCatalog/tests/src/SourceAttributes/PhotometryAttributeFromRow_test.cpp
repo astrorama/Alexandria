@@ -1,5 +1,5 @@
 /**
- * @file PhotometryAttributeFromTable_test.cpp
+ * @file PhotometryAttributeFromRow_test.cpp
  *
  * @date Apr 17, 2014
  * @author Pierre Dubath
@@ -8,10 +8,10 @@
 #include <boost/test/unit_test.hpp>
 #include <memory>
 #include <map>
-#include "ChCatalog/SourceAttributes/PhotometryAttributeFromTable.h"
+#include "ChCatalog/SourceAttributes/PhotometryAttributeFromRow.h"
 #include "ChCatalog/SourceAttributes/Photometry.h"
 #include "ElementsKernel/ElementsException.h"
-#include "ChCatalog/AttributeFromTable.h"
+#include "ChCatalog/AttributeFromRow.h"
 
 //-----------------------------------------------------------------------------
 // Include the TableFixture which contain a complete table mock object use here
@@ -25,7 +25,7 @@ using namespace std;
 //-----------------------------------------------------------------------------
 //
 
-BOOST_AUTO_TEST_SUITE (PhotometryAttributeFromTable_test)
+BOOST_AUTO_TEST_SUITE (PhotometryAttributeFromRow_test)
 
 //-----------------------------------------------------------------------------
 
@@ -33,9 +33,9 @@ BOOST_FIXTURE_TEST_CASE(constructor_test, TableFixture) {
 
   BOOST_TEST_MESSAGE("--> constructor test ");
 
-  PhotometryAttributeFromTable paft {column_info_ptr, filter_name_mapping};
+  PhotometryAttributeFromRow pafr {column_info_ptr, filter_name_mapping};
 
-  map<string, pair<size_t, size_t>> map = paft.getFilterIndexMapping();
+  map<string, pair<size_t, size_t>> map = pafr.getFilterIndexMapping();
   BOOST_CHECK_EQUAL(map[v_filter_name].first, 5);
   BOOST_CHECK_EQUAL(map[v_filter_name].second, 7);
   BOOST_CHECK_EQUAL(map[r_filter_name].first, 6);
@@ -50,7 +50,7 @@ BOOST_FIXTURE_TEST_CASE( createAttribute_test, TableFixture ) {
 
   BOOST_TEST_MESSAGE("--> createAttribute test ");
 
-  PhotometryAttributeFromTable paft {column_info_ptr, filter_name_mapping};
+  PhotometryAttributeFromRow paft {column_info_ptr, filter_name_mapping};
 
   unique_ptr<ChCatalog::Attribute> attribute_ptr = paft.createAttribute(row1);
 

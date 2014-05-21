@@ -5,34 +5,34 @@
  * @author Pierre Dubath
  */
 
-#ifndef PHOTOMETRYATTRIBUTEHANDLER_H_
-#define PHOTOMETRYATTRIBUTEHANDLER_H_
+#ifndef PHOTOMETRYATTRIBUTEFROMROW_H_
+#define PHOTOMETRYATTRIBUTEFROMROW_H_
 #include <map>
 #include <utility>
 #include <string>
 #include <memory>
 
 
-#include "ChCatalog/AttributeFromTable.h"
+#include "ChCatalog/AttributeFromRow.h"
 #include "ChCatalog/Catalog.h"
 #include "ChTable/Table.h"
 
 namespace ChCatalog {
 
 /**
- * @class PhotometryAttributeHandler
- * @brief Implementation of the AttributeHandler for a photometry attribute.
+ * @class PhotometryAttributeFromRow
+ * @brief Implementation of the AttributeFromRow for a photometry attribute.
  * This class implements the createAttribute method that must be used to
  * create Photometry objects.
  *
  */
-class PhotometryAttributeFromTable : public AttributeFromTable {
+class PhotometryAttributeFromRow : public AttributeFromRow {
 public:
   /**
-   * @brief Create a PhotometryAttributeHandler object
+   * @brief Create a PhotometryAttributeFromRow object
    *
-   * @details Create a PhotometryAttributeHandler object, setting up the rule for building
-   * PhotometryAttribute from a Table row. The filter_name_mapping provides the correspondence
+   * @details Create a PhotometryAttributeFromRow object, setting up the rule for building
+   * PhotometryAttribute from table rows. The filter_name_mapping provides the correspondence
    * between the filterName (string) and the names used for the Table columns. These names (of
    * the flux and the error columns) are searched in the columnInfo of the Table and a new
    * mapping between the filterName and the indices of the flux and of the error columns is built.
@@ -49,10 +49,10 @@ public:
    * @exception
    *  An exception is thrown if the names provided in the mapping are not present in the columnInfo.
    */
-  PhotometryAttributeFromTable(std::shared_ptr<ChTable::ColumnInfo> column_info_ptr,
+  PhotometryAttributeFromRow(std::shared_ptr<ChTable::ColumnInfo> column_info_ptr,
       const std::map<std::string, std::pair<std::string, std::string>> filter_name_mapping);
 
-  virtual ~PhotometryAttributeFromTable();
+  virtual ~PhotometryAttributeFromRow();
 
   /**
    * @brief Create a photometricAttribute from a Table row
@@ -85,4 +85,4 @@ private:
 
 } // namespace ChCatalog 
 
-#endif // PHOTOMETRYATTRIBUTEHANDLER_H_ 
+#endif // PHOTOMETRYATTRIBUTEFROMROW_H_

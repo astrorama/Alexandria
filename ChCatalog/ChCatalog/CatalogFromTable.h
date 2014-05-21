@@ -13,7 +13,7 @@
 
 
 #include "ChCatalog/Catalog.h"
-#include "ChCatalog/AttributeFromTable.h"
+#include "ChCatalog/AttributeFromRow.h"
 #include "ChTable/Table.h"
 
 
@@ -22,7 +22,7 @@ namespace ChCatalog {
 class CatalogFromTable {
 public:
   CatalogFromTable(const std::size_t source_id_index,
-      std::vector<std::unique_ptr<AttributeFromTable>> attribute_from_table_ptr_vector);
+      std::vector<std::unique_ptr<AttributeFromRow>> attribute_from_table_ptr_vector);
 
   virtual ~CatalogFromTable();
 
@@ -31,7 +31,7 @@ public:
 private:
   size_t m_source_id_index;
 
-  std::vector<std::unique_ptr<AttributeFromTable>> m_attribute_from_table_ptr_vector;
+  std::vector<std::unique_ptr<AttributeFromRow>> m_attribute_from_table_ptr_vector;
 
 };
 

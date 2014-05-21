@@ -1,5 +1,5 @@
 /**
- * @file CatalogFactory_test.cpp
+ * @file CatalogFromTable_test.cpp
  *
  * @date Apr 15, 2014
  * @author Pierre Dubath
@@ -7,8 +7,8 @@
 
 #include <boost/test/unit_test.hpp>
 #include "ChCatalog/CatalogFromTable.h"
-#include "ChCatalog/AttributeFromTable.h"
-#include "ChCatalog/SourceAttributes/PhotometryAttributeFromTable.h"
+#include "ChCatalog/AttributeFromRow.h"
+#include "ChCatalog/SourceAttributes/PhotometryAttributeFromRow.h"
 
 
 //-----------------------------------------------------------------------------
@@ -31,9 +31,9 @@ BOOST_AUTO_TEST_SUITE (CatalogFromTable_test)
 BOOST_FIXTURE_TEST_CASE(createCatalog_test, TableFixture) {
 
 
-  unique_ptr<AttributeFromTable> photmetryAft_ptr {new PhotometryAttributeFromTable {column_info_ptr, filter_name_mapping} };
+  unique_ptr<AttributeFromRow> photmetryAft_ptr {new PhotometryAttributeFromRow {column_info_ptr, filter_name_mapping} };
 
-  vector<unique_ptr<AttributeFromTable>> attribute_from_table_vector;
+  vector<unique_ptr<AttributeFromRow>> attribute_from_table_vector;
 
   attribute_from_table_vector.push_back( move(photmetryAft_ptr) );
 

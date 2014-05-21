@@ -22,13 +22,16 @@ elements_add_library(ChCatalog src/lib/*.cpp
 elements_add_unit_test(Photometry_test tests/src/SourceAttributes/Photometry_test.cpp tests/src/TestMain.cpp
                        LINK_LIBRARIES ChCatalog TYPE Boost)
                        
-elements_add_unit_test(PhotometryAttributeFromTable_test tests/src/SourceAttributes/PhotometryAttributeFromTable_test.cpp tests/src/TestMain.cpp
+elements_add_unit_test(PhotometryAttributeFromRow_test tests/src/SourceAttributes/PhotometryAttributeFromRow_test.cpp tests/src/TestMain.cpp
                        LINK_LIBRARIES ChCatalog TYPE Boost)
                        
 elements_add_unit_test(Coordinates_test tests/src/SourceAttributes/Coordinates_test.cpp tests/src/TestMain.cpp
                        LINK_LIBRARIES ChCatalog TYPE Boost)
 
 elements_add_unit_test(SpectroscopicRedshift_test tests/src/SourceAttributes/SpectroscopicRedshift_test.cpp tests/src/TestMain.cpp
+                       LINK_LIBRARIES ChCatalog TYPE Boost)
+
+elements_add_unit_test(SpectroscopicRedshiftAttributeFromRow_test tests/src/SourceAttributes/SpectroscopicRedshiftAttributeFromRow_test.cpp tests/src/TestMain.cpp
                        LINK_LIBRARIES ChCatalog TYPE Boost)
                        
 elements_add_unit_test(FilterName_test tests/src/FilterName_test.cpp tests/src/TestMain.cpp

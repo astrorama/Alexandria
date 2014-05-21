@@ -13,7 +13,7 @@ using namespace std;
 namespace ChCatalog {
 
 CatalogFromTable::CatalogFromTable(size_t source_id_index,
-    std::vector<std::unique_ptr<AttributeFromTable>> attribute_from_table_ptr_vector) :
+    std::vector<std::unique_ptr<AttributeFromRow>> attribute_from_table_ptr_vector) :
     m_source_id_index(source_id_index) {
         m_attribute_from_table_ptr_vector = std::move(attribute_from_table_ptr_vector);
 }
