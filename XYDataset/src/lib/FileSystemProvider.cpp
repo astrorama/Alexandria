@@ -81,13 +81,12 @@ std::vector<QualifiedName> FileSystemProvider::listContents(const std::string& g
 
  std::string my_group = group;
  // Make sure the group finishes with a "/" and only one
- size_t pos = my_group.find_last_not_of("/");
- if (  pos != my_group.length()-1) {
-   my_group = my_group.substr(0, pos+1) + "/";
+ while (!my_group.empty() && my_group.back() == '/') {
+   my_group.pop_back();
  }
  // Make sure the group do not start with a "/"
- pos = my_group.find_first_not_of("/") ;
- if ( pos != 0) {
+ size_t pos = my_group.find_first_not_of("/");
+ if (!my_group.empty() && pos != 0) {
    my_group = my_group.substr(pos);
  }
 
