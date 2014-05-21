@@ -50,7 +50,7 @@ public:
    * Constructs a QualifiedName with the given group and name
    * @details
    * Both group and name cannot be empty and they cannot contain the '/'
-   * character. In this case a std::invalid_argument exception is thrown.
+   * character. In this case an ElementsException is thrown.
    * 
    * @param groups One or more groups to qualify the name with
    * @param name The name
@@ -58,6 +58,18 @@ public:
    *    if any of the parameters is empty or contains the '/' character
    */
   QualifiedName(std::vector<std::string> groups, std::string name);
+  
+  /**
+   * @brief
+   * Constructs a QualifiedName object representing the given string
+   * @details
+   * The given string must follow the rules of a qualified name (groups and name
+   * separated with the '/' character and no empty names allowed).
+   * @param qualified_name The string representing the qualified name
+   * @throws ElementsException
+   *    if the given string is an ivalid qualified name
+   */
+  QualifiedName(const std::string& qualified_name);
   
   /**
    * @brief Copy constructor
