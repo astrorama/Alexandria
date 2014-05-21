@@ -12,15 +12,14 @@
 #include <vector>
 #include <string>
 #include "XYDataset/XYDataset.h"
+#include "XYDataset/QualifiedName.h"
 
 namespace XYDataset {
 
 /**
- * The XYDatasetProvider template class provides the dataset following
- * an identifier object
+ * The XYDatasetProvider class provides the dataset following
+ * a QualifiedName object
  */
-
-template <typename T>
 
 class XYDatasetProvider
 {
@@ -44,20 +43,20 @@ class XYDatasetProvider
    * @param group
    * Name of the dataset group
    * @return
-   * A vector of strings of all files included their path
+   * A vector of the qualified names of all datasets inside the given group (recursively)
    */
-   virtual std::vector<std::string> listContents(const std::string& group) = 0;
+   virtual std::vector<QualifiedName> listContents(const std::string& group) = 0;
 
   /**
    * @brief
-   * Virtual function for getting from an identifier the dataset of
+   * Virtual function for getting from a QualifiedName the dataset of
    * XYDataset type
-   * @param identifier
-   * Identifier object of the dataset
+   * @param qualified_name
+   * Qualified name of the dataset
    * @return
    * A unique pointer of XYDataset type to the dataset
    */
-   virtual std::unique_ptr<XYDataset> getDataset(const T &identifier) = 0;
+   virtual std::unique_ptr<XYDataset> getDataset(const QualifiedName& qualified_name) = 0;
 
  private:
 

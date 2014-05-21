@@ -15,6 +15,7 @@
 #include "ElementsKernel/ElementsException.h"
 #include "XYDataset/FileSystemProvider.h"
 #include "XYDataset/AsciiParser.h"
+#include "XYDataset/QualifiedName.h"
 
 using namespace XYDataset;
 
@@ -83,12 +84,12 @@ BOOST_FIXTURE_TEST_CASE(exceptions_test, FileSystemProvider_Fixture) {
 
   // Path is not valid
   base_directory = "/tmp/PATH_DOES_NOT_EXIST";
-  BOOST_CHECK_THROW( FileSystemProvider<std::string> fsp (base_directory, std::move(fp)),
+  BOOST_CHECK_THROW( FileSystemProvider fsp (base_directory, std::move(fp)),
                      ElementsException);
 
   // Path as a file is not valid
   base_directory = base_directory + "filter/MER/Gext_ACSf435w.txt";
-  BOOST_CHECK_THROW( FileSystemProvider<std::string> fsp (base_directory, std::move(fp)),
+  BOOST_CHECK_THROW( FileSystemProvider fsp (base_directory, std::move(fp)),
                      ElementsException);
 
   // Fill up a new file with dataset name already existing
@@ -99,7 +100,7 @@ BOOST_FIXTURE_TEST_CASE(exceptions_test, FileSystemProvider_Fixture) {
   file3_mer << "0.1111 1.0000 \n";
   file3_mer.close();
 
-  BOOST_CHECK_THROW( FileSystemProvider<std::string> fsp (base_directory, std::move(fp)),
+  BOOST_CHECK_THROW( FileSystemProvider fsp (base_directory, std::move(fp)),
                      ElementsException);
 
   // Remove file3 to avoid exception in the next test
@@ -116,19 +117,18 @@ BOOST_FIXTURE_TEST_CASE(listContent_test, FileSystemProvider_Fixture) {
   BOOST_TEST_MESSAGE("--> Testing the listContents function");
   BOOST_TEST_MESSAGE(" ");
 
-  FileSystemProvider<std::string> fsp {"/tmp/euclid/", std::move(fp)};
+  FileSystemProvider fsp {"/tmp/euclid/", std::move(fp)};
 
   // Even with two slashes in the group it must work
   group = { "filter/MER//" };
-  std::vector<std::string> result_vector = fsp.listContents(group);
-
+  std::vector<QualifiedName> result_vector = fsp.listContents(group);
   BOOST_CHECK_EQUAL(2, result_vector.size());
-  BOOST_CHECK_EQUAL("filter/MER/Dataset_name_for_file1", result_vector[0]);
-  BOOST_CHECK_EQUAL("filter/MER/file2", result_vector[1]);
+  BOOST_CHECK(std::find(result_vector.begin(), result_vector.end(), QualifiedName{{"filter","MER"},"Dataset_name_for_file1"})!=result_vector.end());
+  BOOST_CHECK(std::find(result_vector.begin(), result_vector.end(), QualifiedName{{"filter","MER"},"file2"})!=result_vector.end());
 
   // With this group the vector must be empty
   group = { "MER" };
-  std::vector<std::string> result_vector2 = fsp.listContents(group);
+  std::vector<QualifiedName> result_vector2 = fsp.listContents(group);
   BOOST_CHECK_EQUAL(0, result_vector2.size());
 
 }
@@ -143,16 +143,16 @@ BOOST_FIXTURE_TEST_CASE(getDataset_test, FileSystemProvider_Fixture) {
   BOOST_TEST_MESSAGE("--> Testing the getDataset function");
   BOOST_TEST_MESSAGE(" ");
 
-  FileSystemProvider<std::string> fsp {"/tmp/euclid/", std::move(fp)};
+  FileSystemProvider fsp {"/tmp/euclid/", std::move(fp)};
 
   // Check a no null pointer must be return
-  std::string identifier { "filter/MER/Dataset_name_for_file1" };
+  QualifiedName identifier {{"filter","MER"},"Dataset_name_for_file1"};
   std::unique_ptr<XYDataset::XYDataset> dataset_ptr = fsp.getDataset(identifier);
 
   BOOST_CHECK(dataset_ptr);
 
   // Check a nullptr must be returned
-  identifier = "filter/DOES_NOT_EXIST";
+  identifier = QualifiedName{{"filter"},"DOES_NOT_EXIST"};
   dataset_ptr = fsp.getDataset(identifier);
 
   BOOST_CHECK(!dataset_ptr);

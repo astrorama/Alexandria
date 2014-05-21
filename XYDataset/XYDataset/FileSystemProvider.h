@@ -34,9 +34,7 @@ namespace XYDataset {
  * operations (it gets dataset name and data)
  */
 
-template <typename T>
-
-class FileSystemProvider : public XYDatasetProvider<T>
+class FileSystemProvider : public XYDatasetProvider
 {
  public:
 
@@ -57,13 +55,13 @@ class FileSystemProvider : public XYDatasetProvider<T>
 
   /**
    * @brief
-   * Get a dataset corresponding to an unique identifier
+   * Get a dataset corresponding to an unique qualified name
    *
-   * @param identifier : dataset's identifier
+   * @param qualified_name : dataset's qualified name
    * @return
    * A XYDataset unique pointer or null pointer
    */
-  std::unique_ptr<XYDataset> getDataset(const T & identifier) override;
+  std::unique_ptr<XYDataset> getDataset(const QualifiedName& qualified_name) override;
 
   /**
    * @brief
@@ -74,25 +72,21 @@ class FileSystemProvider : public XYDatasetProvider<T>
    *  It is a string which represents a group as for instance: "filter/MER" if
    *  you want all MER filters.
    * @return
-   * A vector of strings of the filenames (including the path) or an empty
+   * A vector of qualified names for the datasets in the files under the group or an empty
    * vector in case of no files for the group
    *
    */
-  std::vector<std::string> listContents(const std::string& group) override;
+  std::vector<QualifiedName> listContents(const std::string& group) override;
 
 
  private:
 
-  std::string                        m_root_path;
-  std::unique_ptr<FileParser>        m_parser;
-  std::map<std::string, std::string> m_map;
+  std::string                          m_root_path;
+  std::unique_ptr<FileParser>          m_parser;
+  std::map<QualifiedName, std::string> m_map;
 
 };
 
 } /* namespace XYDataset */
-
-#define FILESYSTEMPROVIDER_IMPL
-#include "XYDataset/_impl/FileSystemProvider.icpp"
-#undef FILESYSTEMPROVIDER_IMPL
 
 #endif // FILESYSTEMPROVIDER_H_ 

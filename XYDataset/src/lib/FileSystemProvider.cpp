@@ -5,11 +5,12 @@
  * @author Nicolas Morisset
  */
 
-#ifdef FILESYSTEMPROVIDER_IMPL
-
 #include <exception>
 #include <boost/filesystem.hpp>
+#include <boost/algorithm/string.hpp>
+#include "ElementsKernel/ElementsException.h"
 #include "XYDataset/XYDatasetIdentifierTraits.h"
+#include "XYDataset/FileSystemProvider.h"
 
 namespace fs = boost::filesystem;
 
@@ -19,10 +20,8 @@ namespace XYDataset {
 //                              Constructor
 //-----------------------------------------------------------------------------
 
-template <typename T>
-
-FileSystemProvider<T>::FileSystemProvider(const std::string& root_path, std::unique_ptr<FileParser> parser)
-                   : XYDatasetProvider<T>(), m_root_path(root_path), m_parser(std::move(parser)) {
+FileSystemProvider::FileSystemProvider(const std::string& root_path, std::unique_ptr<FileParser> parser)
+                   : XYDatasetProvider(), m_root_path(root_path), m_parser(std::move(parser)) {
 
   std::vector<std::string> string_vector{};
 
@@ -50,17 +49,19 @@ FileSystemProvider<T>::FileSystemProvider(const std::string& root_path, std::uni
         // Remove the root part
         std::string str = it->path().string();
         str = str.substr(m_root_path.length(), str.length());
-        // Remove filename
-        size_t pos = str.find_last_of("/");
-        std::string group = str.substr(0, pos+1);
-        std::string qualified_name = group + dataset_name;
+        // Split by the character '/'
+        std::vector<std::string> groups {};
+        boost::split(groups, str, boost::is_any_of("/"));
+        // The last string is the file name, so we remove it
+        groups.pop_back();
+        QualifiedName qualified_name {groups, dataset_name};
         // Fill up a map
         auto ret = m_map.insert(make_pair(qualified_name, it->path().string()));
         // Check for unique record
         if (!ret.second) {
           throw ElementsException() << "Qualified name can not be inserted "
                                     << "in the map. Qualify name : "
-                                    << qualified_name
+                                    << qualified_name.qualifiedName()
                                     << " Path :" << it->path().string();
         }
       }
@@ -77,8 +78,7 @@ FileSystemProvider<T>::FileSystemProvider(const std::string& root_path, std::uni
 //                             listContents function
 //-----------------------------------------------------------------------------
 
-template <typename T>
-std::vector<std::string> FileSystemProvider<T>::listContents(const std::string& group) {
+std::vector<QualifiedName> FileSystemProvider::listContents(const std::string& group) {
 
  std::string my_group = group;
  // Make sure the group finishes with a "/" and only one
@@ -92,15 +92,14 @@ std::vector<std::string> FileSystemProvider<T>::listContents(const std::string& 
    my_group = my_group.substr(pos);
  }
 
- std::vector<std::string> qualified_name_vector{};
- std::string full_path = m_root_path + my_group;
+ std::vector<QualifiedName> qualified_name_vector{};
 
  // Fill up vector with qualified name from the map
  // Insert all qualified name where path contains the group name at the
  // first position
  for (auto it : m_map ) {
      auto qualified_name = it.first;
-      if (! qualified_name.find(my_group)) {
+      if (boost::starts_with(qualified_name.qualifiedName(), my_group)) {
          qualified_name_vector.push_back(qualified_name);
      }
  } // Eof for
@@ -112,14 +111,11 @@ std::vector<std::string> FileSystemProvider<T>::listContents(const std::string& 
 //                             getDataset function
 //-----------------------------------------------------------------------------
 
-template <typename T>
-
-std::unique_ptr<XYDataset> FileSystemProvider<T>::getDataset(const T & identifier) {
+std::unique_ptr<XYDataset> FileSystemProvider::getDataset(const QualifiedName & qualified_name) {
 
  std::string filename {};
- std::string qualifiedName = XYDatasetIdentifierTraits<T>::getQualifiedName(identifier);
 
- auto it = m_map.find(qualifiedName);
+ auto it = m_map.find(qualified_name);
  if (it != m_map.end()) {
     filename = it->second;
  }
@@ -128,5 +124,3 @@ std::unique_ptr<XYDataset> FileSystemProvider<T>::getDataset(const T & identifie
 }
 
 } /* namespace XYDataset */
-
-#endif /* FILESYSTEMPROVIDER_IMPL */

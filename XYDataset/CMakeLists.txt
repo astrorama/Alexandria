@@ -22,6 +22,9 @@ elements_add_unit_test(FileSystemProvider_test tests/src/FileSystemProvider_test
 elements_add_unit_test(AsciiParser_test tests/src/AsciiParser_test.cpp tests/src/TestMain.cpp
                        LINK_LIBRARIES XYDataset TYPE Boost ChTable)
 
+elements_add_unit_test(QualifiedName_test tests/src/QualifiedName_test.cpp tests/src/TestMain.cpp
+                       LINK_LIBRARIES XYDataset TYPE Boost ChTable)
+
 #-------------------------------------------------------------------------------
 
 #elements_add_unit_test(XYDataset_all_tests tests/src/*_test.cpp tests/src/TestMain.cpp
