@@ -74,11 +74,11 @@ public:
    *
    */
   Photometry(std::shared_ptr<std::vector<std::string>> filter_name_vector_ptr,
-      std::vector<FluxErrorPair> photometry_vector) :
-      m_filter_name_vector_ptr(filter_name_vector_ptr), m_photometry_vector(
-          std::move(photometry_vector)) {
+      std::vector<FluxErrorPair> value_vector) :
+      m_filter_name_vector_ptr(filter_name_vector_ptr), m_value_vector(
+          std::move(value_vector)) {
     // Only check the size, but not the consistency
-    if (m_filter_name_vector_ptr->size() != m_photometry_vector.size()) {
+    if (m_filter_name_vector_ptr->size() != m_value_vector.size()) {
       throw ElementsException()
           << "The std::string and the flux vectors have different size";
     }
@@ -90,12 +90,12 @@ public:
 
   const_iterator begin() const {
     return const_iterator { m_filter_name_vector_ptr->cbegin(),
-        m_photometry_vector.cbegin() };
+        m_value_vector.cbegin() };
   }
 
   const_iterator end() const {
     return const_iterator { m_filter_name_vector_ptr->cend(),
-        m_photometry_vector.cend() };
+        m_value_vector.cend() };
   }
 
   /**
@@ -123,7 +123,7 @@ private:
   std::shared_ptr<std::vector<std::string>> m_filter_name_vector_ptr;
 
   /// The photometry map
-  std::vector<FluxErrorPair> m_photometry_vector;
+  std::vector<FluxErrorPair> m_value_vector;
 
 };
 // Eof class Photometry

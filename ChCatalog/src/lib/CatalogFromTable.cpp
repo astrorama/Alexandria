@@ -12,10 +12,23 @@
 using namespace std;
 namespace ChCatalog {
 
-CatalogFromTable::CatalogFromTable(size_t source_id_index,
-    std::vector<std::unique_ptr<AttributeFromRow>> attribute_from_table_ptr_vector) :
-    m_source_id_index(source_id_index) {
-        m_attribute_from_table_ptr_vector = std::move(attribute_from_table_ptr_vector);
+CatalogFromTable::CatalogFromTable(
+    std::shared_ptr<ChTable::ColumnInfo> column_info_ptr,
+    string source_id_column_name,
+    std::vector<std::unique_ptr<AttributeFromRow>> attribute_from_table_ptr_vector) {
+
+  unique_ptr<size_t> source_id_index_ptr = column_info_ptr->find(
+      source_id_column_name);
+  if (source_id_index_ptr == nullptr
+      || type_index(typeid(int64_t))
+          != column_info_ptr->getType(*(source_id_index_ptr))) {
+    throw ElementsException()
+        << "Column info does not have the expected source_id column of type: double";
+  }
+  m_source_id_index = *(source_id_index_ptr);
+
+  m_attribute_from_table_ptr_vector = std::move(
+      attribute_from_table_ptr_vector);
 }
 
 CatalogFromTable::~CatalogFromTable() {
@@ -30,7 +43,7 @@ ChCatalog::Catalog CatalogFromTable::createCatalog(
 
   for (auto row : input_table) {
 
-    int64_t source_id = boost::get<int64_t>(row[m_source_id_index]);
+    int64_t source_id = boost::get < int64_t > (row[m_source_id_index]);
 
     for (auto& attribute_from_table_ptr : m_attribute_from_table_ptr_vector) {
       attribute_ptr_vector.push_back(

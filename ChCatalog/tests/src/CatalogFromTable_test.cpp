@@ -37,9 +37,7 @@ BOOST_FIXTURE_TEST_CASE(createCatalog_test, TableFixture) {
 
   attribute_from_table_vector.push_back( move(photmetryAft_ptr) );
 
-  size_t source_id_index = *(table.getColumnInfo()->find(source_id_name));
-
-  CatalogFromTable cft {source_id_index, move(attribute_from_table_vector)};
+  CatalogFromTable cft {table.getColumnInfo(), source_id_name, move(attribute_from_table_vector)};
 
   ChCatalog::Catalog catalog = cft.createCatalog(table);
 

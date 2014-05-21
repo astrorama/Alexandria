@@ -45,7 +45,7 @@ unique_ptr<FluxErrorPair> Photometry::find(string filter_name) const
 
   unique_ptr<FluxErrorPair> flux_found_ptr {};
   auto filter_iter = m_filter_name_vector_ptr->begin();
-  auto photometry_iter = m_photometry_vector.begin();
+  auto photometry_iter = m_value_vector.begin();
   while (filter_iter != m_filter_name_vector_ptr->end()) {
     if (*filter_iter == filter_name) {
       break;
