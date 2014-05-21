@@ -13,7 +13,6 @@
 #include <iterator>
 #include "ElementsKernel/ElementsException.h"
 #include "ChCatalog/Attribute.h"
-#include "ChCatalog/FilterName.h"
 
 namespace ChCatalog {
 

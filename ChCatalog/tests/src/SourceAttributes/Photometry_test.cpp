@@ -8,7 +8,6 @@
 #include <iostream>
 
 #include "ChCatalog/SourceAttributes/Photometry.h"
-#include "ChCatalog/FilterName.h"
 
 
 //-----------------------------------------------------------------------------

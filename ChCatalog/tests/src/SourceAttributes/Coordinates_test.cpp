@@ -9,7 +9,6 @@
 #include <boost/test/unit_test.hpp>
 #include <iostream>
 #include "ChCatalog/SourceAttributes/Coordinates.h"
-#include "ChCatalog/FilterName.h"
 
 using namespace ChCatalog;
 using namespace std;

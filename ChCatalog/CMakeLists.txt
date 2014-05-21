@@ -34,9 +34,6 @@ elements_add_unit_test(SpectroscopicRedshift_test tests/src/SourceAttributes/Spe
 elements_add_unit_test(SpectroscopicRedshiftAttributeFromRow_test tests/src/SourceAttributes/SpectroscopicRedshiftAttributeFromRow_test.cpp tests/src/TestMain.cpp
                        LINK_LIBRARIES ChCatalog TYPE Boost)
                        
-elements_add_unit_test(FilterName_test tests/src/FilterName_test.cpp tests/src/TestMain.cpp
-                       LINK_LIBRARIES ChCatalog TYPE Boost)
-
 elements_add_unit_test(Source_test tests/src/Source_test.cpp tests/src/TestMain.cpp
                        LINK_LIBRARIES ChCatalog TYPE Boost)
 
