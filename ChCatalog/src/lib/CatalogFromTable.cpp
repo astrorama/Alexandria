@@ -15,7 +15,7 @@ namespace ChCatalog {
 CatalogFromTable::CatalogFromTable(
     std::shared_ptr<ChTable::ColumnInfo> column_info_ptr,
     string source_id_column_name,
-    std::vector<std::unique_ptr<AttributeFromRow>> attribute_from_table_ptr_vector) {
+    std::vector<std::unique_ptr<AttributeFromRow>> attribute_from_row_ptr_vector) {
 
   unique_ptr<size_t> source_id_index_ptr = column_info_ptr->find(
       source_id_column_name);
@@ -27,8 +27,8 @@ CatalogFromTable::CatalogFromTable(
   }
   m_source_id_index = *(source_id_index_ptr);
 
-  m_attribute_from_table_ptr_vector = std::move(
-      attribute_from_table_ptr_vector);
+  m_attribute_from_row_ptr_vector = std::move(
+      attribute_from_row_ptr_vector);
 }
 
 CatalogFromTable::~CatalogFromTable() {
@@ -45,7 +45,7 @@ ChCatalog::Catalog CatalogFromTable::createCatalog(
 
     int64_t source_id = boost::get < int64_t > (row[m_source_id_index]);
 
-    for (auto& attribute_from_table_ptr : m_attribute_from_table_ptr_vector) {
+    for (auto& attribute_from_table_ptr : m_attribute_from_row_ptr_vector) {
       attribute_ptr_vector.push_back(
           attribute_from_table_ptr->createAttribute(row));
     }
