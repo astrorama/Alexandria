@@ -9,7 +9,6 @@
 #include <boost/filesystem.hpp>
 #include <boost/algorithm/string.hpp>
 #include "ElementsKernel/ElementsException.h"
-#include "XYDataset/XYDatasetIdentifierTraits.h"
 #include "XYDataset/FileSystemProvider.h"
 
 namespace fs = boost::filesystem;
