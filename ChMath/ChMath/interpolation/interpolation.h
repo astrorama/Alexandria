@@ -9,6 +9,7 @@
 
 #include <memory>
 #include <vector>
+#include <XYDataset/XYDataset.h>
 #include "ChMath/function/Function.h"
 
 namespace ChMath {
@@ -18,6 +19,8 @@ enum class InterpolationType {
 };
 
 std::unique_ptr<Function> interpolate(const std::vector<double>& x, const std::vector<double>& y, InterpolationType type);
+
+std::unique_ptr<Function> interpolate(const XYDataset::XYDataset& dataset, InterpolationType type);
 
 } // End of ChMath
 

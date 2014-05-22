@@ -19,4 +19,14 @@ std::unique_ptr<Function> interpolate(const std::vector<double>& x, const std::v
   return nullptr;
 }
 
+std::unique_ptr<Function> interpolate(const XYDataset::XYDataset& dataset, InterpolationType type) {
+  std::vector<double> x {};
+  std::vector<double> y {};
+  for (auto& pair : dataset) {
+    x.push_back(pair.first);
+    y.push_back(pair.second);
+  }
+  return interpolate(x, y, type);
+}
+
 } // End of ChMath
