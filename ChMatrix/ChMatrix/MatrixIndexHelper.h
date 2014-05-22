@@ -52,6 +52,11 @@ public:
   std::vector<size_t> m_axes_index_factors;
 };
 
+template<typename... AxesTypes>
+MatrixIndexHelper<AxesTypes...> makeMatrixIndexHelper(std::tuple<AxisInfo<AxesTypes>...> axes_tuple) {
+  return MatrixIndexHelper<AxesTypes...>(axes_tuple);
+}
+
 } // end of namespace ChMatrix
 
 #endif	/* CHMATRIX_MATRIXINDEXHELPER_H */
