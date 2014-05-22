@@ -5,5 +5,5 @@
  */
 
 #define BOOST_TEST_DYN_LINK
-#define BOOST_TEST_MODULE ChMath Test Suite
+#define BOOST_TEST_MODULE ChTable Test Suite
 #include <boost/test/unit_test.hpp>
