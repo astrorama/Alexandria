@@ -16,7 +16,7 @@
 namespace ChTable {
 
 /**
- * @biref
+ * @brief
  * Returns a vector with strings representing the FITS ASCII table formats for
  * the given table
  * @details
@@ -29,7 +29,7 @@ namespace ChTable {
 std::vector<std::string> getAsciiFormatList(const Table& table);
 
 /**
- * @biref
+ * @brief
  * Returns a vector with strings representing the FITS binary table formats for
  * the given table
  * @details
