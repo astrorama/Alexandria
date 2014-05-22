@@ -7,7 +7,10 @@
 #ifndef CHMATRIX_SERIALIZATION_AXISINFO_H
 #define	CHMATRIX_SERIALIZATION_AXISINFO_H
 
+#include <type_traits>
 #include <boost/serialization/utility.hpp>
+#include <boost/shared_ptr.hpp>
+#include <boost/serialization/shared_ptr.hpp>
 #include "ChMatrix/AxisInfo.h"
 
 namespace boost {
@@ -19,6 +22,17 @@ void serialize(Archive&, ChMatrix::AxisInfo<T>&, const unsigned int) {
 }
 
 template<typename Archive, typename T>
+void saveType(Archive& ar, const T& t, typename std::enable_if<std::is_default_constructible<T>::value>::type* = 0) {
+  ar << t;
+}
+
+template<typename Archive, typename T>
+void saveType(Archive& ar, const T& t, typename std::enable_if<!std::is_default_constructible<T>::value>::type* = 0) {
+  boost::shared_ptr<T> ptr {new T{t}};
+  ar << ptr;
+}
+
+template<typename Archive, typename T>
 void save_construct_data(Archive& ar, const ChMatrix::AxisInfo<T>* t,
                                 const unsigned int) {
   std::string name = t->name();
@@ -26,9 +40,23 @@ void save_construct_data(Archive& ar, const ChMatrix::AxisInfo<T>* t,
   size_t size = t->size();
   ar << size;
   for (size_t i=0; i<size; ++i) {
-    T value = (*t)[i];
-    ar << value;
+    saveType(ar, (*t)[i]);
   }
+}
+
+template<typename Archive, typename T>
+T loadType(Archive& ar, typename std::enable_if<std::is_default_constructible<T>::value>::type* = 0) {
+  T value;
+  ar >> value;
+  return value;
+}
+
+template<typename Archive, typename T>
+T loadType(Archive& ar, typename std::enable_if<!std::is_default_constructible<T>::value>::type* = 0) {
+  boost::shared_ptr<T> ptr;
+  ar >> ptr;
+  T value {*ptr};
+  return value;
 }
 
 template<typename Archive, typename T>
@@ -38,11 +66,11 @@ void load_construct_data(Archive& ar, ChMatrix::AxisInfo<T>* t,
   ar >> name;
   size_t size;
   ar >> size;
-  std::vector<T> values (size);
+  std::vector<T> values;
   for (size_t i=0; i<size; ++i) {
-    T value;
-    ar >> value;
-    values[i] = value;
+    T value = loadType<Archive, T>(ar);
+//    ar >> value;
+    values.push_back(value);
   }
   ::new(t) ChMatrix::AxisInfo<T>(name, values);
 }
