@@ -89,6 +89,9 @@ std::vector<QualifiedName> FileSystemProvider::listContents(const std::string& g
  if (!my_group.empty() && pos != 0) {
    my_group = my_group.substr(pos);
  }
+ if (!my_group.empty()) {
+  my_group.push_back('/');
+ }
 
  std::vector<QualifiedName> qualified_name_vector{};
 
