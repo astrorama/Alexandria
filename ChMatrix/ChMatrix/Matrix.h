@@ -73,6 +73,8 @@ public:
   
   iterator end();
   
+  size_t size();
+  
   data_type& operator()(decltype(std::declval<AxisInfo<AxesTypes>>().size())... indices);
   
 private:
