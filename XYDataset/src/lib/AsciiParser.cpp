@@ -12,12 +12,16 @@
 #include "ElementsKernel/ElementsException.h"
 #include "ChTable/AsciiReader.h"
 #include "XYDataset/AsciiParser.h"
+#include "StringFunctions.h"
 
 using boost::regex;
 using boost::regex_match;
 
 namespace XYDataset {
 
+//
+// Get dataset name from ASCII file
+//
 std::string AsciiParser::getName(const std::string& file) {
 
   std::ifstream sfile(file);
@@ -41,18 +45,17 @@ std::string AsciiParser::getName(const std::string& file) {
   }
   else {
      // Dataset name is the filename without extension and path
-     size_t pos = file.find_last_of("/");
-     // Remove all characters before /
-     std::string str = file.substr(pos+1);
-     // Remove any file extension
-     pos = str.find_last_of(".");
-     dataset_name = str.substr(0, pos);
-  }
+     std::string str {};
+     str          = removeAllBeforeLastSlash(file);
+     dataset_name = removeExtension(str);
+ }
 
   return (dataset_name);
 }
 
-
+//
+// Get dataset from ASCII file
+//
 std::unique_ptr<XYDataset> AsciiParser::getDataset(const std::string& file) {
 
   std::unique_ptr<XYDataset> dataset_ptr {};

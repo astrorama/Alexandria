@@ -2,7 +2,7 @@
  * @file AsciiParser.h
  *
  * @date Apr 14, 2014
- * @author admin
+ * @author Nicolas Morisset
  */
 
 #ifndef ASCIIPARSER_H_
@@ -67,6 +67,8 @@ class AsciiParser : public FileParser
    * A unique pointer to a XYDatatset object or null pointer.
    */
   std::unique_ptr<XYDataset> getDataset(const std::string& file) override;
+
+  virtual ~AsciiParser() {}
 
  private:
 

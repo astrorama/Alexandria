@@ -42,14 +42,10 @@ class FileSystemProvider : public XYDatasetProvider
    * @brief constructor
    * @param root_path : path to the dataset
    * @param parser : FileParser object
-   * @throw ElementsException
-   *  Path to the files not found
-   * @throw ElementsException
-   *  Root path not found
-   * @throw ElementsException
-   *  Root path is not a directory
-   * @throw ElementsException
-   *  Qualified name can not be inserted
+   * @throw ElementsException : path to the files not found
+   * @throw ElementsException : root path not found
+   * @throw ElementsException : root path is not a directory
+   * @throw ElementsException : qualified name can not be inserted
    */
   FileSystemProvider(const std::string& root_path, std::unique_ptr<FileParser> parser);
 

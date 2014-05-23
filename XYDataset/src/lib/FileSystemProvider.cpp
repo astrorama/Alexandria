@@ -10,6 +10,7 @@
 #include <boost/algorithm/string.hpp>
 #include "ElementsKernel/ElementsException.h"
 #include "XYDataset/FileSystemProvider.h"
+#include "StringFunctions.h"
 
 namespace fs = boost::filesystem;
 
@@ -24,11 +25,13 @@ FileSystemProvider::FileSystemProvider(const std::string& root_path, std::unique
 
   std::vector<std::string> string_vector{};
 
-  // Make sure the group finishes with a "/" and only one
-  size_t pos = m_root_path.find_last_not_of("/");
-  if (  pos != m_root_path.length()-1) {
-    m_root_path = m_root_path.substr(0, pos+1) + "/";
-  }
+  // Make sure the root path finishes with a "/" and only one
+  m_root_path = checkEndSlashes(m_root_path);
+
+  // Make sure the root path starts with only one slash
+  m_root_path = checkBeginSlashes(m_root_path);
+
+  std::cout<<"m_root_path "<<m_root_path<<std::endl;
 
   // Convert path to boost filesytem object
   fs::path fspath(m_root_path);

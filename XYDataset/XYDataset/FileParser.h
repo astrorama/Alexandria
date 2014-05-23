@@ -43,7 +43,7 @@ class FileParser
     */
    virtual std::unique_ptr<XYDataset> getDataset(const std::string& file) = 0;
 
- private:
+   virtual ~FileParser() {}
 
 };
 
