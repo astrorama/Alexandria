@@ -1,5 +1,5 @@
 /** 
- * @file ModelTemplateMatrix.h
+ * @file ModelMatrix.h
  * @date May 19, 2014
  * @author Nikolaos Apostolakos
  */

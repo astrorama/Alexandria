@@ -1,5 +1,5 @@
 /** 
- * @file TemplateDataManager.h
+ * @file ModelDataManager.h
  * @date May 20, 2014
  * @author Nikolaos Apostolakos
  */
