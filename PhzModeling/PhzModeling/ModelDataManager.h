@@ -91,7 +91,7 @@ public:
         for (auto& sed_pair : *m_current_reddened_sed) {
 //          redshifted_x.push_back(sed_pair.first * (1+z));
 //          redshifted_y.push_back(sed_pair.second);
-          new_redshifted_values.push_back(std::make_pair(sed_pair.first*(1+z),sed_pair.second));
+          new_redshifted_values.push_back(std::make_pair(sed_pair.first*(1+z),sed_pair.second/((1+z)*(1+z))));
         }
 //        m_current_redshifted_sed = ChMath::interpolate(redshifted_x, redshifted_y, ChMath::InterpolationType::LINEAR);
         m_current_redshifted_sed.reset(new XYDataset::XYDataset{new_redshifted_values});
