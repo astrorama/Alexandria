@@ -15,3 +15,17 @@ find_package(Boost REQUIRED COMPONENTS program_options serialization)
 elements_add_executable(CreateModelPhotometry src/program/CreateModelPhotometry.cpp
                   LINK_LIBRARIES Boost ElementsKernel PhzConfiguration ChCatalog ChMath
                   INCLUDE_DIRS Boost ElementsKernel PhzConfiguration PhzDataModel ChMatrix PhzModeling)
+                  
+elements_add_executable(PhotometryToLikelihood src/program/PhotometryToLikelihood.cpp
+                  LINK_LIBRARIES Boost ElementsKernel PhzConfiguration ChCatalog ChMath
+                  INCLUDE_DIRS Boost ElementsKernel PhzConfiguration PhzDataModel ChMatrix PhzModeling)
+                  
+elements_add_executable(ExportModelDataset src/program/ExportModelDataset.cpp
+                  LINK_LIBRARIES Boost ElementsKernel PhzConfiguration ChCatalog ChMath
+                  INCLUDE_DIRS Boost ElementsKernel PhzConfiguration PhzDataModel ChMatrix PhzModeling)
+
+#---Python modules, Scripts, conf and aux files --------------------------------
+
+elements_install_conf_files()
+elements_install_python_modules()
+elements_install_scripts()

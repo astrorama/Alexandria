@@ -76,8 +76,7 @@ public:
             new PhzModeling::ModelDataManager {axes_tuple,
                 config.sedDatasetProvider(), config.reddeningCurveDatasetProvider()}};
     
-    PhzModeling::ModelMatrix model_matrix {
-                std::move(model_function_manager), axes_tuple};
+    PhzModeling::ModelMatrix model_matrix {std::move(model_function_manager), axes_tuple};
                 
     auto filter_provider = config.filterDatasetProvider();
     auto filter_list = config.filterList();
@@ -110,7 +109,6 @@ public:
       }
       std::vector<ChCatalog::FluxErrorPair> photometry_values;
       for (size_t filter_index=0; filter_index<filter_list.size(); ++filter_index) {
-//      for (auto& filter : filter_list) {
         ChMath::Function& filter_function = *(filter_functions[filter_index]);
         vector<double> x {};
         vector<double> y {};
@@ -122,9 +120,7 @@ public:
           }
         }
         auto filtered_model = ChMath::interpolate(x, y, ChMath::InterpolationType::LINEAR);
-//        auto filtered_model = ChMath::multiply(model, filter_function);
         double flux = ChMath::integrate(*filtered_model, limits.first, limits.second);
-//        double flux = 0;
         flux = flux / filter_compensations[filter_index];
         photometry_values.push_back({flux, 0.});
       }
@@ -136,17 +132,6 @@ public:
       std::ofstream out {options["binary-photometry-matrix"].as<std::string>()};
       ChMatrix::binaryExport(out, photometry_matrix);
     }
-    
-    auto it = photometry_matrix.begin();
-    for (int i = 0; i < 500; i++) {
-      ++it;
-    }
-    logger.info() << "Z " << it.axisValue<0>();
-    logger.info() << "ZE(B-V) " << it.axisValue<1>();
-    logger.info() << "ExtLaw " << it.axisValue<2>().name();
-    logger.info() << "SED " << it.axisValue<3>().name();
-    logger.info() << "FIlter " << (*it).begin().filterName();
-    logger.info() << "Flux " << (*((*it).begin())).flux;
   }
   
   string getVersion() {
