@@ -55,7 +55,7 @@ unique_ptr<Attribute> PhotometryAttributeFromRow::createAttribute(
   ChTable::Row::cell_type flux_cell;
   ChTable::Row::cell_type error_cell;
 
-  for (auto filter_index_pair : m_filter_index_mapping) {
+  for (auto& filter_index_pair : m_filter_index_mapping) {
     flux_cell = row[filter_index_pair.second.first];
     error_cell = row[filter_index_pair.second.second];
     photometry_vector.push_back(FluxErrorPair {boost::get<double>(flux_cell), boost::get<double>(error_cell) } );
