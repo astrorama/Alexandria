@@ -9,8 +9,6 @@
 
 #include <type_traits>
 #include <boost/serialization/utility.hpp>
-#include <boost/shared_ptr.hpp>
-#include <boost/serialization/shared_ptr.hpp>
 #include "ChMatrix/AxisInfo.h"
 
 namespace boost {
@@ -28,7 +26,7 @@ void saveType(Archive& ar, const T& t, typename std::enable_if<std::is_default_c
 
 template<typename Archive, typename T>
 void saveType(Archive& ar, const T& t, typename std::enable_if<!std::is_default_constructible<T>::value>::type* = 0) {
-  boost::shared_ptr<T> ptr {new T{t}};
+  const T* ptr = &t;
   ar << ptr;
 }
 
@@ -53,9 +51,10 @@ T loadType(Archive& ar, typename std::enable_if<std::is_default_constructible<T>
 
 template<typename Archive, typename T>
 T loadType(Archive& ar, typename std::enable_if<!std::is_default_constructible<T>::value>::type* = 0) {
-  boost::shared_ptr<T> ptr;
+  T* ptr;
   ar >> ptr;
   T value {*ptr};
+  delete ptr;
   return value;
 }
 
@@ -69,7 +68,6 @@ void load_construct_data(Archive& ar, ChMatrix::AxisInfo<T>* t,
   std::vector<T> values;
   for (size_t i=0; i<size; ++i) {
     T value = loadType<Archive, T>(ar);
-//    ar >> value;
     values.push_back(value);
   }
   ::new(t) ChMatrix::AxisInfo<T>(name, values);
