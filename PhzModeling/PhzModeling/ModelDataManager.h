@@ -85,15 +85,10 @@ public:
       if (new_sed_index != m_current_sed_index || new_reddening_curve_index != m_current_reddening_curve_index
           || new_ebv_index != m_current_ebv_index || new_z_index != m_current_z_index || !m_current_redshifted_sed) {
         double z = std::get<PhzDataModel::ModelParameter::Z>(m_owner.m_axes_tuple)[new_z_index];
-//        std::vector<double> redshifted_x {};
-//        std::vector<double> redshifted_y {};
         std::vector<std::pair<double, double>> new_redshifted_values {};
         for (auto& sed_pair : *m_current_reddened_sed) {
-//          redshifted_x.push_back(sed_pair.first * (1+z));
-//          redshifted_y.push_back(sed_pair.second);
           new_redshifted_values.push_back(std::make_pair(sed_pair.first*(1+z),sed_pair.second/((1+z)*(1+z))));
         }
-//        m_current_redshifted_sed = ChMath::interpolate(redshifted_x, redshifted_y, ChMath::InterpolationType::LINEAR);
         m_current_redshifted_sed.reset(new XYDataset::XYDataset{new_redshifted_values});
       }
       m_current_sed_index = new_sed_index;

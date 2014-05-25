@@ -128,6 +128,7 @@ public:
     }
     
     PhzDataModel::PhotometryMatrix photometry_matrix {std::move(photometry_vector), axes_tuple};
+    
     {
       std::ofstream out {options["binary-photometry-matrix"].as<std::string>()};
       ChMatrix::binaryExport(out, photometry_matrix);

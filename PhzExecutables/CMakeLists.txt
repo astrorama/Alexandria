@@ -7,6 +7,7 @@ elements_depends_on_subdirs(ChMath)
 elements_depends_on_subdirs(PhzConfiguration)
 elements_depends_on_subdirs(PhzDataModel)
 elements_depends_on_subdirs(PhzModeling)
+elements_depends_on_subdirs(PhzLikelihood)
 
 find_package(Boost REQUIRED COMPONENTS program_options serialization)
 
@@ -18,7 +19,7 @@ elements_add_executable(CreateModelPhotometry src/program/CreateModelPhotometry.
                   
 elements_add_executable(PhotometryToLikelihood src/program/PhotometryToLikelihood.cpp
                   LINK_LIBRARIES Boost ElementsKernel PhzConfiguration ChCatalog ChMath
-                  INCLUDE_DIRS Boost ElementsKernel PhzConfiguration PhzDataModel ChMatrix PhzModeling)
+                  INCLUDE_DIRS Boost ElementsKernel PhzConfiguration PhzDataModel ChMatrix PhzLikelihood)
                   
 elements_add_executable(ExportModelDataset src/program/ExportModelDataset.cpp
                   LINK_LIBRARIES Boost ElementsKernel PhzConfiguration ChCatalog ChMath
