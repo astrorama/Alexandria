@@ -96,7 +96,7 @@ public:
       }
       filter_limits.push_back(std::make_pair(x.front(), x.back()));
       auto filter_comp_func = ChMath::interpolate(x, y, ChMath::InterpolationType::LINEAR);
-      filter_compensations.push_back(ChMath::integrate(*filter_comp_func, 0., 120000.));
+      filter_compensations.push_back(ChMath::integrate(*filter_comp_func, x.front(), x.back()));
     }
                 
     logger.info() << "Number of models to create photometry for: " << model_matrix.size();
