@@ -30,7 +30,7 @@ std::string FitsParser::getName(const std::string& file) {
 
   // Check file exists
   if (!sfile) {
-    throw ElementsException() << "File does not exist : " << file;
+    throw ElementsException() << "File not found : " << file;
   }
 
   // Read first HDU
@@ -60,22 +60,28 @@ std::unique_ptr<XYDataset> FitsParser::getDataset(const std::string& file) {
   std::unique_ptr<XYDataset> dataset_ptr {};
   std::ifstream sfile(file);
 
+  CCfits::FITS::setVerboseMode(true);
+
   // Check file exists
   if (sfile) {
     std::unique_ptr<CCfits::FITS> fits { new CCfits::FITS(file, CCfits::RWmode::Read)};
-    const CCfits::ExtHDU& table_hdu = fits->extension(1);
+    try {
+      const CCfits::ExtHDU& table_hdu = fits->extension(1);
+      // Read first HDU
+      ChTable::FitsReader fits_reader {};
+      auto table = fits_reader.read(table_hdu);
 
-    // Read first HDU
-    ChTable::FitsReader fits_reader {};
-    auto table = fits_reader.read(table_hdu);
-
-    // Put the Table data into vector pair
-    std::vector<std::pair<double, double>> vector_pair;
-    for (auto row : table) {
-        vector_pair.push_back(std::make_pair( boost::get<double>(row[0]), boost::get<double>(row[1]) ));
+      // Put the Table data into vector pair
+      std::vector<std::pair<double, double>> vector_pair;
+      for (auto row : table) {
+          vector_pair.push_back(std::make_pair( boost::get<double>(row[0]), boost::get<double>(row[1]) ));
+      }
+      dataset_ptr = std::unique_ptr<XYDataset> { new XYDataset(vector_pair) };
     }
-    dataset_ptr = std::unique_ptr<XYDataset> { new XYDataset(vector_pair) };
-  }
+    catch(CCfits::FitsException& fits_except){
+      throw ElementsException() << "FitsException catched! File: " << file;
+    } // Eof try-catch
+  } // Eof if
 
  return(dataset_ptr);
 }

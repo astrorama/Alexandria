@@ -34,6 +34,13 @@ class AsciiParser : public FileParser
 {
  public:
 
+  /**
+   * @brief Constructor
+   * Tool for reading FITS tables from streams
+   * @param regex_str
+   * The regex for extracting the dataset name. The default is defined as
+   * "^\\s*#\\s*(\\w+)\\s*$".
+   */
   AsciiParser(const std::string& regex_str="^\\s*#\\s*(\\w+)\\s*$") : FileParser(), m_regex_name(regex_str) {}
 
   /**
