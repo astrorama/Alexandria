@@ -23,7 +23,7 @@ public:
     auto model_iter = phot_model.begin();
     while (obs_iter != phot_obs.end()) {
       double difference = model_scale * (*model_iter).flux - (*obs_iter).flux;
-      chi_square += difference * difference / ((*obs_iter).flux * (*obs_iter).flux);
+      chi_square += difference * difference / ((*obs_iter).error * (*obs_iter).error);
       ++obs_iter;
       ++model_iter;
     }

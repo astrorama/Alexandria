@@ -8,12 +8,15 @@
 #define	PHZLIKELIHOOD_MODELSCALEFUNCTOR_H
 
 #include "ChCatalog/SourceAttributes/Photometry.h"
+#include "ElementsKernel/ElementsLogging.h"
 
 namespace PhzLikelihood {
 
 class ModelScaleFunctor {
+  ElementsLogging logger = ElementsLogging::getLogger("Test");
   
 public:
+  bool flag = false;
   
   ModelScaleFunctor() = default;
   
@@ -25,8 +28,11 @@ public:
     auto obs_iter = phot_obs.begin();
     auto model_iter = phot_model.begin();
     while (obs_iter != phot_obs.end()) {
-      alpha_up += ((*model_iter).flux * (*obs_iter).flux) / ((*obs_iter).flux * (*obs_iter).flux);
-      alpha_down += ((*model_iter).flux * (*model_iter).flux) / ((*obs_iter).flux * (*obs_iter).flux);
+      if (flag) {
+        logger.info() << (*model_iter).flux << " " << (*obs_iter).flux << " " << (*obs_iter).error;
+      }
+      alpha_up += ((*model_iter).flux * (*obs_iter).flux) / ((*obs_iter).error * (*obs_iter).error);
+      alpha_down += ((*model_iter).flux * (*model_iter).flux) / ((*obs_iter).error * (*obs_iter).error);
       ++obs_iter;
       ++model_iter;
     }
