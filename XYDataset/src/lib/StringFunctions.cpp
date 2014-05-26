@@ -15,16 +15,17 @@ namespace XYDataset {
 std::string checkBeginSlashes(const std::string& input_str) {
 
   std::string output_str{};
+  size_t pos = input_str.find_first_not_of("/") ;
+  if (pos != std::string::npos && pos != 0) {
+     output_str = input_str.substr(pos);
+     output_str = "/" + output_str;
+   }
+   else {
+     // no slash at the beginning
+     output_str = "/" + input_str;
+   }
 
-  if (! input_str.empty()) {
-    size_t pos = input_str.find_first_not_of("/") ;
-    if ( pos != 0) {
-      output_str = input_str.substr(pos);
-      output_str = "/" + output_str;
-    }
-  }
-
-return (output_str);
+  return (output_str);
 }
 
 //
@@ -39,9 +40,13 @@ std::string checkNoBeginSlashes(const std::string& input_str) {
     if ( pos != 0) {
       output_str = input_str.substr(pos);
     }
+    else {
+      // no slash
+      output_str = input_str;
+    }
   }
 
-return (output_str);
+  return (output_str);
 }
 
 //
@@ -51,16 +56,17 @@ std::string checkEndSlashes(const std::string& input_str) {
 
   std::string output_str{};
 
-  if (! input_str.empty()) {
-    size_t pos = input_str.find_last_not_of("/");
-    std::cout<<"pos "<<pos<<" input_str "<<input_str<< " length "<<input_str.length()<<std::endl;
-    if (  pos != input_str.length()-1) {
-      // add one
-      output_str = input_str.substr(0, pos+1) + "/";
-    }
+  size_t pos = input_str.find_last_not_of("/");
+  if (  pos != input_str.length()-1) {
+    // add one
+    output_str = input_str.substr(0, pos+1) + "/";
+  }
+  else {
+    // No slash at the end
+    output_str = input_str + "/";
   }
 
-return (output_str);
+ return (output_str);
 }
 
 //

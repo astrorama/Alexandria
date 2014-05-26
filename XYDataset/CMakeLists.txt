@@ -29,4 +29,7 @@ elements_add_unit_test(QualifiedName_test tests/src/QualifiedName_test.cpp tests
 
 elements_add_unit_test(FitsParser_test tests/src/FitsParser_test.cpp tests/src/TestMain.cpp
                        LINK_LIBRARIES XYDataset TYPE Boost ChTable)
+                       
+elements_add_unit_test(StringFunctions_test tests/src/StringFunctions_test.cpp tests/src/TestMain.cpp
+                       LINK_LIBRARIES XYDataset TYPE Boost ChTable)
 
