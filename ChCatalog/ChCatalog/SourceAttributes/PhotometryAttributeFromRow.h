@@ -50,7 +50,7 @@ public:
    *  An exception is thrown if the names provided in the mapping are not present in the columnInfo.
    */
   PhotometryAttributeFromRow(std::shared_ptr<ChTable::ColumnInfo> column_info_ptr,
-      const std::map<std::string, std::pair<std::string, std::string>> filter_name_mapping);
+      const std::vector<std::pair<std::string, std::pair<std::string, std::string>>>& filter_name_mapping);
 
   virtual ~PhotometryAttributeFromRow();
 
@@ -62,19 +62,11 @@ public:
    */
   std::unique_ptr<Attribute> createAttribute(const ChTable::Row& row) override;
 
-  /**
-   * @brief Getting the private m_filter_index_mapping for testing purpose only
-   * @return The filter_index_mapping
-   */
-  const std::map<std::string, std::pair<size_t, size_t> >& getFilterIndexMapping() const {
-    return m_filter_index_mapping;
-  }
-
 private:
   /*
    * Map the correspondence between the filterName and the indexes used in the Table columns
    */
-  std::map<std::string, std::pair<size_t, size_t> > m_filter_index_mapping;
+  std::vector<std::pair<size_t, size_t> > m_table_index_vector;
 
   /*
    * Pointer to the shared filter name vector

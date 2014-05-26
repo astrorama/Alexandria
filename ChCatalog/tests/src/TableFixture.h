@@ -79,12 +79,12 @@ struct TableFixture {
   const string r_filter_name { "TestGroup/RtestName" };
 
   // the mapping variable
-  map<string, pair<string, string>> filter_name_mapping;
+  vector<pair<string, pair<string, string>>> filter_name_mapping;
 
   TableFixture() {
     // This is how the mapping must be defined
-    filter_name_mapping[v_filter_name] = make_pair<string, string>("Double_flux1","Double_error1");
-    filter_name_mapping[r_filter_name] = make_pair<string, string>("Double_flux2","Double_error2");
+    filter_name_mapping.push_back(make_pair(v_filter_name,make_pair<string, string>("Double_flux1","Double_error1")));
+    filter_name_mapping.push_back(make_pair(r_filter_name,make_pair<string, string>("Double_flux2","Double_error2")));
   }
   ~TableFixture() {
     // teardown
