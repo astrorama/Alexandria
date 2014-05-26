@@ -25,8 +25,6 @@ namespace XYDataset {
 //
 std::string FitsParser::getName(const std::string& file) {
 
-  std::cout<<"m_name_keyword "<< m_name_keyword<<std::endl;
-
   std::string dataset_name{};
   std::ifstream sfile(file);
 
@@ -34,20 +32,16 @@ std::string FitsParser::getName(const std::string& file) {
   if (!sfile) {
     throw ElementsException() << "File does not exist : " << file;
   }
-  std::cout<<"file"<< file<<std::endl;
 
   // Read first HDU
   std::unique_ptr<CCfits::FITS> fits { new CCfits::FITS(file, CCfits::RWmode::Read)};
-  std::cout<<"111 file "<< file<<std::endl;
-  CCfits::ExtHDU& table_hdu = fits->extension(0);
-  std::cout<<"22 file "<< file<<std::endl;
+  CCfits::ExtHDU& table_hdu = fits->extension(1);
 
-  std::string key_value {};
-
-  table_hdu.readKey(m_name_keyword, key_value);
-std::cout<<"key_value"<< key_value<<std::endl;
-  if (!key_value.empty()) {
-    dataset_name = key_value;
+  table_hdu.readAllKeys();
+  auto keyword_map = table_hdu.keyWord();
+  auto iter=keyword_map.find(m_name_keyword);
+  if (iter != keyword_map.end()) {
+    iter->second->value(dataset_name);
   }
   else {
     // Dataset name is the filename without extension and path
@@ -55,7 +49,6 @@ std::cout<<"key_value"<< key_value<<std::endl;
     str          = removeAllBeforeLastSlash(file);
     dataset_name = removeExtension(str);
   }
-
   return (dataset_name);
 }
 

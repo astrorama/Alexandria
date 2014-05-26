@@ -36,11 +36,11 @@ CCfits::Table* addTable(CCfits::FITS& fits) {
 
 struct FitsParser_Fixture {
   std::string fits_file = "/tmp/FitsParser_test.fits";
-  std::unique_ptr<CCfits::FITS> fits { new CCfits::FITS("!"+fits_file, CCfits::RWmode::Write) };
-  CCfits::ExtHDU* table_hdu = addTable(*fits);
 
 
   FitsParser_Fixture() {
+    std::unique_ptr<CCfits::FITS> fits { new CCfits::FITS("!"+fits_file, CCfits::RWmode::Write) };
+    addTable(*fits);
   }
   ~FitsParser_Fixture() {
 
@@ -63,27 +63,30 @@ BOOST_FIXTURE_TEST_CASE(getName_function_test, FitsParser_Fixture) {
   BOOST_TEST_MESSAGE("--> Testing the exception of getName function");
   BOOST_TEST_MESSAGE(" ");
 
-  FitsParser fits_parser {"TEST_NAME"};
-std::cout<<"fits_file "<< fits_file<<" getname_result "<<fits_parser.getName(fits_file)<<std::endl;
+  FitsParser fits_parser {"DATASET"};
 
-// BOOST_CHECK_EQUAL("TEST_NAME", fits_parser.getName(fits_file));
+  BOOST_CHECK_EQUAL("TEST_NAME", fits_parser.getName(fits_file));
+
+  fits_parser = FitsParser{"NOT_EXISTING"};
+
+  BOOST_CHECK_EQUAL("FitsParser_test", fits_parser.getName(fits_file));
 }
 
 //-----------------------------------------------------------------------------
 // Test the getDataset function
 //-----------------------------------------------------------------------------
 
-//BOOST_FIXTURE_TEST_CASE(getDataset_function_test, FitsParser_Fixture) {
-//
-//  BOOST_TEST_MESSAGE(" ");
-//  BOOST_TEST_MESSAGE("--> Testing the getDataset function");
-//  BOOST_TEST_MESSAGE(" ");
-//
-//  FitsParser fits_parser {"TEST_NAME"};
-//  auto xy_ptr = fits_parser.getDataset(fits_file);
-//  BOOST_CHECK_EQUAL(xy_ptr->size(), 2);
-//
-//}
+BOOST_FIXTURE_TEST_CASE(getDataset_function_test, FitsParser_Fixture) {
+
+  BOOST_TEST_MESSAGE(" ");
+  BOOST_TEST_MESSAGE("--> Testing the getDataset function");
+  BOOST_TEST_MESSAGE(" ");
+
+  FitsParser fits_parser {"TEST_NAME"};
+  auto xy_ptr = fits_parser.getDataset(fits_file);
+  BOOST_CHECK_EQUAL(xy_ptr->size(), 2);
+
+}
 
 //-----------------------------------------------------------------------------
 
