@@ -87,15 +87,15 @@ public:
     Table phot_catalog_table = AsciiReader(mer_column_types).read(phot_catalog_in);
     
     logger.info() << "Converting the table to catalog";
-    map<string, pair<string, string>> filter_name_mapping {};
-    filter_name_mapping["MER/Ynir_WFC3f105w"] = pair<string, string>{"FLUX_Y","FLUXERR_Y"};
-    filter_name_mapping["MER/Iext_ACSf775w"] = pair<string, string>{"FLUX_I","FLUXERR_I"};
-    filter_name_mapping["MER/Gext_ACSf435w"] = pair<string, string>{"FLUX_G","FLUXERR_G"};
-    filter_name_mapping["MER/Hnir_WFC3f160w"] = pair<string, string>{"FLUX_H","FLUXERR_H"};
-    filter_name_mapping["MER/Rext_ACSf606w"] = pair<string, string>{"FLUX_R","FLUXERR_R"};
-    filter_name_mapping["MER/Jnir_WFC3f125w"] = pair<string, string>{"FLUX_J","FLUXERR_J"};
-    filter_name_mapping["MER/Zext_ACSf850lp"] = pair<string, string>{"FLUX_Z","FLUXERR_Z"};
-    filter_name_mapping["MER/VIS_ACSf814w"] = pair<string, string>{"FLUX_VIS","FLUXERR_VIS"};
+    vector<pair<string, pair<string, string>>> filter_name_mapping {};
+    filter_name_mapping.push_back(make_pair(string{"MER/Ynir_WFC3f105w"}, pair<string, string>{"FLUX_Y","FLUXERR_Y"}));
+    filter_name_mapping.push_back(make_pair(string{"MER/Iext_ACSf775w"}, pair<string, string>{"FLUX_I","FLUXERR_I"}));
+    filter_name_mapping.push_back(make_pair(string{"MER/Gext_ACSf435w"}, pair<string, string>{"FLUX_G","FLUXERR_G"}));
+    filter_name_mapping.push_back(make_pair(string{"MER/Hnir_WFC3f160w"}, pair<string, string>{"FLUX_H","FLUXERR_H"}));
+    filter_name_mapping.push_back(make_pair(string{"MER/Rext_ACSf606w"}, pair<string, string>{"FLUX_R","FLUXERR_R"}));
+    filter_name_mapping.push_back(make_pair(string{"MER/Jnir_WFC3f125w"}, pair<string, string>{"FLUX_J","FLUXERR_J"}));
+    filter_name_mapping.push_back(make_pair(string{"MER/Zext_ACSf850lp"}, pair<string, string>{"FLUX_Z","FLUXERR_Z"}));
+    filter_name_mapping.push_back(make_pair(string{"MER/VIS_ACSf814w"}, pair<string, string>{"FLUX_VIS","FLUXERR_VIS"}));
     vector<unique_ptr<AttributeFromRow>> attribute_from_row_ptr_vector {};
     attribute_from_row_ptr_vector.push_back(unique_ptr<AttributeFromRow>{new PhotometryAttributeFromRow{phot_catalog_table.getColumnInfo(), filter_name_mapping}});
     CatalogFromTable catalog_from_table {phot_catalog_table.getColumnInfo(), "ID", move(attribute_from_row_ptr_vector)};

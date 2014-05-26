@@ -22,20 +22,14 @@ public:
   double operator()(const ChCatalog::Photometry& phot_obs, const ChCatalog::Photometry& phot_model) {
     double alpha_up {0};
     double alpha_down {0};
-    for (auto obs_iter=phot_obs.begin(); obs_iter!=phot_obs.end(); ++obs_iter) {
-      auto model = phot_model.find(obs_iter.filterName());
-      double model_flux = model->flux;
-      alpha_up += (model_flux * (*obs_iter).flux) / ((*obs_iter).error * (*obs_iter).error);
-      alpha_down += (model_flux * model_flux) / ((*obs_iter).error * (*obs_iter).error);
+    auto obs_iter = phot_obs.begin();
+    auto model_iter = phot_model.begin();
+    while (obs_iter != phot_obs.end()) {
+      alpha_up += ((*model_iter).flux * (*obs_iter).flux) / ((*obs_iter).flux * (*obs_iter).flux);
+      alpha_down += ((*model_iter).flux * (*model_iter).flux) / ((*obs_iter).flux * (*obs_iter).flux);
+      ++obs_iter;
+      ++model_iter;
     }
-//    auto obs_iter = phot_obs.begin();
-//    auto model_iter = phot_model.begin();
-//    while (obs_iter != phot_obs.end()) {
-//      alpha_up += ((*model_iter).flux * (*obs_iter).flux) / ((*obs_iter).flux * (*obs_iter).flux);
-//      alpha_down += ((*model_iter).flux * (*model_iter).flux) / ((*obs_iter).flux * (*obs_iter).flux);
-//      ++obs_iter;
-//      ++model_iter;
-//    }
     return alpha_up / alpha_down;
   }
   
