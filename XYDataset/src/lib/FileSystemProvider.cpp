@@ -28,9 +28,6 @@ FileSystemProvider::FileSystemProvider(const std::string& root_path, std::unique
   // Make sure the root path finishes with a "/" and only one
   m_root_path = checkEndSlashes(m_root_path);
 
-  // Make sure the root path starts with only one slash
-  m_root_path = checkBeginSlashes(m_root_path);
-
   std::cout<<"m_root_path "<<m_root_path<<std::endl;
 
   // Convert path to boost filesytem object

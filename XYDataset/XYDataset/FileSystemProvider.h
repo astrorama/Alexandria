@@ -40,7 +40,7 @@ class FileSystemProvider : public XYDatasetProvider
 
   /**
    * @brief constructor
-   * @param root_path : path to the dataset
+   * @param root_path : absolute or relative path to the dataset
    * @param parser : FileParser object
    * @throw ElementsException : path to the files not found
    * @throw ElementsException : root path not found

@@ -73,7 +73,7 @@ BOOST_AUTO_TEST_SUITE (FileSystemProvider_test)
 
 
 //-----------------------------------------------------------------------------
-//                            Test the exceptions
+// Test the exceptions
 //-----------------------------------------------------------------------------
 
 BOOST_FIXTURE_TEST_CASE(exceptions_test, FileSystemProvider_Fixture) {
@@ -108,7 +108,7 @@ BOOST_FIXTURE_TEST_CASE(exceptions_test, FileSystemProvider_Fixture) {
 }
 
 //-----------------------------------------------------------------------------
-//            Test the listContents function
+// Test the listContents function
 //-----------------------------------------------------------------------------
 
 BOOST_FIXTURE_TEST_CASE(listContent_test, FileSystemProvider_Fixture) {
@@ -134,7 +134,7 @@ BOOST_FIXTURE_TEST_CASE(listContent_test, FileSystemProvider_Fixture) {
 }
 
 //-----------------------------------------------------------------------------
-//            Test the listContents function
+// Test the getDataset function
 //-----------------------------------------------------------------------------
 
 BOOST_FIXTURE_TEST_CASE(getDataset_test, FileSystemProvider_Fixture) {

@@ -27,7 +27,7 @@ struct XYDataset_Fixture {
 BOOST_AUTO_TEST_SUITE (XYDataset_test)
 
 //-----------------------------------------------------------------------------
-//            Test the factory function (the constructor)
+// Test the factory function (the constructor)
 //-----------------------------------------------------------------------------
 
 BOOST_FIXTURE_TEST_CASE(Constructor1_test, XYDataset_Fixture) {
@@ -43,7 +43,7 @@ BOOST_FIXTURE_TEST_CASE(Constructor1_test, XYDataset_Fixture) {
 }
 
 //-----------------------------------------------------------------------------
-//             Test the factory function (second constructor)
+// Test the factory function (second constructor)
 //-----------------------------------------------------------------------------
 
 BOOST_FIXTURE_TEST_CASE(Constructor2_test, XYDataset_Fixture) {
@@ -59,7 +59,7 @@ BOOST_FIXTURE_TEST_CASE(Constructor2_test, XYDataset_Fixture) {
 }
 
 //-----------------------------------------------------------------------------
-//            Test the XYDataset size function (second constructor)
+// Test the XYDataset size function (second constructor)
 //-----------------------------------------------------------------------------
 
 BOOST_FIXTURE_TEST_CASE(factory_test, XYDataset_Fixture) {
@@ -74,7 +74,7 @@ BOOST_FIXTURE_TEST_CASE(factory_test, XYDataset_Fixture) {
 }
 
 //-----------------------------------------------------------------------------
-//                     Test the ElementException
+// Test the ElementException
 //-----------------------------------------------------------------------------
 
 BOOST_FIXTURE_TEST_CASE(exception_test, XYDataset_Fixture) {
