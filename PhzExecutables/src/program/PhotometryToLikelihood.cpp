@@ -118,29 +118,39 @@ public:
       const Source& source_const = *source_iter;
       Source& source = const_cast<Source&>(source_const);
       ++counter;
-      if (counter%100==0) {
+      if (counter%100 == 0) {
         logger.info() << "Processing source " << counter << " with ID " << source.getId();
       }
+      
+      // Create the chi2 matrix
       auto source_phot = source.getAttribute<Photometry>();
-//      for (auto it=source_phot->begin(); it!=source_phot->end();++it) {
-//        logger.info() << it.filterName() << " " << (*it).flux;
-//      }
+      PhzMatrix<vector<double>> chi2_matrix {model_phot_marix->axisInfoTuple()};
+      auto model_iter = model_phot_marix->begin();
+      auto chi2_iter = chi2_matrix.begin();
+      while (model_iter != model_phot_marix->end()) {
+        double alpha = model_scale_functor(*source_phot, *model_iter);
+        *chi2_iter = chi_2_functor(*source_phot, *model_iter, alpha);
+        ++model_iter;
+        ++chi2_iter;
+      }
+      
+      // Get the PHZ value as the maximum of the chi2 matrix
       string sed {};
       string reddening_curve {};
       double ebv {};
       double z {};
       double max_chi2 = -1;
-      for (auto model_iter=model_phot_marix->begin(); model_iter!=model_phot_marix->end(); ++model_iter) {
-        double alpha = model_scale_functor(*source_phot, *model_iter);
-        double chi2 = chi_2_functor(*source_phot, *model_iter, alpha);
-        if (chi2 > max_chi2) {
-          max_chi2 = chi2;
-          sed = model_iter.axisValue<ModelParameter::SED>().qualifiedName();
-          reddening_curve = model_iter.axisValue<ModelParameter::REDDENING_CURVE>().qualifiedName();
-          ebv = model_iter.axisValue<ModelParameter::EBV>();
-          z = model_iter.axisValue<ModelParameter::Z>();
+      for (auto chi2_iter=chi2_matrix.begin(); chi2_iter!=chi2_matrix.end(); ++ chi2_iter) {
+        if (*chi2_iter > max_chi2) {
+          max_chi2 = *chi2_iter;
+          sed = chi2_iter.axisValue<ModelParameter::SED>().qualifiedName();
+          reddening_curve = chi2_iter.axisValue<ModelParameter::REDDENING_CURVE>().qualifiedName();
+          ebv = chi2_iter.axisValue<ModelParameter::EBV>();
+          z = chi2_iter.axisValue<ModelParameter::Z>();
         }
       }
+      
+      // Add a row for the output catalog
       row_list.push_back(Row{{source.getId(), sed, reddening_curve, ebv, z}, column_info});
     }
     
