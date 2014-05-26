@@ -35,7 +35,7 @@ public:
    * Vector of shared pointer on Attribute objects
    */
   Source(int64_t source_id, std::vector<std::shared_ptr<Attribute>> attibuteVector)
-        : m_source_id(source_id), m_attribute_vector(attibuteVector) {
+        : m_source_id(source_id), m_attribute_vector( std::move(attibuteVector) ) {
   }
 
   /// Virtual default destructor

@@ -40,17 +40,19 @@ ChCatalog::Catalog CatalogFromTable::createCatalog(
 
   vector<Source> source_vector;
 
-  for (auto& row : input_table) {
+
+  for (auto row : input_table) {
 
     int64_t source_id = boost::get < int64_t > (row[m_source_id_index]);
 
     vector<shared_ptr<Attribute>> attribute_ptr_vector;
+
     for (auto& attribute_from_table_ptr : m_attribute_from_row_ptr_vector) {
       attribute_ptr_vector.push_back(
           attribute_from_table_ptr->createAttribute(row));
     }
 
-    source_vector.push_back(Source { source_id, attribute_ptr_vector });
+    source_vector.push_back(Source { source_id, move(attribute_ptr_vector) });
   }
 
   return Catalog { source_vector };
