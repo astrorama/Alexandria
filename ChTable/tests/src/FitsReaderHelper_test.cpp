@@ -8,10 +8,12 @@
 #include <CCfits/CCfits>
 #include "ElementsKernel/ElementsException.h"
 #include "src/lib/FitsReaderHelper.h"
+#include "TempDir.h"
 
 struct FitsReaderHelper_Fixture {
+  TempDir temp_dir;
   std::unique_ptr<CCfits::FITS> fits {new CCfits::FITS(
-                    "!/tmp/FitsReaderHelper_test.fits", CCfits::RWmode::Write)};
+        (temp_dir.name/"FitsReaderHelper_test.fits").native(), CCfits::RWmode::Write)};
 };
 
 //-----------------------------------------------------------------------------

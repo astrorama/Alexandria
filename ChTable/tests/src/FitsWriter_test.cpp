@@ -10,6 +10,7 @@
 #include "ChTable/ColumnInfo.h"
 #include "ChTable/Row.h"
 #include "ChTable/FitsWriter.h"
+#include "TempDir.h"
 
 struct FitsWriter_Fixture {
   std::vector<ChTable::ColumnInfo::info_type> info_list {
@@ -27,8 +28,9 @@ struct FitsWriter_Fixture {
   ChTable::Row row1 {values1, column_info};
   std::vector<ChTable::Row> row_list {row0, row1};
   ChTable::Table table {row_list};
+  TempDir temp_dir;
   std::unique_ptr<CCfits::FITS> fits {new CCfits::FITS(
-                    "!/tmp/FitsWriter_test.fits", CCfits::RWmode::Write)};
+         (temp_dir.name/"FitsWriter_test.fits").native(), CCfits::RWmode::Write)};
 };
 
 //-----------------------------------------------------------------------------

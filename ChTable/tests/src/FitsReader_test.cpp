@@ -9,6 +9,7 @@
 #include <CCfits/CCfits>
 #include "ElementsKernel/ElementsException.h"
 #include "ChTable/FitsReader.h"
+#include "TempDir.h"
 
 CCfits::Table* addTable(CCfits::FITS& fits) {
   std::vector<std::string> names {"Bool","Int","Long","String","Float","Double"};
@@ -30,8 +31,9 @@ CCfits::Table* addTable(CCfits::FITS& fits) {
 }
 
 struct FitsReader_Fixture {
-  std::unique_ptr<CCfits::FITS> fits {
-          new CCfits::FITS("!/tmp/FitsReader_test.fits", CCfits::RWmode::Write)};
+  TempDir temp_dir;
+  std::unique_ptr<CCfits::FITS> fits {new CCfits::FITS(
+          (temp_dir.name/"FitsReader_test.fits").native(), CCfits::RWmode::Write)};
   const CCfits::PHDU& primary_hdu = fits->pHDU();
   std::vector<long> image_size {2,2};
   CCfits::ExtHDU* image_hdu = fits->addImage("Image", FLOAT_IMG, image_size);
