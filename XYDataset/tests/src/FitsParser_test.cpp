@@ -18,6 +18,7 @@
 #include "ChTable/FitsReader.h"
 #include "XYDataset/FitsParser.h"
 #include "XYDataset/XYDataset.h"
+#include "TempDir.h"
 
 using namespace XYDataset;
 
@@ -35,8 +36,9 @@ CCfits::Table* addTable(CCfits::FITS& fits) {
 }
 
 struct FitsParser_Fixture {
-  std::string fits_file        = "/tmp/FitsParser_test.fits";
-  std::string fits_nodata_file = "/tmp/FitsParser_nodata_test.fits";
+  TempDir temp_dir;
+  std::string fits_file        = temp_dir.name_str+"/FitsParser_test.fits";
+  std::string fits_nodata_file = temp_dir.name_str+"/FitsParser_nodata_test.fits";
 
 
   FitsParser_Fixture() {

@@ -15,6 +15,7 @@
 #include "ElementsKernel/ElementsException.h"
 #include "XYDataset/AsciiParser.h"
 #include "XYDataset/XYDataset.h"
+#include "TempDir.h"
 
 using namespace XYDataset;
 
@@ -34,7 +35,8 @@ struct AsciiParser_Fixture {
   std::string no_file {"nofile.txt"};
   std::string file {"Gext_ACSf435w.txt"};
   std::string file_nodataset_name {"Nodataset_name_inside_file.txt"};
-  std::string base_directory = makeDir("/tmp/euclid/filter/MER/");
+  TempDir temp_dir;
+  std::string base_directory = makeDir(temp_dir.name_str+"euclid/filter/MER/");
 
   AsciiParser_Fixture() {
     // Create files
