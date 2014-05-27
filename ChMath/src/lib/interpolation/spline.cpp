@@ -63,7 +63,7 @@ std::unique_ptr<Function> splineInterpolation(const std::vector<double>& x, cons
     a[i] = a[i] + b[i]*x_1 + c[i]*x_2 + d[i]*x_3;
     b[i] = b[i] + 2.*c[i]*x_1 + 3.*d[i]*x_2;
     c[i] = c[i] + 3.*d[i]*x_1;
-    d[i] = d[i];
+    // d[i] keeps the same value
   }
 
   std::vector<std::shared_ptr<Function>> functions {};
