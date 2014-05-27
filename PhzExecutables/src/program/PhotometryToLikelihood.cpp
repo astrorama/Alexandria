@@ -134,6 +134,33 @@ public:
         ++chi2_iter;
       }
       
+//      int sed_i = 0;
+//      while (sed_i != chi2_matrix.axisInfo<ModelParameter::SED>().size() &&
+//             chi2_matrix.axisInfo<ModelParameter::SED>()[sed_i] != XYDataset::QualifiedName{{"Cosmos"},"SB2_A_0"}) {
+//        ++sed_i;
+//      }
+//      int ebv_i = 0;
+//      while (ebv_i != chi2_matrix.axisInfo<ModelParameter::EBV>().size() &&
+//             chi2_matrix.axisInfo<ModelParameter::EBV>()[ebv_i] < 0.) {
+//        ++ebv_i;
+//      }
+//      int z_i = 0;
+//      while (z_i != chi2_matrix.axisInfo<ModelParameter::Z>().size() &&
+//             chi2_matrix.axisInfo<ModelParameter::Z>()[z_i] < 0.89) {
+//        ++z_i;
+//      }
+//      auto chi2tmp = chi2_matrix.begin();
+//      chi2tmp.fixAxis<ModelParameter::SED>(sed_i).fixAxis<ModelParameter::EBV>(ebv_i).fixAxis<ModelParameter::Z>(z_i);
+//      logger.info() << source.getId() << " : " << *chi2tmp;
+//      auto photemp = model_phot_marix->begin();
+//      photemp.fixAxis<ModelParameter::SED>(sed_i).fixAxis<ModelParameter::EBV>(ebv_i).fixAxis<ModelParameter::Z>(z_i);
+//      model_scale_functor.flag = true;
+//      logger.info() << " a=" << model_scale_functor(*source_phot, *photemp);
+//      model_scale_functor.flag = false;
+//      for (auto it=(*photemp).begin(); it!=(*photemp).end(); ++it) {
+//        logger.info() << it.filterName() << " : " << (*it).flux;
+//      }
+      
       // Get the PHZ value as the maximum of the chi2 matrix
       string sed {};
       string reddening_curve {};

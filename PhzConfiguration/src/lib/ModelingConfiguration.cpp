@@ -5,6 +5,7 @@
  */
 
 #include <set>
+#include <sstream>
 #include "ElementsKernel/ElementsException.h"
 #include "ElementsKernel/ElementsLogging.h"
 #include "XYDataset/FileParser.h"
@@ -82,6 +83,10 @@ std::vector<XYDataset::QualifiedName> ModelingConfiguration::sedList() {
       selected.insert(XYDataset::QualifiedName{name});
     }
   }
+  if (selected.empty()) {
+    logger.error() << "SED list is empty (check the options sed-group and sed-list)";
+    throw ElementsException() << "Empty SED list";
+  }
   return std::vector<XYDataset::QualifiedName> {selected.begin(), selected.end()};
 }
 
@@ -105,6 +110,10 @@ std::vector<XYDataset::QualifiedName> ModelingConfiguration::reddeningCurveList(
       logger.info() << "Adding Reddening Curve " << name;
       selected.insert(XYDataset::QualifiedName{name});
     }
+  }
+  if (selected.empty()) {
+    logger.error() << "Reddening Curve list is empty (check the options reddening-curve-group and reddening-curve-list)";
+    throw ElementsException() << "Empty Reddening Curve list";
   }
   return std::vector<XYDataset::QualifiedName> {selected.begin(), selected.end()};
 }
@@ -130,43 +139,87 @@ std::vector<XYDataset::QualifiedName> ModelingConfiguration::filterList() {
       selected.insert(XYDataset::QualifiedName{name});
     }
   }
+  if (selected.empty()) {
+    logger.error() << "Filter list is empty (check the options filter-group and filter-list)";
+    throw ElementsException() << "Empty Filter list";
+  }
   return std::vector<XYDataset::QualifiedName> {selected.begin(), selected.end()};
 }
 
 std::vector<double> ModelingConfiguration::zList() {
   logger.info() << "Creating Z list...";
-  if (!m_options["z-start"].empty() && !m_options["z-stop"].empty() && !m_options["z-step"].empty()) {
-    double z_start = m_options["z-start"].as<double>();
-    double z_stop = m_options["z-stop"].as<double>();
-    double z_step = m_options["z-step"].as<double>();
-    logger.info() << "Adding Z values in range [" << z_start << "," << z_stop
-                  << "] with step " << z_step;
-    std::vector<double> selected {};
-    for (double z=z_start; z<=z_stop; z+=z_step) {
-      selected.push_back(z);
+  // We use a set to avoid duplicates and to order the different entries
+  std::set<double> selected {};
+  if (!m_options["z-range"].empty()) {
+    auto ranges_list = m_options["z-range"].as<std::vector<std::string>>();
+    for (auto& range_string : ranges_list) {
+      std::stringstream range_stream {range_string};
+      double min {};
+      double max {};
+      double step {};
+      range_stream >> min >> max >> step;
+      logger.info() << "Adding Z values in range [" << min << "," << max
+                    << "] with step " << step;
+      for (double value=min; value<=max; value+=step) {
+        selected.insert(value);
+      }
     }
-    return selected;
   }
-  logger.error() << "Some of the z-start, z-stop or z-step parameters are not set";
-  throw ElementsException {"Missing or unknown Z options"};
+  if (!m_options["z-list"].empty()) {
+    auto values_list = m_options["z-list"].as<std::vector<std::string>>();
+    for (auto& values_string : values_list) {
+      logger.info() << "Adding Z values " << values_string;
+      std::stringstream values_stream {values_string};
+      while (values_stream.good()) {
+        double value {};
+        values_stream >> value;
+        selected.insert(value);
+      }
+    }
+  }
+  if (selected.empty()) {
+    logger.error() << "Z list is empty (check the options z-range and z-list)";
+    throw ElementsException() << "Empty Z list";
+  }
+  return std::vector<double> {selected.begin(), selected.end()};
 }
 
 std::vector<double> ModelingConfiguration::ebvList() {
   logger.info() << "Creating E(B-V) list...";
-  if (!m_options["ebv-start"].empty() && !m_options["ebv-stop"].empty() && !m_options["ebv-step"].empty()) {
-    double ebv_start = m_options["ebv-start"].as<double>();
-    double ebv_stop = m_options["ebv-stop"].as<double>();
-    double ebv_step = m_options["ebv-step"].as<double>();
-    logger.info() << "Adding E(B-V) values in range [" << ebv_start << "," << ebv_stop
-                  << "] with step " << ebv_step;
-    std::vector<double> selected {};
-    for (double ebv=ebv_start; ebv<=ebv_stop; ebv+=ebv_step) {
-      selected.push_back(ebv);
+  // We use a set to avoid duplicates and to order the different entries
+  std::set<double> selected {};
+  if (!m_options["ebv-range"].empty()) {
+    auto ranges_list = m_options["ebv-range"].as<std::vector<std::string>>();
+    for (auto& range_string : ranges_list) {
+      std::stringstream range_stream {range_string};
+      double min {};
+      double max {};
+      double step {};
+      range_stream >> min >> max >> step;
+      logger.info() << "Adding E(B-V) values in range [" << min << "," << max
+                    << "] with step " << step;
+      for (double value=min; value<=max; value+=step) {
+        selected.insert(value);
+      }
     }
-    return selected;
   }
-  logger.error() << "Some of the ebv-start, ebv-stop or ebv-step parameters are not set";
-  throw ElementsException {"Missing or unknown E(B-V) options"};
+  if (!m_options["ebv-list"].empty()) {
+    auto values_list = m_options["ebv-list"].as<std::vector<std::string>>();
+    for (auto& values_string : values_list) {
+      logger.info() << "Adding E(B-V) values " << values_string;
+      std::stringstream values_stream {values_string};
+      while (values_stream.good()) {
+        double value {};
+        values_stream >> value;
+        selected.insert(value);
+      }
+    }
+  }
+  if (selected.empty()) {
+    logger.error() << "E(B-V) list is empty (check the options ebv-range and ebv-list)";
+    throw ElementsException() << "Empty E(B-V) list";
+  }
+  return std::vector<double> {selected.begin(), selected.end()};
 }
 
 } // end of namespace PhzConfiguration
