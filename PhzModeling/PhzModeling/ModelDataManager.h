@@ -11,6 +11,7 @@
 #include <memory>
 #include <vector>
 #include <cmath>
+#include <functional>
 #include "ElementsKernel/ElementsException.h"
 #include "ChMath/function/Function.h"
 #include "ChMath/interpolation/interpolation.h"
@@ -18,6 +19,7 @@
 #include "XYDataset/XYDatasetProvider.h"
 #include "XYDataset/XYDataset.h"
 #include "PhzDataModel/PhzModel.h"
+#include "PhzModeling/ExtinctionFunctor.h"
 
 namespace PhzModeling {
 
@@ -72,15 +74,9 @@ public:
       size_t new_z_index = m_index_helper.axisIndex(PhzDataModel::ModelParameter::Z, m_current_index);
       if (new_sed_index != m_current_sed_index || new_reddening_curve_index != m_current_reddening_curve_index
           || new_ebv_index != m_current_ebv_index || !m_current_reddened_sed) {
-        ChMath::Function& reddening_curve = *m_owner.m_reddening_curve_function_vector[new_reddening_curve_index];
+        ExtinctionFunctor& extinction_functor = m_owner.m_reddening_curve_functor_vector[new_reddening_curve_index];
         double ebv = std::get<PhzDataModel::ModelParameter::EBV>(m_owner.m_axes_tuple)[new_ebv_index];
-        std::vector<std::pair<double, double>> new_reddened_values {};
-        for (auto& sed_pair : *m_owner.m_sed_data_vector[new_sed_index]) {
-          double exponent = -0.4 * reddening_curve(sed_pair.first) * ebv;
-          double reddened_value = sed_pair.second * std::pow(10,exponent);
-          new_reddened_values.push_back(std::make_pair(sed_pair.first, reddened_value));
-        }
-        m_current_reddened_sed.reset(new XYDataset::XYDataset{new_reddened_values});
+        m_current_reddened_sed = extinction_functor(*m_owner.m_sed_data_vector[new_sed_index], ebv);
       }
       if (new_sed_index != m_current_sed_index || new_reddening_curve_index != m_current_reddening_curve_index
           || new_ebv_index != m_current_ebv_index || new_z_index != m_current_z_index || !m_current_redshifted_sed) {
@@ -107,7 +103,6 @@ public:
     size_t m_current_ebv_index {0};
     size_t m_current_z_index {0};
     std::unique_ptr<XYDataset::XYDataset> m_current_reddened_sed;
-//    std::unique_ptr<ChMath::Function> m_current_redshifted_sed;
     std::unique_ptr<XYDataset::XYDataset> m_current_redshifted_sed;
   }; // end of class iterator
   
@@ -139,7 +134,7 @@ public:
         throw ElementsException() << "Reddening curve with name " << reddening_curve_name.qualifiedName()
                                   << " does not exist";
       }
-      m_reddening_curve_function_vector.push_back(ChMath::interpolate(*reddening_curve_data, ChMath::InterpolationType::LINEAR));
+      m_reddening_curve_functor_vector.emplace_back(*reddening_curve_data);
     }
   }
   
@@ -161,6 +156,7 @@ private:
   size_t m_size;
   std::vector<std::unique_ptr<XYDataset::XYDataset>> m_sed_data_vector;
   std::vector<std::unique_ptr<ChMath::Function>> m_reddening_curve_function_vector;
+  std::vector<ExtinctionFunctor> m_reddening_curve_functor_vector;
   
 }; // end of class ModelFunctionDataManager
 
