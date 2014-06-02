@@ -33,6 +33,7 @@ public:
   public:
     iterator(const Matrix<DataManager, AxesTypes...>& owner,
              const data_iter_type& data_iter);
+    iterator& operator=(const iterator& other);
     iterator& operator++();
     data_type& operator*();
     bool operator==(const iterator& other) const;

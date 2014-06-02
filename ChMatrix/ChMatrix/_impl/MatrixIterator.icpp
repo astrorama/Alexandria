@@ -15,6 +15,13 @@ Matrix<DataManager, AxesTypes...>::iterator::iterator(
         : m_owner(owner), m_data_iter {data_iter} { }
 
 template<typename DataManager, typename... AxesTypes>
+auto Matrix<DataManager, AxesTypes...>::iterator::operator=(const iterator& other) -> iterator& {
+  m_data_iter = other.m_data_iter;
+  m_fixed_indices = other.m_fixed_indices;
+  return *this;
+}
+
+template<typename DataManager, typename... AxesTypes>
 auto Matrix<DataManager, AxesTypes...>::iterator::operator++() -> iterator& {
   ++m_data_iter;
   if (!m_fixed_indices.empty()) {
