@@ -14,6 +14,7 @@ namespace po = boost::program_options;
 #include "ElementsKernel/Version.h"
 #include "ChTable/AsciiReader.h"
 #include "PhzDataModel/PhotometryMatrix.h"
+#include "PhzDataModel/LikelihoodMatrix.h"
 #include "PhzLikelihood/ModelScaleFunctor.h"
 #include "PhzLikelihood/ChiSquareFunctor.h"
 #include "ChCatalog/SourceAttributes/PhotometryAttributeFromRow.h"
@@ -124,7 +125,7 @@ public:
       
       // Create the chi2 matrix
       auto source_phot = source.getAttribute<Photometry>();
-      PhzMatrix<vector<double>> chi2_matrix {model_phot_marix->axisInfoTuple()};
+      LikelihoodMatrix chi2_matrix {model_phot_marix->axisInfoTuple()};
       auto model_iter = model_phot_marix->begin();
       auto chi2_iter = chi2_matrix.begin();
       while (model_iter != model_phot_marix->end()) {
