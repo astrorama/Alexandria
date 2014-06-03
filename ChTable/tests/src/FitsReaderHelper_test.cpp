@@ -7,13 +7,13 @@
 #include <boost/test/unit_test.hpp>
 #include <CCfits/CCfits>
 #include "ElementsKernel/ElementsException.h"
+#include "ElementsKernel/Temporary.h"
 #include "src/lib/FitsReaderHelper.h"
-#include "TempDir.h"
 
 struct FitsReaderHelper_Fixture {
   TempDir temp_dir;
   std::unique_ptr<CCfits::FITS> fits {new CCfits::FITS(
-        (temp_dir.name/"FitsReaderHelper_test.fits").native(), CCfits::RWmode::Write)};
+        (temp_dir.path()/"FitsReaderHelper_test.fits").native(), CCfits::RWmode::Write)};
 };
 
 //-----------------------------------------------------------------------------

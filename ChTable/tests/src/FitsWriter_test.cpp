@@ -6,11 +6,11 @@
 
 #include <boost/test/unit_test.hpp>
 #include "ElementsKernel/ElementsException.h"
+#include "ElementsKernel/Temporary.h"
 #include "ChTable/Table.h"
 #include "ChTable/ColumnInfo.h"
 #include "ChTable/Row.h"
 #include "ChTable/FitsWriter.h"
-#include "TempDir.h"
 
 struct FitsWriter_Fixture {
   std::vector<ChTable::ColumnInfo::info_type> info_list {
@@ -30,7 +30,7 @@ struct FitsWriter_Fixture {
   ChTable::Table table {row_list};
   TempDir temp_dir;
   std::unique_ptr<CCfits::FITS> fits {new CCfits::FITS(
-         (temp_dir.name/"FitsWriter_test.fits").native(), CCfits::RWmode::Write)};
+         (temp_dir.path()/"FitsWriter_test.fits").native(), CCfits::RWmode::Write)};
 };
 
 //-----------------------------------------------------------------------------
