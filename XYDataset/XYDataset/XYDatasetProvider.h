@@ -28,7 +28,7 @@ class XYDatasetProvider
    * @brief
    * Virtual function to list all files contents in the "group" path
    * @details
-   * let's take the folleoing example. if you have a group sets to "A/B/C" and
+   * let's take the following example. if you have a group sets to "A/B/C" and
    * under the "C" repository there is the following structure :
    * C/file1
    * C/file2
@@ -57,6 +57,8 @@ class XYDatasetProvider
    * A unique pointer of XYDataset type to the dataset
    */
    virtual std::unique_ptr<XYDataset> getDataset(const QualifiedName& qualified_name) = 0;
+
+   virtual ~XYDatasetProvider() = default;
 
  private:
 

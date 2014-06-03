@@ -36,7 +36,7 @@ class AsciiParser : public FileParser
 
   /**
    * @brief Constructor
-   * Tool for reading FITS tables from streams
+   * Tool for reading ASCII tables from streams
    * @param regex_str
    * The regex for extracting the dataset name. The default is defined as
    * "^\\s*#\\s*(\\w+)\\s*$".
@@ -52,9 +52,9 @@ class AsciiParser : public FileParser
    * into the file, the filename itself is the dataset name removing the path
    * and the extension. If the dataset name is inside the file the function
    * looks for a line starting with a "#" character and extract the word after
-   *  the hash
+   * the hash
    * @param file
-   *  Filename of the file to be read including absolute path
+   * Filename of the file to be read including absolute path
    * @return
    * The name of the datatset
    * @throw
@@ -65,17 +65,18 @@ class AsciiParser : public FileParser
   /**
    * @brief
    * Get a XYDataset object reading data from an ASCII file
-   * @Details
+   * @details
    * Read an ASCII file and put the data into a XYDataset object. It makes the
    * assumption that the file only contains two columns of double values
    * @param file
-   *  Filename of the file to be read including the absolute path
+   * Filename of the file to be read including the absolute path
    * @return
    * A unique pointer to a XYDatatset object or null pointer.
    */
   std::unique_ptr<XYDataset> getDataset(const std::string& file) override;
 
-  virtual ~AsciiParser() {}
+  /// Default destructor
+  virtual ~AsciiParser() = default;
 
  private:
 

@@ -31,7 +31,7 @@ namespace XYDataset {
  * of the files and the name of the dataset are used for constructing the
  * qualified name to match with the identifier. To support different file
  * formats the work is delegated to the FileParser interface about file related
- * operations (it gets dataset name and data)
+ * operations (it gets dataset name and data).
  */
 
 class FileSystemProvider : public XYDatasetProvider
@@ -40,20 +40,29 @@ class FileSystemProvider : public XYDatasetProvider
 
   /**
    * @brief constructor
-   * @param root_path : absolute or relative path to the dataset
-   * @param parser : FileParser object
-   * @throw ElementsException : path to the files not found
-   * @throw ElementsException : root path not found
-   * @throw ElementsException : root path is not a directory
-   * @throw ElementsException : qualified name can not be inserted
+   * The FileSystemProvider handles files in a directory tree.
+   * @details
+   * It fills up a map containing the qualified name and the path of the corresponding file.
+   * @param root_path
+   * Absolute path to the dataset
+   * @param parser
+   * FileParser object
+   * @throw ElementsException
+   * Path to the files not found
+   * @throw ElementsException
+   * Root path not found
+   * @throw ElementsException
+   * Root path is not a directory
+   * @throw ElementsException
+   * Qualified name can not be inserted
    */
   FileSystemProvider(const std::string& root_path, std::unique_ptr<FileParser> parser);
 
   /**
    * @brief
    * Get a dataset corresponding to an unique qualified name
-   *
-   * @param qualified_name : dataset's qualified name
+   * @param qualified_name
+   * Dataset qualified name
    * @return
    * A XYDataset unique pointer or null pointer
    */
@@ -61,12 +70,25 @@ class FileSystemProvider : public XYDatasetProvider
 
   /**
    * @brief
-   * List the files which belong to a group.
+   * List all files which belong to a group.
    * @details
-   * As an example
+   * Fill up a vector with qualified name from the map created at the constructor level.
+   * In the vector, only qualified name where path contains the group name at the
+   * first position is inserted.
+   * let's take the following example. if you have a group sets to "A/B/C" and
+   * under the "C" repository there is the following structure :
+   * C/file1
+   * C/file2
+   * C/D/file3
+   * etc...
+   * then the vector of strings returned will contain the following elements:
+   * vector[0] = "A/B/C/file1"
+   * vector[1] = "A/B/C/file2"
+   * vector[3] = "A/B/C/D/file3"
+   * etc...
+   * Note: The empty string for the group means the root group
    * @param group
-   *  It is a string which represents a group as for instance: "filter/MER" if
-   *  you want all MER filters.
+   *  It is a string which represents a group: e.g. "filter/MER" for getting all MER filters.
    * @return
    * A vector of qualified names for the datasets in the files under the group or an empty
    * vector in case of no files for the group
@@ -74,6 +96,8 @@ class FileSystemProvider : public XYDatasetProvider
    */
   std::vector<QualifiedName> listContents(const std::string& group) override;
 
+  // Default destructor
+  ~FileSystemProvider() = default;
 
  private:
 
