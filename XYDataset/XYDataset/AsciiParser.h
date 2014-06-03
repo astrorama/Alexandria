@@ -25,7 +25,7 @@ namespace XYDataset {
  * the Y data. The name of the dataset is extracted from the first non-empty
  * line of the file, as the first match of a regular expression. If the regular
  * expression does not match, the name of the file (excluding the extension)
- * is used as the name of the dataset. Comments are supported by using the Õ#Õ
+ * is used as the name of the dataset. Comments are supported by using the "#"
  * character.
  * @throw
  * ElementException : File not found

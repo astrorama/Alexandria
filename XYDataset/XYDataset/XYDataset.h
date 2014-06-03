@@ -17,7 +17,7 @@
 namespace XYDataset {
 
 /**
- * @class XYDataset
+ * @class XYDataset::XYDataset
  * Interface class
  * @brief
  * This module provides an interface for accessing two dimensional datasets
@@ -25,8 +25,8 @@ namespace XYDataset {
  * @details
  * The datasets are organized in groups (nested groups are allowed, which
  * create a tree) and they can be uniquely identified by their qualified name,
- * which consists of the group names and the dataset name, sep- arated by slashes
- * (”/”), for example ”groupA/groupB/name”. Note that datasets might not belong
+ * which consists of the group names and the dataset name, separated by slashes
+ * "/" for example "groupA/groupB/name". Note that datasets might not belong
  * to any group (or alternatively that they might belong to the root group), in
  * which case they are accessed by just using their name (no leading slash).
  * The module abstracts the nature of the storage and the only assumption is
