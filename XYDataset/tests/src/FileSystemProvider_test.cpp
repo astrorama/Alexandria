@@ -13,10 +13,10 @@
 #include <boost/filesystem.hpp>
 
 #include "ElementsKernel/ElementsException.h"
+#include "ElementsKernel/Temporary.h"
 #include "XYDataset/FileSystemProvider.h"
 #include "XYDataset/AsciiParser.h"
 #include "XYDataset/QualifiedName.h"
-#include "TempDir.h"
 
 using namespace XYDataset;
 
@@ -37,7 +37,7 @@ struct FileSystemProvider_Fixture {
   std::string group { "filter/MER" };
   // Do not forget the "/" at the end of the base directory
   TempDir temp_dir;
-  std::string base_directory { temp_dir.name_str+"/euclid/" };
+  std::string base_directory { temp_dir.path().native()+"/euclid/" };
   std::string mer_directory    = base_directory + "filter/MER";
   std::string cosmos_directory = base_directory + "filter/COSMOS";
 
@@ -85,7 +85,7 @@ BOOST_FIXTURE_TEST_CASE(exceptions_test, FileSystemProvider_Fixture) {
   BOOST_TEST_MESSAGE(" ");
 
   // Path is not valid
-  base_directory = temp_dir.name_str+"/PATH_DOES_NOT_EXIST";
+  base_directory = temp_dir.path().native()+"/PATH_DOES_NOT_EXIST";
   BOOST_CHECK_THROW( FileSystemProvider fsp (base_directory, std::move(fp)),
                      ElementsException);
 
@@ -96,7 +96,7 @@ BOOST_FIXTURE_TEST_CASE(exceptions_test, FileSystemProvider_Fixture) {
 
   // Fill up a new file with dataset name already existing
   // We must have only unique qualify name
-  std::ofstream file3_mer(temp_dir.name_str+"/euclid/filter/MER/file3.txt");
+  std::ofstream file3_mer(temp_dir.path().native()+"/euclid/filter/MER/file3.txt");
   file3_mer << "\n";
   file3_mer << "# Dataset_name_for_file1\n";
   file3_mer << "0.1111 1.0000 \n";
@@ -106,7 +106,7 @@ BOOST_FIXTURE_TEST_CASE(exceptions_test, FileSystemProvider_Fixture) {
                      ElementsException);
 
   // Remove file3 to avoid exception in the next test
-  removeDir(temp_dir.name_str+"/euclid/filter/MER/file3.txt");
+  removeDir(temp_dir.path().native()+"/euclid/filter/MER/file3.txt");
 }
 
 //-----------------------------------------------------------------------------
@@ -119,7 +119,7 @@ BOOST_FIXTURE_TEST_CASE(listContent_test, FileSystemProvider_Fixture) {
   BOOST_TEST_MESSAGE("--> Testing the listContents function");
   BOOST_TEST_MESSAGE(" ");
 
-  FileSystemProvider fsp {temp_dir.name_str+"/euclid/", std::move(fp)};
+  FileSystemProvider fsp {temp_dir.path().native()+"/euclid/", std::move(fp)};
 
   // Even with two slashes in the group it must work
   group = { "filter/MER//" };
@@ -145,7 +145,7 @@ BOOST_FIXTURE_TEST_CASE(getDataset_test, FileSystemProvider_Fixture) {
   BOOST_TEST_MESSAGE("--> Testing the getDataset function");
   BOOST_TEST_MESSAGE(" ");
 
-  FileSystemProvider fsp {temp_dir.name_str+"/euclid/", std::move(fp)};
+  FileSystemProvider fsp {temp_dir.path().native()+"/euclid/", std::move(fp)};
 
   // Check a no null pointer must be return
   QualifiedName identifier {{"filter","MER"},"Dataset_name_for_file1"};

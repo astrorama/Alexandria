@@ -13,9 +13,9 @@
 #include <boost/filesystem.hpp>
 
 #include "ElementsKernel/ElementsException.h"
+#include "ElementsKernel/Temporary.h"
 #include "XYDataset/AsciiParser.h"
 #include "XYDataset/XYDataset.h"
-#include "TempDir.h"
 
 using namespace XYDataset;
 
@@ -36,7 +36,7 @@ struct AsciiParser_Fixture {
   std::string file {"Gext_ACSf435w.txt"};
   std::string file_nodataset_name {"Nodataset_name_inside_file.txt"};
   TempDir temp_dir;
-  std::string base_directory = makeDir(temp_dir.name_str+"euclid/filter/MER/");
+  std::string base_directory = makeDir(temp_dir.path().native()+"/euclid/filter/MER/");
 
   AsciiParser_Fixture() {
     // Create files
