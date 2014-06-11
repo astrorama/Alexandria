@@ -57,12 +57,10 @@ public:
         "Use all the Reddening Curves in the given group and subgroups")
     ("reddening-curve-list", po::value<vector<string>>(),
         "Use all the given Reddening Curves")
-    ("ebv-start", po::value<double>(), "The E(B-V) range lower limit")
-    ("ebv-stop", po::value<double>(), "The E(B-V) range upper limit")
-    ("ebv-step", po::value<double>(), "The E(B-V) step")
-    ("z-start", po::value<double>(), "The redshift range lower limit")
-    ("z-stop", po::value<double>(), "The redshift range upper limit")
-    ("z-step", po::value<double>(), "The redshift step");
+    ("ebv-range", po::value<vector<string>>(), "Use the E(B-V) values in the given range (min max step)")
+    ("ebv-list", po::value<vector<string>>(), "Use the given space separated E(B-V) values")
+    ("z-range", po::value<vector<string>>(), "Use the Z values in the given range (min max step)")
+    ("z-list", po::value<vector<string>>(), "Use the given space separated Z values");
     return config_file_options;
   }
   

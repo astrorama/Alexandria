@@ -10,6 +10,7 @@
 #include <fstream>
 #include <boost/program_options.hpp>
 namespace po = boost::program_options;
+#include <CCfits/CCfits>
 #include "ElementsKernel/ElementsProgram.h"
 #include "ElementsKernel/Version.h"
 #include "ChTable/AsciiReader.h"
@@ -20,6 +21,7 @@ namespace po = boost::program_options;
 #include "ChCatalog/SourceAttributes/PhotometryAttributeFromRow.h"
 #include "ChCatalog/CatalogFromTable.h"
 #include "ChTable/AsciiWriter.h"
+#include "ChTable/FitsReader.h"
 
 using namespace std;
 using namespace ChCatalog;
@@ -40,6 +42,8 @@ public:
     config_file_options.add_options()
     ("photometric-catalog", po::value<string>(),
         "The catalog containing the observed photometric fluxes and their errors")
+    ("photometric-catalog-format", po::value<string>()->default_value("ASCII"),
+        "The format of the photometric catalog")
     ("model-photometry-matrix", po::value<string>(),
         "The file with the matrix containing the model photometries")
     ("phz-catalog", po::value<string>(),
@@ -62,44 +66,21 @@ public:
     
     string phot_catalog_file = options["photometric-catalog"].as<string>();
     logger.info() << "Reading photometric catalog from file " << phot_catalog_file;
-    fstream phot_catalog_in {phot_catalog_file};
-    vector<std::type_index> mer_column_types {
-      typeid(int64_t), // ID
-      typeid(double), // FLUX_G
-      typeid(double), // FLUX_R
-      typeid(double), // FLUX_I
-      typeid(double), // FLUX_VIS
-      typeid(double), // FLUX_Z
-      typeid(double), // FLUX_Y
-      typeid(double), // FLUX_J
-      typeid(double), // FLUX_H
-      typeid(double), // FLUXERR_G
-      typeid(double), // FLUXERR_R
-      typeid(double), // FLUXERR_I
-      typeid(double), // FLUXERR_VIS
-      typeid(double), // FLUXERR_Z
-      typeid(double), // FLUXERR_Y
-      typeid(double), // FLUXERR_J
-      typeid(double), // FLUXERR_H
-      typeid(double), // ZSPEC
-      typeid(int32_t), // AGN_FLAG
-      typeid(int64_t) // SUPER_ID
-    };
-    Table phot_catalog_table = AsciiReader(mer_column_types).read(phot_catalog_in);
+    string phot_catalog_format = options["photometric-catalog-format"].as<string>();
+    Table phot_catalog_table = (phot_catalog_format == "FITS")
+                             ? readFitsPhotometricCatalog(phot_catalog_file)
+                             : readAsciiPhotometricCatalog(phot_catalog_file);
     
     logger.info() << "Converting the table to catalog";
-    vector<pair<string, pair<string, string>>> filter_name_mapping {};
-    filter_name_mapping.push_back(make_pair(string{"MER/Ynir_WFC3f105w"}, pair<string, string>{"FLUX_Y","FLUXERR_Y"}));
-    filter_name_mapping.push_back(make_pair(string{"MER/Iext_ACSf775w"}, pair<string, string>{"FLUX_I","FLUXERR_I"}));
-    filter_name_mapping.push_back(make_pair(string{"MER/Gext_ACSf435w"}, pair<string, string>{"FLUX_G","FLUXERR_G"}));
-    filter_name_mapping.push_back(make_pair(string{"MER/Hnir_WFC3f160w"}, pair<string, string>{"FLUX_H","FLUXERR_H"}));
-    filter_name_mapping.push_back(make_pair(string{"MER/Rext_ACSf606w"}, pair<string, string>{"FLUX_R","FLUXERR_R"}));
-    filter_name_mapping.push_back(make_pair(string{"MER/Jnir_WFC3f125w"}, pair<string, string>{"FLUX_J","FLUXERR_J"}));
-    filter_name_mapping.push_back(make_pair(string{"MER/Zext_ACSf850lp"}, pair<string, string>{"FLUX_Z","FLUXERR_Z"}));
-    filter_name_mapping.push_back(make_pair(string{"MER/VIS_ACSf814w"}, pair<string, string>{"FLUX_VIS","FLUXERR_VIS"}));
+    vector<pair<string, pair<string, string>>> filter_name_mapping
+              = (phot_catalog_format == "FITS")
+              ? getFitsFilterNameMapping()
+              : getAsciiFilterNameMapping();
     vector<unique_ptr<AttributeFromRow>> attribute_from_row_ptr_vector {};
     attribute_from_row_ptr_vector.push_back(unique_ptr<AttributeFromRow>{new PhotometryAttributeFromRow{phot_catalog_table.getColumnInfo(), filter_name_mapping}});
-    CatalogFromTable catalog_from_table {phot_catalog_table.getColumnInfo(), "ID", move(attribute_from_row_ptr_vector)};
+    string id_column = (phot_catalog_format == "FITS")
+                     ? "SOURCE_ID" : "ID";
+    CatalogFromTable catalog_from_table {phot_catalog_table.getColumnInfo(), id_column, move(attribute_from_row_ptr_vector)};
     Catalog phot_catalog = catalog_from_table.createCatalog(phot_catalog_table);
     
     shared_ptr<ColumnInfo> column_info {new ColumnInfo {{
@@ -135,33 +116,6 @@ public:
         ++chi2_iter;
       }
       
-//      int sed_i = 0;
-//      while (sed_i != chi2_matrix.axisInfo<ModelParameter::SED>().size() &&
-//             chi2_matrix.axisInfo<ModelParameter::SED>()[sed_i] != XYDataset::QualifiedName{{"Cosmos"},"SB2_A_0"}) {
-//        ++sed_i;
-//      }
-//      int ebv_i = 0;
-//      while (ebv_i != chi2_matrix.axisInfo<ModelParameter::EBV>().size() &&
-//             chi2_matrix.axisInfo<ModelParameter::EBV>()[ebv_i] < 0.) {
-//        ++ebv_i;
-//      }
-//      int z_i = 0;
-//      while (z_i != chi2_matrix.axisInfo<ModelParameter::Z>().size() &&
-//             chi2_matrix.axisInfo<ModelParameter::Z>()[z_i] < 0.89) {
-//        ++z_i;
-//      }
-//      auto chi2tmp = chi2_matrix.begin();
-//      chi2tmp.fixAxis<ModelParameter::SED>(sed_i).fixAxis<ModelParameter::EBV>(ebv_i).fixAxis<ModelParameter::Z>(z_i);
-//      logger.info() << source.getId() << " : " << *chi2tmp;
-//      auto photemp = model_phot_marix->begin();
-//      photemp.fixAxis<ModelParameter::SED>(sed_i).fixAxis<ModelParameter::EBV>(ebv_i).fixAxis<ModelParameter::Z>(z_i);
-//      model_scale_functor.flag = true;
-//      logger.info() << " a=" << model_scale_functor(*source_phot, *photemp);
-//      model_scale_functor.flag = false;
-//      for (auto it=(*photemp).begin(); it!=(*photemp).end(); ++it) {
-//        logger.info() << it.filterName() << " : " << (*it).flux;
-//      }
-      
       // Get the PHZ value as the maximum of the chi2 matrix
       string sed {};
       string reddening_curve {};
@@ -191,6 +145,66 @@ public:
   
   string getVersion() {
     return getVersionFromSvnKeywords(SVN_URL, SVN_ID);
+  }
+  
+private:
+  
+  Table readAsciiPhotometricCatalog(string filename) {
+    fstream phot_catalog_in {filename};
+    vector<std::type_index> mer_column_types {
+      typeid(int64_t), // ID
+      typeid(double), // FLUX_G
+      typeid(double), // FLUX_R
+      typeid(double), // FLUX_I
+      typeid(double), // FLUX_VIS
+      typeid(double), // FLUX_Z
+      typeid(double), // FLUX_Y
+      typeid(double), // FLUX_J
+      typeid(double), // FLUX_H
+      typeid(double), // FLUXERR_G
+      typeid(double), // FLUXERR_R
+      typeid(double), // FLUXERR_I
+      typeid(double), // FLUXERR_VIS
+      typeid(double), // FLUXERR_Z
+      typeid(double), // FLUXERR_Y
+      typeid(double), // FLUXERR_J
+      typeid(double), // FLUXERR_H
+      typeid(double), // ZSPEC
+      typeid(int32_t), // AGN_FLAG
+      typeid(int64_t) // SUPER_ID
+    };
+    return AsciiReader(mer_column_types).read(phot_catalog_in);
+  }
+  
+  vector<pair<string, pair<string, string>>> getAsciiFilterNameMapping() {
+    vector<pair<string, pair<string, string>>> filter_name_mapping {};
+    filter_name_mapping.push_back(make_pair(string{"MER/Ynir_WFC3f105w"}, pair<string, string>{"FLUX_Y","FLUXERR_Y"}));
+    filter_name_mapping.push_back(make_pair(string{"MER/Iext_ACSf775w"}, pair<string, string>{"FLUX_I","FLUXERR_I"}));
+    filter_name_mapping.push_back(make_pair(string{"MER/Gext_ACSf435w"}, pair<string, string>{"FLUX_G","FLUXERR_G"}));
+    filter_name_mapping.push_back(make_pair(string{"MER/Hnir_WFC3f160w"}, pair<string, string>{"FLUX_H","FLUXERR_H"}));
+    filter_name_mapping.push_back(make_pair(string{"MER/Rext_ACSf606w"}, pair<string, string>{"FLUX_R","FLUXERR_R"}));
+    filter_name_mapping.push_back(make_pair(string{"MER/Jnir_WFC3f125w"}, pair<string, string>{"FLUX_J","FLUXERR_J"}));
+    filter_name_mapping.push_back(make_pair(string{"MER/Zext_ACSf850lp"}, pair<string, string>{"FLUX_Z","FLUXERR_Z"}));
+    filter_name_mapping.push_back(make_pair(string{"MER/VIS_ACSf814w"}, pair<string, string>{"FLUX_VIS","FLUXERR_VIS"}));
+    return filter_name_mapping;
+  }
+  
+  Table readFitsPhotometricCatalog(string filename) {
+    CCfits::FITS fits {filename};
+    return FitsReader().read(fits.extension(1));
+  }
+  
+  vector<pair<string, pair<string, string>>> getFitsFilterNameMapping() {
+    vector<pair<string, pair<string, string>>> filter_name_mapping {};
+    filter_name_mapping.push_back(make_pair(string{"MER/Ynir_WFC3f105w"}, pair<string, string>{"NIR_Y","NIR_Y_ERR"}));
+    filter_name_mapping.push_back(make_pair(string{"MER/Iext_ACSf775w"}, pair<string, string>{"EXT_i","EXT_i_ERR"}));
+    filter_name_mapping.push_back(make_pair(string{"MER/Gext_ACSf435w"}, pair<string, string>{"EXT_g","EXT_g_ERR"}));
+    filter_name_mapping.push_back(make_pair(string{"MER/Hnir_WFC3f160w"}, pair<string, string>{"NIR_H","NIR_H_ERR"}));
+    filter_name_mapping.push_back(make_pair(string{"MER/Rext_ACSf606w"}, pair<string, string>{"EXT_r","EXT_r_ERR"}));
+    filter_name_mapping.push_back(make_pair(string{"MER/Jnir_WFC3f125w"}, pair<string, string>{"NIR_J","NIR_J_ERR"}));
+    filter_name_mapping.push_back(make_pair(string{"MER/Zext_ACSf850lp"}, pair<string, string>{"EXT_z","EXT_z_ERR"}));
+    filter_name_mapping.push_back(make_pair(string{"MER/VIS_ACSf814w"}, pair<string, string>{"VIS","VIS_ERR"}));
+    return filter_name_mapping;
   }
   
 }; //end of class PhotometryToLikelihood
