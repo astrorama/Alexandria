@@ -1,7 +1,7 @@
-# /home/nikoapos/ISDC/Projects/Alexandria/1.0/CommonDM/python/CommonDM/dm/Interfaces/pro/sim_stub.py
+# /home/nikoapos/ISDC/Projects/Alexandria/2.0/CommonDM/python/CommonDM/dm/Interfaces/pro/sim_stub.py
 # PyXB bindings for NamespaceModule
 # NSM:597a9d3938750139e92466200f1278b1a9dd9acd
-# Generated 2014-03-17 18:50:36.640106 by PyXB version 1.1.2
+# Generated 2014-06-12 14:36:51.819158 by PyXB version 1.1.2
 import pyxb
 import pyxb.binding
 import pyxb.binding.saxer
@@ -11,7 +11,7 @@ import pyxb.utils.domutils
 import sys
 
 # Unique identifier for bindings created at the same time
-_GenerationUID = pyxb.utils.utility.UniqueIdentifier('urn:uuid:a3e7637c-adfc-11e3-9f2e-c4d98710dc86')
+_GenerationUID = pyxb.utils.utility.UniqueIdentifier('urn:uuid:399d4060-f22e-11e3-acaf-c4d98710dc86')
 
 # Import bindings for namespaces imported into schema
 import CommonDM.dm.pro.sim_stub
@@ -42,17 +42,17 @@ def CreateFromDOM (node, default_namespace=None):
     return pyxb.binding.basis.element.AnyCreateFromDOM(node, _fallback_namespace=default_namespace)
 
 
-VisInputConfiguration = pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'VisInputConfiguration'), CommonDM.dm.pro.sim_stub.visInputConfiguration)
-Namespace.addCategoryObject('elementBinding', VisInputConfiguration.name().localName(), VisInputConfiguration)
-
 NipInputConfiguration = pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'NipInputConfiguration'), CommonDM.dm.pro.sim_stub.nipInputConfiguration)
 Namespace.addCategoryObject('elementBinding', NipInputConfiguration.name().localName(), NipInputConfiguration)
+
+TipsInputConfiguration = pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'TipsInputConfiguration'), CommonDM.dm.pro.sim_stub.tipsInputConfiguration)
+Namespace.addCategoryObject('elementBinding', TipsInputConfiguration.name().localName(), TipsInputConfiguration)
 
 TipsOutput = pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'TipsOutput'), CommonDM.dm.pro.sim_stub.metadataVISNISPSimulationInterfaces)
 Namespace.addCategoryObject('elementBinding', TipsOutput.name().localName(), TipsOutput)
 
-TipsInputConfiguration = pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'TipsInputConfiguration'), CommonDM.dm.pro.sim_stub.tipsInputConfiguration)
-Namespace.addCategoryObject('elementBinding', TipsInputConfiguration.name().localName(), TipsInputConfiguration)
+VisInputConfiguration = pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'VisInputConfiguration'), CommonDM.dm.pro.sim_stub.visInputConfiguration)
+Namespace.addCategoryObject('elementBinding', VisInputConfiguration.name().localName(), VisInputConfiguration)
 
 NipOutput = pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'NipOutput'), CommonDM.dm.pro.sim_stub.nipOutput)
 Namespace.addCategoryObject('elementBinding', NipOutput.name().localName(), NipOutput)

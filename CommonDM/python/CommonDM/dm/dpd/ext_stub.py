@@ -1,7 +1,7 @@
-# /home/nikoapos/ISDC/Projects/Alexandria/1.0/CommonDM/python/CommonDM/dm/dpd/ext_stub.py
+# /home/nikoapos/ISDC/Projects/Alexandria/2.0/CommonDM/python/CommonDM/dm/dpd/ext_stub.py
 # PyXB bindings for NamespaceModule
 # NSM:c41bdd9aa0398bba4f9b269d9446297ad51ac9cc
-# Generated 2014-03-17 18:50:36.642545 by PyXB version 1.1.2
+# Generated 2014-06-12 14:36:51.818391 by PyXB version 1.1.2
 import pyxb
 import pyxb.binding
 import pyxb.binding.saxer
@@ -11,7 +11,7 @@ import pyxb.utils.domutils
 import sys
 
 # Unique identifier for bindings created at the same time
-_GenerationUID = pyxb.utils.utility.UniqueIdentifier('urn:uuid:a3e7637c-adfc-11e3-9f2e-c4d98710dc86')
+_GenerationUID = pyxb.utils.utility.UniqueIdentifier('urn:uuid:399d4060-f22e-11e3-acaf-c4d98710dc86')
 
 # Import bindings for namespaces imported into schema
 import pyxb.binding.datatypes

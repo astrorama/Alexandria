@@ -19,7 +19,7 @@ def _getFileDictionary(file_dictionary_string):
     # If we have multiple ports we should have a string representation of a
     # python dictionary. Otherwise we have a single path string.
     try:
-        dictionary_literal = file_dictionary_string.replace('{',"{\'").replace(':',"\':\'").replace('}',"\'}")
+        dictionary_literal = file_dictionary_string.replace('{',"{\'").replace(':',"\':\'").replace(',',"\',\'").replace('}',"\'}")
         result = ast.literal_eval(dictionary_literal)
     except:
         result[''] = file_dictionary_string
