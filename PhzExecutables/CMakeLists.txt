@@ -1,0 +1,32 @@
+elements_subdir(PhzExecutables 0.1)
+
+elements_depends_on_subdirs(ElementsKernel)
+elements_depends_on_subdirs(ChMatrix)
+elements_depends_on_subdirs(ChCatalog)
+elements_depends_on_subdirs(ChMath)
+elements_depends_on_subdirs(PhzConfiguration)
+elements_depends_on_subdirs(PhzDataModel)
+elements_depends_on_subdirs(PhzModeling)
+elements_depends_on_subdirs(PhzLikelihood)
+
+find_package(Boost REQUIRED COMPONENTS program_options serialization)
+
+#===== Executables =============================================================
+                  
+elements_add_executable(CreateModelPhotometry src/program/CreateModelPhotometry.cpp
+                  LINK_LIBRARIES Boost ElementsKernel PhzConfiguration ChCatalog ChMath
+                  INCLUDE_DIRS Boost ElementsKernel PhzConfiguration PhzDataModel ChMatrix PhzModeling)
+                  
+elements_add_executable(PhotometryToLikelihood src/program/PhotometryToLikelihood.cpp
+                  LINK_LIBRARIES Boost ElementsKernel PhzConfiguration ChCatalog ChMath
+                  INCLUDE_DIRS Boost ElementsKernel PhzConfiguration PhzDataModel ChMatrix PhzLikelihood)
+                  
+elements_add_executable(ExportModelDataset src/program/ExportModelDataset.cpp
+                  LINK_LIBRARIES Boost ElementsKernel PhzConfiguration ChCatalog ChMath
+                  INCLUDE_DIRS Boost ElementsKernel PhzConfiguration PhzDataModel ChMatrix PhzModeling)
+
+#---Python modules, Scripts, conf and aux files --------------------------------
+
+elements_install_conf_files()
+elements_install_python_modules()
+elements_install_scripts()

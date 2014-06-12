@@ -1,7 +1,7 @@
-# /home/nikoapos/ISDC/Projects/Alexandria/1.0/CommonDM/python/CommonDM/dm/sys_stub.py
+# /home/nikoapos/ISDC/Projects/Alexandria/2.0/CommonDM/python/CommonDM/dm/sys_stub.py
 # PyXB bindings for NamespaceModule
 # NSM:ef11d8db76a7f46c6c12cc44757c7de95f0af727
-# Generated 2014-03-17 18:50:36.638039 by PyXB version 1.1.2
+# Generated 2014-06-12 14:36:51.812699 by PyXB version 1.1.2
 import pyxb
 import pyxb.binding
 import pyxb.binding.saxer
@@ -11,7 +11,7 @@ import pyxb.utils.domutils
 import sys
 
 # Unique identifier for bindings created at the same time
-_GenerationUID = pyxb.utils.utility.UniqueIdentifier('urn:uuid:a3e7637c-adfc-11e3-9f2e-c4d98710dc86')
+_GenerationUID = pyxb.utils.utility.UniqueIdentifier('urn:uuid:399d4060-f22e-11e3-acaf-c4d98710dc86')
 
 # Import bindings for namespaces imported into schema
 import pyxb.binding.datatypes
@@ -82,20 +82,6 @@ scientificGroupName._InitializeFacetMap(scientificGroupName._CF_enumeration)
 Namespace.addCategoryObject('typeBinding', u'scientificGroupName', scientificGroupName)
 
 # Atomic SimpleTypeDefinition
-class configFileName (pyxb.binding.datatypes.string):
-
-    """An atomic simple type."""
-
-    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'configFileName')
-    _Documentation = None
-configFileName._CF_pattern = pyxb.binding.facets.CF_pattern()
-configFileName._CF_pattern.addPattern(pattern=u'EUC-[GSOV|IOTE|OPER|4SVT?|TD??|TEST].[A-Za-z0-9]{3,4}')
-configFileName._CF_maxLength = pyxb.binding.facets.CF_maxLength(value=pyxb.binding.datatypes.nonNegativeInteger(64L))
-configFileName._InitializeFacetMap(configFileName._CF_pattern,
-   configFileName._CF_maxLength)
-Namespace.addCategoryObject('typeBinding', u'configFileName', configFileName)
-
-# Atomic SimpleTypeDefinition
 class infraName (pyxb.binding.datatypes.string, pyxb.binding.basis.enumeration_mixin):
 
     """List of SDC/infrastructures components used in EUCLID SGS.	"""
@@ -133,6 +119,20 @@ systemDateTime._InitializeFacetMap(systemDateTime._CF_pattern)
 Namespace.addCategoryObject('typeBinding', u'systemDateTime', systemDateTime)
 
 # Atomic SimpleTypeDefinition
+class configFileName (pyxb.binding.datatypes.string):
+
+    """An atomic simple type."""
+
+    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'configFileName')
+    _Documentation = None
+configFileName._CF_pattern = pyxb.binding.facets.CF_pattern()
+configFileName._CF_pattern.addPattern(pattern=u'EUC-[GSOV|IOTE|OPER|4SVT?|TD??|TEST].[A-Za-z0-9]{3,4}')
+configFileName._CF_maxLength = pyxb.binding.facets.CF_maxLength(value=pyxb.binding.datatypes.nonNegativeInteger(64L))
+configFileName._InitializeFacetMap(configFileName._CF_pattern,
+   configFileName._CF_maxLength)
+Namespace.addCategoryObject('typeBinding', u'configFileName', configFileName)
+
+# Atomic SimpleTypeDefinition
 class dataFileName (pyxb.binding.datatypes.string):
 
     """An atomic simple type."""
@@ -145,78 +145,6 @@ dataFileName._CF_maxLength = pyxb.binding.facets.CF_maxLength(value=pyxb.binding
 dataFileName._InitializeFacetMap(dataFileName._CF_pattern,
    dataFileName._CF_maxLength)
 Namespace.addCategoryObject('typeBinding', u'dataFileName', dataFileName)
-
-# Complex type genericHeader with content type ELEMENT_ONLY
-class genericHeader (pyxb.binding.basis.complexTypeDefinition):
-    _TypeDefinition = None
-    _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
-    _Abstract = False
-    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'genericHeader')
-    # Base type is pyxb.binding.datatypes.anyType
-    
-    # Element {http://euclid.esa.org/schema/sys}ProductType uses Python identifier ProductType
-    __ProductType = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'ProductType'), 'ProductType', '__httpeuclid_esa_orgschemasys_genericHeader_httpeuclid_esa_orgschemasysProductType', False)
-
-    
-    ProductType = property(__ProductType.value, __ProductType.set, None, u'Identifies the type of product. The list of product types is defined within the Data Model.')
-
-    
-    # Element {http://euclid.esa.org/schema/sys}ScientificCustodian uses Python identifier ScientificCustodian
-    __ScientificCustodian = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'ScientificCustodian'), 'ScientificCustodian', '__httpeuclid_esa_orgschemasys_genericHeader_httpeuclid_esa_orgschemasysScientificCustodian', False)
-
-    
-    ScientificCustodian = property(__ScientificCustodian.value, __ScientificCustodian.set, None, u'Scientific Group responsible of the quality of  the data referring to the OU or SWG or else. The custodian of this group and coordinates complete ')
-
-    
-    # Element {http://euclid.esa.org/schema/sys}ProductName uses Python identifier ProductName
-    __ProductName = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'ProductName'), 'ProductName', '__httpeuclid_esa_orgschemasys_genericHeader_httpeuclid_esa_orgschemasysProductName', False)
-
-    
-    ProductName = property(__ProductName.value, __ProductName.set, None, u'Product Name, the interface embeds one and only one Product. This information is derived from the task schema input/output name. ')
-
-    
-    # Element {http://euclid.esa.org/schema/sys}SoftwareName uses Python identifier SoftwareName
-    __SoftwareName = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'SoftwareName'), 'SoftwareName', '__httpeuclid_esa_orgschemasys_genericHeader_httpeuclid_esa_orgschemasysSoftwareName', False)
-
-    
-    SoftwareName = property(__SoftwareName.value, __SoftwareName.set, None, u'This SoftwareName is extracted from the task definition : /tsk/component tsk/executable')
-
-    
-    # Element {http://euclid.esa.org/schema/sys}AccessRights uses Python identifier AccessRights
-    __AccessRights = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'AccessRights'), 'AccessRights', '__httpeuclid_esa_orgschemasys_genericHeader_httpeuclid_esa_orgschemasysAccessRights', False)
-
-    
-    AccessRights = property(__AccessRights.value, __AccessRights.set, None, u'Interface access rights.')
-
-    
-    # Element {http://euclid.esa.org/schema/sys}ProductId uses Python identifier ProductId
-    __ProductId = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'ProductId'), 'ProductId', '__httpeuclid_esa_orgschemasys_genericHeader_httpeuclid_esa_orgschemasysProductId', False)
-
-    
-    ProductId = property(__ProductId.value, __ProductId.set, None, u'This Id is the unique reference of the object defined in thi interface, this Id is processed by IAL to ensure the uniqueness.')
-
-    
-    # Element {http://euclid.esa.org/schema/sys}SoftwareRelease uses Python identifier SoftwareRelease
-    __SoftwareRelease = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'SoftwareRelease'), 'SoftwareRelease', '__httpeuclid_esa_orgschemasys_genericHeader_httpeuclid_esa_orgschemasysSoftwareRelease', False)
-
-    
-    SoftwareRelease = property(__SoftwareRelease.value, __SoftwareRelease.set, None, u'This SoftwareRelease is extracted from the task definition : /tsk/component tsk/version')
-
-
-    _ElementMap = {
-        __ProductType.name() : __ProductType,
-        __ScientificCustodian.name() : __ScientificCustodian,
-        __ProductName.name() : __ProductName,
-        __SoftwareName.name() : __SoftwareName,
-        __AccessRights.name() : __AccessRights,
-        __ProductId.name() : __ProductId,
-        __SoftwareRelease.name() : __SoftwareRelease
-    }
-    _AttributeMap = {
-        
-    }
-Namespace.addCategoryObject('typeBinding', u'genericHeader', genericHeader)
-
 
 # Complex type accessRights with content type ELEMENT_ONLY
 class accessRights (pyxb.binding.basis.complexTypeDefinition):
@@ -266,31 +194,77 @@ class accessRights (pyxb.binding.basis.complexTypeDefinition):
 Namespace.addCategoryObject('typeBinding', u'accessRights', accessRights)
 
 
+# Complex type genericHeader with content type ELEMENT_ONLY
+class genericHeader (pyxb.binding.basis.complexTypeDefinition):
+    _TypeDefinition = None
+    _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
+    _Abstract = False
+    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'genericHeader')
+    # Base type is pyxb.binding.datatypes.anyType
+    
+    # Element {http://euclid.esa.org/schema/sys}SoftwareName uses Python identifier SoftwareName
+    __SoftwareName = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'SoftwareName'), 'SoftwareName', '__httpeuclid_esa_orgschemasys_genericHeader_httpeuclid_esa_orgschemasysSoftwareName', False)
+
+    
+    SoftwareName = property(__SoftwareName.value, __SoftwareName.set, None, u'This SoftwareName is extracted from the task definition : /tsk/component tsk/executable')
+
+    
+    # Element {http://euclid.esa.org/schema/sys}AccessRights uses Python identifier AccessRights
+    __AccessRights = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'AccessRights'), 'AccessRights', '__httpeuclid_esa_orgschemasys_genericHeader_httpeuclid_esa_orgschemasysAccessRights', False)
+
+    
+    AccessRights = property(__AccessRights.value, __AccessRights.set, None, u'Interface access rights.')
+
+    
+    # Element {http://euclid.esa.org/schema/sys}ProductId uses Python identifier ProductId
+    __ProductId = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'ProductId'), 'ProductId', '__httpeuclid_esa_orgschemasys_genericHeader_httpeuclid_esa_orgschemasysProductId', False)
+
+    
+    ProductId = property(__ProductId.value, __ProductId.set, None, u'This Id is the unique reference of the object defined in thi interface, this Id is processed by IAL to ensure the uniqueness.')
+
+    
+    # Element {http://euclid.esa.org/schema/sys}SoftwareRelease uses Python identifier SoftwareRelease
+    __SoftwareRelease = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'SoftwareRelease'), 'SoftwareRelease', '__httpeuclid_esa_orgschemasys_genericHeader_httpeuclid_esa_orgschemasysSoftwareRelease', False)
+
+    
+    SoftwareRelease = property(__SoftwareRelease.value, __SoftwareRelease.set, None, u'This SoftwareRelease is extracted from the task definition : /tsk/component tsk/version')
+
+    
+    # Element {http://euclid.esa.org/schema/sys}ProductType uses Python identifier ProductType
+    __ProductType = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'ProductType'), 'ProductType', '__httpeuclid_esa_orgschemasys_genericHeader_httpeuclid_esa_orgschemasysProductType', False)
+
+    
+    ProductType = property(__ProductType.value, __ProductType.set, None, u'Identifies the type of product. The list of product types is defined within the Data Model.')
+
+    
+    # Element {http://euclid.esa.org/schema/sys}ProductName uses Python identifier ProductName
+    __ProductName = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'ProductName'), 'ProductName', '__httpeuclid_esa_orgschemasys_genericHeader_httpeuclid_esa_orgschemasysProductName', False)
+
+    
+    ProductName = property(__ProductName.value, __ProductName.set, None, u'Product Name, the interface embeds one and only one Product. This information is derived from the task schema input/output name. ')
+
+    
+    # Element {http://euclid.esa.org/schema/sys}ScientificCustodian uses Python identifier ScientificCustodian
+    __ScientificCustodian = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'ScientificCustodian'), 'ScientificCustodian', '__httpeuclid_esa_orgschemasys_genericHeader_httpeuclid_esa_orgschemasysScientificCustodian', False)
+
+    
+    ScientificCustodian = property(__ScientificCustodian.value, __ScientificCustodian.set, None, u'Scientific Group responsible of the quality of  the data referring to the OU or SWG or else. The custodian of this group and coordinates complete ')
 
 
-genericHeader._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'ProductType'), pyxb.binding.datatypes.QName, scope=genericHeader, documentation=u'Identifies the type of product. The list of product types is defined within the Data Model.'))
+    _ElementMap = {
+        __SoftwareName.name() : __SoftwareName,
+        __AccessRights.name() : __AccessRights,
+        __ProductId.name() : __ProductId,
+        __SoftwareRelease.name() : __SoftwareRelease,
+        __ProductType.name() : __ProductType,
+        __ProductName.name() : __ProductName,
+        __ScientificCustodian.name() : __ScientificCustodian
+    }
+    _AttributeMap = {
+        
+    }
+Namespace.addCategoryObject('typeBinding', u'genericHeader', genericHeader)
 
-genericHeader._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'ScientificCustodian'), scientificGroupName, scope=genericHeader, documentation=u'Scientific Group responsible of the quality of  the data referring to the OU or SWG or else. The custodian of this group and coordinates complete '))
-
-genericHeader._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'ProductName'), CommonDM.dm.bas_stub.objectName, scope=genericHeader, documentation=u'Product Name, the interface embeds one and only one Product. This information is derived from the task schema input/output name. '))
-
-genericHeader._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'SoftwareName'), pyxb.binding.datatypes.string, scope=genericHeader, documentation=u'This SoftwareName is extracted from the task definition : /tsk/component tsk/executable'))
-
-genericHeader._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'AccessRights'), accessRights, scope=genericHeader, documentation=u'Interface access rights.'))
-
-genericHeader._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'ProductId'), CommonDM.dm.bas_stub.objectId, scope=genericHeader, documentation=u'This Id is the unique reference of the object defined in thi interface, this Id is processed by IAL to ensure the uniqueness.'))
-
-genericHeader._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'SoftwareRelease'), version, scope=genericHeader, documentation=u'This SoftwareRelease is extracted from the task definition : /tsk/component tsk/version'))
-genericHeader._GroupModel = pyxb.binding.content.GroupSequence(
-    pyxb.binding.content.ParticleModel(genericHeader._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'ProductName')), min_occurs=1, max_occurs=1),
-    pyxb.binding.content.ParticleModel(genericHeader._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'ProductId')), min_occurs=1, max_occurs=1),
-    pyxb.binding.content.ParticleModel(genericHeader._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'ProductType')), min_occurs=1, max_occurs=1),
-    pyxb.binding.content.ParticleModel(genericHeader._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'SoftwareName')), min_occurs=1, max_occurs=1),
-    pyxb.binding.content.ParticleModel(genericHeader._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'SoftwareRelease')), min_occurs=1, max_occurs=1),
-    pyxb.binding.content.ParticleModel(genericHeader._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'ScientificCustodian')), min_occurs=1, max_occurs=1),
-    pyxb.binding.content.ParticleModel(genericHeader._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'AccessRights')), min_occurs=1, max_occurs=1)
-    )
-genericHeader._ContentModel = pyxb.binding.content.ParticleModel(genericHeader._GroupModel, min_occurs=1, max_occurs=1)
 
 
 
@@ -308,3 +282,29 @@ accessRights._GroupModel = pyxb.binding.content.GroupSequence(
     pyxb.binding.content.ParticleModel(accessRights._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'ScientificGroupWrite')), min_occurs=1, max_occurs=1)
     )
 accessRights._ContentModel = pyxb.binding.content.ParticleModel(accessRights._GroupModel, min_occurs=1, max_occurs=1)
+
+
+
+genericHeader._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'SoftwareName'), pyxb.binding.datatypes.string, scope=genericHeader, documentation=u'This SoftwareName is extracted from the task definition : /tsk/component tsk/executable'))
+
+genericHeader._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'AccessRights'), accessRights, scope=genericHeader, documentation=u'Interface access rights.'))
+
+genericHeader._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'ProductId'), CommonDM.dm.bas_stub.objectId, scope=genericHeader, documentation=u'This Id is the unique reference of the object defined in thi interface, this Id is processed by IAL to ensure the uniqueness.'))
+
+genericHeader._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'SoftwareRelease'), version, scope=genericHeader, documentation=u'This SoftwareRelease is extracted from the task definition : /tsk/component tsk/version'))
+
+genericHeader._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'ProductType'), pyxb.binding.datatypes.QName, scope=genericHeader, documentation=u'Identifies the type of product. The list of product types is defined within the Data Model.'))
+
+genericHeader._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'ProductName'), CommonDM.dm.bas_stub.objectName, scope=genericHeader, documentation=u'Product Name, the interface embeds one and only one Product. This information is derived from the task schema input/output name. '))
+
+genericHeader._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'ScientificCustodian'), scientificGroupName, scope=genericHeader, documentation=u'Scientific Group responsible of the quality of  the data referring to the OU or SWG or else. The custodian of this group and coordinates complete '))
+genericHeader._GroupModel = pyxb.binding.content.GroupSequence(
+    pyxb.binding.content.ParticleModel(genericHeader._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'ProductName')), min_occurs=1, max_occurs=1),
+    pyxb.binding.content.ParticleModel(genericHeader._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'ProductId')), min_occurs=1, max_occurs=1),
+    pyxb.binding.content.ParticleModel(genericHeader._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'ProductType')), min_occurs=1, max_occurs=1),
+    pyxb.binding.content.ParticleModel(genericHeader._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'SoftwareName')), min_occurs=1, max_occurs=1),
+    pyxb.binding.content.ParticleModel(genericHeader._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'SoftwareRelease')), min_occurs=1, max_occurs=1),
+    pyxb.binding.content.ParticleModel(genericHeader._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'ScientificCustodian')), min_occurs=1, max_occurs=1),
+    pyxb.binding.content.ParticleModel(genericHeader._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'AccessRights')), min_occurs=1, max_occurs=1)
+    )
+genericHeader._ContentModel = pyxb.binding.content.ParticleModel(genericHeader._GroupModel, min_occurs=1, max_occurs=1)

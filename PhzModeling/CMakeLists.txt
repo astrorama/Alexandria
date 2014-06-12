@@ -1,0 +1,10 @@
+elements_subdir(PhzModeling 0.1)
+
+elements_depends_on_subdirs(ElementsKernel)
+elements_depends_on_subdirs(ChMatrix)
+elements_depends_on_subdirs(ChCatalog)
+elements_depends_on_subdirs(ChMath)
+elements_depends_on_subdirs(PhzConfiguration)
+elements_depends_on_subdirs(PhzDataModel)
+
+find_package(Boost REQUIRED COMPONENTS serialization)

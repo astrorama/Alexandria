@@ -1,5 +1,9 @@
 import os
+import datetime
+import time
+import hashlib
 import CommonDM.dm.sys.sgs_stub as sgs_stub
+import CommonDM.dm.sys_stub as sys_stub
 
 class LocalFileUnavailable(Exception):
     def __init__(self, value):
@@ -7,7 +11,7 @@ class LocalFileUnavailable(Exception):
     def __str__(self):
         return repr(self.value)
 
-def get_file_from_data_container(dc):
+def getFileFromDataContainer(dc):
     """Extracts the local filename from a data container.
 
     Args:
@@ -32,7 +36,7 @@ def get_file_from_data_container(dc):
             return filename
     raise LocalFileUnavailable('Error: No local file for DataContainer ' + str(dc.Id))
 
-def create_data_container_for_file(filename, type, description):
+def createDataContainerForFile(filename, type, description):
     """Creates a data container PyXB stub which represents the given file.
     
     Note that only files in the same directory with the output XML file are
@@ -66,12 +70,45 @@ def create_data_container_for_file(filename, type, description):
     if creationDate.find(':') == -1:
         creationDate = creationDate[:13]+':'+creationDate[13:15]+':'+creationDate[15:]
     dc.CreationDate = creationDate
-    dc.CheckSum = _create_check_sum(filename)
+    dc.CheckSum = _createCheckSum(filename)
     return dc
 
-def _create_check_sum(filename):
+def _createCheckSum(filename):
     """Returns a PyXB checksumType stub for the given file."""
     checkSum = sgs_stub.checksumType()
     checkSum.Algorithm = 'MD5'
-    checkSum.Value = md5_for_file(filename)
+    checkSum.Value = _md5ForFile(filename)
     return checkSum
+
+def _md5ForFile(filename, block_size=2**20):
+    """Generates the MD5 checksum for the given file"""
+    f = open(filename, 'rb')
+    md5 = hashlib.md5()
+    while True:
+        data = f.read(block_size)
+        if not data:
+            break
+        md5.update(data)
+    f.close()
+    return md5.hexdigest()
+
+def createEuclidFilename(file_type, extension):
+    date_string = datetime.datetime.isoformat(datetime.datetime.utcfromtimestamp(time.time()))
+    date_string = date_string[:-3]
+    return 'EUC-TEST-' + file_type + '-' + date_string + '.' + extension
+
+def createGenericHeader():
+    header = sys_stub.genericHeader()
+    header.ProductId = 0
+    header.ProductName = 'PhotoZCatalog'
+    header.ProductType = 'FITS'
+    header.SoftwareName = 'SDC-CH Prototype'
+    header.SoftwareRelease = '0.1'
+    header.ScientificCustodian = 'PHZ'
+    acr = sys_stub.accessRights()
+    acr.EuclidConsortiumRead = True
+    acr.EuclidConsortiumWrite = False
+    acr.ScientificGroupRead = True
+    acr.ScientificGroupWrite = True
+    header.AccessRights = acr
+    return header
