@@ -83,7 +83,7 @@ BOOST_FIXTURE_TEST_CASE( identical_sources_test, CatalogFixture ) {
   try {
     Catalog catalog {source_vector_identical};
   }
-  catch (ElementsException e) {
+  catch (ElementsException& e) {
     identical = true;
   };
 

@@ -38,8 +38,8 @@ public:
     m_max = max;
     return m_value * (max - min);
   }
-  mutable double m_min;
-  mutable double m_max;
+  mutable double m_min {0};
+  mutable double m_max {0};
 private:
   double m_value;
 };

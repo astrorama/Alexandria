@@ -39,7 +39,7 @@ const ChTable::Table FitsReader::read(const CCfits::HDU& hdu) {
   // First we check that we have a table HDU
   try {
     dynamic_cast<const CCfits::Table&>(hdu);
-  } catch (std::bad_cast) {
+  } catch (std::bad_cast&) {
     throw ElementsException() << "Given HDU is not a table";
   }
   const CCfits::Table& table_hdu = dynamic_cast<const CCfits::Table&>(hdu);
