@@ -17,10 +17,10 @@ namespace ChTable {
 /**
  * @class Table
  * 
- * @brief Represents an ASCII table
+ * @brief Represents a table
  * 
  * @details
- * The Table is an immutable class which represents an ASCII table. It contains
+ * The Table is an immutable class which represents a table. It contains
  * a list of Rows, which all have the same columns. Note that because the Table
  * is immutable instances without rows are not allowed.
  */
