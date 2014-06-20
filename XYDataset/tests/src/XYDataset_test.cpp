@@ -98,19 +98,14 @@ BOOST_FIXTURE_TEST_CASE(const_iterator_test, XYDataset_Fixture) {
   BOOST_TEST_MESSAGE("--> Testing the begin, end functions");
   BOOST_TEST_MESSAGE(" ");
 
-//  auto xy_ptr = XYDataset::factory(vector1, vector2);
-//  auto it = xy_ptr->begin();
-//
-//  BOOST_CHECK(1   == it->first);
-//  BOOST_CHECK(1.1 == it->second);
-//  it = --xy_ptr->end();
-//  BOOST_CHECK(5   == it->first);
-//  BOOST_CHECK(5.5 == it->second);
-
   auto xy_ptr = XYDataset::factory(vector1, vector2);
-  for (auto it = xy_ptr->begin(); it < xy_ptr->end(); ++it) {
-	  std::cout << " X : " << it->first << " Y : "<< it->second << std::endl;
-  }
+  auto it = xy_ptr->begin();
+
+  BOOST_CHECK(1   == it->first);
+  BOOST_CHECK(1.1 == it->second);
+  it = --xy_ptr->end();
+  BOOST_CHECK(5   == it->first);
+  BOOST_CHECK(5.5 == it->second);
 
 }
 
