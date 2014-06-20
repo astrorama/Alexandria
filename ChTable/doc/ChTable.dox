@@ -17,7 +17,7 @@ ASCII or FITS files. It provides a set of classes describing a table in the
 memory, which constitute its data model, and methods for reading and writing
 these classes from/to ASCII and FITS formats. The following sections describe
 briefly how to use the module and can be used as a quick-start guide. For more
-detailed information refer the documentation of each individual class and
+detailed information refer to the documentation of each individual class and
 method in the ChTable namespace.
 
 
@@ -25,7 +25,7 @@ ChTable data model
 ------------------
 
 The main class of the ChTable is the Table class, which represents a table in
-the memory. It can be seen as a collection of Row%s, with the restriction that
+memory. It can be seen as a collection of Row%s, with the restriction that
 all share the same columns. Each of the columns is defined by its name (which
 must be unique, not be empty and not contain whitespace characters) and the
 type of its objects. The information of the columns, which can be both
@@ -49,20 +49,15 @@ lines are assumed for each example:
 
 Note that the second and third lines are used to make the example code more
 readable and they will introduce all the symbols of the ChTable and std
-namespaces, so they must be used sparingly.
+namespaces, so they must be sparingly used.
 
 #### Create a Table ####
 
-This example shows how to create a table with three columns, the first
-representing the name of a function, the second an X value and the third the
-Y value calculated using the function. Because all the Table related classes
-are immutable, they must be created in a bottom-up approach.
+This example demonstrates all the necessary steps for creating a Table object.
+To be more comprehensible, each step is presented and explained separately.
 
-First, the ColumnInfo object which describes the columns must be created. This
-object will be shared between the Table and all its Row%s, so it is stored in
-a std::shared_ptr. Each column is described by a ColumnInfo::info_type object,
-which contains the column name and its type. Note that at the construction of
-the ColumnInfo the `info_list` vector is moved because it is not needed anymore.
+The first step is to create the ColumnInfo object which describes the columns
+of the table:
 
 \code{.cpp}
   vector<ColumnInfo::info_type> info_list {
@@ -73,6 +68,19 @@ the ColumnInfo the `info_list` vector is moved because it is not needed anymore.
   shared_ptr<ColumnInfo> column_info {new ColumnInfo {move(info_list)}};
 \endcode
 
+Each column is described by a ColumnInfo::info_type object, which contains the
+column name and its type. As can be seen above, our table will have three
+columns defined as:
+
+- **Function**: representing the name of a function,
+- **X**: an X value and
+- **Y**: the Y value calculated using the function
+
+The ColumnInfo object will be shared between the Table and all its Row%s, so it
+is stored in a std::shared_ptr. Note that at the construction of 
+the ColumnInfo the `info_list` vector is moved because it is not needed anymore.
+This is optional (but recommended).
+
 Having the ColumnInfo object from the previous step, we can start creating the
 Row%s of the Table. In this step we store the Row%s in a vector, which will
 be used later to construct the Table. The Row constructor gets as parameters a
@@ -82,7 +90,7 @@ specialization allowing for the types  `bool`, `int32_t`, `int64_t`, `float`,
 `double` and `std::string`.
 
 The following code is an example of how to construct a Row in a verbose and
-easy to understand way, by first creating a vector with the cell values. Note
+easy way to understand, by first creating a vector with the cell values. Note
 that this vector is not going to be further used, so it is moved during the Row
 construction.
 
@@ -114,9 +122,9 @@ gives some examples of types and literals, and can be used to avoid mistakes.
 | `double`      | `5.` or `2E-15`   | Recommended `double` literal syntax                                  |
 | `long double` | `5.L` or `2E-15L` | **do not use!**                                                      |
 
-A more complicated and realistic Row creation example is the following, which
-creates some Row%s with the results of the `sin` and `cos` functions. Note that
-in this example the vector containing the cell values and the Row itself are
+The following code creates the Row%s of our table, which are populated with
+some results of the `sin` and `cos` functions. Note that
+in this example the Row and the vector containing the cell values are
 constructed at the same time.
 
 \code{.cpp}
@@ -203,7 +211,7 @@ Column Z not found
 Because all the cell values are stored as boost::variants, if a Table contains
 columns of a different type than the one the program expects, the problem will
 not be detected until a cell value is retrieved during runtime. For this
-reason, to minimize the debugging effort and to allow for better log messages,
+reason, to minimize the debugging effort and to allow better log messages,
 it is recommended to always check the types of the Table columns in interest,
 before trying to read the data from the Row%s cells. This can easily be done
 by using the `typeid()` method: 
@@ -279,12 +287,12 @@ Output:
 Third rows Y value is 0.587785
 \endcode
 
-Most of the time, to use the data of the Table cells, they must be retrieved in
+Most of the time, to use the data of the Table cells, they must be retrieved with
 the correct type. The Row::cell_type objects can be converted to the actual
 type by using the `boost::get` method. Note that trying to convert the cell
 value to a wrong type will result to a `boost::bad_get` exception. For example,
-the following lines of code calculate the sum of all the values of the Y
-column (which keeps `double` values): 
+the following lines of code calculate the sum of the Y column values 
+(column of `double` type): 
 
 \code{.cpp}
   double sum {0};
@@ -329,13 +337,13 @@ columns are extracted from the second such line, by using the following
 conventions:
 
 - bool, boolean : A boolean value as the following (case is ignored):
-  - true, t, yes, y, 1
-  - false, f, no, n, 0
-- int, int32 : A 32 bit integer
-- long, int64 : A 64 bit integer
-- float : Single (32 bit) precision floating point
-- double : Double (64 bit) precision floating point
-- string : String without whitespaces
+                  - true,  t, yes, y, 1
+                  - false, f,  no, n, 0
+- int,  int32   : A 32 bit integer
+- long, int64   : A 64 bit integer
+- float         : Single (32 bit) precision floating point
+- double        : Double (64 bit) precision floating point
+- string        : String without whitespaces
 
 If there is no line describing the types of the columns, all the types are
 assumed to be strings.
