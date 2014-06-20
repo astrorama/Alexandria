@@ -7,6 +7,7 @@
 
 #include <iostream>
 #include <boost/test/unit_test.hpp>
+
 #include "ElementsKernel/ElementsException.h"
 #include "XYDataset/XYDataset.h"
 
@@ -69,7 +70,7 @@ BOOST_FIXTURE_TEST_CASE(factory_test, XYDataset_Fixture) {
   BOOST_TEST_MESSAGE(" ");
 
   auto xy_ptr = XYDataset::factory(vector1, vector2);
-  BOOST_CHECK(5 == vector1.size());
+  BOOST_CHECK(5 == xy_ptr->size());
 
 }
 
@@ -97,14 +98,19 @@ BOOST_FIXTURE_TEST_CASE(const_iterator_test, XYDataset_Fixture) {
   BOOST_TEST_MESSAGE("--> Testing the begin, end functions");
   BOOST_TEST_MESSAGE(" ");
 
-  auto xy_ptr = XYDataset::factory(vector1, vector2);
-  auto it = xy_ptr->begin();
+//  auto xy_ptr = XYDataset::factory(vector1, vector2);
+//  auto it = xy_ptr->begin();
+//
+//  BOOST_CHECK(1   == it->first);
+//  BOOST_CHECK(1.1 == it->second);
+//  it = --xy_ptr->end();
+//  BOOST_CHECK(5   == it->first);
+//  BOOST_CHECK(5.5 == it->second);
 
-  BOOST_CHECK(1   == it->first);
-  BOOST_CHECK(1.1 == it->second);
-  it = --xy_ptr->end();
-  BOOST_CHECK(5   == it->first);
-  BOOST_CHECK(5.5 == it->second);
+  auto xy_ptr = XYDataset::factory(vector1, vector2);
+  for (auto it = xy_ptr->begin(); it < xy_ptr->end(); ++it) {
+	  std::cout << " X : " << it->first << " Y : "<< it->second << std::endl;
+  }
 
 }
 
