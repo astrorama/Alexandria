@@ -1,16 +1,8 @@
 namespace ChTable {
 
-/**
+/** \page chtable ChTable module
 
-@defgroup ChTable ChTable module
-
-@brief
-Module for ASCII and FITS table handling
-
-@details
-
-Developers quick start guide
-============================
+\tableofcontents
 
 The ChTable module provides the means for reading and writing tables from/to
 ASCII or FITS files. It provides a set of classes describing a table in the
@@ -20,9 +12,7 @@ briefly how to use the module and can be used as a quick-start guide. For more
 detailed information refer to the documentation of each individual class and
 method in the ChTable namespace.
 
-
-ChTable data model
-------------------
+\section datamodel ChTable Data Model
 
 The main class of the ChTable is the Table class, which represents a table in
 memory. It can be seen as a collection of Row%s, with the restriction that
@@ -35,7 +25,7 @@ by the ColumnInfo class. Each cell of a Row is stored in a boost::variant
 their content. Note that all the ChTable data model classes are designed to
 be immutable (cannot be modified).
 
-### Examples ###
+\subsection dmexamples Examples
 
 The following examples demonstrate how to create new Table%s from the scratch
 and some basic operations on them. To avoid duplication, the following two
@@ -51,7 +41,7 @@ Note that the second and third lines are used to make the example code more
 readable and they will introduce all the symbols of the ChTable and std
 namespaces, so they must be sparingly used.
 
-#### Create a Table ####
+\subsubsection createtable Create a Table
 
 This example demonstrates all the necessary steps for creating a Table object.
 To be more comprehensible, each step is presented and explained separately.
@@ -122,8 +112,8 @@ gives some examples of types and literals, and can be used to avoid mistakes.
 | `double`      | `5.` or `2E-15`   | Recommended `double` literal syntax                                  |
 | `long double` | `5.L` or `2E-15L` | **do not use!**                                                      |
 
-The following code creates the Row%s of our table, which are populated with
-some results of the `sin` and `cos` functions. Note that
+A more complicated and realistic Row creation example is the following, which
+creates some Row%s with the results of the `sin` and `cos` functions. Note that
 in this example the Row and the vector containing the cell values are
 constructed at the same time.
 
@@ -145,7 +135,7 @@ of a Table must have the same ColumnInfo (an exception is thrown otherwise).
   Table table {row_list};
 \endcode
 
-#### Examine column information ####
+\subsubsection examinecolumn Examine column information
 
 This example shows how the information of the columns can be retrieved by using
 the ColumnInfo class. A shared pointer to the ColumnInfo object can be
@@ -222,7 +212,7 @@ by using the `typeid()` method:
   }
 \endcode
 
-#### Access the table data ####
+\subsubsection accessdata Access the table data
 
 The easiest way to access the data of a Table is by using the iterators
 provided by the Table and Row classes. The Table::begin() method provides an
@@ -309,14 +299,13 @@ Sum of all Y values is 3.07768
 \endcode
 
 
-Table I/O
----------
+\section tableio Table I/O
 
 The ChTable module provides functionality for importing and exporting Table%s
 from/to files. The currently supported formats are ASCII space separated text
 files and FITS tables. The following examples demonstrate this functionality.
 
-### Reading a Table from an ASCII stream ###
+\subsection readascii Reading a Table from an ASCII stream
 
 The ChTable module provides the class AsciiReader, which can be used for
 reading a table from an input stream. Note that a generic `std::istream` is used
@@ -369,7 +358,7 @@ if a file contains the following text:
        cos  3.14159          -1
 \endcode
 
-it can be red directly by using the command:
+it can be read directly by using the command:
 
 \code{.cpp}
   auto table = AsciiReader{}.read(file_stream);
@@ -421,7 +410,7 @@ sequence (column names and types will be detected automatically):
   auto table = reader.read(file_stream);
 \endcode
 
-### Writing a Table in an ASCII stream ###
+\subsection writeascii Writing a Table in an ASCII stream
 
 To export a Table as an ASCII character sequence, the ChTable module provides
 the AsciiWriter class. Similarly with the AsciiReader, the AsciiWriter writes
@@ -497,7 +486,7 @@ Output:
         cos  3.14159          -1
 \endcode
 
-### Reading a Table from a FITS file ###
+\subsection readfits Reading a Table from a FITS file
 
 The ChTable functionality related with reading a Table from a FITS file is
 provided by the FitsReader class. This class can read Table%s from
@@ -538,7 +527,7 @@ Overriding the column types is not. The conventions of the FITS
 types conversions to the Table cell values can be found in the documentation
 of the FitsReader::read() method.
 
-### Writing a Table in a FITS file ###
+\subsection writefits Writing a Table in a FITS file
 
 To export a Table in a FITS file, the ChTable module provides the FitsWriter
 class. This class can append to a `CCfits::FITS` object both ASCII and binary
