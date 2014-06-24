@@ -251,19 +251,37 @@ and the result is:
 \section XY_FULLCODE The Entire Code
 
 \code{.cpp}
+#include <iostream>
+#include <vector>
+#include "XYDataset/XYDataset.h"
+#include "XYDataset/AsciiParser.h"
+#include "XYDataset/FileSystemProvider.h"
+#include "XYDataset/QualifiedName.h"
 
+using namespace XYDataset;
+
+int main() {
+
+      std::string                 group { "filter/MER" };
       std::unique_ptr<FileParser> fp { new AsciiParser{} };
       FileSystemProvider          fsp {"/tmp/euclid", std::move(fp)};
-      std::string                 group { "filter/MER" };
+      
+      // ListContents function
       std::vector<QualifiedName> result_vector = fsp.listContents(group);
+      
+      // Display dataset name and qualified name
       for (unsigned int i = 0; i< result_vector.size(); ++i) {
           std::cout << "Dataset name   : " << result_vector[i].datasetName()   << std::endl;
           std::cout << "Qualified Name : " << result_vector[i].qualifiedName() << std::endl;
       }
+      
+      // Get the dataset
       std::unique_ptr<XYDataset::XYDataset> dataset_ptr = fsp.getDataset(result_vector[0]);
+      
 	  for (auto it = dataset_ptr->begin(); it < dataset_ptr->end(); ++it) {
 		  std::cout << " X : " << it->first << " Y : "<< it->second << std::endl;
 	  }
+}
 \endcode
 */
 
