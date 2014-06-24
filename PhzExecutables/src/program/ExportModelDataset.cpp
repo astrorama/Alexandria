@@ -116,7 +116,7 @@ public:
       double z = iter.axisValue<ModelParameter::Z>();
       stringstream filename {};
       filename << out_dir.string() << "/" << setfill('0') << setw(size_length)
-               << counter << "-" << sed.name() << "_" << reddening_curve.name()
+               << counter << "-" << sed.datasetName() << "_" << reddening_curve.datasetName()
                << "_EBV" << ebv << "_Z" << z;
       if (out_format == "FITS") {
         filename << ".fits";

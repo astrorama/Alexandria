@@ -23,7 +23,7 @@ template<typename Archive>
 void save_construct_data(Archive& ar, const XYDataset::QualifiedName* t, const unsigned int) {
   std::vector<std::string> groups = t->groups();
   ar << groups;
-  std::string name = t->name();
+  std::string name = t->datasetName();
   ar << name;
 }
 
