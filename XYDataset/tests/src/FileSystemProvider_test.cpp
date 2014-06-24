@@ -147,7 +147,7 @@ BOOST_FIXTURE_TEST_CASE(getDataset_test, FileSystemProvider_Fixture) {
 
   FileSystemProvider fsp {temp_dir.path().native()+"/euclid/", std::move(fp)};
 
-  // Check a no null pointer must be return
+  // Check that a pointer must be returned (and not the nullptr)
   QualifiedName identifier {{"filter","MER"},"Dataset_name_for_file1"};
   std::unique_ptr<XYDataset::XYDataset> dataset_ptr = fsp.getDataset(identifier);
 

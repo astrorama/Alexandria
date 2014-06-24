@@ -104,7 +104,7 @@ namespace XYDataset {
     * @return
     *  The size of the container which is the number of Source objects
     */
-   size_t size() const { return m_values.size();}
+   size_t size() const { return m_values.size(); }
 
  private:
 
