@@ -11,17 +11,17 @@
 namespace XYDataset {
 
 QualifiedName::QualifiedName(std::vector<std::string> groups, std::string name)
-            : m_groups {std::move(groups)}, m_name {std::move(name)} {
+            : m_groups {std::move(groups)}, m_dataset_name {std::move(name)} {
   for (auto& group : m_groups) {
     if (group.empty() || group.find('/') != std::string::npos) {
       throw ElementsException() << "Invalid group name " << group;
     }
     m_qualified_name.append(group).append("/");
   }
-  if (m_name.empty() || m_name.find('/') != std::string::npos) {
-    throw ElementsException() << "Invalid name " << m_name;
+  if (m_dataset_name.empty() || m_dataset_name.find('/') != std::string::npos) {
+    throw ElementsException() << "Invalid name " << m_dataset_name;
   }
-  m_qualified_name.append(m_name);
+  m_qualified_name.append(m_dataset_name);
 }
             
 std::vector<std::string> getGroups(const std::string& qualified_name) {
@@ -45,8 +45,8 @@ const std::vector<std::string>& QualifiedName::groups() const {
   return m_groups;
 }
 
-const std::string& QualifiedName::name() const {
-  return m_name;
+const std::string& QualifiedName::datasetName() const {
+  return m_dataset_name;
 }
 
 const std::string& QualifiedName::qualifiedName() const {

@@ -51,14 +51,14 @@ BOOST_AUTO_TEST_CASE(nameMethods_test) {
   BOOST_CHECK_EQUAL(groups1.size(), 2);
   BOOST_CHECK_EQUAL(groups1[0], group1);
   BOOST_CHECK_EQUAL(groups1[1], group2);
-  BOOST_CHECK_EQUAL(qualifiedName1.name(), name);
+  BOOST_CHECK_EQUAL(qualifiedName1.datasetName(), name);
   BOOST_CHECK_EQUAL(qualifiedName1.qualifiedName(), group1+"/"+group2+"/"+name);
   BOOST_CHECK_EQUAL(groups2.size(), 1);
   BOOST_CHECK_EQUAL(groups2[0], group1);
-  BOOST_CHECK_EQUAL(qualifiedName2.name(), name);
+  BOOST_CHECK_EQUAL(qualifiedName2.datasetName(), name);
   BOOST_CHECK_EQUAL(qualifiedName2.qualifiedName(), group1+"/"+name);
   BOOST_CHECK_EQUAL(groups3.size(), 0);
-  BOOST_CHECK_EQUAL(qualifiedName3.name(), name);
+  BOOST_CHECK_EQUAL(qualifiedName3.datasetName(), name);
   BOOST_CHECK_EQUAL(qualifiedName3.qualifiedName(), name);
   
 }

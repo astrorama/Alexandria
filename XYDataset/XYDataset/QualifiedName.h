@@ -112,7 +112,7 @@ public:
    * @brief Returns the unqualified name
    * @return The unqualified name
    */
-  const std::string& name() const;
+  const std::string& datasetName() const;
 
   /**
    * @brief Returns the qualified name as a string
@@ -174,7 +174,7 @@ public:
 private:
 
   std::vector<std::string> m_groups;
-  std::string m_name;
+  std::string m_dataset_name;
   std::string m_qualified_name;
   mutable size_t m_hash {0};
 
