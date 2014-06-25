@@ -1,5 +1,5 @@
 /** 
- * @file Polynomial.cpp
+ * @file src/lib/function/Polynomial.cpp
  * @date February 19, 2014
  * @author Nikolaos Apostolakos
  */

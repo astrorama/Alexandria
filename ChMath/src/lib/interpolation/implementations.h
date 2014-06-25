@@ -1,5 +1,5 @@
 /** 
- * @file implementations.h
+ * @file src/lib/interpolation/implementations.h
  * @date February 21, 2014
  * @author Nikolaos Apostolakos
  */

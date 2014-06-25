@@ -1,5 +1,5 @@
 /** 
- * @file Linear_test.cpp
+ * @file tests/src/interpolation/Linear_test.cpp
  * @date February 20, 2014
  * @author Nikolaos Apostolakos
  */

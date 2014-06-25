@@ -1,5 +1,5 @@
 /** 
- * @file Polynomial.h
+ * @file ChMath/function/Polynomial.h
  * @date February 19, 2014
  * @author Nikolaos Apostolakos
  */

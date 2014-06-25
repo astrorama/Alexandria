@@ -1,5 +1,5 @@
 /** 
- * @file Polynomial_test.cpp
+ * @file tests/src/function/Polynomial_test.cpp
  * @date February 19, 2014
  * @author Nikolaos Apostolakos
  */

@@ -1,5 +1,5 @@
 /** 
- * @file linear.cpp
+ * @file src/lib/interpolation/linear.cpp
  * @date February 20, 2014
  * @author Nikolaos Apostolakos
  */

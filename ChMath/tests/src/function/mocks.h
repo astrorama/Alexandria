@@ -1,5 +1,5 @@
 /** 
- * @file mocks.h
+ * @file tests/src/function/mocks.h
  * @date February 20, 2014
  * @author Nikolaos Apostolakos
  */

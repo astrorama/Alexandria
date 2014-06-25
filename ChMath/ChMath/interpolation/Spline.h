@@ -1,5 +1,5 @@
 /** 
- * @file Spline.h
+ * @file ChMath/interpolation/Spline.h
  * @date February 21, 2014
  * @author Nikolaos Apostolakos
  */

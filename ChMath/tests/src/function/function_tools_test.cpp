@@ -1,5 +1,5 @@
 /** 
- * @file function_tools_test.cpp
+ * @file tests/src/function/function_tools_test.cpp
  * @date February 19, 2014
  * @author Nikolaos Apostolakos
  */

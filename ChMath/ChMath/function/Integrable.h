@@ -1,5 +1,5 @@
 /** 
- * @file Integrable.h
+ * @file ChMath/function/Integrable.h
  * @date February 18, 2014
  * @author Nikolaos Apostolakos
  */

@@ -1,5 +1,5 @@
 /** 
- * @file interpolation.cpp
+ * @file src/lib/interpolation/interpolation.cpp
  * @date February 21, 2014
  * @author Nikolaos Apostolakos
  */

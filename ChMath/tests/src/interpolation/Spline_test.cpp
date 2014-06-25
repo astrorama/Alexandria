@@ -1,5 +1,5 @@
 /** 
- * @file Spline_test.cpp
+ * @file tests/src/interpolation/Spline_test.cpp
  * @date February 20, 2014
  * @author Nikolaos Apostolakos
  */

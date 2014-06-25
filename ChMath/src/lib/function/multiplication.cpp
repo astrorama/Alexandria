@@ -1,5 +1,5 @@
 /** 
- * @file multiplication.cpp
+ * @file src/lib/function/multiplication.cpp
  * @date February 19, 2014
  * @author Nikolaos Apostolakos
  */

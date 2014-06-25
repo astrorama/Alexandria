@@ -1,5 +1,5 @@
 /** 
- * @file multiplication.h
+ * @file ChMath/function/multiplication.h
  * @date February 19, 2014
  * @author Nikolaos Apostolakos
  */

@@ -1,5 +1,5 @@
 /** 
- * @file interpolation.h
+ * @file ChMath/interpolation/interpolation.h
  * @date February 20, 2014
  * @author Nikolaos Apostolakos
  */
