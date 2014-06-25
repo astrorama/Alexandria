@@ -1,5 +1,5 @@
 /** 
- * @file ExtinctionFunctor.h
+ * @file PhzModeling/ExtinctionFunctor.h
  * @date May 28, 2014
  * @author Nikolaos Apostolakos
  */

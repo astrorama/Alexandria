@@ -1,5 +1,5 @@
 /** 
- * @file ModelMatrix.h
+ * @file PhzModeling/ModelMatrix.h
  * @date May 19, 2014
  * @author Nikolaos Apostolakos
  */
