@@ -1,5 +1,5 @@
 /** 
- * @file ModelScaleFunctor.h
+ * @file PhzLikelihood/ModelScaleFunctor.h
  * @date May 24, 2014
  * @author Nikolaos Apostolakos
  */

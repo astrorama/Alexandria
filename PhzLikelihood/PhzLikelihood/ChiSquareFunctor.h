@@ -1,5 +1,5 @@
 /** 
- * @file ChiSquareFunctor.h
+ * @file PhzLikelihood/ChiSquareFunctor.h
  * @date May 24, 2014
  * @author Nikolaos Apostolakos
  */
