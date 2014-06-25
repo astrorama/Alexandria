@@ -1,5 +1,5 @@
 /**
- * @file Coordinates_test.cpp
+ * @file tests/src/SourceAttributes/Coordinates_test.cpp
  *
  * @author Nicolas Morisset
  *

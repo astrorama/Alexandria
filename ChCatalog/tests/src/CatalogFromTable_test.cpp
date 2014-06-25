@@ -1,5 +1,5 @@
 /**
- * @file CatalogFromTable_test.cpp
+ * @file tests/src/CatalogFromTable_test.cpp
  *
  * @date Apr 15, 2014
  * @author Pierre Dubath

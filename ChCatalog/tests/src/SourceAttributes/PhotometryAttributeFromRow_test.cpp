@@ -1,5 +1,5 @@
 /**
- * @file PhotometryAttributeFromRow_test.cpp
+ * @file tests/src/SourceAttributes/PhotometryAttributeFromRow_test.cpp
  *
  * @date Apr 17, 2014
  * @author Pierre Dubath

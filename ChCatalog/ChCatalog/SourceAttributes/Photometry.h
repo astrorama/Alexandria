@@ -1,5 +1,5 @@
 /**
- * @file Photometry.h
+ * @file ChCatalog/SourceAttributes/Photometry.h
  *
  * Created on: Jan 17, 2014
  *     Author: Pierre Dubath

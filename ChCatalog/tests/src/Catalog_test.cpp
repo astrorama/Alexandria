@@ -1,5 +1,5 @@
 /**
- * @file Catalog_test.cpp
+ * @file tests/src/Catalog_test.cpp
  *
  *  Created on: March 1, 2013
  *      Author: Pierre Dubath

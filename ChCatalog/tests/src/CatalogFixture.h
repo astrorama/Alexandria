@@ -1,5 +1,5 @@
 /**
- * @file CatalogFixture.h
+ * @file tests/src/CatalogFixture.h
  *
  * @date May 13, 2014
  * @author Pierre Dubath

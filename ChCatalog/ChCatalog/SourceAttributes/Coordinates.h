@@ -1,5 +1,5 @@
 /**
- * @file Coordinates.h
+ * @file ChCatalog/SourceAttributes/Coordinates.h
  *
  * Created on: Jan 22, 2014
  *     Author: Pierre Dubath

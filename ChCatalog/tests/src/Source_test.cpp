@@ -1,5 +1,5 @@
 /**
- * @file Source_test.cpp
+ * @file tests/src/Source_test.cpp
  *
  *  Created on: Jan 14, 2013
  *      Author: dubath

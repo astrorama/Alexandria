@@ -1,5 +1,5 @@
 /**
- * @file Catalog.h
+ * @file ChCatalog/Catalog.h
  *
  * @author Nicolas Morisset
  *

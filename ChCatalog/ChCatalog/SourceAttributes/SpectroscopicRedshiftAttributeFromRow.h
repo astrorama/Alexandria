@@ -1,5 +1,5 @@
 /**
- * @file SpectroscopicRedshiftAttributeHandler.h
+ * @file ChCatalog/SourceAttributes/SpectroscopicRedshiftAttributeFromRow.h
  *
  * @date Apr 17, 2014
  * @author Pierre Dubath

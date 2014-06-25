@@ -1,5 +1,5 @@
 /**
- * @file SurveyNames.h
+ * @file ChCatalog/Enumerations/SurveyNames.h
  *
  * Created on: May 23, 2013
  *     Author: Pavel Binko

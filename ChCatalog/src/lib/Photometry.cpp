@@ -1,5 +1,5 @@
 /**
- * @file Photometry.cpp
+ * @file src/lib/Photometry.cpp
  *
  * @date Feb 5, 2014
  * @author Pierre Dubath

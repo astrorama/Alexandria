@@ -1,5 +1,5 @@
 /**
- * @file SpectroscopicRedshift.h
+ * @file ChCatalog/SourceAttributes/SpectroscopicRedshift.h
  *
  * @date Jan 16, 2014
  * @author Pierre Dubath

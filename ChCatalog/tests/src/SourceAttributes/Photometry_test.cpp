@@ -1,5 +1,5 @@
 /**
- * @file Photometry_test.cpp
+ * @file tests/src/SourceAttributes/Photometry_test.cpp
  *
  * Created on: Jan 20, 2014
  *     Author: Pierre Dubath

@@ -1,5 +1,5 @@
 /**
- * @file PhotometryAttributeHandler.cpp
+ * @file src/lib/PhotometryAttributeFromRow.cpp
  *
  * @date Apr 17, 2014
  * @author dubath

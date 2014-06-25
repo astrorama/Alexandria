@@ -1,5 +1,5 @@
 /**
- * @file Attribute.h
+ * @file ChCatalog/Attribute.h
  *
  * Created on: Jan 20, 2014
  *     Author: Pierre Dubath

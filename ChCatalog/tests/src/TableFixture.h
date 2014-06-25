@@ -1,5 +1,5 @@
 /**
- * @file TableFixture.h
+ * @file tests/src/TableFixture.h
  *
  * @date May 16, 2014
  * @author Pierre Dubath

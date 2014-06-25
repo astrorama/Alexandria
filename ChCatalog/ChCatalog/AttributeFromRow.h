@@ -1,5 +1,5 @@
 /**
- * @file AttributeHandler.h
+ * @file ChCatalog/AttributeFromRow.h
  *
  * @date Apr 17, 2014
  * @author Pierre Dubath

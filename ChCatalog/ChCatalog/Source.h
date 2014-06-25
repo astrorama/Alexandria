@@ -1,5 +1,5 @@
 /**
- * @file Source.h
+ * @file ChCatalog/Source.h
  *
  * Created on: Jan 21, 2014
  *     Author: Pierre Dubath

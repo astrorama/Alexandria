@@ -1,5 +1,5 @@
 /**
- * @file SpectroscopicRedshift_test.cpp
+ * @file tests/src/SourceAttributes/SpectroscopicRedshift_test.cpp
  *
  * @author Nicolas Morisset
  *

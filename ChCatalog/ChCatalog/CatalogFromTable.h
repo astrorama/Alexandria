@@ -1,5 +1,5 @@
 /**
- * @file CatalogFactory.h
+ * @file ChCatalog/CatalogFromTable.h
  *
  * Created on: Apr 15, 2014
  *     Author: Pierre Dubath

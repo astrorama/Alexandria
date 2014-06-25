@@ -1,5 +1,5 @@
 /**
- * @file PhotometryAttributeHandler.h
+ * @file ChCatalog/SourceAttributes/PhotometryAttributeFromRow.h
  *
  * @date Apr 17, 2014
  * @author Pierre Dubath
