@@ -1,5 +1,5 @@
 /** 
- * @file ModelingConfiguration.h
+ * @file PhzConfiguration/ModelingConfiguration.h
  * @date May 21, 2014
  * @author Nikolaos Apostolakos
  */

@@ -1,5 +1,5 @@
 /** 
- * @file ModelingConfiguration.cpp
+ * @file src/lib/ModelingConfiguration.cpp
  * @date May 21, 2014
  * @author Nikolaos Apostolakos
  */
