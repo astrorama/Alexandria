@@ -1,11 +1,11 @@
 namespace XYDataset {
 
-/** \page XYDataset XYDataset documentation
+/** \page xydataset XYDataset documentation
 
  \tableofcontents
 
 
-\section XY_GUIDE Developers quick start guide
+\section xy_guide Developers quick start guide
 
  XYDataset module
 
@@ -28,26 +28,26 @@ of each individual class and method in the XYDataset namespace.
 Before going a bit further, three terms are important for this module, QualifiedName, 
 Group and dataset name. Hereafter, we describe them.
 
-\section XY_group Group
+\section xy_group Group
 
 We define a Group as a set of words separated by a '/' character,  
 e.g. group1/group2/name. It could refer to a set of directories,
 as group1, group2 and name could be a dataset name.
 
-\section XY_dataset Dataset Name
+\section xy_dataset Dataset Name
 
 We defined as a dataset name, a filename (without extension and path) or
 a name which is defined inside a file (specific keyword defined in a FITS file
 or a name defined after a commented line in an ASCII file)
 
-\section XY_qualifiedName Qualified Name
+\section xy_qualifiedName Qualified Name
 
 The QualifiedName is a class itself. This class represents a name qualified with 
 a set of groups. The groups and names are separated with the '/' character (e.g.
  group1/group2/name). Note that the qualified name is assumed to be unique and
 it is used as an identifier.
 
-\section XY_EXAMPLES HowTo through examples
+\section xy_examples HowTo through examples
 
 The following examples show how to create a new XYDataset object and some operations on it.
 
@@ -74,7 +74,7 @@ or
   auto xy_ptr = XYDataset::XYDataset::factory(vector1, vector2);
 \endcode
 
-\section XY_ACCESS Access to the XYDataset data
+\section xy_access Access to the XYDataset data
 
 The easiest way to access the data of a XYDataset object is by using the iterators
 provided by the XYDataset class. The XYDataset::begin(), XYDataset::end() methods provide an
@@ -105,10 +105,10 @@ You can get the size of the XYdataset object above by using the follwoing code :
  \endcode
 
  
-\section XY_FILES How to get a XYdataset object reading an ASCII or FITS file?
+\section xy_files How to get a XYdataset object reading an ASCII or FITS file?
 
 
-\subsection XY_ASCIIFILE Read an ASCII file
+\subsection xy_acsiifile Read an ASCII file
 
 The AsciiParser class is doing this work. It reads ASCII files which contain space or 
 tab separated tables of two columns. The first column contains the X data and the second
@@ -138,7 +138,7 @@ To get the dataset name proceed as follows:
 Note that the AsciiParser class inherits from the FileParser interface class. This FileParser class
 has the two virtual functions : getName and getDataset.
 
-\subsection XY_FITSFILE Read a FITS file
+\subsection xy_fitsfile Read a FITS file
 
 The FitsParser class is done for that. This class has the same functionalities as the AsciiParser 
 class. So to get the dataset and the dataset name proceed as follows:
@@ -150,7 +150,7 @@ class. So to get the dataset and the dataset name proceed as follows:
 	  std::string dataset_name  = fitsParser.getName(filename);
 \endcode
 
-\section XY_DIRECTORYTREE Read files from a directory tree 
+\section xy_directorytree Read files from a directory tree 
 
 The FileSystemProvider class is doing that for you. This class inherits from the XYDatasetProvider class.
 The FileSystemProvider class handles files in a directory tree of the file system. The 
@@ -183,7 +183,7 @@ Contents:
 300.2 300.2
 \endcode
 
-\subsection XY_FileSystemProvider Create a FileSystemProvider Object
+\subsection xy_filesystemprovider Create a FileSystemProvider Object
 
 We create a unique pointer to a FileParser object in order to build a FileSystemProvider
 object as follows :
@@ -195,7 +195,7 @@ object as follows :
 
 The "/tmp/euclid/" string is the root path to the data.
 
-\subsection XY_listContents Use the listContents function
+\subsection xy_listcontents Use the listContents function
 
 We use the listContents function in order to get all qualified names for the "filter/MER" 
 group as follows : 
@@ -223,7 +223,7 @@ Dataset name   : datasetname_first_file
 Qualified Name : filter/MER/datasetname_first_file
 \endcode
 
-\subsection XY_getDataset Use the getDataset function
+\subsection xy_getdataset Use the getDataset function
  
 Now we have all qualified names for a specific group of files, so we can get 
 a XYDadaset object for a specific qualified name (for the first element for instance)
@@ -248,7 +248,7 @@ and the result is:
  X : 300.2 Y : 300.2
 \endcode
 
-\section XY_FULLCODE The Entire Code
+\section xy_fullcode The Entire Code
 
 \code{.cpp}
 #include <iostream>

@@ -4,6 +4,8 @@ The Alexandria project is a collection of generic reusable modules, which
 target a more reliable and easier programming experience. The contained
 modules are the following:
 
-- \subpage chtable "ChTable module": Module for ASCII and FITS table handling
+- \subpage chcatalog "ChCatalog module" : Module for handling catalog data
+- \subpage chtable "ChTable module"     : Module for ASCII and FITS table handling
+- \subpage xydataset "XYDataset module" : Module providing an interface for accessing two dimensional datasets
 
 */

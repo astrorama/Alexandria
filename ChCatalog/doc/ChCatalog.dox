@@ -1,0 +1,12 @@
+namespace ChCatalog {
+
+/** \page chcatalog ChCatalog documentation
+
+ \tableofcontents
+
+
+\section ChCat_GUIDE Developers quick start guide
+
+*/
+
+}
