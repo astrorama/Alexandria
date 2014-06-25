@@ -1,5 +1,5 @@
 /**
- * @file FileParser.h
+ * @file XYDataset/FileParser.h
  *
  * @date Apr 11, 2014
  * @author Nicolas Morisset

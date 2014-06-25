@@ -1,5 +1,5 @@
 /**
- * @file AsciiParser_test.cpp
+ * @file tests/src/AsciiParser_test.cpp
  *
  * @date Apr 16, 2014
  * @author Nicolas Morisset

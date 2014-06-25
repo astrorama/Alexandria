@@ -1,5 +1,5 @@
 /**
- * @file QualifiedName.h
+ * @file XYDataset/QualifiedName.h
  * @date May 19, 2014
  * @author Nikolaos Apostolakos
  */

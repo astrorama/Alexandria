@@ -1,5 +1,5 @@
 /**
- * @file FitsParser_test.cpp
+ * @file tests/src/FitsParser_test.cpp
  *
  * @date May 19, 2014
  * @author Nicolas Morisset

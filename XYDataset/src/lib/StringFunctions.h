@@ -1,5 +1,5 @@
 /**
- * @file StringFunctions.h
+ * @file src/lib/StringFunctions.h
  *
  * @date May 21, 2014
  * @author Nicolas Morisset

@@ -1,5 +1,5 @@
 /**
- * @file XYDatasetProvider.h
+ * @file XYDataset/XYDatasetProvider.h
  *
  * @date Apr 10, 2014
  * @author Nicolas Morisset

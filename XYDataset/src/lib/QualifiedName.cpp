@@ -1,5 +1,5 @@
 /** 
- * @file QualifiedName.cpp
+ * @file src/lib/QualifiedName.cpp
  * @date May 19, 2014
  * @author Nikolaos Apostolakos
  */

@@ -1,5 +1,5 @@
 /**
- * @file XYDataset.cpp
+ * @file src/lib/XYDataset.cpp
  *
  * @date Apr 9, 2014
  * @author Nicolas Morisset

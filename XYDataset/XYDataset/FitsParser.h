@@ -1,5 +1,5 @@
 /**
- * @file FitsParser.h
+ * @file XYDataset/FitsParser.h
  *
  * @date Apr 14, 2014
  * @author admin

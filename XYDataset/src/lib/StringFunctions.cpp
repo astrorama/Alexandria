@@ -1,5 +1,5 @@
 /**
- * @file StringFunctions.cpp
+ * @file src/lib/StringFunctions.cpp
  *
  * @date May 22, 2014
  * @author Nicolas Morisset
