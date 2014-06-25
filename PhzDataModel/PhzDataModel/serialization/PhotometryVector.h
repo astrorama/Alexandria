@@ -1,5 +1,5 @@
 /** 
- * @file PhotometryVector.h
+ * @file PhzDataModel/serialization/PhotometryVector.h
  * @date May 22, 2014
  * @author Nikolaos Apostolakos
  */

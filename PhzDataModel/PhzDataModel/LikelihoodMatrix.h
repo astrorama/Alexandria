@@ -1,5 +1,5 @@
 /** 
- * @file LikelihoodMatrix.h
+ * @file PhzDataModel/LikelihoodMatrix.h
  * @date June 2, 2014
  * @author Nikolaos Apostolakos
  */

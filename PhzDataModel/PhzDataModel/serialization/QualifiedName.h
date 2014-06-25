@@ -1,5 +1,5 @@
 /** 
- * @file QualifiedName.h
+ * @file PhzDataModel/serialization/QualifiedName.h
  * @date May 20, 2014
  * @author Nikolaos Apostolakos
  */

@@ -1,5 +1,5 @@
 /** 
- * @file PhzModel.h
+ * @file PhzDataModel/PhzModel.h
  * @date May 20, 2014
  * @author Nikolaos Apostolakos
  */
