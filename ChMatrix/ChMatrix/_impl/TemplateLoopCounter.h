@@ -1,5 +1,5 @@
 /** 
- * @file TemplateLoopCounter.h
+ * @file ChMatrix/_impl/TemplateLoopCounter.h
  * @date May 13, 2014
  * @author Nikolaos Apostolakos
  */

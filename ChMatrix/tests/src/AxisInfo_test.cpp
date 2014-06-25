@@ -1,5 +1,5 @@
 /** 
- * @file AxisInfo_test.cpp
+ * @file tests/src/AxisInfo_test.cpp
  * @date June 16, 2014
  * @author Nikolaos Apostolakos
  */

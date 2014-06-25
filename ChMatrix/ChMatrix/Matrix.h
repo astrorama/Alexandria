@@ -1,5 +1,5 @@
 /** 
- * @file Matrix.h
+ * @file ChMatrix/Matrix.h
  * @date May 13, 2014
  * @author Nikolaos Apostolakos
  */

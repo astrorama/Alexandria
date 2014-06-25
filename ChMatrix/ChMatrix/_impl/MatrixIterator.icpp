@@ -1,5 +1,5 @@
 /** 
- * @file MatrixIterator.icpp
+ * @file ChMatrix/_impl/MatrixIterator.icpp
  * @date May 14, 2014
  * @author Nikolaos Apostolakos
  */

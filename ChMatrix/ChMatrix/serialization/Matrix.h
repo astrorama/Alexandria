@@ -1,5 +1,5 @@
 /** 
- * @file Matrix.h
+ * @file ChMatrix/serialization/Matrix.h
  * @date May 17, 2014
  * @author Nikolaos Apostolakos
  */

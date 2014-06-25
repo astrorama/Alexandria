@@ -1,5 +1,5 @@
 /** 
- * @file serialize.h
+ * @file ChMatrix/serialize.h
  * @date May 19, 2014
  * @author Nikolaos Apostolakos
  */

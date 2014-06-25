@@ -1,5 +1,5 @@
 /** 
- * @file MatrixConstructionHelper.h
+ * @file ChMatrix/_impl/MatrixConstructionHelper.h
  * @date May 13, 2014
  * @author Nikolaos Apostolakos
  */

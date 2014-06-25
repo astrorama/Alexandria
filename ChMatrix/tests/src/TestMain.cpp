@@ -1,5 +1,5 @@
 /** 
- * @file TestMain.cpp
+ * @file tests/src/TestMain.cpp
  * @date June 16, 2014
  * @author Nikolaos Apostolakos
  */

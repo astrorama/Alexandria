@@ -1,5 +1,5 @@
 /** 
- * @file DataManagerTraits.h
+ * @file ChMatrix/DataManagerTraits.h
  * @date May 13, 2014
  * @author Nikolaos Apostolakos
  */

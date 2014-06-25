@@ -1,5 +1,5 @@
 /** 
- * @file MatrixIndexHelper.h
+ * @file ChMatrix/MatrixIndexHelper.h
  * @date May 15, 2014
  * @author Nikolaos Apostolakos
  */

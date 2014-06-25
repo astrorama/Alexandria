@@ -1,5 +1,5 @@
 /** 
- * @file serialization/AxisInfo.h
+ * @file ChMatrix/serialization/AxisInfo.h
  * @date May 16, 2014
  * @author Nikolaos Apostolakos
  */
