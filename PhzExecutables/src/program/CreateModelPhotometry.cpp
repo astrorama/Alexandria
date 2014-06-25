@@ -1,5 +1,5 @@
 /** 
- * @file CreateModelPhotometry.cpp
+ * @file src/program/CreateModelPhotometry.cpp
  * @date May 22, 2014
  * @author Nikolaos Apostolakos
  */

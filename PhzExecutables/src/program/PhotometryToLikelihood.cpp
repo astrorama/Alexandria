@@ -1,5 +1,5 @@
 /** 
- * @file PhotometryToLikelihood.cpp
+ * @file src/program/PhotometryToLikelihood.cpp
  * @date May 23, 2014
  * @author Nikolaos Apostolakos
  */
