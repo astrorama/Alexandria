@@ -1,5 +1,5 @@
 /** 
- * @file ReaderHelper.cpp
+ * @file src/lib/ReaderHelper.cpp
  * @date April 21, 2014
  * @author Nikolaos Apostolakos
  */

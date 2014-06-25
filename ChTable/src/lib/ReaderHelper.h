@@ -1,5 +1,5 @@
 /** 
- * @file ReaderHelper.h
+ * @file src/lib/ReaderHelper.h
  * @date April 21, 2014
  * @author Nikolaos Apostolakos
  */

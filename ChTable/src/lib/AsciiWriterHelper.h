@@ -1,5 +1,5 @@
 /** 
- * @file AsciiWriterHelper.h
+ * @file src/lib/AsciiWriterHelper.h
  * @date April 16, 2014
  * @author Nikolaos Apostolakos
  */

@@ -1,5 +1,5 @@
 /** 
- * @file Table_test.cpp
+ * @file tests/src/Table_test.cpp
  * @date April 9, 2014
  * @author Nikolaos Apostolakos
  */

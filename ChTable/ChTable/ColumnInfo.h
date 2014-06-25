@@ -1,5 +1,5 @@
 /** 
- * @file ColumnInfo.h
+ * @file ChTable/ColumnInfo.h
  * @date April 7, 2014
  * @author Nikolaos Apostolakos
  */

@@ -1,5 +1,5 @@
 /** 
- * @file Table.h
+ * @file ChTable/Table.h
  * @date April 9, 2014
  * @author Nikolaos Apostolakos
  */

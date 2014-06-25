@@ -1,5 +1,5 @@
 /** 
- * @file FitsWriterHelper.h
+ * @file src/lib/FitsWriterHelper.h
  * @date April 23, 2014
  * @author Nikolaos Apostolakos
  */

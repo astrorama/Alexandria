@@ -1,5 +1,5 @@
 /** 
- * @file ColumnInfo_test.cpp
+ * @file tests/src/ColumnInfo_test.cpp
  * @date April 7, 2014
  * @author Nikolaos Apostolakos
  */

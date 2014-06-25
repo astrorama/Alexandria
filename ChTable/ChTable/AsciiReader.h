@@ -1,5 +1,5 @@
 /** 
- * @file AsciiReader.h
+ * @file ChTable/AsciiReader.h
  * @date April 11, 2014
  * @author Nikolaos Apostolakos
  */

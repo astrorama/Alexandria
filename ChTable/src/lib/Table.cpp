@@ -1,5 +1,5 @@
 /** 
- * @file Table.cpp
+ * @file src/lib/Table.cpp
  * @date April 9, 2014
  * @author Nikolaos Apostolakos
  */

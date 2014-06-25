@@ -1,5 +1,5 @@
 /** 
- * @file FitsReaderHelper.h
+ * @file src/lib/FitsReaderHelper.h
  * @date April 17, 2014
  * @author Nikolaos Apostolakos
  */

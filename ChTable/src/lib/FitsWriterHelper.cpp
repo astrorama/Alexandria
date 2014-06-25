@@ -1,5 +1,5 @@
 /** 
- * @file FitsWriterHelper.cpp
+ * @file src/lib/FitsWriterHelper.cpp
  * @date April 23, 2014
  * @author Nikolaos Apostolakos
  */

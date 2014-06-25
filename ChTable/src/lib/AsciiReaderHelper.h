@@ -1,5 +1,5 @@
 /** 
- * @file AsciiReaderHelper.h
+ * @file src/lib/AsciiReaderHelper.h
  * @date April 15, 2014
  * @author Nikolaos Apostolakos
  */

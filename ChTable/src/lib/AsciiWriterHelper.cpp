@@ -1,5 +1,5 @@
 /** 
- * @file AsciiWriterHelper.cpp
+ * @file src/lib/AsciiWriterHelper.cpp
  * @date April 16, 2014
  * @author Nikolaos Apostolakos
  */

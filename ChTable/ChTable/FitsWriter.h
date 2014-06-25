@@ -1,5 +1,5 @@
 /** 
- * @file FitsWriter.h
+ * @file ChTable/FitsWriter.h
  * @date April 23, 2014
  * @author Nikolaos Apostolakos
  */

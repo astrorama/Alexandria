@@ -1,5 +1,5 @@
 /** 
- * @file FitsReader.cpp
+ * @file src/lib/FitsReader.cpp
  * @date April 17, 2014
  * @author Nikolaos Apostolakos
  */

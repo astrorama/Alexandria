@@ -1,5 +1,5 @@
 /** 
- * @file AsciiWriter.h
+ * @file ChTable/AsciiWriter.h
  * @date April 16, 2014
  * @author Nikolaos Apostolakos
  */

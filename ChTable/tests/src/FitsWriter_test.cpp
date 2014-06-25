@@ -1,5 +1,5 @@
 /** 
- * @file FitsWriter_test.cpp
+ * @file tests/src/FitsWriter_test.cpp
  * @date April 23, 2014
  * @author Nikolaos Apostolakos
  */

@@ -1,5 +1,5 @@
 /** 
- * @file ColumnInfo.cpp
+ * @file src/lib/ColumnInfo.cpp
  * @date April 7, 2014
  * @author Nikolaos Apostolakos
  */

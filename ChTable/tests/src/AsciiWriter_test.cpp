@@ -1,5 +1,5 @@
 /** 
- * @file AsciiReader_test.cpp
+ * @file tests/src/AsciiWriter_test.cpp
  * @date April 11, 2014
  * @author Nikolaos Apostolakos
  */

@@ -1,5 +1,5 @@
 /** 
- * @file AsciiReader.cpp
+ * @file src/lib/AsciiReader.cpp
  * @date April 11, 2014
  * @author Nikolaos Apostolakos
  */

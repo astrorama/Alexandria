@@ -1,5 +1,5 @@
 /** 
- * @file FitsReaderHelper_test.cpp
+ * @file tests/src/FitsReaderHelper_test.cpp
  * @date April 17, 2014
  * @author Nikolaos Apostolakos
  */
