@@ -65,7 +65,6 @@ public:
    * @details
    * The given string must follow the rules of a qualified name (groups and name
    * separated with the '/' character and no empty names allowed).
-   * @param  The string representing the qualified name
    * @throws ElementsException
    *    if the given string is an invalid qualified name
    */
@@ -73,26 +72,22 @@ public:
   
   /**
    * @brief Copy constructor
-   * @param The QualifiedName to copy from
    */
   QualifiedName(const QualifiedName&) = default;
   
   /**
    * @brief Copy assignment operator
-   * @param  The QualifiedName to copy from
    * @return A reference to the QualifiedName which was copied to
    */
   QualifiedName& operator=(const QualifiedName& ) = default;
   
   /**
    * @brief Move constructor
-   * @param The QualifiedName to move from
    */
   QualifiedName(QualifiedName&& ) = default;
   
   /**
    * @brief Move assignment operator
-   * @param  The QualifiedName to move from
    * @return A reference to the QualifiedName in which was moved in
    */
   QualifiedName& operator=(QualifiedName&&) = default;
