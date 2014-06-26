@@ -32,7 +32,7 @@ public:
   /**
    * @brief The createAttribute method for creating an Attribute from a Table row
    * @details
-   * @param A reference to a Row of a Table
+   * @param row A reference to a Row of a Table
    * @return A unique pointer to the newly created Attribute
    */
   virtual std::unique_ptr<Attribute> createAttribute(

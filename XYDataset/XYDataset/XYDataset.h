@@ -43,7 +43,7 @@ namespace XYDataset {
    typedef std::vector<std::pair<double, double>>::const_iterator const_iterator;
 
    /**
-    * @brief
+    * @brief Constructor
     * XYDataset interface represents an immutable data set
     *
     * @details
@@ -70,12 +70,14 @@ namespace XYDataset {
    /**
     * @brief
     * Make a XYDataset object from two vectors of doubles
-    * @param vector_pair
-    * A vector of pair of doubles
+    * @param x
+    * A vector of double values
+    * @param y
+    * A vector of double values
      * @return
     * A unique pointer of XYDataset type
     */
-   static std::unique_ptr<XYDataset> factory(std::vector<double>, std::vector<double>);
+   static std::unique_ptr<XYDataset> factory(std::vector<double> x, std::vector<double> y);
 
    /**
     * @brief Destructor

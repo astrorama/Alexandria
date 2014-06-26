@@ -68,7 +68,7 @@ public:
    *
    * @param filter_name_vector_ptr
    *  a shared pointer to the vector of filter names
-   * @param photometry_vector
+   * @param value_vector
    *  the vector of ValuePair, i..e, the flux values with their errors
    *
    */

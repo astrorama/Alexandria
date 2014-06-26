@@ -21,7 +21,7 @@
 namespace ChCatalog {
 
 /**
-* @class Source
+ * @class Source
  * @brief The Source class include all information related to a sky source
  */
 class Source {
@@ -30,9 +30,9 @@ public:
   /**
    * @brief Constructor
    * @param source_id
-   *  Source identification
-   * @param  vector<std::shared_ptr<Attribute>>
-   * Vector of shared pointer on Attribute objects
+   *  Source identifier
+   * @param  attibuteVector
+   * Vector of shared pointers on Attribute objects
    */
   Source(int64_t source_id, std::vector<std::shared_ptr<Attribute>> attibuteVector)
         : m_source_id(source_id), m_attribute_vector( std::move(attibuteVector) ) {
@@ -65,10 +65,10 @@ public:
 
  private:
 
-  /// Source identification
+  // Source identification
   int64_t m_source_id { };
 
-  /// Vector of shared pointers to attribute
+  // Vector of shared pointers to attribute
   std::vector<std::shared_ptr<Attribute>> m_attribute_vector;
 
 };

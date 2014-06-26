@@ -35,7 +35,7 @@ public:
    *  Constructs a vector container of Source objects and a map
    *  of source identification and an index which is the location of the Source
    *  object in the vector container
-   * @param
+   * @param source_vector
    *  Vector container of Source objects
    * @throw ElementsException
    *  A Source object can not be inserted twice in the map
@@ -70,7 +70,7 @@ public:
   /**
    * @brief
    *  Find the Source object from its identification number
-   * @param
+   * @param source_id
    * The source identification number
    * @return
    * A shared pointer to the Source object or a null pointer in case of

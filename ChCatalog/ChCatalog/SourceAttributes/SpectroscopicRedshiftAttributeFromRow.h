@@ -38,7 +38,7 @@ public:
    * SpectroscopicRedshiftAttribute from table rows. The names provides the names used for
    * the Table columns.
    *
-   * @param column_info
+   * @param column_info_ptr
    *    describes the columns of the Table, providing in particular the required column names
    *
    * @param specz_value_column_name
@@ -82,7 +82,7 @@ public:
   /**
    * @brief Create a photometricAttribute from a Table row
    * @details Create a photometricAttribute from a Table row using the mapping included in this object
-   * @param A ChTable row
+   * @param row A ChTable row
    * @return A unique pointer to a (SpectroscopicRedshift) Attribute
    */
   std::unique_ptr<Attribute> createAttribute(const ChTable::Row& row) override {

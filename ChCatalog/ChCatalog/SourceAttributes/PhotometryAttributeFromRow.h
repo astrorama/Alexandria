@@ -39,7 +39,7 @@ public:
    * The user must provide this mapping between the filterName (which are then used throughout the
    * processing) and the column names which comes from the input photometric (ASCII or FITS) catalog.
    *
-   * @param columnInfo
+   * @param column_info_ptr
    *    describes the columns of the Table providing in particular the require column names
    *
    * @param filter_name_mapping
