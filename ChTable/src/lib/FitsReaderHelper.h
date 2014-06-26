@@ -21,7 +21,7 @@ namespace ChTable {
  * @details
  * For more information about the column naming see the constructor of FitsReader.
  * 
- * @param hdu The HDU to read the columns from
+ * @param table_hdu The HDU to read the columns from
  * @return the column names
  */
 std::vector<std::string> autoDetectColumnNames(const CCfits::Table& table_hdu);

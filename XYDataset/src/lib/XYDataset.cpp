@@ -24,13 +24,11 @@ XYDataset::const_iterator XYDataset::end() const {
   return m_values.cend();
 }
 
-unique_ptr<XYDataset> XYDataset::factory(vector<pair<double, double>> vector_pair)
-{
+unique_ptr<XYDataset> XYDataset::factory(vector<pair<double, double>> vector_pair) {
   return (unique_ptr<XYDataset> (new XYDataset(vector_pair)));
 }
 
-unique_ptr<XYDataset> XYDataset::factory(std::vector<double> x_vector, std::vector<double> y_vector)
-{
+unique_ptr<XYDataset> XYDataset::factory(std::vector<double> x_vector, std::vector<double> y_vector) {
   size_t x_size = x_vector.size();
   size_t y_size = y_vector.size();
   // Vector must have the same size

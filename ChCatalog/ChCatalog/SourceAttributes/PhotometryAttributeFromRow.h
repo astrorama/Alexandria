@@ -57,7 +57,7 @@ public:
   /**
    * @brief Create a photometricAttribute from a Table row
    * @details Create a photometricAttribute from a Table row using the mapping included in this object
-   * @param A ChTable row
+   * @param row A ChTable row
    * @return A unique pointer to a (Photometry) Attribute
    */
   std::unique_ptr<Attribute> createAttribute(const ChTable::Row& row) override;

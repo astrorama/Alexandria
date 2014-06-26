@@ -44,7 +44,7 @@ public:
    * @param specz_value_column_name
    *    give the name of the spectroscopic redshift value table column
    *
-   * @param specz_value_column_name
+   * @param specz_error_column_name
    *    give the name of the spectroscopic redshift error table column
    *
    * @exception
