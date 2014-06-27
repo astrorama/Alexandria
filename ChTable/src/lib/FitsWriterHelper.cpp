@@ -33,7 +33,6 @@ size_t maxWidth(const Table& table, size_t column_index) {
 size_t maxWidthScientific(const Table& table, size_t column_index) {
   size_t width = 0;
   for (const auto& row : table) {
-    std::string representation = scientificFormat(row[column_index]);
     width = std::max(width, scientificFormat(row[column_index]).size());
   }
   return width;
