@@ -7,3 +7,6 @@ find_package(Boost REQUIRED COMPONENTS serialization)
 
 elements_add_unit_test(AxisInfo_test tests/src/AxisInfo_test.cpp tests/src/TestMain.cpp
                        LINK_LIBRARIES TYPE Boost)
+
+elements_add_unit_test(AxisInfo_serialization_test tests/src/serialization/AxisInfo_test.cpp tests/src/TestMain.cpp
+                       LINK_LIBRARIES Boost TYPE Boost)
