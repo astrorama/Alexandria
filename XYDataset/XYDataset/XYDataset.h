@@ -82,7 +82,7 @@ namespace XYDataset {
    /**
     * @brief Destructor
     */
-   virtual ~XYDataset() { }
+   virtual ~XYDataset() = default;
 
    /**
     * @brief

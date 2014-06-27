@@ -70,7 +70,7 @@ std::string checkEndSlashes(const std::string& input_str) {
 }
 
 //
-// Make sure the string does not start with a "/" character
+// Remove an extension, so any character after the last "." character
 //
 std::string removeExtension(const std::string& input_str) {
 

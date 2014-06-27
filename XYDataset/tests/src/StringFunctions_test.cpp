@@ -47,6 +47,7 @@ BOOST_FIXTURE_TEST_CASE(checkBeginSlashes_test, Stringfunctions_Fixture) {
   BOOST_CHECK_EQUAL("/", checkBeginSlashes("") );
   BOOST_CHECK_EQUAL("/string/test", checkBeginSlashes("string/test") );
   BOOST_CHECK_EQUAL("/string/test", checkBeginSlashes("//string/test") );
+  BOOST_CHECK_EQUAL("/string/test", checkBeginSlashes("/string/test") );
 }
 
 //-----------------------------------------------------------------------------
