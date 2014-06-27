@@ -42,7 +42,7 @@ BOOST_FIXTURE_TEST_CASE(ConstructorEmptyComment, AsciiWriter_Fixture) {
   std::string comment = "";
   
   // Then
-  BOOST_CHECK_THROW(ChTable::AsciiWriter writer {comment}, ElementsException);
+  BOOST_CHECK_THROW(ChTable::AsciiWriter {comment}, ElementsException);
   
 }
 
