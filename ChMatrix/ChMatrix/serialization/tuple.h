@@ -11,17 +11,18 @@
 #include <type_traits>
 #include <memory>
 #include <boost/serialization/split_free.hpp>
-#include <boost/shared_ptr.hpp>
-#include <boost/serialization/shared_ptr.hpp>
-
-#include <iostream>
 
 namespace boost {
 namespace serialization {
 
+/// Class which saves in a boost serialization archive the elements of a tuple
+/// in a recursive way. It uses two different ways to save the elements,
+/// depending if their type has default constructor or not.
 template<size_t N>
 struct Save {
   
+  /// Version of save for default constructible tuple elements. It just saves
+  /// in the archive the element.
   template<typename Archive, typename... Args>
   static void save(Archive& ar, const std::tuple<Args...>& t, const unsigned int version,
                           typename std::enable_if<std::is_default_constructible<typename std::tuple_element<N-1, std::tuple<Args...>>::type>::value>::type* = 0) {
@@ -29,30 +30,39 @@ struct Save {
     Save<N-1>::save(ar, t, version);
   }
   
+  /// Version of save for non default constructible tuple elements. It saves
+  /// in the archive a pointer to the element, to enable the boost serialization
+  /// non default constructor support. These objects must be read as pointers.
   template<typename Archive, typename... Args>
   static void save(Archive& ar, const std::tuple<Args...>& t, const unsigned int version,
                           typename std::enable_if<!std::is_default_constructible<typename std::tuple_element<N-1, std::tuple<Args...>>::type>::value>::type* = 0) {
-    // Here we have an element of the tuple which is not default constructible.
-    // This means we have to load it as a pointer. To not have memory leaks we
-    // store it as a boost::shared_ptr (STL pointers are not supported by boost
-    // serialization) so we can read from the stream a shared_ptr. Note that we
-    // create a new object in the heap by using the copy constructor. This object
-    // will be deleted after this method exits, but the one in the tuple will not.
-    boost::shared_ptr<typename std::tuple_element<N-1, std::tuple<Args...>>::type> ptr {new typename std::tuple_element<N-1, std::tuple<Args...>>::type(std::get<N-1>(t))};
+    // Do NOT delete this pointer! It points in the element of the tuple and
+    // the tuple will take care of the memory management
+    typename std::remove_reference<decltype(std::get<N-1>(t))>::type* ptr = &std::get<N-1>(t);
     ar << ptr;
     Save<N-1>::save(ar, t, version);
   }
 };
 
+/// Class which defines the end of the recursion when saving the elements of
+/// a tuple in a boost archive.
 template<>
 struct Save<0> {
+  /// This method does nothing. It exists to break the recursion.
   template<typename Archive, typename... Args>
   static void save(Archive&, const std::tuple<Args...>&, const unsigned int) { }
 };
 
+/// Class which loads from a boost serialization archive the elements of a tuple
+/// in a recursive way. It uses two different ways to load the elements,
+/// depending if their type has default constructor or not. Note that non
+/// default constructible elements must have a copy assignment operator.
 template<size_t N>
 struct Load {
   
+  /// Version of load for default constructible tuple elements. It just loads
+  /// from the archive the element into the default constructed element of the
+  /// tuple.
   template<typename Archive, typename... Args>
   static void load(Archive& ar, std::tuple<Args...>& t, const unsigned int version,
                           typename std::enable_if<std::is_default_constructible<typename std::tuple_element<N-1, std::tuple<Args...>>::type>::value>::type* = 0) {
@@ -60,34 +70,48 @@ struct Load {
     Load<N-1>::load(ar, t, version);
   }
   
+  /// Version of load for non default constructible tuple elements. It reads
+  /// from the archive a pointer to enable the boost non default constructor
+  /// mechanisms and then it uses the copy assignment operator to move the
+  /// just red object in the tuple.
   template<typename Archive, typename... Args>
   static void load(Archive& ar, std::tuple<Args...>& t, const unsigned int version,
                           typename std::enable_if<!std::is_default_constructible<typename std::tuple_element<N-1, std::tuple<Args...>>::type>::value>::type* = 0) {
-    // We read the object in a shared_ptr and then we copy it in the tuple. The
-    // shared_ptr will delete the extra copy in the heap.
-    boost::shared_ptr<typename std::tuple_element<N-1, std::tuple<Args...>>::type> ptr;
+    typedef typename std::remove_reference<decltype(std::get<N-1>(t))>::type ElementType;
+    ElementType* ptr;
     ar >> ptr;
-    std::get<N-1>(t) = *ptr;
+    // We use a unique_ptr to guarantee deletion of the pointer
+    std::unique_ptr<ElementType> deleter {ptr};
+    std::get<N-1>(t) = *deleter;
     Load<N-1>::load(ar, t, version);
   }
 };
 
+/// Class which defines the end of the recursion when loading the elements of
+/// a tuple in a boost archive.
 template<>
 struct Load<0> {
+  /// This method does nothing. It exists to break the recursion.
   template<typename Archive, typename... Args>
   static void load(Archive&, std::tuple<Args...>&, const unsigned int) { }
 };
 
+/// Method which saves a tuple instance to an archive. It uses the Save class
+/// to recursively save all the tuple elements.
 template<typename Archive, typename... Args>
 void save(Archive& ar, const std::tuple<Args...>& t, const unsigned int version) {
   Save<sizeof...(Args)>::save(ar, t, version);
 }
 
+/// Method which loads a tuple instance to an archive. It uses the Load class
+/// to recursively load all the tuple elements.
 template<typename Archive, typename... Args>
 void load(Archive& ar, std::tuple<Args...>& t, const unsigned int version) {
   Load<sizeof...(Args)>::load(ar, t, version);
 }
 
+/// Method which saves/loads a tuple instance to/from an archive. It uses the
+/// split_free method to split the two actions in different methods.
 template<typename Archive, typename... Args>
 void serialize(Archive& ar, std::tuple<Args...>& t, const unsigned int version) {
   split_free(ar, t, version);

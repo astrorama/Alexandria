@@ -8,6 +8,7 @@
 #define	CHMATRIX_SERIALIZATION_AXISINFO_H
 
 #include <type_traits>
+#include <memory>
 #include <boost/serialization/utility.hpp>
 #include "ChMatrix/AxisInfo.h"
 
@@ -77,8 +78,9 @@ template<typename Archive, typename T>
 T loadType(Archive& ar, typename std::enable_if<!std::is_default_constructible<T>::value>::type* = 0) {
   T* ptr;
   ar >> ptr;
-  T value {*ptr};
-  delete ptr;
+  // We use a unique_ptr to guarantee deletion of the pointer
+  std::unique_ptr<T> deleter {ptr};
+  T value {*deleter};
   return value;
 }
 
