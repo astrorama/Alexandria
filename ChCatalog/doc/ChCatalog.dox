@@ -1,13 +1,11 @@
 namespace ChCatalog {
 
-/** \page chcatalog ChCatalog documentation
+/** \page chcatalog ChCatalog Module
 
  \tableofcontents
 
 
 \section chcat_guide Developers quick start guide
-
-ChCatalog module
 
 This module builds a vector container of Source objects, a map
 of source identification and an index which is the location of the Source
