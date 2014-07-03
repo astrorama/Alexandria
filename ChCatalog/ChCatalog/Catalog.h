@@ -45,7 +45,7 @@ public:
   /**
    * @brief Destructor
    */
-  virtual ~Catalog() { }
+  virtual ~Catalog() = default;
 
   /**
    * @brief
