@@ -9,6 +9,8 @@
 
 namespace ChMatrix {
 
+/// This is a dummy class with a integer template parameter, which is used
+/// as a counter for the template recursions.
 template<int>
 struct TemplateLoopCounter { };
 

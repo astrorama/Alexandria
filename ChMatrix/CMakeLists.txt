@@ -13,3 +13,9 @@ elements_add_unit_test(AxisInfo_serialization_test tests/src/serialization/AxisI
 
 elements_add_unit_test(tuple_serialization_test tests/src/serialization/tuple_test.cpp tests/src/TestMain.cpp
                        LINK_LIBRARIES Boost TYPE Boost)
+
+elements_add_unit_test(MatrixConstructionHelper_test tests/src/MatrixConstructionHelper_test.cpp tests/src/TestMain.cpp
+                       LINK_LIBRARIES Boost TYPE Boost)
+
+elements_add_unit_test(MatrixIndexHelper_test tests/src/MatrixIndexHelper_test.cpp tests/src/TestMain.cpp
+                       LINK_LIBRARIES Boost TYPE Boost)
