@@ -43,14 +43,7 @@ public:
    * 
    * @param axes_tuple The information about the axes of the Matrix
    */
-  MatrixIndexHelper(const std::tuple<AxisInfo<AxesTypes>...>& axes_tuple)
-          : m_axes_sizes { 
-                MatrixConstructionHelper<AxesTypes...>::createAxesSizesVector(
-                        axes_tuple, TemplateLoopCounter<sizeof...(AxesTypes)>{})
-          }, m_axes_index_factors {
-                MatrixConstructionHelper<AxesTypes...>::createAxisIndexFactorVector(
-                     axes_tuple, TemplateLoopCounter<sizeof...(AxesTypes)>{})
-          } { }
+  MatrixIndexHelper(const std::tuple<AxisInfo<AxesTypes>...>& axes_tuple);
   
   /// Default destructor
   virtual ~MatrixIndexHelper() = default;
@@ -64,11 +57,7 @@ public:
    * @param array_index The index of the one dimensional array
    * @return the coordinate of the axis
    */
-  size_t axisIndex(size_t axis, size_t array_index) const {
-    size_t index = array_index % m_axes_index_factors[axis+1];
-    index = index / m_axes_index_factors[axis];
-  return index;
-  }
+  size_t axisIndex(size_t axis, size_t array_index) const;
   
   /**
    * Returns the index of a one dimensional array which corresponds to the
@@ -77,17 +66,7 @@ public:
    * @param coords The Matrix coordinates
    * @return the one dimensional array index
    */
-  size_t totalIndex(std::initializer_list<size_t> coords) const {
-    size_t total {0};
-    auto coords_iter = coords.begin();
-    auto factors_iter = m_axes_index_factors.begin();
-    while (coords_iter != coords.end()) {
-      total += (*coords_iter) * (*factors_iter);
-      ++coords_iter;
-      ++factors_iter;
-    }
-    return total;
-  }
+  size_t totalIndex(std::initializer_list<size_t> coords) const;
   
   std::vector<size_t> m_axes_sizes;
   std::vector<size_t> m_axes_index_factors;
@@ -108,6 +87,8 @@ MatrixIndexHelper<AxesTypes...> makeMatrixIndexHelper(const std::tuple<AxisInfo<
 }
 
 } // end of namespace ChMatrix
+
+#include "ChMatrix/_impl/MatrixIndexHelper.icpp"
 
 #endif	/* CHMATRIX_MATRIXINDEXHELPER_H */
 
