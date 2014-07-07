@@ -66,7 +66,7 @@ public:
    * @param coords The Matrix coordinates
    * @return the one dimensional array index
    */
-  size_t totalIndex(std::initializer_list<size_t> coords) const;
+  size_t totalIndex(decltype(std::declval<AxisInfo<AxesTypes>>().size())... coords) const;
   
   std::vector<size_t> m_axes_sizes;
   std::vector<size_t> m_axes_index_factors;

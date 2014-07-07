@@ -4,6 +4,9 @@
  * @author Nikolaos Apostolakos
  */
 
+#include "ChMatrix/MatrixIndexHelper.h"
+
+
 namespace ChMatrix {
 
 template<typename... AxesTypes>
@@ -23,17 +26,19 @@ size_t MatrixIndexHelper<AxesTypes...>::axisIndex(size_t axis, size_t array_inde
   return index;
 }
 
+template <typename Factors, typename Coord>
+size_t calculateTotalIndex(const Factors& factors, Coord coord) {
+  return coord * factors[factors.size() - 2];
+}
+
+template <typename Factors, typename Coord, typename... RestCoords>
+size_t calculateTotalIndex(const Factors& factors, Coord coord, RestCoords... rest_coords) {
+  return coord * factors[factors.size()-sizeof...(RestCoords)-2] + calculateTotalIndex(factors, rest_coords...);
+}
+
 template<typename... AxesTypes>
-size_t MatrixIndexHelper<AxesTypes...>::totalIndex(std::initializer_list<size_t> coords) const {
-  size_t total {0};
-  auto coords_iter = coords.begin();
-  auto factors_iter = m_axes_index_factors.begin();
-  while (coords_iter != coords.end()) {
-    total += (*coords_iter) * (*factors_iter);
-    ++coords_iter;
-    ++factors_iter;
-  }
-  return total;
+size_t MatrixIndexHelper<AxesTypes...>::totalIndex(decltype(std::declval<AxisInfo<AxesTypes>>().size())... coords) const {
+  return calculateTotalIndex(m_axes_index_factors, coords...);
 }
 
 }

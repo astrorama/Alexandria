@@ -78,7 +78,7 @@ size_t Matrix<DataManager, AxesTypes...>::size() {
 
 template<typename DataManager, typename... AxesTypes>
 auto Matrix<DataManager, AxesTypes...>::operator()(decltype(std::declval<AxisInfo<AxesTypes>>().size())... indices) -> data_type& {
-  size_t total_index = m_index_helper.totalIndex({indices...});
+  size_t total_index = m_index_helper.totalIndex(indices...);
   return (*m_data_manager)[total_index];
 }
 

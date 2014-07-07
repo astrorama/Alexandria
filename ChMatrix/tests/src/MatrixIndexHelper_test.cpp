@@ -65,7 +65,7 @@ BOOST_FIXTURE_TEST_CASE(totalIndex, MatrixIndexHelper_Fixture) {
     for (size_t coord3=0; coord3<axis3.size(); ++coord3) {
       for (size_t coord2=0; coord2<axis2.size(); ++coord2) {
         for (size_t coord1=0; coord1<axis1.size(); ++coord1) {
-          BOOST_CHECK_EQUAL(helper.totalIndex({coord1, coord2, coord3, coord4}), array_index);
+          BOOST_CHECK_EQUAL(helper.totalIndex(coord1, coord2, coord3, coord4), array_index);
           ++array_index;
         }
       }
