@@ -22,3 +22,6 @@ elements_add_unit_test(MatrixIndexHelper_test tests/src/MatrixIndexHelper_test.c
 
 elements_add_unit_test(DataManagerTraits_test tests/src/DataManagerTraits_test.cpp tests/src/TestMain.cpp
                        LINK_LIBRARIES Boost TYPE Boost)
+
+elements_add_unit_test(Matrix_test tests/src/Matrix_test.cpp tests/src/TestMain.cpp
+                       LINK_LIBRARIES Boost TYPE Boost)

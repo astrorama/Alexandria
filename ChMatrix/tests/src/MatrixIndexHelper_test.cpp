@@ -7,8 +7,6 @@
 #include <boost/test/unit_test.hpp>
 #include "ChMatrix/MatrixIndexHelper.h"
 
-#include <iostream>
-
 struct MatrixIndexHelper_Fixture {
   typedef ChMatrix::AxisInfo<int> IntAxis;
   IntAxis axis1 {"Axis 1", {1, 2, 3, 4, 5}};
@@ -38,10 +36,10 @@ BOOST_FIXTURE_TEST_CASE(axisIndex, MatrixIndexHelper_Fixture) {
     for (size_t coord3=0; coord3<axis3.size(); ++coord3) {
       for (size_t coord2=0; coord2<axis2.size(); ++coord2) {
         for (size_t coord1=0; coord1<axis1.size(); ++coord1) {
-    BOOST_CHECK_EQUAL(helper.axisIndex(0, array_index), coord1);
-    BOOST_CHECK_EQUAL(helper.axisIndex(1, array_index), coord2);
-    BOOST_CHECK_EQUAL(helper.axisIndex(2, array_index), coord3);
-    BOOST_CHECK_EQUAL(helper.axisIndex(3, array_index), coord4);
+          BOOST_CHECK_EQUAL(helper.axisIndex(0, array_index), coord1);
+          BOOST_CHECK_EQUAL(helper.axisIndex(1, array_index), coord2);
+          BOOST_CHECK_EQUAL(helper.axisIndex(2, array_index), coord3);
+          BOOST_CHECK_EQUAL(helper.axisIndex(3, array_index), coord4);
           ++array_index;
         }
       }

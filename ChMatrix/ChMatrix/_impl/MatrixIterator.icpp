@@ -4,6 +4,7 @@
  * @author Nikolaos Apostolakos
  */
 
+#include <algorithm>
 #include "ElementsKernel/ElementsException.h"
 
 namespace ChMatrix {
@@ -71,7 +72,7 @@ auto Matrix<DataManager, AxesTypes...>::iterator::axisValue() const -> const axi
 
 template<typename DataManager, typename... AxesTypes>
 template<int I>
-auto Matrix<DataManager, AxesTypes...>::iterator::fixAxis(size_t index) -> iterator& {
+auto Matrix<DataManager, AxesTypes...>::iterator::fixAxisByIndex(size_t index) -> iterator& {
   if (index >= m_owner.axisInfo<I>().size()) {
     throw ElementsException() << "Index (" << index << ") out of axis " 
                               << m_owner.axisInfo<I>().name() << " size ("
@@ -80,6 +81,18 @@ auto Matrix<DataManager, AxesTypes...>::iterator::fixAxis(size_t index) -> itera
   m_fixed_indices[I] = index;
   forwardToIndex(I, index);
   return *this;
+}
+
+template<typename DataManager, typename... AxesTypes>
+template<int I>
+auto Matrix<DataManager, AxesTypes...>::iterator::fixAxisByValue(const axis_type<I>& value) -> iterator& {
+  auto axis_info = m_owner.axisInfo<I>();
+  auto iter = std::find(axis_info.begin(), axis_info.end(), value);
+  if (iter == axis_info.end()) {
+    throw ElementsException() << "Failed to fix axis " << m_owner.axisInfo<I>().name()
+                              << " (given value not found)";
+  }
+  return fixAxisByIndex<I>(iter - axis_info.begin());
 }
 
 template<typename DataManager, typename... AxesTypes>
