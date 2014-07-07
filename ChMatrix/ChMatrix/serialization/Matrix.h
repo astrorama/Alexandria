@@ -18,12 +18,20 @@
 namespace boost {
 namespace serialization {
 
+/// Method which saves/loads a Matrix instance to/from an archive. It does a
+/// check that the DataManager of the Matrix allows for boost serialization.
+/// This check is done in compilation time.
 template<class Archive, typename DataManager, typename... AxesTypes>
 void serialize(Archive&, ChMatrix::Matrix<DataManager,AxesTypes...>&, const unsigned int) {
   static_assert(ChMatrix::DataManagerTraits<DataManager>::enable_boost_serialize,
                 "Boost serialization of Matrix with unsupported DataManager");
 }
 
+/// Saves in the given archive all the data necessary for recunstructing the
+/// given Matrix by using its constructor. The data saved are the axes tuple
+/// and a pointer to the DataManager.
+/// NOTE: Any changes in this method should be reflected in the
+/// load_construct_data method.
 template<class Archive, typename DataManager, typename... AxesTypes>
 void save_construct_data(Archive& ar, const ChMatrix::Matrix<DataManager,AxesTypes...>* t,
                                 const unsigned int) {
@@ -34,11 +42,18 @@ void save_construct_data(Archive& ar, const ChMatrix::Matrix<DataManager,AxesTyp
   ar << data_manager_ptr;
 }
 
+/// Helper method which constructs an AxisInfo object with empty name and
+/// zero knots.
 template <typename T>
 ChMatrix::AxisInfo<T> emptyAxisInfo() {
   return {"", {}};
 }
 
+/// Loads from the given archive all the data necessary for reconstructing a
+/// Matrix object and constructs a new one where the t pointer points. The
+/// data red are the axes tuple and the DataManager.
+/// NOTE: Any changes in this method should be reflected in the
+/// save_construct_data method.
 template<class Archive, typename DataManager, typename... AxesTypes>
 void load_construct_data(Archive& ar, ChMatrix::Matrix<DataManager,AxesTypes...>* t,
                                 const unsigned int) {

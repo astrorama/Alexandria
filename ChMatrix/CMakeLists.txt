@@ -25,3 +25,6 @@ elements_add_unit_test(DataManagerTraits_test tests/src/DataManagerTraits_test.c
 
 elements_add_unit_test(Matrix_test tests/src/Matrix_test.cpp tests/src/TestMain.cpp
                        LINK_LIBRARIES Boost TYPE Boost)
+
+elements_add_unit_test(serialize_test tests/src/serialize_test.cpp tests/src/TestMain.cpp
+                       LINK_LIBRARIES Boost TYPE Boost)
