@@ -11,11 +11,13 @@ namespace ChCatalog {
 
 /**
  * @class Attribute
- * @brief Attribute interface extended by all source attributes
+ * @brief
+ * Attribute interface extended by all source attributes
  *
- * @details This interface that must be extended by all kind of source attributes, such as
- *  coordinates or photometry.  A Source includes a vector of attribute of arbitrary  and
- *  type.
+ * @details
+ * This interface that must be extended by all kind of source attributes, such
+ * as coordinates or photometry. A Source includes a vector of attributes of
+ * arbitrary type.
  */
 class Attribute {
 public:

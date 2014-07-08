@@ -32,8 +32,8 @@ public:
    *  Build a catalog of Source objects
    *
    * @details
-   *  Constructs a vector container of Source objects and a map
-   *  of source identification and an index which is the location of the Source
+   *  Constructs a vector container of Source objects, a map of source
+   *  identification and an index which is the location of the Source
    *  object in the vector container
    * @param source_vector
    *  Vector container of Source objects
@@ -87,10 +87,10 @@ public:
   size_t size() const { return m_source_vector.size();}
 
 private:
-  /// Vector of Source objects
+  // Vector of Source objects
   std::vector<Source>        m_source_vector { };
-  /// Map of the Source identification and their location
-  /// in the Source vector
+  // Map of the Source identification and their location
+  // in the Source vector
   std::map<int64_t, size_t> m_source_index_map { };
 
 };

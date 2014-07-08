@@ -22,7 +22,8 @@ namespace ChCatalog {
 
 /**
  * @class Source
- * @brief The Source class include all information related to a sky source
+ * @brief
+ * The Source class includes all information related to a sky source
  */
 class Source {
 
