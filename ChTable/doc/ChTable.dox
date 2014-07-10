@@ -208,7 +208,7 @@ by using the `typeid()` method:
 
 \code{.cpp}
   if (table_column_info->getType(*x_index) != typeid(double)) {
-    cout << "The column X is not of type double!!!\n";
+    // Here is safe to access the X column data
   }
 \endcode
 
