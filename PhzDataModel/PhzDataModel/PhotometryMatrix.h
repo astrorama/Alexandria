@@ -26,8 +26,7 @@ namespace ChMatrix {
 // We define the DataManagerTraits for a vector of Photometries to redefine the
 // factory method because the Photometry does not have default constructor.
 template<>
-class DataManagerTraits<PhzDataModel::PhotometryDataHandler> {
-public:
+struct DataManagerTraits<PhzDataModel::PhotometryDataHandler> {
   typedef ChCatalog::Photometry data_type;
   typedef typename PhzDataModel::PhotometryDataHandler::iterator iterator;
   static std::unique_ptr<PhzDataModel::PhotometryDataHandler> factory(size_t size){

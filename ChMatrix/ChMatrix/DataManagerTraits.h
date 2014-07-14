@@ -28,9 +28,7 @@ namespace ChMatrix {
  * @tparam DataManager the manager which keeps the Matrix data
  */
 template<typename DataManager>
-class DataManagerTraits {
-  
-public:
+struct DataManagerTraits {
   
   /// The type of the data kept by the DataManager
   typedef typename DataManager::data_type data_type;
@@ -95,9 +93,7 @@ public:
  * @tparam T the type of the data kept by the vector
  */
 template<typename T>
-class DataManagerTraits<std::vector<T>> {
-  
-public:
+struct DataManagerTraits<std::vector<T>> {
   
   /// The type of the data kept by the DataManager
   typedef T data_type;
