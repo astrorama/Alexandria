@@ -616,7 +616,7 @@ be used:
 
 \code{.cpp}
 template <typename CellType>
-using MyMatrix = typename Matrix<vector<CellType>, int, double, string>;
+using MyMatrix = Matrix<vector<CellType>, int, double, string>;
 \endcode
 
 The above definition assumes that all the matrices will use a vector as a
