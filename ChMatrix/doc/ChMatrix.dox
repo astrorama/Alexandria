@@ -25,8 +25,8 @@ namespace, so they must be sparingly used.
 \section datamodel ChMatrix data model
 
 The ChMatrix data model consists of three concepts, the AxisInfo class, which
-contains information of a matrix axis, the DataManager, which handles the matrix
-cell values and the Matrix class, which combines everything together. The
+contains information of a matrix axis, the **DataManager**, which handles the
+matrix cell values and the Matrix class, which combines everything together. The
 following sections describe these concepts and provide examples of how to use
 them.
 
@@ -62,8 +62,9 @@ the following code:
 In the code above one can make the following observations:
 
 - To support axes with knots of different types, the AxisInfo class gets this
-  type as a template parameter. In the example above the type chosen is `int`.
-  Note that user defined types are also supported.
+  type as a template parameter. In the example above the type chosen is `int` 
+  (`AxisInfo<int>`). To use knots of `string` type, the definitions should be
+  `AxisInfo<string>`. Note that user defined types are also supported.
 
 - The first parameter of the AxisInfo constructor is a string which describes
   the *axis name*. The axes of a Matrix must have unique names.
@@ -293,7 +294,7 @@ constructor:
 \endcode
 
 The DataManager instance is passed as a `unique_ptr` to indicate the change of
-ownership (the Matrix instance will own the data manager from than moment on).
+ownership (the Matrix instance will own the data manager from that moment on).
 Note that the size of the given `DataManager` must be the size required
 according the axes sizes. If a manager of wrong size is given a runtime
 exception is thrown.
@@ -311,7 +312,7 @@ The code above creates a new matrix of booleans, with the same axes like the
 parameter. Note that only the axes number and types need to match between the
 two matrices. The new matrix DataManager can be of any type.
 
-\subsection matrixinformation Retrieving Matrix information
+\subsubsection matrixinformation Retrieving Matrix information
 
 The Matrix class provides a range of methods for retrieving its information, as
 demonstrated by the following code:
@@ -348,7 +349,7 @@ which returns a reference to an AxisInfo object. The axis to get the information
 for is specified with an integer template parameter representing its (zero
 based) index.
 
-\subsection directmatrixaccess Direct cell access
+\subsubsection directmatrixaccess Direct cell access
 
 The Matrix cells can be directly accessed based on their coordinates, by using
 the parenthesis operator. This operator returns a reference to the cell value
@@ -361,12 +362,36 @@ which can be used both for reading and writing:
   cout << matrix(2, 0, 1) << "\n";
 \endcode
 
-This way of accessing the matrix cells is very useful for accessing a single
-cell of which the coordinates are known in advance. This access though includes
-an overhead of the coordinates translation, so the use of the Matrix iterator is
-recommended for any case a big number of cells is accessed.
+Note that the parenthesis operator will not perform any bound checks to the
+given indices. If any of the indices is out of bounds will result to *undefined
+behavior*. For cases the indices are not guaranteed to be in bounds, the
+alternative method at() should be used (with the implied performance cost),
+which behaves the same way like the parenthesis operator, but it throws an
+ElementsException in the case any of the indices is out of bounds:
 
-\subsection matrixiterator Matrix iterator
+\code{.cpp}
+  size_t coord = .....;
+  try {
+    // Set the value of a specific cell
+    matrix.at(coord, 0, 1) = 50;
+    // Read the value of a specific cell
+    cout << matrix.at(coord, 0, 1) << "\n";
+  } catch (ElementsException e) {
+    cout << e.what() << "\n";
+  }
+\endcode
+
+In the above example if the coord variable has a value less than the first axis
+size the code will print the cell value. If it is out of bounds, it will print
+the message of the exception.
+
+Accessing the matrix cells by using the parenthesis operator and the at() method
+is very useful for accessing a single cell of which the coordinates are known at
+the time of the call. This access though includes an overhead of the coordinates
+translation, so the use of the Matrix iterator (described bellow) is recommended
+for any case a big number of cells is accessed.
+
+\subsubsection matrixiterator Matrix iterator
 
 The second way to access the Matrix cells, both for reading and writing, is by
 using the Matrix iterator. This method is the most efficient because it does not
@@ -449,7 +474,7 @@ Both methods receive the axis (zero based) index as an integer template
 parameter. Note that the overhead of the second method is higher than the one of
 the first, so it should be avoided in cases performance is an issue.
 
-\subsection matrixslicing Matrix slicing
+\subsubsection matrixslicing Matrix slicing
 
 The ChMatrix module provides very efficient iteration over slices of a Matrix.
 This is provided by the Matrix::iterator::fixAxisByIndex() and
@@ -489,13 +514,13 @@ this coordinate). Increasing further the iterator will move it only through the
 cells of the slice.
 
 The functions for fixing an iterators axes can be chained to fix more than one
-axes:
+axes. For example, if in the previous code we had used:
 
 \code{.cpp}
 iter.fixAxisByValue<2>("two").fixAxisByIndex<0>(2).fixAxisByValue<1>(.1);
 \endcode
 
-Output:
+we would get the following output:
 
 \code
 Cell (3, 0.1, two): 13
@@ -604,9 +629,9 @@ template <typename DataManager>
 using MyMatrix = Matrix<DataManager, int, double, string>;
 \endcode
 
-\subsection binaryexportspecialization binaryExport() specialization
+\subsection binaryimportspecialization binaryImport() specialization
 
-If serialization is to be used, it is recommended to wrap the binaryExport()
+If serialization is to be used, it is recommended to wrap the binaryImport()
 method with a more specialized templated function. This is because this method
 cannot infer the Matrix template parameters (there is no matrix argument), with
 result lengthy calls. The following code can simplify that:
@@ -618,8 +643,8 @@ unique_ptr<MyMatrix<T>> myBinaryImport(istream& in) {
 }
 \endcode
 
-Note that the binaryExport() method can infer all the template parameters from
-its arguments, so no specialization is required.
+Note that, on the contrary, the binaryExport() method can infer all the template
+parameters from its arguments, so no specialization is required.
 
 \subsection specializationuse Using the specialized types
 
