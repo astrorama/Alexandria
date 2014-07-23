@@ -22,6 +22,9 @@ Note that these lines are used to make the example code more readable and they
 will introduce all the symbols of the ChMatrix and std namespaces in the global
 namespace, so they must be sparingly used.
 
+At the bottom of this page can be found the entire code of the examples as a
+single file.
+
 \section datamodel ChMatrix data model
 
 The ChMatrix data model consists of three concepts, the AxisInfo class, which
@@ -685,6 +688,294 @@ make easier the comparison.
   
   // Create a matrix to keep strings
   MyMatrix<string> string_matrix = {matrix.axisInfoTuple()};
+\endcode
+
+\section fullcode Full example code
+
+\code{.cpp}
+#include <iostream>
+#include <vector>
+#include <sstream>
+#include "ChMatrix/Matrix.h"
+#include "ChMatrix/serialize.h"
+
+using namespace ChMatrix;
+using namespace std;
+
+// /////////////////////////////////////
+// Definitions for custom DataManager
+// /////////////////////////////////////
+
+template <typename T>
+class MemoryManager {
+public:
+  MemoryManager(size_t size) {
+    m_size = size;
+    m_start = reinterpret_cast<T*>(malloc(m_size * sizeof(T)));
+  }
+  ~MemoryManager() {
+    free(m_start);
+  }
+  size_t getSize() {
+    return m_size;
+  }
+  T* getPointerToStart() {
+    return m_start;
+  }
+private:
+  size_t m_size;
+  T* m_start;
+};
+
+namespace ChMatrix {
+
+template<typename T>
+struct DataManagerTraits<MemoryManager<T>> {
+  typedef T data_type;
+  typedef T* iterator;
+  static unique_ptr<MemoryManager<T>> factory(size_t s) {
+    return unique_ptr<MemoryManager<T>>{new MemoryManager<T>{s}};
+  }
+  static size_t size(const MemoryManager<T>& m) {
+    return m.getSize();
+  }
+  static iterator begin(MemoryManager<T>& m) {
+    return m.getPointerToStart();
+  }
+  static iterator end(MemoryManager<T>& m) {
+    return m.getPointerToStart() + m.getSize();
+  }
+  static const bool enable_boost_serialize = false;
+};
+
+} // End of ChMatrix namespace
+
+// /////////////////////////////////////////
+// End of custom DataManager definitions
+// /////////////////////////////////////////
+
+// ///////////////////////////////////////////////////
+// Definitions for specializing the Matrix API
+// ///////////////////////////////////////////////////
+
+enum {
+  INT_AXIS = 0,
+  DOUBLE_AXIS = 1,
+  STRING_AXIS = 2
+};
+
+template <typename CellType>
+using MyMatrix = Matrix<vector<CellType>, int, double, string>;
+
+template <typename T>
+unique_ptr<MyMatrix<T>> myBinaryImport(istream& in) {
+  return binaryImport<vector<T>, int, double, string>(in);
+}
+
+// ///////////////////////////////////////////////////
+// End of definitions for specializing the Matrix API
+// ///////////////////////////////////////////////////
+
+int main() {
+  
+  // /////////////////////////////////////////
+  // Creating AxisInfo objects
+  // /////////////////////////////////////////
+  cout << "\nCreating AxisInfo objects\n";
+  
+  vector<int> knot_values {3000, 3500, 4000, 4500, 5000};
+  AxisInfo<int> wavelength_axis {"Wavelength", move(knot_values)};
+  
+  // /////////////////////////////////////////
+  // Using AxisInfo objects
+  // /////////////////////////////////////////
+  cout << "\nUsing AxisInfo objects\n";
+  
+  // Getting the axis name
+  cout << "Axis name : " << wavelength_axis.name() << "\n";
+  // Getting the number of knots
+  cout << "Number of knots : " << wavelength_axis.size() << "\n";
+  // Accessing a knot value directly using its (zero based) index
+  cout << "Second knot value : " << wavelength_axis[1] << "\n";
+  // Accessing the knots using the iterator
+  cout << "All knot values : ( ";
+  for (auto& knot_value : wavelength_axis) {
+    cout << knot_value << " ";
+  }
+  cout << ")\n";
+  
+  // /////////////////////////////////////////
+  // Using custom DataManager
+  // /////////////////////////////////////////
+  cout << "\nUsing custom DataManager\n";
+  
+  Matrix<MemoryManager<double>, int> custom_dm_matrix { wavelength_axis };
+  
+  // /////////////////////////////////////////
+  // Creating Matrix objects
+  // /////////////////////////////////////////
+  cout << "\nCreating Matrix objects\n";
+  
+  // Create the axes descriptions
+  AxisInfo<int> int_axis {"Integers", {1, 2, 3, 4, 5}};
+  AxisInfo<double> double_axis {"Doubles", {0.1, 0.2}};
+  AxisInfo<string> string_axis {"Strings", {"one", "two", "three"}};
+  
+  // Create a matrix with integer data
+  Matrix<vector<int>, int, double, string> matrix {int_axis, double_axis, string_axis};
+  
+  // Create and initialize the DataManager instance
+  unique_ptr<vector<int>> data_manager {new vector<int>{}};
+  for (int i=0; i<30; ++i) {
+    data_manager->push_back(i);
+  }
+  
+  // Create the Matrix object with the initialized DataManager
+  Matrix<vector<int>, int, double, string> initialized_matrix
+                    {move(data_manager), int_axis, double_axis, string_axis};
+  
+  // Create matrix with same parameter space
+  Matrix<vector<bool>, int, double, string> bool_matrix {matrix.axisInfoTuple()};
+  
+  // /////////////////////////////////////////
+  // Retrieving Matrix information
+  // /////////////////////////////////////////
+  cout << "\nRetrieving Matrix information\n";
+  
+  // Get the matrix dimensionality
+  cout << "Dimensionality: " << matrix.rank() << "\n";
+  
+  // Get the total number of cells of the matrix
+  cout << "Total number of cells: " << matrix.size() << "\n";
+  
+  // Retrieve information about the third axis
+  auto& third_axis = matrix.axisInfo<2>();
+  
+  // Print the axis information
+  cout << "Third axis name: " << third_axis.name() << "\n";
+  cout << "Third axis knots: ";
+  for (auto& knot : third_axis) {
+    cout << knot << " ";
+  }
+  
+  // /////////////////////////////////////////
+  // Direct cell access
+  // /////////////////////////////////////////
+  cout << "\nDirect cell access\n";
+  
+  // Set the value of a specific cell
+  matrix(2, 0, 1) = 50;
+  // Read the value of a specific cell
+  cout << "Matrix cell (2, 0, 1):" << matrix(2, 0, 1) << "\n";
+  
+  // Calling at() with in bounds coordinates
+  size_t coord = 1;
+  try {
+    // Set the value of a specific cell
+    matrix.at(coord, 0, 1) = 50;
+    // Read the value of a specific cell
+    cout << "Matrix cell (" << coord << ", 0, 1):" << matrix.at(coord, 0, 1) << "\n";
+  } catch (ElementsException e) {
+    cout << e.what() << "\n";
+  }
+  
+  // Calling at() with out of bounds coordinates
+  coord = 20;
+  try {
+    // Set the value of a specific cell
+    matrix.at(coord, 0, 1) = 50;
+    // Read the value of a specific cell
+    cout << "Matrix cell (" << coord << ", 0, 1):" << matrix.at(coord, 0, 1) << "\n";
+  } catch (ElementsException e) {
+    cout << e.what() << "\n";
+  }
+
+  // /////////////////////////////////////////
+  // Matrix iterator
+  // /////////////////////////////////////////
+  cout << "\nMatrix iterator\n";
+  
+  // Set all the matrix values
+  int counter {0};
+  for (auto& cell : matrix) {
+    cell = ++counter;
+  }
+  // Print all the matrix cells
+  cout << "Matrix cells: ";
+  for (auto& cell : matrix) {
+    cout << cell << " ";
+  }
+  cout << '\n';
+  
+  // Print detailed information for each cell
+  for (auto iter=matrix.begin(); iter!=matrix.end(); ++iter) {
+    cout << "Cell (" << iter.axisValue<0>() << ", " << iter.axisValue<1>()
+         << ", " << iter.axisValue<2>() << "): " << *iter << "\n";
+  }
+
+  // /////////////////////////////////////////
+  // Matrix slicing
+  // /////////////////////////////////////////
+  cout << "\nMatrix slicing\n";
+  
+  // Get an iterator and fix the third axis
+  cout << "One axis fixed\n";
+  auto iter = matrix.begin();
+  iter.fixAxisByValue<2>("two");
+  
+  // Print detailed information for each cell
+  do {
+    cout << "Cell (" << iter.axisValue<0>() << ", " << iter.axisValue<1>()
+         << ", " << iter.axisValue<2>() << "): " << *iter << "\n";
+  } while (++iter != matrix.end());
+  
+  cout << "Three axes fixed\n";
+  iter = matrix.begin();
+  iter.fixAxisByValue<2>("two").fixAxisByIndex<0>(2).fixAxisByValue<1>(.1);
+  
+  // Print detailed information for each cell
+  do {
+    cout << "Cell (" << iter.axisValue<0>() << ", " << iter.axisValue<1>()
+         << ", " << iter.axisValue<2>() << "): " << *iter << "\n";
+  } while (++iter != matrix.end());
+
+  // /////////////////////////////////////////
+  // Default Matrix Serialization
+  // /////////////////////////////////////////
+  cout << "\nDefault Matrix Serialization\n";
+  
+  stringstream stream {};
+  binaryExport(stream, matrix);
+  auto stream_matrix = binaryImport<vector<int>, int, double, string>(stream);
+
+  // /////////////////////////////////////////
+  // Using specialized Matrix types
+  // /////////////////////////////////////////
+  cout << "\nUsing specialized Matrix types\n";
+  
+  // Create a matrix with integer data
+  MyMatrix<int> spec_matrix {int_axis, double_axis, string_axis};
+  // Print all the nodes of the string axis
+  cout << "String axis knots:";
+  for (auto& knot : spec_matrix.axisInfo<STRING_AXIS>()) {
+    cout << " " << knot;
+  }
+  cout << "\n";
+  // Get an iterator and fix two axes
+  auto iter2 = spec_matrix.begin();
+  iter2.fixAxisByValue<STRING_AXIS>("two").fixAxisByIndex<INT_AXIS>(3);
+  // Print some info about each cell
+  do {
+    cout << "Double axis coord: " << iter2.axisIndex<DOUBLE_AXIS>() << "\n";
+    cout << "Double axis knot value: " << iter2.axisValue<DOUBLE_AXIS>() << "\n";
+  } while (++iter2 != spec_matrix.end());
+  // Write the matrix in a string stream and then read it back
+  binaryExport(stream, spec_matrix);
+  auto stream_spec_matrix = myBinaryImport<int>(stream);
+  // Create a matrix to keep strings
+  MyMatrix<string> string_matrix = {spec_matrix.axisInfoTuple()};
+  
+}
 \endcode
 
 */
