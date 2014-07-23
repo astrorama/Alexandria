@@ -5,6 +5,7 @@
  */
 
 #include <boost/test/unit_test.hpp>
+#include "ElementsKernel/ElementsException.h"
 #include "ChMatrix/MatrixIndexHelper.h"
 
 struct MatrixIndexHelper_Fixture {
@@ -69,6 +70,47 @@ BOOST_FIXTURE_TEST_CASE(totalIndex, MatrixIndexHelper_Fixture) {
       }
     }
   }
+  
+}
+
+//-----------------------------------------------------------------------------
+// Test the totalIndexChecked method
+//-----------------------------------------------------------------------------
+    
+BOOST_FIXTURE_TEST_CASE(totalIndexChecked, MatrixIndexHelper_Fixture) {
+  
+  // When
+  auto helper = ChMatrix::makeMatrixIndexHelper(axes_tuple);
+            
+  // Then
+  size_t array_index {0};
+  for (size_t coord4=0; coord4<axis4.size(); ++coord4) {
+    for (size_t coord3=0; coord3<axis3.size(); ++coord3) {
+      for (size_t coord2=0; coord2<axis2.size(); ++coord2) {
+        for (size_t coord1=0; coord1<axis1.size(); ++coord1) {
+          BOOST_CHECK_EQUAL(helper.totalIndexChecked(coord1, coord2, coord3, coord4), array_index);
+          ++array_index;
+        }
+      }
+    }
+  }
+  
+}
+
+//-----------------------------------------------------------------------------
+// Test the totalIndexChecked method throws out of bound exception
+//-----------------------------------------------------------------------------
+    
+BOOST_FIXTURE_TEST_CASE(totalIndexCheckedOutOfBounds, MatrixIndexHelper_Fixture) {
+  
+  // When
+  auto helper = ChMatrix::makeMatrixIndexHelper(axes_tuple);
+            
+  // Then
+  BOOST_CHECK_THROW(helper.totalIndexChecked(axis1.size(), 0, 0, 0), ElementsException);
+  BOOST_CHECK_THROW(helper.totalIndexChecked(0, axis2.size(), 0, 0), ElementsException);
+  BOOST_CHECK_THROW(helper.totalIndexChecked(0, 0, axis3.size(), 0), ElementsException);
+  BOOST_CHECK_THROW(helper.totalIndexChecked(0, 0, 0, axis4.size()), ElementsException);
   
 }
 

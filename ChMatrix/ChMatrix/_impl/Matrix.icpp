@@ -82,4 +82,10 @@ auto Matrix<DataManager, AxesTypes...>::operator()(decltype(std::declval<AxisInf
   return (*m_data_manager)[total_index];
 }
 
+template<typename DataManager, typename... AxesTypes>
+auto Matrix<DataManager, AxesTypes...>::at(decltype(std::declval<AxisInfo<AxesTypes>>().size())... indices) -> data_type& {
+  size_t total_index = m_index_helper.totalIndexChecked(indices...);
+  return (*m_data_manager)[total_index];
+}
+
 } // end of namespace ChMatrix

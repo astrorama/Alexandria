@@ -61,12 +61,23 @@ public:
   
   /**
    * Returns the index of a one dimensional array which corresponds to the
-   * given Matrix coordinates.
+   * given Matrix coordinates. This method does not perform any bound checks.
    * 
    * @param coords The Matrix coordinates
    * @return the one dimensional array index
    */
   size_t totalIndex(decltype(std::declval<AxisInfo<AxesTypes>>().size())... coords) const;
+  
+  /**
+   * Returns the index of a one dimensional array which corresponds to the
+   * given Matrix coordinates. This method performs bound checks.
+   * 
+   * @param coords The Matrix coordinates
+   * @return the one dimensional array index
+   * @throws ElementsException
+   *    if any coordinate is out of bound
+   */
+  size_t totalIndexChecked(decltype(std::declval<AxisInfo<AxesTypes>>().size())... coords) const;
   
   std::vector<size_t> m_axes_sizes;
   std::vector<size_t> m_axes_index_factors;

@@ -290,6 +290,63 @@ BOOST_FIXTURE_TEST_CASE(parenthesisOperator, Matrix_Fixture) {
 }
 
 //-----------------------------------------------------------------------------
+// Test the at method
+//-----------------------------------------------------------------------------
+    
+BOOST_FIXTURE_TEST_CASE(at, Matrix_Fixture) {
+  
+  // Given
+  std::unique_ptr<std::vector<double>> custom_data_manager {new std::vector<double>(total_size)};
+  double custom_value = 0;
+  for (size_t i=0; i<total_size; ++i) {
+    custom_value += 0.1;
+    (*custom_data_manager)[i] = custom_value;
+  }
+  
+  // When
+  MatrixType matrix {std::move(custom_data_manager), axes_tuple};
+  
+  // Then
+  double expected_value {0};
+  for (size_t coord4=0; coord4<axis4.size(); ++coord4) {
+    for (size_t coord3=0; coord3<axis3.size(); ++coord3) {
+      for (size_t coord2=0; coord2<axis2.size(); ++coord2) {
+        for (size_t coord1=0; coord1<axis1.size(); ++coord1) {
+          expected_value += 0.1;
+          BOOST_CHECK_EQUAL(matrix.at(coord1, coord2, coord3, coord4), expected_value);
+        }
+      }
+    }
+  }
+  
+}
+
+//-----------------------------------------------------------------------------
+// Test the at method throws for out of bound
+//-----------------------------------------------------------------------------
+    
+BOOST_FIXTURE_TEST_CASE(atOutOfBound, Matrix_Fixture) {
+  
+  // Given
+  std::unique_ptr<std::vector<double>> custom_data_manager {new std::vector<double>(total_size)};
+  double custom_value = 0;
+  for (size_t i=0; i<total_size; ++i) {
+    custom_value += 0.1;
+    (*custom_data_manager)[i] = custom_value;
+  }
+  
+  // When
+  MatrixType matrix {std::move(custom_data_manager), axes_tuple};
+  
+  // Then
+  BOOST_CHECK_THROW(matrix.at(axis1.size(), 0, 0, 0), ElementsException);
+  BOOST_CHECK_THROW(matrix.at(0, axis2.size(), 0, 0), ElementsException);
+  BOOST_CHECK_THROW(matrix.at(0, 0, axis3.size(), 0), ElementsException);
+  BOOST_CHECK_THROW(matrix.at(0, 0, 0, axis4.size()), ElementsException);
+  
+}
+
+//-----------------------------------------------------------------------------
 // Test the iterator
 //-----------------------------------------------------------------------------
     

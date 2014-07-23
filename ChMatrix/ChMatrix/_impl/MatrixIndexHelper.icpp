@@ -4,8 +4,7 @@
  * @author Nikolaos Apostolakos
  */
 
-#include "ChMatrix/MatrixIndexHelper.h"
-
+#include "ElementsKernel/ElementsException.h"
 
 namespace ChMatrix {
 
@@ -38,6 +37,33 @@ size_t calculateTotalIndex(const Factors& factors, Coord coord, RestCoords... re
 
 template<typename... AxesTypes>
 size_t MatrixIndexHelper<AxesTypes...>::totalIndex(decltype(std::declval<AxisInfo<AxesTypes>>().size())... coords) const {
+  return calculateTotalIndex(m_axes_index_factors, coords...);
+}
+
+template <typename AxesSizes, typename Coord>
+void checkBounds(const AxesSizes& axes_sizes, Coord coord) {
+  if (coord >= axes_sizes[axes_sizes.size()-1]) {
+    throw ElementsException() << "Coordinate " << coord << " for axis "
+                              << (axes_sizes.size()-1) << " (size " 
+                              << axes_sizes[axes_sizes.size()-1]
+                              << ") is out of bound";
+  }
+}
+
+template <typename AxesSizes, typename Coord, typename... RestCoords>
+void checkBounds(const AxesSizes& axes_sizes, Coord coord, RestCoords... rest_coords) {
+  if (coord >= axes_sizes[axes_sizes.size()-sizeof...(RestCoords)-1]) {
+    throw ElementsException() << "Coordinate " << coord << " for axis "
+                              << (axes_sizes.size()-sizeof...(RestCoords)-1) << " (size " 
+                              << axes_sizes[axes_sizes.size()-sizeof...(RestCoords)-1]
+                              << ") is out of bound";
+  }
+  checkBounds(axes_sizes, rest_coords...);
+}
+
+template<typename... AxesTypes>
+size_t MatrixIndexHelper<AxesTypes...>::totalIndexChecked(decltype(std::declval<AxisInfo<AxesTypes>>().size())... coords) const {
+  checkBounds(m_axes_sizes, coords...);
   return calculateTotalIndex(m_axes_index_factors, coords...);
 }
 

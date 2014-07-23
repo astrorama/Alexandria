@@ -167,12 +167,29 @@ public:
   
   /**
    * Returns a reference to the matrix cell for the given axes indices, to be
-   * used both for reading and writing.
+   * used both for reading and writing. This method is not bound-checked and
+   * out of range indices cause undefined behavior. If the caller cannot
+   * guarantee that the indices will be in range, the method at() can be used,
+   * which has the same behavior but performs out of range checks.
    * 
    * @param indices The indices of the axes
    * @return A reference to the cell
    */
   data_type& operator()(decltype(std::declval<AxisInfo<AxesTypes>>().size())... indices);
+  
+  /**
+   * Returns a reference to the matrix cell for the given axes indices, to be
+   * used both for reading and writing. This method is the bound-checked
+   * alternative of the parenthesis operator. Note that if the caller can
+   * guarantee that the indices will be in range, the parenthesis operator
+   * is a better choice, because it will be faster.
+   * 
+   * @param indices The indices of the axes
+   * @return A reference to the cell
+   * @throws ElementsException
+   *    if any of the indices is out of range
+   */
+  data_type& at(decltype(std::declval<AxisInfo<AxesTypes>>().size())... indices);
   
 private:
   
