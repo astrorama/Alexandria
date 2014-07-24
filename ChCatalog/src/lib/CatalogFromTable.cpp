@@ -14,7 +14,7 @@ namespace ChCatalog {
 
 CatalogFromTable::CatalogFromTable(
     std::shared_ptr<ChTable::ColumnInfo> column_info_ptr,
-    string source_id_column_name,
+    const string& source_id_column_name,
     std::vector<std::unique_ptr<AttributeFromRow>> attribute_from_row_ptr_vector) {
 
   unique_ptr<size_t> source_id_index_ptr = column_info_ptr->find(

@@ -1,4 +1,4 @@
-/** 
+/**
  * @file src/lib/function/Polynomial.cpp
  * @date February 19, 2014
  * @author Nikolaos Apostolakos
@@ -11,8 +11,7 @@
 
 namespace ChMath {
 
-Polynomial::Polynomial(std::vector<double> coefficients) {
-  m_coef = std::move(coefficients);
+Polynomial::Polynomial(std::vector<double> coefficients) : m_coef{std::move(coefficients)} {
 }
 
 std::vector<double> Polynomial::getCoefficients() const {

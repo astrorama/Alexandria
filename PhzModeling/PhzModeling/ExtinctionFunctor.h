@@ -1,4 +1,4 @@
-/** 
+/**
  * @file PhzModeling/ExtinctionFunctor.h
  * @date May 28, 2014
  * @author Nikolaos Apostolakos
@@ -15,19 +15,19 @@
 namespace PhzModeling {
 
 class ExtinctionFunctor {
-  
+
 public:
-  
-  ExtinctionFunctor(const XYDataset::XYDataset& reddening_curve) {
-    m_reddening_curve = ChMath::interpolate(reddening_curve, ChMath::InterpolationType::LINEAR);
+
+  ExtinctionFunctor(const XYDataset::XYDataset& reddening_curve)
+  : m_reddening_curve{ChMath::interpolate(reddening_curve, ChMath::InterpolationType::LINEAR)}{
   }
-  
+
   ExtinctionFunctor(ExtinctionFunctor&&) = default;
-  
+
   ExtinctionFunctor& operator=(ExtinctionFunctor&&) = default;
-  
+
   virtual ~ExtinctionFunctor() = default;
-  
+
   std::unique_ptr<XYDataset::XYDataset> operator()(const XYDataset::XYDataset& sed, double ebv) const {
     std::vector<std::pair<double, double>> reddened_values {};
     for (auto& sed_pair : sed) {
@@ -37,11 +37,11 @@ public:
     }
     return std::unique_ptr<XYDataset::XYDataset> {new XYDataset::XYDataset {std::move(reddened_values)}};
   }
-  
+
 private:
-  
+
   std::unique_ptr<ChMath::Function> m_reddening_curve;
-  
+
 };
 
 } // end of namespace PhzModeling

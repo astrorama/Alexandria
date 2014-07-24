@@ -21,13 +21,13 @@
 using namespace XYDataset;
 
 // Create a directory on disk
-void makeDirectory(const std::string name) {
+void makeDirectory(const std::string& name) {
   boost::filesystem::path d {name};
   boost::filesystem::create_directories(d);
 }
 
 // Remove a directory on disk
-void removeDir(const std::string base_dir) {
+void removeDir(const std::string& base_dir) {
   boost::filesystem::path bd {base_dir};
   boost::filesystem::remove_all(bd);
 }

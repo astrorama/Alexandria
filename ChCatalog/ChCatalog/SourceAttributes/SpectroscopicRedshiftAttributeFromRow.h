@@ -52,8 +52,8 @@ public:
    */
   SpectroscopicRedshiftAttributeFromRow(
       std::shared_ptr<ChTable::ColumnInfo> column_info_ptr,
-      const std::string specz_value_column_name,
-      const std::string specz_error_column_name) {
+      const std::string& specz_value_column_name,
+      const std::string& specz_error_column_name) {
 
     unique_ptr<size_t> specz_value_column_index_ptr = column_info_ptr->find(
         specz_value_column_name);
@@ -100,6 +100,6 @@ private:
 
 };
 
-} // namespace ChCatalog 
+} // namespace ChCatalog
 
 #endif // SPECTROSCOPICATTRIBUTEFROMROW_H_

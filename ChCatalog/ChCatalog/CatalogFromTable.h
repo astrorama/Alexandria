@@ -21,8 +21,9 @@ namespace ChCatalog {
 
 class CatalogFromTable {
 public:
-  CatalogFromTable(std::shared_ptr<ChTable::ColumnInfo> column_info_ptr, const std::string source_id_column_name,
-      std::vector<std::unique_ptr<AttributeFromRow>> attribute_from_row_ptr_vector);
+  CatalogFromTable(std::shared_ptr<ChTable::ColumnInfo> column_info_ptr,
+                   const std::string& source_id_column_name,
+                   std::vector<std::unique_ptr<AttributeFromRow>> attribute_from_row_ptr_vector);
 
   virtual ~CatalogFromTable();
 
@@ -37,4 +38,4 @@ private:
 
 } // namespace ChCatalog
 
-#endif // CATALOGFACTORY_H_ 
+#endif // CATALOGFACTORY_H_
