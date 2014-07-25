@@ -207,7 +207,7 @@ before trying to read the data from the Row%s cells. This can easily be done
 by using the `typeid()` method: 
 
 \code{.cpp}
-  if (table_column_info->getType(*x_index) != typeid(double)) {
+  if (table_column_info->getType(*x_index) == typeid(double)) {
     // Here is safe to access the X column data
   }
 \endcode
@@ -313,7 +313,7 @@ instead of a file name. This is done to provide more flexibility. To open a file
 as a stream the following code can be used:
 
 \code{.cpp}
-  fstream file_stream {"/path/to/table/file"};
+  fstream in_stream {"/path/to/table/file"};
 \endcode
 
 The AsciiReader class, by default will interpret the `#` as comment character
@@ -361,7 +361,17 @@ if a file contains the following text:
 it can be read directly by using the command:
 
 \code{.cpp}
-  auto table = AsciiReader{}.read(file_stream);
+  table = AsciiReader{}.read(in_stream);
+\endcode
+
+Note that the above command will read till the end of the stream, so any further
+reading attempts will behave like reading an empty file. For the following
+examples to work, before calling the read method again, the stream must be
+reopened, or be rewind at the beginning by using the commands:
+
+\code{.cpp}
+  in_stream.clear();
+  in_stream.seekg(0, ios_base::beg);
 \endcode
 
 Except of this automatic mode, the AsciiReader class can be parameterized by
@@ -378,8 +388,8 @@ and Y columns as `float` values:
   vector<std::type_index> column_types {
     typeid(string), typeid(float), typeid(float)
   };
-  AsciiReader reader {column_types};
-  auto table = reader.read(file_stream);
+  AsciiReader reader_types {column_types};
+  table = reader_types.read(in_stream);
 \endcode
 
 Note that the above code will still detect automatically the names of the
@@ -390,8 +400,8 @@ the *X* column as *Angle* and the *Y* column as *Value*:
 
 \code{.cpp}
   vector<string> column_names {"Function", "Angle", "Value"};
-  AsciiReader reader {{}, column_names};
-  auto table = reader.read(file_stream);
+  AsciiReader reader_names {{}, column_names};
+  table = reader_names.read(in_stream);
 \endcode
 
 Note that an empty vector is given as the first parameter (the column types).
@@ -406,8 +416,8 @@ The following example can read files which start their comments with the `//`
 sequence (column names and types will be detected automatically):
 
 \code{.cpp}
-  AsciiReader reader {{}, {}, "//"};
-  auto table = reader.read(file_stream);
+  AsciiReader reader_comment {{}, {}, "//"};
+  table = reader_comment.read(in_stream);
 \endcode
 
 \subsection writeascii Writing a Table in an ASCII stream
@@ -462,8 +472,8 @@ parameterized is the comment character to use. For example, the following
 code will use the `//` comment indicator:
 
 \code{.cpp}
-  AsciiWriter writer {"//"};
-  writer.write(cout, table);
+  AsciiWriter writer_comment {"//"};
+  writer_comment.write(cout, table);
 \endcode
 
 Output:
@@ -510,7 +520,7 @@ automatically be detected from the HDU keywords, so reading the Table is as
 simple as:
 
 \code{.cpp}
-  auto table = FitsReader{}.read(hdu);
+  auto table = FitsReader{}.read(table_hdu);
 \endcode
 
 Similarly with the AsciiReader, the FitsReader can be parameterized via its
@@ -520,7 +530,7 @@ overridden:
 \code{.cpp}
   vector<string> column_names {"Function", "Angle", "Value"};
   FitsReader reader {column_names};
-  auto table = reader.read(hdu);
+  auto table = reader.read(table_hdu);
 \endcode
 
 Overriding the column types is not. The conventions of the FITS
@@ -554,6 +564,174 @@ append the table on, the new HDUs name and the table with the data:
 \code{.cpp}
   FitsWriter writer {FitsWriter::Format::BINARY};
   writer.write(fits, "TABLE_NAME", table);
+\endcode
+
+\section fullcode Full Example Code
+
+\code{.cpp}
+#include <iostream>
+#include <sstream>
+#include <math.h>
+#include "ChTable/Table.h"
+#include "ChTable/AsciiReader.h"
+#include "ChTable/AsciiWriter.h"
+
+using namespace ChTable;
+using namespace std;
+
+int main() {
+  
+  // //////////////////////////////////
+  // Create a Table
+  // //////////////////////////////////
+  cout << "\nCreate a Table\n";
+  
+  // Step 1: Create the ColumnInfo object
+  vector<ColumnInfo::info_type> info_list {
+    ColumnInfo::info_type {"Function", typeid(string)},
+    ColumnInfo::info_type {"X", typeid(double)},
+    ColumnInfo::info_type {"Y", typeid(double)}
+  };
+  shared_ptr<ColumnInfo> column_info {new ColumnInfo {move(info_list)}};
+  
+  // Step 2: Create the Rows of the table
+  vector<Row> row_list {};
+  for (int i = 0; i <= 5; ++i) {
+    double x = i * M_PI / 5;
+    row_list.push_back(Row{{string{"sin"}, x, sin(x)}, column_info});
+    row_list.push_back(Row{{string{"cos"}, x, cos(x)}, column_info});
+  }
+  
+  // Verbose way to create rows
+  vector<Row::cell_type> cell_values {string{"example"}, 5., 2E-15};
+  Row row {move(cell_values), column_info};
+  
+  // Step 3: Create the table instance
+  Table table {row_list};
+  
+  // //////////////////////////////////
+  // Examine column information
+  // //////////////////////////////////
+  cout << "\nExamine column information\n";
+  
+  // Retrieving the column information
+  auto table_column_info = table.getColumnInfo();
+  auto row_column_info = row.getColumnInfo();
+  
+  // Printing the column information
+  size_t column_no = table_column_info->size();
+  cout << "The table has " << column_no << " columns\n";
+  for (size_t i = 0; i < column_no; ++i) {
+    cout << "Column " << i << ": "<< table_column_info->getName(i)
+         << " (type: " << table_column_info->getType(i).name() << ")\n";
+  }
+  
+  // Searching for a column by name
+  auto x_index = table_column_info->find("X");
+  if (x_index) {
+    cout << "Column X has index " << *x_index << "\n";
+  } else {
+    cout << "Column X not found\n";
+  }
+  auto z_index = table_column_info->find("Z");
+  if (z_index) {
+    cout << "Column Z has index " << *z_index << "\n";
+  } else {
+    cout << "Column Z not found\n";
+  }
+  
+  // Checking the type of a column
+  if (table_column_info->getType(*x_index) == typeid(double)) {
+    cout << "Safe to access X column data\n";
+  }
+  
+  // //////////////////////////////////
+  // Access the table data
+  // //////////////////////////////////
+  cout << "\nAccess the table data\n";
+  
+  // Print all table data
+  for (auto& row : table) {
+    for (auto& cell : row) {
+      cout << cell << " ";
+    }
+    cout << "\n";
+  }
+  
+  // Access a single cell
+  cout << "Third rows X value is " << table[2][*x_index] << "\n";
+  
+  // Access a column by name
+  cout << "Third rows Y value is " << table[2]["Y"] << "\n";
+  
+  // Retrieve the cell value
+  double sum {0};
+  for (auto& row : table) {
+    sum += boost::get<double>(row["Y"]);
+  }
+  cout << "Sum of all Y values is " << sum << "\n";
+  
+  // //////////////////////////////////
+  // Reading a Table from an ASCII stream
+  // //////////////////////////////////
+  cout << "\nReading a Table from an ASCII stream\n";
+  
+  stringstream in_stream { "# Function        X           Y\n" 
+                           "#   string   double      double\n" 
+                           "       sin        0           0\n" 
+                           "       cos        0           1\n" 
+                           "       sin 0.628319    0.587785\n" 
+                           "       cos 0.628319    0.809017\n" 
+                           "       sin  1.25664    0.951057\n" 
+                           "       cos  1.25664    0.309017\n" 
+                           "       sin  1.88496    0.951057\n" 
+                           "       cos  1.88496   -0.309017\n" 
+                           "       sin  2.51327    0.587785\n" 
+                           "       cos  2.51327   -0.809017\n" 
+                           "       sin  3.14159 1.22465e-16\n" 
+                           "       cos  3.14159          -1\n"};
+  
+  // Reading the table (default way)
+  table = AsciiReader{}.read(in_stream);
+  
+  in_stream.clear();
+  in_stream.seekg(0, ios_base::beg);
+  
+  // Parameterizing column types
+  vector<std::type_index> column_types {
+    typeid(string), typeid(float), typeid(float)
+  };
+  AsciiReader reader_types {column_types};
+  table = reader_types.read(in_stream);
+  
+  in_stream.clear();
+  in_stream.seekg(0, ios_base::beg);
+  
+  // Parameterizing column names
+  vector<string> column_names {"Function", "Angle", "Value"};
+  AsciiReader reader_names {{}, column_names};
+  table = reader_names.read(in_stream);
+  
+  in_stream.clear();
+  in_stream.seekg(0, ios_base::beg);
+  
+  // Parameterizing the comment indicator
+  AsciiReader reader_comment {{}, {}, "#"};
+  table = reader_comment.read(in_stream);
+  
+  // //////////////////////////////////
+  // Writing a Table in an ASCII stream
+  // //////////////////////////////////
+  cout << "\nWriting a Table in an ASCII stream\n";
+  
+  // Default writing
+  AsciiWriter{}.write(cout, table);
+  
+  // Changing comment character
+  AsciiWriter writer_comment {"//"};
+  writer_comment.write(cout, table);
+  
+}
 \endcode
 
 */
