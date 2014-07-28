@@ -14,7 +14,7 @@ namespace ChMath {
 Polynomial::Polynomial(std::vector<double> coefficients) : m_coef{std::move(coefficients)} {
 }
 
-std::vector<double> Polynomial::getCoefficients() const {
+const std::vector<double>& Polynomial::getCoefficients() const {
   return m_coef;
 }
 

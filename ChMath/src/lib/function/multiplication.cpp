@@ -16,6 +16,7 @@
 
 namespace ChMath {
 
+/// Function for multiplying two Polynomial%s. It multiplies their coefficients.
 std::unique_ptr<Function> multiplyPolynomials(const Function& f1, const Function& f2) {
   const Polynomial& p1 = dynamic_cast<const Polynomial&>(f1);
   const Polynomial& p2 = dynamic_cast<const Polynomial&>(f2);
@@ -28,6 +29,8 @@ std::unique_ptr<Function> multiplyPolynomials(const Function& f1, const Function
   return std::unique_ptr<Polynomial>(new Polynomial{resultCoef});
 }
 
+/// Function for multiplying a Piecewise with any other type. It multiplies each
+/// sub-function of the Piecewise with the other function.
 std::unique_ptr<Function> multiplyPiecewiseWithGeneric(const Function& f1, const Function& f2) {
   const Piecewise& piecewise = dynamic_cast<const Piecewise&>(f1);
   std::vector<std::shared_ptr<Function>> functions {};
@@ -37,21 +40,13 @@ std::unique_ptr<Function> multiplyPiecewiseWithGeneric(const Function& f1, const
   return std::unique_ptr<Function>(new Piecewise {piecewise.getKnots(), functions});
 }
 
-std::unique_ptr<Function> multiplyPiecewises(const Function& f1, const Function& f2) {
-  const Piecewise& p1 = dynamic_cast<const Piecewise&>(f1);
-  const Piecewise& p2 = dynamic_cast<const Piecewise&>(f2);
-  
-  auto p1Knots = p1.getKnots();
-  auto p2Knots = p2.getKnots();
-  if (p1Knots.front() >= p2Knots.back() || p1Knots.back() <= p2Knots.front()) {
-    return std::unique_ptr<Function> {new Polynomial{{0.}}};
-  }
-  
+/// Returns a vector of the overlapping knots from the given vectors
+std::vector<double> overlappingKnots(const std::vector<double>& knots1, const std::vector<double>& knots2) {
   std::set<double> knotSet {};
-  auto p1Iter = p1Knots.begin();
-  auto p2Iter = p2Knots.begin();
+  auto p1Iter = knots1.begin();
+  auto p2Iter = knots2.begin();
   bool started = false;
-  while (p1Iter != p1Knots.end() && p2Iter != p2Knots.end()) {
+  while (p1Iter != knots1.end() && p2Iter != knots2.end()) {
     if (!started) {
       if (*p1Iter < *p2Iter) {
         if (*(++p1Iter) > *p2Iter) {
@@ -72,7 +67,19 @@ std::unique_ptr<Function> multiplyPiecewises(const Function& f1, const Function&
       ++p2Iter;
     }
   }
-  std::vector<double> knots {knotSet.begin(), knotSet.end()};
+  return std::vector<double> {knotSet.begin(), knotSet.end()};
+}
+
+// Multiply two Piecewise Function%s by multiplying all their sub-functions
+std::unique_ptr<Function> multiplyPiecewises(const Function& f1, const Function& f2) {
+  const Piecewise& p1 = dynamic_cast<const Piecewise&>(f1);
+  const Piecewise& p2 = dynamic_cast<const Piecewise&>(f2);
+  
+  auto knots = overlappingKnots(p1.getKnots(), p2.getKnots());
+  
+  if (knots.empty()) {
+    return std::unique_ptr<Function> {new Polynomial{{0.}}};
+  }
   
   std::vector<std::shared_ptr<Function>> functions {};
   auto p1func = p1.getFunctions();
@@ -83,10 +90,10 @@ std::unique_ptr<Function> multiplyPiecewises(const Function& f1, const Function&
     if (knot == knots.back()) {
       break;
     }
-    while (p1Knots[i1+1] <= knot) {
+    while (p1.getKnots()[i1+1] <= knot) {
       ++i1;
     }
-    while (p2Knots[i2+1] <= knot) {
+    while (p2.getKnots()[i2+1] <= knot) {
       ++i2;
     }
     functions.push_back(std::shared_ptr<Function>{ChMath::multiply(*p1func[i1], *p2func[i2]).release()});
@@ -95,53 +102,9 @@ std::unique_ptr<Function> multiplyPiecewises(const Function& f1, const Function&
   return std::unique_ptr<Function>{new Piecewise{knots, functions}};
 }
 
-std::unique_ptr<Function> multiplySplines(const Function& f1, const Function& f2) {
-  const Piecewise& p1 = dynamic_cast<const Piecewise&>(f1);
-  const Piecewise& p2 = dynamic_cast<const Piecewise&>(f2);
-  
-  auto p1Knots = p1.getKnots();
-  auto p2Knots = p2.getKnots();
-  if (p1Knots.front() >= p2Knots.back() || p1Knots.back() <= p2Knots.front()) {
-    return std::unique_ptr<Function> {new Polynomial{{0.}}};
-  }
-  
-  std::set<double> knotSet {};
-  auto p1Iter = p1Knots.begin();
-  auto p2Iter = p2Knots.begin();
-  bool started = false;
-  while (p1Iter != p1Knots.end() && p2Iter != p2Knots.end()) {
-    if (!started) {
-      if (*p1Iter < *p2Iter) {
-        if (*(++p1Iter) > *p2Iter) {
-          started = true;
-        }
-      } else {
-        if (*p1Iter < *(++p2Iter)) {
-          started = true;
-        }
-      }
-      continue;
-    }
-    if (*p1Iter < *p2Iter) {
-      knotSet.insert(*p1Iter);
-      ++p1Iter;
-    } else {
-      knotSet.insert(*p2Iter);
-      ++p2Iter;
-    }
-  }
-  std::vector<double> knots {knotSet.begin(), knotSet.end()};
-  std::vector<double> values {};
-  for (double knot : knots) {
-    values.push_back(f1(knot)*f2(knot));
-  }
-  return ChMath::interpolate(knots, values, InterpolationType::CUBIC_SPLINE);
-}
-
 std::map<std::pair<std::type_index,std::type_index>, MultiplyFunction> multiplySpecificSpecificMap {
   {std::pair<std::type_index,std::type_index>(typeid(Polynomial),typeid(Polynomial)), multiplyPolynomials},
-  {std::pair<std::type_index,std::type_index>(typeid(Piecewise),typeid(Piecewise)), multiplyPiecewises},
-  {std::pair<std::type_index,std::type_index>(typeid(Spline),typeid(Spline)), multiplySplines}
+  {std::pair<std::type_index,std::type_index>(typeid(Piecewise),typeid(Piecewise)), multiplyPiecewises}
 };
 
 std::map<std::type_index, MultiplyFunction> multiplySpecificGenericMap {

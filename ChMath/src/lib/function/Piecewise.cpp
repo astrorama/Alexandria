@@ -25,11 +25,11 @@ Piecewise::Piecewise(std::vector<double> knots, std::vector<std::shared_ptr<Func
   }
 }
                     
-std::vector<double> Piecewise::getKnots() const {
+const std::vector<double>& Piecewise::getKnots() const {
   return m_knots;
 }
 
-std::vector<std::shared_ptr<Function>> Piecewise::getFunctions() const {
+const std::vector<std::shared_ptr<Function>>& Piecewise::getFunctions() const {
   return m_functions;
 }
 

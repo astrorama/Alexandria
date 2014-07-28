@@ -105,6 +105,67 @@ BOOST_FIXTURE_TEST_CASE(PiecewiseWithPiecewise, Multiplication_Fixture) {
   for (double x=-2.;x<= 7.; x+=.1) {
     BOOST_CHECK_CLOSE((*multPointer)(x), p1(x)*p2(x), close_tolerance);
   }
+  
+  // When
+  // Multiplication order should not matter
+  multPointer = ChMath::multiply(p2, p1);
+  
+  // Then
+  BOOST_CHECK(multPointer);
+  piecePointer = dynamic_cast<ChMath::Piecewise*>(multPointer.get());
+  BOOST_CHECK(piecePointer);
+  resKnots = piecePointer->getKnots();
+  expectedKnots = {.5,.7,1.,1.5,2.};
+  BOOST_CHECK_EQUAL_COLLECTIONS(resKnots.begin(), resKnots.end(), expectedKnots.begin(), expectedKnots.end());
+  for (double x=-2.;x<= 7.; x+=.1) {
+    BOOST_CHECK_CLOSE((*multPointer)(x), p1(x)*p2(x), close_tolerance);
+  }
+}
+
+//-----------------------------------------------------------------------------
+// Test multiplication between two piecewises with different ranges
+//-----------------------------------------------------------------------------
+
+BOOST_FIXTURE_TEST_CASE(PiecewiseWithPiecewiseDiffRanges, Multiplication_Fixture) {
+  
+  // Given
+  std::vector<double> knots1 {-1.,0.,1.,2.};
+  std::vector<std::shared_ptr<ChMath::Function> > functions1 {};
+  functions1.push_back(std::shared_ptr<ChMath::Function>(new IntegrableMock(1.)));
+  functions1.push_back(std::shared_ptr<ChMath::Function>(new IntegrableMock(2.)));
+  functions1.push_back(std::shared_ptr<ChMath::Function>(new IntegrableMock(1.)));
+  ChMath::Piecewise p1{knots1, functions1};
+  std::vector<double> knots2 {3.,4.,5.,6.,7.,8.};
+  std::vector<std::shared_ptr<ChMath::Function> > functions2 {};
+  functions2.push_back(std::shared_ptr<ChMath::Function>(new IntegrableMock(3.)));
+  functions2.push_back(std::shared_ptr<ChMath::Function>(new IntegrableMock(2.)));
+  functions2.push_back(std::shared_ptr<ChMath::Function>(new IntegrableMock(1.)));
+  functions2.push_back(std::shared_ptr<ChMath::Function>(new IntegrableMock(3.)));
+  functions2.push_back(std::shared_ptr<ChMath::Function>(new IntegrableMock(4.)));
+  ChMath::Piecewise p2{knots2, functions2};
+  
+  // When
+  auto multPointer = ChMath::multiply(p1, p2);
+  
+  // Then
+  BOOST_CHECK(multPointer);
+  ChMath::Polynomial* ppolyPointer = dynamic_cast<ChMath::Polynomial*>(multPointer.get());
+  BOOST_CHECK(ppolyPointer);
+  auto resCoeff = ppolyPointer->getCoefficients();
+  std::vector<double> expectedCoeff {.0};
+  BOOST_CHECK_EQUAL_COLLECTIONS(resCoeff.begin(), resCoeff.end(), expectedCoeff.begin(), expectedCoeff.end());
+  
+  // When
+  // Multiplication order should not matter
+  multPointer = ChMath::multiply(p2, p1);
+  
+  // Then
+  BOOST_CHECK(multPointer);
+  ppolyPointer = dynamic_cast<ChMath::Polynomial*>(multPointer.get());
+  BOOST_CHECK(ppolyPointer);
+  resCoeff = ppolyPointer->getCoefficients();
+  expectedCoeff = {.0};
+  BOOST_CHECK_EQUAL_COLLECTIONS(resCoeff.begin(), resCoeff.end(), expectedCoeff.begin(), expectedCoeff.end());
 }
 
 //-----------------------------------------------------------------------------
