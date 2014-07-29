@@ -11,7 +11,6 @@
 #include "ChMath/function/Piecewise.h"
 #include "ChMath/function/multiplication.h"
 #include "ChMath/function/function_tools.h"
-#include "ChMath/interpolation/Spline.h"
 #include "ChMath/interpolation/interpolation.h"
 
 namespace ChMath {

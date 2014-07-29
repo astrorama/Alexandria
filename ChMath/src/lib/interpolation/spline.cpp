@@ -7,7 +7,7 @@
 #include "ElementsKernel/ElementsException.h"
 #include "ChMath/interpolation/interpolation.h"
 #include "ChMath/function/Polynomial.h"
-#include "ChMath/interpolation/Spline.h"
+#include "ChMath/function/Piecewise.h"
 
 namespace ChMath {
 
@@ -71,7 +71,7 @@ std::unique_ptr<Function> splineInterpolation(const std::vector<double>& x, cons
     functions.push_back(std::shared_ptr<Function>(new Polynomial{{a[i],b[i],c[i],d[i]}}));
   }
   
-  return std::unique_ptr<Function>(new Spline{x, std::move(functions)});
+  return std::unique_ptr<Function>(new Piecewise{x, std::move(functions)});
 }
 
 } // End of ChMath
