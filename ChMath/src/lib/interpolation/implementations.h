@@ -9,8 +9,10 @@
 
 namespace ChMath {
 
+/// Performs linear interpolation for the given set of data points
 std::unique_ptr<Function> linearInterpolation(const std::vector<double>& x, const std::vector<double>& y);
 
+/// Performs cubic spline interpolation for the given set of data points
 std::unique_ptr<Function> splineInterpolation(const std::vector<double>& x, const std::vector<double>& y);
 
 } // End of ChMath
