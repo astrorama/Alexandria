@@ -1,0 +1,351 @@
+namespace ChMath {
+
+/** \page chmath ChMath module
+
+\tableofcontents
+
+The ChMath module provides and API for mathematical functions, operations on
+these functions and methods for converting data to functions. This page starts
+with a description of the basic interfaces and classes of this module and how
+to use them and finishes with guidelines on how to extend the module for new
+types of functions.
+
+\section usage Using the ChMath module
+
+\subsection interfaces Function interfaces
+
+The ChMath module defines a tree of interfaces which describe mathematical
+functions.
+
+\subsubsection function Function
+
+The core of the ChMath module is the Function interface. This interface
+represents a mathematical function, which converts a value from domain X to a
+value of domain Y. The conversion is done by using the parenthesis operator:
+
+\code{.cpp}
+  const Function& f = ...;
+  cout << f(3.14) << '\n';
+\endcode
+
+Any code using the ChMath module should use variables of reference or pointer to
+Function type instead of concrete implementation types, and rely only on the
+methods provided by the Function interface. This way the function used can be
+replaced easily with the minimum amount of modifications.
+
+Note that because Function is an abstract class, copying a Function reference or
+pointer is not possible via the copy constructors and operators. For this reason
+the Function interface provides the Function::clone() method, which creates a
+copy of the function and returns a pointer to it:
+
+\code{.cpp}
+  unique_ptr<Function> f_copy = f.clone();
+  cout << "f_copy(3.14) = " << (*f_copy)(3.14) << '\n';
+\endcode
+
+The returned pointer points to an object of the correct sub-type. All function
+types are providing this functionality.
+
+\subsubsection integrable Integrable
+
+The Integrable is an interface extension of the Function interface, which
+indicates that the function integration can be done in a fast analytical way.
+The functions which inherit this interface are implementing the
+Integrable::integrate() method, which performs this calculation.
+
+\subsubsection differentiable Differentiable
+
+The Differentiable is an interface extension of the Function interface, which
+indicates that the derivative and the indefinite integral of the function exist
+can be represented by anther function. The functions which inherit this
+interface are implementing the Differentiable::derivative() and
+Differentiable::indefiniteIntegral() methods.
+
+Note that the Differentiable functions are always Integrable, because their
+integration can be calculated based on the indefinite integral. The ChMath
+module does take care of this optimization.
+
+\subsection implementations Function implementations
+
+The current version of the ChMath module provides the following concrete
+implementations of the Function interface.
+
+\subsubsection polynomial Polynomial
+
+The Polynomial class represents a polynomial of a single variable and arbitrary
+degree. It can be constructed by a vector containing its coefficients, where
+the order in the vector is the degree of the coefficient. For example:
+
+\code{.cpp}
+  vector<double> coef {5., 0., 3.};
+  Polynomial p {coef};
+  cout << "5 + 3*4^2 = " << p(4) << '\n';
+\endcode
+
+Note that the Polynomial function implements the Differentiable interface (so
+also the Integrable interface).
+
+\subsubsection piecewise Piecewise
+
+The Piecewise class is a function defined by a set of knots, which divide the
+X domain in ranges, and a set of sub-functions (one for each range) which define
+its value. Outside of the knots, the piecewise function always returns zero. For
+example, the function:
+
+\f[
+f(x) = \begin{cases}
+  0, & \text{if } x < 0 \\
+  x, & \text{if } 0 < x < 5 \\
+  5+3x^2, & \text{if } 5 < x < 7 \\
+  0, & \text{if } x > 7
+\end{cases}
+\f]
+
+can be represented with the following code:
+
+\code{.cpp}
+  // Create the knots and the functions for each range
+  vector<double> knots {0, 5, 7};
+  vector<shared_ptr<ChMath::Function> > functions {
+    shared_ptr<ChMath::Function> {new Polynomial{{0, 1}}},
+    shared_ptr<ChMath::Function> {new Polynomial{{5, 0, 3}}}
+  };
+  // Create the piecewise function
+  Piecewise piece {knots, functions};
+
+  // Print out some results in the screen
+  cout << "f(-5) = " << piece(-5) << '\n';
+  cout << "f(2.5) = " << piece(2.5) << '\n';
+  cout << "f(6) = " << piece(6) << '\n';
+  cout << "f(8) = " << piece(8) << '\n';
+\endcode
+
+Note that the Piecewise function is implementing the Integrable interface by
+redirecting the calculation to its sub-functions, so its performance depends on
+the performance of the sub-functions.
+
+\subsection tools Function tools
+
+The ChMath module provides tools for handling Function objects which can be used
+with the following include statement:
+
+\code{.cpp}
+#include "ChMath/function/function_tools.h"
+\endcode
+
+\subsubsection integration Integration
+
+The ChMath module provides support for integration of functions via the
+integrate() method:
+
+\code{.cpp}
+  cout << "Integral of f() in [3,6] = " << integrate(piece, 3, 6) << '\n';
+\endcode
+
+The integrate() method will take advantage of the functions which are
+implementing the Integrable interface during its calculation. Note that the
+current version of the ChMath module does not provide a default numerical
+integration method, so if a function is not implementing the Integrable
+interface, an exception will be thrown.
+
+\subsubsection multiplication Multiplication
+
+The ChMath module provides support for multiplication of functions via the
+multiply() method, which returns a Function instance representing the
+multiplication result:
+
+\code{.cpp}
+  std::unique_ptr<Function> mult = multiply(piece, p);
+  cout << "x\tf(x)\tp(x)\tmult(x)\n";
+  for (int i = 0; i < 10; ++i) {
+    cout << i << '\t' << piece(i) << '\t' << p(i) << '\t' << (*mult)(i) << '\n';
+  }
+\endcode
+
+The type of the returned Function depends on the types of the functions being
+multiplied (for more information on this refer the \ref specifymultiplications
+section bellow).
+
+\subsection interpolation Interpolation
+
+The ChMath module provides interpolation functionality, which can be enabled by
+including the file:
+
+\code{.pp}
+#include "ChMath/interpolation/interpolation.h"
+\endcode
+
+The currently supported types of interpolation are linear and cubic spline:
+
+\code{.cpp}
+  // The knots of the interpolation
+  vector<double> x {0, 1, 2, 3, 4};
+  vector<double> y {4, 23, 45, 32,38};
+  // Linear interpolation
+  auto linear = interpolate(x, y, InterpolationType::LINEAR);
+  // Cubic spline interpolation
+  auto spline = interpolate(x, y, InterpolationType::CUBIC_SPLINE);
+  
+  cout << "linear\tspline\n";
+  for (double i=0; i<=4; i+=0.1) {
+    cout << (*linear)(i) << '\t' << (*spline)(i) << '\n';
+  }
+\endcode
+
+The result of the interpolation is a Piecewise function with knots the knots of
+the interpolation. The linear interpolation contains as sub-functions linear
+polynomials and the spline interpolation third degree polynomials. Note that the
+result functions can be used as any other function, so integration is possible
+by using the integrate() method.
+
+\section extention Extending the ChMath module
+
+Extending the ChMath module means adding new Function implementations. These
+implementations can be added in the ChMath module itself, or might be
+application specific and exist in a different module. In both cases the steps
+for implementing new Function types are the same.
+
+\subsection createfunction Creating a function implementation
+
+The first step is to create a new class which implements the Function interface,
+or one of its sub-interfaces (Integrable and Differentiable). As an example, the
+following code implements a function representing the constant function:
+
+\code{.cpp}
+class Constant : public Integrable {
+public:
+  // The variable which keeps the value of the constant function
+  double m_value;
+  // The constructor gets constant value
+  Constant(double value) : m_value{value} { }
+  // We must override the clone method, which creates a new
+  // Constant instance with the same value
+  virtual std::unique_ptr<Function> clone() const override {
+    return std::unique_ptr<Function> {new Constant(m_value)};
+  }
+  // We override the parenthesis operator to always return the same value
+  virtual double operator()(const double) const override {
+    return m_value;
+  }
+  // Calculating the integral is a simple multiplication
+  virtual double integrate(const double a, const double b) const override {
+    return m_value * (b - a);
+  }
+};
+\endcode
+
+As shown in the code above, the Constant class inherits from the Integrable
+interface. This is because the integration of the constant function can be
+easily performed with just a multiplication. The implementations of the clone()
+function and the parenthesis operator are also self explanatory. The first
+returns a new instance of the Constant (constructed by using the constructor)
+and the second returns always the same value.
+
+\subsection specifymultiplications Specifying multiplication methods
+
+The Constant function example is a good example of a function that has an
+analytical multiplication with many other functions. When multiplied with a
+polynomial, for example, the result is a new polynomial with all its
+coefficients multiplied with the constant value.
+
+ChMath allows for definitions of such efficient function multiplications, so
+further manipulation of the results will take advantage of the the result type
+(for example for integration). This requires the following steps.
+
+\subsubsection multiplicationfunction Define the multiplication function
+
+First, the function which performs the multiplication between the two functions
+must be written:
+
+\code{.cpp}
+// Method for multiplying a Constant with a Polynomial
+unique_ptr<Function> multConstPol(const Function& f1, const Function& f2) {
+  const Constant& c = dynamic_cast<const Constant&>(f1);
+  const Polynomial& p = dynamic_cast<const Polynomial&>(f2);
+  vector<double> coef = p.getCoefficients();
+  for (auto& v : coef) {
+    v *= c.m_value;
+  }
+  return unique_ptr<Function>(new Polynomial{coef});
+}
+\endcode
+
+The above example returns a new Polynomial, the coefficients of which are all
+multiplied with the constant value. It is important to notice the signature of
+the function. It takes two arguments which are constant Function references and
+it returns a unique_ptr to a Function object.
+
+\subsubsection multiplicationmap Extending the multiplication map
+
+The second step is to allow ChMath module to know when to use the newly defined
+function. The ChMath module does this search by using two maps defined in the
+ChMath/function/multiplication.h file, the multiplySpecificSpecificMap and the
+multiplySpecificGenericMap. The first of these maps has as keys pairs of
+Function concrete types and as values the functions which can perform the
+multiplication of these Function%s. This can be explained better with an
+example:
+
+\code{.cpp}
+  // We define that multiplying Constant with Polynomial is done with multConstPol
+  multiplySpecificSpecificMap.insert(
+      {pair<type_index,type_index>(typeid(Constant),typeid(Polynomial)), multConstPol}
+  );
+  
+  // The result of multiplying a Constant with a Polynomial is now a Polynomial
+  auto m = multiply(Constant{5}, Polynomial{{0,1}});
+  cout << typeid(*m).name() << '\n';
+\endcode
+
+Note that if the multiplication of a function type with itself makes sense, it
+should also be added in the multiplySpecificSpecificMap. For example multiplying
+two Constant functions results to a new Constant function:
+
+\code{.cpp}
+
+// Method for multiplying Constant functions
+unique_ptr<Function> multConst(const Function& f1, const Function& f2) {
+  const Constant& c1 = dynamic_cast<const Constant&>(f1);
+  const Constant& c2 = dynamic_cast<const Constant&>(f2);
+  return unique_ptr<Function>(new Constant{c1.m_value*c2.m_value});
+}
+
+...
+
+  // We define how to multiply Constants
+  multiplySpecificSpecificMap.insert(
+      {pair<type_index,type_index>(typeid(Constant),typeid(Constant)), multConst}
+  );
+  
+  // The result of multiplying Constants is now a Constant
+  m = multiply(Constant{5}, Constant{10});
+  cout << typeid(*m).name() << '\n';
+\endcode
+
+There are some cases that the multiplication of a custom Function type with
+any other type must be handled. A good example is the Piecewise function, which
+must delegate the multiplication to each of its sub-functions, independently of
+the type of the function it is multiplied with. This can be achieved by using
+the second map, multiplySpecificGenericMap, which has as keys a single Function
+type.
+
+Note that the multiplySpecificSpecificMap is always searched first. If the pair
+of types is found there, any entries in the multiplySpecificGenericMap will be
+ignored (note that the order of the types does not matter). If a Function type
+is not found in any of the two maps, then the multiply() method returns a
+build-in wrapper type which performs the multiplication on the fly.
+
+\subsubsection chmathinternalext Extending inside ChMath
+
+It is important to mention that the above examples call the insert() method of
+the map. This is necessary if the new Function definitions are not part of the
+ChMath itself (because the maps are already initialized in ChMath). These
+insertions must be performed before the new function types are used as
+parameters of the multiply() method.
+
+In the case the new Function types are defined inside the ChMath module as part
+of extending the module itself, the map entries can be directly added in the map
+initialization in the file multiplication.cpp, which is the recommended way.
+
+*/
+
+}
