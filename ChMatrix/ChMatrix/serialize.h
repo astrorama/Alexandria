@@ -59,12 +59,15 @@ void binaryExport(std::ostream& out, const Matrix<DataManager, AxesTypes...>& ma
  * @return The matrix red from the stream
  */
 template<typename DataManager, typename... AxesTypes>
-std::unique_ptr<Matrix<DataManager, AxesTypes...>> binaryImport(std::istream& in) {
+Matrix<DataManager, AxesTypes...> binaryImport(std::istream& in) {
   boost::archive::binary_iarchive bia {in};
   // Do NOT delete manually this pointer. It is wrapped with a unique_ptr later.
   Matrix<DataManager, AxesTypes...>* ptr;
   bia >> ptr;
-  return std::unique_ptr<Matrix<DataManager, AxesTypes...>> {ptr};
+  std::unique_ptr<Matrix<DataManager, AxesTypes...>> matr_ptr {ptr};
+  // We move out to the result the matrix pointed by the pointer. The unique_ptr
+  // will delete the (now empty) pointed object
+  return std::move(*matr_ptr);
 }
 
 } // end of namespace ChMatrix

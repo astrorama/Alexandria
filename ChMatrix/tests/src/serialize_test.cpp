@@ -53,37 +53,36 @@ BOOST_AUTO_TEST_CASE(MatrixSerializationDefaultConstructibleCells) {
   // When
   std::stringstream stream {};
   ChMatrix::binaryExport(stream, matrix);
-  std::unique_ptr<MatrixType> result = 
-      ChMatrix::binaryImport<std::vector<DCC>, double, DCC, NDCC>(stream);
+  MatrixType result = ChMatrix::binaryImport<std::vector<DCC>, double, DCC, NDCC>(stream);
   
   // Then
-  BOOST_CHECK_EQUAL(result->rank(), 3);
-  BOOST_CHECK_EQUAL(result->axisInfo<0>().name(), name0);
+  BOOST_CHECK_EQUAL(result.rank(), 3);
+  BOOST_CHECK_EQUAL(result.axisInfo<0>().name(), name0);
   BOOST_CHECK_EQUAL_COLLECTIONS(
-      result->axisInfo<0>().begin(), result->axisInfo<0>().end(),
+      result.axisInfo<0>().begin(), result.axisInfo<0>().end(),
       knots0.begin(), knots0.end());
-  BOOST_CHECK_EQUAL(result->axisInfo<1>().name(), name1);
-  BOOST_CHECK_EQUAL(result->axisInfo<1>().size(), knots1.size());
-  auto result_iter1 = result->axisInfo<1>().begin();
+  BOOST_CHECK_EQUAL(result.axisInfo<1>().name(), name1);
+  BOOST_CHECK_EQUAL(result.axisInfo<1>().size(), knots1.size());
+  auto result_iter1 = result.axisInfo<1>().begin();
   auto knots_iter1 = knots1.begin();
-  while (result_iter1 != result->axisInfo<1>().end()) {
+  while (result_iter1 != result.axisInfo<1>().end()) {
     BOOST_CHECK_EQUAL(result_iter1->value, knots_iter1->value);
     ++result_iter1;
     ++ knots_iter1;
   }
-  BOOST_CHECK_EQUAL(result->axisInfo<2>().name(), name2);
-  BOOST_CHECK_EQUAL(result->axisInfo<2>().size(), knots2.size());
-  auto result_iter2 = result->axisInfo<2>().begin();
+  BOOST_CHECK_EQUAL(result.axisInfo<2>().name(), name2);
+  BOOST_CHECK_EQUAL(result.axisInfo<2>().size(), knots2.size());
+  auto result_iter2 = result.axisInfo<2>().begin();
   auto knots_iter2 = knots2.begin();
-  while (result_iter2 != result->axisInfo<2>().end()) {
+  while (result_iter2 != result.axisInfo<2>().end()) {
     BOOST_CHECK_EQUAL(result_iter2->value, knots_iter2->value);
     ++result_iter2;
     ++ knots_iter2;
   }
-  BOOST_CHECK_EQUAL(result->size(), matrix.size());
-  auto result_iter = result->begin();
+  BOOST_CHECK_EQUAL(result.size(), matrix.size());
+  auto result_iter = result.begin();
   auto matrix_iter = matrix.begin();
-  while (result_iter != result->end()) {
+  while (result_iter != result.end()) {
     BOOST_CHECK_EQUAL((*result_iter).value, (*matrix_iter).value);
     ++result_iter;
     ++matrix_iter;
@@ -128,37 +127,36 @@ BOOST_AUTO_TEST_CASE(MatrixSerializationNonDefaultConstructibleCells) {
   // When
   std::stringstream stream {};
   ChMatrix::binaryExport(stream, matrix);
-  std::unique_ptr<MatrixType> result = 
-      ChMatrix::binaryImport<std::vector<NDCC>, double, DCC, NDCC>(stream);
+  MatrixType result = ChMatrix::binaryImport<std::vector<NDCC>, double, DCC, NDCC>(stream);
   
   // Then
-  BOOST_CHECK_EQUAL(result->rank(), 3);
-  BOOST_CHECK_EQUAL(result->axisInfo<0>().name(), name0);
+  BOOST_CHECK_EQUAL(result.rank(), 3);
+  BOOST_CHECK_EQUAL(result.axisInfo<0>().name(), name0);
   BOOST_CHECK_EQUAL_COLLECTIONS(
-      result->axisInfo<0>().begin(), result->axisInfo<0>().end(),
+      result.axisInfo<0>().begin(), result.axisInfo<0>().end(),
       knots0.begin(), knots0.end());
-  BOOST_CHECK_EQUAL(result->axisInfo<1>().name(), name1);
-  BOOST_CHECK_EQUAL(result->axisInfo<1>().size(), knots1.size());
-  auto result_iter1 = result->axisInfo<1>().begin();
+  BOOST_CHECK_EQUAL(result.axisInfo<1>().name(), name1);
+  BOOST_CHECK_EQUAL(result.axisInfo<1>().size(), knots1.size());
+  auto result_iter1 = result.axisInfo<1>().begin();
   auto knots_iter1 = knots1.begin();
-  while (result_iter1 != result->axisInfo<1>().end()) {
+  while (result_iter1 != result.axisInfo<1>().end()) {
     BOOST_CHECK_EQUAL(result_iter1->value, knots_iter1->value);
     ++result_iter1;
     ++ knots_iter1;
   }
-  BOOST_CHECK_EQUAL(result->axisInfo<2>().name(), name2);
-  BOOST_CHECK_EQUAL(result->axisInfo<2>().size(), knots2.size());
-  auto result_iter2 = result->axisInfo<2>().begin();
+  BOOST_CHECK_EQUAL(result.axisInfo<2>().name(), name2);
+  BOOST_CHECK_EQUAL(result.axisInfo<2>().size(), knots2.size());
+  auto result_iter2 = result.axisInfo<2>().begin();
   auto knots_iter2 = knots2.begin();
-  while (result_iter2 != result->axisInfo<2>().end()) {
+  while (result_iter2 != result.axisInfo<2>().end()) {
     BOOST_CHECK_EQUAL(result_iter2->value, knots_iter2->value);
     ++result_iter2;
     ++ knots_iter2;
   }
-  BOOST_CHECK_EQUAL(result->size(), matrix.size());
-  auto result_iter = result->begin();
+  BOOST_CHECK_EQUAL(result.size(), matrix.size());
+  auto result_iter = result.begin();
   auto matrix_iter = matrix.begin();
-  while (result_iter != result->end()) {
+  while (result_iter != result.end()) {
     BOOST_CHECK_EQUAL((*result_iter).value, (*matrix_iter).value);
     ++result_iter;
     ++matrix_iter;

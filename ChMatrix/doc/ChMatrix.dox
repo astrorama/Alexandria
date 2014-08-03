@@ -641,7 +641,7 @@ result lengthy calls. The following code can simplify that:
 
 \code{.cpp}
 template <typename T>
-unique_ptr<MyMatrix<T>> myBinaryImport(istream& in) {
+MyMatrix<T> myBinaryImport(istream& in) {
   return binaryImport<vector<T>, int, double, string>(in);
 }
 \endcode
@@ -768,7 +768,7 @@ template <typename CellType>
 using MyMatrix = Matrix<vector<CellType>, int, double, string>;
 
 template <typename T>
-unique_ptr<MyMatrix<T>> myBinaryImport(istream& in) {
+MyMatrix<T> myBinaryImport(istream& in) {
   return binaryImport<vector<T>, int, double, string>(in);
 }
 
@@ -973,7 +973,7 @@ int main() {
   binaryExport(stream, spec_matrix);
   auto stream_spec_matrix = myBinaryImport<int>(stream);
   // Create a matrix to keep strings
-  MyMatrix<string> string_matrix = {spec_matrix.axisInfoTuple()};
+  MyMatrix<string> string_matrix = {stream_spec_matrix.axisInfoTuple()};
   
 }
 \endcode

@@ -46,7 +46,7 @@ template<typename DataManager>
 using PhzMatrix = typename ChMatrix::Matrix<DataManager, double, double, XYDataset::QualifiedName, XYDataset::QualifiedName>;
 
 template<typename DataManager>
-std::unique_ptr<PhzMatrix<DataManager>> binaryImportPhzMatrix(std::istream& in) {
+PhzMatrix<DataManager> binaryImportPhzMatrix(std::istream& in) {
   return ChMatrix::binaryImport<DataManager, double, double, XYDataset::QualifiedName, XYDataset::QualifiedName>(in);
 }
 

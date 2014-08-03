@@ -136,6 +136,11 @@ public:
    */
   Matrix(std::unique_ptr<DataManager> data_manager, std::tuple<AxisInfo<AxesTypes>...> axes_tuple);
   
+  /// Default move constructor
+  Matrix(Matrix<DataManager, AxesTypes...>&&) = default;
+  
+  Matrix(const Matrix<DataManager, AxesTypes...>&) = delete;
+  
   /// Default destructor
   virtual ~Matrix() = default;
   

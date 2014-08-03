@@ -45,6 +45,9 @@ public:
    */
   MatrixIndexHelper(const std::tuple<AxisInfo<AxesTypes>...>& axes_tuple);
   
+  /// Default move constructor
+  MatrixIndexHelper(MatrixIndexHelper<AxesTypes...>&&) = default;
+  
   /// Default destructor
   virtual ~MatrixIndexHelper() = default;
   

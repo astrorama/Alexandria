@@ -58,11 +58,9 @@ public:
     
     string model_phot_matrix_file = options["model-photometry-matrix"].as<string>();
     logger.info() << "Reading Model photometry matrix from file " << model_phot_matrix_file;
-    unique_ptr<PhotometryMatrix> model_phot_marix;
-    {
-      ifstream in {model_phot_matrix_file};
-      model_phot_marix = binaryImportPhzMatrix<vector<Photometry>>(in);
-    }
+    ifstream in {model_phot_matrix_file};
+    PhotometryMatrix model_phot_marix = binaryImportPhzMatrix<vector<Photometry>>(in);
+    in.close();
     
     string phot_catalog_file = options["photometric-catalog"].as<string>();
     logger.info() << "Reading photometric catalog from file " << phot_catalog_file;
@@ -106,10 +104,10 @@ public:
       
       // Create the chi2 matrix
       auto source_phot = source.getAttribute<Photometry>();
-      LikelihoodMatrix chi2_matrix {model_phot_marix->axisInfoTuple()};
-      auto model_iter = model_phot_marix->begin();
+      LikelihoodMatrix chi2_matrix {model_phot_marix.axisInfoTuple()};
+      auto model_iter = model_phot_marix.begin();
       auto chi2_iter = chi2_matrix.begin();
-      while (model_iter != model_phot_marix->end()) {
+      while (model_iter != model_phot_marix.end()) {
         double alpha = model_scale_functor(*source_phot, *model_iter);
         *chi2_iter = chi_2_functor(*source_phot, *model_iter, alpha);
         ++model_iter;
