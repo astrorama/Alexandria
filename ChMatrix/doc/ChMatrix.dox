@@ -113,136 +113,64 @@ All knot values : ( 3000 3500 4000 4500 5000 )
 
 \subsection datamanager DataManager interface
 
-The purpose of the Matrix class is not to re-implement a matrix representation
-in the memory. Instead, it delegates the memory management of the cell data to
-an object of the type given as the `DataManager` template parameter. This
-delegation is not done directly (to provide more flexibility). Instead, every
-time the Matrix wants to access the DataManager, it uses the corresponding
-specialization of the traits class DataManagerTraits.
+The GridContainer class does not implement in itself a data structure to
+hold the array of grid cell values. Instead, it delegates this task to a GridCellManager
+which is provided as a template to the GridContainer class (with signatures
+such as GridContainer<GridCellManager, ...>, where the additional template
+parameters are related to the grid axes, see GridContainer below). 
 
-\subsubsection vectordatamanager std::vector as DataManager
+Perhaps, the simplest case is when a  std::vector  (say a std::vector<int>)
+is taken as a GridCellManager. In this  case, it is the vector that holds
+and manages the grid cell values and we have GridContainer<vector<int>, ...>.
+However for a maximum of flexibility, the GridContainer never use directly the
+vector<int> itself, but a GridCellManagerTraits which provides an interface to
+manipulate the grid cell values. In the case of a std::vector<int> GridCellManager,
+calls will be made to a GridCellManagerTraits<std::vector<int>>, but in the
+more general case we have GridCellManagerTraits<GridCellManager>.
 
-Because the `std::vector` type can be used in many different scenarios as the
-Matrix DataManager, the specialization of the DataManagerTraits is provided by
-ChMatrix module by default. Until being more familiar with the ChMatrix module,
-and to see directly how a DataManager can be used by the Matrix class, one can
-skip directly to the \ref matrix section, and return later here for studying the
-details of DataManagerTraits.
+The GridCellManagerTraits must implement the following interfaces:
 
-\subsubsection datamanagertraits Implementing a DataManagerTraits specialization
+- type GridCellManagerTraits::cell_type<br/>
+  The type of the data kept by the `GridCellManager`. This is the type "int" in our 
+  above vector example.
 
-The DataManagerTraits defines the behavior a DataManager type must provide, so
-it can be used by the Matrix class. In other words, it provides the interface of
-the DataManager for the Matrix to use. This is done so a type which provides a
-different interface can be used as a DataManager, by just defining a
-specialization of the DataManagerTraits. Note that the DataManagerTraits default
-behavior is to delegate all the operations to the type used as a DataManager. If
-the type is compliant with this interface, there is no need for defining the
-DataManagerTraits specialization.
+- type GridCellManagerTraits::iterator<br/>
+  The iterator type which is used to iterate through the grid cells.
 
-As an example, imagine that we want to use as DataManager an *old-style* class
-which uses pointers to handle an area in the memory:
+- function GridCellManagerTraits::factory()<br/>
+  Creates a new `GridCellManager` instance, which manages the given number of cells.
 
-\code{.cpp}
-template <typename T>
-class MemoryManager {
-public:
-  MemoryManager(size_t size) {
-    m_size = size;
-    m_start = reinterpret_cast<T*>(malloc(m_size * sizeof(T)));
-  }
-  ~MemoryManager() {
-    free(m_start);
-  }
-  size_t getSize() {
-    return m_size;
-  }
-  T* getPointerToStart() {
-    return m_start;
-  }
-private:
-  size_t m_size;
-  T* m_start;
-};
-\endcode
+- function GridCellManagerTraits::size()<br/>
+  Returns the number of cells managed by the given `GridCellManager`.
 
-As can be seen above, the `MemoryManager` class uses `malloc` to allocate enough
-memory for the required number of objects, and frees it when it is destroyed. It
-provides direct access to the memory by returning a pointer to the beginning of
-it (note that the above implementation is incomplete and only for demonstration
-purposes). The `MemoryManager` class is not compliant with the DataManagerTraits
-interface, so, if we want to use it as a Matrix DataManager, we need to provide
-a specialization. This can be done with the following code:
+- function GridCellManagerTraits::begin()<br/>
+  Returns an iterator pointing to the first cell managed by the GridCellManager.
+ 
+- function GridCellManagerTraits::end()<br/>
+  Returns an iterator pointing right after the last cell managed by the
+  GridCellManager. 
 
-\code{.cpp}
-namespace ChMatrix {
-
-template<typename T>
-struct DataManagerTraits<MemoryManager<T>> {
-  typedef T data_type;
-  typedef T* iterator;
-  static unique_ptr<MemoryManager<T>> factory(size_t s) {
-    return unique_ptr<MemoryManager<T>>{new MemoryManager<T>{s}};
-  }
-  static size_t size(const MemoryManager<T>& m) {
-    return m.getSize();
-  }
-  static iterator begin(MemoryManager<T>& m) {
-    return m.getPointerToStart();
-  }
-  static iterator end(MemoryManager<T>& m) {
-    return m.getPointerToStart() + m.getSize();
-  }
-  static const bool enable_boost_serialize = false;
-};
-
-} // End of ChMatrix namespace
-\endcode
-
-The DataManagerTraits specializations, as seen above, must be defined in the
-ChMatrix namespace. They must contain the following definitions:
-
-- type DataManagerTraits::data_type<br/>
-  The type of the data kept by the `DataManager`. For our example this is the
-  template type `T` of the `MemoryManager`.
-
-- type DataManagerTraits::iterator<br/>
-  The iterator type which is used to iterate through the data kept in the data
-  manager. For our example we define a pointer to the type `T` (pointers behave
-  as iterators).
-
-- function DataManagerTraits::factory()<br/>
-  Creates a new `DataManager` instance, which manages the given number of data.
-  For our example we call the constructor of the `MemoryManager` class, which
-  will allocate the required memory.
-
-- function DataManagerTraits::size()<br/>
-  Returns the number of data managed by the given `DataManager`. For our example
-  we call the `getSize()` method of the `MemoryManager`.
-
-- function DataManagerTraits::begin()<br/>
-  Returns an iterator pointing to the first element managed by the DataManager.
-  For our example we return a pointer to the beginning of the allocated memory.
-
-- function DataManagerTraits::end()<br/>
-  Returns an iterator pointing right after the last element managed by the
-  DataManager. For our example we use the `getPointerToStart()` and `getSize()`
-  methods to return a pointer right after the allocated memory.
-
-- constant DataManagerTraits::enable_boost_serialize<br/>
-  Indicates if the DataManager is boost serializable (this is explained later
+- constant GridCellManagerTraits::enable_boost_serialize<br/>
+  Indicates if the GridCellManager is boost serializable (this is explained later
   in the \ref serialization section).
 
-Note that it is not obligatory to implement all the above, but only what is
-actually being used. For example, the Matrix class provides an alternative
-constructor which does not use the `factory()` method, but it gets the
-`DataManager` instance as a parameter. This can be used if the managed type
-does not have a meaningful default value.
+There is a (default) GridCellManagerTraits<GridCellManager> implementation for the
+simplest case where the GridCellManager is a std::vector. In this case, for example,
+the implementation of GridCellManagerTraits::size() is straightforwards, it is just
+delegated to the vector in the following way.
 
-Furthermore, there is no requirement for the `DataManager` to actually keep the
-data in the memory. An implementation can provide an iterator which will
-calculate the data *on the fly*. Such types of DataManagers are too application
-specific, so they are not described further here.
+\code{.cpp}
+template<typename T>
+size_t DataManagerTraits<std::vector<T>>::size(const std::vector<T>& vector) {
+  return vector.size();
+}
+\endcode
+
+The proposed default is then to use a std::vector as GridCellManager and the
+corresponding GridCellManagerTraits implementation. However, it is possible to
+propose an alternative, say MyGridCellManager if a corresponding implementation
+of GridCellManagerTraits<MyGridCellManager> is also provided (see annexe 1 for 
+an example of such an implementation).
 
 \subsection matrix Matrix class
 
@@ -690,7 +618,92 @@ make easier the comparison.
   MyMatrix<string> string_matrix = {matrix.axisInfoTuple()};
 \endcode
 
-\section fullcode Full example code
+\subsection ANNEX 
+
+\subsection datamanagertraits Implementing a DataManagerTraits specialization
+
+The DataManagerTraits defines the behavior a DataManager type must provide, so
+it can be used by the Matrix class. In other words, it provides the interface of
+the DataManager for the Matrix to use. This is done so a type which provides a
+different interface can be used as a DataManager, by just defining a
+specialization of the DataManagerTraits. Note that the DataManagerTraits default
+behavior is to delegate all the operations to the type used as a DataManager. If
+the type is compliant with this interface, there is no need for defining the
+DataManagerTraits specialization.
+
+As an example, imagine that we want to use as DataManager an *old-style* class
+which uses pointers to handle an area in the memory:
+
+\code{.cpp}
+template <typename T>
+class MemoryManager {
+public:
+  MemoryManager(size_t size) {
+    m_size = size;
+    m_start = reinterpret_cast<T*>(malloc(m_size * sizeof(T)));
+  }
+  ~MemoryManager() {
+    free(m_start);
+  }
+  size_t getSize() {
+    return m_size;
+  }
+  T* getPointerToStart() {
+    return m_start;
+  }
+private:
+  size_t m_size;
+  T* m_start;
+};
+\endcode
+
+As can be seen above, the `MemoryManager` class uses `malloc` to allocate enough
+memory for the required number of objects, and frees it when it is destroyed. It
+provides direct access to the memory by returning a pointer to the beginning of
+it (note that the above implementation is incomplete and only for demonstration
+purposes). The `MemoryManager` class is not compliant with the DataManagerTraits
+interface, so, if we want to use it as a Matrix DataManager, we need to provide
+a specialization. This can be done with the following code:
+
+\code{.cpp}
+namespace ChMatrix {
+
+template<typename T>
+struct DataManagerTraits<MemoryManager<T>> {
+  typedef T data_type;
+  typedef T* iterator;
+  static unique_ptr<MemoryManager<T>> factory(size_t s) {
+    return unique_ptr<MemoryManager<T>>{new MemoryManager<T>{s}};
+  }
+  static size_t size(const MemoryManager<T>& m) {
+    return m.getSize();
+  }
+  static iterator begin(MemoryManager<T>& m) {
+    return m.getPointerToStart();
+  }
+  static iterator end(MemoryManager<T>& m) {
+    return m.getPointerToStart() + m.getSize();
+  }
+  static const bool enable_boost_serialize = false;
+};
+
+} // End of ChMatrix namespace
+\endcode
+
+
+Note that it is not obligatory to implement all the above, but only what is
+actually being used. For example, the Matrix class provides an alternative
+constructor which does not use the `factory()` method, but it gets the
+`DataManager` instance as a parameter. This can be used if the managed type
+does not have a meaningful default value.
+
+Furthermore, there is no requirement for the `DataManager` to actually keep the
+data in the memory. An implementation can provide an iterator which will
+calculate the data *on the fly*. Such types of DataManagers are too application
+specific, so they are not described further here.
+
+
+\subsection fullcode Full example code
 
 \code{.cpp}
 #include <iostream>
