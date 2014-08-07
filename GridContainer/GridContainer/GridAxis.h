@@ -4,13 +4,13 @@
  * @author Nikolaos Apostolakos
  */
 
-#ifndef GRIDCONTAINER_AXISINFO_H
-#define	GRIDCONTAINER_AXISINFO_H
+#ifndef GRIDCONTAINER_GRIDAXIS_H
+#define	GRIDCONTAINER_GRIDAXIS_H
 
 #include <string>
 #include <vector>
 
-namespace GridContainer {
+namespace Grid {
 
 /**
  * @class GridAxis
@@ -62,9 +62,9 @@ private:
   
 };
 
-} // end of namespace GridContainer
+} // end of namespace Grid
 
 #include "GridContainer/_impl/GridAxis.icpp"
 
-#endif	/* GRIDCONTAINER_AXISINFO_H */
+#endif	/* GRIDCONTAINER_GRIDAXIS_H */
 

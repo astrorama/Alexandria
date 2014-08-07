@@ -18,10 +18,10 @@ BOOST_AUTO_TEST_SUITE (GridCellManagerTraits_test)
 BOOST_AUTO_TEST_CASE(defaultOperations) {
   
   // Given
-  class DefaultDataManager {
+  class DefaultCellManager {
     int m_size;
   public:
-    DefaultDataManager(int size) : m_size{size} {}
+    DefaultCellManager(int size) : m_size{size} {}
     typedef double data_type;
     struct iterator { int m_i {0}; };
     size_t size() const { return m_size; };
@@ -30,13 +30,13 @@ BOOST_AUTO_TEST_CASE(defaultOperations) {
   };
   
   // When
-  typedef GridContainer::GridCellManagerTraits<DefaultDataManager> traits;
+  typedef Grid::GridCellManagerTraits<DefaultCellManager> traits;
   auto result = traits::factory(5);
   
   // Then
-  BOOST_CHECK(typeid(traits::data_type) == typeid(DefaultDataManager::data_type));
-  BOOST_CHECK(typeid(traits::iterator) == typeid(DefaultDataManager::iterator));
-  BOOST_CHECK(typeid(*result) == typeid(DefaultDataManager));
+  BOOST_CHECK(typeid(traits::data_type) == typeid(DefaultCellManager::data_type));
+  BOOST_CHECK(typeid(traits::iterator) == typeid(DefaultCellManager::iterator));
+  BOOST_CHECK(typeid(*result) == typeid(DefaultCellManager));
   BOOST_CHECK_EQUAL(traits::size(*result), 5);
   BOOST_CHECK_EQUAL(traits::begin(*result).m_i, 1);
   BOOST_CHECK_EQUAL(traits::end(*result).m_i, 2);
@@ -51,16 +51,16 @@ BOOST_AUTO_TEST_CASE(defaultOperations) {
 BOOST_AUTO_TEST_CASE(vectorOperations) {
   
   // Given
-  typedef std::vector<double> VectorDataManager;
+  typedef std::vector<double> VectorCellManager;
   
   // When
-  typedef GridContainer::GridCellManagerTraits<VectorDataManager> traits;
+  typedef Grid::GridCellManagerTraits<VectorCellManager> traits;
   auto result = traits::factory(5);
   
   // Then
   BOOST_CHECK(typeid(traits::data_type) == typeid(double));
-  BOOST_CHECK(typeid(traits::iterator) == typeid(VectorDataManager::iterator));
-  BOOST_CHECK(typeid(*result) == typeid(VectorDataManager));
+  BOOST_CHECK(typeid(traits::iterator) == typeid(VectorCellManager::iterator));
+  BOOST_CHECK(typeid(*result) == typeid(VectorCellManager));
   BOOST_CHECK_EQUAL(traits::size(*result), 5);
   BOOST_CHECK(traits::begin(*result) == result->begin());
   BOOST_CHECK(traits::end(*result) == result->end());

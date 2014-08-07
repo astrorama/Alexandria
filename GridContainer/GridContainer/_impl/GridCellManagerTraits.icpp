@@ -4,7 +4,7 @@
  * @author Nikolaos Apostolakos
  */
 
-namespace GridContainer {
+namespace Grid {
 
 template<typename GridCellManager>
 std::unique_ptr<GridCellManager> GridCellManagerTraits<GridCellManager>::factory(size_t size) {
@@ -12,18 +12,18 @@ std::unique_ptr<GridCellManager> GridCellManagerTraits<GridCellManager>::factory
 }
 
 template<typename GridCellManager>
-size_t GridCellManagerTraits<GridCellManager>::size(const GridCellManager& data_manager) {
-  return data_manager.size();
+size_t GridCellManagerTraits<GridCellManager>::size(const GridCellManager& cell_manager) {
+  return cell_manager.size();
 }
 
 template<typename GridCellManager>
-auto GridCellManagerTraits<GridCellManager>::begin(GridCellManager& data_manager) -> iterator {
-  return data_manager.begin();
+auto GridCellManagerTraits<GridCellManager>::begin(GridCellManager& cell_manager) -> iterator {
+  return cell_manager.begin();
 }
 
 template<typename GridCellManager>
-auto GridCellManagerTraits<GridCellManager>::end(GridCellManager& data_manager) -> iterator {
-  return data_manager.end();
+auto GridCellManagerTraits<GridCellManager>::end(GridCellManager& cell_manager) -> iterator {
+  return cell_manager.end();
 }
 
 template<typename T>
@@ -46,4 +46,4 @@ auto GridCellManagerTraits<std::vector<T>>::end(std::vector<T>& vector) -> itera
   return vector.end();
 }
 
-} // end of namespace GridContainer
+} // end of namespace Grid

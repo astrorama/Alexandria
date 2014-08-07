@@ -22,8 +22,8 @@ namespace serialization {
 /// check that the GridCellManager of the GridContainer allows for boost serialization.
 /// This check is done in compilation time.
 template<class Archive, typename GridCellManager, typename... AxesTypes>
-void serialize(Archive&, GridContainer::GridContainer<GridCellManager,AxesTypes...>&, const unsigned int) {
-  static_assert(GridContainer::GridCellManagerTraits<GridCellManager>::enable_boost_serialize,
+void serialize(Archive&, Grid::GridContainer<GridCellManager,AxesTypes...>&, const unsigned int) {
+  static_assert(Grid::GridCellManagerTraits<GridCellManager>::enable_boost_serialize,
                 "Boost serialization of GridContainer with unsupported GridCellManager");
 }
 
@@ -33,19 +33,19 @@ void serialize(Archive&, GridContainer::GridContainer<GridCellManager,AxesTypes.
 /// NOTE: Any changes in this method should be reflected in the
 /// load_construct_data method.
 template<class Archive, typename GridCellManager, typename... AxesTypes>
-void save_construct_data(Archive& ar, const GridContainer::GridContainer<GridCellManager,AxesTypes...>* t,
+void save_construct_data(Archive& ar, const Grid::GridContainer<GridCellManager,AxesTypes...>* t,
                                 const unsigned int) {
-  std::tuple<GridContainer::GridAxis<AxesTypes>...> axes_tuple = t->getAxesTuple();
+  std::tuple<Grid::GridAxis<AxesTypes>...> axes_tuple = t->getAxesTuple();
   ar << axes_tuple;
-  // Do NOT delete this pointer!!! It points to the GridCellManager of the matrix
-  const GridCellManager* data_manager_ptr = &(t->getDataManager());
-  ar << data_manager_ptr;
+  // Do NOT delete this pointer!!! It points to the GridCellManager of the grid
+  const GridCellManager* cell_manager_ptr = &(t->getCellManager());
+  ar << cell_manager_ptr;
 }
 
 /// Helper method which constructs an GridAxis object with empty name and
 /// zero knots.
 template <typename T>
-GridContainer::GridAxis<T> emptyGridAxis() {
+Grid::GridAxis<T> emptyGridAxis() {
   return {"", {}};
 }
 
@@ -55,17 +55,17 @@ GridContainer::GridAxis<T> emptyGridAxis() {
 /// NOTE: Any changes in this method should be reflected in the
 /// save_construct_data method.
 template<class Archive, typename GridCellManager, typename... AxesTypes>
-void load_construct_data(Archive& ar, GridContainer::GridContainer<GridCellManager,AxesTypes...>* t,
+void load_construct_data(Archive& ar, Grid::GridContainer<GridCellManager,AxesTypes...>* t,
                                 const unsigned int) {
   // We create a tuple containing empty GridAxis objects. These will be replaced
   // when we read from the stream with the real GridAxis objects. We have to do
   // that because the GridAxis does not have a default constructor.
-  std::tuple<GridContainer::GridAxis<AxesTypes>...> axes_tuple {(emptyGridAxis<AxesTypes>())...};
+  std::tuple<Grid::GridAxis<AxesTypes>...> axes_tuple {(emptyGridAxis<AxesTypes>())...};
   ar >> axes_tuple;
-  GridCellManager* data_manager;
-  ar >> data_manager;
-  std::unique_ptr<GridCellManager> ptr {data_manager};
-  ::new(t) GridContainer::GridContainer<GridCellManager,AxesTypes...>(std::move(ptr), axes_tuple);
+  GridCellManager* cell_manager;
+  ar >> cell_manager;
+  std::unique_ptr<GridCellManager> ptr {cell_manager};
+  ::new(t) Grid::GridContainer<GridCellManager,AxesTypes...>(std::move(ptr), axes_tuple);
 }
 
 } /* end of namespace serialization */

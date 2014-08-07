@@ -4,7 +4,7 @@
  * @author Nikolaos Apostolakos
  */
 
-namespace GridContainer {
+namespace Grid {
 
 template<typename T>
 GridAxis<T>::GridAxis(std::string name, std::vector<T> values)
@@ -36,4 +36,4 @@ auto GridAxis<T>::end() const -> const_iterator {
   return m_values.end();
 }
 
-} // end of namespace GridContainer
+} // end of namespace Grid

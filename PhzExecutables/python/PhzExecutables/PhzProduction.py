@@ -11,7 +11,7 @@ def getApplicationName():
 def generateCommandParameters(input_files_dict, output_files_dict):
     parameters = []
     parameters.extend(_generatePhotometryCatalogParam(input_files_dict))
-    parameters.extend(_generateModelPhotometryMatrixParam(input_files_dict))
+    parameters.extend(_generateModelPhotometryGridParam(input_files_dict))
     parameters.extend(_generatePhzCatalogParam(output_files_dict))
     return parameters
 
@@ -35,17 +35,17 @@ def _generatePhotometryCatalogParam(input_files_dict):
     parameters.append('--photometric-catalog-format=FITS')
     return parameters
 
-def _generateModelPhotometryMatrixParam(input_files_dict):
+def _generateModelPhotometryGridParam(input_files_dict):
     parameters = []
     print input_files_dict
     calib_data_xml = input_files_dict.get('CalibrationData')
     if calib_data_xml:
         dom = domutils.StringToDOM(file(calib_data_xml).read())
         calib_data = stub.PHZCalibrationData.createFromDOM(dom)
-        model_phot_matrix = dmtools.getFileFromDataContainer(calib_data.Data.CalibrationModel[0].Model)
-        if not model_phot_matrix.startswith(os.sep):
-            model_phot_matrix = os.path.abspath(os.path.dirname(calib_data_xml)) + os.sep + model_phot_matrix
-        parameters.append('--model-photometry-matrix=' + model_phot_matrix)
+        model_phot_grid = dmtools.getFileFromDataContainer(calib_data.Data.CalibrationModel[0].Model)
+        if not model_phot_grid.startswith(os.sep):
+            model_phot_grid = os.path.abspath(os.path.dirname(calib_data_xml)) + os.sep + model_phot_grid
+        parameters.append('--model-photometry-grid=' + model_phot_grid)
     return parameters
 
 def _generatePhzCatalogParam(output_files_dict):

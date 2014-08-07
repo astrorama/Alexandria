@@ -23,37 +23,37 @@ BOOST_AUTO_TEST_CASE(GridContainerSerializationDefaultConstructibleCells) {
   
   typedef DefaultConstructibleClass DCC;
   typedef NonDefaultConstructibleClass NDCC;
-  typedef GridContainer::GridContainer<std::vector<DCC>, double, DCC, NDCC> GridContainerType;
+  typedef Grid::GridContainer<std::vector<DCC>, double, DCC, NDCC> GridContainerType;
   
   // Given
   std::string name0 = "FundamentalAxis";
   std::vector<double> knots0 {0., 3.4, 12E-15};
-  GridContainer::GridAxis<double> axis_info0 {name0, knots0};
+  Grid::GridAxis<double> axis0 {name0, knots0};
   std::string name1 = "DefaultConstructibleAxis";
   std::vector<DCC> knots1 {DCC{}, DCC{}, DCC{}};
   knots1[0].value = 0.;
   knots1[1].value = 3.4;
   knots1[2].value = 12E-15;
-  GridContainer::GridAxis<DCC> axis_info1 {name1, knots1};
+  Grid::GridAxis<DCC> axis1 {name1, knots1};
   std::string name2 = "NonDefaultConstructibleAxis";
   std::vector<NDCC> knots2 {};
   knots2.push_back(NDCC{0.});
   knots2.push_back(NDCC{3.4});
   knots2.push_back(NDCC{12E-15});
-  GridContainer::GridAxis<NDCC> axis_info2 {name2, knots2};
-  std::unique_ptr<std::vector<DCC>> data_manager {new std::vector<DCC>{}};
+  Grid::GridAxis<NDCC> axis2 {name2, knots2};
+  std::unique_ptr<std::vector<DCC>> cell_manager {new std::vector<DCC>{}};
   double value {0.};
   for (size_t i=0; i<knots0.size()*knots1.size()*knots2.size(); ++i) {
-    data_manager->push_back({});
-    data_manager->back().value = value;
+    cell_manager->push_back({});
+    cell_manager->back().value = value;
     value += 0.1;
   }
-  GridContainerType matrix {std::move(data_manager), axis_info0, axis_info1, axis_info2};
+  GridContainerType grid {std::move(cell_manager), axis0, axis1, axis2};
   
   // When
   std::stringstream stream {};
-  GridContainer::binaryExport(stream, matrix);
-  GridContainerType result = GridContainer::binaryImport<std::vector<DCC>, double, DCC, NDCC>(stream);
+  Grid::gridBinaryExport(stream, grid);
+  GridContainerType result = Grid::gridBinaryImport<std::vector<DCC>, double, DCC, NDCC>(stream);
   
   // Then
   BOOST_CHECK_EQUAL(result.axisNumber(), 3);
@@ -79,13 +79,13 @@ BOOST_AUTO_TEST_CASE(GridContainerSerializationDefaultConstructibleCells) {
     ++result_iter2;
     ++ knots_iter2;
   }
-  BOOST_CHECK_EQUAL(result.size(), matrix.size());
+  BOOST_CHECK_EQUAL(result.size(), grid.size());
   auto result_iter = result.begin();
-  auto matrix_iter = matrix.begin();
+  auto grid_iter = grid.begin();
   while (result_iter != result.end()) {
-    BOOST_CHECK_EQUAL((*result_iter).value, (*matrix_iter).value);
+    BOOST_CHECK_EQUAL((*result_iter).value, (*grid_iter).value);
     ++result_iter;
-    ++matrix_iter;
+    ++grid_iter;
   }
   
 }
@@ -98,36 +98,36 @@ BOOST_AUTO_TEST_CASE(GridContainerSerializationNonDefaultConstructibleCells) {
   
   typedef DefaultConstructibleClass DCC;
   typedef NonDefaultConstructibleClass NDCC;
-  typedef GridContainer::GridContainer<std::vector<NDCC>, double, DCC, NDCC> GridContainerType;
+  typedef Grid::GridContainer<std::vector<NDCC>, double, DCC, NDCC> GridContainerType;
   
   // Given
   std::string name0 = "FundamentalAxis";
   std::vector<double> knots0 {0., 3.4, 12E-15};
-  GridContainer::GridAxis<double> axis_info0 {name0, knots0};
+  Grid::GridAxis<double> axis0 {name0, knots0};
   std::string name1 = "DefaultConstructibleAxis";
   std::vector<DCC> knots1 {DCC{}, DCC{}, DCC{}};
   knots1[0].value = 0.;
   knots1[1].value = 3.4;
   knots1[2].value = 12E-15;
-  GridContainer::GridAxis<DCC> axis_info1 {name1, knots1};
+  Grid::GridAxis<DCC> axis1 {name1, knots1};
   std::string name2 = "NonDefaultConstructibleAxis";
   std::vector<NDCC> knots2 {};
   knots2.push_back(NDCC{0.});
   knots2.push_back(NDCC{3.4});
   knots2.push_back(NDCC{12E-15});
-  GridContainer::GridAxis<NDCC> axis_info2 {name2, knots2};
-  std::unique_ptr<std::vector<NDCC>> data_manager {new std::vector<NDCC>{}};
+  Grid::GridAxis<NDCC> axis2 {name2, knots2};
+  std::unique_ptr<std::vector<NDCC>> cell_manager {new std::vector<NDCC>{}};
   double value {0.};
   for (size_t i=0; i<knots0.size()*knots1.size()*knots2.size(); ++i) {
-    data_manager->push_back({value});
+    cell_manager->push_back({value});
     value += 0.1;
   }
-  GridContainerType matrix {std::move(data_manager), axis_info0, axis_info1, axis_info2};
+  GridContainerType grid {std::move(cell_manager), axis0, axis1, axis2};
   
   // When
   std::stringstream stream {};
-  GridContainer::binaryExport(stream, matrix);
-  GridContainerType result = GridContainer::binaryImport<std::vector<NDCC>, double, DCC, NDCC>(stream);
+  Grid::gridBinaryExport(stream, grid);
+  GridContainerType result = Grid::gridBinaryImport<std::vector<NDCC>, double, DCC, NDCC>(stream);
   
   // Then
   BOOST_CHECK_EQUAL(result.axisNumber(), 3);
@@ -153,13 +153,13 @@ BOOST_AUTO_TEST_CASE(GridContainerSerializationNonDefaultConstructibleCells) {
     ++result_iter2;
     ++ knots_iter2;
   }
-  BOOST_CHECK_EQUAL(result.size(), matrix.size());
+  BOOST_CHECK_EQUAL(result.size(), grid.size());
   auto result_iter = result.begin();
-  auto matrix_iter = matrix.begin();
+  auto grid_iter = grid.begin();
   while (result_iter != result.end()) {
-    BOOST_CHECK_EQUAL((*result_iter).value, (*matrix_iter).value);
+    BOOST_CHECK_EQUAL((*result_iter).value, (*grid_iter).value);
     ++result_iter;
-    ++matrix_iter;
+    ++grid_iter;
   }
   
 }

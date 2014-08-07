@@ -15,24 +15,24 @@
 #include "GridContainer/GridIndexHelper.h"
 #include "_impl/GridConstructionHelper.h"
 
-namespace GridContainer {
+namespace Grid {
 
 /**
  * @class GridContainer
  * 
  * @brief
- * Representation of a multi-dimensional matrix which contains axis information
+ * Representation of a multi-dimensional grid which contains axis information
  * 
  * @details
- * The GridContainer class represents the notion of a multi-dimensional matrix, each
+ * The GridContainer class represents the notion of a multi-dimensional grid, each
  * axis of is represented by an GridAxis object. Note that this class is not
- * a mathematical tool, but it focuses on providing fast access to the matrix
+ * a mathematical tool, but it focuses on providing fast access to the grid
  * cells and axis information in an efficient way.
  * 
- * In fact, the GridContainer class delegates the handling of the matrix cell values
+ * In fact, the GridContainer class delegates the handling of the grid cell values
  * to an instance of a GridCellManager object. The type of this object is given
  * as a template parameter and it can be any type (including mathematical
- * representations of matrices from other libraries). To reduce the requirements
+ * representations of grids from other libraries). To reduce the requirements
  * on the GridCellManager type, the GridContainer class does not access it directly, but
  * it uses the GridCellManagerTraits. This allows to use as GridCellManager even classes
  * of third party libraries, by defining a specialization of GridCellManagerTraits
@@ -45,7 +45,7 @@ namespace GridContainer {
  * following command:
  * 
  * \code {.cpp}
- * auto third_axis = matrix.getAxis<2>();
+ * auto third_axis = grid.getAxis<2>();
  * \endcode
  * 
  * The cell values (both for reading and writing) can be accessed in two ways.
@@ -53,21 +53,21 @@ namespace GridContainer {
  * coordinates of the cell, or by using the iterator returned by the begin()
  * method.
  * 
- * Accessing the matrix by using the iterator is optimized for speed and is the
- * recommended way for traversing through the matrix. This way of iteration
+ * Accessing the grid by using the iterator is optimized for speed and is the
+ * recommended way for traversing through the grid. This way of iteration
  * implies no performance penalty for the axis information management and it
  * is almost as fast as iterating through the GridCellManager containing the data.
  * If the axis information is required, it can be retrieved by using the
  * iterator.axisIndex() and iterator.axisValue() methods (with the implied
  * performance penalty).
  * 
- * Slicing the matrix is supported by the iterator.fixAxisIndex() and
+ * Slicing the grid is supported by the iterator.fixAxisIndex() and
  * iterator.fixAxisValue() methods, which will modify the way the iterator
  * traverses the cells. For example:
  * 
  * @tparam GridCellManager The class to which the handling of the cell values is
  *                     delegated
- * @tparam AxesTypes The types of the matrix axes
+ * @tparam AxesTypes The types of the grid axes
  */
 template<typename GridCellManager, typename... AxesTypes>
 class GridContainer {
@@ -90,25 +90,25 @@ public:
    * The GridCellManager type must be given as a template parameter and an instance
    * of it will be created by using the GridCellManagerTraits.factory() method.
    * 
-   * @param axes the GridAxis%s describing the axes of the matrix
+   * @param axes the GridAxis%es describing the axes of the grid
    */
   GridContainer(GridAxis<AxesTypes>... axes);
   
   /**
-   * @brief Constructs a GridContainer with the given axes and data manager
+   * @brief Constructs a GridContainer with the given axes and cell manager
    * @details
    * This constructor will use as GridCellManager the given object and it will not
-   * try to create a new one. The values in the data_manager are preserved, so
+   * try to create a new one. The values in the cell_manager are preserved, so
    * they can be initialized prior the constructor call. If the given data
    * manager does not contain the number of data required for representing the
    * given axes, an exception is thrown.
    * 
-   * @param data_manager The data manager instance which keeps the data
-   * @param axes the GridAxis%s describing the axes of the matrix
+   * @param cell_manager The cell manager instance which keeps the data
+   * @param axes the GridAxis%es describing the axes of the grid
    * @throws ElementsException
-   *    if the data_manager has wrong size
+   *    if the cell_manager has wrong size
    */
-  GridContainer(std::unique_ptr<GridCellManager> data_manager, GridAxis<AxesTypes>... axes);
+  GridContainer(std::unique_ptr<GridCellManager> cell_manager, GridAxis<AxesTypes>... axes);
   
   /**
    * @brief Constructs a GridContainer with the given axes
@@ -116,25 +116,25 @@ public:
    * The GridCellManager type must be given as a template parameter and an instance
    * of it will be created by using the GridCellManagerTraits.factory() method.
    * 
-   * @param axes_tuple the GridAxis%s describing the axes of the matrix
+   * @param axes_tuple the GridAxis%es describing the axes of the grid
    */
   GridContainer(std::tuple<GridAxis<AxesTypes>...> axes_tuple);
   
   /**
-   * @brief Constructs a GridContainer with the given axes and data manager
+   * @brief Constructs a GridContainer with the given axes and cell manager
    * @details
    * This constructor will use as GridCellManager the given object and it will not
-   * try to create a new one. The values in the data_manager are preserved, so
+   * try to create a new one. The values in the cell_manager are preserved, so
    * they can be initialized prior the constructor call. If the given data
    * manager does not contain the number of data required for representing the
    * given axes, an exception is thrown.
    * 
-   * @param data_manager The data manager instance which keeps the data
-   * @param axes_tuple the GridAxis%s describing the axes of the matrix
+   * @param cell_manager The cell manager instance which keeps the data
+   * @param axes_tuple the GridAxis%es describing the axes of the grid
    * @throws ElementsException
-   *    if the data_manager has wrong size
+   *    if the cell_manager has wrong size
    */
-  GridContainer(std::unique_ptr<GridCellManager> data_manager, std::tuple<GridAxis<AxesTypes>...> axes_tuple);
+  GridContainer(std::unique_ptr<GridCellManager> cell_manager, std::tuple<GridAxis<AxesTypes>...> axes_tuple);
   
   /// Default move constructor
   GridContainer(GridContainer<GridCellManager, AxesTypes...>&&) = default;
@@ -144,7 +144,7 @@ public:
   /// Default destructor
   virtual ~GridContainer() = default;
   
-  /// Returns the number of axes of the matrix (dimensionality)
+  /// Returns the number of axes of the grid (dimensionality)
   size_t axisNumber() const;
   
   /**
@@ -155,23 +155,23 @@ public:
   template<int I>
   const GridAxis<axis_type<I>>& getAxis() const;
   
-  /// Returns a tuple containing the information of all the matrix axes.
+  /// Returns a tuple containing the information of all the grid axes.
   const std::tuple<GridAxis<AxesTypes>...>& getAxesTuple() const;
   
   /// Returns a reference to the GridCellManager object which handles the cell values
-  const GridCellManager& getDataManager() const;
+  const GridCellManager& getCellManager() const;
   
-  /// Returns an iterator to the first cell of the matrix
+  /// Returns an iterator to the first cell of the grid
   iterator begin();
   
-  /// Returns an iterator to the cell after the last of the matrix
+  /// Returns an iterator to the cell after the last of the grid
   iterator end();
   
-  /// Returns the total number of cells of the matrix
+  /// Returns the total number of cells of the grid
   size_t size();
   
   /**
-   * Returns a reference to the matrix cell for the given axes indices, to be
+   * Returns a reference to the grid cell for the given axes indices, to be
    * used both for reading and writing. This method is not bound-checked and
    * out of range indices cause undefined behavior. If the caller cannot
    * guarantee that the indices will be in range, the method at() can be used,
@@ -183,7 +183,7 @@ public:
   cell_type& operator()(decltype(std::declval<GridAxis<AxesTypes>>().size())... indices);
   
   /**
-   * Returns a reference to the matrix cell for the given axes indices, to be
+   * Returns a reference to the grid cell for the given axes indices, to be
    * used both for reading and writing. This method is the bound-checked
    * alternative of the parenthesis operator. Note that if the caller can
    * guarantee that the indices will be in range, the parenthesis operator
@@ -227,12 +227,12 @@ class GridContainer<GridCellManager, AxesTypes...>::iterator : public std::itera
 public:
   
   /**
-   * @brief Constructs a new iterator for the given matrix
+   * @brief Constructs a new iterator for the given grid
    * @details
    * The cell on which the iterator points is controlled by the data_iter
-   * parameter, which is an iterator to the GridCellManager of the matrix.
+   * parameter, which is an iterator to the GridCellManager of the grid.
    * 
-   * @param owner The matrix to iterate through
+   * @param owner The grid to iterate through
    * @param data_iter The GridCellManager iterator indicating the cell position
    */
   iterator(const GridContainer<GridCellManager, AxesTypes...>& owner,
@@ -241,18 +241,18 @@ public:
   /// Copy operator of the iterator
   iterator& operator=(const iterator& other);
   
-  /// Moves the iterator to the next matrix cell
+  /// Moves the iterator to the next grid cell
   iterator& operator++();
   
   /// Returns a reference to the cell value
   cell_type& operator*();
   
   /// Compares two iterators for equality. Should be used only for iterators
-  /// of the same matrix.
+  /// of the same grid.
   bool operator==(const iterator& other) const;
   
   /// Compares two iterators for inequality. Should be used only for iterators
-  /// of the same matrix.
+  /// of the same grid.
   bool operator!=(const iterator& other) const;
   
   /// Returns the index (coordinate) of the axis with index I, for the cell
@@ -272,7 +272,7 @@ public:
    * 
    * @tparam I the index of the axis to fix
    * @param index the index to fix the axis to
-   * @return the iterator over the matrix slice
+   * @return the iterator over the grid slice
    * @throws ElementsException
    *    if the given index is out of the bounds of the axis
    */
@@ -281,7 +281,7 @@ public:
   
   /**
    * Modifies the iterator to navigate only through cells with the given axis
-   * value. If the current cell does not fulfil this requirement the iterator
+   * value. If the current cell does not fulfill this requirement the iterator
    * will be forward to the first that does.
    * 
    * Note that this method will search in the values of the axis, so it implies
@@ -290,7 +290,7 @@ public:
    * 
    * @tparam I the index of the axis to fix
    * @param value the value to fix the axis to
-   * @return the iterator over the matrix slice
+   * @return the iterator over the grid slice
    * @throws ElementsException
    *    if the axis does not contain the given value
    */
@@ -306,7 +306,7 @@ private:
   
 }; // end of class iterator
 
-} // end of namespace GridContainer
+} // end of namespace Grid
 
 #include "GridContainer/_impl/GridContainer.icpp"
 #include "GridContainer/_impl/GridIterator.icpp"

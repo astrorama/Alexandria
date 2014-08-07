@@ -7,7 +7,7 @@
 #include <algorithm>
 #include "ElementsKernel/ElementsException.h"
 
-namespace GridContainer {
+namespace Grid {
 
 template<typename GridCellManager, typename... AxesTypes>
 GridContainer<GridCellManager, AxesTypes...>::iterator::iterator(
@@ -86,13 +86,13 @@ auto GridContainer<GridCellManager, AxesTypes...>::iterator::fixAxisByIndex(size
 template<typename GridCellManager, typename... AxesTypes>
 template<int I>
 auto GridContainer<GridCellManager, AxesTypes...>::iterator::fixAxisByValue(const axis_type<I>& value) -> iterator& {
-  auto axis_info = m_owner.getAxis<I>();
-  auto iter = std::find(axis_info.begin(), axis_info.end(), value);
-  if (iter == axis_info.end()) {
+  auto axis = m_owner.getAxis<I>();
+  auto iter = std::find(axis.begin(), axis.end(), value);
+  if (iter == axis.end()) {
     throw ElementsException() << "Failed to fix axis " << m_owner.getAxis<I>().name()
                               << " (given value not found)";
   }
-  return fixAxisByIndex<I>(iter - axis_info.begin());
+  return fixAxisByIndex<I>(iter - axis.begin());
 }
 
 template<typename GridCellManager, typename... AxesTypes>

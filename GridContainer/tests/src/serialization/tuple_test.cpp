@@ -112,20 +112,20 @@ BOOST_AUTO_TEST_CASE(combinationOfValues) {
   // Given
   std::string name0 = "FundamentalAxis";
   std::vector<double> knots0 {0., 3.4, 12E-15};
-  GridContainer::GridAxis<double> axis_info0 {name0, knots0};
+  Grid::GridAxis<double> axis0 {name0, knots0};
   std::string name1 = "DefaultConstructibleAxis";
   std::vector<DCC> knots1 {DCC{}, DCC{}, DCC{}};
   knots1[0].value = 0.;
   knots1[1].value = 3.4;
   knots1[2].value = 12E-15;
-  GridContainer::GridAxis<DCC> axis_info1 {name1, knots1};
+  Grid::GridAxis<DCC> axis1 {name1, knots1};
   std::string name2 = "NonDefaultConstructibleAxis";
   std::vector<NDCC> knots2 {};
   knots2.push_back(NDCC{0.});
   knots2.push_back(NDCC{3.4});
   knots2.push_back(NDCC{12E-15});
-  GridContainer::GridAxis<NDCC> axis_info2 {name2, knots2};
-  auto tuple = std::make_tuple(axis_info0, axis_info1, axis_info2);
+  Grid::GridAxis<NDCC> axis2 {name2, knots2};
+  auto tuple = std::make_tuple(axis0, axis1, axis2);
   
   // When
   std::stringstream stream {};
@@ -135,9 +135,9 @@ BOOST_AUTO_TEST_CASE(combinationOfValues) {
   // some dummy default values which will be replaced with the ones from the
   // stream
   auto result = std::make_tuple(
-    GridContainer::GridAxis<double>{"", {}},
-    GridContainer::GridAxis<DCC>{"", {}},
-    GridContainer::GridAxis<NDCC>{"", {}}
+    Grid::GridAxis<double>{"", {}},
+    Grid::GridAxis<DCC>{"", {}},
+    Grid::GridAxis<NDCC>{"", {}}
   );
   boost::archive::binary_iarchive bia {stream};
   bia >> result;
@@ -173,7 +173,7 @@ BOOST_AUTO_TEST_CASE(combinationOfValues) {
 // and not the tuple per se.
 //-----------------------------------------------------------------------------
     
-BOOST_AUTO_TEST_CASE(axisInfoValues) {
+BOOST_AUTO_TEST_CASE(gridAxesValues) {
   
   typedef DefaultConstructibleClass DCC;
   typedef NonDefaultConstructibleClass NDCC;

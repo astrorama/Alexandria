@@ -1,11 +1,11 @@
 /** 
- * @file PhzDataModel/PhotometryMatrix.h
+ * @file PhzDataModel/PhotometryGrid.h
  * @date May 19, 2014
  * @author Nikolaos Apostolakos
  */
 
-#ifndef PHZDATAMODEL_PHOTOMETRYMATRIX_H
-#define	PHZDATAMODEL_PHOTOMETRYMATRIX_H
+#ifndef PHZDATAMODEL_PHOTOMETRYGRID_H
+#define	PHZDATAMODEL_PHOTOMETRYGRID_H
 
 #include <memory>
 #include "ChCatalog/SourceAttributes/Photometry.h"
@@ -16,12 +16,12 @@ namespace PhzDataModel {
 
 typedef std::vector<ChCatalog::Photometry> PhotometryDataHandler;
 
-typedef PhzMatrix<PhotometryDataHandler> PhotometryMatrix;
+typedef PhzGrid<PhotometryDataHandler> PhotometryGrid;
 
 } // end of namespace PhzDataModel
 
 
-namespace GridContainer {
+namespace Grid {
 
 // We define the GridCellManagerTraits for a vector of Photometries to redefine the
 // factory method because the Photometry does not have default constructor.
@@ -47,7 +47,7 @@ struct GridCellManagerTraits<PhzDataModel::PhotometryDataHandler> {
   static const bool enable_boost_serialize = true;
 }; // end of GridCellManagerTraits
 
-} // end of namespace GridContainer
+} // end of namespace Grid
 
-#endif	/* PHZDATAMODEL_PHOTOMETRYMATRIX_H */
+#endif	/* PHZDATAMODEL_PHOTOMETRYGRID_H */
 

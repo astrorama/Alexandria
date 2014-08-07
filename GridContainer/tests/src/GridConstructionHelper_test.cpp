@@ -8,13 +8,13 @@
 #include "GridContainer/_impl/GridConstructionHelper.h"
 
 struct GridConstructionHelper_Fixture {
-  typedef GridContainer::GridAxis<int> IntAxis;
+  typedef Grid::GridAxis<int> IntAxis;
   IntAxis axis1 {"Axis 1", {1, 2, 3, 4, 5}};
   IntAxis axis2 {"Axis 2", {1, 2, 3}};
   IntAxis axis3 {"Axis 3", {1, 2, 3, 4, 5, 6}};
   IntAxis axis4 {"Axis 4", {1, 2}};
   std::tuple<IntAxis, IntAxis, IntAxis, IntAxis> axes_tuple {axis1, axis2, axis3, axis4};
-  typedef GridContainer::GridConstructionHelper<int, int, int, int> Helper;
+  typedef Grid::GridConstructionHelper<int, int, int, int> Helper;
 };
 
 //-----------------------------------------------------------------------------
@@ -28,7 +28,7 @@ BOOST_AUTO_TEST_SUITE (GridConstructionHelper_test)
 BOOST_FIXTURE_TEST_CASE(createAxesSizesVector, GridConstructionHelper_Fixture) {
   
   // When
-  std::vector<size_t> result = Helper::createAxesSizesVector(axes_tuple, GridContainer::TemplateLoopCounter<4>{});
+  std::vector<size_t> result = Helper::createAxesSizesVector(axes_tuple, Grid::TemplateLoopCounter<4>{});
             
   // Then
   BOOST_CHECK_EQUAL(result.size(), 4);
@@ -45,7 +45,7 @@ BOOST_FIXTURE_TEST_CASE(createAxesSizesVector, GridConstructionHelper_Fixture) {
 BOOST_FIXTURE_TEST_CASE(createAxisIndexFactorVector, GridConstructionHelper_Fixture) {
   
   // When
-  std::vector<size_t> result = Helper::createAxisIndexFactorVector(axes_tuple, GridContainer::TemplateLoopCounter<4>{});
+  std::vector<size_t> result = Helper::createAxisIndexFactorVector(axes_tuple, Grid::TemplateLoopCounter<4>{});
             
   // Then
   BOOST_CHECK_EQUAL(result.size(), 5);

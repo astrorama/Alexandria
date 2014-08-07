@@ -6,21 +6,21 @@
 
 #include "ElementsKernel/ElementsException.h"
 
-namespace GridContainer {
+namespace Grid {
 
 template<typename GridCellManager, typename... AxesTypes>
 GridContainer<GridCellManager, AxesTypes...>::GridContainer(GridAxis<AxesTypes>... axes)
       : m_axes{std::move(axes)...} { }
 
 template<typename GridCellManager, typename... AxesTypes>
-GridContainer<GridCellManager, AxesTypes...>::GridContainer(std::unique_ptr<GridCellManager> data_manager,
+GridContainer<GridCellManager, AxesTypes...>::GridContainer(std::unique_ptr<GridCellManager> cell_manager,
                                           GridAxis<AxesTypes>... axes)
-      : m_axes{std::move(axes)...}, m_cell_manager{std::move(data_manager)} {
+      : m_axes{std::move(axes)...}, m_cell_manager{std::move(cell_manager)} {
   size_t manager_size = GridCellManagerTraits<GridCellManager>::size(*m_cell_manager);
-  size_t matrix_size = m_index_helper.m_axes_index_factors.back();
-  if (manager_size != matrix_size) {
+  size_t grid_size = m_index_helper.m_axes_index_factors.back();
+  if (manager_size != grid_size) {
     throw ElementsException() << "GridCellManager size (" << manager_size << ") and "
-                              << "GridContainer size (" << matrix_size << ") do not match";
+                              << "GridContainer size (" << grid_size << ") do not match";
   }
 }
 
@@ -29,14 +29,14 @@ GridContainer<GridCellManager, AxesTypes...>::GridContainer(std::tuple<GridAxis<
       : m_axes{std::move(axes_tuple)} { }
 
 template<typename GridCellManager, typename... AxesTypes>
-GridContainer<GridCellManager, AxesTypes...>::GridContainer(std::unique_ptr<GridCellManager> data_manager,
+GridContainer<GridCellManager, AxesTypes...>::GridContainer(std::unique_ptr<GridCellManager> cell_manager,
                                           std::tuple<GridAxis<AxesTypes>...> axes_tuple)
-      : m_axes{std::move(axes_tuple)}, m_cell_manager{std::move(data_manager)} {
+      : m_axes{std::move(axes_tuple)}, m_cell_manager{std::move(cell_manager)} {
   size_t manager_size = GridCellManagerTraits<GridCellManager>::size(*m_cell_manager);
-  size_t matrix_size = m_index_helper.m_axes_index_factors.back();
-  if (manager_size != matrix_size) {
+  size_t grid_size = m_index_helper.m_axes_index_factors.back();
+  if (manager_size != grid_size) {
     throw ElementsException() << "GridCellManager size (" << manager_size << ") and "
-                              << "GridContainer size (" << matrix_size << ") do not match";
+                              << "GridContainer size (" << grid_size << ") do not match";
   }
 }
                      
@@ -57,7 +57,7 @@ const std::tuple<GridAxis<AxesTypes>...>& GridContainer<GridCellManager, AxesTyp
 }
 
 template<typename GridCellManager, typename... AxesTypes>
-const GridCellManager& GridContainer<GridCellManager, AxesTypes...>::getDataManager() const {
+const GridCellManager& GridContainer<GridCellManager, AxesTypes...>::getCellManager() const {
   return *m_cell_manager;
 }
 
@@ -88,4 +88,4 @@ auto GridContainer<GridCellManager, AxesTypes...>::at(decltype(std::declval<Grid
   return (*m_cell_manager)[total_index];
 }
 
-} // end of namespace GridContainer
+} // end of namespace Grid

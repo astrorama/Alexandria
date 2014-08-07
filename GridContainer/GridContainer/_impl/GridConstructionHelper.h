@@ -4,15 +4,15 @@
  * @author Nikolaos Apostolakos
  */
 
-#ifndef GRIDCONTAINER_GRIDCONTAINERCONSTRUCTIONHELPER_H
-#define	GRIDCONTAINER_GRIDCONTAINERCONSTRUCTIONHELPER_H
+#ifndef GRIDCONTAINER_GRIDCONSTRUCTIONHELPER_H
+#define	GRIDCONTAINER_GRIDCONSTRUCTIONHELPER_H
 
 #include <vector>
 #include <tuple>
 #include "GridContainer/GridAxis.h"
 #include "TemplateLoopCounter.h"
 
-namespace GridContainer {
+namespace Grid {
 
 /**
  * @class GridConstructionHelper
@@ -115,7 +115,7 @@ public:
   }
 };
 
-} // end of namespace GridContainer
+} // end of namespace Grid
 
-#endif	/* GRIDCONTAINER_GRIDCONTAINERCONSTRUCTIONHELPER_H */
+#endif	/* GRIDCONTAINER_GRIDCONSTRUCTIONHELPER_H */
 

@@ -17,8 +17,8 @@ namespace po = boost::program_options;
 #include "ChMath/function/function_tools.h"
 #include "PhzConfiguration/ModelingConfiguration.h"
 #include "PhzDataModel/PhzModel.h"
-#include "PhzDataModel/PhotometryMatrix.h"
-#include "PhzModeling/ModelMatrix.h"
+#include "PhzDataModel/PhotometryGrid.h"
+#include "PhzModeling/ModelGrid.h"
 
 using namespace std;
 
@@ -33,8 +33,8 @@ public:
   po::options_description defineSpecificProgramOptions() {
     po::options_description config_file_options("Model Photometry options");
     config_file_options.add_options()
-    ("binary-photometry-matrix", po::value<string>(),
-        "The file to export in binary format the matrix containing the calculated photometries")
+    ("binary-photometry-grid", po::value<string>(),
+        "The file to export in binary format the grid containing the calculated photometries")
     ("sed-root-path", po::value<string>(),
         "The directory containing the SED datasets, organized in folders")
     ("sed-group", po::value<vector<string>>(),
@@ -70,11 +70,11 @@ public:
     auto axes_tuple = PhzDataModel::createAxesTuple(config.zList(), config.ebvList(),
                                   config.reddeningCurveList(), config.sedList());
 
-    std::unique_ptr<PhzModeling::ModelDataManager> model_function_manager {
-            new PhzModeling::ModelDataManager {axes_tuple,
+    std::unique_ptr<PhzModeling::ModelCellManager> model_function_manager {
+            new PhzModeling::ModelCellManager {axes_tuple,
                 config.sedDatasetProvider(), config.reddeningCurveDatasetProvider()}};
     
-    PhzModeling::ModelMatrix model_matrix {std::move(model_function_manager), axes_tuple};
+    PhzModeling::ModelGrid model_grid {std::move(model_function_manager), axes_tuple};
                 
     auto filter_provider = config.filterDatasetProvider();
     auto filter_list = config.filterList();
@@ -97,10 +97,10 @@ public:
       filter_compensations.push_back(ChMath::integrate(*filter_comp_func, x.front(), x.back()));
     }
                 
-    logger.info() << "Number of models to create photometry for: " << model_matrix.size();
+    logger.info() << "Number of models to create photometry for: " << model_grid.size();
     int counter {0};
     std::unique_ptr<std::vector<ChCatalog::Photometry>> photometry_vector {new std::vector<ChCatalog::Photometry>{}};
-    for (auto& model : model_matrix) {
+    for (auto& model : model_grid) {
       ++counter;
       if (counter%1000 == 0) {
         logger.info() << "Number of models proccessed: " << counter;
@@ -125,11 +125,11 @@ public:
       photometry_vector->push_back(ChCatalog::Photometry{filter_name_list_ptr, std::move(photometry_values)});
     }
     
-    PhzDataModel::PhotometryMatrix photometry_matrix {std::move(photometry_vector), axes_tuple};
+    PhzDataModel::PhotometryGrid photometry_grid {std::move(photometry_vector), axes_tuple};
     
     {
-      std::ofstream out {options["binary-photometry-matrix"].as<std::string>()};
-      GridContainer::binaryExport(out, photometry_matrix);
+      std::ofstream out {options["binary-photometry-grid"].as<std::string>()};
+      Grid::gridBinaryExport(out, photometry_grid);
     }
   }
   

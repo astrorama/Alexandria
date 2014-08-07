@@ -14,8 +14,8 @@ namespace po = boost::program_options;
 #include "ElementsKernel/ElementsProgram.h"
 #include "ElementsKernel/Version.h"
 #include "ChTable/AsciiReader.h"
-#include "PhzDataModel/PhotometryMatrix.h"
-#include "PhzDataModel/LikelihoodMatrix.h"
+#include "PhzDataModel/PhotometryGrid.h"
+#include "PhzDataModel/LikelihoodGrid.h"
 #include "PhzLikelihood/ModelScaleFunctor.h"
 #include "PhzLikelihood/ChiSquareFunctor.h"
 #include "ChCatalog/SourceAttributes/PhotometryAttributeFromRow.h"
@@ -44,8 +44,8 @@ public:
         "The catalog containing the observed photometric fluxes and their errors")
     ("photometric-catalog-format", po::value<string>()->default_value("ASCII"),
         "The format of the photometric catalog")
-    ("model-photometry-matrix", po::value<string>(),
-        "The file with the matrix containing the model photometries")
+    ("model-photometry-grid", po::value<string>(),
+        "The file with the grid containing the model photometries")
     ("phz-catalog", po::value<string>(),
         "The file to create the photometric redshift catalog in");
     return config_file_options;
@@ -56,10 +56,10 @@ public:
     
     const po::variables_map options = this->getVariablesMap();
     
-    string model_phot_matrix_file = options["model-photometry-matrix"].as<string>();
-    logger.info() << "Reading Model photometry matrix from file " << model_phot_matrix_file;
-    ifstream in {model_phot_matrix_file};
-    PhotometryMatrix model_phot_marix = binaryImportPhzMatrix<vector<Photometry>>(in);
+    string model_phot_grid_file = options["model-photometry-grid"].as<string>();
+    logger.info() << "Reading Model photometry grid from file " << model_phot_grid_file;
+    ifstream in {model_phot_grid_file};
+    PhotometryGrid model_phot_marix = phzGridBinaryImport<vector<Photometry>>(in);
     in.close();
     
     string phot_catalog_file = options["photometric-catalog"].as<string>();
@@ -102,11 +102,11 @@ public:
         logger.info() << "Processing source " << counter << " with ID " << source.getId();
       }
       
-      // Create the chi2 matrix
+      // Create the chi2 grid
       auto source_phot = source.getAttribute<Photometry>();
-      LikelihoodMatrix chi2_matrix {model_phot_marix.getAxesTuple()};
+      LikelihoodGrid chi2_grid {model_phot_marix.getAxesTuple()};
       auto model_iter = model_phot_marix.begin();
-      auto chi2_iter = chi2_matrix.begin();
+      auto chi2_iter = chi2_grid.begin();
       while (model_iter != model_phot_marix.end()) {
         double alpha = model_scale_functor(*source_phot, *model_iter);
         *chi2_iter = chi_2_functor(*source_phot, *model_iter, alpha);
@@ -114,13 +114,13 @@ public:
         ++chi2_iter;
       }
       
-      // Get the PHZ value as the maximum of the chi2 matrix
+      // Get the PHZ value as the maximum of the chi2 grid
       string sed {};
       string reddening_curve {};
       double ebv {};
       double z {};
       double max_chi2 = -1;
-      for (auto chi2_iter=chi2_matrix.begin(); chi2_iter!=chi2_matrix.end(); ++ chi2_iter) {
+      for (auto chi2_iter=chi2_grid.begin(); chi2_iter!=chi2_grid.end(); ++ chi2_iter) {
         if (*chi2_iter > max_chi2) {
           max_chi2 = *chi2_iter;
           sed = chi2_iter.axisValue<ModelParameter::SED>().qualifiedName();

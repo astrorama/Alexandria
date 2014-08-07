@@ -28,26 +28,26 @@ struct ModelParameter {
   };
 };
 
-typedef std::tuple<GridContainer::GridAxis<double>, GridContainer::GridAxis<double>,
-    GridContainer::GridAxis<XYDataset::QualifiedName>, GridContainer::GridAxis<XYDataset::QualifiedName>> ModelAxesTuple;
+typedef std::tuple<Grid::GridAxis<double>, Grid::GridAxis<double>,
+    Grid::GridAxis<XYDataset::QualifiedName>, Grid::GridAxis<XYDataset::QualifiedName>> ModelAxesTuple;
 
 ModelAxesTuple createAxesTuple(std::vector<double> zs, std::vector<double> ebvs,
                                std::vector<XYDataset::QualifiedName> reddening_curves,
                                std::vector<XYDataset::QualifiedName> seds) {
-  GridContainer::GridAxis<double> z_axis {"Z", std::move(zs)};
-  GridContainer::GridAxis<double> ebv_axis {"E(B-V)", std::move(ebvs)};
-  GridContainer::GridAxis<XYDataset::QualifiedName> reddening_curves_axis {"Reddening Curve", std::move(reddening_curves)};
-  GridContainer::GridAxis<XYDataset::QualifiedName> sed_axis {"SED", std::move(seds)};
+  Grid::GridAxis<double> z_axis {"Z", std::move(zs)};
+  Grid::GridAxis<double> ebv_axis {"E(B-V)", std::move(ebvs)};
+  Grid::GridAxis<XYDataset::QualifiedName> reddening_curves_axis {"Reddening Curve", std::move(reddening_curves)};
+  Grid::GridAxis<XYDataset::QualifiedName> sed_axis {"SED", std::move(seds)};
   return ModelAxesTuple{std::move(z_axis), std::move(ebv_axis),
                         std::move(reddening_curves_axis), std::move(sed_axis)};
 }
 
 template<typename GridCellManager>
-using PhzMatrix = typename GridContainer::GridContainer<GridCellManager, double, double, XYDataset::QualifiedName, XYDataset::QualifiedName>;
+using PhzGrid = typename Grid::GridContainer<GridCellManager, double, double, XYDataset::QualifiedName, XYDataset::QualifiedName>;
 
 template<typename GridCellManager>
-PhzMatrix<GridCellManager> binaryImportPhzMatrix(std::istream& in) {
-  return GridContainer::binaryImport<GridCellManager, double, double, XYDataset::QualifiedName, XYDataset::QualifiedName>(in);
+PhzGrid<GridCellManager> phzGridBinaryImport(std::istream& in) {
+  return Grid::gridBinaryImport<GridCellManager, double, double, XYDataset::QualifiedName, XYDataset::QualifiedName>(in);
 }
 
 }

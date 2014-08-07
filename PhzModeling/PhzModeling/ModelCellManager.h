@@ -1,11 +1,11 @@
 /** 
- * @file PhzModeling/ModelDataManager.h
+ * @file PhzModeling/ModelCellManager.h
  * @date May 20, 2014
  * @author Nikolaos Apostolakos
  */
 
-#ifndef PHZMODELING_MODELDATAMANAGER_H
-#define	PHZMODELING_MODELDATAMANAGER_H
+#ifndef PHZMODELING_MODELCELLMANAGER_H
+#define	PHZMODELING_MODELCELLMANAGER_H
 
 #include <iterator>
 #include <memory>
@@ -23,7 +23,7 @@
 
 namespace PhzModeling {
 
-class ModelDataManager {
+class ModelCellManager {
   
 public:
   
@@ -32,7 +32,7 @@ public:
   
   class iterator : public std::iterator<std::random_access_iterator_tag, data_type> {
   public:
-    iterator(ModelDataManager& owner, size_t current_index) : m_owner(owner), m_current_index{current_index} { }
+    iterator(ModelCellManager& owner, size_t current_index) : m_owner(owner), m_current_index{current_index} { }
     iterator(const iterator& other) : m_owner(other.m_owner), m_current_index{other.m_current_index} { }
     iterator& operator=(const iterator& other) {
       m_current_index = other.m_current_index;
@@ -94,10 +94,10 @@ public:
       return *m_current_redshifted_sed;
     }
   private:
-    ModelDataManager& m_owner;
+    ModelCellManager& m_owner;
     size_t m_current_index;
-    decltype(GridContainer::makeGridIndexHelper(std::declval<PhzDataModel::ModelAxesTuple>()))
-        m_index_helper = GridContainer::makeGridIndexHelper(m_owner.m_axes_tuple);
+    decltype(Grid::makeGridIndexHelper(std::declval<PhzDataModel::ModelAxesTuple>()))
+        m_index_helper = Grid::makeGridIndexHelper(m_owner.m_axes_tuple);
     size_t m_current_sed_index {0};
     size_t m_current_reddening_curve_index {0};
     size_t m_current_ebv_index {0};
@@ -106,7 +106,7 @@ public:
     std::unique_ptr<XYDataset::XYDataset> m_current_redshifted_sed;
   }; // end of class iterator
   
-  ModelDataManager(PhzDataModel::ModelAxesTuple axes_tuple,
+  ModelCellManager(PhzDataModel::ModelAxesTuple axes_tuple,
                            std::unique_ptr<XYDataset::XYDatasetProvider> sed_provider,
                            std::unique_ptr<XYDataset::XYDatasetProvider> reddening_curve_provider)
               : m_axes_tuple{std::move(axes_tuple)} {
@@ -158,9 +158,9 @@ private:
   std::vector<std::unique_ptr<ChMath::Function>> m_reddening_curve_function_vector;
   std::vector<ExtinctionFunctor> m_reddening_curve_functor_vector;
   
-}; // end of class ModelFunctionDataManager
+}; // end of class ModelCellManager
 
 } // end of namespace PhzModeling
 
-#endif	/* PHZMODELING_MODELDATAMANAGER_H */
+#endif	/* PHZMODELING_MODELCELLMANAGER_H */
 

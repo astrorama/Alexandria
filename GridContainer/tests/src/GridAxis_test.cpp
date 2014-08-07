@@ -20,10 +20,10 @@ BOOST_AUTO_TEST_CASE(name) {
   // Given
   std::string name = "AxisName";
   std::vector<double> knots {};
-  GridContainer::GridAxis<double> axis_info {name, knots};
+  Grid::GridAxis<double> axis {name, knots};
   
   // When
-  auto& result = axis_info.name();
+  auto& result = axis.name();
   
   // Then
   BOOST_CHECK_EQUAL(result, name);
@@ -39,10 +39,10 @@ BOOST_AUTO_TEST_CASE(size) {
   // Given
   std::string name = "AxisName";
   std::vector<double> knots {{1., 2., 2.5, 3.8}};
-  GridContainer::GridAxis<double> axis_info {name, knots};
+  Grid::GridAxis<double> axis {name, knots};
   
   // When
-  auto size = axis_info.size();
+  auto size = axis.size();
   
   // Then
   BOOST_CHECK_EQUAL(size, knots.size());
@@ -58,11 +58,11 @@ BOOST_AUTO_TEST_CASE(iterator) {
   // Given
   std::string name = "AxisName";
   std::vector<double> knots {{1., 2., 2.5, 3.8}};
-  GridContainer::GridAxis<double> axis_info {name, knots};
+  Grid::GridAxis<double> axis {name, knots};
   
   // When
-  auto axis_iter = axis_info.begin();
-  auto axis_end = axis_info.end();
+  auto axis_iter = axis.begin();
+  auto axis_end = axis.end();
   auto knots_iter = knots.begin();
   
   // Then
@@ -83,11 +83,11 @@ BOOST_AUTO_TEST_CASE(indexAccess) {
   // Given
   std::string name = "AxisName";
   std::vector<double> knots {{1., 2., 2.5, 3.8}};
-  GridContainer::GridAxis<double> axis_info {name, knots};
+  Grid::GridAxis<double> axis {name, knots};
   
   // When
-  auto axis_iter = axis_info.begin();
-  auto axis_end = axis_info.end();
+  auto axis_iter = axis.begin();
+  auto axis_end = axis.end();
   auto knots_iter = knots.begin();
   
   // Then

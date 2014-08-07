@@ -6,7 +6,7 @@
 
 #include "ElementsKernel/ElementsException.h"
 
-namespace GridContainer {
+namespace Grid {
 
 template<typename... AxesTypes>
 GridIndexHelper<AxesTypes...>::GridIndexHelper(const std::tuple<GridAxis<AxesTypes>...>& axes_tuple)

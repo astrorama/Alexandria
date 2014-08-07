@@ -4,20 +4,20 @@
  * @author Nikolaos Apostolakos
  */
 
-#ifndef GRIDCONTAINER_GRIDCONTAINERINDEXHELPER_H
-#define	GRIDCONTAINER_GRIDCONTAINERINDEXHELPER_H
+#ifndef GRIDCONTAINER_GRIDINDEXHELPER_H
+#define	GRIDCONTAINER_GRIDINDEXHELPER_H
 
 #include <vector>
 #include <tuple>
 #include "GridContainer/GridAxis.h"
 #include "_impl/GridConstructionHelper.h"
 
-namespace GridContainer {
+namespace Grid {
 
 /**
  * @class GridIndexHelper
  * 
- * @brief Helper class for converting multi-dimensional matrix coordinates to
+ * @brief Helper class for converting multi-dimensional grid coordinates to
  * the index of a long data array and vice versa
  * 
  * @details
@@ -100,9 +100,9 @@ GridIndexHelper<AxesTypes...> makeGridIndexHelper(const std::tuple<GridAxis<Axes
   return GridIndexHelper<AxesTypes...>(axes_tuple);
 }
 
-} // end of namespace GridContainer
+} // end of namespace Grid
 
 #include "GridContainer/_impl/GridIndexHelper.icpp"
 
-#endif	/* GRIDCONTAINER_GRIDCONTAINERINDEXHELPER_H */
+#endif	/* GRIDCONTAINER_GRIDINDEXHELPER_H */
 

@@ -22,8 +22,8 @@ namespace po = boost::program_options;
 #include "ChTable/FitsWriter.h"
 #include "PhzConfiguration/ModelingConfiguration.h"
 #include "PhzDataModel/PhzModel.h"
-#include "PhzModeling/ModelMatrix.h"
-#include "PhzModeling/ModelDataManager.h"
+#include "PhzModeling/ModelGrid.h"
+#include "PhzModeling/ModelCellManager.h"
 
 using namespace std;
 using namespace XYDataset;
@@ -74,11 +74,11 @@ public:
     auto axes_tuple = createAxesTuple(config.zList(), config.ebvList(),
                                   config.reddeningCurveList(), config.sedList());
 
-    std::unique_ptr<PhzModeling::ModelDataManager> model_function_manager {
-            new PhzModeling::ModelDataManager {axes_tuple,
+    std::unique_ptr<PhzModeling::ModelCellManager> model_function_manager {
+            new PhzModeling::ModelCellManager {axes_tuple,
                 config.sedDatasetProvider(), config.reddeningCurveDatasetProvider()}};
     
-    PhzModeling::ModelMatrix model_matrix {std::move(model_function_manager), axes_tuple};
+    PhzModeling::ModelGrid model_grid {std::move(model_function_manager), axes_tuple};
     
     // We get the output directory
     if (options["output-dir"].empty()) {
@@ -103,12 +103,12 @@ public:
       throw ElementsException() << "Parameter output-format must be either 'FITS' or 'ASCII'";
     }
     
-    size_t size = model_matrix.size();
+    size_t size = model_grid.size();
     size_t size_length = boost::lexical_cast<std::string>(size).size();
     size_t counter {};
     logger.info() << "Exporting " << size << " datasets in "
                   << out_dir << " in " << out_format << " format...";
-    for (auto iter=model_matrix.begin(); iter!=model_matrix.end(); ++iter) {
+    for (auto iter=model_grid.begin(); iter!=model_grid.end(); ++iter) {
       ++counter;
       QualifiedName sed = iter.axisValue<ModelParameter::SED>();
       QualifiedName reddening_curve = iter.axisValue<ModelParameter::REDDENING_CURVE>();
