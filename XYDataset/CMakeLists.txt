@@ -15,21 +15,21 @@ elements_add_library(XYDataset src/lib/*.cpp
 
 #===== Boost tests =============================================================
 
-elements_add_unit_test(XYDataset_test tests/src/XYDataset_test.cpp tests/src/TestMain.cpp
-                       LINK_LIBRARIES XYDataset TYPE Boost ChTable)
+elements_add_unit_test(XYDataset_test tests/src/XYDataset_test.cpp
+                       LINK_LIBRARIES XYDataset TYPE Boost)
 
-elements_add_unit_test(FileSystemProvider_test tests/src/FileSystemProvider_test.cpp tests/src/TestMain.cpp
-                       LINK_LIBRARIES XYDataset TYPE Boost ChTable)
+elements_add_unit_test(FileSystemProvider_test tests/src/FileSystemProvider_test.cpp
+                       LINK_LIBRARIES XYDataset TYPE Boost)
 
-elements_add_unit_test(AsciiParser_test tests/src/AsciiParser_test.cpp tests/src/TestMain.cpp
-                       LINK_LIBRARIES XYDataset TYPE Boost ChTable)
+elements_add_unit_test(AsciiParser_test tests/src/AsciiParser_test.cpp
+                       LINK_LIBRARIES XYDataset TYPE Boost)
 
-elements_add_unit_test(QualifiedName_test tests/src/QualifiedName_test.cpp tests/src/TestMain.cpp
-                       LINK_LIBRARIES XYDataset TYPE Boost ChTable)
+elements_add_unit_test(QualifiedName_test tests/src/QualifiedName_test.cpp
+                       LINK_LIBRARIES XYDataset TYPE Boost)
 
-elements_add_unit_test(FitsParser_test tests/src/FitsParser_test.cpp tests/src/TestMain.cpp
-                       LINK_LIBRARIES XYDataset TYPE Boost ChTable)
-                       
-elements_add_unit_test(StringFunctions_test tests/src/StringFunctions_test.cpp tests/src/TestMain.cpp
-                       LINK_LIBRARIES XYDataset TYPE Boost ChTable)
+elements_add_unit_test(FitsParser_test tests/src/FitsParser_test.cpp
+                       LINK_LIBRARIES XYDataset TYPE Boost)
+
+elements_add_unit_test(StringFunctions_test tests/src/StringFunctions_test.cpp
+                       LINK_LIBRARIES XYDataset TYPE Boost)
 

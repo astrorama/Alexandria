@@ -10,8 +10,8 @@ elements_add_library(ChMath src/lib/function/*.cpp src/lib/interpolation/*.cpp
 
 #===== Boost tests =============================================================
 
-elements_add_unit_test(function_all_tests tests/src/function/*_test.cpp tests/src/TestMain.cpp
+elements_add_unit_test(function_all_tests tests/src/function/*_test.cpp
                        LINK_LIBRARIES ChMath XYDataset TYPE Boost)
 
-elements_add_unit_test(interpolation_all_tests tests/src/interpolation/*_test.cpp tests/src/TestMain.cpp
+elements_add_unit_test(interpolation_all_tests tests/src/interpolation/*_test.cpp
                        LINK_LIBRARIES ChMath XYDataset TYPE Boost)

@@ -19,33 +19,33 @@ elements_add_library(ChCatalog src/lib/*.cpp
 #===== Boost tests =============================================================
 
 
-elements_add_unit_test(Photometry_test tests/src/SourceAttributes/Photometry_test.cpp tests/src/TestMain.cpp
-                       LINK_LIBRARIES ChCatalog TYPE Boost)
-                       
-elements_add_unit_test(PhotometryAttributeFromRow_test tests/src/SourceAttributes/PhotometryAttributeFromRow_test.cpp tests/src/TestMain.cpp
-                       LINK_LIBRARIES ChCatalog TYPE Boost)
-                       
-elements_add_unit_test(Coordinates_test tests/src/SourceAttributes/Coordinates_test.cpp tests/src/TestMain.cpp
+elements_add_unit_test(Photometry_test tests/src/SourceAttributes/Photometry_test.cpp
                        LINK_LIBRARIES ChCatalog TYPE Boost)
 
-elements_add_unit_test(SpectroscopicRedshift_test tests/src/SourceAttributes/SpectroscopicRedshift_test.cpp tests/src/TestMain.cpp
+elements_add_unit_test(PhotometryAttributeFromRow_test tests/src/SourceAttributes/PhotometryAttributeFromRow_test.cpp
                        LINK_LIBRARIES ChCatalog TYPE Boost)
 
-elements_add_unit_test(SpectroscopicRedshiftAttributeFromRow_test tests/src/SourceAttributes/SpectroscopicRedshiftAttributeFromRow_test.cpp tests/src/TestMain.cpp
-                       LINK_LIBRARIES ChCatalog TYPE Boost)
-                       
-elements_add_unit_test(Source_test tests/src/Source_test.cpp tests/src/TestMain.cpp
+elements_add_unit_test(Coordinates_test tests/src/SourceAttributes/Coordinates_test.cpp
                        LINK_LIBRARIES ChCatalog TYPE Boost)
 
-elements_add_unit_test(Catalog_test tests/src/Catalog_test.cpp tests/src/TestMain.cpp
+elements_add_unit_test(SpectroscopicRedshift_test tests/src/SourceAttributes/SpectroscopicRedshift_test.cpp
+                       LINK_LIBRARIES ChCatalog TYPE Boost)
+
+elements_add_unit_test(SpectroscopicRedshiftAttributeFromRow_test tests/src/SourceAttributes/SpectroscopicRedshiftAttributeFromRow_test.cpp
+                       LINK_LIBRARIES ChCatalog TYPE Boost)
+
+elements_add_unit_test(Source_test tests/src/Source_test.cpp
+                       LINK_LIBRARIES ChCatalog TYPE Boost)
+
+elements_add_unit_test(Catalog_test tests/src/Catalog_test.cpp
                        LINK_LIBRARIES ChCatalog TYPE Boost)
 
 #-------------------------------------------------------------------------------
 
-elements_add_unit_test(ChCatalog_all_attribute_tests tests/src/SourceAttributes/*_test.cpp tests/src/TestMain.cpp
+elements_add_unit_test(ChCatalog_all_attribute_tests tests/src/SourceAttributes/*_test.cpp
                        LINK_LIBRARIES ChCatalog TYPE Boost)
-                       
-elements_add_unit_test(ChCatalog_all_tests tests/src/*_test.cpp tests/src/TestMain.cpp
+
+elements_add_unit_test(ChCatalog_all_tests tests/src/*_test.cpp
                        LINK_LIBRARIES ChCatalog TYPE Boost)
 
 #-------------------------------------------------------------------------------
