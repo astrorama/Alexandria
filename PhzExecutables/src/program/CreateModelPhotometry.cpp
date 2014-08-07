@@ -129,7 +129,7 @@ public:
     
     {
       std::ofstream out {options["binary-photometry-matrix"].as<std::string>()};
-      ChMatrix::binaryExport(out, photometry_matrix);
+      GridContainer::binaryExport(out, photometry_matrix);
     }
   }
   

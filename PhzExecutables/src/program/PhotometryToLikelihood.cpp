@@ -104,7 +104,7 @@ public:
       
       // Create the chi2 matrix
       auto source_phot = source.getAttribute<Photometry>();
-      LikelihoodMatrix chi2_matrix {model_phot_marix.axisInfoTuple()};
+      LikelihoodMatrix chi2_matrix {model_phot_marix.getAxesTuple()};
       auto model_iter = model_phot_marix.begin();
       auto chi2_iter = chi2_matrix.begin();
       while (model_iter != model_phot_marix.end()) {

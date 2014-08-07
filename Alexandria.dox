@@ -4,10 +4,10 @@ The Alexandria project is a collection of generic reusable modules, which
 target a more reliable and easier programming experience. The contained
 modules are the following:
 
-- \subpage chcatalog "ChCatalog module" : Module for handling catalog data
-- \subpage chtable "ChTable module"     : Module for ASCII and FITS table handling
-- \subpage xydataset "XYDataset module" : Module providing an interface for accessing two dimensional datasets
-- \subpage chmatrix "ChMatrix module"   : Module providing multi-dimensional matrices
-- \subpage chmath "ChMath module"       : API for mathematical function definition and manipulation
+- \subpage chcatalog "ChCatalog module"         : Module for handling catalog data
+- \subpage chtable "ChTable module"             : Module for ASCII and FITS table handling
+- \subpage xydataset "XYDataset module"         : Module providing an interface for accessing two dimensional datasets
+- \subpage gridcontainer "GridContainer module" : Module providing multi-dimensional matrices
+- \subpage chmath "ChMath module"               : API for mathematical function definition and manipulation
 
 */

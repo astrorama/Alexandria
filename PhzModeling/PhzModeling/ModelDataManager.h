@@ -15,7 +15,7 @@
 #include "ElementsKernel/ElementsException.h"
 #include "ChMath/function/Function.h"
 #include "ChMath/interpolation/interpolation.h"
-#include "ChMatrix/MatrixIndexHelper.h"
+#include "GridContainer/GridIndexHelper.h"
 #include "XYDataset/XYDatasetProvider.h"
 #include "XYDataset/XYDataset.h"
 #include "PhzDataModel/PhzModel.h"
@@ -96,8 +96,8 @@ public:
   private:
     ModelDataManager& m_owner;
     size_t m_current_index;
-    decltype(ChMatrix::makeMatrixIndexHelper(std::declval<PhzDataModel::ModelAxesTuple>()))
-        m_index_helper = ChMatrix::makeMatrixIndexHelper(m_owner.m_axes_tuple);
+    decltype(GridContainer::makeGridIndexHelper(std::declval<PhzDataModel::ModelAxesTuple>()))
+        m_index_helper = GridContainer::makeGridIndexHelper(m_owner.m_axes_tuple);
     size_t m_current_sed_index {0};
     size_t m_current_reddening_curve_index {0};
     size_t m_current_ebv_index {0};

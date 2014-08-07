@@ -1,0 +1,996 @@
+namespace GridContainer {
+
+/** \page gridcontainer GridContainer module
+
+\tableofcontents
+
+The GridContainer module provides a highly configurable, multi-dimensional matrix,
+which provides extended functionality related with the information about its
+axes (in an efficient way). Note that this module is **NOT** a mathematical
+module. The provided GridContainer is closer to a collection structure than a
+mathematical matrix and no mathematical functionality is provided.
+
+This page contains multiple code examples. To improve readability, the following
+two lines are assumed for each example:
+
+\code{.cpp}
+  using namespace GridContainer;
+  using namespace std;
+\endcode
+
+Note that these lines are used to make the example code more readable and they
+will introduce all the symbols of the GridContainer and std namespaces in the global
+namespace, so they must be sparingly used.
+
+At the bottom of this page can be found the entire code of the examples as a
+single file.
+
+\section datamodel GridContainer data model
+
+The GridContainer data model consists of three concepts, the GridAxis class, which
+contains information of a matrix axis, the **GridCellManager**, which handles the
+matrix cell values and the GridContainer class, which combines everything together. The
+following sections describe these concepts and provide examples of how to use
+them.
+
+\subsection axisinfo GridAxis class
+
+Each axis of a GridContainer can be seen as a collection of (zero based) indexed knots
+(knot_0, knot_1, knot_2 etc). The index of each knot represents the coordinate
+of the matrix cells and the value of the knot represents the world value of the
+axis. For example, an axis representing the wavelength might have the following
+knots:
+
+| Knot Index | Knot Value |
+|:----------:|:----------:|
+|      0     |    3000    |
+|      1     |    3500    |
+|      2     |    4000    |
+|      3     |    4500    |
+|      4     |    5000    |
+
+Using the above axis, to access the matrix cells which have wavelength equal
+with 4000, the wavelength axis coordinate must be 2.
+
+\subsubsection axisinfocreation Creating GridAxis objects
+
+Constructing the GridAxis object representing the above axis can be done using
+the following code:
+
+\code {.cpp}
+  vector<int> knot_values {3000, 3500, 4000, 4500, 5000};
+  GridAxis<int> wavelength_axis {"Wavelength", move(knot_values)};
+\endcode
+
+In the code above one can make the following observations:
+
+- To support axes with knots of different types, the GridAxis class gets this
+  type as a template parameter. In the example above the type chosen is `int` 
+  (`GridAxis<int>`). To use knots of `string` type, the definitions should be
+  `GridAxis<string>`. Note that user defined types are also supported.
+
+- The first parameter of the GridAxis constructor is a string which describes
+  the *axis name*. The axes of a GridContainer must have unique names.
+
+- The values of the knots must be given during construction. This is because the
+  GridAxis class is immutable and further modifications are not allowed.
+
+- The number of knots is not given explicitly, but it is inferred from the
+  vector containing the knot values.
+
+\subsubsection axisinfoaccess Using GridAxis objects
+
+Retrieving the axis information from an GridAxis object is trivial. The knot
+values can be accessed either by using an iterator or directly, by using the
+brackets (`[]`) operator, as demonstrated in the following example:
+
+\code{.cpp}
+  // Getting the axis name
+  cout << "Axis name : " << wavelength_axis.name() << "\n";
+  
+  // Getting the number of knots
+  cout << "Number of knots : " << wavelength_axis.size() << "\n";
+  
+  // Accessing a knot value directly using its (zero based) index
+  cout << "Second knot value : " << wavelength_axis[1] << "\n";
+  
+  // Accessing the knots using the iterator
+  cout << "All knot values : ( ";
+  for (auto& knot_value : wavelength_axis) {
+    cout << knot_value << " ";
+  }
+  cout << ")\n";
+\endcode
+
+Output:
+
+\code
+Axis name : Wavelength
+Number of knots : 5
+Second knot value : 3500
+All knot values : ( 3000 3500 4000 4500 5000 )
+\endcode
+
+\subsection datamanager GridCellManager interface
+
+The GridContainer class does not implement in itself a data structure to
+hold the array of grid cell values. Instead, it delegates this task to a GridCellManager
+which is provided as a template to the GridContainer class (with signatures
+such as GridContainer<GridCellManager, ...>, where the additional template
+parameters are related to the grid axes, see GridContainer below). 
+
+Perhaps, the simplest case is when a  std::vector  (say a std::vector<int>)
+is taken as a GridCellManager. In this  case, it is the vector that holds
+and manages the grid cell values and we have GridContainer<vector<int>, ...>.
+However for a maximum of flexibility, the GridContainer never use directly the
+vector<int> itself, but a GridCellManagerTraits which provides an interface to
+manipulate the grid cell values. In the case of a std::vector<int> GridCellManager,
+calls will be made to a GridCellManagerTraits<std::vector<int>>, but in the
+more general case we have GridCellManagerTraits<GridCellManager>.
+
+The GridCellManagerTraits must implement the following interfaces:
+
+- type GridCellManagerTraits::cell_type<br/>
+  The type of the data kept by the `GridCellManager`. This is the type "int" in our 
+  above vector example.
+
+- type GridCellManagerTraits::iterator<br/>
+  The iterator type which is used to iterate through the grid cells.
+
+- function GridCellManagerTraits::factory()<br/>
+  Creates a new `GridCellManager` instance, which manages the given number of cells.
+
+- function GridCellManagerTraits::size()<br/>
+  Returns the number of cells managed by the given `GridCellManager`.
+
+- function GridCellManagerTraits::begin()<br/>
+  Returns an iterator pointing to the first cell managed by the GridCellManager.
+ 
+- function GridCellManagerTraits::end()<br/>
+  Returns an iterator pointing right after the last cell managed by the
+  GridCellManager. 
+
+- constant GridCellManagerTraits::enable_boost_serialize<br/>
+  Indicates if the GridCellManager is boost serializable (this is explained later
+  in the \ref serialization section).
+
+There is a (default) GridCellManagerTraits<GridCellManager> implementation for the
+simplest case where the GridCellManager is a std::vector. In this case, for example,
+the implementation of GridCellManagerTraits::size() is straightforwards, it is just
+delegated to the vector in the following way.
+
+\code{.cpp}
+template<typename T>
+size_t GridCellManagerTraits<std::vector<T>>::size(const std::vector<T>& vector) {
+  return vector.size();
+}
+\endcode
+
+The proposed default is then to use a std::vector as GridCellManager and the
+corresponding GridCellManagerTraits implementation. However, it is possible to
+propose an alternative, say MyGridCellManager if a corresponding implementation
+of GridCellManagerTraits<MyGridCellManager> is also provided (see annexe 1 for 
+an example of such an implementation).
+
+\subsection matrix GridContainer class
+
+As explained earlier, the GridContainer class is combining together the concepts of the
+GridCellManager (which keeps the GridContainer data) and the information of the
+corresponding axes (described as GridAxis objects).
+
+\subsubsection creatematrix Creating GridContainer objects
+
+Each GridContainer object has a fixed parameter space, meaning that, once created, its
+axes cannot be modified. For this reason, the GridAxis objects representing the
+GridContainer axes must be created beforehand. The following code demonstrates how to
+create a three dimensional matrix:
+
+\code{.cpp}
+// Create the axes descriptions
+GridAxis<int> int_axis {"Integers", {1, 2, 3, 4, 5}};
+GridAxis<double> double_axis {"Doubles", {0.1, 0.2}};
+GridAxis<string> string_axis {"Strings", {"one", "two", "three"}};
+
+// Create a matrix with integer data
+GridContainer<vector<int>, int, double, string> matrix {int_axis, double_axis, string_axis};
+\endcode
+
+The first template parameter of the GridContainer class defines the `GridCellManager` type
+that the GridContainer will use. In the example above this type is `vector<int>`, which
+shows that the GridContainer will keep integer values and it will use a vector as the
+GridCellManager.
+
+The rest of the template parameters define the types of the axes world values.
+In our example the first axis has integer knots, the second double knots and the
+third strings. Note that the axes knots can be of any type, even of user defined
+types. The axes given as parameters to the constructor must be of the correct
+types, otherwise the compilation will fail.
+
+In the example above, the vector for keeping the matrix data is automatically
+created by the constructor, by using the GridCellManagerTraits::factory() method.
+For the case of a `GridCellManager` type which does not provide the `factory()`
+method in its GridCellManagerTraits specialization, or for the case some default
+initialization values are required, the GridContainer class provides a second
+constructor:
+
+\code{.cpp}
+  // Create and initialize the GridCellManager instance
+  unique_ptr<vector<int>> data_manager {new vector<int>{}};
+  for (int i=0; i<30; ++i) {
+    data_manager->push_back(i);
+  }
+  // Create the GridContainer object
+  GridContainer<vector<int>, int, double, string> initialized_matrix
+                    {move(data_manager), int_axis, double_axis, string_axis};
+\endcode
+
+The GridCellManager instance is passed as a `unique_ptr` to indicate the change of
+ownership (the GridContainer instance will own the data manager from that moment on).
+Note that the size of the given `GridCellManager` must be the size required
+according the axes sizes. If a manager of wrong size is given a runtime
+exception is thrown.
+
+The last case of creating Matrices is when one already has a GridContainer instance and
+want to create a second GridContainer with the same parameter space (axes). This is a
+common operation, so it is supported by the GridContainer API as demonstrated by the
+following code:
+
+\code{.cpp}
+GridContainer<vector<bool>, int, double, string> bool_matrix {matrix.getAxesTuple()};
+\endcode
+
+The code above creates a new matrix of booleans, with the same axes like the
+parameter. Note that only the axes number and types need to match between the
+two matrices. The new matrix GridCellManager can be of any type.
+
+\subsubsection matrixinformation Retrieving GridContainer information
+
+The GridContainer class provides a range of methods for retrieving its information, as
+demonstrated by the following code:
+
+\code{.cpp}
+  // Get the matrix dimensionality
+  cout << "Dimensionality: " << matrix.axisNumber() << "\n";
+
+  // Get the total number of cells of the matrix
+  cout << "Total number of cells: " << matrix.size() << "\n";
+
+  // Retrieve information about the third axis
+  auto& third_axis = matrix.axisInfo<2>();
+
+  // Print the axis information
+  cout << "Third axis name: " << third_axis.name() << "\n";
+  cout << "Third axis knots: ";
+  for (auto& knot : third_axis) {
+    cout << knot << " ";
+  }
+\endcode
+
+Output:
+
+\code
+Dimensionality: 3
+Total number of cells: 30
+Third axis name: Strings
+Third axis knots: one two three
+\endcode
+
+Note that the axes information is retrieved by the GridContainer::getAxis() method,
+which returns a reference to an GridAxis object. The axis to get the information
+for is specified with an integer template parameter representing its (zero
+based) index.
+
+\subsubsection directmatrixaccess Direct cell access
+
+The GridContainer cells can be directly accessed based on their coordinates, by using
+the parenthesis operator. This operator returns a reference to the cell value
+which can be used both for reading and writing:
+
+\code{.cpp}
+  // Set the value of a specific cell
+  matrix(2, 0, 1) = 50;
+  // Read the value of a specific cell
+  cout << matrix(2, 0, 1) << "\n";
+\endcode
+
+Note that the parenthesis operator will not perform any bound checks to the
+given indices. If any of the indices is out of bounds will result to *undefined
+behavior*. For cases the indices are not guaranteed to be in bounds, the
+alternative method at() should be used (with the implied performance cost),
+which behaves the same way like the parenthesis operator, but it throws an
+ElementsException in the case any of the indices is out of bounds:
+
+\code{.cpp}
+  size_t coord = .....;
+  try {
+    // Set the value of a specific cell
+    matrix.at(coord, 0, 1) = 50;
+    // Read the value of a specific cell
+    cout << matrix.at(coord, 0, 1) << "\n";
+  } catch (ElementsException e) {
+    cout << e.what() << "\n";
+  }
+\endcode
+
+In the above example if the coord variable has a value less than the first axis
+size the code will print the cell value. If it is out of bounds, it will print
+the message of the exception.
+
+Accessing the matrix cells by using the parenthesis operator and the at() method
+is very useful for accessing a single cell of which the coordinates are known at
+the time of the call. This access though includes an overhead of the coordinates
+translation, so the use of the GridContainer iterator (described bellow) is recommended
+for any case a big number of cells is accessed.
+
+\subsubsection matrixiterator GridContainer iterator
+
+The second way to access the GridContainer cells, both for reading and writing, is by
+using the GridContainer iterator. This method is the most efficient because it does not
+imply any overhead related with axes management. For example, the following code
+is almost as fast as accessing directly the vector keeping the values:
+
+\code{.cpp}
+  // Set all the matrix values
+  int counter {0};
+  for (auto& cell : matrix) {
+    cell = ++counter;
+  }
+  // Print all the matrix cells
+  cout << "GridContainer cells: ";
+  for (auto& cell : matrix) {
+    cout << cell << " ";
+  }
+\endcode
+
+Output:
+
+\code
+GridContainer cells: 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30
+\endcode
+
+The order the cells are iterated is such so that the first axis varies the
+fastest and the last the slowest. Note that using the iterator for accessing the
+matrix cells is the most efficient way, but it does not provide any information
+about the axes of each cell. This information can be retrieved by using the
+special methods of the GridContainer::iterator when needed (which implies some
+computing overhead):
+
+\code{.cpp}
+  // Print detailed information for each cell
+  for (auto iter=matrix.begin(); iter!=matrix.end(); ++iter) {
+    cout << "Cell (" << iter.axisValue<0>() << ", " << iter.axisValue<1>()
+         << ", " << iter.axisValue<2>() << "): " << *iter << "\n";
+  }
+\endcode
+
+Output:
+
+\code
+Cell (1, 0.1, one): 1
+Cell (2, 0.1, one): 2
+Cell (3, 0.1, one): 3
+Cell (4, 0.1, one): 4
+Cell (5, 0.1, one): 5
+Cell (1, 0.2, one): 6
+Cell (2, 0.2, one): 7
+Cell (3, 0.2, one): 8
+Cell (4, 0.2, one): 9
+Cell (5, 0.2, one): 10
+Cell (1, 0.1, two): 11
+Cell (2, 0.1, two): 12
+Cell (3, 0.1, two): 13
+Cell (4, 0.1, two): 14
+Cell (5, 0.1, two): 15
+Cell (1, 0.2, two): 16
+Cell (2, 0.2, two): 17
+Cell (3, 0.2, two): 18
+Cell (4, 0.2, two): 19
+Cell (5, 0.2, two): 20
+Cell (1, 0.1, three): 21
+Cell (2, 0.1, three): 22
+Cell (3, 0.1, three): 23
+Cell (4, 0.1, three): 24
+Cell (5, 0.1, three): 25
+Cell (1, 0.2, three): 26
+Cell (2, 0.2, three): 27
+Cell (3, 0.2, three): 28
+Cell (4, 0.2, three): 29
+Cell (5, 0.2, three): 30
+\endcode
+
+The methods provided by the iterator for accessing the axes information are the
+GridContainer::iterator::axisIndex(), which returns the related coordinate, and the
+GridContainer::iterator::axisValue(), which returns the world value of the axis knot.
+Both methods receive the axis (zero based) index as an integer template
+parameter. Note that the overhead of the second method is higher than the one of
+the first, so it should be avoided in cases performance is an issue.
+
+\subsubsection matrixslicing GridContainer slicing
+
+The GridContainer module provides very efficient iteration over slices of a GridContainer.
+This is provided by the GridContainer::iterator::fixAxisByIndex() and
+GridContainer::iterator::fixAxisByValue() methods, as demonstrated by the following
+code:
+
+\code{.cpp}
+  // Get an iterator and fix the third axis
+  auto iter = matrix.begin();
+  iter.fixAxisByValue<2>("two");
+
+  // Print detailed information for each cell
+  do {
+    cout << "Cell (" << iter.axisValue<0>() << ", " << iter.axisValue<1>()
+         << ", " << iter.axisValue<2>() << "): " << *iter << "\n";
+  } while (++iter != matrix.end());
+\endcode
+
+Output:
+
+\code
+Cell (1, 0.1, two): 11
+Cell (2, 0.1, two): 12
+Cell (3, 0.1, two): 13
+Cell (4, 0.1, two): 14
+Cell (5, 0.1, two): 15
+Cell (1, 0.2, two): 16
+Cell (2, 0.2, two): 17
+Cell (3, 0.2, two): 18
+Cell (4, 0.2, two): 19
+Cell (5, 0.2, two): 20
+\endcode
+
+When a method for fixing an axis is called, the iterator moves to the next cell
+with the given axis coordinate (or stays where it is if the current cell has
+this coordinate). Increasing further the iterator will move it only through the
+cells of the slice.
+
+The functions for fixing an iterators axes can be chained to fix more than one
+axes. For example, if in the previous code we had used:
+
+\code{.cpp}
+iter.fixAxisByValue<2>("two").fixAxisByIndex<0>(2).fixAxisByValue<1>(.1);
+\endcode
+
+we would get the following output:
+
+\code
+Cell (3, 0.1, two): 13
+\endcode
+
+The order in which the axes are fixed is not important, but keep in mind that if
+the current cell does not have the requested axis coordinate the iterator is
+shifted. For this reason it is best to fix the iterator axes right after
+retrieving the iterator with the GridContainer::begin() method. If an axis is fixed a
+second time, the iterator will ignore the first fixing and will iterate through
+the new slice.
+
+\section serialization GridContainer I/O
+
+To be able to import and export GridContainer objects, the GridContainer module provides by
+default support for binary boost serialization. This support is enabled by
+including the `GridContainer/serialize.h` file:
+
+\code{.cpp}
+#include "GridContainer/serialize.h"
+\endcode
+
+\subsection defaultserialization Default GridContainer Serialization
+
+For the simple case that a vector is used as a `GridCellManager` and the cell type,
+as well as all the axes types, are boost serializable, serialization of the
+matrices can work *out-of-the-box*:
+
+\code{.cpp}
+  stringstream stream {};
+  binaryExport(stream, matrix);
+  auto stream_matrix = binaryImport<vector<int>, int, double, string>(stream);
+\endcode
+
+To be more flexible, the GridContainer module provides GridContainer serialization to
+generic streams. To make the example more readable a string stream is used, but
+it can be easily replaced with file streams to support permanent storage, or by
+socket streams to transfer matrices via the network.
+
+\subsection axisserialization Non-Default Axis Serialization
+
+The above example works without any input from the user because all the axes
+have types which are boost serializable. If an axis had a user defined type the
+compilation would fail, as boost would not know how to serialize its values.
+This is easily fixed by implementing the required methods to make the user
+defined type serializable. More information can be found in the boost
+serialization documentation, which can be found
+[here](http://www.boost.org/doc/libs/1_55_0/libs/serialization/doc/index.html).
+
+\subsection datamanagerserialization Custom GridCellManager Serialization
+
+Similarly with the axes types, the `GridCellManager` type of a matrix must be boost
+serializable, otherwise it will not be possible to serialize the matrix. By
+default all the GridCellManagers are considered not serializable by the GridContainer
+module. To enable serialization for a specific GridCellManager, except of defining
+the related boost::serialization methods, the related specialization of the
+GridCellManagerTraits must have the enable_boost_serializable flag set to true.
+
+By default the GridContainer module enables serialization only for vectors of types
+which are boost serializable.
+
+\section apispecialization Specializing the GridContainer API
+
+From the examples above can be seen that the API of the GridContainer module is quite
+verbose. This is because of the flexibility the API provides, which leads in
+lengthy template definitions. In real life applications though, there are many
+cases that a set of (different cell type) matrices is required for a fixed
+parameter space. The following is a suggestion of how to simplify the use of the
+GridContainer API for these cases.
+
+\subsection axesorder Defining the axes order
+
+To avoid the error prone use of integers as axes indices for all the methods
+requiring them as a template parameter, an enumeration can be used, so more
+meaningful names will replace them:
+
+\code{.cpp}
+enum {
+  INT_AXIS = 0,
+  DOUBLE_AXIS = 1,
+  STRING_AXIS = 2
+};
+\endcode
+
+Note that an anonymous plain enum has been used. This is because we want to be
+able to use the conversion of the enumeration name to integer directly, without
+having to perform casts (as is required by the enum class).
+
+\subsection matrixspecialization Defining a GridContainer specialization
+
+To avoid repetition of the lengthy GridContainer declarations a specialized alias can
+be used:
+
+\code{.cpp}
+template <typename CellType>
+using MyGridContainer = GridContainer<vector<CellType>, int, double, string>;
+\endcode
+
+The above definition assumes that all the matrices will use a vector as a
+`GridCellManager` and allows only for further customization of the matrix cells
+type. If different `GridCellManagers` are to be used, the following (more generic)
+definition can be used:
+
+\code{.cpp}
+template <typename GridCellManager>
+using MyGridContainer = GridContainer<GridCellManager, int, double, string>;
+\endcode
+
+\subsection binaryimportspecialization binaryImport() specialization
+
+If serialization is to be used, it is recommended to wrap the binaryImport()
+method with a more specialized templated function. This is because this method
+cannot infer the GridContainer template parameters (there is no matrix argument), with
+result lengthy calls. The following code can simplify that:
+
+\code{.cpp}
+template <typename T>
+MyGridContainer<T> myBinaryImport(istream& in) {
+  return binaryImport<vector<T>, int, double, string>(in);
+}
+\endcode
+
+Note that, on the contrary, the binaryExport() method can infer all the template
+parameters from its arguments, so no specialization is required.
+
+\subsection specializationuse Using the specialized types
+
+The following code demonstrates how the code using the above specializations
+looks like. Note that the same examples like the previous sections are used, to
+make easier the comparison.
+
+\code{.cpp}
+  // Create the GridAxis objects (same as before)
+  GridAxis<int> int_axis {"Integers", {1, 2, 3, 4, 5}};
+  GridAxis<double> double_axis {"Doubles", {0.1, 0.2}};
+  GridAxis<string> string_axis {"Strings", {"one", "two", "three"}};
+  
+  // Create a matrix with integer data
+  MyGridContainer<int> matrix {int_axis, double_axis, string_axis};
+  
+  // Print all the nodes of the string axis
+  cout << "String axis knots:";
+  for (auto& knot : matrix.axisInfo<STRING_AXIS>()) {
+    cout << " " << knot;
+  }
+  cout << "\n";
+  
+  // Get an iterator and fix two axes
+  auto iter = matrix.begin();
+  iter.fixAxisByValue<STRING_AXIS>("two").fixAxisByIndex<INT_AXIS>(3);
+  
+  // Print some info about each cell
+  do {
+    cout << "Double axis coord: " << iter.axisIndex<DOUBLE_AXIS>() << "\n";
+    cout << "Double axis knot value: " << iter.axisValue<DOUBLE_AXIS>() << "\n";
+  } while (++iter != matrix.end());
+  
+  // Write the matrix in a string stream and then read it back
+  stringstream stream {};
+  binaryExport(stream, matrix);
+  auto stream_matrix = myBinaryImport<int>(stream);
+  
+  // Create a matrix to keep strings
+  MyGridContainer<string> string_matrix = {matrix.getAxesTuple()};
+\endcode
+
+\subsection ANNEX 
+
+\subsection datamanagertraits Implementing a GridCellManagerTraits specialization
+
+The GridCellManagerTraits defines the behavior a GridCellManager type must provide, so
+it can be used by the GridContainer class. In other words, it provides the interface of
+the GridCellManager for the GridContainer to use. This is done so a type which provides a
+different interface can be used as a GridCellManager, by just defining a
+specialization of the GridCellManagerTraits. Note that the GridCellManagerTraits default
+behavior is to delegate all the operations to the type used as a GridCellManager. If
+the type is compliant with this interface, there is no need for defining the
+GridCellManagerTraits specialization.
+
+As an example, imagine that we want to use as GridCellManager an *old-style* class
+which uses pointers to handle an area in the memory:
+
+\code{.cpp}
+template <typename T>
+class MemoryManager {
+public:
+  MemoryManager(size_t size) {
+    m_size = size;
+    m_start = reinterpret_cast<T*>(malloc(m_size * sizeof(T)));
+  }
+  ~MemoryManager() {
+    free(m_start);
+  }
+  size_t getSize() {
+    return m_size;
+  }
+  T* getPointerToStart() {
+    return m_start;
+  }
+private:
+  size_t m_size;
+  T* m_start;
+};
+\endcode
+
+As can be seen above, the `MemoryManager` class uses `malloc` to allocate enough
+memory for the required number of objects, and frees it when it is destroyed. It
+provides direct access to the memory by returning a pointer to the beginning of
+it (note that the above implementation is incomplete and only for demonstration
+purposes). The `MemoryManager` class is not compliant with the GridCellManagerTraits
+interface, so, if we want to use it as a GridContainer GridCellManager, we need to provide
+a specialization. This can be done with the following code:
+
+\code{.cpp}
+namespace GridContainer {
+
+template<typename T>
+struct GridCellManagerTraits<MemoryManager<T>> {
+  typedef T data_type;
+  typedef T* iterator;
+  static unique_ptr<MemoryManager<T>> factory(size_t s) {
+    return unique_ptr<MemoryManager<T>>{new MemoryManager<T>{s}};
+  }
+  static size_t size(const MemoryManager<T>& m) {
+    return m.getSize();
+  }
+  static iterator begin(MemoryManager<T>& m) {
+    return m.getPointerToStart();
+  }
+  static iterator end(MemoryManager<T>& m) {
+    return m.getPointerToStart() + m.getSize();
+  }
+  static const bool enable_boost_serialize = false;
+};
+
+} // End of GridContainer namespace
+\endcode
+
+
+Note that it is not obligatory to implement all the above, but only what is
+actually being used. For example, the GridContainer class provides an alternative
+constructor which does not use the `factory()` method, but it gets the
+`GridCellManager` instance as a parameter. This can be used if the managed type
+does not have a meaningful default value.
+
+Furthermore, there is no requirement for the `GridCellManager` to actually keep the
+data in the memory. An implementation can provide an iterator which will
+calculate the data *on the fly*. Such types of GridCellManagers are too application
+specific, so they are not described further here.
+
+
+\subsection fullcode Full example code
+
+\code{.cpp}
+#include <iostream>
+#include <vector>
+#include <sstream>
+#include "GridContainer/GridContainer.h"
+#include "GridContainer/serialize.h"
+
+using namespace GridContainer;
+using namespace std;
+
+// /////////////////////////////////////
+// Definitions for custom GridCellManager
+// /////////////////////////////////////
+
+template <typename T>
+class MemoryManager {
+public:
+  MemoryManager(size_t size) {
+    m_size = size;
+    m_start = reinterpret_cast<T*>(malloc(m_size * sizeof(T)));
+  }
+  ~MemoryManager() {
+    free(m_start);
+  }
+  size_t getSize() {
+    return m_size;
+  }
+  T* getPointerToStart() {
+    return m_start;
+  }
+private:
+  size_t m_size;
+  T* m_start;
+};
+
+namespace GridContainer {
+
+template<typename T>
+struct GridCellManagerTraits<MemoryManager<T>> {
+  typedef T data_type;
+  typedef T* iterator;
+  static unique_ptr<MemoryManager<T>> factory(size_t s) {
+    return unique_ptr<MemoryManager<T>>{new MemoryManager<T>{s}};
+  }
+  static size_t size(const MemoryManager<T>& m) {
+    return m.getSize();
+  }
+  static iterator begin(MemoryManager<T>& m) {
+    return m.getPointerToStart();
+  }
+  static iterator end(MemoryManager<T>& m) {
+    return m.getPointerToStart() + m.getSize();
+  }
+  static const bool enable_boost_serialize = false;
+};
+
+} // End of GridContainer namespace
+
+// /////////////////////////////////////////
+// End of custom GridCellManager definitions
+// /////////////////////////////////////////
+
+// ///////////////////////////////////////////////////
+// Definitions for specializing the GridContainer API
+// ///////////////////////////////////////////////////
+
+enum {
+  INT_AXIS = 0,
+  DOUBLE_AXIS = 1,
+  STRING_AXIS = 2
+};
+
+template <typename CellType>
+using MyGridContainer = GridContainer<vector<CellType>, int, double, string>;
+
+template <typename T>
+MyGridContainer<T> myBinaryImport(istream& in) {
+  return binaryImport<vector<T>, int, double, string>(in);
+}
+
+// ///////////////////////////////////////////////////
+// End of definitions for specializing the GridContainer API
+// ///////////////////////////////////////////////////
+
+int main() {
+  
+  // /////////////////////////////////////////
+  // Creating GridAxis objects
+  // /////////////////////////////////////////
+  cout << "\nCreating GridAxis objects\n";
+  
+  vector<int> knot_values {3000, 3500, 4000, 4500, 5000};
+  GridAxis<int> wavelength_axis {"Wavelength", move(knot_values)};
+  
+  // /////////////////////////////////////////
+  // Using GridAxis objects
+  // /////////////////////////////////////////
+  cout << "\nUsing GridAxis objects\n";
+  
+  // Getting the axis name
+  cout << "Axis name : " << wavelength_axis.name() << "\n";
+  // Getting the number of knots
+  cout << "Number of knots : " << wavelength_axis.size() << "\n";
+  // Accessing a knot value directly using its (zero based) index
+  cout << "Second knot value : " << wavelength_axis[1] << "\n";
+  // Accessing the knots using the iterator
+  cout << "All knot values : ( ";
+  for (auto& knot_value : wavelength_axis) {
+    cout << knot_value << " ";
+  }
+  cout << ")\n";
+  
+  // /////////////////////////////////////////
+  // Using custom GridCellManager
+  // /////////////////////////////////////////
+  cout << "\nUsing custom GridCellManager\n";
+  
+  GridContainer<MemoryManager<double>, int> custom_dm_matrix { wavelength_axis };
+  
+  // /////////////////////////////////////////
+  // Creating GridContainer objects
+  // /////////////////////////////////////////
+  cout << "\nCreating GridContainer objects\n";
+  
+  // Create the axes descriptions
+  GridAxis<int> int_axis {"Integers", {1, 2, 3, 4, 5}};
+  GridAxis<double> double_axis {"Doubles", {0.1, 0.2}};
+  GridAxis<string> string_axis {"Strings", {"one", "two", "three"}};
+  
+  // Create a matrix with integer data
+  GridContainer<vector<int>, int, double, string> matrix {int_axis, double_axis, string_axis};
+  
+  // Create and initialize the GridCellManager instance
+  unique_ptr<vector<int>> data_manager {new vector<int>{}};
+  for (int i=0; i<30; ++i) {
+    data_manager->push_back(i);
+  }
+  
+  // Create the GridContainer object with the initialized GridCellManager
+  GridContainer<vector<int>, int, double, string> initialized_matrix
+                    {move(data_manager), int_axis, double_axis, string_axis};
+  
+  // Create matrix with same parameter space
+  GridContainer<vector<bool>, int, double, string> bool_matrix {matrix.getAxesTuple()};
+  
+  // /////////////////////////////////////////
+  // Retrieving GridContainer information
+  // /////////////////////////////////////////
+  cout << "\nRetrieving GridContainer information\n";
+  
+  // Get the matrix dimensionality
+  cout << "Dimensionality: " << matrix.axisNumber() << "\n";
+  
+  // Get the total number of cells of the matrix
+  cout << "Total number of cells: " << matrix.size() << "\n";
+  
+  // Retrieve information about the third axis
+  auto& third_axis = matrix.axisInfo<2>();
+  
+  // Print the axis information
+  cout << "Third axis name: " << third_axis.name() << "\n";
+  cout << "Third axis knots: ";
+  for (auto& knot : third_axis) {
+    cout << knot << " ";
+  }
+  
+  // /////////////////////////////////////////
+  // Direct cell access
+  // /////////////////////////////////////////
+  cout << "\nDirect cell access\n";
+  
+  // Set the value of a specific cell
+  matrix(2, 0, 1) = 50;
+  // Read the value of a specific cell
+  cout << "GridContainer cell (2, 0, 1):" << matrix(2, 0, 1) << "\n";
+  
+  // Calling at() with in bounds coordinates
+  size_t coord = 1;
+  try {
+    // Set the value of a specific cell
+    matrix.at(coord, 0, 1) = 50;
+    // Read the value of a specific cell
+    cout << "GridContainer cell (" << coord << ", 0, 1):" << matrix.at(coord, 0, 1) << "\n";
+  } catch (ElementsException e) {
+    cout << e.what() << "\n";
+  }
+  
+  // Calling at() with out of bounds coordinates
+  coord = 20;
+  try {
+    // Set the value of a specific cell
+    matrix.at(coord, 0, 1) = 50;
+    // Read the value of a specific cell
+    cout << "GridContainer cell (" << coord << ", 0, 1):" << matrix.at(coord, 0, 1) << "\n";
+  } catch (ElementsException e) {
+    cout << e.what() << "\n";
+  }
+
+  // /////////////////////////////////////////
+  // GridContainer iterator
+  // /////////////////////////////////////////
+  cout << "\nGridContainer iterator\n";
+  
+  // Set all the matrix values
+  int counter {0};
+  for (auto& cell : matrix) {
+    cell = ++counter;
+  }
+  // Print all the matrix cells
+  cout << "GridContainer cells: ";
+  for (auto& cell : matrix) {
+    cout << cell << " ";
+  }
+  cout << '\n';
+  
+  // Print detailed information for each cell
+  for (auto iter=matrix.begin(); iter!=matrix.end(); ++iter) {
+    cout << "Cell (" << iter.axisValue<0>() << ", " << iter.axisValue<1>()
+         << ", " << iter.axisValue<2>() << "): " << *iter << "\n";
+  }
+
+  // /////////////////////////////////////////
+  // GridContainer slicing
+  // /////////////////////////////////////////
+  cout << "\nGridContainer slicing\n";
+  
+  // Get an iterator and fix the third axis
+  cout << "One axis fixed\n";
+  auto iter = matrix.begin();
+  iter.fixAxisByValue<2>("two");
+  
+  // Print detailed information for each cell
+  do {
+    cout << "Cell (" << iter.axisValue<0>() << ", " << iter.axisValue<1>()
+         << ", " << iter.axisValue<2>() << "): " << *iter << "\n";
+  } while (++iter != matrix.end());
+  
+  cout << "Three axes fixed\n";
+  iter = matrix.begin();
+  iter.fixAxisByValue<2>("two").fixAxisByIndex<0>(2).fixAxisByValue<1>(.1);
+  
+  // Print detailed information for each cell
+  do {
+    cout << "Cell (" << iter.axisValue<0>() << ", " << iter.axisValue<1>()
+         << ", " << iter.axisValue<2>() << "): " << *iter << "\n";
+  } while (++iter != matrix.end());
+
+  // /////////////////////////////////////////
+  // Default GridContainer Serialization
+  // /////////////////////////////////////////
+  cout << "\nDefault GridContainer Serialization\n";
+  
+  stringstream stream {};
+  binaryExport(stream, matrix);
+  auto stream_matrix = binaryImport<vector<int>, int, double, string>(stream);
+
+  // /////////////////////////////////////////
+  // Using specialized GridContainer types
+  // /////////////////////////////////////////
+  cout << "\nUsing specialized GridContainer types\n";
+  
+  // Create a matrix with integer data
+  MyGridContainer<int> spec_matrix {int_axis, double_axis, string_axis};
+  // Print all the nodes of the string axis
+  cout << "String axis knots:";
+  for (auto& knot : spec_matrix.axisInfo<STRING_AXIS>()) {
+    cout << " " << knot;
+  }
+  cout << "\n";
+  // Get an iterator and fix two axes
+  auto iter2 = spec_matrix.begin();
+  iter2.fixAxisByValue<STRING_AXIS>("two").fixAxisByIndex<INT_AXIS>(3);
+  // Print some info about each cell
+  do {
+    cout << "Double axis coord: " << iter2.axisIndex<DOUBLE_AXIS>() << "\n";
+    cout << "Double axis knot value: " << iter2.axisValue<DOUBLE_AXIS>() << "\n";
+  } while (++iter2 != spec_matrix.end());
+  // Write the matrix in a string stream and then read it back
+  binaryExport(stream, spec_matrix);
+  auto stream_spec_matrix = myBinaryImport<int>(stream);
+  // Create a matrix to keep strings
+  MyGridContainer<string> string_matrix = {stream_spec_matrix.getAxesTuple()};
+  
+}
+\endcode
+
+*/
+
+}

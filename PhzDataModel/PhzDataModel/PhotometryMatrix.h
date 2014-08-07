@@ -21,12 +21,12 @@ typedef PhzMatrix<PhotometryDataHandler> PhotometryMatrix;
 } // end of namespace PhzDataModel
 
 
-namespace ChMatrix {
+namespace GridContainer {
 
-// We define the DataManagerTraits for a vector of Photometries to redefine the
+// We define the GridCellManagerTraits for a vector of Photometries to redefine the
 // factory method because the Photometry does not have default constructor.
 template<>
-struct DataManagerTraits<PhzDataModel::PhotometryDataHandler> {
+struct GridCellManagerTraits<PhzDataModel::PhotometryDataHandler> {
   typedef ChCatalog::Photometry data_type;
   typedef typename PhzDataModel::PhotometryDataHandler::iterator iterator;
   static std::unique_ptr<PhzDataModel::PhotometryDataHandler> factory(size_t size){
@@ -45,9 +45,9 @@ struct DataManagerTraits<PhzDataModel::PhotometryDataHandler> {
     return vector.end();
   }
   static const bool enable_boost_serialize = true;
-}; // end of DataManagerTraits
+}; // end of GridCellManagerTraits
 
-} // end of namespace ChMatrix
+} // end of namespace GridContainer
 
 #endif	/* PHZDATAMODEL_PHOTOMETRYMATRIX_H */
 

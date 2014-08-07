@@ -1,0 +1,91 @@
+/** 
+ * @file GridContainer/_impl/GridContainer.icpp
+ * @date May 13, 2014
+ * @author Nikolaos Apostolakos
+ */
+
+#include "ElementsKernel/ElementsException.h"
+
+namespace GridContainer {
+
+template<typename GridCellManager, typename... AxesTypes>
+GridContainer<GridCellManager, AxesTypes...>::GridContainer(GridAxis<AxesTypes>... axes)
+      : m_axes{std::move(axes)...} { }
+
+template<typename GridCellManager, typename... AxesTypes>
+GridContainer<GridCellManager, AxesTypes...>::GridContainer(std::unique_ptr<GridCellManager> data_manager,
+                                          GridAxis<AxesTypes>... axes)
+      : m_axes{std::move(axes)...}, m_cell_manager{std::move(data_manager)} {
+  size_t manager_size = GridCellManagerTraits<GridCellManager>::size(*m_cell_manager);
+  size_t matrix_size = m_index_helper.m_axes_index_factors.back();
+  if (manager_size != matrix_size) {
+    throw ElementsException() << "GridCellManager size (" << manager_size << ") and "
+                              << "GridContainer size (" << matrix_size << ") do not match";
+  }
+}
+
+template<typename GridCellManager, typename... AxesTypes>
+GridContainer<GridCellManager, AxesTypes...>::GridContainer(std::tuple<GridAxis<AxesTypes>...> axes_tuple)
+      : m_axes{std::move(axes_tuple)} { }
+
+template<typename GridCellManager, typename... AxesTypes>
+GridContainer<GridCellManager, AxesTypes...>::GridContainer(std::unique_ptr<GridCellManager> data_manager,
+                                          std::tuple<GridAxis<AxesTypes>...> axes_tuple)
+      : m_axes{std::move(axes_tuple)}, m_cell_manager{std::move(data_manager)} {
+  size_t manager_size = GridCellManagerTraits<GridCellManager>::size(*m_cell_manager);
+  size_t matrix_size = m_index_helper.m_axes_index_factors.back();
+  if (manager_size != matrix_size) {
+    throw ElementsException() << "GridCellManager size (" << manager_size << ") and "
+                              << "GridContainer size (" << matrix_size << ") do not match";
+  }
+}
+                     
+template<typename GridCellManager, typename... AxesTypes>
+size_t GridContainer<GridCellManager, AxesTypes...>::axisNumber() const {
+  return std::tuple_size<decltype(m_axes)>::value;
+}
+
+template<typename GridCellManager, typename... AxesTypes>
+template<int I>
+auto GridContainer<GridCellManager, AxesTypes...>::getAxis() const -> const GridAxis<axis_type<I>>& {
+    return std::get<I>(m_axes);
+}
+
+template<typename GridCellManager, typename... AxesTypes>
+const std::tuple<GridAxis<AxesTypes>...>& GridContainer<GridCellManager, AxesTypes...>::getAxesTuple() const {
+  return m_axes;
+}
+
+template<typename GridCellManager, typename... AxesTypes>
+const GridCellManager& GridContainer<GridCellManager, AxesTypes...>::getDataManager() const {
+  return *m_cell_manager;
+}
+
+template<typename GridCellManager, typename... AxesTypes>
+auto GridContainer<GridCellManager, AxesTypes...>::begin() -> iterator {
+  return iterator{*this, GridCellManagerTraits<GridCellManager>::begin(*m_cell_manager)};
+}
+
+template<typename GridCellManager, typename... AxesTypes>
+auto GridContainer<GridCellManager, AxesTypes...>::end() -> iterator {
+  return iterator{*this, GridCellManagerTraits<GridCellManager>::end(*m_cell_manager)};
+}
+
+template<typename GridCellManager, typename... AxesTypes>
+size_t GridContainer<GridCellManager, AxesTypes...>::size() {
+  return m_index_helper.m_axes_index_factors.back();
+}
+
+template<typename GridCellManager, typename... AxesTypes>
+auto GridContainer<GridCellManager, AxesTypes...>::operator()(decltype(std::declval<GridAxis<AxesTypes>>().size())... indices) -> cell_type& {
+  size_t total_index = m_index_helper.totalIndex(indices...);
+  return (*m_cell_manager)[total_index];
+}
+
+template<typename GridCellManager, typename... AxesTypes>
+auto GridContainer<GridCellManager, AxesTypes...>::at(decltype(std::declval<GridAxis<AxesTypes>>().size())... indices) -> cell_type& {
+  size_t total_index = m_index_helper.totalIndexChecked(indices...);
+  return (*m_cell_manager)[total_index];
+}
+
+} // end of namespace GridContainer

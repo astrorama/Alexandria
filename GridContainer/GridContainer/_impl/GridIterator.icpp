@@ -1,0 +1,111 @@
+/** 
+ * @file GridContainer/_impl/GridIterator.icpp
+ * @date May 14, 2014
+ * @author Nikolaos Apostolakos
+ */
+
+#include <algorithm>
+#include "ElementsKernel/ElementsException.h"
+
+namespace GridContainer {
+
+template<typename GridCellManager, typename... AxesTypes>
+GridContainer<GridCellManager, AxesTypes...>::iterator::iterator(
+                                const GridContainer<GridCellManager, AxesTypes...>& owner,
+                                const cell_manager_iter_type& data_iter)
+        : m_owner(owner), m_data_iter {data_iter} { }
+
+template<typename GridCellManager, typename... AxesTypes>
+auto GridContainer<GridCellManager, AxesTypes...>::iterator::operator=(const iterator& other) -> iterator& {
+  m_data_iter = other.m_data_iter;
+  m_fixed_indices = other.m_fixed_indices;
+  return *this;
+}
+
+template<typename GridCellManager, typename... AxesTypes>
+auto GridContainer<GridCellManager, AxesTypes...>::iterator::operator++() -> iterator& {
+  ++m_data_iter;
+  if (!m_fixed_indices.empty()) {
+    for (auto& fixed_index_pair : m_fixed_indices) {
+      size_t axis = fixed_index_pair.first;
+      size_t fixed_index = fixed_index_pair.second;
+      forwardToIndex(axis, fixed_index);
+    }
+    // Because we make big steps there is the possibility we went after the end.
+    // In this case we set the iterator to the end.
+    auto end_iter = GridCellManagerTraits<GridCellManager>::end(*(m_owner.m_cell_manager));
+    if (m_data_iter > end_iter) {
+      m_data_iter = end_iter;
+    }
+  }
+  return *this;
+}
+
+template<typename GridCellManager, typename... AxesTypes>
+auto GridContainer<GridCellManager, AxesTypes...>::iterator::operator*() -> cell_type& {
+  return *m_data_iter;
+}
+
+template<typename GridCellManager, typename... AxesTypes>
+bool GridContainer<GridCellManager, AxesTypes...>::iterator::operator==(const iterator& other) const {
+  return m_data_iter == other.m_data_iter;
+}
+
+template<typename GridCellManager, typename... AxesTypes>
+bool GridContainer<GridCellManager, AxesTypes...>::iterator::operator!=(const iterator& other) const {
+  return m_data_iter != other.m_data_iter;
+}
+
+template<typename GridCellManager, typename... AxesTypes>
+template<int I>
+size_t GridContainer<GridCellManager, AxesTypes...>::iterator::axisIndex() const {
+  size_t index = m_data_iter - GridCellManagerTraits<GridCellManager>::begin(*(m_owner.m_cell_manager));
+  return m_owner.m_index_helper.axisIndex(I, index);
+}
+
+template<typename GridCellManager, typename... AxesTypes>
+template<int I>
+auto GridContainer<GridCellManager, AxesTypes...>::iterator::axisValue() const -> const axis_type<I>& {
+  size_t index = axisIndex<I>();
+  return std::get<I>(m_owner.m_axes)[index];
+}
+
+template<typename GridCellManager, typename... AxesTypes>
+template<int I>
+auto GridContainer<GridCellManager, AxesTypes...>::iterator::fixAxisByIndex(size_t index) -> iterator& {
+  if (index >= m_owner.getAxis<I>().size()) {
+    throw ElementsException() << "Index (" << index << ") out of axis " 
+                              << m_owner.getAxis<I>().name() << " size ("
+                              << m_owner.getAxis<I>().size() << ")";
+  }
+  m_fixed_indices[I] = index;
+  forwardToIndex(I, index);
+  return *this;
+}
+
+template<typename GridCellManager, typename... AxesTypes>
+template<int I>
+auto GridContainer<GridCellManager, AxesTypes...>::iterator::fixAxisByValue(const axis_type<I>& value) -> iterator& {
+  auto axis_info = m_owner.getAxis<I>();
+  auto iter = std::find(axis_info.begin(), axis_info.end(), value);
+  if (iter == axis_info.end()) {
+    throw ElementsException() << "Failed to fix axis " << m_owner.getAxis<I>().name()
+                              << " (given value not found)";
+  }
+  return fixAxisByIndex<I>(iter - axis_info.begin());
+}
+
+template<typename GridCellManager, typename... AxesTypes>
+void GridContainer<GridCellManager, AxesTypes...>::iterator::forwardToIndex(size_t axis, size_t fixed_index) {
+  size_t current_size = m_data_iter - GridCellManagerTraits<GridCellManager>::begin(*(m_owner.m_cell_manager));
+  size_t current_index = m_owner.m_index_helper.axisIndex(axis, current_size);
+  if (fixed_index != current_index) {
+    size_t axis_factor = m_owner.m_index_helper.m_axes_index_factors[axis];
+    size_t distance = (fixed_index > current_index)
+          ? fixed_index - current_index
+          : m_owner.m_index_helper.m_axes_sizes[axis] + fixed_index - current_index;
+    m_data_iter += distance * axis_factor;
+  }
+}
+
+} // end of GridContainer namespace

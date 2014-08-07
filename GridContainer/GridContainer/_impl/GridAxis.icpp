@@ -1,0 +1,39 @@
+/** 
+ * @file GridContainer/_impl/GridAxis.icpp
+ * @date May 12, 2014
+ * @author Nikolaos Apostolakos
+ */
+
+namespace GridContainer {
+
+template<typename T>
+GridAxis<T>::GridAxis(std::string name, std::vector<T> values)
+        : m_name(std::move(name)), m_values(std::move(values)) {
+}
+
+template<typename T>
+size_t GridAxis<T>::size() const {
+  return m_values.size();
+}
+
+template<typename T>
+const std::string& GridAxis<T>::name() const {
+  return m_name;
+}
+
+template<typename T>
+const T& GridAxis<T>::operator[](size_t index) const {
+  return m_values[index];
+}
+
+template<typename T>
+auto GridAxis<T>::begin() const -> const_iterator {
+  return m_values.cbegin();
+}
+
+template<typename T>
+auto GridAxis<T>::end() const -> const_iterator {
+  return m_values.end();
+}
+
+} // end of namespace GridContainer
