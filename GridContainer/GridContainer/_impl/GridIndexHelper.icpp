@@ -25,13 +25,13 @@ size_t GridIndexHelper<AxesTypes...>::axisIndex(size_t axis, size_t array_index)
   return index;
 }
 
-template <typename Factors, typename Coord>
-size_t calculateTotalIndex(const Factors& factors, Coord coord) {
+template <typename Coord>
+size_t calculateTotalIndex(const std::vector<size_t>& factors, Coord coord) {
   return coord * factors[factors.size() - 2];
 }
 
-template <typename Factors, typename Coord, typename... RestCoords>
-size_t calculateTotalIndex(const Factors& factors, Coord coord, RestCoords... rest_coords) {
+template <typename Coord, typename... RestCoords>
+size_t calculateTotalIndex(const std::vector<size_t>& factors, Coord coord, RestCoords... rest_coords) {
   return coord * factors[factors.size()-sizeof...(RestCoords)-2] + calculateTotalIndex(factors, rest_coords...);
 }
 
@@ -40,8 +40,8 @@ size_t GridIndexHelper<AxesTypes...>::totalIndex(decltype(std::declval<GridAxis<
   return calculateTotalIndex(m_axes_index_factors, coords...);
 }
 
-template <typename AxesSizes, typename Coord>
-void checkBounds(const AxesSizes& axes_sizes, Coord coord) {
+template <typename Coord>
+void checkBounds(const std::vector<size_t>& axes_sizes, Coord coord) {
   if (coord >= axes_sizes[axes_sizes.size()-1]) {
     throw ElementsException() << "Coordinate " << coord << " for axis "
                               << (axes_sizes.size()-1) << " (size " 
@@ -50,8 +50,8 @@ void checkBounds(const AxesSizes& axes_sizes, Coord coord) {
   }
 }
 
-template <typename AxesSizes, typename Coord, typename... RestCoords>
-void checkBounds(const AxesSizes& axes_sizes, Coord coord, RestCoords... rest_coords) {
+template <typename Coord, typename... RestCoords>
+void checkBounds(const std::vector<size_t>& axes_sizes, Coord coord, RestCoords... rest_coords) {
   if (coord >= axes_sizes[axes_sizes.size()-sizeof...(RestCoords)-1]) {
     throw ElementsException() << "Coordinate " << coord << " for axis "
                               << (axes_sizes.size()-sizeof...(RestCoords)-1) << " (size " 
