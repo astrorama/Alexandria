@@ -54,7 +54,7 @@ Using the above axis, to access the grid cells which have wavelength equal with
 
 \subsubsection axiscreation Creating GridAxis objects
 
-Constructing the GridAxis object representing the above axis can be done using
+Constructing a GridAxis object which represents the above axis can be done using
 the following code:
 
 \code {.cpp}
@@ -115,61 +115,19 @@ All knot values : ( 3000 3500 4000 4500 5000 )
 
 The GridContainer class does not implement in itself a data structure to hold
 the array of grid cell values. Instead, it delegates this task to a
-GridCellManager which is provided as a template to the GridContainer class (with
-signatures such as GridContainer<GridCellManager, ...>, where the additional
-template parameters are related to the grid axes, see GridContainer below). 
+**GridCellManager**, the type of which is provided as a template parameter to
+the GridContainer class (with signatures such as `GridContainer<GridCellManager,
+...>`, where the additional template parameters are related to the grid axes,
+see \ref grid below). 
 
-Perhaps, the simplest case is when a  std::vector  (say a std::vector<int>) is
-taken as a GridCellManager. In this  case, it is the vector that holds and
-manages the grid cell values and we have GridContainer<vector<int>, ...>.
-However for a maximum of flexibility, the GridContainer never use directly the
-vector<int> itself, but a GridCellManagerTraits which provides an interface to
-manipulate the grid cell values. In the case of a std::vector<int>
-GridCellManager, calls will be made to a
-GridCellManagerTraits<std::vector<int>>, but in the more general case we have
-GridCellManagerTraits<GridCellManager>.
+Existing container classes can be used as the **GridCellManager** of a
+GridContainer, with the simplest example being the std::vector. For example, a
+GridContainer defined as `GridContainer<vector<int>,...>` will use internally a
+vector to hold and manage the grid cell integer values.
 
-The GridCellManagerTraits must implement the following interfaces:
-
-- type GridCellManagerTraits::cell_type<br/> The type of the data kept by the
-  `GridCellManager`. This is the type "int" in our  above vector example.
-
-- type GridCellManagerTraits::iterator<br/> The iterator type which is used to
-  iterate through the grid cells.
-
-- function GridCellManagerTraits::factory()<br/> Creates a new `GridCellManager`
-  instance, which manages the given number of cells.
-
-- function GridCellManagerTraits::size()<br/> Returns the number of cells
-  managed by the given `GridCellManager`.
-
-- function GridCellManagerTraits::begin()<br/> Returns an iterator pointing to
-  the first cell managed by the GridCellManager.
- 
-- function GridCellManagerTraits::end()<br/> Returns an iterator pointing right
-  after the last cell managed by the GridCellManager. 
-
-- constant GridCellManagerTraits::enable_boost_serialize<br/> Indicates if the
-  GridCellManager is boost serializable (this is explained later in the \ref
-  serialization section).
-
-There is a (default) GridCellManagerTraits<GridCellManager> implementation for
-the simplest case where the GridCellManager is a std::vector. In this case, for
-example, the implementation of GridCellManagerTraits::size() is
-straightforwards, it is just delegated to the vector in the following way.
-
-\code{.cpp}
-template<typename T>
-size_t GridCellManagerTraits<std::vector<T>>::size(const std::vector<T>& vector) {
-  return vector.size();
-}
-\endcode
-
-The proposed default is then to use a std::vector as GridCellManager and the
-corresponding GridCellManagerTraits implementation. However, it is possible to
-propose an alternative, say MyGridCellManager if a corresponding implementation
-of GridCellManagerTraits<MyGridCellManager> is also provided (see annexe 1 for 
-an example of such an implementation).
+The usage of custom GridCellManagers requires a better understanding of the
+GridContainer module in total, so it is postponed for later in this document
+(section \ref customcellcontainer).
 
 \subsection grid GridContainer class
 
@@ -190,7 +148,7 @@ GridAxis<int> int_axis {"Integers", {1, 2, 3, 4, 5}};
 GridAxis<double> double_axis {"Doubles", {0.1, 0.2}};
 GridAxis<string> string_axis {"Strings", {"one", "two", "three"}};
 
-// Create a grid with integer data
+// Create a grid with integer cell values
 GridContainer<vector<int>, int, double, string> grid {int_axis, double_axis, string_axis};
 \endcode
 
@@ -203,7 +161,7 @@ The rest of the template parameters define the types of the axes world values.
 In our example the first axis has integer knots, the second double knots and the
 third strings. Note that the axes knots can be of any type, even of user defined
 types. The axes given as parameters to the constructor must be of the correct
-types, otherwise the compilation will fail.
+type, otherwise the compilation will fail.
 
 In the example above, the vector for keeping the grid data is automatically
 created by the constructor, by using the GridCellManagerTraits::factory()
@@ -238,7 +196,7 @@ as demonstrated by the following code:
 GridContainer<vector<bool>, int, double, string> bool_grid {grid.getAxesTuple()};
 \endcode
 
-The code above creates a new grid of booleans, with the same axes like the
+The code above creates a new grid of boolean cells, with the same axes like the
 parameter. Note that only the axes number and types need to match between the
 two grids. The new grid GridCellManager can be of any type.
 
@@ -619,22 +577,57 @@ make easier the comparison.
   MyGridContainer<string> string_grid = {grid.getAxesTuple()};
 \endcode
 
-\subsection ANNEX 
+\section customcellcontainer Using a custom GridCellContainer
 
-\subsection cellmanagertraits Implementing a GridCellManagerTraits specialization
+\subsection cellmanagertraits The CellManagerTraits interface
 
-The GridCellManagerTraits defines the behavior a GridCellManager type must
-provide, so it can be used by the GridContainer class. In other words, it
-provides the interface of the GridCellManager for the GridContainer to use. This
-is done so a type which provides a different interface can be used as a
-GridCellManager, by just defining a specialization of the GridCellManagerTraits.
-Note that the GridCellManagerTraits default behavior is to delegate all the
-operations to the type used as a GridCellManager. If the type is compliant with
-this interface, there is no need for defining the GridCellManagerTraits
-specialization.
+To achieve maximum flexibility, the GridContainer never use directly the
+**GridCellManager** instance itself. Instead, it uses the GridCellManagerTraits
+class, which provides an interface to manipulate the grid cell values. In the
+case of a std::vector<int> **GridCellManager**, the GridContainer will make
+calls to a GridCellManagerTraits<std::vector<int>>.
 
-As an example, imagine that we want to use as GridCellManager an *old-style*
-class which uses pointers to handle an area in the memory:
+The GridCellManagerTraits must implement the following interfaces:
+
+- type GridCellManagerTraits::cell_type<br/> The type of the data kept by the
+  `GridCellManager`. This is the type "int" in our  above vector example.
+
+- type GridCellManagerTraits::iterator<br/> The iterator type which is used to
+  iterate through the grid cells in the GridCellManager.
+
+- function GridCellManagerTraits::factory()<br/> Creates a new `GridCellManager`
+  instance, which manages a given (fixed) number of cells.
+
+- function GridCellManagerTraits::size()<br/> Returns the number of cells
+  managed by the given `GridCellManager`.
+
+- function GridCellManagerTraits::begin()<br/> Returns an iterator pointing to
+  the first cell managed by the GridCellManager.
+ 
+- function GridCellManagerTraits::end()<br/> Returns an iterator pointing right
+  after the last cell managed by the GridCellManager. 
+
+- constant GridCellManagerTraits::enable_boost_serialize<br/> Indicates if the
+  GridCellManager is boost serializable (as explained in the \ref serialization
+  section).
+
+The default implementation of the GridCellManagerTraits will redirect all the
+calls to the GridCellManager. If the type used as GridCellManager provides all
+the required functions, it can be used directly.
+
+The module also provides a specialization for all the std::vector types. This
+specialization behaves the same way like the default one, but it enables the
+boost serialization flag.
+
+The following sections describe how to specialize the GridCellManagerTraits for
+types which are not providing the required API.
+
+\subsection customcellManager A custom GridCellManager type
+
+As an example of a type which can be used as a GridCellManager but it does not
+follow the GridCellManagerTraits API, imagine that we want to use as
+GridCellManager an *old-style* class which uses pointers to handle an area in
+the memory:
 
 \code{.cpp}
 template <typename T>
@@ -664,9 +657,23 @@ memory for the required number of objects, and frees it when it is destroyed. It
 provides direct access to the memory by returning a pointer to the beginning of
 it (note that the above implementation is incomplete and only for demonstration
 purposes). The `MemoryManager` class is not compliant with the
-GridCellManagerTraits interface, so, if we want to use it as a GridContainer
-GridCellManager, we need to provide a specialization. This can be done with the
-following code:
+GridCellManagerTraits interface, so, if we want to use it as a GridCellManager,
+we need to provide a traits specialization.
+
+\subsection customcellmanagertraits Specializing the GridCellManagerTraits
+
+The GridCellManagerTraits defines the behavior a GridCellManager type must
+provide, so it can be used by the GridContainer class. In other words, it
+provides the interface of the GridCellManager for the GridContainer to use. This
+is done so a type which provides a different interface can be used as a
+GridCellManager, by just defining a specialization of the GridCellManagerTraits.
+Note that the GridCellManagerTraits default behavior is to delegate all the
+operations to the type used as a GridCellManager. If the type is compliant with
+this interface, there is no need for defining the GridCellManagerTraits
+specialization.
+
+The specialization of the GridCellManagerTraits for our `MemoryManager` type can
+be done with the following code:
 
 \code{.cpp}
 namespace Grid {
