@@ -59,7 +59,7 @@ public:
     string model_phot_grid_file = options["model-photometry-grid"].as<string>();
     logger.info() << "Reading Model photometry grid from file " << model_phot_grid_file;
     ifstream in {model_phot_grid_file};
-    PhotometryGrid model_phot_marix = phzGridBinaryImport<vector<Photometry>>(in);
+    PhotometryGrid model_phot_grid = phzGridBinaryImport<vector<Photometry>>(in);
     in.close();
     
     string phot_catalog_file = options["photometric-catalog"].as<string>();
@@ -104,10 +104,10 @@ public:
       
       // Create the chi2 grid
       auto source_phot = source.getAttribute<Photometry>();
-      LikelihoodGrid chi2_grid {model_phot_marix.getAxesTuple()};
-      auto model_iter = model_phot_marix.begin();
+      LikelihoodGrid chi2_grid {model_phot_grid.getAxesTuple()};
+      auto model_iter = model_phot_grid.begin();
       auto chi2_iter = chi2_grid.begin();
-      while (model_iter != model_phot_marix.end()) {
+      while (model_iter != model_phot_grid.end()) {
         double alpha = model_scale_functor(*source_phot, *model_iter);
         *chi2_iter = chi_2_functor(*source_phot, *model_iter, alpha);
         ++model_iter;
