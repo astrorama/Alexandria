@@ -7,10 +7,12 @@
 #ifndef GRIDCONTAINER_NONDEFAULTCONSTRUCTIBLECLASS_H
 #define	GRIDCONTAINER_NONDEFAULTCONSTRUCTIBLECLASS_H
 
+#include "GridContainer/GridCellManagerTraits.h"
+
 class NonDefaultConstructibleClass {
 public:
   NonDefaultConstructibleClass(double v) : value{v} {}
-  double value = 0;
+  double value;
 };
 
 namespace boost {
@@ -33,6 +35,30 @@ void load_construct_data(Archive &ar, NonDefaultConstructibleClass* p, const uns
 }
 
 }
+}
+
+namespace Grid {
+
+template<>
+struct GridCellManagerTraits<std::vector<NonDefaultConstructibleClass>> {
+  typedef NonDefaultConstructibleClass data_type;
+  typedef typename std::vector<NonDefaultConstructibleClass>::iterator iterator;
+  static std::unique_ptr<std::vector<NonDefaultConstructibleClass>> factory(size_t size) {
+    return std::unique_ptr<std::vector<NonDefaultConstructibleClass>> {new std::vector<NonDefaultConstructibleClass>(size, NonDefaultConstructibleClass{0})};
+  }
+  static size_t size(const std::vector<NonDefaultConstructibleClass>& vector){
+    return vector.size();
+  }
+  static iterator begin(std::vector<NonDefaultConstructibleClass>& vector) {
+    return vector.begin();
+  }
+  static iterator end(std::vector<NonDefaultConstructibleClass>& vector) {
+    return vector.end();
+  }
+  static const bool enable_boost_serialize = true;
+  
+};
+
 }
 
 #endif	/* GRIDCONTAINER_NONDEFAULTCONSTRUCTIBLECLASS_H */

@@ -1,4 +1,5 @@
 /** 
+ * 
  * @file GridContainer/serialization/GridContainer.h
  * @date May 17, 2014
  * @author Nikolaos Apostolakos
@@ -10,6 +11,7 @@
 #include <type_traits>
 #include <memory>
 #include <boost/serialization/vector.hpp>
+#include <boost/serialization/split_free.hpp>
 #include "GridContainer/GridAxis.h"
 #include "GridContainer/GridContainer.h"
 #include "GridContainer/serialization/tuple.h"
@@ -18,18 +20,67 @@
 namespace boost {
 namespace serialization {
 
-/// Method which saves/loads a GridContainer instance to/from an archive. It does a
-/// check that the GridCellManager of the GridContainer allows for boost serialization.
-/// This check is done in compilation time.
+/// Method which saves a GridContainer instance to an archive. This version handles 
+/// default constructible cell values.
 template<class Archive, typename GridCellManager, typename... AxesTypes>
-void serialize(Archive&, Grid::GridContainer<GridCellManager,AxesTypes...>&, const unsigned int) {
-  static_assert(Grid::GridCellManagerTraits<GridCellManager>::enable_boost_serialize,
-                "Boost serialization of GridContainer with unsupported GridCellManager");
+void save(Archive& ar, const Grid::GridContainer<GridCellManager,AxesTypes...>& grid, const unsigned int,
+               typename std::enable_if<std::is_default_constructible<typename Grid::GridCellManagerTraits<GridCellManager>::data_type>::value>::type* = 0) {
+  for (auto& cell : grid) {
+    ar << cell;
+  }
 }
 
-/// Saves in the given archive all the data necessary for recunstructing the
-/// given GridContainer by using its constructor. The data saved are the axes tuple
-/// and a pointer to the GridCellManager.
+/// Method which saves a GridContainer instance to an archive. This version handles 
+/// non-default constructible cell values.
+template<class Archive, typename GridCellManager, typename... AxesTypes>
+void save(Archive& ar, const Grid::GridContainer<GridCellManager,AxesTypes...>& grid, const unsigned int,
+               typename std::enable_if<!std::is_default_constructible<typename Grid::GridCellManagerTraits<GridCellManager>::data_type>::value>::type* = 0) {
+  for (auto& cell : grid) {
+    // Do NOT delete this pointer! It points to the cell of the grid and the
+    // grid will take care of the memory management
+    typename std::remove_reference<decltype(cell)>::type* ptr = &cell;
+    ar << ptr;
+  }
+}
+
+/// Method which loads a GridContainer instance from an archive. This version handles 
+/// default constructible cell values.
+template<class Archive, typename GridCellManager, typename... AxesTypes>
+void load(Archive& ar, Grid::GridContainer<GridCellManager,AxesTypes...>& grid, const unsigned int,
+               typename std::enable_if<std::is_default_constructible<typename Grid::GridCellManagerTraits<GridCellManager>::data_type>::value>::type* = 0) {
+  for (auto& cell : grid) {
+    ar >> cell;
+  }
+}
+
+/// Method which loads a GridContainer instance from an archive. This version handles 
+/// non-default constructible cell values.
+template<class Archive, typename GridCellManager, typename... AxesTypes>
+void load(Archive& ar, Grid::GridContainer<GridCellManager,AxesTypes...>& grid, const unsigned int,
+               typename std::enable_if<!std::is_default_constructible<typename Grid::GridCellManagerTraits<GridCellManager>::data_type>::value>::type* = 0) {
+  for (auto& cell : grid) {
+    typename Grid::GridCellManagerTraits<GridCellManager>::data_type* ptr;
+    ar >> ptr;
+    // We use a unique_ptr to guarantee deletion of the pointer
+    std::unique_ptr<typename Grid::GridCellManagerTraits<GridCellManager>::data_type> deleter {ptr};
+    cell = *deleter;
+  }
+}
+
+/// Method which saves/loads a GridContainer instance to/from an archive. It does a
+/// check that the GridCellManager of the GridContainer allows for boost serialization.
+/// This check is done in compilation time. After the check the save/load action
+/// is delegated to the save and load methods.
+template<class Archive, typename GridCellManager, typename... AxesTypes>
+void serialize(Archive& ar, Grid::GridContainer<GridCellManager,AxesTypes...>& grid, const unsigned int version) {
+  static_assert(Grid::GridCellManagerTraits<GridCellManager>::enable_boost_serialize,
+                "Boost serialization of GridContainer with unsupported GridCellManager");
+  split_free(ar, grid, version);
+}
+
+/// Saves in the given archive all the data necessary for reconstructing the
+/// given GridContainer by using its constructor. The data saved is the axes tuple.
+/// The cell data are handled in the serialize method.
 /// NOTE: Any changes in this method should be reflected in the
 /// load_construct_data method.
 template<class Archive, typename GridCellManager, typename... AxesTypes>
@@ -37,9 +88,6 @@ void save_construct_data(Archive& ar, const Grid::GridContainer<GridCellManager,
                                 const unsigned int) {
   std::tuple<Grid::GridAxis<AxesTypes>...> axes_tuple = t->getAxesTuple();
   ar << axes_tuple;
-  // Do NOT delete this pointer!!! It points to the GridCellManager of the grid
-  const GridCellManager* cell_manager_ptr = &(t->getCellManager());
-  ar << cell_manager_ptr;
 }
 
 /// Helper method which constructs an GridAxis object with empty name and
@@ -62,10 +110,7 @@ void load_construct_data(Archive& ar, Grid::GridContainer<GridCellManager,AxesTy
   // that because the GridAxis does not have a default constructor.
   std::tuple<Grid::GridAxis<AxesTypes>...> axes_tuple {(emptyGridAxis<AxesTypes>())...};
   ar >> axes_tuple;
-  GridCellManager* cell_manager;
-  ar >> cell_manager;
-  std::unique_ptr<GridCellManager> ptr {cell_manager};
-  ::new(t) Grid::GridContainer<GridCellManager,AxesTypes...>(std::move(ptr), axes_tuple);
+  ::new(t) Grid::GridContainer<GridCellManager,AxesTypes...>(axes_tuple);
 }
 
 } /* end of namespace serialization */

@@ -10,7 +10,6 @@
 #include <memory>
 #include "ChCatalog/SourceAttributes/Photometry.h"
 #include "PhzDataModel/PhzModel.h"
-#include "PhzDataModel/serialization/PhotometryVector.h"
 
 namespace PhzDataModel {
 
@@ -48,6 +47,11 @@ struct GridCellManagerTraits<PhzDataModel::PhotometryCellManager> {
 }; // end of GridCellManagerTraits
 
 } // end of namespace Grid
+
+// Here we include the serialization of the photometry grid. This is done here
+// to avoid having the default grid serialization applied to the PhotometryGrid
+// (which would happen if the user would forget to include this file)
+#include "PhzDataModel/serialization/PhotometryGrid.h"
 
 #endif	/* PHZDATAMODEL_PHOTOMETRYGRID_H */
 
