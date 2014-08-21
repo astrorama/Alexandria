@@ -161,33 +161,11 @@ The rest of the template parameters define the types of the axes world values.
 In our example the first axis has integer knots, the second double knots and the
 third strings. Note that the axes knots can be of any type, even of user defined
 types. The axes given as parameters to the constructor must be of the correct
-type, otherwise the compilation will fail.
+type, otherwise the compilation will fail. Note that in the example above, the
+vector for keeping the grid data is automatically created by the constructor, by
+using the GridCellManagerTraits::factory() method.
 
-In the example above, the vector for keeping the grid data is automatically
-created by the constructor, by using the GridCellManagerTraits::factory()
-method. For the case of a `GridCellManager` type which does not provide the
-`factory()` method in its GridCellManagerTraits specialization, or for the case
-some default initialization values are required, the GridContainer class
-provides a second constructor:
-
-\code{.cpp}
-  // Create and initialize the GridCellManager instance
-  unique_ptr<vector<int>> cell_manager {new vector<int>{}};
-  for (int i=0; i<30; ++i) {
-    cell_manager->push_back(i);
-  }
-  // Create the GridContainer object
-  GridContainer<vector<int>, int, double, string> initialized_grid
-                    {move(cell_manager), int_axis, double_axis, string_axis};
-\endcode
-
-The GridCellManager instance is passed as a `unique_ptr` to indicate the change
-of ownership (the GridContainer instance will own the cell manager from that
-moment on). Note that the size of the given `GridCellManager` must be the size
-required according the axes sizes. If a manager of wrong size is given a runtime
-exception is thrown.
-
-The last case of creating Grids is when one already has a GridContainer
+The second way of creating Grids is when one already has a GridContainer
 instance and want to create a second GridContainer with the same parameter space
 (axes). This is a common operation, so it is supported by the GridContainer API
 as demonstrated by the following code:
@@ -461,13 +439,13 @@ serialization documentation, which can be found
 
 \subsection cellmanagerserialization Custom GridCellManager Serialization
 
-Similarly with the axes types, the `GridCellManager` type of a grid must be
-boost serializable, otherwise it will not be possible to serialize the grid. By
-default all the GridCellManagers are considered not serializable by the
-GridContainer module. To enable serialization for a specific GridCellManager,
-except of defining the related boost::serialization methods, the related
-specialization of the GridCellManagerTraits must have the
-enable_boost_serializable flag set to true.
+Similarly with the axes types, the type of the cells of a grid must be boost
+serializable, otherwise it will not be possible to serialize the grid. Note that
+the GridCellManager itself does not need to be serializable, just the values it
+manages. By default serialization is disabled for all the GridCellManagers. To
+enable serialization for a specific GridCellManager, except of defining the
+related boost::serialization methods, the related specialization of the
+GridCellManagerTraits must have the enable_boost_serializable flag set to true.
 
 By default the GridContainer module enables serialization only for vectors of
 types which are boost serializable.
@@ -701,15 +679,11 @@ struct GridCellManagerTraits<MemoryManager<T>> {
 \endcode
 
 Note that it is not obligatory to implement all the above, but only what is
-actually being used. For example, the GridContainer class provides an
-alternative constructor which does not use the `factory()` method, but it gets
-the `GridCellManager` instance as a parameter. This can be used if the managed
-type does not have a meaningful default value.
-
-Furthermore, there is no requirement for the `GridCellManager` to actually keep
-the data in the memory. An implementation can provide an iterator which will
-calculate the data *on the fly*. Such types of GridCellManagers are too
-application specific, so they are not described further here.
+actually being used. Furthermore, there is no requirement for the
+`GridCellManager` to actually keep the data in the memory. An implementation can
+provide an iterator which will calculate the data *on the fly*. Such types of
+GridCellManagers are too application specific, so they are not described further
+here.
 
 
 \subsection fullcode Full example code
@@ -845,17 +819,7 @@ int main() {
   
   // Create a grid with integer data
   GridContainer<vector<int>, int, double, string> grid {int_axis, double_axis, string_axis};
-  
-  // Create and initialize the GridCellManager instance
-  unique_ptr<vector<int>> cell_manager {new vector<int>{}};
-  for (int i=0; i<30; ++i) {
-    cell_manager->push_back(i);
-  }
-  
-  // Create the GridContainer object with the initialized GridCellManager
-  GridContainer<vector<int>, int, double, string> initialized_grid
-                    {move(cell_manager), int_axis, double_axis, string_axis};
-  
+
   // Create grid with same parameter space
   GridContainer<vector<bool>, int, double, string> bool_grid {grid.getAxesTuple()};
   
