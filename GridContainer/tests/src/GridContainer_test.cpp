@@ -371,10 +371,16 @@ BOOST_FIXTURE_TEST_CASE(iterator, GridContainer_Fixture) {
   
   // When
   GridContainerType grid {std::move(custom_cell_manager), axes_tuple};
+  const GridContainerType& const_grid = grid;
   
   // Then
   double expected_value {0};
   for (auto& result_value : grid) {
+    expected_value += 0.1;
+    BOOST_CHECK_EQUAL(result_value, expected_value);
+  }
+  expected_value = 0;
+  for (auto& result_value : const_grid) {
     expected_value += 0.1;
     BOOST_CHECK_EQUAL(result_value, expected_value);
   }
@@ -389,9 +395,11 @@ BOOST_FIXTURE_TEST_CASE(iteratorAxisIndex, GridContainer_Fixture) {
   
   // Given
   GridContainerType grid {axes_tuple};
+  const GridContainerType& const_grid = grid;
   
   // When
   auto iterator = grid.begin();
+  auto const_iterator = const_grid.begin();
   
   // Then
   for (size_t coord4=0; coord4<axis4.size(); ++coord4) {
@@ -403,6 +411,19 @@ BOOST_FIXTURE_TEST_CASE(iteratorAxisIndex, GridContainer_Fixture) {
           BOOST_CHECK_EQUAL(iterator.axisIndex<2>(), coord3);
           BOOST_CHECK_EQUAL(iterator.axisIndex<3>(), coord4);
           ++iterator;
+        }
+      }
+    }
+  }
+  for (size_t coord4=0; coord4<axis4.size(); ++coord4) {
+    for (size_t coord3=0; coord3<axis3.size(); ++coord3) {
+      for (size_t coord2=0; coord2<axis2.size(); ++coord2) {
+        for (size_t coord1=0; coord1<axis1.size(); ++coord1) {
+          BOOST_CHECK_EQUAL(const_iterator.axisIndex<0>(), coord1);
+          BOOST_CHECK_EQUAL(const_iterator.axisIndex<1>(), coord2);
+          BOOST_CHECK_EQUAL(const_iterator.axisIndex<2>(), coord3);
+          BOOST_CHECK_EQUAL(const_iterator.axisIndex<3>(), coord4);
+          ++const_iterator;
         }
       }
     }
@@ -418,9 +439,11 @@ BOOST_FIXTURE_TEST_CASE(iteratorAxisValue, GridContainer_Fixture) {
   
   // Given
   GridContainerType grid {axes_tuple};
+  const GridContainerType& const_grid = grid;
   
   // When
   auto iterator = grid.begin();
+  auto const_iterator = const_grid.begin();
   
   // Then
   for (size_t coord4=0; coord4<axis4.size(); ++coord4) {
@@ -436,6 +459,19 @@ BOOST_FIXTURE_TEST_CASE(iteratorAxisValue, GridContainer_Fixture) {
       }
     }
   }
+  for (size_t coord4=0; coord4<axis4.size(); ++coord4) {
+    for (size_t coord3=0; coord3<axis3.size(); ++coord3) {
+      for (size_t coord2=0; coord2<axis2.size(); ++coord2) {
+        for (size_t coord1=0; coord1<axis1.size(); ++coord1) {
+          BOOST_CHECK_EQUAL(const_iterator.axisValue<0>(), axis1[coord1]);
+          BOOST_CHECK_EQUAL(const_iterator.axisValue<1>(), axis2[coord2]);
+          BOOST_CHECK_EQUAL(const_iterator.axisValue<2>(), axis3[coord3]);
+          BOOST_CHECK_EQUAL(const_iterator.axisValue<3>(), axis4[coord4]);
+          ++const_iterator;
+        }
+      }
+    }
+  }
   
 }
 
@@ -447,12 +483,15 @@ BOOST_FIXTURE_TEST_CASE(fixIteratorByIndex, GridContainer_Fixture) {
   
   // Given
   GridContainerType grid {axes_tuple};
+  const GridContainerType& const_grid = grid;
   
   for (size_t fixed_index=0; fixed_index<axis1.size(); ++fixed_index) {
     
     // When
     auto iterator = grid.begin();
     iterator.fixAxisByIndex<0>(fixed_index);
+    auto const_iterator = const_grid.begin();
+    const_iterator.fixAxisByIndex<0>(fixed_index);
     
     // Then
     for (size_t coord4 = 0; coord4 < axis4.size(); ++coord4) {
@@ -466,6 +505,17 @@ BOOST_FIXTURE_TEST_CASE(fixIteratorByIndex, GridContainer_Fixture) {
         }
       }
     }
+    for (size_t coord4 = 0; coord4 < axis4.size(); ++coord4) {
+      for (size_t coord3 = 0; coord3 < axis3.size(); ++coord3) {
+        for (size_t coord2 = 0; coord2 < axis2.size(); ++coord2) {
+          BOOST_CHECK_EQUAL(const_iterator.axisIndex<0>(), fixed_index);
+          BOOST_CHECK_EQUAL(const_iterator.axisIndex<1>(), coord2);
+          BOOST_CHECK_EQUAL(const_iterator.axisIndex<2>(), coord3);
+          BOOST_CHECK_EQUAL(const_iterator.axisIndex<3>(), coord4);
+          ++const_iterator;
+        }
+      }
+    }
     
   }
   
@@ -474,6 +524,8 @@ BOOST_FIXTURE_TEST_CASE(fixIteratorByIndex, GridContainer_Fixture) {
     // When
     auto iterator = grid.begin();
     iterator.fixAxisByIndex<1>(fixed_index);
+    auto const_iterator = const_grid.begin();
+    const_iterator.fixAxisByIndex<1>(fixed_index);
     
     // Then
     for (size_t coord4 = 0; coord4 < axis4.size(); ++coord4) {
@@ -487,6 +539,17 @@ BOOST_FIXTURE_TEST_CASE(fixIteratorByIndex, GridContainer_Fixture) {
         }
       }
     }
+    for (size_t coord4 = 0; coord4 < axis4.size(); ++coord4) {
+      for (size_t coord3 = 0; coord3 < axis3.size(); ++coord3) {
+        for (size_t coord1 = 0; coord1 < axis1.size(); ++coord1) {
+          BOOST_CHECK_EQUAL(const_iterator.axisIndex<0>(), coord1);
+          BOOST_CHECK_EQUAL(const_iterator.axisIndex<1>(), fixed_index);
+          BOOST_CHECK_EQUAL(const_iterator.axisIndex<2>(), coord3);
+          BOOST_CHECK_EQUAL(const_iterator.axisIndex<3>(), coord4);
+          ++const_iterator;
+        }
+      }
+    }
     
   }
   
@@ -495,6 +558,8 @@ BOOST_FIXTURE_TEST_CASE(fixIteratorByIndex, GridContainer_Fixture) {
     // When
     auto iterator = grid.begin();
     iterator.fixAxisByIndex<2>(fixed_index);
+    auto const_iterator = const_grid.begin();
+    const_iterator.fixAxisByIndex<2>(fixed_index);
     
     // Then
     for (size_t coord4 = 0; coord4 < axis4.size(); ++coord4) {
@@ -508,6 +573,17 @@ BOOST_FIXTURE_TEST_CASE(fixIteratorByIndex, GridContainer_Fixture) {
         }
       }
     }
+    for (size_t coord4 = 0; coord4 < axis4.size(); ++coord4) {
+      for (size_t coord2 = 0; coord2 < axis2.size(); ++coord2) {
+        for (size_t coord1 = 0; coord1 < axis1.size(); ++coord1) {
+          BOOST_CHECK_EQUAL(const_iterator.axisIndex<0>(), coord1);
+          BOOST_CHECK_EQUAL(const_iterator.axisIndex<1>(), coord2);
+          BOOST_CHECK_EQUAL(const_iterator.axisIndex<2>(), fixed_index);
+          BOOST_CHECK_EQUAL(const_iterator.axisIndex<3>(), coord4);
+          ++const_iterator;
+        }
+      }
+    }
     
   }
   
@@ -516,6 +592,8 @@ BOOST_FIXTURE_TEST_CASE(fixIteratorByIndex, GridContainer_Fixture) {
     // When
     auto iterator = grid.begin();
     iterator.fixAxisByIndex<3>(fixed_index);
+    auto const_iterator = const_grid.begin();
+    const_iterator.fixAxisByIndex<3>(fixed_index);
     
     // Then
     for (size_t coord3 = 0; coord3 < axis3.size(); ++coord3) {
@@ -526,6 +604,17 @@ BOOST_FIXTURE_TEST_CASE(fixIteratorByIndex, GridContainer_Fixture) {
           BOOST_CHECK_EQUAL(iterator.axisIndex<2>(), coord3);
           BOOST_CHECK_EQUAL(iterator.axisIndex<3>(), fixed_index);
           ++iterator;
+        }
+      }
+    }
+    for (size_t coord3 = 0; coord3 < axis3.size(); ++coord3) {
+      for (size_t coord2 = 0; coord2 < axis2.size(); ++coord2) {
+        for (size_t coord1 = 0; coord1 < axis1.size(); ++coord1) {
+          BOOST_CHECK_EQUAL(const_iterator.axisIndex<0>(), coord1);
+          BOOST_CHECK_EQUAL(const_iterator.axisIndex<1>(), coord2);
+          BOOST_CHECK_EQUAL(const_iterator.axisIndex<2>(), coord3);
+          BOOST_CHECK_EQUAL(const_iterator.axisIndex<3>(), fixed_index);
+          ++const_iterator;
         }
       }
     }
@@ -542,15 +631,21 @@ BOOST_FIXTURE_TEST_CASE(fixIteratorByIndexOutOfBound, GridContainer_Fixture) {
   
   // Given
   GridContainerType grid {axes_tuple};
+  const GridContainerType& const_grid = grid;
   
   // When
   auto iterator = grid.begin();
+  auto const_iterator = const_grid.begin();
   
   // Then
   BOOST_CHECK_THROW(iterator.fixAxisByIndex<0>(axis1.size()), ElementsException);
   BOOST_CHECK_THROW(iterator.fixAxisByIndex<1>(axis2.size()), ElementsException);
   BOOST_CHECK_THROW(iterator.fixAxisByIndex<2>(axis3.size()), ElementsException);
   BOOST_CHECK_THROW(iterator.fixAxisByIndex<3>(axis4.size()), ElementsException);
+  BOOST_CHECK_THROW(const_iterator.fixAxisByIndex<0>(axis1.size()), ElementsException);
+  BOOST_CHECK_THROW(const_iterator.fixAxisByIndex<1>(axis2.size()), ElementsException);
+  BOOST_CHECK_THROW(const_iterator.fixAxisByIndex<2>(axis3.size()), ElementsException);
+  BOOST_CHECK_THROW(const_iterator.fixAxisByIndex<3>(axis4.size()), ElementsException);
   
 }
 
@@ -562,12 +657,15 @@ BOOST_FIXTURE_TEST_CASE(fixIteratorByValue, GridContainer_Fixture) {
   
   // Given
   GridContainerType grid {axes_tuple};
+  const GridContainerType& const_grid = grid;
   
   for (size_t fixed_index=0; fixed_index<axis1.size(); ++fixed_index) {
     
     // When
     auto iterator = grid.begin();
     iterator.fixAxisByValue<0>(axis1[fixed_index]);
+    auto const_iterator = const_grid.begin();
+    const_iterator.fixAxisByValue<0>(axis1[fixed_index]);
     
     // Then
     for (size_t coord4 = 0; coord4 < axis4.size(); ++coord4) {
@@ -581,6 +679,17 @@ BOOST_FIXTURE_TEST_CASE(fixIteratorByValue, GridContainer_Fixture) {
         }
       }
     }
+    for (size_t coord4 = 0; coord4 < axis4.size(); ++coord4) {
+      for (size_t coord3 = 0; coord3 < axis3.size(); ++coord3) {
+        for (size_t coord2 = 0; coord2 < axis2.size(); ++coord2) {
+          BOOST_CHECK_EQUAL(const_iterator.axisIndex<0>(), fixed_index);
+          BOOST_CHECK_EQUAL(const_iterator.axisIndex<1>(), coord2);
+          BOOST_CHECK_EQUAL(const_iterator.axisIndex<2>(), coord3);
+          BOOST_CHECK_EQUAL(const_iterator.axisIndex<3>(), coord4);
+          ++const_iterator;
+        }
+      }
+    }
     
   }
   
@@ -589,6 +698,8 @@ BOOST_FIXTURE_TEST_CASE(fixIteratorByValue, GridContainer_Fixture) {
     // When
     auto iterator = grid.begin();
     iterator.fixAxisByValue<1>(axis2[fixed_index]);
+    auto const_iterator = const_grid.begin();
+    const_iterator.fixAxisByValue<1>(axis2[fixed_index]);
     
     // Then
     for (size_t coord4 = 0; coord4 < axis4.size(); ++coord4) {
@@ -602,6 +713,17 @@ BOOST_FIXTURE_TEST_CASE(fixIteratorByValue, GridContainer_Fixture) {
         }
       }
     }
+    for (size_t coord4 = 0; coord4 < axis4.size(); ++coord4) {
+      for (size_t coord3 = 0; coord3 < axis3.size(); ++coord3) {
+        for (size_t coord1 = 0; coord1 < axis1.size(); ++coord1) {
+          BOOST_CHECK_EQUAL(const_iterator.axisIndex<0>(), coord1);
+          BOOST_CHECK_EQUAL(const_iterator.axisIndex<1>(), fixed_index);
+          BOOST_CHECK_EQUAL(const_iterator.axisIndex<2>(), coord3);
+          BOOST_CHECK_EQUAL(const_iterator.axisIndex<3>(), coord4);
+          ++const_iterator;
+        }
+      }
+    }
     
   }
   
@@ -610,6 +732,8 @@ BOOST_FIXTURE_TEST_CASE(fixIteratorByValue, GridContainer_Fixture) {
     // When
     auto iterator = grid.begin();
     iterator.fixAxisByValue<2>(axis3[fixed_index]);
+    auto const_iterator = const_grid.begin();
+    const_iterator.fixAxisByValue<2>(axis3[fixed_index]);
     
     // Then
     for (size_t coord4 = 0; coord4 < axis4.size(); ++coord4) {
@@ -623,6 +747,17 @@ BOOST_FIXTURE_TEST_CASE(fixIteratorByValue, GridContainer_Fixture) {
         }
       }
     }
+    for (size_t coord4 = 0; coord4 < axis4.size(); ++coord4) {
+      for (size_t coord2 = 0; coord2 < axis2.size(); ++coord2) {
+        for (size_t coord1 = 0; coord1 < axis1.size(); ++coord1) {
+          BOOST_CHECK_EQUAL(const_iterator.axisIndex<0>(), coord1);
+          BOOST_CHECK_EQUAL(const_iterator.axisIndex<1>(), coord2);
+          BOOST_CHECK_EQUAL(const_iterator.axisIndex<2>(), fixed_index);
+          BOOST_CHECK_EQUAL(const_iterator.axisIndex<3>(), coord4);
+          ++const_iterator;
+        }
+      }
+    }
     
   }
   
@@ -631,6 +766,8 @@ BOOST_FIXTURE_TEST_CASE(fixIteratorByValue, GridContainer_Fixture) {
     // When
     auto iterator = grid.begin();
     iterator.fixAxisByValue<3>(axis4[fixed_index]);
+    auto const_iterator = const_grid.begin();
+    const_iterator.fixAxisByValue<3>(axis4[fixed_index]);
     
     // Then
     for (size_t coord3 = 0; coord3 < axis3.size(); ++coord3) {
@@ -641,6 +778,17 @@ BOOST_FIXTURE_TEST_CASE(fixIteratorByValue, GridContainer_Fixture) {
           BOOST_CHECK_EQUAL(iterator.axisIndex<2>(), coord3);
           BOOST_CHECK_EQUAL(iterator.axisIndex<3>(), fixed_index);
           ++iterator;
+        }
+      }
+    }
+    for (size_t coord3 = 0; coord3 < axis3.size(); ++coord3) {
+      for (size_t coord2 = 0; coord2 < axis2.size(); ++coord2) {
+        for (size_t coord1 = 0; coord1 < axis1.size(); ++coord1) {
+          BOOST_CHECK_EQUAL(const_iterator.axisIndex<0>(), coord1);
+          BOOST_CHECK_EQUAL(const_iterator.axisIndex<1>(), coord2);
+          BOOST_CHECK_EQUAL(const_iterator.axisIndex<2>(), coord3);
+          BOOST_CHECK_EQUAL(const_iterator.axisIndex<3>(), fixed_index);
+          ++const_iterator;
         }
       }
     }
@@ -657,15 +805,21 @@ BOOST_FIXTURE_TEST_CASE(fixIteratorByValueNotFound, GridContainer_Fixture) {
   
   // Given
   GridContainerType grid {axes_tuple};
+  const GridContainerType& const_grid = grid;
   
   // When
   auto iterator = grid.begin();
+  auto const_iterator = const_grid.begin();
   
   // Then
   BOOST_CHECK_THROW(iterator.fixAxisByValue<0>(axis1.size()+1), ElementsException);
   BOOST_CHECK_THROW(iterator.fixAxisByValue<1>(axis2.size()+1), ElementsException);
   BOOST_CHECK_THROW(iterator.fixAxisByValue<2>(axis3.size()+1), ElementsException);
   BOOST_CHECK_THROW(iterator.fixAxisByValue<3>(axis4.size()+1), ElementsException);
+  BOOST_CHECK_THROW(const_iterator.fixAxisByValue<0>(axis1.size()+1), ElementsException);
+  BOOST_CHECK_THROW(const_iterator.fixAxisByValue<1>(axis2.size()+1), ElementsException);
+  BOOST_CHECK_THROW(const_iterator.fixAxisByValue<2>(axis3.size()+1), ElementsException);
+  BOOST_CHECK_THROW(const_iterator.fixAxisByValue<3>(axis4.size()+1), ElementsException);
   
 }
 
