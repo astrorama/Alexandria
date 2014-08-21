@@ -60,65 +60,6 @@ BOOST_FIXTURE_TEST_CASE(GridAxisConstructor, GridContainer_Fixture) {
 }
 
 //-----------------------------------------------------------------------------
-// Test construction with GridAxis objects and GridCellManager
-//-----------------------------------------------------------------------------
-    
-BOOST_FIXTURE_TEST_CASE(GridAxisCellManagerConstructor, GridContainer_Fixture) {
-  
-  // Given
-  std::unique_ptr<std::vector<double>> custom_cell_manager {new std::vector<double>(total_size)};
-  double custom_value = 0;
-  for (size_t i=0; i<total_size; ++i) {
-    custom_value += 0.1;
-    (*custom_cell_manager)[i] = custom_value;
-  }
-  
-  // When
-  GridContainerType result_grid {std::move(custom_cell_manager), axis1, axis2, axis3, axis4};
-  auto& result_cell_manager = result_grid.getCellManager();
-  auto& result_axes_tuple = result_grid.getAxesTuple();
-  
-  // Then
-  BOOST_CHECK_EQUAL(result_cell_manager.size(), total_size);
-  double expected_value = 0;
-  for (auto& value : result_cell_manager) {
-    expected_value += 0.1;
-    BOOST_CHECK_EQUAL(value, expected_value);
-  }
-  BOOST_CHECK_EQUAL(std::get<0>(result_axes_tuple).name(), axis1.name());
-  BOOST_CHECK_EQUAL_COLLECTIONS(
-      std::get<0>(result_axes_tuple).begin(), std::get<0>(result_axes_tuple).end(),
-      axis1.begin(), axis1.end());
-  BOOST_CHECK_EQUAL(std::get<1>(result_axes_tuple).name(), axis2.name());
-  BOOST_CHECK_EQUAL_COLLECTIONS(
-      std::get<1>(result_axes_tuple).begin(), std::get<1>(result_axes_tuple).end(),
-      axis2.begin(), axis2.end());
-  BOOST_CHECK_EQUAL(std::get<2>(result_axes_tuple).name(), axis3.name());
-  BOOST_CHECK_EQUAL_COLLECTIONS(
-      std::get<2>(result_axes_tuple).begin(), std::get<2>(result_axes_tuple).end(),
-      axis3.begin(), axis3.end());
-  BOOST_CHECK_EQUAL(std::get<3>(result_axes_tuple).name(), axis4.name());
-  BOOST_CHECK_EQUAL_COLLECTIONS(
-      std::get<3>(result_axes_tuple).begin(), std::get<3>(result_axes_tuple).end(),
-      axis4.begin(), axis4.end());
-  
-}
-
-//-----------------------------------------------------------------------------
-// Test construction with GridAxis objects and GridCellManager with wrong size
-//-----------------------------------------------------------------------------
-    
-BOOST_FIXTURE_TEST_CASE(GridAxisCellManagerConstructorWrongSize, GridContainer_Fixture) {
-  
-  // Given
-  std::unique_ptr<std::vector<double>> custom_cell_manager {new std::vector<double>(total_size/2)};
-  
-  // Then
-  BOOST_CHECK_THROW(GridContainerType(std::move(custom_cell_manager), axis1, axis2, axis3, axis4), ElementsException);
-  
-}
-
-//-----------------------------------------------------------------------------
 // Test construction with GridAxis tuple
 //-----------------------------------------------------------------------------
     
@@ -150,65 +91,6 @@ BOOST_FIXTURE_TEST_CASE(GridAxisTupleonstructor, GridContainer_Fixture) {
   BOOST_CHECK_EQUAL_COLLECTIONS(
       std::get<3>(result_axes_tuple).begin(), std::get<3>(result_axes_tuple).end(),
       axis4.begin(), axis4.end());
-  
-}
-
-//-----------------------------------------------------------------------------
-// Test construction with GridAxis tuple and GridCellManager
-//-----------------------------------------------------------------------------
-    
-BOOST_FIXTURE_TEST_CASE(GridAxisTupleCellManagerConstructor, GridContainer_Fixture) {
-  
-  // Given
-  std::unique_ptr<std::vector<double>> custom_cell_manager {new std::vector<double>(total_size)};
-  double custom_value = 0;
-  for (size_t i=0; i<total_size; ++i) {
-    custom_value += 0.1;
-    (*custom_cell_manager)[i] = custom_value;
-  }
-  
-  // When
-  GridContainerType result_grid {std::move(custom_cell_manager), axes_tuple};
-  auto& result_cell_manager = result_grid.getCellManager();
-  auto& result_axes_tuple = result_grid.getAxesTuple();
-  
-  // Then
-  BOOST_CHECK_EQUAL(result_cell_manager.size(), total_size);
-  double expected_value = 0;
-  for (auto& value : result_cell_manager) {
-    expected_value += 0.1;
-    BOOST_CHECK_EQUAL(value, expected_value);
-  }
-  BOOST_CHECK_EQUAL(std::get<0>(result_axes_tuple).name(), axis1.name());
-  BOOST_CHECK_EQUAL_COLLECTIONS(
-      std::get<0>(result_axes_tuple).begin(), std::get<0>(result_axes_tuple).end(),
-      axis1.begin(), axis1.end());
-  BOOST_CHECK_EQUAL(std::get<1>(result_axes_tuple).name(), axis2.name());
-  BOOST_CHECK_EQUAL_COLLECTIONS(
-      std::get<1>(result_axes_tuple).begin(), std::get<1>(result_axes_tuple).end(),
-      axis2.begin(), axis2.end());
-  BOOST_CHECK_EQUAL(std::get<2>(result_axes_tuple).name(), axis3.name());
-  BOOST_CHECK_EQUAL_COLLECTIONS(
-      std::get<2>(result_axes_tuple).begin(), std::get<2>(result_axes_tuple).end(),
-      axis3.begin(), axis3.end());
-  BOOST_CHECK_EQUAL(std::get<3>(result_axes_tuple).name(), axis4.name());
-  BOOST_CHECK_EQUAL_COLLECTIONS(
-      std::get<3>(result_axes_tuple).begin(), std::get<3>(result_axes_tuple).end(),
-      axis4.begin(), axis4.end());
-  
-}
-
-//-----------------------------------------------------------------------------
-// Test construction with GridAxis tuple and GridCellManager with wrong size
-//-----------------------------------------------------------------------------
-    
-BOOST_FIXTURE_TEST_CASE(GridAxisTupleCellManagerConstructorWrongSize, GridContainer_Fixture) {
-  
-  // Given
-  std::unique_ptr<std::vector<double>> custom_cell_manager {new std::vector<double>(total_size/2)};
-  
-  // Then
-  BOOST_CHECK_THROW(GridContainerType(std::move(custom_cell_manager), axes_tuple), ElementsException);
   
 }
 
@@ -264,16 +146,15 @@ BOOST_FIXTURE_TEST_CASE(size, GridContainer_Fixture) {
 BOOST_FIXTURE_TEST_CASE(parenthesisOperator, GridContainer_Fixture) {
   
   // Given
-  std::unique_ptr<std::vector<double>> custom_cell_manager {new std::vector<double>(total_size)};
-  double custom_value = 0;
-  for (size_t i=0; i<total_size; ++i) {
-    custom_value += 0.1;
-    (*custom_cell_manager)[i] = custom_value;
-  }
+  GridContainerType grid {axes_tuple};
+  const GridContainerType& const_grid = grid;
   
   // When
-  GridContainerType grid {std::move(custom_cell_manager), axes_tuple};
-  const GridContainerType& const_grid = grid;
+  double custom_value = 0;
+  for (auto& cell : grid) {
+    custom_value += 0.1;
+    cell = custom_value;
+  }
   
   // Then
   double expected_value {0};
@@ -298,16 +179,15 @@ BOOST_FIXTURE_TEST_CASE(parenthesisOperator, GridContainer_Fixture) {
 BOOST_FIXTURE_TEST_CASE(at, GridContainer_Fixture) {
   
   // Given
-  std::unique_ptr<std::vector<double>> custom_cell_manager {new std::vector<double>(total_size)};
-  double custom_value = 0;
-  for (size_t i=0; i<total_size; ++i) {
-    custom_value += 0.1;
-    (*custom_cell_manager)[i] = custom_value;
-  }
+  GridContainerType grid {axes_tuple};
+  const GridContainerType& const_grid = grid;
   
   // When
-  GridContainerType grid {std::move(custom_cell_manager), axes_tuple};
-  const GridContainerType& const_grid = grid;
+  double custom_value = 0;
+  for (auto& cell : grid) {
+    custom_value += 0.1;
+    cell = custom_value;
+  }
   
   // Then
   double expected_value {0};
@@ -332,16 +212,15 @@ BOOST_FIXTURE_TEST_CASE(at, GridContainer_Fixture) {
 BOOST_FIXTURE_TEST_CASE(atOutOfBound, GridContainer_Fixture) {
   
   // Given
-  std::unique_ptr<std::vector<double>> custom_cell_manager {new std::vector<double>(total_size)};
-  double custom_value = 0;
-  for (size_t i=0; i<total_size; ++i) {
-    custom_value += 0.1;
-    (*custom_cell_manager)[i] = custom_value;
-  }
+  GridContainerType grid {axes_tuple};
+  const GridContainerType& const_grid = grid;
   
   // When
-  GridContainerType grid {std::move(custom_cell_manager), axes_tuple};
-  const GridContainerType& const_grid = grid;
+  double custom_value = 0;
+  for (auto& cell : grid) {
+    custom_value += 0.1;
+    cell = custom_value;
+  }
   
   // Then
   BOOST_CHECK_THROW(grid.at(axis1.size(), 0, 0, 0), ElementsException);
@@ -362,16 +241,15 @@ BOOST_FIXTURE_TEST_CASE(atOutOfBound, GridContainer_Fixture) {
 BOOST_FIXTURE_TEST_CASE(iterator, GridContainer_Fixture) {
   
   // Given
-  std::unique_ptr<std::vector<double>> custom_cell_manager {new std::vector<double>(total_size)};
-  double custom_value = 0;
-  for (size_t i=0; i<total_size; ++i) {
-    custom_value += 0.1;
-    (*custom_cell_manager)[i] = custom_value;
-  }
+  GridContainerType grid {axes_tuple};
+  const GridContainerType& const_grid = grid;
   
   // When
-  GridContainerType grid {std::move(custom_cell_manager), axes_tuple};
-  const GridContainerType& const_grid = grid;
+  double custom_value = 0;
+  for (auto& cell : grid) {
+    custom_value += 0.1;
+    cell = custom_value;
+  }
   
   // Then
   double expected_value {0};

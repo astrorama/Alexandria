@@ -41,14 +41,12 @@ BOOST_AUTO_TEST_CASE(GridContainerSerializationDefaultConstructibleCells) {
   knots2.push_back(NDCC{3.4});
   knots2.push_back(NDCC{12E-15});
   Grid::GridAxis<NDCC> axis2 {name2, knots2};
-  std::unique_ptr<std::vector<DCC>> cell_manager {new std::vector<DCC>{}};
+  GridContainerType grid {axis0, axis1, axis2};
   double value {0.};
-  for (size_t i=0; i<knots0.size()*knots1.size()*knots2.size(); ++i) {
-    cell_manager->push_back({});
-    cell_manager->back().value = value;
+  for (auto& cell : grid) {
+    cell.value = value;
     value += 0.1;
   }
-  GridContainerType grid {std::move(cell_manager), axis0, axis1, axis2};
   
   // When
   std::stringstream stream {};
@@ -116,13 +114,12 @@ BOOST_AUTO_TEST_CASE(GridContainerSerializationNonDefaultConstructibleCells) {
   knots2.push_back(NDCC{3.4});
   knots2.push_back(NDCC{12E-15});
   Grid::GridAxis<NDCC> axis2 {name2, knots2};
-  std::unique_ptr<std::vector<NDCC>> cell_manager {new std::vector<NDCC>{}};
+  GridContainerType grid {axis0, axis1, axis2};
   double value {0.};
-  for (size_t i=0; i<knots0.size()*knots1.size()*knots2.size(); ++i) {
-    cell_manager->push_back({value});
+  for (auto& cell : grid) {
+    cell = NDCC{value};
     value += 0.1;
   }
-  GridContainerType grid {std::move(cell_manager), axis0, axis1, axis2};
   
   // When
   std::stringstream stream {};
