@@ -273,6 +273,7 @@ BOOST_FIXTURE_TEST_CASE(parenthesisOperator, GridContainer_Fixture) {
   
   // When
   GridContainerType grid {std::move(custom_cell_manager), axes_tuple};
+  const GridContainerType& const_grid = grid;
   
   // Then
   double expected_value {0};
@@ -282,6 +283,7 @@ BOOST_FIXTURE_TEST_CASE(parenthesisOperator, GridContainer_Fixture) {
         for (size_t coord1=0; coord1<axis1.size(); ++coord1) {
           expected_value += 0.1;
           BOOST_CHECK_EQUAL(grid(coord1, coord2, coord3, coord4), expected_value);
+          BOOST_CHECK_EQUAL(const_grid(coord1, coord2, coord3, coord4), expected_value);
         }
       }
     }
@@ -305,6 +307,7 @@ BOOST_FIXTURE_TEST_CASE(at, GridContainer_Fixture) {
   
   // When
   GridContainerType grid {std::move(custom_cell_manager), axes_tuple};
+  const GridContainerType& const_grid = grid;
   
   // Then
   double expected_value {0};
@@ -314,6 +317,7 @@ BOOST_FIXTURE_TEST_CASE(at, GridContainer_Fixture) {
         for (size_t coord1=0; coord1<axis1.size(); ++coord1) {
           expected_value += 0.1;
           BOOST_CHECK_EQUAL(grid.at(coord1, coord2, coord3, coord4), expected_value);
+          BOOST_CHECK_EQUAL(const_grid.at(coord1, coord2, coord3, coord4), expected_value);
         }
       }
     }
@@ -337,12 +341,17 @@ BOOST_FIXTURE_TEST_CASE(atOutOfBound, GridContainer_Fixture) {
   
   // When
   GridContainerType grid {std::move(custom_cell_manager), axes_tuple};
+  const GridContainerType& const_grid = grid;
   
   // Then
   BOOST_CHECK_THROW(grid.at(axis1.size(), 0, 0, 0), ElementsException);
   BOOST_CHECK_THROW(grid.at(0, axis2.size(), 0, 0), ElementsException);
   BOOST_CHECK_THROW(grid.at(0, 0, axis3.size(), 0), ElementsException);
   BOOST_CHECK_THROW(grid.at(0, 0, 0, axis4.size()), ElementsException);
+  BOOST_CHECK_THROW(const_grid.at(axis1.size(), 0, 0, 0), ElementsException);
+  BOOST_CHECK_THROW(const_grid.at(0, axis2.size(), 0, 0), ElementsException);
+  BOOST_CHECK_THROW(const_grid.at(0, 0, axis3.size(), 0), ElementsException);
+  BOOST_CHECK_THROW(const_grid.at(0, 0, 0, axis4.size()), ElementsException);
   
 }
 

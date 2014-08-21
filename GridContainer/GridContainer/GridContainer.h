@@ -168,7 +168,7 @@ public:
   iterator end();
   
   /// Returns the total number of cells of the grid
-  size_t size();
+  size_t size() const;
   
   /**
    * Returns a reference to the grid cell for the given axes indices, to be
@@ -180,6 +180,9 @@ public:
    * @param indices The indices of the axes
    * @return A reference to the cell
    */
+  const cell_type& operator()(decltype(std::declval<GridAxis<AxesTypes>>().size())... indices) const;
+  
+  /// @copydoc operator() (decltype(std::declval<GridAxis<AxesTypes>>().size())...) const
   cell_type& operator()(decltype(std::declval<GridAxis<AxesTypes>>().size())... indices);
   
   /**
@@ -194,6 +197,9 @@ public:
    * @throws ElementsException
    *    if any of the indices is out of range
    */
+  const cell_type& at(decltype(std::declval<GridAxis<AxesTypes>>().size())... indices) const;
+  
+  /// @copydoc at(decltype(std::declval<GridAxis<AxesTypes>>().size())...) const
   cell_type& at(decltype(std::declval<GridAxis<AxesTypes>>().size())... indices);
   
 private:

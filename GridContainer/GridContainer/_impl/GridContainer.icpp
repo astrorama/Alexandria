@@ -72,20 +72,30 @@ auto GridContainer<GridCellManager, AxesTypes...>::end() -> iterator {
 }
 
 template<typename GridCellManager, typename... AxesTypes>
-size_t GridContainer<GridCellManager, AxesTypes...>::size() {
+size_t GridContainer<GridCellManager, AxesTypes...>::size() const {
   return m_index_helper.m_axes_index_factors.back();
 }
 
 template<typename GridCellManager, typename... AxesTypes>
-auto GridContainer<GridCellManager, AxesTypes...>::operator()(decltype(std::declval<GridAxis<AxesTypes>>().size())... indices) -> cell_type& {
+auto GridContainer<GridCellManager, AxesTypes...>::operator()(decltype(std::declval<GridAxis<AxesTypes>>().size())... indices) const -> const cell_type& {
   size_t total_index = m_index_helper.totalIndex(indices...);
   return (*m_cell_manager)[total_index];
 }
 
 template<typename GridCellManager, typename... AxesTypes>
-auto GridContainer<GridCellManager, AxesTypes...>::at(decltype(std::declval<GridAxis<AxesTypes>>().size())... indices) -> cell_type& {
+auto GridContainer<GridCellManager, AxesTypes...>::operator()(decltype(std::declval<GridAxis<AxesTypes>>().size())... indices) -> cell_type& {
+  return const_cast<cell_type&>(static_cast<const GridContainer&>(*this)(indices...));
+}
+
+template<typename GridCellManager, typename... AxesTypes>
+auto GridContainer<GridCellManager, AxesTypes...>::at(decltype(std::declval<GridAxis<AxesTypes>>().size())... indices) const -> const cell_type& {
   size_t total_index = m_index_helper.totalIndexChecked(indices...);
   return (*m_cell_manager)[total_index];
+}
+
+template<typename GridCellManager, typename... AxesTypes>
+auto GridContainer<GridCellManager, AxesTypes...>::at(decltype(std::declval<GridAxis<AxesTypes>>().size())... indices) -> cell_type& {
+  return const_cast<cell_type&>(static_cast<const GridContainer&>(*this).at(indices...));
 }
 
 } // end of namespace Grid
