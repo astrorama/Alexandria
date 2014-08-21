@@ -33,11 +33,6 @@ const std::tuple<GridAxis<AxesTypes>...>& GridContainer<GridCellManager, AxesTyp
 }
 
 template<typename GridCellManager, typename... AxesTypes>
-const GridCellManager& GridContainer<GridCellManager, AxesTypes...>::getCellManager() const {
-  return *m_cell_manager;
-}
-
-template<typename GridCellManager, typename... AxesTypes>
 auto GridContainer<GridCellManager, AxesTypes...>::begin() -> iterator {
   return iterator{*this, GridCellManagerTraits<GridCellManager>::begin(*m_cell_manager)};
 }

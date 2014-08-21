@@ -32,12 +32,11 @@ BOOST_FIXTURE_TEST_CASE(GridAxisConstructor, GridContainer_Fixture) {
   
   // When
   GridContainerType result_grid {axis1, axis2, axis3, axis4};
-  auto& result_cell_manager = result_grid.getCellManager();
   auto& result_axes_tuple = result_grid.getAxesTuple();
   
   // Then
-  BOOST_CHECK_EQUAL(result_cell_manager.size(), total_size);
-  for (auto& value : result_cell_manager) {
+  BOOST_CHECK_EQUAL(result_grid.size(), total_size);
+  for (auto& value : result_grid) {
     BOOST_CHECK_EQUAL(value, 0.);
   }
   BOOST_CHECK_EQUAL(std::get<0>(result_axes_tuple).name(), axis1.name());
@@ -67,12 +66,11 @@ BOOST_FIXTURE_TEST_CASE(GridAxisTupleonstructor, GridContainer_Fixture) {
   
   // When
   GridContainerType result_grid {axes_tuple};
-  auto& result_cell_manager = result_grid.getCellManager();
   auto& result_axes_tuple = result_grid.getAxesTuple();
   
   // Then
-  BOOST_CHECK_EQUAL(result_cell_manager.size(), total_size);
-  for (auto& value : result_cell_manager) {
+  BOOST_CHECK_EQUAL(result_grid.size(), total_size);
+  for (auto& value : result_grid) {
     BOOST_CHECK_EQUAL(value, 0.);
   }
   BOOST_CHECK_EQUAL(std::get<0>(result_axes_tuple).name(), axis1.name());

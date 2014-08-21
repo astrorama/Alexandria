@@ -130,9 +130,6 @@ public:
   /// Returns a tuple containing the information of all the grid axes.
   const std::tuple<GridAxis<AxesTypes>...>& getAxesTuple() const;
   
-  /// Returns a reference to the GridCellManager object which handles the cell values
-  const GridCellManager& getCellManager() const;
-  
   /// Returns an iterator to the first cell of the grid
   iterator begin();
   
