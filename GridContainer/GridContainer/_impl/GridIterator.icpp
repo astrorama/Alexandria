@@ -10,20 +10,23 @@
 namespace Grid {
 
 template<typename GridCellManager, typename... AxesTypes>
-GridContainer<GridCellManager, AxesTypes...>::iterator::iterator(
+template<typename CellType>
+GridContainer<GridCellManager, AxesTypes...>::iter<CellType>::iter(
                                 const GridContainer<GridCellManager, AxesTypes...>& owner,
                                 const cell_manager_iter_type& data_iter)
         : m_owner(owner), m_data_iter {data_iter} { }
 
 template<typename GridCellManager, typename... AxesTypes>
-auto GridContainer<GridCellManager, AxesTypes...>::iterator::operator=(const iterator& other) -> iterator& {
+template<typename CellType>
+auto GridContainer<GridCellManager, AxesTypes...>::iter<CellType>::operator=(const iter& other) -> iter& {
   m_data_iter = other.m_data_iter;
   m_fixed_indices = other.m_fixed_indices;
   return *this;
 }
 
 template<typename GridCellManager, typename... AxesTypes>
-auto GridContainer<GridCellManager, AxesTypes...>::iterator::operator++() -> iterator& {
+template<typename CellType>
+auto GridContainer<GridCellManager, AxesTypes...>::iter<CellType>::operator++() -> iter& {
   ++m_data_iter;
   if (!m_fixed_indices.empty()) {
     for (auto& fixed_index_pair : m_fixed_indices) {
@@ -42,37 +45,43 @@ auto GridContainer<GridCellManager, AxesTypes...>::iterator::operator++() -> ite
 }
 
 template<typename GridCellManager, typename... AxesTypes>
-auto GridContainer<GridCellManager, AxesTypes...>::iterator::operator*() -> cell_type& {
+template<typename CellType>
+auto GridContainer<GridCellManager, AxesTypes...>::iter<CellType>::operator*() -> CellType& {
   return *m_data_iter;
 }
 
 template<typename GridCellManager, typename... AxesTypes>
-bool GridContainer<GridCellManager, AxesTypes...>::iterator::operator==(const iterator& other) const {
+template<typename CellType>
+bool GridContainer<GridCellManager, AxesTypes...>::iter<CellType>::operator==(const iter& other) const {
   return m_data_iter == other.m_data_iter;
 }
 
 template<typename GridCellManager, typename... AxesTypes>
-bool GridContainer<GridCellManager, AxesTypes...>::iterator::operator!=(const iterator& other) const {
+template<typename CellType>
+bool GridContainer<GridCellManager, AxesTypes...>::iter<CellType>::operator!=(const iter& other) const {
   return m_data_iter != other.m_data_iter;
 }
 
 template<typename GridCellManager, typename... AxesTypes>
+template<typename CellType>
 template<int I>
-size_t GridContainer<GridCellManager, AxesTypes...>::iterator::axisIndex() const {
+size_t GridContainer<GridCellManager, AxesTypes...>::iter<CellType>::axisIndex() const {
   size_t index = m_data_iter - GridCellManagerTraits<GridCellManager>::begin(*(m_owner.m_cell_manager));
   return m_owner.m_index_helper.axisIndex(I, index);
 }
 
 template<typename GridCellManager, typename... AxesTypes>
+template<typename CellType>
 template<int I>
-auto GridContainer<GridCellManager, AxesTypes...>::iterator::axisValue() const -> const axis_type<I>& {
+auto GridContainer<GridCellManager, AxesTypes...>::iter<CellType>::axisValue() const -> const axis_type<I>& {
   size_t index = axisIndex<I>();
   return std::get<I>(m_owner.m_axes)[index];
 }
 
 template<typename GridCellManager, typename... AxesTypes>
+template<typename CellType>
 template<int I>
-auto GridContainer<GridCellManager, AxesTypes...>::iterator::fixAxisByIndex(size_t index) -> iterator& {
+auto GridContainer<GridCellManager, AxesTypes...>::iter<CellType>::fixAxisByIndex(size_t index) -> iter& {
   if (index >= m_owner.getAxis<I>().size()) {
     throw ElementsException() << "Index (" << index << ") out of axis " 
                               << m_owner.getAxis<I>().name() << " size ("
@@ -84,8 +93,9 @@ auto GridContainer<GridCellManager, AxesTypes...>::iterator::fixAxisByIndex(size
 }
 
 template<typename GridCellManager, typename... AxesTypes>
+template<typename CellType>
 template<int I>
-auto GridContainer<GridCellManager, AxesTypes...>::iterator::fixAxisByValue(const axis_type<I>& value) -> iterator& {
+auto GridContainer<GridCellManager, AxesTypes...>::iter<CellType>::fixAxisByValue(const axis_type<I>& value) -> iter& {
   auto axis = m_owner.getAxis<I>();
   auto iter = std::find(axis.begin(), axis.end(), value);
   if (iter == axis.end()) {
@@ -96,7 +106,8 @@ auto GridContainer<GridCellManager, AxesTypes...>::iterator::fixAxisByValue(cons
 }
 
 template<typename GridCellManager, typename... AxesTypes>
-void GridContainer<GridCellManager, AxesTypes...>::iterator::forwardToIndex(size_t axis, size_t fixed_index) {
+template<typename CellType>
+void GridContainer<GridCellManager, AxesTypes...>::iter<CellType>::forwardToIndex(size_t axis, size_t fixed_index) {
   size_t current_size = m_data_iter - GridCellManagerTraits<GridCellManager>::begin(*(m_owner.m_cell_manager));
   size_t current_index = m_owner.m_index_helper.axisIndex(axis, current_size);
   if (fixed_index != current_index) {

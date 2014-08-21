@@ -82,7 +82,11 @@ class GridContainer {
 public:
   
   // The iterator type of the GridContainer. See at the end of the file for its declaration
-  class iterator;
+  template<typename CellType>
+  class iter;
+  
+  typedef iter<cell_type> iterator;
+  typedef iter<cell_type const> const_iterator;
   
   /**
    * @brief Constructs a GridContainer with the given axes
@@ -164,8 +168,14 @@ public:
   /// Returns an iterator to the first cell of the grid
   iterator begin();
   
+  /// @copydoc begin()
+  const_iterator begin() const;
+  
   /// Returns an iterator to the cell after the last of the grid
   iterator end();
+  
+  /// @copydoc end()
+  const_iterator end() const;
   
   /// Returns the total number of cells of the grid
   size_t size() const;
@@ -216,7 +226,7 @@ private:
 
 
 /**
- * @class GridContainer::iterator
+ * @class GridContainer::iter
  * 
  * @brief Class to iterate through the GridContainer cells
  * 
@@ -229,7 +239,8 @@ private:
  * fixAxisByValue() methods.
  */
 template<typename GridCellManager, typename... AxesTypes>
-class GridContainer<GridCellManager, AxesTypes...>::iterator : public std::iterator<std::forward_iterator_tag, cell_type> {
+template<typename CellType>
+class GridContainer<GridCellManager, AxesTypes...>::iter : public std::iterator<std::forward_iterator_tag, CellType> {
 public:
   
   /**
@@ -241,25 +252,25 @@ public:
    * @param owner The grid to iterate through
    * @param data_iter The GridCellManager iterator indicating the cell position
    */
-  iterator(const GridContainer<GridCellManager, AxesTypes...>& owner,
+  iter(const GridContainer<GridCellManager, AxesTypes...>& owner,
            const cell_manager_iter_type& data_iter);
   
   /// Copy operator of the iterator
-  iterator& operator=(const iterator& other);
+  iter& operator=(const iter& other);
   
   /// Moves the iterator to the next grid cell
-  iterator& operator++();
+  iter& operator++();
   
   /// Returns a reference to the cell value
-  cell_type& operator*();
+  CellType& operator*();
   
   /// Compares two iterators for equality. Should be used only for iterators
   /// of the same grid.
-  bool operator==(const iterator& other) const;
+  bool operator==(const iter& other) const;
   
   /// Compares two iterators for inequality. Should be used only for iterators
   /// of the same grid.
-  bool operator!=(const iterator& other) const;
+  bool operator!=(const iter& other) const;
   
   /// Returns the index (coordinate) of the axis with index I, for the cell
   /// the iterator points
@@ -283,7 +294,7 @@ public:
    *    if the given index is out of the bounds of the axis
    */
   template<int I>
-  iterator& fixAxisByIndex(size_t index);
+  iter& fixAxisByIndex(size_t index);
   
   /**
    * Modifies the iterator to navigate only through cells with the given axis
@@ -301,7 +312,7 @@ public:
    *    if the axis does not contain the given value
    */
   template<int I>
-  iterator& fixAxisByValue(const axis_type<I>& value);
+  iter& fixAxisByValue(const axis_type<I>& value);
   
 private:
   
@@ -310,7 +321,7 @@ private:
   std::map<size_t, size_t> m_fixed_indices;
   void forwardToIndex(size_t axis, size_t fixed_index);
   
-}; // end of class iterator
+}; // end of class iter
 
 } // end of namespace Grid
 

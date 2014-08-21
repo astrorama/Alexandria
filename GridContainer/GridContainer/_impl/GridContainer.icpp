@@ -67,8 +67,18 @@ auto GridContainer<GridCellManager, AxesTypes...>::begin() -> iterator {
 }
 
 template<typename GridCellManager, typename... AxesTypes>
+auto GridContainer<GridCellManager, AxesTypes...>::begin() const -> const_iterator {
+  return const_iterator{*this, GridCellManagerTraits<GridCellManager>::begin(*m_cell_manager)};
+}
+
+template<typename GridCellManager, typename... AxesTypes>
 auto GridContainer<GridCellManager, AxesTypes...>::end() -> iterator {
   return iterator{*this, GridCellManagerTraits<GridCellManager>::end(*m_cell_manager)};
+}
+
+template<typename GridCellManager, typename... AxesTypes>
+auto GridContainer<GridCellManager, AxesTypes...>::end() const -> const_iterator {
+  return const_iterator{*this, GridCellManagerTraits<GridCellManager>::end(*m_cell_manager)};
 }
 
 template<typename GridCellManager, typename... AxesTypes>
