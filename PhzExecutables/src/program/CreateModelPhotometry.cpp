@@ -95,7 +95,8 @@ public:
                 
     logger.info() << "Number of models to create photometry for: " << model_grid.size();
     int counter {0};
-    std::unique_ptr<std::vector<ChCatalog::Photometry>> photometry_vector {new std::vector<ChCatalog::Photometry>{}};
+    PhzDataModel::PhotometryGrid photometry_grid {axes_tuple};
+    auto phot_grid_iter = photometry_grid.begin();
     for (auto& model : model_grid) {
       ++counter;
       if (counter%1000 == 0) {
@@ -118,10 +119,9 @@ public:
         flux = flux / filter_compensations[filter_index];
         photometry_values.push_back({flux, 0.});
       }
-      photometry_vector->push_back(ChCatalog::Photometry{filter_name_list_ptr, std::move(photometry_values)});
+      *phot_grid_iter = ChCatalog::Photometry{filter_name_list_ptr, std::move(photometry_values)};
+      ++phot_grid_iter;
     }
-    
-    PhzDataModel::PhotometryGrid photometry_grid {std::move(photometry_vector), axes_tuple};
     
     {
       std::ofstream out {options["binary-photometry-grid"].as<std::string>()};

@@ -99,22 +99,6 @@ public:
   GridContainer(GridAxis<AxesTypes>... axes);
   
   /**
-   * @brief Constructs a GridContainer with the given axes and cell manager
-   * @details
-   * This constructor will use as GridCellManager the given object and it will not
-   * try to create a new one. The values in the cell_manager are preserved, so
-   * they can be initialized prior the constructor call. If the given data
-   * manager does not contain the number of data required for representing the
-   * given axes, an exception is thrown.
-   * 
-   * @param cell_manager The cell manager instance which keeps the data
-   * @param axes the GridAxis%es describing the axes of the grid
-   * @throws ElementsException
-   *    if the cell_manager has wrong size
-   */
-  GridContainer(std::unique_ptr<GridCellManager> cell_manager, GridAxis<AxesTypes>... axes);
-  
-  /**
    * @brief Constructs a GridContainer with the given axes
    * @details
    * The GridCellManager type must be given as a template parameter and an instance
@@ -123,22 +107,6 @@ public:
    * @param axes_tuple the GridAxis%es describing the axes of the grid
    */
   GridContainer(std::tuple<GridAxis<AxesTypes>...> axes_tuple);
-  
-  /**
-   * @brief Constructs a GridContainer with the given axes and cell manager
-   * @details
-   * This constructor will use as GridCellManager the given object and it will not
-   * try to create a new one. The values in the cell_manager are preserved, so
-   * they can be initialized prior the constructor call. If the given data
-   * manager does not contain the number of data required for representing the
-   * given axes, an exception is thrown.
-   * 
-   * @param cell_manager The cell manager instance which keeps the data
-   * @param axes_tuple the GridAxis%es describing the axes of the grid
-   * @throws ElementsException
-   *    if the cell_manager has wrong size
-   */
-  GridContainer(std::unique_ptr<GridCellManager> cell_manager, std::tuple<GridAxis<AxesTypes>...> axes_tuple);
   
   /// Default move constructor
   GridContainer(GridContainer<GridCellManager, AxesTypes...>&&) = default;

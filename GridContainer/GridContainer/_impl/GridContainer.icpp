@@ -13,32 +13,8 @@ GridContainer<GridCellManager, AxesTypes...>::GridContainer(GridAxis<AxesTypes>.
       : m_axes{std::move(axes)...} { }
 
 template<typename GridCellManager, typename... AxesTypes>
-GridContainer<GridCellManager, AxesTypes...>::GridContainer(std::unique_ptr<GridCellManager> cell_manager,
-                                          GridAxis<AxesTypes>... axes)
-      : m_axes{std::move(axes)...}, m_cell_manager{std::move(cell_manager)} {
-  size_t manager_size = GridCellManagerTraits<GridCellManager>::size(*m_cell_manager);
-  size_t grid_size = m_index_helper.m_axes_index_factors.back();
-  if (manager_size != grid_size) {
-    throw ElementsException() << "GridCellManager size (" << manager_size << ") and "
-                              << "GridContainer size (" << grid_size << ") do not match";
-  }
-}
-
-template<typename GridCellManager, typename... AxesTypes>
 GridContainer<GridCellManager, AxesTypes...>::GridContainer(std::tuple<GridAxis<AxesTypes>...> axes_tuple)
       : m_axes{std::move(axes_tuple)} { }
-
-template<typename GridCellManager, typename... AxesTypes>
-GridContainer<GridCellManager, AxesTypes...>::GridContainer(std::unique_ptr<GridCellManager> cell_manager,
-                                          std::tuple<GridAxis<AxesTypes>...> axes_tuple)
-      : m_axes{std::move(axes_tuple)}, m_cell_manager{std::move(cell_manager)} {
-  size_t manager_size = GridCellManagerTraits<GridCellManager>::size(*m_cell_manager);
-  size_t grid_size = m_index_helper.m_axes_index_factors.back();
-  if (manager_size != grid_size) {
-    throw ElementsException() << "GridCellManager size (" << manager_size << ") and "
-                              << "GridContainer size (" << grid_size << ") do not match";
-  }
-}
                      
 template<typename GridCellManager, typename... AxesTypes>
 size_t GridContainer<GridCellManager, AxesTypes...>::axisNumber() const {
