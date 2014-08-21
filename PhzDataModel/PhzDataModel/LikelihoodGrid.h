@@ -12,9 +12,9 @@
 
 namespace PhzDataModel {
 
-typedef std::vector<double> LikelihoodGridManager;
+typedef std::vector<double> LikelihoodCellManager;
 
-typedef PhzGrid<LikelihoodGridManager> LikelihoodGrid;
+typedef PhzGrid<LikelihoodCellManager> LikelihoodGrid;
 
 }
 

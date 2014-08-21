@@ -18,7 +18,7 @@ namespace po = boost::program_options;
 #include "PhzConfiguration/ModelingConfiguration.h"
 #include "PhzDataModel/PhzModel.h"
 #include "PhzDataModel/PhotometryGrid.h"
-#include "PhzModeling/ModelGrid.h"
+#include "PhzModeling/ModelDatasetGrid.h"
 
 using namespace std;
 
@@ -70,11 +70,7 @@ public:
     auto axes_tuple = PhzDataModel::createAxesTuple(config.zList(), config.ebvList(),
                                   config.reddeningCurveList(), config.sedList());
 
-    std::unique_ptr<PhzModeling::ModelCellManager> model_function_manager {
-            new PhzModeling::ModelCellManager {axes_tuple,
-                config.sedDatasetProvider(), config.reddeningCurveDatasetProvider()}};
-    
-    PhzModeling::ModelGrid model_grid {std::move(model_function_manager), axes_tuple};
+    PhzModeling::ModelDatasetGrid model_grid {axes_tuple, config.sedDatasetProvider(), config.reddeningCurveDatasetProvider()};
                 
     auto filter_provider = config.filterDatasetProvider();
     auto filter_list = config.filterList();

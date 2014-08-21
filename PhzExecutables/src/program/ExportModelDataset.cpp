@@ -22,8 +22,7 @@ namespace po = boost::program_options;
 #include "ChTable/FitsWriter.h"
 #include "PhzConfiguration/ModelingConfiguration.h"
 #include "PhzDataModel/PhzModel.h"
-#include "PhzModeling/ModelGrid.h"
-#include "PhzModeling/ModelCellManager.h"
+#include "PhzModeling/ModelDatasetGrid.h"
 
 using namespace std;
 using namespace XYDataset;
@@ -73,12 +72,8 @@ public:
     
     auto axes_tuple = createAxesTuple(config.zList(), config.ebvList(),
                                   config.reddeningCurveList(), config.sedList());
-
-    std::unique_ptr<PhzModeling::ModelCellManager> model_function_manager {
-            new PhzModeling::ModelCellManager {axes_tuple,
-                config.sedDatasetProvider(), config.reddeningCurveDatasetProvider()}};
     
-    PhzModeling::ModelGrid model_grid {std::move(model_function_manager), axes_tuple};
+    PhzModeling::ModelDatasetGrid model_grid {axes_tuple, config.sedDatasetProvider(), config.reddeningCurveDatasetProvider()};
     
     // We get the output directory
     if (options["output-dir"].empty()) {
@@ -108,6 +103,7 @@ public:
     size_t counter {};
     logger.info() << "Exporting " << size << " datasets in "
                   << out_dir << " in " << out_format << " format...";
+    
     for (auto iter=model_grid.begin(); iter!=model_grid.end(); ++iter) {
       ++counter;
       QualifiedName sed = iter.axisValue<ModelParameter::SED>();

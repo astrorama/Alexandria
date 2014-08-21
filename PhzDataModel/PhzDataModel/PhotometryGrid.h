@@ -14,9 +14,9 @@
 
 namespace PhzDataModel {
 
-typedef std::vector<ChCatalog::Photometry> PhotometryGridManager;
+typedef std::vector<ChCatalog::Photometry> PhotometryCellManager;
 
-typedef PhzGrid<PhotometryGridManager> PhotometryGrid;
+typedef PhzGrid<PhotometryCellManager> PhotometryGrid;
 
 } // end of namespace PhzDataModel
 
@@ -26,22 +26,22 @@ namespace Grid {
 // We define the GridCellManagerTraits for a vector of Photometries to redefine the
 // factory method because the Photometry does not have default constructor.
 template<>
-struct GridCellManagerTraits<PhzDataModel::PhotometryGridManager> {
+struct GridCellManagerTraits<PhzDataModel::PhotometryCellManager> {
   typedef ChCatalog::Photometry data_type;
-  typedef typename PhzDataModel::PhotometryGridManager::iterator iterator;
-  static std::unique_ptr<PhzDataModel::PhotometryGridManager> factory(size_t size){
+  typedef typename PhzDataModel::PhotometryCellManager::iterator iterator;
+  static std::unique_ptr<PhzDataModel::PhotometryCellManager> factory(size_t size){
     ChCatalog::Photometry default_photometry {std::make_shared<std::vector<std::string>>(), {}};
-    return std::unique_ptr<PhzDataModel::PhotometryGridManager> {
-      new PhzDataModel::PhotometryGridManager(size, default_photometry)
+    return std::unique_ptr<PhzDataModel::PhotometryCellManager> {
+      new PhzDataModel::PhotometryCellManager(size, default_photometry)
     };
   }
-  static size_t size(const PhzDataModel::PhotometryGridManager& vector) {
+  static size_t size(const PhzDataModel::PhotometryCellManager& vector) {
     return vector.size();
   }
-  static iterator begin(PhzDataModel::PhotometryGridManager& vector) {
+  static iterator begin(PhzDataModel::PhotometryCellManager& vector) {
     return vector.begin();
   }
-  static iterator end(PhzDataModel::PhotometryGridManager& vector) {
+  static iterator end(PhzDataModel::PhotometryCellManager& vector) {
     return vector.end();
   }
   static const bool enable_boost_serialize = true;
