@@ -6,7 +6,6 @@
  */
 
 #include <boost/test/unit_test.hpp>
-#include "ChCatalog/Enumerations/SurveyNames.h"
 #include "ChCatalog/Source.h"
 #include "ChCatalog/Catalog.h"
 
