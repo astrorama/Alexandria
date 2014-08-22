@@ -1,3 +1,4 @@
+namespace Euclid {
 namespace XYDataset {
 
 /** \page xydataset XYDataset documentation
@@ -287,3 +288,4 @@ int main() {
 
 
 }
+} // end of namespace Euclid

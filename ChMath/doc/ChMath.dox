@@ -1,3 +1,4 @@
+namespace Euclid {
 namespace ChMath {
 
 /** \page chmath ChMath module
@@ -349,3 +350,4 @@ initialization in the file multiplication.cpp, which is the recommended way.
 */
 
 }
+} // end of namespace Euclid
