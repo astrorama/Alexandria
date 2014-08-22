@@ -14,6 +14,8 @@
 #include <iterator>
 #include <utility>
 
+#include "ElementsKernel/Export.h"
+
 namespace XYDataset {
 
 /**
@@ -35,7 +37,7 @@ namespace XYDataset {
  * ElementException :  Vectors must have the same size!
  */
 
- class XYDataset
+ class ELEMENTS_API XYDataset
  {
 
  public:
@@ -118,4 +120,4 @@ namespace XYDataset {
 
 
 
-#endif // XYDATASET_H_ 
+#endif // XYDATASET_H_

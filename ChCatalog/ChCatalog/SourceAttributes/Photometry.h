@@ -11,7 +11,10 @@
 #include <memory>
 #include <vector>
 #include <iterator>
+
+#include "ElementsKernel/Export.h"
 #include "ElementsKernel/ElementsException.h"
+
 #include "ChCatalog/Attribute.h"
 
 namespace ChCatalog {
@@ -38,7 +41,7 @@ struct FluxErrorPair {
  * Always use the PhotometryAttributeHandler to build Photometry objects.
  *
  */
-class Photometry: public Attribute {
+class ELEMENTS_API Photometry: public Attribute {
 
 public:
 

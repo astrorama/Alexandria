@@ -14,6 +14,8 @@
 #include <string>
 #include <map>
 
+#include "ElementsKernel/Export.h"
+
 #include "XYDataset/XYDataset.h"
 #include "XYDataset/XYDatasetProvider.h"
 #include "XYDataset/FileParser.h"
@@ -34,7 +36,7 @@ namespace XYDataset {
  * operations (it gets dataset name and data).
  */
 
-class FileSystemProvider : public XYDatasetProvider
+class ELEMENTS_API FileSystemProvider : public XYDatasetProvider
 {
  public:
 
@@ -109,4 +111,4 @@ class FileSystemProvider : public XYDatasetProvider
 
 } /* namespace XYDataset */
 
-#endif // FILESYSTEMPROVIDER_H_ 
+#endif // FILESYSTEMPROVIDER_H_

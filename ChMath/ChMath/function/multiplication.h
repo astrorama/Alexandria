@@ -1,4 +1,4 @@
-/** 
+/**
  * @file ChMath/function/multiplication.h
  * @date February 19, 2014
  * @author Nikolaos Apostolakos
@@ -11,6 +11,8 @@
 #include <utility>
 #include <typeindex>
 
+#include "ElementsKernel/Export.h"
+
 namespace ChMath {
 
 /// Alias of a function which multiplies Function objects
@@ -22,7 +24,7 @@ typedef std::unique_ptr<Function> (*MultiplyFunction)(const Function&, const Fun
  * map is the function which can be used for performing this multiplication in
  * an efficient way.
  */
-extern std::map<std::pair<std::type_index,std::type_index>, MultiplyFunction> multiplySpecificSpecificMap;
+ELEMENTS_API extern std::map<std::pair<std::type_index,std::type_index>, MultiplyFunction> multiplySpecificSpecificMap;
 
 /**
  * A map for retrieving specific function multiplication implementations. The
@@ -30,7 +32,7 @@ extern std::map<std::pair<std::type_index,std::type_index>, MultiplyFunction> mu
  * other function and the value of the map is the function which can be used for
  * performing this multiplication in an efficient way.
  */
-extern std::map<std::type_index, MultiplyFunction> multiplySpecificGenericMap;
+ELEMENTS_API extern std::map<std::type_index, MultiplyFunction> multiplySpecificGenericMap;
 
 } // End of ChMath
 

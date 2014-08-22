@@ -8,6 +8,8 @@
 #ifndef ASCIIPARSER_H_
 #define ASCIIPARSER_H_
 
+#include "ElementsKernel/Export.h"
+
 #include "XYDataset/XYDataset.h"
 #include "XYDataset/FileParser.h"
 
@@ -30,7 +32,7 @@ namespace XYDataset {
  * @throw
  * ElementException : File not found
  */
-class AsciiParser : public FileParser
+class ELEMENTS_API AsciiParser : public FileParser
 {
  public:
 
@@ -88,4 +90,4 @@ class AsciiParser : public FileParser
 
 
 
-#endif // ASCIIPARSER_H_ 
+#endif // ASCIIPARSER_H_

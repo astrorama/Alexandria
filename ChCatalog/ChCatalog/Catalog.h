@@ -11,6 +11,9 @@
 
 #include <map>
 #include <memory>
+
+#include "ElementsKernel/Export.h"
+
 #include "ChCatalog/Source.h"
 
 namespace ChCatalog {
@@ -22,7 +25,7 @@ namespace ChCatalog {
  *  Catalog contains a container of sources
  *
  */
-class Catalog
+class ELEMENTS_API Catalog
 {
 
 public:

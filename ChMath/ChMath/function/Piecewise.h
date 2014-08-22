@@ -1,4 +1,4 @@
-/** 
+/**
  * @file ChMath/function/Piecewise.h
  * @date February 20, 2014
  * @author Nikolaos Apostolakos
@@ -9,24 +9,27 @@
 
 #include <vector>
 #include <memory>
+
+#include "ElementsKernel/Export.h"
+
 #include "ChMath/function/Integrable.h"
 
 namespace ChMath {
 
 /**
  * @class Piecewise
- * 
+ *
  * @brief Represents a piecewise function
- * 
+ *
  * @details
  * A Piecewise function is defined by multiple sub functions, each applied to an
  * interval defined by the piecewise knots. Outside of the knots range the
  * Piecewise evaluates zero.
  */
-class Piecewise : public Integrable {
-  
+class ELEMENTS_API Piecewise : public Integrable {
+
 public:
-  
+
   /**
    * Creates a new Piecewise instance with the given knots and functions between
    * them. The functions vector must have size one less than the knots. The
@@ -41,24 +44,24 @@ public:
    *    if the knots are not strictly increasing
    */
   Piecewise(std::vector<double> knots, std::vector<std::shared_ptr<Function>> functions);
-  
+
   /// Default destructor
   virtual ~Piecewise() = default;
-  
+
   /// Returns the knots of the piecewise function
   const std::vector<double>& getKnots() const;
-  
+
   /// Returns the functions in the ranges between the knots
   const std::vector<std::shared_ptr<Function>>& getFunctions() const;
-  
+
   /// Returns the value of the piecewise function for the given value, by using
   /// the correct sub-function. Values outside of the knots evaluate to zero.
   double operator()(const double) const override;
-  
+
   /// Creates a Piecewise function with the same knots and sub-functions. Note
   /// that the sub-functions are not cloned, but just a pointer is copied.
   std::unique_ptr<Function> clone() const override;
-  
+
   /**
    * Calculates the integral in the range [x1,x2], by delegating the integration
    * in the sub-functions.
@@ -67,14 +70,14 @@ public:
    * @return The integral in the range [x1,x2]
    */
   double integrate(const double x1, const double x2) const override;
-  
+
 private:
-  
+
   /// A vector where the knots are kept
   std::vector<double> m_knots;
   /// A vector where the sub-functions are kept
   std::vector<std::shared_ptr<Function>> m_functions;
-  
+
 };
 
 } // End of ChMath

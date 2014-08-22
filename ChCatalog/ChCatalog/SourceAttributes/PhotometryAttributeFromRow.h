@@ -13,6 +13,8 @@
 #include <memory>
 
 
+#include "ElementsKernel/Export.h"
+
 #include "ChCatalog/AttributeFromRow.h"
 #include "ChCatalog/Catalog.h"
 #include "ChTable/Table.h"
@@ -26,7 +28,7 @@ namespace ChCatalog {
  * create Photometry objects.
  *
  */
-class PhotometryAttributeFromRow : public AttributeFromRow {
+class ELEMENTS_API PhotometryAttributeFromRow : public AttributeFromRow {
 public:
   /**
    * @brief Create a PhotometryAttributeFromRow object
@@ -75,6 +77,6 @@ private:
 
 };
 
-} // namespace ChCatalog 
+} // namespace ChCatalog
 
 #endif // PHOTOMETRYATTRIBUTEFROMROW_H_

@@ -11,19 +11,21 @@
 #include <vector>
 #include <functional>
 
+#include "ElementsKernel/Export.h"
+
 namespace XYDataset {
 
 /**
  * @class QualifiedName
- * 
+ *
  * @brief Represents a name qualified with a set of groups
- * 
- * 
+ *
+ *
  * The QualifiedName class represents a name qualified with a set of groups.
  * The groups and the names are separated with the '/' character (eg
  * group1/group2/name). Note that the qualified name is assumed to be unique and
  * it can be used as identifier.
- * 
+ *
  * The QualifiedName class provides a method for calculating its hash. The
  * "less than" and "equals" operators are implemented using this hash value as
  * much as possible. This means the QualifiedName can be used as a key in ordered
@@ -31,17 +33,17 @@ namespace XYDataset {
  * performance, the ordering of the QualifiedNames is not alphabetical, but based
  * on the hash key. If the alphabetical ordering is important, then the provided
  * QualifiedName::AlphabeticalComparator can be used:
- * 
+ *
  * \code
  * // This set will order the QualifiedNames based on their hash values
  * std::set<QualifiedName> hashOrderedSet {};
- * 
+ *
  * // This set will order the QualifiedNames in alphabetical order of their
  * // qualified names
  * std::set<QualifiedName, QualifiedName::AlphabeticalComparator> alphabeticalSet {};
  * \endcode
  */
-class QualifiedName {
+class ELEMENTS_API QualifiedName {
 
 public:
 
@@ -51,14 +53,14 @@ public:
    * @details
    * Both group and name cannot be empty and they cannot contain the '/'
    * character. In this case an ElementsException is thrown.
-   * 
+   *
    * @param groups One or more groups to qualify the name with
    * @param name The name
    * @throws ElementsException
    *    if any of the parameters is empty or contains the '/' character
    */
   QualifiedName(std::vector<std::string> groups, std::string name);
-  
+
   /**
    * @brief
    * Constructs a QualifiedName object representing the given string
@@ -69,23 +71,23 @@ public:
    *    if the given string is an invalid qualified name
    */
   QualifiedName(const std::string& );
-  
+
   /**
    * @brief Copy constructor
    */
   QualifiedName(const QualifiedName&) = default;
-  
+
   /**
    * @brief Copy assignment operator
    * @return A reference to the QualifiedName which was copied to
    */
   QualifiedName& operator=(const QualifiedName& ) = default;
-  
+
   /**
    * @brief Move constructor
    */
   QualifiedName(QualifiedName&& ) = default;
-  
+
   /**
    * @brief Move assignment operator
    * @return A reference to the QualifiedName in which was moved in
@@ -99,7 +101,7 @@ public:
 
   /**
    * @brief Returns the groups qualifying the name
-   * @return The groups qualifying the name 
+   * @return The groups qualifying the name
    */
   const std::vector<std::string>& groups() const;
 
@@ -117,13 +119,13 @@ public:
    * @return The qualified name as a string
    */
   const std::string& qualifiedName() const;
-  
+
   /**
    * @brief Returns the hash value of the QualifiedName
    * @return The hash value
    */
   size_t hash() const;
-  
+
   /**
    * @brief Compares this QualifiedName with the parameter
    * @details
@@ -131,10 +133,10 @@ public:
    * reasons). For alphabetical comparison the QualifiedName::alphabeticalComparator
    * can be used.
    * @param other The QualifiedName to compare with
-   * @return 
+   * @return
    */
   bool operator<(const QualifiedName& other) const;
-  
+
   /**
    * @brief Checks if this QualifiedName is equal with the parameter
    * @details
@@ -143,7 +145,7 @@ public:
    * @return true if the two QualifiedName are equal, false otherwise
    */
   bool operator==(const QualifiedName& other) const;
-  
+
   /**
    * @brief Checks if this QualifiedName is not equal with the parameter
    * @details
@@ -152,7 +154,7 @@ public:
    * @return true if the two QualifiedName are not equal, false otherwise
    */
   bool operator!=(const QualifiedName& other) const;
-  
+
   /**
    * @class AlphabeticalComparator
    * @brief Provides alphabetical comparison for the QualifiedNames a and b
@@ -197,4 +199,4 @@ struct hash<XYDataset::QualifiedName> {
 
 } // namespace std
 
-#endif // PHZDATAMODEL_QUALIFIEDNAME_H 
+#endif // PHZDATAMODEL_QUALIFIEDNAME_H

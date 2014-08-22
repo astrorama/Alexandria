@@ -8,6 +8,8 @@
 #ifndef FITSPARSER_H_
 #define FITSPARSER_H_
 
+#include "ElementsKernel/Export.h"
+
 #include "XYDataset/XYDataset.h"
 #include "XYDataset/FileParser.h"
 
@@ -27,7 +29,7 @@ namespace XYDataset {
  * not exist, the dataset name is extracted from the FITS filename itself
  * removing the path and extension (.fits).
  */
-class FitsParser : public FileParser
+class ELEMENTS_API FitsParser : public FileParser
 {
  public:
 
@@ -84,4 +86,4 @@ class FitsParser : public FileParser
 
 
 
-#endif // FITSPARSER_H_ 
+#endif // FITSPARSER_H_

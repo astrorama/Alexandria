@@ -1,4 +1,4 @@
-/** 
+/**
  * @file src/lib/AsciiReaderHelper.h
  * @date April 15, 2014
  * @author Nikolaos Apostolakos
@@ -10,13 +10,16 @@
 #include <istream>
 #include <string>
 #include <typeindex>
+
+
+#include "ElementsKernel/Export.h"
 #include "ChTable/Row.h"
 
 namespace ChTable {
 
 /**
  * @class StreamRewinder
- * 
+ *
  * @brief
  * This class gets a stream as argument during construction and when it is deleted
  * it sets the position of the stream back to where it was during the constructor
@@ -40,14 +43,14 @@ private:
  * @details
  * When the method returns the given stream is positioned at the same position
  * like before the method was called.
- * 
+ *
  * @param in The string to read from
  * @param comment The comment pattern
  * @return The number of columns
  * @throws ElementsException
  *    if there is no uncommented, non-empty line
  */
-size_t countColumns(std::istream& in, const std::string& comment);
+ELEMENTS_API size_t countColumns(std::istream& in, const std::string& comment);
 
 /**
  * @brief
@@ -56,7 +59,7 @@ size_t countColumns(std::istream& in, const std::string& comment);
  * For more information about the auto-detection rules see the constructor of
  * AsciiReader. When the method returns, the given stream is positioned at the
  * same position like before the method was called.
- * 
+ *
  * @param in The stream to read the column names from
  * @param comment The comment pattern
  * @param columns_number The number of columns
@@ -64,7 +67,7 @@ size_t countColumns(std::istream& in, const std::string& comment);
  * @throws ElementsException
  *    if there are duplicate column names
  */
-std::vector<std::string> autoDetectColumnNames(std::istream& in,
+ELEMENTS_API std::vector<std::string> autoDetectColumnNames(std::istream& in,
                                                const std::string& comment,
                                                size_t columns_number);
 
@@ -75,7 +78,7 @@ std::vector<std::string> autoDetectColumnNames(std::istream& in,
  * For more information about the auto-detection rules see the constructor of
  * AsciiReader. When the method returns, the given stream is positioned at the
  * same position like before the method was called.
- * 
+ *
  * @param in The stream to read the column types from
  * @param comment The comment pattern
  * @param columns_number The number of columns
@@ -83,7 +86,7 @@ std::vector<std::string> autoDetectColumnNames(std::istream& in,
  * @throws ElementsException
  *    if any of the types is not one of the valid keywords
  */
-std::vector<std::type_index> autoDetectColumnTypes(std::istream& in,
+ELEMENTS_API std::vector<std::type_index> autoDetectColumnTypes(std::istream& in,
                                                    const std::string& comment,
                                                    size_t columns_number);
 
@@ -93,14 +96,14 @@ std::vector<std::type_index> autoDetectColumnTypes(std::istream& in,
  * @details
  * For more information of the supported types see the documentation of the
  * ChTable::AsciiReader constructor.
- * 
+ *
  * @param value The value to convert
  * @param type The type of the cell
  * @return The Row::cell_type representing the value
  * @throws ElementsException
  *    if the conversion fails
  */
-Row::cell_type convertToCellType(const std::string& value, std::type_index type);
+ELEMENTS_API Row::cell_type convertToCellType(const std::string& value, std::type_index type);
 
 }
 

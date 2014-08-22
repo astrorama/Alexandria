@@ -11,6 +11,7 @@
 #include <map>
 #include <memory>
 
+#include "ElementsKernel/Export.h"
 
 #include "ChCatalog/Catalog.h"
 #include "ChCatalog/AttributeFromRow.h"
@@ -19,7 +20,7 @@
 
 namespace ChCatalog {
 
-class CatalogFromTable {
+class ELEMENTS_API CatalogFromTable {
 public:
   CatalogFromTable(std::shared_ptr<ChTable::ColumnInfo> column_info_ptr,
                    const std::string& source_id_column_name,

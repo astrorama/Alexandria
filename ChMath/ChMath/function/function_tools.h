@@ -1,4 +1,4 @@
-/** 
+/**
  * @file ChMath/function/function_tools.h
  * @date February 19, 2014
  * @author Nikolaos Apostolakos
@@ -6,6 +6,8 @@
 
 #ifndef CHMATH_FUNCTION_TOOLS_H
 #define	CHMATH_FUNCTION_TOOLS_H
+
+#include "ElementsKernel/Export.h"
 
 #include "ChMath/function/Function.h"
 
@@ -22,7 +24,7 @@ namespace ChMath {
  * @param max The maximum range of the integration
  * @return The integral in the range [min,max]
  */
-double integrate(const Function& function, const double min, const double max);
+ELEMENTS_API double integrate(const Function& function, const double min, const double max);
 
 /**
  * Returns a function which represents the multiplication of the two parameters.
@@ -30,9 +32,9 @@ double integrate(const Function& function, const double min, const double max);
  * maps for detecting efficient ways of multiplying the parameters.
  * @param f1 The first function to multiply
  * @param f2 The second function to multiply
- * @return A function representing the multiplication of the parameters 
+ * @return A function representing the multiplication of the parameters
  */
-std::unique_ptr<Function> multiply(const Function& f1, const Function& f2);
+ELEMENTS_API std::unique_ptr<Function> multiply(const Function& f1, const Function& f2);
 
 } // End of ChMath
 

@@ -1,4 +1,4 @@
-/** 
+/**
  * @file ChMath/interpolation/interpolation.h
  * @date February 20, 2014
  * @author Nikolaos Apostolakos
@@ -9,7 +9,10 @@
 
 #include <memory>
 #include <vector>
-#include <XYDataset/XYDataset.h>
+
+#include "ElementsKernel/Export.h"
+
+#include "XYDataset/XYDataset.h"
 #include "ChMath/function/Function.h"
 
 namespace ChMath {
@@ -31,7 +34,7 @@ enum class InterpolationType {
  * @throws ElementsException
  *    if the x values are not strictly increasing
  */
-std::unique_ptr<Function> interpolate(const std::vector<double>& x, const std::vector<double>& y, InterpolationType type);
+ELEMENTS_API std::unique_ptr<Function> interpolate(const std::vector<double>& x, const std::vector<double>& y, InterpolationType type);
 
 /**
  * Returns a Function which performs interpolation for the data points of the
@@ -44,7 +47,7 @@ std::unique_ptr<Function> interpolate(const std::vector<double>& x, const std::v
  * @throws ElementsException
  *    if the x values are not strictly increasing
  */
-std::unique_ptr<Function> interpolate(const XYDataset::XYDataset& dataset, InterpolationType type);
+ELEMENTS_API std::unique_ptr<Function> interpolate(const XYDataset::XYDataset& dataset, InterpolationType type);
 
 } // End of ChMath
 
