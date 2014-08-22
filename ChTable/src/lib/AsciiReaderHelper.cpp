@@ -13,6 +13,7 @@ using boost::regex_match;
 #include "ElementsKernel/ElementsException.h"
 #include "AsciiReaderHelper.h"
 
+namespace Euclid {
 namespace ChTable {
 
 size_t countColumns(std::istream& in, const std::string& comment) {
@@ -191,3 +192,4 @@ Row::cell_type convertToCellType(const std::string& value, std::type_index type)
 }
 
 }
+} // end of namespace Euclid

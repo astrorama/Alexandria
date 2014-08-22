@@ -27,20 +27,20 @@ BOOST_AUTO_TEST_CASE(fundamentalKnotValues) {
   // Given
   std::string name = "AxisName";
   std::vector<double> knots {0., 3.4, 12E-15};
-  Grid::GridAxis<double> axis {name, knots};
+  Euclid::Grid::GridAxis<double> axis {name, knots};
   
   // When
   std::stringstream stream {};
   boost::archive::binary_oarchive boa {stream};
   // We write to the stream a pointer to enable the non-default constructor
   // functionality of boost serialization
-  Grid::GridAxis<double>* axis_ptr = &axis;
+  Euclid::Grid::GridAxis<double>* axis_ptr = &axis;
   boa << axis_ptr;
-  Grid::GridAxis<double>* result;
+  Euclid::Grid::GridAxis<double>* result;
   boost::archive::binary_iarchive bia {stream};
   bia >> result;
   // We use a unique_ptr for the memory management
-  std::unique_ptr<Grid::GridAxis<double>> result_ptr {result};
+  std::unique_ptr<Euclid::Grid::GridAxis<double>> result_ptr {result};
   
   // Then
   BOOST_CHECK_EQUAL(result_ptr->name(), name);
@@ -63,20 +63,20 @@ BOOST_AUTO_TEST_CASE(defaultConstructibleKnotValues) {
   knots.back().value = 3.4;
   knots.push_back(DefaultConstructibleClass{});
   knots.back().value = 12E-15;
-  Grid::GridAxis<DefaultConstructibleClass> axis {name, knots};
+  Euclid::Grid::GridAxis<DefaultConstructibleClass> axis {name, knots};
   
   // When
   std::stringstream stream {};
   boost::archive::binary_oarchive boa {stream};
   // We write to the stream a pointer to enable the non-default constructor
   // functionality of boost serialization
-  Grid::GridAxis<DefaultConstructibleClass>* axis_ptr = &axis;
+  Euclid::Grid::GridAxis<DefaultConstructibleClass>* axis_ptr = &axis;
   boa << axis_ptr;
-  Grid::GridAxis<DefaultConstructibleClass>* result;
+  Euclid::Grid::GridAxis<DefaultConstructibleClass>* result;
   boost::archive::binary_iarchive bia {stream};
   bia >> result;
   // We use a unique_ptr for the memory management
-  std::unique_ptr<Grid::GridAxis<DefaultConstructibleClass>> result_ptr {result};
+  std::unique_ptr<Euclid::Grid::GridAxis<DefaultConstructibleClass>> result_ptr {result};
   
   // Then
   BOOST_CHECK_EQUAL(result_ptr->name(), name);
@@ -103,20 +103,20 @@ BOOST_AUTO_TEST_CASE(nonDefaultConstructibleKnotValues) {
   knots.push_back(NonDefaultConstructibleClass{0.});
   knots.push_back(NonDefaultConstructibleClass{3.4});
   knots.push_back(NonDefaultConstructibleClass{12E-15});
-  Grid::GridAxis<NonDefaultConstructibleClass> axis {name, knots};
+  Euclid::Grid::GridAxis<NonDefaultConstructibleClass> axis {name, knots};
   
   // When
   std::stringstream stream {};
   boost::archive::binary_oarchive boa {stream};
   // We write to the stream a pointer to enable the non-default constructor
   // functionality of boost serialization
-  Grid::GridAxis<NonDefaultConstructibleClass>* axis_ptr = &axis;
+  Euclid::Grid::GridAxis<NonDefaultConstructibleClass>* axis_ptr = &axis;
   boa << axis_ptr;
-  Grid::GridAxis<NonDefaultConstructibleClass>* result;
+  Euclid::Grid::GridAxis<NonDefaultConstructibleClass>* result;
   boost::archive::binary_iarchive bia {stream};
   bia >> result;
   // We use a unique_ptr for the memory management
-  std::unique_ptr<Grid::GridAxis<NonDefaultConstructibleClass>> result_ptr {result};
+  std::unique_ptr<Euclid::Grid::GridAxis<NonDefaultConstructibleClass>> result_ptr {result};
   
   // Then
   BOOST_CHECK_EQUAL(result_ptr->name(), name);

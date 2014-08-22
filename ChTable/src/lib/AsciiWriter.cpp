@@ -11,6 +11,7 @@
 #include "ChTable/AsciiWriter.h"
 #include "AsciiWriterHelper.h"
 
+namespace Euclid {
 namespace ChTable {
 
 AsciiWriter::AsciiWriter(std::string comment) : m_comment{std::move(comment)} {
@@ -46,3 +47,4 @@ void AsciiWriter::write(std::ostream& out, const Table& table) const {
 }
 
 }
+} // end of namespace Euclid

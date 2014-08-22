@@ -18,7 +18,7 @@
 // as a test reference
 #include "tests/src/TableFixture.h"
 
-using namespace ChCatalog;
+using namespace Euclid::ChCatalog;
 using namespace std;
 
 
@@ -51,22 +51,22 @@ BOOST_FIXTURE_TEST_CASE( createAttribute_test, TableFixture ) {
 
   SpectroscopicRedshiftAttributeFromRow srafr {column_info_ptr, spec_z_val_col_name, spec_z_err_col_name};
 
-//  unique_ptr<ChCatalog::Attribute> attribute_ptr_0 = srafr.createAttribute(row0);
+//  unique_ptr<Euclid::ChCatalog::Attribute> attribute_ptr_0 = srafr.createAttribute(row0);
 //
-//  BOOST_CHECK( typeid(*attribute_ptr_0) == typeid(ChCatalog::SpectroscopicRedshift) );
+//  BOOST_CHECK( typeid(*attribute_ptr_0) == typeid(Euclid::ChCatalog::SpectroscopicRedshift) );
 //
-//  if(typeid(*attribute_ptr_0) == typeid(ChCatalog::SpectroscopicRedshift)) {
-//      ChCatalog::SpectroscopicRedshift& spectroscopicRedshift = dynamic_cast<ChCatalog::SpectroscopicRedshift&>( *attribute_ptr_0 );
+//  if(typeid(*attribute_ptr_0) == typeid(Euclid::ChCatalog::SpectroscopicRedshift)) {
+//      Euclid::ChCatalog::SpectroscopicRedshift& spectroscopicRedshift = dynamic_cast<Euclid::ChCatalog::SpectroscopicRedshift&>( *attribute_ptr_0 );
 //      BOOST_CHECK_CLOSE(spectroscopicRedshift.getValue(), spec_z_val_row0 , tolerance);
 //      BOOST_CHECK_CLOSE(spectroscopicRedshift.getError(), spec_z_err_row0 , tolerance);
 //  }
 
-  unique_ptr<ChCatalog::Attribute> attribute_ptr_1 = srafr.createAttribute(row1);
+  unique_ptr<Euclid::ChCatalog::Attribute> attribute_ptr_1 = srafr.createAttribute(row1);
 
-  BOOST_CHECK( typeid(*attribute_ptr_1) == typeid(ChCatalog::SpectroscopicRedshift) );
+  BOOST_CHECK( typeid(*attribute_ptr_1) == typeid(Euclid::ChCatalog::SpectroscopicRedshift) );
 
-   if(typeid(*attribute_ptr_1) == typeid(ChCatalog::SpectroscopicRedshift)) {
-       ChCatalog::SpectroscopicRedshift& spectroscopicRedshift = dynamic_cast<ChCatalog::SpectroscopicRedshift&>( *attribute_ptr_1 );
+   if(typeid(*attribute_ptr_1) == typeid(Euclid::ChCatalog::SpectroscopicRedshift)) {
+       Euclid::ChCatalog::SpectroscopicRedshift& spectroscopicRedshift = dynamic_cast<Euclid::ChCatalog::SpectroscopicRedshift&>( *attribute_ptr_1 );
        BOOST_CHECK_CLOSE(spectroscopicRedshift.getValue(), spec_z_val_row1 , tolerance);
        BOOST_CHECK_CLOSE(spectroscopicRedshift.getError(), spec_z_err_row1 , tolerance);
    }

@@ -8,6 +8,7 @@
 #include <ElementsKernel/ElementsException.h>
 #include "XYDataset/QualifiedName.h"
 
+namespace Euclid {
 namespace XYDataset {
 
 QualifiedName::QualifiedName(std::vector<std::string> groups, std::string name)
@@ -86,3 +87,4 @@ bool QualifiedName::operator!=(const QualifiedName& other) const {
 }
 
 } // namespace XYDataset
+} // end of namespace Euclid

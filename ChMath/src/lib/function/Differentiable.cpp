@@ -6,6 +6,7 @@
 
 #include "ChMath/function/Differentiable.h"
 
+namespace Euclid {
 namespace ChMath {
 
 double Differentiable::integrate(const double x1, const double x2) const {
@@ -14,3 +15,4 @@ double Differentiable::integrate(const double x1, const double x2) const {
 }
 
 } // end of ChMath
+} // end of namespace Euclid

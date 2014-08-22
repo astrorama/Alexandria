@@ -15,6 +15,7 @@ using boost::regex_match;
 #include "ReaderHelper.h"
 #include "FitsReaderHelper.h"
 
+namespace Euclid {
 namespace ChTable {
 
 FitsReader::FitsReader(std::vector<std::string> column_names)
@@ -35,7 +36,7 @@ FitsReader::FitsReader(std::vector<std::string> column_names)
   }
 }
 
-const ChTable::Table FitsReader::read(const CCfits::HDU& hdu) {
+const Euclid::ChTable::Table FitsReader::read(const CCfits::HDU& hdu) {
   // First we check that we have a table HDU
   try {
     dynamic_cast<const CCfits::Table&>(hdu);
@@ -73,7 +74,8 @@ const ChTable::Table FitsReader::read(const CCfits::HDU& hdu) {
     row_list.push_back(Row{cells,column_info});
   }
   
-  return ChTable::Table{row_list};
+  return Euclid::ChTable::Table{row_list};
 }
 
 }
+} // end of namespace Euclid

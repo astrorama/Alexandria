@@ -10,6 +10,7 @@
 #include <string>
 #include <vector>
 
+namespace Euclid {
 namespace Grid {
 
 /**
@@ -63,6 +64,7 @@ private:
 };
 
 } // end of namespace Grid
+} // end of namespace Euclid
 
 #include "GridContainer/_impl/GridAxis.icpp"
 

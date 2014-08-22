@@ -19,6 +19,7 @@
 #include "ChCatalog/Catalog.h"
 #include "ChTable/Table.h"
 
+namespace Euclid {
 namespace ChCatalog {
 
 /**
@@ -51,7 +52,7 @@ public:
    * @exception
    *  An exception is thrown if the names provided in the mapping are not present in the columnInfo.
    */
-  PhotometryAttributeFromRow(std::shared_ptr<ChTable::ColumnInfo> column_info_ptr,
+  PhotometryAttributeFromRow(std::shared_ptr<Euclid::ChTable::ColumnInfo> column_info_ptr,
       const std::vector<std::pair<std::string, std::pair<std::string, std::string>>>& filter_name_mapping);
 
   virtual ~PhotometryAttributeFromRow();
@@ -62,7 +63,7 @@ public:
    * @param row A ChTable row
    * @return A unique pointer to a (Photometry) Attribute
    */
-  std::unique_ptr<Attribute> createAttribute(const ChTable::Row& row) override;
+  std::unique_ptr<Attribute> createAttribute(const Euclid::ChTable::Row& row) override;
 
 private:
   /*
@@ -78,5 +79,6 @@ private:
 };
 
 } // namespace ChCatalog
+} // end of namespace Euclid
 
 #endif // PHOTOMETRYATTRIBUTEFROMROW_H_

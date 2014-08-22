@@ -9,6 +9,7 @@
 #include "ChMath/function/Piecewise.h"
 #include "ChMath/function/function_tools.h"
 
+namespace Euclid {
 namespace ChMath {
 
 Piecewise::Piecewise(std::vector<double> knots, std::vector<std::shared_ptr<Function> > functions)
@@ -79,7 +80,7 @@ double Piecewise::integrate(const double x1, const double x2) const {
     if (min < *knotIter) {
       double down = (min > *prevKnotIter) ? min : *prevKnotIter;
       double up = (max < *knotIter) ? max : *knotIter;
-      result += ChMath::integrate(**functionIter, down, up);
+      result += Euclid::ChMath::integrate(**functionIter, down, up);
     }
     ++functionIter;
   }
@@ -87,3 +88,4 @@ double Piecewise::integrate(const double x1, const double x2) const {
 }
 
 } // End of ChMath
+} // end of namespace Euclid

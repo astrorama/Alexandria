@@ -11,6 +11,7 @@
 
 #include "ChMath/function/Function.h"
 
+namespace Euclid {
 namespace ChMath {
 
 /**
@@ -37,6 +38,7 @@ ELEMENTS_API double integrate(const Function& function, const double min, const 
 ELEMENTS_API std::unique_ptr<Function> multiply(const Function& f1, const Function& f2);
 
 } // End of ChMath
+} // end of namespace Euclid
 
 #endif	/* CHMATH_FUNCTION_TOOLS_H */
 

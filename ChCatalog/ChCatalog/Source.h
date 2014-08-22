@@ -18,6 +18,7 @@
 #include "ChCatalog/SourceAttributes/Coordinates.h"
 #include "ChCatalog/Attribute.h"
 
+namespace Euclid {
 namespace ChCatalog {
 
 /**
@@ -80,5 +81,6 @@ public:
 #undef SOURCE_IMPL
 
 } /* namespace ChCatalog */
+} // end of namespace Euclid
 
 #endif /* SOURCE_H_ */

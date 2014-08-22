@@ -15,6 +15,7 @@
 #include "GridContainer/GridIndexHelper.h"
 #include "_impl/GridConstructionHelper.h"
 
+namespace Euclid {
 namespace Grid {
 
 /**
@@ -289,6 +290,7 @@ private:
 }; // end of class iter
 
 } // end of namespace Grid
+} // end of namespace Euclid
 
 #include "GridContainer/_impl/GridContainer.icpp"
 #include "GridContainer/_impl/GridIterator.icpp"

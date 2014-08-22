@@ -18,6 +18,7 @@
 #include "XYDataset/XYDatasetProvider.h"
 #include "XYDataset/QualifiedName.h"
 
+namespace Euclid {
 namespace PhzConfiguration {
 
 class ELEMENTS_API ModelingConfiguration {
@@ -30,17 +31,17 @@ public:
 
   virtual ~ModelingConfiguration() = default;
 
-  std::unique_ptr<XYDataset::XYDatasetProvider> sedDatasetProvider();
+  std::unique_ptr<Euclid::XYDataset::XYDatasetProvider> sedDatasetProvider();
 
-  std::unique_ptr<XYDataset::XYDatasetProvider> reddeningCurveDatasetProvider();
+  std::unique_ptr<Euclid::XYDataset::XYDatasetProvider> reddeningCurveDatasetProvider();
 
-  std::unique_ptr<XYDataset::XYDatasetProvider> filterDatasetProvider();
+  std::unique_ptr<Euclid::XYDataset::XYDatasetProvider> filterDatasetProvider();
 
-  std::vector<XYDataset::QualifiedName> sedList();
+  std::vector<Euclid::XYDataset::QualifiedName> sedList();
 
-  std::vector<XYDataset::QualifiedName> reddeningCurveList();
+  std::vector<Euclid::XYDataset::QualifiedName> reddeningCurveList();
 
-  std::vector<XYDataset::QualifiedName> filterList();
+  std::vector<Euclid::XYDataset::QualifiedName> filterList();
 
   std::vector<double> zList();
 
@@ -53,6 +54,7 @@ private:
 }; // end of class ModelingConfiguration
 
 } // end of namespace PhzConfiguration
+} // end of namespace Euclid
 
 #endif	/* PHZCONFIGURATION_MODELINGCONFIGURATION_H */
 

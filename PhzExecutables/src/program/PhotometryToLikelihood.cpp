@@ -24,10 +24,10 @@ namespace po = boost::program_options;
 #include "ChTable/FitsReader.h"
 
 using namespace std;
-using namespace ChCatalog;
-using namespace ChTable;
-using namespace PhzDataModel;
-using namespace PhzLikelihood;
+using namespace Euclid::ChCatalog;
+using namespace Euclid::ChTable;
+using namespace Euclid::PhzDataModel;
+using namespace Euclid::PhzLikelihood;
 
 class PhotometryToLikelihood : public ElementsProgram {
   

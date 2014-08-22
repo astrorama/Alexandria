@@ -4,6 +4,7 @@
  * @author Nikolaos Apostolakos
  */
 
+namespace Euclid {
 namespace Grid {
 
 template<typename T>
@@ -37,3 +38,4 @@ auto GridAxis<T>::end() const -> const_iterator {
 }
 
 } // end of namespace Grid
+} // end of namespace Euclid

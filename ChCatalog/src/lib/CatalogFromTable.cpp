@@ -10,10 +10,11 @@
 #include "ChTable/ColumnInfo.h"
 
 using namespace std;
+namespace Euclid {
 namespace ChCatalog {
 
 CatalogFromTable::CatalogFromTable(
-    std::shared_ptr<ChTable::ColumnInfo> column_info_ptr,
+    std::shared_ptr<Euclid::ChTable::ColumnInfo> column_info_ptr,
     const string& source_id_column_name,
     std::vector<std::unique_ptr<AttributeFromRow>> attribute_from_row_ptr_vector) {
 
@@ -35,8 +36,8 @@ CatalogFromTable::~CatalogFromTable() {
   // @todo Auto-generated destructor stub
 }
 
-ChCatalog::Catalog CatalogFromTable::createCatalog(
-    const ChTable::Table& input_table) {
+Euclid::ChCatalog::Catalog CatalogFromTable::createCatalog(
+    const Euclid::ChTable::Table& input_table) {
 
   vector<Source> source_vector;
 
@@ -58,5 +59,5 @@ ChCatalog::Catalog CatalogFromTable::createCatalog(
   return Catalog { source_vector };
 }
 
-}
-// namespace ChDataModel
+} // namespace ChCatalog
+} // end of namespace Euclid

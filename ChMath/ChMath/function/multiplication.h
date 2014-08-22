@@ -13,6 +13,7 @@
 
 #include "ElementsKernel/Export.h"
 
+namespace Euclid {
 namespace ChMath {
 
 /// Alias of a function which multiplies Function objects
@@ -35,6 +36,7 @@ ELEMENTS_API extern std::map<std::pair<std::type_index,std::type_index>, Multipl
 ELEMENTS_API extern std::map<std::type_index, MultiplyFunction> multiplySpecificGenericMap;
 
 } // End of ChMath
+} // end of namespace Euclid
 
 #endif	/* CHMATH_MULTIPLICATION_H */
 

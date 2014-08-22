@@ -13,6 +13,7 @@
 #include "ChMath/function/function_tools.h"
 #include "ChMath/interpolation/interpolation.h"
 
+namespace Euclid {
 namespace ChMath {
 
 /// Function for multiplying two Polynomial%s. It multiplies their coefficients.
@@ -34,7 +35,7 @@ std::unique_ptr<Function> multiplyPiecewiseWithGeneric(const Function& f1, const
   const Piecewise& piecewise = dynamic_cast<const Piecewise&>(f1);
   std::vector<std::shared_ptr<Function>> functions {};
   for (auto original : piecewise.getFunctions()) {
-    functions.push_back(std::shared_ptr<Function>{ChMath::multiply(*original, f2).release()});
+    functions.push_back(std::shared_ptr<Function>{Euclid::ChMath::multiply(*original, f2).release()});
   }
   return std::unique_ptr<Function>(new Piecewise {piecewise.getKnots(), functions});
 }
@@ -95,7 +96,7 @@ std::unique_ptr<Function> multiplyPiecewises(const Function& f1, const Function&
     while (p2.getKnots()[i2+1] <= knot) {
       ++i2;
     }
-    functions.push_back(std::shared_ptr<Function>{ChMath::multiply(*p1func[i1], *p2func[i2]).release()});
+    functions.push_back(std::shared_ptr<Function>{Euclid::ChMath::multiply(*p1func[i1], *p2func[i2]).release()});
   }
   
   return std::unique_ptr<Function>{new Piecewise{knots, functions}};
@@ -111,3 +112,4 @@ std::map<std::type_index, MultiplyFunction> multiplySpecificGenericMap {
 };
 
 } // End of ChMath
+} // end of namespace Euclid

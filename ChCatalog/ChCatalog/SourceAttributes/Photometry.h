@@ -17,6 +17,7 @@
 
 #include "ChCatalog/Attribute.h"
 
+namespace Euclid {
 namespace ChCatalog {
 
 struct FluxErrorPair {
@@ -131,5 +132,6 @@ private:
 // Eof class Photometry
 
 } /* namespace ChCatalog */
+} // end of namespace Euclid
 
 #endif /* PHOTOMETRY_H_ */

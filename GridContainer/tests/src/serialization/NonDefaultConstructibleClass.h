@@ -37,6 +37,7 @@ void load_construct_data(Archive &ar, NonDefaultConstructibleClass* p, const uns
 }
 }
 
+namespace Euclid {
 namespace Grid {
 
 template<>
@@ -60,6 +61,7 @@ struct GridCellManagerTraits<std::vector<NonDefaultConstructibleClass>> {
 };
 
 }
+} // end of namespace Euclid
 
 #endif	/* GRIDCONTAINER_NONDEFAULTCONSTRUCTIBLECLASS_H */
 

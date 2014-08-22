@@ -14,6 +14,7 @@
 #include "XYDataset/FileParser.h"
 
 
+namespace Euclid {
 namespace XYDataset {
 
 /**
@@ -87,6 +88,7 @@ class ELEMENTS_API AsciiParser : public FileParser
 };
 
 } /* namespace XYDataset */
+} // end of namespace Euclid
 
 
 

@@ -12,6 +12,7 @@
 #include "GridContainer/GridAxis.h"
 #include "TemplateLoopCounter.h"
 
+namespace Euclid {
 namespace Grid {
 
 /**
@@ -116,6 +117,7 @@ public:
 };
 
 } // end of namespace Grid
+} // end of namespace Euclid
 
 #endif	/* GRIDCONTAINER_GRIDCONSTRUCTIONHELPER_H */
 

@@ -20,7 +20,7 @@
 #include "XYDataset/FitsParser.h"
 #include "XYDataset/XYDataset.h"
 
-using namespace XYDataset;
+using namespace Euclid::XYDataset;
 
 
 CCfits::Table* addTable(CCfits::FITS& fits) {

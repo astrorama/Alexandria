@@ -10,7 +10,7 @@
 #include <iostream>
 #include "ChCatalog/SourceAttributes/Coordinates.h"
 
-using namespace ChCatalog;
+using namespace Euclid::ChCatalog;
 using namespace std;
 
 //-----------------------------------------------------------------------------

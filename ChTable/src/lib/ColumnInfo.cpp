@@ -16,6 +16,7 @@ using boost::regex_match;
 #include "ElementsKernel/ElementsException.h"
 #include "ChTable/ColumnInfo.h"
 
+namespace Euclid {
 namespace ChTable {
 
 ColumnInfo::ColumnInfo(std::vector<info_type> info_list)
@@ -81,3 +82,4 @@ std::unique_ptr<size_t> ColumnInfo::find(const std::string& name) const {
 }
 
 }
+} // end of namespace Euclid

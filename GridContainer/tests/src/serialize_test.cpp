@@ -23,24 +23,24 @@ BOOST_AUTO_TEST_CASE(GridContainerSerializationDefaultConstructibleCells) {
   
   typedef DefaultConstructibleClass DCC;
   typedef NonDefaultConstructibleClass NDCC;
-  typedef Grid::GridContainer<std::vector<DCC>, double, DCC, NDCC> GridContainerType;
+  typedef Euclid::Grid::GridContainer<std::vector<DCC>, double, DCC, NDCC> GridContainerType;
   
   // Given
   std::string name0 = "FundamentalAxis";
   std::vector<double> knots0 {0., 3.4, 12E-15};
-  Grid::GridAxis<double> axis0 {name0, knots0};
+  Euclid::Grid::GridAxis<double> axis0 {name0, knots0};
   std::string name1 = "DefaultConstructibleAxis";
   std::vector<DCC> knots1 {DCC{}, DCC{}, DCC{}};
   knots1[0].value = 0.;
   knots1[1].value = 3.4;
   knots1[2].value = 12E-15;
-  Grid::GridAxis<DCC> axis1 {name1, knots1};
+  Euclid::Grid::GridAxis<DCC> axis1 {name1, knots1};
   std::string name2 = "NonDefaultConstructibleAxis";
   std::vector<NDCC> knots2 {};
   knots2.push_back(NDCC{0.});
   knots2.push_back(NDCC{3.4});
   knots2.push_back(NDCC{12E-15});
-  Grid::GridAxis<NDCC> axis2 {name2, knots2};
+  Euclid::Grid::GridAxis<NDCC> axis2 {name2, knots2};
   GridContainerType grid {axis0, axis1, axis2};
   double value {0.};
   for (auto& cell : grid) {
@@ -50,8 +50,8 @@ BOOST_AUTO_TEST_CASE(GridContainerSerializationDefaultConstructibleCells) {
   
   // When
   std::stringstream stream {};
-  Grid::gridBinaryExport(stream, grid);
-  GridContainerType result = Grid::gridBinaryImport<std::vector<DCC>, double, DCC, NDCC>(stream);
+  Euclid::Grid::gridBinaryExport(stream, grid);
+  GridContainerType result = Euclid::Grid::gridBinaryImport<std::vector<DCC>, double, DCC, NDCC>(stream);
   
   // Then
   BOOST_CHECK_EQUAL(result.axisNumber(), 3);
@@ -96,24 +96,24 @@ BOOST_AUTO_TEST_CASE(GridContainerSerializationNonDefaultConstructibleCells) {
   
   typedef DefaultConstructibleClass DCC;
   typedef NonDefaultConstructibleClass NDCC;
-  typedef Grid::GridContainer<std::vector<NDCC>, double, DCC, NDCC> GridContainerType;
+  typedef Euclid::Grid::GridContainer<std::vector<NDCC>, double, DCC, NDCC> GridContainerType;
   
   // Given
   std::string name0 = "FundamentalAxis";
   std::vector<double> knots0 {0., 3.4, 12E-15};
-  Grid::GridAxis<double> axis0 {name0, knots0};
+  Euclid::Grid::GridAxis<double> axis0 {name0, knots0};
   std::string name1 = "DefaultConstructibleAxis";
   std::vector<DCC> knots1 {DCC{}, DCC{}, DCC{}};
   knots1[0].value = 0.;
   knots1[1].value = 3.4;
   knots1[2].value = 12E-15;
-  Grid::GridAxis<DCC> axis1 {name1, knots1};
+  Euclid::Grid::GridAxis<DCC> axis1 {name1, knots1};
   std::string name2 = "NonDefaultConstructibleAxis";
   std::vector<NDCC> knots2 {};
   knots2.push_back(NDCC{0.});
   knots2.push_back(NDCC{3.4});
   knots2.push_back(NDCC{12E-15});
-  Grid::GridAxis<NDCC> axis2 {name2, knots2};
+  Euclid::Grid::GridAxis<NDCC> axis2 {name2, knots2};
   GridContainerType grid {axis0, axis1, axis2};
   double value {0.};
   for (auto& cell : grid) {
@@ -123,8 +123,8 @@ BOOST_AUTO_TEST_CASE(GridContainerSerializationNonDefaultConstructibleCells) {
   
   // When
   std::stringstream stream {};
-  Grid::gridBinaryExport(stream, grid);
-  GridContainerType result = Grid::gridBinaryImport<std::vector<NDCC>, double, DCC, NDCC>(stream);
+  Euclid::Grid::gridBinaryExport(stream, grid);
+  GridContainerType result = Euclid::Grid::gridBinaryImport<std::vector<NDCC>, double, DCC, NDCC>(stream);
   
   // Then
   BOOST_CHECK_EQUAL(result.axisNumber(), 3);

@@ -15,6 +15,7 @@
 
 #include "ChTable/Table.h"
 
+namespace Euclid {
 namespace ChTable {
 
 /**
@@ -41,6 +42,7 @@ ELEMENTS_API std::string typeToKeyword(std::type_index type);
 ELEMENTS_API std::vector<size_t> calculateColumnLengths(const Table& table);
 
 }
+} // end of namespace Euclid
 
 #endif	/* CHTABLE_ASCIIWRITERHELPER_H */
 

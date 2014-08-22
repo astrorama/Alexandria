@@ -54,7 +54,7 @@ BOOST_AUTO_TEST_CASE(ConstructorDuplicateColumnNames) {
   std::vector<std::string> names {"First", "Second", "Third", "Second"};
   
   // Then
-  BOOST_CHECK_THROW(ChTable::FitsReader reader {names}, ElementsException);
+  BOOST_CHECK_THROW(Euclid::ChTable::FitsReader reader {names}, ElementsException);
   
 }
 
@@ -68,7 +68,7 @@ BOOST_AUTO_TEST_CASE(ConstructorEmptyColumnNames) {
   std::vector<std::string> names {"First", "Second", "", "Forth"};
   
   // Then
-  BOOST_CHECK_THROW(ChTable::FitsReader reader {names}, ElementsException);
+  BOOST_CHECK_THROW(Euclid::ChTable::FitsReader reader {names}, ElementsException);
   
 }
 
@@ -86,11 +86,11 @@ BOOST_AUTO_TEST_CASE(ConstructorColumnNamesWithWhitespaces) {
   std::vector<std::string> new_page {"New\fPage"};
   
   // Then
-  BOOST_CHECK_THROW(ChTable::FitsReader reader {space}, ElementsException);
-  BOOST_CHECK_THROW(ChTable::FitsReader reader {tab}, ElementsException);
-  BOOST_CHECK_THROW(ChTable::FitsReader reader {carriage_return}, ElementsException);
-  BOOST_CHECK_THROW(ChTable::FitsReader reader {new_line}, ElementsException);
-  BOOST_CHECK_THROW(ChTable::FitsReader reader {new_page}, ElementsException);
+  BOOST_CHECK_THROW(Euclid::ChTable::FitsReader reader {space}, ElementsException);
+  BOOST_CHECK_THROW(Euclid::ChTable::FitsReader reader {tab}, ElementsException);
+  BOOST_CHECK_THROW(Euclid::ChTable::FitsReader reader {carriage_return}, ElementsException);
+  BOOST_CHECK_THROW(Euclid::ChTable::FitsReader reader {new_line}, ElementsException);
+  BOOST_CHECK_THROW(Euclid::ChTable::FitsReader reader {new_page}, ElementsException);
   
 }
 
@@ -101,7 +101,7 @@ BOOST_AUTO_TEST_CASE(ConstructorColumnNamesWithWhitespaces) {
 BOOST_FIXTURE_TEST_CASE(readNonTable, FitsReader_Fixture) {
   
   // Given
-  ChTable::FitsReader reader {};
+  Euclid::ChTable::FitsReader reader {};
 
   // Then
   BOOST_CHECK_THROW(reader.read(primary_hdu), ElementsException);
@@ -117,7 +117,7 @@ BOOST_FIXTURE_TEST_CASE(ReadWrongColumnNamesNumber, FitsReader_Fixture) {
   
   // Given
   std::vector<std::string> names {"First","Second"};
-  ChTable::FitsReader reader {names};
+  Euclid::ChTable::FitsReader reader {names};
 
   // Then
   BOOST_CHECK_THROW(reader.read(*table_hdu), ElementsException);
@@ -131,10 +131,10 @@ BOOST_FIXTURE_TEST_CASE(ReadWrongColumnNamesNumber, FitsReader_Fixture) {
 BOOST_FIXTURE_TEST_CASE(ReadSuccess, FitsReader_Fixture) {
   
   // Given
-  ChTable::FitsReader reader {};
+  Euclid::ChTable::FitsReader reader {};
   
   // When
-  ChTable::Table table = reader.read(*table_hdu);
+  Euclid::ChTable::Table table = reader.read(*table_hdu);
   auto column_info = table.getColumnInfo();
 
   // Then

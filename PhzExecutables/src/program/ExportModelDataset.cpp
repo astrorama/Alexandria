@@ -25,9 +25,9 @@ namespace po = boost::program_options;
 #include "PhzModeling/ModelDatasetGrid.h"
 
 using namespace std;
-using namespace XYDataset;
-using namespace PhzDataModel;
-using namespace ChTable;
+using namespace Euclid::XYDataset;
+using namespace Euclid::PhzDataModel;
+using namespace Euclid::ChTable;
 
 class ExportModelDataset : public ElementsProgram {
   
@@ -68,12 +68,12 @@ public:
     
     const po::variables_map options = this->getVariablesMap();
     
-    PhzConfiguration::ModelingConfiguration config {std::move(options)};
+    Euclid::PhzConfiguration::ModelingConfiguration config {std::move(options)};
     
     auto axes_tuple = createAxesTuple(config.zList(), config.ebvList(),
                                   config.reddeningCurveList(), config.sedList());
     
-    PhzModeling::ModelDatasetGrid model_grid {axes_tuple, config.sedDatasetProvider(), config.reddeningCurveDatasetProvider()};
+    Euclid::PhzModeling::ModelDatasetGrid model_grid {axes_tuple, config.sedDatasetProvider(), config.reddeningCurveDatasetProvider()};
     
     // We get the output directory
     if (options["output-dir"].empty()) {

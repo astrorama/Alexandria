@@ -9,6 +9,7 @@
 
 #include "ChCatalog/Attribute.h"
 
+namespace Euclid {
 namespace ChCatalog {
 
 /**
@@ -35,5 +36,6 @@ private:
 };
 
 } // namespace ChCatalog
+} // end of namespace Euclid
 
 #endif // COORDINATES_H_ 

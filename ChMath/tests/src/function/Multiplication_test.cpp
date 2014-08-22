@@ -28,16 +28,16 @@ BOOST_AUTO_TEST_SUITE (Multiplication_test)
 BOOST_FIXTURE_TEST_CASE(PolynomialWithPolynomial, Multiplication_Fixture) {
   
   // Given
-  ChMath::Polynomial p1 {{1., 0.5, -2.}};
-  ChMath::Polynomial p2 {{3., 0., 2.}};
+  Euclid::ChMath::Polynomial p1 {{1., 0.5, -2.}};
+  Euclid::ChMath::Polynomial p2 {{3., 0., 2.}};
   std::vector<double> expectedCoef {3., 1.5, -4., 1., -4.};
   
   // When
-  auto multPointer = ChMath::multiply(p1, p2);
+  auto multPointer = Euclid::ChMath::multiply(p1, p2);
   
   // Then
   BOOST_CHECK(multPointer);
-  ChMath::Polynomial* polPointer = dynamic_cast<ChMath::Polynomial*>(multPointer.get());
+  Euclid::ChMath::Polynomial* polPointer = dynamic_cast<Euclid::ChMath::Polynomial*>(multPointer.get());
   BOOST_CHECK(polPointer);
   std::vector<double> multCoef = polPointer->getCoefficients();
   BOOST_CHECK_EQUAL_COLLECTIONS(multCoef.begin(), multCoef.end(), expectedCoef.begin(), expectedCoef.end());
@@ -51,19 +51,19 @@ BOOST_FIXTURE_TEST_CASE(PiecewiseWithGeneric, Multiplication_Fixture) {
   
   // Given
   std::vector<double> knots {-1.,0.,1.,2.};
-  std::vector<std::shared_ptr<ChMath::Function> > functions {};
-  functions.push_back(std::shared_ptr<ChMath::Function>(new IntegrableMock(1.)));
-  functions.push_back(std::shared_ptr<ChMath::Function>(new IntegrableMock(2.)));
-  functions.push_back(std::shared_ptr<ChMath::Function>(new IntegrableMock(1.)));
-  ChMath::Piecewise piecewise{knots, functions};
+  std::vector<std::shared_ptr<Euclid::ChMath::Function> > functions {};
+  functions.push_back(std::shared_ptr<Euclid::ChMath::Function>(new IntegrableMock(1.)));
+  functions.push_back(std::shared_ptr<Euclid::ChMath::Function>(new IntegrableMock(2.)));
+  functions.push_back(std::shared_ptr<Euclid::ChMath::Function>(new IntegrableMock(1.)));
+  Euclid::ChMath::Piecewise piecewise{knots, functions};
   IntegrableMock generic {5.};
   
   // When
-  auto multPointer = ChMath::multiply(piecewise, generic);
+  auto multPointer = Euclid::ChMath::multiply(piecewise, generic);
   
   // Then
   BOOST_CHECK(multPointer);
-  ChMath::Piecewise* piecePointer = dynamic_cast<ChMath::Piecewise*>(multPointer.get());
+  Euclid::ChMath::Piecewise* piecePointer = dynamic_cast<Euclid::ChMath::Piecewise*>(multPointer.get());
   BOOST_CHECK(piecePointer);
   for (double x=-2.;x<= 3.; x+=.1) {
     BOOST_CHECK_CLOSE((*multPointer)(x), piecewise(x)*generic(x), close_tolerance);
@@ -78,26 +78,26 @@ BOOST_FIXTURE_TEST_CASE(PiecewiseWithPiecewise, Multiplication_Fixture) {
   
   // Given
   std::vector<double> knots1 {-1.,0.,1.,2.};
-  std::vector<std::shared_ptr<ChMath::Function> > functions1 {};
-  functions1.push_back(std::shared_ptr<ChMath::Function>(new IntegrableMock(1.)));
-  functions1.push_back(std::shared_ptr<ChMath::Function>(new IntegrableMock(2.)));
-  functions1.push_back(std::shared_ptr<ChMath::Function>(new IntegrableMock(1.)));
-  ChMath::Piecewise p1{knots1, functions1};
+  std::vector<std::shared_ptr<Euclid::ChMath::Function> > functions1 {};
+  functions1.push_back(std::shared_ptr<Euclid::ChMath::Function>(new IntegrableMock(1.)));
+  functions1.push_back(std::shared_ptr<Euclid::ChMath::Function>(new IntegrableMock(2.)));
+  functions1.push_back(std::shared_ptr<Euclid::ChMath::Function>(new IntegrableMock(1.)));
+  Euclid::ChMath::Piecewise p1{knots1, functions1};
   std::vector<double> knots2 {.5,.7,1.,1.5,4.,6};
-  std::vector<std::shared_ptr<ChMath::Function> > functions2 {};
-  functions2.push_back(std::shared_ptr<ChMath::Function>(new IntegrableMock(3.)));
-  functions2.push_back(std::shared_ptr<ChMath::Function>(new IntegrableMock(2.)));
-  functions2.push_back(std::shared_ptr<ChMath::Function>(new IntegrableMock(1.)));
-  functions2.push_back(std::shared_ptr<ChMath::Function>(new IntegrableMock(3.)));
-  functions2.push_back(std::shared_ptr<ChMath::Function>(new IntegrableMock(4.)));
-  ChMath::Piecewise p2{knots2, functions2};
+  std::vector<std::shared_ptr<Euclid::ChMath::Function> > functions2 {};
+  functions2.push_back(std::shared_ptr<Euclid::ChMath::Function>(new IntegrableMock(3.)));
+  functions2.push_back(std::shared_ptr<Euclid::ChMath::Function>(new IntegrableMock(2.)));
+  functions2.push_back(std::shared_ptr<Euclid::ChMath::Function>(new IntegrableMock(1.)));
+  functions2.push_back(std::shared_ptr<Euclid::ChMath::Function>(new IntegrableMock(3.)));
+  functions2.push_back(std::shared_ptr<Euclid::ChMath::Function>(new IntegrableMock(4.)));
+  Euclid::ChMath::Piecewise p2{knots2, functions2};
   
   // When
-  auto multPointer = ChMath::multiply(p1, p2);
+  auto multPointer = Euclid::ChMath::multiply(p1, p2);
   
   // Then
   BOOST_CHECK(multPointer);
-  ChMath::Piecewise* piecePointer = dynamic_cast<ChMath::Piecewise*>(multPointer.get());
+  Euclid::ChMath::Piecewise* piecePointer = dynamic_cast<Euclid::ChMath::Piecewise*>(multPointer.get());
   BOOST_CHECK(piecePointer);
   auto resKnots = piecePointer->getKnots();
   std::vector<double> expectedKnots {.5,.7,1.,1.5,2.};
@@ -108,11 +108,11 @@ BOOST_FIXTURE_TEST_CASE(PiecewiseWithPiecewise, Multiplication_Fixture) {
   
   // When
   // Multiplication order should not matter
-  multPointer = ChMath::multiply(p2, p1);
+  multPointer = Euclid::ChMath::multiply(p2, p1);
   
   // Then
   BOOST_CHECK(multPointer);
-  piecePointer = dynamic_cast<ChMath::Piecewise*>(multPointer.get());
+  piecePointer = dynamic_cast<Euclid::ChMath::Piecewise*>(multPointer.get());
   BOOST_CHECK(piecePointer);
   resKnots = piecePointer->getKnots();
   expectedKnots = {.5,.7,1.,1.5,2.};
@@ -130,26 +130,26 @@ BOOST_FIXTURE_TEST_CASE(PiecewiseWithPiecewiseDiffRanges, Multiplication_Fixture
   
   // Given
   std::vector<double> knots1 {-1.,0.,1.,2.};
-  std::vector<std::shared_ptr<ChMath::Function> > functions1 {};
-  functions1.push_back(std::shared_ptr<ChMath::Function>(new IntegrableMock(1.)));
-  functions1.push_back(std::shared_ptr<ChMath::Function>(new IntegrableMock(2.)));
-  functions1.push_back(std::shared_ptr<ChMath::Function>(new IntegrableMock(1.)));
-  ChMath::Piecewise p1{knots1, functions1};
+  std::vector<std::shared_ptr<Euclid::ChMath::Function> > functions1 {};
+  functions1.push_back(std::shared_ptr<Euclid::ChMath::Function>(new IntegrableMock(1.)));
+  functions1.push_back(std::shared_ptr<Euclid::ChMath::Function>(new IntegrableMock(2.)));
+  functions1.push_back(std::shared_ptr<Euclid::ChMath::Function>(new IntegrableMock(1.)));
+  Euclid::ChMath::Piecewise p1{knots1, functions1};
   std::vector<double> knots2 {3.,4.,5.,6.,7.,8.};
-  std::vector<std::shared_ptr<ChMath::Function> > functions2 {};
-  functions2.push_back(std::shared_ptr<ChMath::Function>(new IntegrableMock(3.)));
-  functions2.push_back(std::shared_ptr<ChMath::Function>(new IntegrableMock(2.)));
-  functions2.push_back(std::shared_ptr<ChMath::Function>(new IntegrableMock(1.)));
-  functions2.push_back(std::shared_ptr<ChMath::Function>(new IntegrableMock(3.)));
-  functions2.push_back(std::shared_ptr<ChMath::Function>(new IntegrableMock(4.)));
-  ChMath::Piecewise p2{knots2, functions2};
+  std::vector<std::shared_ptr<Euclid::ChMath::Function> > functions2 {};
+  functions2.push_back(std::shared_ptr<Euclid::ChMath::Function>(new IntegrableMock(3.)));
+  functions2.push_back(std::shared_ptr<Euclid::ChMath::Function>(new IntegrableMock(2.)));
+  functions2.push_back(std::shared_ptr<Euclid::ChMath::Function>(new IntegrableMock(1.)));
+  functions2.push_back(std::shared_ptr<Euclid::ChMath::Function>(new IntegrableMock(3.)));
+  functions2.push_back(std::shared_ptr<Euclid::ChMath::Function>(new IntegrableMock(4.)));
+  Euclid::ChMath::Piecewise p2{knots2, functions2};
   
   // When
-  auto multPointer = ChMath::multiply(p1, p2);
+  auto multPointer = Euclid::ChMath::multiply(p1, p2);
   
   // Then
   BOOST_CHECK(multPointer);
-  ChMath::Polynomial* ppolyPointer = dynamic_cast<ChMath::Polynomial*>(multPointer.get());
+  Euclid::ChMath::Polynomial* ppolyPointer = dynamic_cast<Euclid::ChMath::Polynomial*>(multPointer.get());
   BOOST_CHECK(ppolyPointer);
   auto resCoeff = ppolyPointer->getCoefficients();
   std::vector<double> expectedCoeff {.0};
@@ -157,11 +157,11 @@ BOOST_FIXTURE_TEST_CASE(PiecewiseWithPiecewiseDiffRanges, Multiplication_Fixture
   
   // When
   // Multiplication order should not matter
-  multPointer = ChMath::multiply(p2, p1);
+  multPointer = Euclid::ChMath::multiply(p2, p1);
   
   // Then
   BOOST_CHECK(multPointer);
-  ppolyPointer = dynamic_cast<ChMath::Polynomial*>(multPointer.get());
+  ppolyPointer = dynamic_cast<Euclid::ChMath::Polynomial*>(multPointer.get());
   BOOST_CHECK(ppolyPointer);
   resCoeff = ppolyPointer->getCoefficients();
   expectedCoeff = {.0};

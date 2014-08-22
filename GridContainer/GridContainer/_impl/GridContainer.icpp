@@ -6,6 +6,7 @@
 
 #include "ElementsKernel/ElementsException.h"
 
+namespace Euclid {
 namespace Grid {
 
 template<typename GridCellManager, typename... AxesTypes>
@@ -80,3 +81,4 @@ auto GridContainer<GridCellManager, AxesTypes...>::at(decltype(std::declval<Grid
 }
 
 } // end of namespace Grid
+} // end of namespace Euclid

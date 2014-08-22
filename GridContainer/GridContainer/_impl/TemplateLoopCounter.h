@@ -7,6 +7,7 @@
 #ifndef GRIDCONTAINER_TEMPLATELOOPCOUNTER_H
 #define	GRIDCONTAINER_TEMPLATELOOPCOUNTER_H
 
+namespace Euclid {
 namespace Grid {
 
 /// This is a dummy class with a integer template parameter, which is used
@@ -15,6 +16,7 @@ template<int>
 struct TemplateLoopCounter { };
 
 }
+} // end of namespace Euclid
 
 #endif	/* GRIDCONTAINER_TEMPLATELOOPCOUNTER_H */
 

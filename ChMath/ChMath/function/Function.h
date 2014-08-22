@@ -10,6 +10,7 @@
 #include <memory>
 #include "ElementsKernel/ElementsException.h"
 
+namespace Euclid {
 namespace ChMath {
 
 /**
@@ -48,6 +49,7 @@ public:
 };
 
 } // End of ChMath
+} // end of namespace Euclid
 
 #endif	/* CHMATH_FUNCTION_H */
 

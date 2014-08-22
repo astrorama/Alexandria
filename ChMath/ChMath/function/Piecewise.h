@@ -14,6 +14,7 @@
 
 #include "ChMath/function/Integrable.h"
 
+namespace Euclid {
 namespace ChMath {
 
 /**
@@ -81,6 +82,7 @@ private:
 };
 
 } // End of ChMath
+} // end of namespace Euclid
 
 #endif	/* CHMATH_PIECEWISE_H */
 

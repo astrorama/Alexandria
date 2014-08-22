@@ -14,6 +14,7 @@
 #include "GridContainer/GridContainer.h"
 #include "GridContainer/serialization/GridContainer.h"
 
+namespace Euclid {
 namespace Grid {
 
 /**
@@ -71,6 +72,7 @@ GridContainer<GridCellManager, AxesTypes...> gridBinaryImport(std::istream& in) 
 }
 
 } // end of namespace Grid
+} // end of namespace Euclid
 
 #endif	/* GRIDCONTAINER_SERIALIZE_H */
 

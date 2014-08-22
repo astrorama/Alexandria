@@ -16,6 +16,7 @@
 
 #include "ChTable/Table.h"
 
+namespace Euclid {
 namespace ChTable {
 
 /**
@@ -125,6 +126,7 @@ private:
 };
 
 }
+} // end of namespace Euclid
 
 #endif	/* CHTABLE_ASCII_READER_H */
 

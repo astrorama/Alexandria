@@ -9,6 +9,7 @@
 #include "ElementsKernel/ElementsException.h"
 #include "AsciiWriterHelper.h"
 
+namespace Euclid {
 namespace ChTable {
 
 std::string typeToKeyword(std::type_index type) {
@@ -49,3 +50,4 @@ std::vector<size_t> calculateColumnLengths(const Table& table) {
 }
 
 }
+} // end of namespace Euclid

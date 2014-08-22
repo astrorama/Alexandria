@@ -16,6 +16,7 @@
 
 #include "ChTable/Table.h"
 
+namespace Euclid {
 namespace ChTable {
 
 /**
@@ -47,6 +48,7 @@ ELEMENTS_API std::vector<std::string> getBinaryFormatList(const Table& table);
 void populateColumn(const Table& table, size_t column_index, CCfits::Table* table_hdu);
 
 }
+} // end of namespace Euclid
 
 #endif	/* CHTABLE_FITSWRITERHELPER_H */
 

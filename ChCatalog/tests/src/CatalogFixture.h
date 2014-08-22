@@ -17,7 +17,7 @@
 #include "ChCatalog/SourceAttributes/SpectroscopicRedshift.h"
 #include "ChCatalog/Catalog.h"
 
-using namespace ChCatalog;
+using namespace Euclid::ChCatalog;
 using namespace std;
 
 struct CatalogFixture {

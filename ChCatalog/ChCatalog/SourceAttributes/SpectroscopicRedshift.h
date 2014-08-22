@@ -10,6 +10,7 @@
 
 #include "ChCatalog/Attribute.h"
 
+namespace Euclid {
 namespace ChCatalog {
 
 /**
@@ -42,5 +43,6 @@ private:
 };
 
 } // namespace ChCatalog
+} // end of namespace Euclid
 
 #endif // SPECTROSCOPICREDSHIFT_H_ 

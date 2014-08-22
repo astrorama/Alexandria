@@ -18,7 +18,7 @@
 #include "XYDataset/AsciiParser.h"
 #include "XYDataset/QualifiedName.h"
 
-using namespace XYDataset;
+using namespace Euclid::XYDataset;
 
 // Create a directory on disk
 void makeDirectory(const std::string& name) {
@@ -149,7 +149,7 @@ BOOST_FIXTURE_TEST_CASE(getDataset_test, FileSystemProvider_Fixture) {
 
   // Check that a pointer must be returned (and not the nullptr)
   QualifiedName identifier {{"filter","MER"},"Dataset_name_for_file1"};
-  std::unique_ptr<XYDataset::XYDataset> dataset_ptr = fsp.getDataset(identifier);
+  std::unique_ptr<Euclid::XYDataset::XYDataset> dataset_ptr = fsp.getDataset(identifier);
 
   BOOST_CHECK(dataset_ptr);
 

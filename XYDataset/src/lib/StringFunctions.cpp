@@ -7,6 +7,7 @@
 
 #include "StringFunctions.h"
 
+namespace Euclid {
 namespace XYDataset {
 
 //
@@ -112,4 +113,5 @@ return (output_str);
 }
 
 } // XYDataset namespace
+} // end of namespace Euclid
 

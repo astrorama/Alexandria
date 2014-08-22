@@ -13,6 +13,7 @@
 
 using namespace std;
 
+namespace Euclid {
 namespace ChCatalog {
 
 //-----------------------------------------------------------------------------
@@ -25,12 +26,12 @@ Catalog::Catalog(vector<Source> source_vector): m_source_vector(source_vector)
      // Make sure the element does not already exist
      if (!it.second)
      {
-       throw ElementsException("ChCatalog::Catalog: Source object already exist "
+       throw ElementsException("Euclid::ChCatalog::Catalog: Source object already exist "
              "in the map for source ID : %d, index: %d\n",
              m_source_vector[index].getId(), index);
      }
   }
-} // Eof ChCatalog::Catalog
+} // Eof Euclid::ChCatalog::Catalog
 
 
 //-----------------------------------------------------------------------------
@@ -51,3 +52,4 @@ shared_ptr<Source> Catalog::find(const int64_t source_id) const
 //-----------------------------------------------------------------------------
 
 } /* namespace ChCatalog */
+} // end of namespace Euclid

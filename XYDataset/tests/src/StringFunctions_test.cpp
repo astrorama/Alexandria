@@ -15,7 +15,7 @@
 
 #include "../../XYDataset/src/lib/StringFunctions.h"
 
-using namespace XYDataset;
+using namespace Euclid::XYDataset;
 
 
 

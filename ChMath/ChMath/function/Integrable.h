@@ -9,6 +9,7 @@
 
 #include "ChMath/function/Function.h"
 
+namespace Euclid {
 namespace ChMath {
 
 /**
@@ -39,6 +40,7 @@ public:
 };
 
 } // End of ChMath
+} // end of namespace Euclid
 
 #endif	/* CHMATH_INTEGRABLE_H */
 

@@ -6,6 +6,7 @@
 
 #include "ReaderHelper.h"
 
+namespace Euclid {
 namespace ChTable {
 
 std::shared_ptr<ColumnInfo> createColumnInfo(const std::vector<std::string>& names,
@@ -18,3 +19,4 @@ std::shared_ptr<ColumnInfo> createColumnInfo(const std::vector<std::string>& nam
 }
 
 }
+} // end of namespace Euclid

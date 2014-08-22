@@ -7,6 +7,7 @@
 #include "ElementsKernel/ElementsException.h"
 #include "ChTable/Table.h"
 
+namespace Euclid {
 namespace ChTable {
 
 Table::Table(std::vector<Row> row_list) : m_row_list {std::move(row_list)} ,
@@ -51,3 +52,4 @@ Table::const_iterator Table::end() const {
 }
 
 }
+} // end of namespace Euclid

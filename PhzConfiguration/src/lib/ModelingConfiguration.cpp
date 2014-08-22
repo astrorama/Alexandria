@@ -13,6 +13,7 @@
 #include "XYDataset/FileSystemProvider.h"
 #include "PhzConfiguration/ModelingConfiguration.h"
 
+namespace Euclid {
 namespace PhzConfiguration {
 
 ElementsLogging logger = ElementsLogging::getLogger("ModelingConfiguration");
@@ -20,52 +21,52 @@ ElementsLogging logger = ElementsLogging::getLogger("ModelingConfiguration");
 ModelingConfiguration::ModelingConfiguration(std::map<std::string, option_type> options)
           : m_options{std::move(options)} { }
 
-std::unique_ptr<XYDataset::XYDatasetProvider> ModelingConfiguration::sedDatasetProvider() {
+std::unique_ptr<Euclid::XYDataset::XYDatasetProvider> ModelingConfiguration::sedDatasetProvider() {
   if (!m_options["sed-root-path"].empty()) {
     std::string path = m_options["sed-root-path"].as<std::string>();
     logger.info() << "Using SED root directory " << path;
     logger.info() << "Assuming SED files are ASCII files";
-    std::unique_ptr<XYDataset::FileParser> file_parser {new XYDataset::AsciiParser{}};
-    return std::unique_ptr<XYDataset::XYDatasetProvider> {
-      new XYDataset::FileSystemProvider{path, std::move(file_parser)}
+    std::unique_ptr<Euclid::XYDataset::FileParser> file_parser {new Euclid::XYDataset::AsciiParser{}};
+    return std::unique_ptr<Euclid::XYDataset::XYDatasetProvider> {
+      new Euclid::XYDataset::FileSystemProvider{path, std::move(file_parser)}
     };
   }
   logger.error() << "The option 'sed-root-path' is not set";
   throw ElementsException {"Missing or unknown SED dataset provider options"};
 }
 
-std::unique_ptr<XYDataset::XYDatasetProvider> ModelingConfiguration::reddeningCurveDatasetProvider() {
+std::unique_ptr<Euclid::XYDataset::XYDatasetProvider> ModelingConfiguration::reddeningCurveDatasetProvider() {
   if (!m_options["reddening-curve-root-path"].empty()) {
     std::string path = m_options["reddening-curve-root-path"].as<std::string>();
     logger.info() << "Using Reddening Curve root directory " << path;
     logger.info() << "Assuming Reddening Curve files are ASCII files";
-    std::unique_ptr<XYDataset::FileParser> file_parser {new XYDataset::AsciiParser{}};
-    return std::unique_ptr<XYDataset::XYDatasetProvider> {
-      new XYDataset::FileSystemProvider{path, std::move(file_parser)}
+    std::unique_ptr<Euclid::XYDataset::FileParser> file_parser {new Euclid::XYDataset::AsciiParser{}};
+    return std::unique_ptr<Euclid::XYDataset::XYDatasetProvider> {
+      new Euclid::XYDataset::FileSystemProvider{path, std::move(file_parser)}
     };
   }
   logger.error() << "The option 'reddening-curve-root-path' is not set";
   throw ElementsException {"Missing or unknown Reddening Curve dataset provider options"};
 }
 
-std::unique_ptr<XYDataset::XYDatasetProvider> ModelingConfiguration::filterDatasetProvider() {
+std::unique_ptr<Euclid::XYDataset::XYDatasetProvider> ModelingConfiguration::filterDatasetProvider() {
   if (!m_options["filter-root-path"].empty()) {
     std::string path = m_options["filter-root-path"].as<std::string>();
     logger.info() << "Using Filter root directory " << path;
     logger.info() << "Assuming Filter files are ASCII files";
-    std::unique_ptr<XYDataset::FileParser> file_parser {new XYDataset::AsciiParser{}};
-    return std::unique_ptr<XYDataset::XYDatasetProvider> {
-      new XYDataset::FileSystemProvider{path, std::move(file_parser)}
+    std::unique_ptr<Euclid::XYDataset::FileParser> file_parser {new Euclid::XYDataset::AsciiParser{}};
+    return std::unique_ptr<Euclid::XYDataset::XYDatasetProvider> {
+      new Euclid::XYDataset::FileSystemProvider{path, std::move(file_parser)}
     };
   }
   logger.error() << "The option 'filter-root-path' is not set";
   throw ElementsException {"Missing or unknown Filter dataset provider options"};
 }
 
-std::vector<XYDataset::QualifiedName> ModelingConfiguration::sedList() {
+std::vector<Euclid::XYDataset::QualifiedName> ModelingConfiguration::sedList() {
   logger.info() << "Creating SED list...";
   // We use a set to avoid duplicate entries
-  std::set<XYDataset::QualifiedName> selected {};
+  std::set<Euclid::XYDataset::QualifiedName> selected {};
   if (!m_options["sed-group"].empty()) {
     auto provider = sedDatasetProvider();
     auto group_list = m_options["sed-group"].as<std::vector<std::string>>();
@@ -80,20 +81,20 @@ std::vector<XYDataset::QualifiedName> ModelingConfiguration::sedList() {
     auto name_list = m_options["sed-list"].as<std::vector<std::string>>();
     for (auto& name : name_list) {
       logger.info() << "Adding SED " << name;
-      selected.insert(XYDataset::QualifiedName{name});
+      selected.insert(Euclid::XYDataset::QualifiedName{name});
     }
   }
   if (selected.empty()) {
     logger.error() << "SED list is empty (check the options sed-group and sed-list)";
     throw ElementsException() << "Empty SED list";
   }
-  return std::vector<XYDataset::QualifiedName> {selected.begin(), selected.end()};
+  return std::vector<Euclid::XYDataset::QualifiedName> {selected.begin(), selected.end()};
 }
 
-std::vector<XYDataset::QualifiedName> ModelingConfiguration::reddeningCurveList() {
+std::vector<Euclid::XYDataset::QualifiedName> ModelingConfiguration::reddeningCurveList() {
   logger.info() << "Creating Reddening Curve list...";
   // We use a set to avoid duplicate entries
-  std::set<XYDataset::QualifiedName> selected {};
+  std::set<Euclid::XYDataset::QualifiedName> selected {};
   if (!m_options["reddening-curve-group"].empty()) {
     auto provider = reddeningCurveDatasetProvider();
     auto group_list = m_options["reddening-curve-group"].as<std::vector<std::string>>();
@@ -108,20 +109,20 @@ std::vector<XYDataset::QualifiedName> ModelingConfiguration::reddeningCurveList(
     auto name_list = m_options["reddening-curve-list"].as<std::vector<std::string>>();
     for (auto& name : name_list) {
       logger.info() << "Adding Reddening Curve " << name;
-      selected.insert(XYDataset::QualifiedName{name});
+      selected.insert(Euclid::XYDataset::QualifiedName{name});
     }
   }
   if (selected.empty()) {
     logger.error() << "Reddening Curve list is empty (check the options reddening-curve-group and reddening-curve-list)";
     throw ElementsException() << "Empty Reddening Curve list";
   }
-  return std::vector<XYDataset::QualifiedName> {selected.begin(), selected.end()};
+  return std::vector<Euclid::XYDataset::QualifiedName> {selected.begin(), selected.end()};
 }
 
-std::vector<XYDataset::QualifiedName> ModelingConfiguration::filterList() {
+std::vector<Euclid::XYDataset::QualifiedName> ModelingConfiguration::filterList() {
   logger.info() << "Creating Filter list...";
   // We use a set to avoid duplicate entries
-  std::set<XYDataset::QualifiedName> selected {};
+  std::set<Euclid::XYDataset::QualifiedName> selected {};
   if (!m_options["filter-group"].empty()) {
     auto provider = filterDatasetProvider();
     auto group_list = m_options["filter-group"].as<std::vector<std::string>>();
@@ -136,14 +137,14 @@ std::vector<XYDataset::QualifiedName> ModelingConfiguration::filterList() {
     auto name_list = m_options["filter-list"].as<std::vector<std::string>>();
     for (auto& name : name_list) {
       logger.info() << "Adding Filter " << name;
-      selected.insert(XYDataset::QualifiedName{name});
+      selected.insert(Euclid::XYDataset::QualifiedName{name});
     }
   }
   if (selected.empty()) {
     logger.error() << "Filter list is empty (check the options filter-group and filter-list)";
     throw ElementsException() << "Empty Filter list";
   }
-  return std::vector<XYDataset::QualifiedName> {selected.begin(), selected.end()};
+  return std::vector<Euclid::XYDataset::QualifiedName> {selected.begin(), selected.end()};
 }
 
 std::vector<double> ModelingConfiguration::zList() {
@@ -223,3 +224,4 @@ std::vector<double> ModelingConfiguration::ebvList() {
 }
 
 } // end of namespace PhzConfiguration
+} // end of namespace Euclid

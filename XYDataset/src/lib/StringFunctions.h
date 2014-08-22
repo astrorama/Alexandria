@@ -13,6 +13,7 @@
 
 #include "ElementsKernel/Export.h"
 
+namespace Euclid {
 namespace XYDataset {
 
 //
@@ -42,5 +43,6 @@ ELEMENTS_API std::string removeExtension(const std::string& input_str);
 ELEMENTS_API std::string removeAllBeforeLastSlash(const std::string& input_str);
 
 } // XYDataset namespace
+} // end of namespace Euclid
 
 #endif // STRINGFUNCTIONS_H_

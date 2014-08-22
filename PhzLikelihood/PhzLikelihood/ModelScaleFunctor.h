@@ -9,6 +9,7 @@
 
 #include "ChCatalog/SourceAttributes/Photometry.h"
 
+namespace Euclid {
 namespace PhzLikelihood {
 
 class ModelScaleFunctor {
@@ -19,7 +20,7 @@ public:
   
   virtual ~ModelScaleFunctor() = default;
   
-  double operator()(const ChCatalog::Photometry& phot_obs, const ChCatalog::Photometry& phot_model) {
+  double operator()(const Euclid::ChCatalog::Photometry& phot_obs, const Euclid::ChCatalog::Photometry& phot_model) {
     double alpha_up {0};
     double alpha_down {0};
     auto obs_iter = phot_obs.begin();
@@ -36,6 +37,7 @@ public:
 };
 
 } // end of namespace PhzLikelihood
+} // end of namespace Euclid
 
 #endif	/* PHZLIKELIHOOD_MODELSCALEFUNCTOR_H */
 

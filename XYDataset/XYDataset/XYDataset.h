@@ -16,10 +16,11 @@
 
 #include "ElementsKernel/Export.h"
 
+namespace Euclid {
 namespace XYDataset {
 
 /**
- * @class XYDataset::XYDataset
+ * @class Euclid::XYDataset::XYDataset
  * Interface class
  * @brief
  * This module provides an interface for accessing two dimensional datasets
@@ -117,6 +118,7 @@ namespace XYDataset {
  };
 
 } /* namespace XYDataset */
+} // end of namespace Euclid
 
 
 

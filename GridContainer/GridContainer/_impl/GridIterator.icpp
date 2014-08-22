@@ -7,6 +7,7 @@
 #include <algorithm>
 #include "ElementsKernel/ElementsException.h"
 
+namespace Euclid {
 namespace Grid {
 
 template<typename GridCellManager, typename... AxesTypes>
@@ -120,3 +121,4 @@ void GridContainer<GridCellManager, AxesTypes...>::iter<CellType>::forwardToInde
 }
 
 } // end of GridContainer namespace
+} // end of namespace Euclid

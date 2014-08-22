@@ -15,6 +15,7 @@ using boost::regex_match;
 #include "ElementsKernel/ElementsException.h"
 #include "ChTable/Row.h"
 
+namespace Euclid {
 namespace ChTable {
 
 Row::Row(std::vector<cell_type> values, std::shared_ptr<ColumnInfo> column_info)
@@ -78,3 +79,4 @@ Row::const_iterator Row::end() const {
 }
 
 }
+} // end of namespace Euclid

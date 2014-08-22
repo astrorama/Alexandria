@@ -14,6 +14,7 @@
 
 namespace fs = boost::filesystem;
 
+namespace Euclid {
 namespace XYDataset {
 
 //-----------------------------------------------------------------------------
@@ -123,3 +124,4 @@ std::unique_ptr<XYDataset> FileSystemProvider::getDataset(const QualifiedName & 
 }
 
 } /* namespace XYDataset */
+} // end of namespace Euclid

@@ -19,6 +19,7 @@ using boost::regex_match;
 #include "ReaderHelper.h"
 #include "AsciiReaderHelper.h"
 
+namespace Euclid {
 namespace ChTable {
 
 AsciiReader::AsciiReader(std::vector<std::type_index> column_types,
@@ -103,3 +104,4 @@ const Table AsciiReader::read(std::istream& in) const {
 }
 
 }
+} // end of namespace Euclid

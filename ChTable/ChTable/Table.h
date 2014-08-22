@@ -15,6 +15,7 @@
 #include "ChTable/ColumnInfo.h"
 #include "ChTable/Row.h"
 
+namespace Euclid {
 namespace ChTable {
 
 /**
@@ -99,6 +100,7 @@ private:
 };
 
 }
+} // end of namespace Euclid
 
 #endif	/* CHTABLE_TABLE_H */
 

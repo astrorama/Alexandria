@@ -7,6 +7,7 @@
 #ifndef PHZLIKELIHOOD_CHISQUAREFUNCTOR_H
 #define	PHZLIKELIHOOD_CHISQUAREFUNCTOR_H
 
+namespace Euclid {
 namespace PhzLikelihood {
 
 class ChiSquareFunctor {
@@ -17,7 +18,7 @@ public:
   
   virtual ~ChiSquareFunctor() = default;
   
-  double operator()(const ChCatalog::Photometry& phot_obs, const ChCatalog::Photometry& phot_model, double model_scale) {
+  double operator()(const Euclid::ChCatalog::Photometry& phot_obs, const Euclid::ChCatalog::Photometry& phot_model, double model_scale) {
     double chi_square {0};
     auto obs_iter = phot_obs.begin();
     auto model_iter = phot_model.begin();
@@ -33,6 +34,7 @@ public:
 };
 
 } // end of namespace PhzLikelihood
+} // end of namespace Euclid
 
 #endif	/* PHZLIKELIHOOD_CHISQUAREFUNCTOR_H */
 

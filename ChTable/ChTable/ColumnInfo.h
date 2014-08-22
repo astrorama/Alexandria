@@ -15,6 +15,7 @@
 
 #include "ElementsKernel/Export.h"
 
+namespace Euclid {
 namespace ChTable {
 
 /**
@@ -134,6 +135,7 @@ private:
 };
 
 }
+} // end of namespace Euclid
 
 #endif	/* CHTABLE_COLUMNINFO_H */
 

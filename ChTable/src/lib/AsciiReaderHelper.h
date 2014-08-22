@@ -15,6 +15,7 @@
 #include "ElementsKernel/Export.h"
 #include "ChTable/Row.h"
 
+namespace Euclid {
 namespace ChTable {
 
 /**
@@ -95,7 +96,7 @@ ELEMENTS_API std::vector<std::type_index> autoDetectColumnTypes(std::istream& in
  * Converts the given value to a Row::cell_type of the given type
  * @details
  * For more information of the supported types see the documentation of the
- * ChTable::AsciiReader constructor.
+ * Euclid::ChTable::AsciiReader constructor.
  *
  * @param value The value to convert
  * @param type The type of the cell
@@ -106,6 +107,7 @@ ELEMENTS_API std::vector<std::type_index> autoDetectColumnTypes(std::istream& in
 ELEMENTS_API Row::cell_type convertToCellType(const std::string& value, std::type_index type);
 
 }
+} // end of namespace Euclid
 
 #endif	/* CHTABLE_ASCIIREADERHELPER_H */
 

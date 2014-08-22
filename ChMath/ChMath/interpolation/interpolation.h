@@ -15,6 +15,7 @@
 #include "XYDataset/XYDataset.h"
 #include "ChMath/function/Function.h"
 
+namespace Euclid {
 namespace ChMath {
 
 /// Enumeration of the different supported interpolation types
@@ -47,9 +48,10 @@ ELEMENTS_API std::unique_ptr<Function> interpolate(const std::vector<double>& x,
  * @throws ElementsException
  *    if the x values are not strictly increasing
  */
-ELEMENTS_API std::unique_ptr<Function> interpolate(const XYDataset::XYDataset& dataset, InterpolationType type);
+ELEMENTS_API std::unique_ptr<Function> interpolate(const Euclid::XYDataset::XYDataset& dataset, InterpolationType type);
 
 } // End of ChMath
+} // end of namespace Euclid
 
 #endif	/* INTERPOLATION_H */
 

@@ -13,6 +13,7 @@
 
 #include "ElementsKernel/Export.h"
 
+namespace Euclid {
 namespace XYDataset {
 
 /**
@@ -178,11 +179,12 @@ private:
 }; // class QualifiedName
 
 } // namespace XYDataset
+} // end of namespace Euclid
 
 namespace std {
 
 /**
- * @brief Hash operation for the XYDataset::QualifiedName
+ * @brief Hash operation for the Euclid::XYDataset::QualifiedName
  * @details
  * This method is implemented so no special hash functions need to be given as
  * template parameters to the unordered collections. It just redirects the call
@@ -191,8 +193,8 @@ namespace std {
  * @return The hash key of the QualifiedName
  */
 template <>
-struct hash<XYDataset::QualifiedName> {
-  size_t operator()(const XYDataset::QualifiedName& qualifiedName) const {
+struct hash<Euclid::XYDataset::QualifiedName> {
+  size_t operator()(const Euclid::XYDataset::QualifiedName& qualifiedName) const {
     return qualifiedName.hash();
   }
 };

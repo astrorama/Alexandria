@@ -4,6 +4,7 @@
  * @author Nikolaos Apostolakos
  */
 
+namespace Euclid {
 namespace Grid {
 
 template<typename GridCellManager>
@@ -47,3 +48,4 @@ auto GridCellManagerTraits<std::vector<T>>::end(std::vector<T>& vector) -> itera
 }
 
 } // end of namespace Grid
+} // end of namespace Euclid

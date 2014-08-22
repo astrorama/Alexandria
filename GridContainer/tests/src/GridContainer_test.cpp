@@ -10,8 +10,8 @@
 #include "GridContainer/GridContainer.h"
 
 struct GridContainer_Fixture {
-  typedef Grid::GridContainer<std::vector<double>, int, int, int, int> GridContainerType;
-  typedef Grid::GridAxis<int> IntAxis;
+  typedef Euclid::Grid::GridContainer<std::vector<double>, int, int, int, int> GridContainerType;
+  typedef Euclid::Grid::GridAxis<int> IntAxis;
   IntAxis axis1 {"Axis 1", {1, 2, 3, 4, 5}};
   IntAxis axis2 {"Axis 2", {1, 2, 3}};
   IntAxis axis3 {"Axis 3", {1, 2, 3, 4, 5, 6}};

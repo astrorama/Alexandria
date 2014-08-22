@@ -14,6 +14,7 @@
 #include "XYDataset/XYDataset.h"
 #include "XYDataset/QualifiedName.h"
 
+namespace Euclid {
 namespace XYDataset {
 
 /**
@@ -71,5 +72,6 @@ class XYDatasetProvider
 };
 
 } /* namespace XYDataset */
+} // end of namespace Euclid
 
 #endif // XYDATASETPROVIDER_H_ 

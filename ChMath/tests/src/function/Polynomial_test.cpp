@@ -27,7 +27,7 @@ BOOST_FIXTURE_TEST_CASE(Constructor, Polynomial_Fixture) {
   
   // Given
   std::vector<double> coef {2.5, 0.8, -1.3, 0.02};
-  ChMath::Polynomial polynomial {coef};
+  Euclid::ChMath::Polynomial polynomial {coef};
   
   // When
   std::vector<double> resCoef = polynomial.getCoefficients();
@@ -45,14 +45,14 @@ BOOST_FIXTURE_TEST_CASE(Clone, Polynomial_Fixture) {
   
   // Given
   std::vector<double> coef {2.5, 0.8, -1.3, 0.02};
-  ChMath::Polynomial polynomial {coef};
+  Euclid::ChMath::Polynomial polynomial {coef};
   
   // When
   auto clonePtr = polynomial.clone();
   
   // Then
   BOOST_CHECK(clonePtr);
-  ChMath::Polynomial* resPol = dynamic_cast<ChMath::Polynomial*>(clonePtr.get());
+  Euclid::ChMath::Polynomial* resPol = dynamic_cast<Euclid::ChMath::Polynomial*>(clonePtr.get());
   BOOST_CHECK(resPol);
   std::vector<double> resCoef = resPol->getCoefficients();
   BOOST_CHECK_EQUAL_COLLECTIONS(resCoef.begin(), resCoef.end(), coef.begin(), coef.end());
@@ -67,7 +67,7 @@ BOOST_FIXTURE_TEST_CASE(FunctionOperator, Polynomial_Fixture) {
 
   // Given
   std::vector<double> coef {2.5, 0.8, -1.3, 0.02};
-  ChMath::Polynomial polynomial {coef};
+  Euclid::ChMath::Polynomial polynomial {coef};
   
   for (double x=-10.; x <=10.; x+=0.1) {
     
@@ -94,10 +94,10 @@ BOOST_FIXTURE_TEST_CASE(Derivative, Polynomial_Fixture) {
   // Given
   std::vector<double> polCoef {2.5, 0.8, -1.3, 0.02};
   std::vector<double> expectedCoef {0.8, -2.6, 0.06};
-  ChMath::Polynomial polynomial {polCoef};
+  Euclid::ChMath::Polynomial polynomial {polCoef};
   
   // When
-  auto derivative = std::dynamic_pointer_cast<ChMath::Polynomial>(polynomial.derivative());
+  auto derivative = std::dynamic_pointer_cast<Euclid::ChMath::Polynomial>(polynomial.derivative());
   
   // Then
   BOOST_CHECK(derivative);
@@ -114,10 +114,10 @@ BOOST_FIXTURE_TEST_CASE(IndefiniteIntegral, Polynomial_Fixture) {
   // Given
   std::vector<double> polCoef {2.5, 0.8, -1.5, 0.02};
   std::vector<double> expectedCoef {0., 2.5, 0.4, -0.5, 0.005};
-  ChMath::Polynomial polynomial {polCoef};
+  Euclid::ChMath::Polynomial polynomial {polCoef};
   
   // When
-  auto indefiniteIntegral = std::dynamic_pointer_cast<ChMath::Polynomial>(polynomial.indefiniteIntegral());
+  auto indefiniteIntegral = std::dynamic_pointer_cast<Euclid::ChMath::Polynomial>(polynomial.indefiniteIntegral());
   
   // Then
   BOOST_CHECK(indefiniteIntegral);

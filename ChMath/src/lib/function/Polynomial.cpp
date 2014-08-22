@@ -9,6 +9,7 @@
 #include <memory>
 #include "ChMath/function/Polynomial.h"
 
+namespace Euclid {
 namespace ChMath {
 
 Polynomial::Polynomial(std::vector<double> coefficients) : m_coef{std::move(coefficients)} {
@@ -56,3 +57,4 @@ std::shared_ptr<Function> Polynomial::indefiniteIntegral() const {
 }
 
 } // End of ChMath
+} // end of namespace Euclid

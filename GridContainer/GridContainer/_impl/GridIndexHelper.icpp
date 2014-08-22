@@ -6,6 +6,7 @@
 
 #include "ElementsKernel/ElementsException.h"
 
+namespace Euclid {
 namespace Grid {
 
 template<typename... AxesTypes>
@@ -68,3 +69,4 @@ size_t GridIndexHelper<AxesTypes...>::totalIndexChecked(decltype(std::declval<Gr
 }
 
 }
+} // end of namespace Euclid

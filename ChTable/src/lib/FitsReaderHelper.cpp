@@ -8,6 +8,7 @@
 #include "ElementsKernel/ElementsException.h"
 #include "FitsReaderHelper.h"
 
+namespace Euclid {
 namespace ChTable {
 
 std::vector<std::string> autoDetectColumnNames(const CCfits::Table& table_hdu) {
@@ -101,3 +102,4 @@ std::vector<Row::cell_type> translateColumn(CCfits::Column& column, std::type_in
 }
 
 }
+} // end of namespace Euclid

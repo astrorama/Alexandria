@@ -32,7 +32,7 @@ BOOST_FIXTURE_TEST_CASE(autoDetectColumnNames, FitsReaderHelper_Fixture) {
   CCfits::Table* table_hdu = fits->addTable("CheckNames", 0, names, types);
   
   // When
-  std::vector<std::string> result = ChTable::autoDetectColumnNames(*table_hdu);
+  std::vector<std::string> result = Euclid::ChTable::autoDetectColumnNames(*table_hdu);
   
   // Then
   BOOST_CHECK_EQUAL(result.size(), 4);
@@ -56,7 +56,7 @@ BOOST_FIXTURE_TEST_CASE(autoDetectColumnTypesAscii, FitsReaderHelper_Fixture) {
   CCfits::Table* table_hdu = fits->addTable("ASCII", 0, names, types, units, CCfits::HduType::AsciiTbl);
   
   // When
-  std::vector<std::type_index> result = ChTable::autoDetectColumnTypes(*table_hdu);
+  std::vector<std::type_index> result = Euclid::ChTable::autoDetectColumnTypes(*table_hdu);
   
   // Then
   BOOST_CHECK_EQUAL(result.size(), 5);
@@ -80,7 +80,7 @@ BOOST_FIXTURE_TEST_CASE(autoDetectColumnTypesBinary, FitsReaderHelper_Fixture) {
   CCfits::Table* table_hdu = fits->addTable("Binary", 0, names, types);
   
   // When
-  std::vector<std::type_index> result = ChTable::autoDetectColumnTypes(*table_hdu);
+  std::vector<std::type_index> result = Euclid::ChTable::autoDetectColumnTypes(*table_hdu);
   
   // Then
   BOOST_CHECK_EQUAL(result.size(), 8);
@@ -107,7 +107,7 @@ BOOST_FIXTURE_TEST_CASE(autoDetectColumnTypesBinaryUnsupportedTypes, FitsReaderH
   CCfits::Table* table_hdu = fits->addTable("Bit", 0, names, types);
   
   // Then
-  BOOST_CHECK_THROW(ChTable::autoDetectColumnTypes(*table_hdu), ElementsException);
+  BOOST_CHECK_THROW(Euclid::ChTable::autoDetectColumnTypes(*table_hdu), ElementsException);
   
   // Given
   names = {"FloatComplex"};
@@ -115,7 +115,7 @@ BOOST_FIXTURE_TEST_CASE(autoDetectColumnTypesBinaryUnsupportedTypes, FitsReaderH
   table_hdu = fits->addTable("FloatComplex", 0, names, types);
   
   // Then
-  BOOST_CHECK_THROW(ChTable::autoDetectColumnTypes(*table_hdu), ElementsException);
+  BOOST_CHECK_THROW(Euclid::ChTable::autoDetectColumnTypes(*table_hdu), ElementsException);
   
   // Given
   names = {"DoubleComplex"};
@@ -123,7 +123,7 @@ BOOST_FIXTURE_TEST_CASE(autoDetectColumnTypesBinaryUnsupportedTypes, FitsReaderH
   table_hdu = fits->addTable("DoubleComplex", 0, names, types);
   
   // Then
-  BOOST_CHECK_THROW(ChTable::autoDetectColumnTypes(*table_hdu), ElementsException);
+  BOOST_CHECK_THROW(Euclid::ChTable::autoDetectColumnTypes(*table_hdu), ElementsException);
   
   // Given
   names = {"IntArray"};
@@ -131,7 +131,7 @@ BOOST_FIXTURE_TEST_CASE(autoDetectColumnTypesBinaryUnsupportedTypes, FitsReaderH
   table_hdu = fits->addTable("IntArray", 0, names, types);
   
   // Then
-  BOOST_CHECK_THROW(ChTable::autoDetectColumnTypes(*table_hdu), ElementsException);
+  BOOST_CHECK_THROW(Euclid::ChTable::autoDetectColumnTypes(*table_hdu), ElementsException);
   
 }
 
@@ -160,12 +160,12 @@ BOOST_FIXTURE_TEST_CASE(translateColumn, FitsReaderHelper_Fixture) {
   
   
   // When
-  auto bool_result = ChTable::translateColumn(table_hdu->column(1), typeid(bool));
-  auto int_result = ChTable::translateColumn(table_hdu->column(2), typeid(int32_t));
-  auto long_result = ChTable::translateColumn(table_hdu->column(3), typeid(int64_t));
-  auto string_result = ChTable::translateColumn(table_hdu->column(4), typeid(std::string));
-  auto float_result = ChTable::translateColumn(table_hdu->column(5), typeid(float));
-  auto double_result = ChTable::translateColumn(table_hdu->column(6), typeid(double));
+  auto bool_result = Euclid::ChTable::translateColumn(table_hdu->column(1), typeid(bool));
+  auto int_result = Euclid::ChTable::translateColumn(table_hdu->column(2), typeid(int32_t));
+  auto long_result = Euclid::ChTable::translateColumn(table_hdu->column(3), typeid(int64_t));
+  auto string_result = Euclid::ChTable::translateColumn(table_hdu->column(4), typeid(std::string));
+  auto float_result = Euclid::ChTable::translateColumn(table_hdu->column(5), typeid(float));
+  auto double_result = Euclid::ChTable::translateColumn(table_hdu->column(6), typeid(double));
   
   // Then
   BOOST_CHECK_EQUAL(bool_result.size(), 2);

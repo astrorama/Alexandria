@@ -17,6 +17,7 @@
 using boost::regex;
 using boost::regex_match;
 
+namespace Euclid {
 namespace XYDataset {
 
 //
@@ -63,7 +64,7 @@ std::unique_ptr<XYDataset> AsciiParser::getDataset(const std::string& file) {
   // Check file exists
   if (sfile) {
     // Read file into a Table object
-    ChTable::AsciiReader ascii_reader {{typeid(double), typeid(double)}};
+    Euclid::ChTable::AsciiReader ascii_reader {{typeid(double), typeid(double)}};
     auto table = ascii_reader.read(sfile);
     // Put the Table data into vector pair
     std::vector<std::pair<double, double>> vector_pair;
@@ -77,3 +78,4 @@ std::unique_ptr<XYDataset> AsciiParser::getDataset(const std::string& file) {
 }
 
 } // XYDataset namespace
+} // end of namespace Euclid

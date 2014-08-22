@@ -10,6 +10,7 @@
 #include <vector>
 #include "PhzDataModel/PhzModel.h"
 
+namespace Euclid {
 namespace PhzDataModel {
 
 typedef std::vector<double> LikelihoodCellManager;
@@ -17,6 +18,7 @@ typedef std::vector<double> LikelihoodCellManager;
 typedef PhzGrid<LikelihoodCellManager> LikelihoodGrid;
 
 }
+} // end of namespace Euclid
 
 #endif	/* PHZDATAMODEL_LIKELIHOODGRID_H */
 

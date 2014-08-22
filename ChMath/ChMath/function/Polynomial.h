@@ -14,6 +14,7 @@
 #include "ChMath/function/Function.h"
 #include "ChMath/function/Differentiable.h"
 
+namespace Euclid {
 namespace ChMath {
 
 /**
@@ -64,6 +65,7 @@ private:
 }; // End of Polynomial
 
 } // End of ChMath
+} // end of namespace Euclid
 
 #endif	/* CHMATH_POLYNOMIAL_H */
 

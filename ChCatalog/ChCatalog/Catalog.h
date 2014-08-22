@@ -16,6 +16,7 @@
 
 #include "ChCatalog/Source.h"
 
+namespace Euclid {
 namespace ChCatalog {
 
 /**
@@ -99,5 +100,6 @@ private:
 };
 
 } /* namespace ChCatalog */
+} // end of namespace Euclid
 
 #endif /* CATALOG_H_ */

@@ -18,17 +18,18 @@
 #include "ChTable/Table.h"
 
 
+namespace Euclid {
 namespace ChCatalog {
 
 class ELEMENTS_API CatalogFromTable {
 public:
-  CatalogFromTable(std::shared_ptr<ChTable::ColumnInfo> column_info_ptr,
+  CatalogFromTable(std::shared_ptr<Euclid::ChTable::ColumnInfo> column_info_ptr,
                    const std::string& source_id_column_name,
                    std::vector<std::unique_ptr<AttributeFromRow>> attribute_from_row_ptr_vector);
 
   virtual ~CatalogFromTable();
 
-  ChCatalog::Catalog createCatalog(const ChTable::Table& input_table);
+  Euclid::ChCatalog::Catalog createCatalog(const Euclid::ChTable::Table& input_table);
 
 private:
   size_t m_source_id_index;
@@ -38,5 +39,6 @@ private:
 };
 
 } // namespace ChCatalog
+} // end of namespace Euclid
 
 #endif // CATALOGFACTORY_H_

@@ -17,7 +17,7 @@
 #include "XYDataset/AsciiParser.h"
 #include "XYDataset/XYDataset.h"
 
-using namespace XYDataset;
+using namespace Euclid::XYDataset;
 
 std::string makeDir(std::string name) {
   boost::filesystem::path d {name};

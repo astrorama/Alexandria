@@ -14,6 +14,7 @@
 
 using namespace std;
 
+namespace Euclid {
 namespace XYDataset {
 
 XYDataset::const_iterator XYDataset::begin() const {
@@ -49,3 +50,4 @@ unique_ptr<XYDataset> XYDataset::factory(vector<double> x_vector, vector<double>
 }
 
 } /* namespace XYDataset */
+} // end of namespace Euclid

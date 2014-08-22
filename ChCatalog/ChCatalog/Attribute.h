@@ -7,6 +7,7 @@
 #ifndef ATTRIBUTE_H_
 #define ATTRIBUTE_H_
 
+namespace Euclid {
 namespace ChCatalog {
 
 /**
@@ -26,5 +27,6 @@ public:
 };
 
 } // namespace ChDataModel 
+} // end of namespace Euclid
 
 #endif // ATTRIBUTE_H_ 

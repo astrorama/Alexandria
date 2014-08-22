@@ -10,6 +10,7 @@
 #include "ChCatalog/Attribute.h"
 #include "ChTable/Row.h"
 
+namespace Euclid {
 namespace ChCatalog {
 
 /**
@@ -36,10 +37,11 @@ public:
    * @return A unique pointer to the newly created Attribute
    */
   virtual std::unique_ptr<Attribute> createAttribute(
-      const ChTable::Row& row) = 0;
+      const Euclid::ChTable::Row& row) = 0;
 
 };
 
 } // namespace ChCatalog 
+} // end of namespace Euclid
 
 #endif // ATTRIBUTEHANDLER_H_ 

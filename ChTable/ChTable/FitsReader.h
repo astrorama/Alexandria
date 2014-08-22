@@ -13,6 +13,7 @@
 
 #include "ChTable/Table.h"
 
+namespace Euclid {
 namespace ChTable {
 
 /**
@@ -92,7 +93,7 @@ public:
    * @throws ElementsException
    *    if any column has a format that is not supported
    */
-  const ChTable::Table read(const CCfits::HDU& hdu);
+  const Euclid::ChTable::Table read(const CCfits::HDU& hdu);
 
 private:
   std::vector<std::string> m_column_names;
@@ -100,6 +101,7 @@ private:
 };
 
 }
+} // end of namespace Euclid
 
 #endif	/* CHTABLE_FITSREADER_H */
 

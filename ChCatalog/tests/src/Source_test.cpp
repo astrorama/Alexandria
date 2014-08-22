@@ -22,7 +22,7 @@
 #include "tests/src/CatalogFixture.h"
 
 
-using namespace ChCatalog;
+using namespace Euclid::ChCatalog;
 using namespace std;
 
 

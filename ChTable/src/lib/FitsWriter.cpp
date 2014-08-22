@@ -8,6 +8,7 @@
 #include "ChTable/FitsWriter.h"
 #include "ElementsKernel/ElementsException.h"
 
+namespace Euclid {
 namespace ChTable {
 
 FitsWriter::FitsWriter(Format format) : m_format{format} { }
@@ -34,3 +35,4 @@ void FitsWriter::write(CCfits::FITS& fits, const std::string& hdu_name, const Ta
 }
 
 }
+} // end of namespace Euclid

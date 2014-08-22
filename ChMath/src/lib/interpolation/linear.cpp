@@ -9,6 +9,7 @@
 #include "ChMath/function/Polynomial.h"
 #include "ChMath/function/Piecewise.h"
 
+namespace Euclid {
 namespace ChMath {
 
 std::unique_ptr<Function> linearInterpolation(const std::vector<double>& x, const std::vector<double>& y) {
@@ -30,3 +31,4 @@ std::unique_ptr<Function> linearInterpolation(const std::vector<double>& x, cons
 }
 
 } // End of ChMath
+} // end of namespace Euclid

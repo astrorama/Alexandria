@@ -13,6 +13,7 @@
 #include <typeindex>
 #include "ChTable/ColumnInfo.h"
 
+namespace Euclid {
 namespace ChTable {
 
 /// Creates a ColumnInfo object from the given names and types
@@ -20,6 +21,7 @@ std::shared_ptr<ColumnInfo> createColumnInfo(const std::vector<std::string>& nam
                                              const std::vector<std::type_index>& types);
 
 }
+} // end of namespace Euclid
 
 #endif	/* CHTABLE_READERHELPER_H */
 

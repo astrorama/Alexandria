@@ -9,6 +9,7 @@
 #include "ChMath/function/function_tools.h"
 #include "ChMath/function/multiplication.h"
 
+namespace Euclid {
 namespace ChMath {
 
 double integrate(const Function& function, const double min, const double max) {
@@ -60,3 +61,4 @@ std::unique_ptr<Function> multiply(const Function& f1, const Function& f2) {
 }
 
 } // End of ChMath
+} // end of namespace Euclid

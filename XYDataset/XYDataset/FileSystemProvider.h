@@ -20,6 +20,7 @@
 #include "XYDataset/XYDatasetProvider.h"
 #include "XYDataset/FileParser.h"
 
+namespace Euclid {
 namespace XYDataset {
 
 /**
@@ -110,5 +111,6 @@ class ELEMENTS_API FileSystemProvider : public XYDatasetProvider
 };
 
 } /* namespace XYDataset */
+} // end of namespace Euclid
 
 #endif // FILESYSTEMPROVIDER_H_

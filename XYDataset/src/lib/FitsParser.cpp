@@ -18,6 +18,7 @@
 using boost::regex;
 using boost::regex_match;
 
+namespace Euclid {
 namespace XYDataset {
 
 //
@@ -68,7 +69,7 @@ std::unique_ptr<XYDataset> FitsParser::getDataset(const std::string& file) {
     try {
       const CCfits::ExtHDU& table_hdu = fits->extension(1);
       // Read first HDU
-      ChTable::FitsReader fits_reader {};
+      Euclid::ChTable::FitsReader fits_reader {};
       auto table = fits_reader.read(table_hdu);
 
       // Put the Table data into vector pair
@@ -87,6 +88,7 @@ std::unique_ptr<XYDataset> FitsParser::getDataset(const std::string& file) {
 }
 
 } // XYDataset namespace
+} // end of namespace Euclid
 
 
 

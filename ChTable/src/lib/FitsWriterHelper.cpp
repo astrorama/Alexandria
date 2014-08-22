@@ -13,6 +13,7 @@
 #include "ChTable/Table.h"
 #include "ElementsKernel/ElementsException.h"
 
+namespace Euclid {
 namespace ChTable {
 
 template<typename T>
@@ -83,7 +84,7 @@ std::vector<std::string> getBinaryFormatList(const Table& table) {
 }
 
 template<typename T>
-std::vector<T> createColumnData(const ChTable::Table& table, size_t column_index) {
+std::vector<T> createColumnData(const Euclid::ChTable::Table& table, size_t column_index) {
   std::vector<T> data {};
   for (const auto& row : table) {
     data.push_back(boost::get<T>(row[column_index]));
@@ -110,3 +111,4 @@ void populateColumn(const Table& table, size_t column_index, CCfits::Table* tabl
 }
 
 }
+} // end of namespace Euclid

@@ -16,6 +16,7 @@
 
 #include "ChTable/Row.h"
 
+namespace Euclid {
 namespace ChTable {
 
 /**
@@ -58,6 +59,7 @@ ELEMENTS_API std::vector<std::type_index> autoDetectColumnTypes(const CCfits::Ta
 ELEMENTS_API std::vector<Row::cell_type> translateColumn(CCfits::Column& column, std::type_index type);
 
 }
+} // end of namespace Euclid
 
 #endif	/* FITSREADERHELPER_H */
 

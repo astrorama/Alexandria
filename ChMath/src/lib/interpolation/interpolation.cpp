@@ -7,6 +7,7 @@
 #include "ChMath/interpolation/interpolation.h"
 #include "implementations.h"
 
+namespace Euclid {
 namespace ChMath {
 
 std::unique_ptr<Function> interpolate(const std::vector<double>& x, const std::vector<double>& y, InterpolationType type) {
@@ -19,7 +20,7 @@ std::unique_ptr<Function> interpolate(const std::vector<double>& x, const std::v
   return nullptr;
 }
 
-std::unique_ptr<Function> interpolate(const XYDataset::XYDataset& dataset, InterpolationType type) {
+std::unique_ptr<Function> interpolate(const Euclid::XYDataset::XYDataset& dataset, InterpolationType type) {
   std::vector<double> x {};
   std::vector<double> y {};
   for (auto& pair : dataset) {
@@ -30,3 +31,4 @@ std::unique_ptr<Function> interpolate(const XYDataset::XYDataset& dataset, Inter
 }
 
 } // End of ChMath
+} // end of namespace Euclid
