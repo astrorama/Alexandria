@@ -16,11 +16,11 @@
 #include "SourceCatalog/Catalog.h"
 #include "ChTable/Table.h"
 
-using namespace Euclid::ChCatalog;
+using namespace Euclid::SourceCatalog;
 using namespace std;
 
 namespace Euclid {
-namespace ChCatalog {
+namespace SourceCatalog {
 
 /**
  * @class SpectroscopicRedshiftAttributeFromRow
@@ -101,7 +101,7 @@ private:
 
 };
 
-} // namespace ChCatalog
+} // namespace SourceCatalog
 } // end of namespace Euclid
 
 #endif // SPECTROSCOPICATTRIBUTEFROMROW_H_

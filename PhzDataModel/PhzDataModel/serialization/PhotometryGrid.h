@@ -54,14 +54,14 @@ void load(Archive& ar, Euclid::PhzDataModel::PhotometryGrid& grid, const unsigne
   ar >> filter_names;
   auto filter_names_ptr = std::make_shared<std::vector<std::string>>(std::move(filter_names));
   for (auto& cell : grid) {
-    std::vector<Euclid::ChCatalog::FluxErrorPair> phot_values;
+    std::vector<Euclid::SourceCatalog::FluxErrorPair> phot_values;
     for (int i=0; i< filter_names_ptr->size(); ++i) {
       double flux;
       double error;
       ar >> flux >> error;
       phot_values.push_back({flux, error});
     }
-    cell = Euclid::ChCatalog::Photometry {filter_names_ptr, std::move(phot_values)};
+    cell = Euclid::SourceCatalog::Photometry {filter_names_ptr, std::move(phot_values)};
   }
 }
 

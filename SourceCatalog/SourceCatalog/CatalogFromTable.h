@@ -19,7 +19,7 @@
 
 
 namespace Euclid {
-namespace ChCatalog {
+namespace SourceCatalog {
 
 class ELEMENTS_API CatalogFromTable {
 public:
@@ -29,7 +29,7 @@ public:
 
   virtual ~CatalogFromTable();
 
-  Euclid::ChCatalog::Catalog createCatalog(const Euclid::ChTable::Table& input_table);
+  Euclid::SourceCatalog::Catalog createCatalog(const Euclid::ChTable::Table& input_table);
 
 private:
   size_t m_source_id_index;
@@ -38,7 +38,7 @@ private:
 
 };
 
-} // namespace ChCatalog
+} // namespace SourceCatalog
 } // end of namespace Euclid
 
 #endif // CATALOGFACTORY_H_

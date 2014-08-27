@@ -20,7 +20,7 @@
 #include "ChTable/Table.h"
 
 namespace Euclid {
-namespace ChCatalog {
+namespace SourceCatalog {
 
 /**
  * @class PhotometryAttributeFromRow
@@ -78,7 +78,7 @@ private:
 
 };
 
-} // namespace ChCatalog
+} // namespace SourceCatalog
 } // end of namespace Euclid
 
 #endif // PHOTOMETRYATTRIBUTEFROMROW_H_

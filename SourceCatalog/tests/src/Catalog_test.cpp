@@ -19,7 +19,7 @@
 #include "tests/src/CatalogFixture.h"
 
 
-using namespace Euclid::ChCatalog;
+using namespace Euclid::SourceCatalog;
 using namespace std;
 
 

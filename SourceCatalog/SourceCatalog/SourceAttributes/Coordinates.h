@@ -10,7 +10,7 @@
 #include "SourceCatalog/Attribute.h"
 
 namespace Euclid {
-namespace ChCatalog {
+namespace SourceCatalog {
 
 /**
  * @class Coordinates
@@ -35,7 +35,7 @@ private:
 
 };
 
-} // namespace ChCatalog
+} // namespace SourceCatalog
 } // end of namespace Euclid
 
 #endif // COORDINATES_H_ 

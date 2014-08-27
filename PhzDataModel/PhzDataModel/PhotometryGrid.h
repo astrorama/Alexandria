@@ -14,7 +14,7 @@
 namespace Euclid {
 namespace PhzDataModel {
 
-typedef std::vector<Euclid::ChCatalog::Photometry> PhotometryCellManager;
+typedef std::vector<Euclid::SourceCatalog::Photometry> PhotometryCellManager;
 
 typedef PhzGrid<PhotometryCellManager> PhotometryGrid;
 
@@ -29,10 +29,10 @@ namespace GridContainer {
 // factory method because the Photometry does not have default constructor.
 template<>
 struct GridCellManagerTraits<Euclid::PhzDataModel::PhotometryCellManager> {
-  typedef Euclid::ChCatalog::Photometry data_type;
+  typedef Euclid::SourceCatalog::Photometry data_type;
   typedef typename Euclid::PhzDataModel::PhotometryCellManager::iterator iterator;
   static std::unique_ptr<Euclid::PhzDataModel::PhotometryCellManager> factory(size_t size){
-    Euclid::ChCatalog::Photometry default_photometry {std::make_shared<std::vector<std::string>>(), {}};
+    Euclid::SourceCatalog::Photometry default_photometry {std::make_shared<std::vector<std::string>>(), {}};
     return std::unique_ptr<Euclid::PhzDataModel::PhotometryCellManager> {
       new Euclid::PhzDataModel::PhotometryCellManager(size, default_photometry)
     };

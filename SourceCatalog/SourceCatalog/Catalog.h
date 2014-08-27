@@ -17,7 +17,7 @@
 #include "SourceCatalog/Source.h"
 
 namespace Euclid {
-namespace ChCatalog {
+namespace SourceCatalog {
 
 /**
  * @class Catalog
@@ -99,7 +99,7 @@ private:
 
 };
 
-} /* namespace ChCatalog */
+} /* namespace SourceCatalog */
 } // end of namespace Euclid
 
 #endif /* CATALOG_H_ */

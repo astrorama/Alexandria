@@ -24,7 +24,7 @@ namespace po = boost::program_options;
 #include "ChTable/FitsReader.h"
 
 using namespace std;
-using namespace Euclid::ChCatalog;
+using namespace Euclid::SourceCatalog;
 using namespace Euclid::ChTable;
 using namespace Euclid::PhzDataModel;
 using namespace Euclid::PhzLikelihood;

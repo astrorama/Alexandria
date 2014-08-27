@@ -102,7 +102,7 @@ public:
       if (counter%1000 == 0) {
         logger.info() << "Number of models proccessed: " << counter;
       }
-      std::vector<Euclid::ChCatalog::FluxErrorPair> photometry_values;
+      std::vector<Euclid::SourceCatalog::FluxErrorPair> photometry_values;
       for (size_t filter_index=0; filter_index<filter_list.size(); ++filter_index) {
         Euclid::ChMath::Function& filter_function = *(filter_functions[filter_index]);
         vector<double> x {};
@@ -119,7 +119,7 @@ public:
         flux = flux / filter_compensations[filter_index];
         photometry_values.push_back({flux, 0.});
       }
-      *phot_grid_iter = Euclid::ChCatalog::Photometry{filter_name_list_ptr, std::move(photometry_values)};
+      *phot_grid_iter = Euclid::SourceCatalog::Photometry{filter_name_list_ptr, std::move(photometry_values)};
       ++phot_grid_iter;
     }
     

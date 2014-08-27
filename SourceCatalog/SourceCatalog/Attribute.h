@@ -8,7 +8,7 @@
 #define ATTRIBUTE_H_
 
 namespace Euclid {
-namespace ChCatalog {
+namespace SourceCatalog {
 
 /**
  * @class Attribute

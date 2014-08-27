@@ -11,7 +11,7 @@
 
 using namespace std;
 namespace Euclid {
-namespace ChCatalog {
+namespace SourceCatalog {
 
 CatalogFromTable::CatalogFromTable(
     std::shared_ptr<Euclid::ChTable::ColumnInfo> column_info_ptr,
@@ -36,7 +36,7 @@ CatalogFromTable::~CatalogFromTable() {
   // @todo Auto-generated destructor stub
 }
 
-Euclid::ChCatalog::Catalog CatalogFromTable::createCatalog(
+Euclid::SourceCatalog::Catalog CatalogFromTable::createCatalog(
     const Euclid::ChTable::Table& input_table) {
 
   vector<Source> source_vector;
@@ -59,5 +59,5 @@ Euclid::ChCatalog::Catalog CatalogFromTable::createCatalog(
   return Catalog { source_vector };
 }
 
-} // namespace ChCatalog
+} // namespace SourceCatalog
 } // end of namespace Euclid

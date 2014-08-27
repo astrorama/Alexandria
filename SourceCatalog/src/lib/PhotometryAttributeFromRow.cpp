@@ -12,7 +12,7 @@
 using namespace std;
 
 namespace Euclid {
-namespace ChCatalog {
+namespace SourceCatalog {
 
 PhotometryAttributeFromRow::PhotometryAttributeFromRow(
     std::shared_ptr<Euclid::ChTable::ColumnInfo> column_info_ptr,
@@ -64,6 +64,6 @@ unique_ptr<Attribute> PhotometryAttributeFromRow::createAttribute(
   return move(photometry_ptr);
 }
 
-} // namespace ChCatalog
+} // namespace SourceCatalog
 } // end of namespace Euclid
 

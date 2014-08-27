@@ -10,7 +10,7 @@
 using namespace std;
 
 namespace Euclid {
-namespace ChCatalog {
+namespace SourceCatalog {
 
 Photometry::const_iterator::const_iterator(const std::vector<string>::const_iterator& filters_iter,
                                            const std::vector<FluxErrorPair>::const_iterator& values_iter)
@@ -62,5 +62,5 @@ unique_ptr<FluxErrorPair> Photometry::find(string filter_name) const
 } // Eof Photometry::find
 
 
-} // namespace ChCatalog
+} // namespace SourceCatalog
 } // end of namespace Euclid

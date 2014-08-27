@@ -19,7 +19,7 @@
 #include "ChTable/Table.h"
 #include "ChTable/ColumnInfo.h"
 
-using namespace Euclid::ChCatalog;
+using namespace Euclid::SourceCatalog;
 using namespace std;
 
 struct TableFixture {

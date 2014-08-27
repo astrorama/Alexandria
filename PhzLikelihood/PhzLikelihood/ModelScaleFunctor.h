@@ -20,7 +20,7 @@ public:
   
   virtual ~ModelScaleFunctor() = default;
   
-  double operator()(const Euclid::ChCatalog::Photometry& phot_obs, const Euclid::ChCatalog::Photometry& phot_model) {
+  double operator()(const Euclid::SourceCatalog::Photometry& phot_obs, const Euclid::SourceCatalog::Photometry& phot_model) {
     double alpha_up {0};
     double alpha_down {0};
     auto obs_iter = phot_obs.begin();

@@ -11,7 +11,7 @@
 #include "SourceCatalog/Attribute.h"
 
 namespace Euclid {
-namespace ChCatalog {
+namespace SourceCatalog {
 
 /**
  * @class SpectroscopicRedshift
@@ -42,7 +42,7 @@ private:
   double m_error {};
 };
 
-} // namespace ChCatalog
+} // namespace SourceCatalog
 } // end of namespace Euclid
 
 #endif // SPECTROSCOPICREDSHIFT_H_ 

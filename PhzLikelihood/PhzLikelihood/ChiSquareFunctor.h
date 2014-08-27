@@ -18,7 +18,7 @@ public:
   
   virtual ~ChiSquareFunctor() = default;
   
-  double operator()(const Euclid::ChCatalog::Photometry& phot_obs, const Euclid::ChCatalog::Photometry& phot_model, double model_scale) {
+  double operator()(const Euclid::SourceCatalog::Photometry& phot_obs, const Euclid::SourceCatalog::Photometry& phot_model, double model_scale) {
     double chi_square {0};
     auto obs_iter = phot_obs.begin();
     auto model_iter = phot_model.begin();

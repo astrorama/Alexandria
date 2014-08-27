@@ -19,7 +19,7 @@
 #include "SourceCatalog/Attribute.h"
 
 namespace Euclid {
-namespace ChCatalog {
+namespace SourceCatalog {
 
 /**
  * @class Source
@@ -80,7 +80,7 @@ public:
 #include "SourceCatalog/_impl/Source.icpp"
 #undef SOURCE_IMPL
 
-} /* namespace ChCatalog */
+} /* namespace SourceCatalog */
 } // end of namespace Euclid
 
 #endif /* SOURCE_H_ */

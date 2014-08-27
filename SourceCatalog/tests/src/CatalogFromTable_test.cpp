@@ -16,11 +16,11 @@
 // as a test reference
 #include "tests/src/TableFixture.h"
 
-using namespace Euclid::ChCatalog;
+using namespace Euclid::SourceCatalog;
 using namespace std;
 
 namespace Euclid {
-namespace ChCatalog {
+namespace SourceCatalog {
 
 //-----------------------------------------------------------------------------
 //
@@ -40,7 +40,7 @@ BOOST_FIXTURE_TEST_CASE(createCatalog_test, TableFixture) {
 
   CatalogFromTable cft {table.getColumnInfo(), source_id_name, move(attribute_from_table_vector)};
 
-  Euclid::ChCatalog::Catalog catalog = cft.createCatalog(table);
+  Euclid::SourceCatalog::Catalog catalog = cft.createCatalog(table);
 
 
   BOOST_CHECK_EQUAL(catalog.find(source_id_1)->getId(),  source_id_1 );
@@ -51,5 +51,5 @@ BOOST_FIXTURE_TEST_CASE(createCatalog_test, TableFixture) {
 
 BOOST_AUTO_TEST_SUITE_END ()
 
-} // namespace ChCatalog
+} // namespace SourceCatalog
 } // end of namespace Euclid

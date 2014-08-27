@@ -1,7 +1,7 @@
 namespace Euclid {
-namespace ChCatalog {
+namespace SourceCatalog {
 
-/** \page chcatalog ChCatalog Module
+/** \page sourcecatalog SourceCatalog Module
 
  \tableofcontents
 
@@ -29,7 +29,7 @@ that the following lines are included by default:
 #include "SourceCatalog/SourceAttributes/Coordinates.h"
 #include "SourceCatalog/SourceAttributes/SpectroscopicRedshift.h"
 
-using namespace ChCatalog;
+using namespace Euclid::SourceCatalog;
 using namespace std;
 \endcode
 
@@ -305,7 +305,7 @@ Output:
 #include "SourceCatalog/SourceAttributes/Coordinates.h"
 #include "SourceCatalog/SourceAttributes/SpectroscopicRedshift.h"
 
-using namespace ChCatalog;
+using namespace Euclid::SourceCatalog;
 using namespace std;
 
 int main() {

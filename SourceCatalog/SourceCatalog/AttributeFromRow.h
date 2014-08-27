@@ -11,7 +11,7 @@
 #include "ChTable/Row.h"
 
 namespace Euclid {
-namespace ChCatalog {
+namespace SourceCatalog {
 
 /**
  * @class AttributeFromRow
@@ -41,7 +41,7 @@ public:
 
 };
 
-} // namespace ChCatalog 
+} // namespace SourceCatalog 
 } // end of namespace Euclid
 
 #endif // ATTRIBUTEHANDLER_H_ 
