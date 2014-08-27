@@ -7,7 +7,7 @@
 #ifndef PHZLIKELIHOOD_MODELSCALEFUNCTOR_H
 #define	PHZLIKELIHOOD_MODELSCALEFUNCTOR_H
 
-#include "ChCatalog/SourceAttributes/Photometry.h"
+#include "SourceCatalog/SourceAttributes/Photometry.h"
 
 namespace Euclid {
 namespace PhzLikelihood {

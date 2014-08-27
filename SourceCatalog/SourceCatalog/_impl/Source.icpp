@@ -1,0 +1,27 @@
+/**
+ * @file SourceCatalog/_impl/Source.icpp
+ *
+ * Created on: Jan 22, 2014
+ *     Author: Pierre Dubath
+ */
+
+#include <memory>
+
+#ifdef SOURCE_IMPL
+
+template<typename T>
+std::shared_ptr<T> Source::getAttribute() {
+  std::shared_ptr<T> result {};
+  // loop over all source attribute
+  for (auto attribute_ptr : m_attribute_vector) {
+    result = std::dynamic_pointer_cast<T>(attribute_ptr);
+    // check whether there is a source attribute that can be successfully casted in Type T
+    if (result) {
+      break;
+    }
+  }
+  return result;
+}
+
+
+#endif /* SOURCE_IMPL */

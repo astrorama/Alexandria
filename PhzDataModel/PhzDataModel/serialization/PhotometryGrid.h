@@ -9,7 +9,7 @@
 
 #include <boost/serialization/split_free.hpp>
 #include "ElementsKernel/Exception.h"
-#include "ChCatalog/SourceAttributes/Photometry.h"
+#include "SourceCatalog/SourceAttributes/Photometry.h"
 #include "GridContainer/serialization/GridContainer.h"
 #include "PhzDataModel/PhotometryGrid.h"
 

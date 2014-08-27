@@ -18,8 +18,8 @@ namespace po = boost::program_options;
 #include "PhzDataModel/LikelihoodGrid.h"
 #include "PhzLikelihood/ModelScaleFunctor.h"
 #include "PhzLikelihood/ChiSquareFunctor.h"
-#include "ChCatalog/SourceAttributes/PhotometryAttributeFromRow.h"
-#include "ChCatalog/CatalogFromTable.h"
+#include "SourceCatalog/SourceAttributes/PhotometryAttributeFromRow.h"
+#include "SourceCatalog/CatalogFromTable.h"
 #include "ChTable/AsciiWriter.h"
 #include "ChTable/FitsReader.h"
 

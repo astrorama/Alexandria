@@ -1,6 +1,6 @@
 elements_subdir(PhzDataModel 0.1)
 
-elements_depends_on_subdirs(ChCatalog)
+elements_depends_on_subdirs(SourceCatalog)
 elements_depends_on_subdirs(GridContainer)
 elements_depends_on_subdirs(XYDataset)
 

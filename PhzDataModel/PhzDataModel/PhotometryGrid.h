@@ -8,7 +8,7 @@
 #define	PHZDATAMODEL_PHOTOMETRYGRID_H
 
 #include <memory>
-#include "ChCatalog/SourceAttributes/Photometry.h"
+#include "SourceCatalog/SourceAttributes/Photometry.h"
 #include "PhzDataModel/PhzModel.h"
 
 namespace Euclid {

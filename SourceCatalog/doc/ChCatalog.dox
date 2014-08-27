@@ -1,0 +1,429 @@
+namespace Euclid {
+namespace ChCatalog {
+
+/** \page chcatalog ChCatalog Module
+
+ \tableofcontents
+
+
+\section chcat_guide Developers quick start guide
+
+This module builds a vector container of Source objects, a map
+of source identification and an index which is the location of the Source
+object in the vector container. 
+
+\section chcat_includes Includes and Namespaces
+
+In all code examples we present in the next sections, we assume
+that the following lines are included by default:
+
+\code{.cpp}
+#include <iostream>
+#include <vector>
+#include <memory>
+
+#include "SourceCatalog/Catalog.h"
+#include "SourceCatalog/Attribute.h"
+#include "SourceCatalog/Source.h"
+#include "SourceCatalog/SourceAttributes/Photometry.h"
+#include "SourceCatalog/SourceAttributes/Coordinates.h"
+#include "SourceCatalog/SourceAttributes/SpectroscopicRedshift.h"
+
+using namespace ChCatalog;
+using namespace std;
+\endcode
+
+Note that namespaces are used to make the example code more
+readable.
+
+\section chcat_source The Source Class
+
+
+Before creating a Catalog object we need to create a vector of Source objects. A Source
+object consists of a source identification number and a vector of shared pointers 
+to Attribute objects.
+There are three Attribute objects for a Source : Photometry, SpectroscopicRedshift and 
+Coordinates objects.
+
+\subsection chcat_coord The Coordinates Attribute
+ 
+We define the Coordinates Attribute as follows:
+
+\code{.cpp}
+  double ra_1  = 181.4657;
+  double dec_1 = -36.27363;
+  double ra_2  = 281.4657;
+  double dec_2 = -26.27363;
+  
+  shared_ptr<Attribute> coordinates_1_ptr { new Coordinates{ra_1, dec_1} };
+  shared_ptr<Attribute> coordinates_2_ptr { new Coordinates{ra_2, dec_2} };
+\endcode
+
+In this example, we define two Coordinates objects. A Coordinate object is defined by two
+double values, the right ascension (e.g. ra_1) and the declinaison (e.g. dec_1).
+The getRa and getDec functions are available for this class for getting the right ascension
+and the declinaison value. They are used as follows:
+
+\code{.cpp}
+  cout<<" Right ascension : " << dynamic_pointer_cast<Coordinates>(coordinates_1_ptr)->getRa()  << endl;
+  cout<<" Declinaison     : " << dynamic_pointer_cast<Coordinates>(coordinates_1_ptr)->getDec() << endl;
+\endcode
+Note that we need to use the \b dynamic_pointer_cast here.
+
+Output
+
+\code
+ Right ascension : 181.466
+ Declinaison     : -36.2736
+\endcode
+
+\subsection chcat_spec The SpectroscopicRedshift Attribute
+
+We define the SpectroscopicRedshift Attribute as follows:
+
+\code{.cpp}
+ double z_value = 3.;
+ double z_error = 0.01;
+ shared_ptr<Attribute> spec_redshift_ptr { new SpectroscopicRedshift {z_value, z_error} };
+\endcode
+
+In the above example a SpectroscopicRedshift object needs two double values, 
+a redshift value and the associated error. 
+
+\subsubsection chcat_spec_sub The getValue and getError Functions
+
+The SpectroscopicRedshift class provides two functions, getValue and getError. They can be used as follows:
+
+\code{.cpp}
+  cout<<" Z value : " << dynamic_pointer_cast<SpectroscopicRedshift>(spec_redshift_ptr)->getValue() << endl;
+  cout<<" Z error : " << dynamic_pointer_cast<SpectroscopicRedshift>(spec_redshift_ptr)->getError() << endl;
+\endcode
+
+ Output
+
+\code
+ Z value : 3
+ Z error : 0.01
+\endcode
+
+\subsection chcat_phot The Photometry Attribute
+
+We define the Photometry Attribute as follows:
+
+\code{.cpp}
+  Photometry photometry {filter_name_vector_ptr, photometry_vector};
+\endcode
+
+The Photometry object needs two parameters. The \b filter_name_vector_ptr parameter
+is a shared pointer to a vector of strings and the \b photometry_vector parameter is
+a vector of FluxErrorPair objects. The FluxErrorPair objects consist of a couple of 
+double values, the flux and the error associated to this flux.
+The following example shows how to define them.
+
+\code{.cpp}
+ // Creation of the filter_name_vector_ptr pointer
+ const std::string filter_name_1 { "COSMOS/g_SDSS" };
+ const std::string filter_name_2 { "COSMOS/r_SDSS" };
+ shared_ptr<vector<std::string>> filter_name_vector_ptr { new vector<std::string> { filter_name_1, filter_name_2 } };
+
+ // Creation of the vector of FluxErrorPair objects
+ const double flux_1  = 0.46575674;
+ const double error_1 = 0.00001534;
+ const double flux_2  = 0.01537575674;
+ const double error_2 = 0.00354616;
+ vector<FluxErrorPair> photometry_vector { FluxErrorPair(flux_1,error_1), FluxErrorPair(flux_2, error_2) };
+ 
+ // Creation of the Photometry pointer
+ shared_ptr<Attribute> photometry_ptr    { new Photometry { filter_name_vector_ptr, photometry_vector } };
+\endcode
+
+\subsubsection chcat_photsubfind The find Function
+
+The Photometry class provides the find function as follows:
+\code{.cpp}
+  shared_ptr<FluxErrorPair> ptr1 =  dynamic_pointer_cast<Photometry>(photometry_ptr)->find(filter_name_1);
+  cout<<" Photometry Flux   : " << ptr1->flux  << endl;
+  cout<<" Photometry Error  : " << ptr1->error << endl;
+\endcode
+
+Output:
+
+\code
+ Photometry Flux   : 0.465757
+ Photometry Error  : 1.534e-05
+\endcode
+
+\subsubsection chcat_photsubbe The begin and end Iterators
+
+The Photometry class provides an iterator for reading the data
+as follows:
+
+\code{.cpp}
+  for (auto photo_iter = dynamic_pointer_cast<Photometry>(photometry_ptr)->begin(); photo_iter != dynamic_pointer_cast<Photometry>(photometry_ptr)->end(); ++photo_iter) {
+	  cout<<" Photometry Filtername : " << photo_iter.filterName() << " Photometry Flux : " << (*photo_iter).flux << " Photometry Error : " << (*photo_iter).error << endl;
+  }
+\endcode
+
+Output
+
+\code
+ Photometry Filtername : COSMOS/g_SDSS Photometry Flux : 0.465757 Photometry Error : 1.534e-05
+ Photometry Filtername : COSMOS/r_SDSS Photometry Flux : 0.0153758 Photometry Error : 0.00354616
+\endcode
+
+\subsection chcat_sourcesub The Source Object
+
+Now we need to create a vector of shared pointers to the Attribute objects 
+for building a Source object as follows:
+
+\code{.cpp}
+  vector<shared_ptr<Attribute>> attribute_vector_1 {coordinates_1_ptr, spec_redshift_ptr, photometry_ptr};
+  vector<shared_ptr<Attribute>> attribute_vector_2 {coordinates_2_ptr, spec_redshift_ptr};
+\endcode
+
+Note that for the needs of the next examples, we have created two attruibute vectors.
+From this step we are ready to create the Source objects as follows:
+
+\code{.cpp}
+  Source source_1{ 10000, attribute_vector_1};
+  Source source_2{ 20000, attribute_vector_2};
+  
+  // Store Source objects in a vector
+  vector<Source> source_vector { source_1, source_2 }; 
+\endcode
+
+The Source object needs an identifier(a number) and a vector of shared pointers
+to its Attribute objects. In this example above we have created two Source objects as 
+a Catalog object needs a vector of Source objects.
+
+\subsubsection chcat_getsourcefctsubid The getId Function
+
+\code{.cpp}
+  cout<<" Source Identifier     : " << source_1.getId() << endl;
+\endcode
+
+Output:
+
+\code
+ Source Identifier     : 10000
+\endcode
+
+\subsubsection chcat_getsourcefctsubatt The getAttribute Function
+
+\code{.cpp}
+  shared_ptr<Coordinates> coord_ptr(source_1.getAttribute<Coordinates>());
+  cout<<" Right ascension       : " << coord_ptr->getRa()  << endl;
+  cout<<" Declinaison           : " << coord_ptr->getDec() << endl;
+\endcode
+
+Output:
+
+\code
+ Right ascension       : 181.466
+ Declinaison           : -36.2736
+\endcode
+
+\section chcat_catalog The Catalog Class
+
+From this step we can create a Catalog object providing the vector of
+Source objects as follows: 
+
+\code{.cpp}
+  Catalog catalog{ source_vector };
+\endcode
+
+\subsection chcat_catalogsize The size Function
+
+To know the size of a Catalog object, use the size function 
+as follows:
+
+\code{.cpp}
+ cout<<" Catalog size          : " << catalog.size()  << endl;
+\endcode
+
+Output:
+
+\code
+ Catalog size          : 2
+\endcode
+
+\subsection chcat_catalogiter The cbegin and cend Iterators
+
+The catalog class provides an iterator in order to play with the Catalog
+contents, hereafter we display for instance the Source identifier as follows:
+
+\code{.cpp}
+  for (auto it = catalog.cbegin(); it != catalog.cend(); ++it ) {
+	  cout<<" Catalog Source ID     : " << it->getId()  <<endl;
+  }
+\endcode
+
+Output:
+\code
+ Catalog Source ID     : 10000
+ Catalog Source ID     : 20000
+\endcode
+
+\subsection chcat_catalogfind The find Function?
+
+To find a Source object in the Catalog using the identification number (e.g. 20000), 
+proceed as follows:
+
+\code{.cpp}
+  shared_ptr<Source> secondSource(catalog.find(20000));
+\endcode
+
+In this example we try to find the Source with the identifier number 20000.
+A nullptr is returned in case of no Source found. In our case, we know the
+Source object exists and we can display some information of the Source as
+the coordinates for instance.
+
+\code{.cpp}
+  shared_ptr<Coordinates> coordinates(secondSource->getAttribute<Coordinates>());
+  cout<<" Right Ascension : " << coordinates->getRa() <<endl;
+  cout<<" Declinaison     : " << coordinates->getDec() <<endl;
+\endcode
+
+Output:
+
+\code
+ Right Ascension : 281.466
+ Declinaison     : -26.2736
+\endcode
+
+\section chcat_fullcode The Entire Code
+
+\code{.cpp}
+#include <iostream>
+#include <vector>
+#include <memory>
+
+#include "SourceCatalog/Catalog.h"
+#include "SourceCatalog/Attribute.h"
+#include "SourceCatalog/Source.h"
+#include "SourceCatalog/SourceAttributes/Photometry.h"
+#include "SourceCatalog/SourceAttributes/Coordinates.h"
+#include "SourceCatalog/SourceAttributes/SpectroscopicRedshift.h"
+
+using namespace ChCatalog;
+using namespace std;
+
+int main() {
+
+  // ---------------------------------------------------------------------------
+  //                              Coordinates Class
+  // ---------------------------------------------------------------------------
+
+  double ra_1  = 181.4657;
+  double dec_1 = -36.27363;
+  double ra_2  = 281.4657;
+  double dec_2 = -26.27363;
+
+  shared_ptr<Attribute> coordinates_1_ptr { new Coordinates { ra_1, dec_1 } };
+  shared_ptr<Attribute> coordinates_2_ptr { new Coordinates { ra_2, dec_2 } };
+
+  cout << " " << endl;
+  cout << "--> Coordinates Class" << endl;
+  cout << " " << endl;
+  cout << " Right ascension : " << dynamic_pointer_cast<Coordinates>(coordinates_1_ptr)->getRa()  << endl;
+  cout << " Declinaison     : " << dynamic_pointer_cast<Coordinates>(coordinates_1_ptr)->getDec() << endl;
+
+  // ---------------------------------------------------------------------------
+  //                          SpectroscopicRedshift Class
+  // ---------------------------------------------------------------------------
+
+  double z_value = 3.;
+  double z_error = 0.01;
+  shared_ptr<Attribute> spec_redshift_ptr { new SpectroscopicRedshift {z_value, z_error} };
+
+  cout << " " << endl;
+  cout << "--> SpectroscopicRedshift Class" << endl;
+  cout << " " << endl;
+  cout<<" Z value         : " << dynamic_pointer_cast<SpectroscopicRedshift>(spec_redshift_ptr)->getValue() << endl;
+  cout<<" Z error         : " << dynamic_pointer_cast<SpectroscopicRedshift>(spec_redshift_ptr)->getError() << endl;
+
+  // ---------------------------------------------------------------------------
+  //                              Photometry Class
+  // ---------------------------------------------------------------------------
+
+  // Creation of the filter_name_vector_ptr pointer
+  const std::string filter_name_1 { "COSMOS/g_SDSS" };
+  const std::string filter_name_2 { "COSMOS/r_SDSS" };
+  shared_ptr<vector<std::string>> filter_name_vector_ptr { new vector<std::string> { filter_name_1, filter_name_2 } };
+
+  // Creation of the vector of FluxErrorPair objects
+  const double flux_1  = 0.46575674;
+  const double error_1 = 0.00001534;
+  const double flux_2  = 0.01537575674;
+  const double error_2 = 0.00354616;
+  vector<FluxErrorPair> photometry_vector { FluxErrorPair(flux_1,error_1), FluxErrorPair(flux_2, error_2) };
+
+  // Creation of the Photometry pointer
+  shared_ptr<Attribute> photometry_ptr    { new Photometry { filter_name_vector_ptr, photometry_vector} };
+
+  shared_ptr<FluxErrorPair> ptr1 =  dynamic_pointer_cast<Photometry>(photometry_ptr)->find(filter_name_1);
+
+  cout << " " << endl;
+  cout << "--> Photometry Class" << endl;
+  cout << " " << endl;
+  cout<<" Photometry Flux : " << ptr1->flux  << endl;
+  cout<<" Photometry Error: " << ptr1->error << endl;
+
+  for (auto photo_iter = dynamic_pointer_cast<Photometry>(photometry_ptr)->begin(); photo_iter != dynamic_pointer_cast<Photometry>(photometry_ptr)->end(); ++photo_iter) {
+      cout<<" Photometry Filtername : " << photo_iter.filterName() << " Photometry Flux : " << (*photo_iter).flux << " Photometry Error : " << (*photo_iter).error << endl;
+  }
+
+  // ---------------------------------------------------------------------------
+  //                              Source Class
+  // ---------------------------------------------------------------------------
+
+  vector<shared_ptr<Attribute>> attribute_vector_1 {coordinates_1_ptr, spec_redshift_ptr, photometry_ptr};
+  vector<shared_ptr<Attribute>> attribute_vector_2 {coordinates_2_ptr, spec_redshift_ptr};
+
+  Source source_1{ 10000, attribute_vector_1};
+  Source source_2{ 20000, attribute_vector_2};
+
+  // Store Source objects in a vector
+  vector<Source> source_vector { source_1, source_2 };
+
+  cout << " " << endl;
+  cout << "--> Source Class" << endl;
+  cout << " " << endl;
+  cout<<" Source Identifier     : " << source_1.getId() << endl;
+
+  shared_ptr<Coordinates> coord_ptr(source_1.getAttribute<Coordinates>());
+
+  cout<<" Right ascension       : " << coord_ptr->getRa()  << endl;
+  cout<<" Declinaison           : " << coord_ptr->getDec() << endl;
+
+  // ---------------------------------------------------------------------------
+  //                              Catalog Class
+  // ---------------------------------------------------------------------------
+
+  Catalog catalog{ source_vector };
+
+  cout << " " << endl;
+  cout << "--> Catalog Class" << endl;
+  cout << " " << endl;
+  cout<<" Catalog size          : " << catalog.size()  << endl;
+
+  for (auto it = catalog.cbegin(); it != catalog.cend(); ++it ) {
+    cout<<" Catalog Source ID     : " << it->getId()  <<endl;
+  }
+
+  shared_ptr<Source> secondSource(catalog.find(20000));
+  shared_ptr<Coordinates> coordinates(secondSource->getAttribute<Coordinates>());
+
+  cout<<" Right Ascension       : " << coordinates->getRa() <<endl;
+  cout<<" Declinaison           : " << coordinates->getDec() <<endl;
+
+}
+
+
+\endcode
+
+*/
+
+
+}
+} // end of namespace Euclid
