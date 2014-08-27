@@ -13,8 +13,8 @@
 #include <cmath>
 #include <functional>
 #include "ElementsKernel/Exception.h"
-#include "ChMath/function/Function.h"
-#include "ChMath/interpolation/interpolation.h"
+#include "MathUtils/function/Function.h"
+#include "MathUtils/interpolation/interpolation.h"
 #include "GridContainer/GridIndexHelper.h"
 #include "XYDataset/XYDatasetProvider.h"
 #include "XYDataset/XYDataset.h"

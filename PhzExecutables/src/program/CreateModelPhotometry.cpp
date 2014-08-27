@@ -13,8 +13,8 @@
 namespace po = boost::program_options;
 #include "ElementsKernel/Program.h"
 #include "ElementsKernel/Version.h"
-#include "ChMath/function/Function.h"
-#include "ChMath/function/function_tools.h"
+#include "MathUtils/function/Function.h"
+#include "MathUtils/function/function_tools.h"
 #include "PhzConfiguration/ModelingConfiguration.h"
 #include "PhzDataModel/PhzModel.h"
 #include "PhzDataModel/PhotometryGrid.h"

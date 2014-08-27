@@ -9,8 +9,8 @@
 
 #include <memory>
 #include "XYDataset/XYDataset.h"
-#include "ChMath/function/Function.h"
-#include "ChMath/interpolation/interpolation.h"
+#include "MathUtils/function/Function.h"
+#include "MathUtils/interpolation/interpolation.h"
 
 namespace Euclid {
 namespace PhzModeling {

@@ -3,7 +3,7 @@ elements_subdir(PhzModeling 0.1)
 elements_depends_on_subdirs(ElementsKernel)
 elements_depends_on_subdirs(GridContainer)
 elements_depends_on_subdirs(SourceCatalog)
-elements_depends_on_subdirs(ChMath)
+elements_depends_on_subdirs(MathUtils)
 elements_depends_on_subdirs(PhzConfiguration)
 elements_depends_on_subdirs(PhzDataModel)
 
