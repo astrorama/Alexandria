@@ -11,7 +11,7 @@
 #include <CCfits/CCfits>
 
 #include "ElementsKernel/Exception.h"
-#include "ChTable/FitsReader.h"
+#include "Table/FitsReader.h"
 #include "XYDataset/FitsParser.h"
 #include "StringFunctions.h"
 

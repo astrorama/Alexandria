@@ -1,5 +1,5 @@
 elements_subdir(XYDataset 1.0)
-elements_depends_on_subdirs(ChTable)
+elements_depends_on_subdirs(Table)
 
 find_package(Boost REQUIRED COMPONENTS filesystem thread system)
 find_package(Cfitsio)
@@ -8,8 +8,8 @@ find_package(CCfits)
 #===== Libraries ===============================================================
 
 elements_add_library(XYDataset src/lib/*.cpp
-                  LINK_LIBRARIES ${CMAKE_DL_LIBS} Boost ChTable Cfitsio CCfits
-                  INCLUDE_DIRS Boost ChTable Cfitsio CCfits
+                  LINK_LIBRARIES ${CMAKE_DL_LIBS} Boost Table Cfitsio CCfits
+                  INCLUDE_DIRS Boost Table Cfitsio CCfits
                   PUBLIC_HEADERS XYDataset )
 
 

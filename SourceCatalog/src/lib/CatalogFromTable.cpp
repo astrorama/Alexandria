@@ -7,7 +7,7 @@
 #include <vector>
 #include "SourceCatalog/CatalogFromTable.h"
 #include "SourceCatalog/SourceAttributes/Photometry.h"
-#include "ChTable/ColumnInfo.h"
+#include "Table/ColumnInfo.h"
 
 using namespace std;
 namespace Euclid {

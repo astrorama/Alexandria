@@ -16,7 +16,7 @@
 #include "ElementsKernel/Exception.h"
 #include "ElementsKernel/Temporary.h"
 #include <CCfits/CCfits>
-#include "ChTable/FitsReader.h"
+#include "Table/FitsReader.h"
 #include "XYDataset/FitsParser.h"
 #include "XYDataset/XYDataset.h"
 

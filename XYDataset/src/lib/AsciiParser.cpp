@@ -10,7 +10,7 @@
 #include <iostream>
 
 #include "ElementsKernel/Exception.h"
-#include "ChTable/AsciiReader.h"
+#include "Table/AsciiReader.h"
 #include "XYDataset/AsciiParser.h"
 #include "StringFunctions.h"
 

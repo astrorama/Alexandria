@@ -17,9 +17,9 @@ namespace po = boost::program_options;
 #include <CCfits/CCfits>
 #include "ElementsKernel/Program.h"
 #include "ElementsKernel/Version.h"
-#include "ChTable/Table.h"
-#include "ChTable/AsciiWriter.h"
-#include "ChTable/FitsWriter.h"
+#include "Table/Table.h"
+#include "Table/AsciiWriter.h"
+#include "Table/FitsWriter.h"
 #include "PhzConfiguration/ModelingConfiguration.h"
 #include "PhzDataModel/PhzModel.h"
 #include "PhzModeling/ModelDatasetGrid.h"

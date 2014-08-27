@@ -8,7 +8,7 @@
 #define ATTRIBUTEHANDLER_H_
 
 #include "SourceCatalog/Attribute.h"
-#include "ChTable/Row.h"
+#include "Table/Row.h"
 
 namespace Euclid {
 namespace SourceCatalog {

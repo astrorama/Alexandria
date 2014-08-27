@@ -17,7 +17,7 @@
 
 #include "SourceCatalog/AttributeFromRow.h"
 #include "SourceCatalog/Catalog.h"
-#include "ChTable/Table.h"
+#include "Table/Table.h"
 
 namespace Euclid {
 namespace SourceCatalog {

@@ -15,9 +15,9 @@
 //#include "SourceCatalog/SourceAttributes/Photometry.h"
 //#include "SourceCatalog/SourceAttributes/Coordinates.h"
 //#include "SourceCatalog/SourceAttributes/SpectroscopicRedshift.h"
-#include "ChTable/Row.h"
-#include "ChTable/Table.h"
-#include "ChTable/ColumnInfo.h"
+#include "Table/Row.h"
+#include "Table/Table.h"
+#include "Table/ColumnInfo.h"
 
 using namespace Euclid::SourceCatalog;
 using namespace std;

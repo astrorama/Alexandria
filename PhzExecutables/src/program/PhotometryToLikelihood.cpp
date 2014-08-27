@@ -13,15 +13,15 @@ namespace po = boost::program_options;
 #include <CCfits/CCfits>
 #include "ElementsKernel/Program.h"
 #include "ElementsKernel/Version.h"
-#include "ChTable/AsciiReader.h"
+#include "Table/AsciiReader.h"
 #include "PhzDataModel/PhotometryGrid.h"
 #include "PhzDataModel/LikelihoodGrid.h"
 #include "PhzLikelihood/ModelScaleFunctor.h"
 #include "PhzLikelihood/ChiSquareFunctor.h"
 #include "SourceCatalog/SourceAttributes/PhotometryAttributeFromRow.h"
 #include "SourceCatalog/CatalogFromTable.h"
-#include "ChTable/AsciiWriter.h"
-#include "ChTable/FitsReader.h"
+#include "Table/AsciiWriter.h"
+#include "Table/FitsReader.h"
 
 using namespace std;
 using namespace Euclid::SourceCatalog;

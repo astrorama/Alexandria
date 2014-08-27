@@ -1,6 +1,6 @@
 elements_subdir(SourceCatalog 1.0)
 
-elements_depends_on_subdirs(ChTable)
+elements_depends_on_subdirs(Table)
 
 elements_depends_on_subdirs(ElementsKernel)
 
@@ -11,8 +11,8 @@ find_package(Eigen3)
 #===== Libraries ===============================================================
 
 elements_add_library(SourceCatalog src/lib/*.cpp
-                  LINK_LIBRARIES ${CMAKE_DL_LIBS} Boost ChTable
-                  INCLUDE_DIRS Eigen3 Boost ChTable
+                  LINK_LIBRARIES ${CMAKE_DL_LIBS} Boost Table
+                  INCLUDE_DIRS Eigen3 Boost Table
                   PUBLIC_HEADERS SourceCatalog)
 
 
