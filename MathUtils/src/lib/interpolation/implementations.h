@@ -4,11 +4,11 @@
  * @author Nikolaos Apostolakos
  */
 
-#ifndef CHMATH_IMPLEMENTATIONS_H
-#define	CHMATH_IMPLEMENTATIONS_H
+#ifndef MATHUTILS_IMPLEMENTATIONS_H
+#define	MATHUTILS_IMPLEMENTATIONS_H
 
 namespace Euclid {
-namespace ChMath {
+namespace MathUtils {
 
 /// Performs linear interpolation for the given set of data points
 std::unique_ptr<Function> linearInterpolation(const std::vector<double>& x, const std::vector<double>& y);
@@ -16,8 +16,8 @@ std::unique_ptr<Function> linearInterpolation(const std::vector<double>& x, cons
 /// Performs cubic spline interpolation for the given set of data points
 std::unique_ptr<Function> splineInterpolation(const std::vector<double>& x, const std::vector<double>& y);
 
-} // End of ChMath
+} // End of MathUtils
 } // end of namespace Euclid
 
-#endif	/* CHMATH_IMPLEMENTATIONS_H */
+#endif	/* MATHUTILS_IMPLEMENTATIONS_H */
 

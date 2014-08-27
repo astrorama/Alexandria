@@ -4,8 +4,8 @@
  * @author Nikolaos Apostolakos
  */
 
-#ifndef CHMATH_DIFFERENTIABLE_H
-#define	CHMATH_DIFFERENTIABLE_H
+#ifndef MATHUTILS_DIFFERENTIABLE_H
+#define	MATHUTILS_DIFFERENTIABLE_H
 
 #include <memory>
 
@@ -14,7 +14,7 @@
 #include "MathUtils/function/Integrable.h"
 
 namespace Euclid {
-namespace ChMath {
+namespace MathUtils {
 
 /**
  * @interface Differentiable
@@ -51,8 +51,8 @@ public:
   double integrate(const double x1, const double x2) const override final;
 };
 
-} // End of ChMath
+} // End of MathUtils
 } // end of namespace Euclid
 
-#endif	/* CHMATH_DIFFERENTIABLE_H */
+#endif	/* MATHUTILS_DIFFERENTIABLE_H */
 

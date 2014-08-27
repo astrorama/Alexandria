@@ -4,15 +4,15 @@
  * @author Nikolaos Apostolakos
  */
 
-#ifndef CHMATH_FUNCTION_TOOLS_H
-#define	CHMATH_FUNCTION_TOOLS_H
+#ifndef MATHUTILS_FUNCTION_TOOLS_H
+#define	MATHUTILS_FUNCTION_TOOLS_H
 
 #include "ElementsKernel/Export.h"
 
 #include "MathUtils/function/Function.h"
 
 namespace Euclid {
-namespace ChMath {
+namespace MathUtils {
 
 /**
  * Returns the integral of the given function inside the range [min,max]. This
@@ -37,8 +37,8 @@ ELEMENTS_API double integrate(const Function& function, const double min, const 
  */
 ELEMENTS_API std::unique_ptr<Function> multiply(const Function& f1, const Function& f2);
 
-} // End of ChMath
+} // End of MathUtils
 } // end of namespace Euclid
 
-#endif	/* CHMATH_FUNCTION_TOOLS_H */
+#endif	/* MATHUTILS_FUNCTION_TOOLS_H */
 

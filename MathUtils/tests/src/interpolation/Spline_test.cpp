@@ -35,7 +35,7 @@ BOOST_FIXTURE_TEST_CASE(Spline, Spline_Fixture) {
   }
   
   // When
-  auto linear = Euclid::ChMath::interpolate(x, y, Euclid::ChMath::InterpolationType::CUBIC_SPLINE);
+  auto linear = Euclid::MathUtils::interpolate(x, y, Euclid::MathUtils::InterpolationType::CUBIC_SPLINE);
   std::vector<double> result {};
   for (double xValue : x) {
     result.push_back((*linear)(xValue));

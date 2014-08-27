@@ -20,7 +20,7 @@ class ExtinctionFunctor {
 public:
 
   ExtinctionFunctor(const Euclid::XYDataset::XYDataset& reddening_curve)
-  : m_reddening_curve{Euclid::ChMath::interpolate(reddening_curve, Euclid::ChMath::InterpolationType::LINEAR)}{
+  : m_reddening_curve{Euclid::MathUtils::interpolate(reddening_curve, Euclid::MathUtils::InterpolationType::LINEAR)}{
   }
 
   ExtinctionFunctor(ExtinctionFunctor&&) = default;
@@ -41,7 +41,7 @@ public:
 
 private:
 
-  std::unique_ptr<Euclid::ChMath::Function> m_reddening_curve;
+  std::unique_ptr<Euclid::MathUtils::Function> m_reddening_curve;
 
 };
 

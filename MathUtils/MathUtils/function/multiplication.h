@@ -4,8 +4,8 @@
  * @author Nikolaos Apostolakos
  */
 
-#ifndef CHMATH_MULTIPLICATION_H
-#define	CHMATH_MULTIPLICATION_H
+#ifndef MATHUTILS_MULTIPLICATION_H
+#define	MATHUTILS_MULTIPLICATION_H
 
 #include <map>
 #include <utility>
@@ -14,7 +14,7 @@
 #include "ElementsKernel/Export.h"
 
 namespace Euclid {
-namespace ChMath {
+namespace MathUtils {
 
 /// Alias of a function which multiplies Function objects
 typedef std::unique_ptr<Function> (*MultiplyFunction)(const Function&, const Function&);
@@ -35,8 +35,8 @@ ELEMENTS_API extern std::map<std::pair<std::type_index,std::type_index>, Multipl
  */
 ELEMENTS_API extern std::map<std::type_index, MultiplyFunction> multiplySpecificGenericMap;
 
-} // End of ChMath
+} // End of MathUtils
 } // end of namespace Euclid
 
-#endif	/* CHMATH_MULTIPLICATION_H */
+#endif	/* MATHUTILS_MULTIPLICATION_H */
 

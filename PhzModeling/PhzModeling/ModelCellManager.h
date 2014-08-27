@@ -28,7 +28,7 @@ class ModelCellManager {
   
 public:
   
-//  typedef Euclid::ChMath::Function data_type;
+//  typedef Euclid::MathUtils::Function data_type;
   typedef Euclid::XYDataset::XYDataset data_type;
   
   class iterator : public std::iterator<std::random_access_iterator_tag, data_type> {
@@ -156,7 +156,7 @@ private:
   Euclid::PhzDataModel::ModelAxesTuple m_axes_tuple;
   size_t m_size;
   std::vector<std::unique_ptr<Euclid::XYDataset::XYDataset>> m_sed_data_vector;
-  std::vector<std::unique_ptr<Euclid::ChMath::Function>> m_reddening_curve_function_vector;
+  std::vector<std::unique_ptr<Euclid::MathUtils::Function>> m_reddening_curve_function_vector;
   std::vector<ExtinctionFunctor> m_reddening_curve_functor_vector;
   
 }; // end of class ModelCellManager

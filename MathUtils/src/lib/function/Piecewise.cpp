@@ -10,7 +10,7 @@
 #include "MathUtils/function/function_tools.h"
 
 namespace Euclid {
-namespace ChMath {
+namespace MathUtils {
 
 Piecewise::Piecewise(std::vector<double> knots, std::vector<std::shared_ptr<Function> > functions)
                     : m_knots{std::move(knots)}, m_functions{std::move(functions)} {
@@ -80,12 +80,12 @@ double Piecewise::integrate(const double x1, const double x2) const {
     if (min < *knotIter) {
       double down = (min > *prevKnotIter) ? min : *prevKnotIter;
       double up = (max < *knotIter) ? max : *knotIter;
-      result += Euclid::ChMath::integrate(**functionIter, down, up);
+      result += Euclid::MathUtils::integrate(**functionIter, down, up);
     }
     ++functionIter;
   }
   return direction * result;
 }
 
-} // End of ChMath
+} // End of MathUtils
 } // end of namespace Euclid

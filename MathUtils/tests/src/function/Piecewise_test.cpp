@@ -29,14 +29,14 @@ BOOST_FIXTURE_TEST_CASE(Constructor, Piecewise_Fixture) {
   
   // Given
   std::vector<double> knots {-1.,-0.5,0.25,10.};
-  std::vector<std::shared_ptr<Euclid::ChMath::Function> > functions {};
+  std::vector<std::shared_ptr<Euclid::MathUtils::Function> > functions {};
   for (double knot : knots) {
-    functions.push_back(std::shared_ptr<Euclid::ChMath::Function>(new IntegrableMock(knot)));
+    functions.push_back(std::shared_ptr<Euclid::MathUtils::Function>(new IntegrableMock(knot)));
   }
   functions.pop_back();
   
   // When
-  Euclid::ChMath::Piecewise piecewise{knots, functions};
+  Euclid::MathUtils::Piecewise piecewise{knots, functions};
   auto resKnots = piecewise.getKnots();
   auto resFuncs = piecewise.getFunctions();
   
@@ -54,14 +54,14 @@ BOOST_FIXTURE_TEST_CASE(ConstructorUnorderedKnots, Piecewise_Fixture) {
   
   // Given
   std::vector<double> knots {-1.,0.5,0.25,10.};
-  std::vector<std::shared_ptr<Euclid::ChMath::Function> > functions {};
+  std::vector<std::shared_ptr<Euclid::MathUtils::Function> > functions {};
   for (double knot : knots) {
-    functions.push_back(std::shared_ptr<Euclid::ChMath::Function>(new IntegrableMock(knot)));
+    functions.push_back(std::shared_ptr<Euclid::MathUtils::Function>(new IntegrableMock(knot)));
   }
   functions.pop_back();
   
   // Then
-  BOOST_CHECK_THROW(Euclid::ChMath::Piecewise(knots, functions), Elements::Exception);
+  BOOST_CHECK_THROW(Euclid::MathUtils::Piecewise(knots, functions), Elements::Exception);
   
 }
 
@@ -73,13 +73,13 @@ BOOST_FIXTURE_TEST_CASE(ConstructorWrongSizes, Piecewise_Fixture) {
   
   // Given
   std::vector<double> knots {-1.,-0.5,0.25,10.};
-  std::vector<std::shared_ptr<Euclid::ChMath::Function> > functions {};
+  std::vector<std::shared_ptr<Euclid::MathUtils::Function> > functions {};
   for (double knot : knots) {
-    functions.push_back(std::shared_ptr<Euclid::ChMath::Function>(new IntegrableMock(knot)));
+    functions.push_back(std::shared_ptr<Euclid::MathUtils::Function>(new IntegrableMock(knot)));
   }
   
   // Then
-  BOOST_CHECK_THROW(Euclid::ChMath::Piecewise(knots, functions), Elements::Exception);
+  BOOST_CHECK_THROW(Euclid::MathUtils::Piecewise(knots, functions), Elements::Exception);
   
 }
 
@@ -91,19 +91,19 @@ BOOST_FIXTURE_TEST_CASE(Clone, Piecewise_Fixture) {
   
   // Given
   std::vector<double> knots {-1.,-0.5,0.25,10.};
-  std::vector<std::shared_ptr<Euclid::ChMath::Function> > functions {};
+  std::vector<std::shared_ptr<Euclid::MathUtils::Function> > functions {};
   for (double knot : knots) {
-    functions.push_back(std::shared_ptr<Euclid::ChMath::Function>(new IntegrableMock(knot)));
+    functions.push_back(std::shared_ptr<Euclid::MathUtils::Function>(new IntegrableMock(knot)));
   }
   functions.pop_back();
-  Euclid::ChMath::Piecewise piecewise{knots, functions};
+  Euclid::MathUtils::Piecewise piecewise{knots, functions};
   
   // When
   auto clonePtr = piecewise.clone();
   
   // Then
   BOOST_CHECK(clonePtr);
-  Euclid::ChMath::Piecewise* resPiece = dynamic_cast<Euclid::ChMath::Piecewise*>(clonePtr.get());
+  Euclid::MathUtils::Piecewise* resPiece = dynamic_cast<Euclid::MathUtils::Piecewise*>(clonePtr.get());
   BOOST_CHECK(resPiece);
   auto resKnots = resPiece->getKnots();
   auto resFuncs = resPiece->getFunctions();
@@ -120,14 +120,14 @@ BOOST_FIXTURE_TEST_CASE(FunctionOperator, Piecewise_Fixture) {
   
   // Given
   std::vector<double> knots {-1.,-0.5,0.25,10.};
-  std::vector<std::shared_ptr<Euclid::ChMath::Function> > functions {};
+  std::vector<std::shared_ptr<Euclid::MathUtils::Function> > functions {};
   for (double knot : knots) {
-    functions.push_back(std::shared_ptr<Euclid::ChMath::Function>(new IntegrableMock(knot)));
+    functions.push_back(std::shared_ptr<Euclid::MathUtils::Function>(new IntegrableMock(knot)));
   }
   functions.pop_back();
   
   // When
-  Euclid::ChMath::Piecewise piecewise{knots, functions};
+  Euclid::MathUtils::Piecewise piecewise{knots, functions};
   
   // Then
   BOOST_CHECK_SMALL(piecewise(-2.), small_tolerance);
@@ -150,11 +150,11 @@ BOOST_FIXTURE_TEST_CASE(IntegrateInRange, Piecewise_Fixture) {
   
   // Given
   std::vector<double> knots {-1.,0.,1.,2.};
-  std::vector<std::shared_ptr<Euclid::ChMath::Function> > functions {};
-  functions.push_back(std::shared_ptr<Euclid::ChMath::Function>(new IntegrableMock(1.)));
-  functions.push_back(std::shared_ptr<Euclid::ChMath::Function>(new IntegrableMock(2.)));
-  functions.push_back(std::shared_ptr<Euclid::ChMath::Function>(new IntegrableMock(1.)));
-  Euclid::ChMath::Piecewise piecewise{knots, functions};
+  std::vector<std::shared_ptr<Euclid::MathUtils::Function> > functions {};
+  functions.push_back(std::shared_ptr<Euclid::MathUtils::Function>(new IntegrableMock(1.)));
+  functions.push_back(std::shared_ptr<Euclid::MathUtils::Function>(new IntegrableMock(2.)));
+  functions.push_back(std::shared_ptr<Euclid::MathUtils::Function>(new IntegrableMock(1.)));
+  Euclid::MathUtils::Piecewise piecewise{knots, functions};
   
   // When
   double integral1 = piecewise.integrate(-1., 2.);
@@ -190,11 +190,11 @@ BOOST_FIXTURE_TEST_CASE(IntegrateOutOfRange, Piecewise_Fixture) {
   
   // Given
   std::vector<double> knots {-1.,0.,1.,2.};
-  std::vector<std::shared_ptr<Euclid::ChMath::Function> > functions {};
-  functions.push_back(std::shared_ptr<Euclid::ChMath::Function>(new IntegrableMock(1.)));
-  functions.push_back(std::shared_ptr<Euclid::ChMath::Function>(new IntegrableMock(2.)));
-  functions.push_back(std::shared_ptr<Euclid::ChMath::Function>(new IntegrableMock(1.)));
-  Euclid::ChMath::Piecewise piecewise{knots, functions};
+  std::vector<std::shared_ptr<Euclid::MathUtils::Function> > functions {};
+  functions.push_back(std::shared_ptr<Euclid::MathUtils::Function>(new IntegrableMock(1.)));
+  functions.push_back(std::shared_ptr<Euclid::MathUtils::Function>(new IntegrableMock(2.)));
+  functions.push_back(std::shared_ptr<Euclid::MathUtils::Function>(new IntegrableMock(1.)));
+  Euclid::MathUtils::Piecewise piecewise{knots, functions};
   
   // When
   double integral1 = piecewise.integrate(-5., 10.);

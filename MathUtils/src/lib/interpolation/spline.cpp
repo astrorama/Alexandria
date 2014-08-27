@@ -10,7 +10,7 @@
 #include "MathUtils/function/Piecewise.h"
 
 namespace Euclid {
-namespace ChMath {
+namespace MathUtils {
 
 std::unique_ptr<Function> splineInterpolation(const std::vector<double>& x, const std::vector<double>& y) {
   if (x.size() != y.size()) {
@@ -75,5 +75,5 @@ std::unique_ptr<Function> splineInterpolation(const std::vector<double>& x, cons
   return std::unique_ptr<Function>(new Piecewise{x, std::move(functions)});
 }
 
-} // End of ChMath
+} // End of MathUtils
 } // end of namespace Euclid

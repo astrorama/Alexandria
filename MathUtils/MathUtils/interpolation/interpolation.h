@@ -16,7 +16,7 @@
 #include "MathUtils/function/Function.h"
 
 namespace Euclid {
-namespace ChMath {
+namespace MathUtils {
 
 /// Enumeration of the different supported interpolation types
 enum class InterpolationType {
@@ -50,7 +50,7 @@ ELEMENTS_API std::unique_ptr<Function> interpolate(const std::vector<double>& x,
  */
 ELEMENTS_API std::unique_ptr<Function> interpolate(const Euclid::XYDataset::XYDataset& dataset, InterpolationType type);
 
-} // End of ChMath
+} // End of MathUtils
 } // end of namespace Euclid
 
 #endif	/* INTERPOLATION_H */

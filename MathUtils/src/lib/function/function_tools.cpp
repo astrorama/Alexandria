@@ -10,7 +10,7 @@
 #include "MathUtils/function/multiplication.h"
 
 namespace Euclid {
-namespace ChMath {
+namespace MathUtils {
 
 double integrate(const Function& function, const double min, const double max) {
   const Integrable* integrable = dynamic_cast<const Integrable*>(&function);
@@ -60,5 +60,5 @@ std::unique_ptr<Function> multiply(const Function& f1, const Function& f2) {
   return std::unique_ptr<Function> {new DefaultMultiplication(f1, f2)};
 }
 
-} // End of ChMath
+} // End of MathUtils
 } // end of namespace Euclid

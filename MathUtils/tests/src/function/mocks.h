@@ -11,7 +11,7 @@
 #include "MathUtils/function/Integrable.h"
 #include "MathUtils/function/Differentiable.h"
 
-class FunctionMock : public Euclid::ChMath::Function {
+class FunctionMock : public Euclid::MathUtils::Function {
 public:
   FunctionMock(const double value) : m_value{value} { }
   double operator()(const double) const {
@@ -24,7 +24,7 @@ private:
   double m_value;
 };
 
-class IntegrableMock : public Euclid::ChMath::Integrable {
+class IntegrableMock : public Euclid::MathUtils::Integrable {
 public:
   IntegrableMock(const double value) : m_value{value} { }
   double operator()(const double) const {
@@ -44,7 +44,7 @@ private:
   double m_value;
 };
 
-class DifferentiableMock : public Euclid::ChMath::Differentiable {
+class DifferentiableMock : public Euclid::MathUtils::Differentiable {
 public:
   double operator()(const double x) const {
     if (x < 0) {
@@ -56,17 +56,17 @@ public:
   std::unique_ptr<Function> clone() const override {
     return std::unique_ptr<Function> {new DifferentiableMock{}};
   }
-  std::shared_ptr<Euclid::ChMath::Function> derivative() const {
+  std::shared_ptr<Euclid::MathUtils::Function> derivative() const {
     return nullptr;
   }
-  std::shared_ptr<Euclid::ChMath::Function> indefiniteIntegral() const {
+  std::shared_ptr<Euclid::MathUtils::Function> indefiniteIntegral() const {
     if (!m_func) {
       m_func.reset(new DifferentiableMock{});
     }
     return m_func;
   }
 private:
-  mutable std::shared_ptr<Euclid::ChMath::Function> m_func {};
+  mutable std::shared_ptr<Euclid::MathUtils::Function> m_func {};
 };
 
 

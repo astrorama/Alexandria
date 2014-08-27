@@ -4,8 +4,8 @@
  * @author Nikolaos Apostolakos
  */
 
-#ifndef CHMATH_PIECEWISE_H
-#define	CHMATH_PIECEWISE_H
+#ifndef MATHUTILS_PIECEWISE_H
+#define	MATHUTILS_PIECEWISE_H
 
 #include <vector>
 #include <memory>
@@ -15,7 +15,7 @@
 #include "MathUtils/function/Integrable.h"
 
 namespace Euclid {
-namespace ChMath {
+namespace MathUtils {
 
 /**
  * @class Piecewise
@@ -81,8 +81,8 @@ private:
 
 };
 
-} // End of ChMath
+} // End of MathUtils
 } // end of namespace Euclid
 
-#endif	/* CHMATH_PIECEWISE_H */
+#endif	/* MATHUTILS_PIECEWISE_H */
 

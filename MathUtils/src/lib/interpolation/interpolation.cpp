@@ -8,7 +8,7 @@
 #include "implementations.h"
 
 namespace Euclid {
-namespace ChMath {
+namespace MathUtils {
 
 std::unique_ptr<Function> interpolate(const std::vector<double>& x, const std::vector<double>& y, InterpolationType type) {
   switch (type) {
@@ -30,5 +30,5 @@ std::unique_ptr<Function> interpolate(const Euclid::XYDataset::XYDataset& datase
   return interpolate(x, y, type);
 }
 
-} // End of ChMath
+} // End of MathUtils
 } // end of namespace Euclid

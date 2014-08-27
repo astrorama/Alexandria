@@ -4,13 +4,13 @@
  * @author Nikolaos Apostolakos
  */
 
-#ifndef CHMATH_INTEGRABLE_H
-#define	CHMATH_INTEGRABLE_H
+#ifndef MATHUTILS_INTEGRABLE_H
+#define	MATHUTILS_INTEGRABLE_H
 
 #include "MathUtils/function/Function.h"
 
 namespace Euclid {
-namespace ChMath {
+namespace MathUtils {
 
 /**
  * @interface Integrable
@@ -39,8 +39,8 @@ public:
   virtual double integrate(const double a, const double b) const = 0;
 };
 
-} // End of ChMath
+} // End of MathUtils
 } // end of namespace Euclid
 
-#endif	/* CHMATH_INTEGRABLE_H */
+#endif	/* MATHUTILS_INTEGRABLE_H */
 

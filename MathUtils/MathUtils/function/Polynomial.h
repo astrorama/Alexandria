@@ -4,8 +4,8 @@
  * @author Nikolaos Apostolakos
  */
 
-#ifndef CHMATH_POLYNOMIAL_H
-#define	CHMATH_POLYNOMIAL_H
+#ifndef MATHUTILS_POLYNOMIAL_H
+#define	MATHUTILS_POLYNOMIAL_H
 
 #include <vector>
 
@@ -15,7 +15,7 @@
 #include "MathUtils/function/Differentiable.h"
 
 namespace Euclid {
-namespace ChMath {
+namespace MathUtils {
 
 /**
  * @class Polynomial
@@ -64,8 +64,8 @@ private:
 
 }; // End of Polynomial
 
-} // End of ChMath
+} // End of MathUtils
 } // end of namespace Euclid
 
-#endif	/* CHMATH_POLYNOMIAL_H */
+#endif	/* MATHUTILS_POLYNOMIAL_H */
 

@@ -4,14 +4,14 @@
  * @author Nikolaos Apostolakos
  */
 
-#ifndef CHMATH_FUNCTION_H
-#define	CHMATH_FUNCTION_H
+#ifndef MATHUTILS_FUNCTION_H
+#define	MATHUTILS_FUNCTION_H
 
 #include <memory>
 #include "ElementsKernel/Exception.h"
 
 namespace Euclid {
-namespace ChMath {
+namespace MathUtils {
 
 /**
  * @interface Function
@@ -48,8 +48,8 @@ public:
   virtual std::unique_ptr<Function> clone() const = 0;
 };
 
-} // End of ChMath
+} // End of MathUtils
 } // end of namespace Euclid
 
-#endif	/* CHMATH_FUNCTION_H */
+#endif	/* MATHUTILS_FUNCTION_H */
 
