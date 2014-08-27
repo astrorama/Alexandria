@@ -12,7 +12,7 @@
 #include "AsciiWriterHelper.h"
 
 namespace Euclid {
-namespace ChTable {
+namespace Table {
 
 AsciiWriter::AsciiWriter(std::string comment) : m_comment{std::move(comment)} {
   if (m_comment.empty()) {

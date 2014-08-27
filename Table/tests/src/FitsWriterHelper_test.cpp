@@ -12,21 +12,21 @@
 #include "src/lib/FitsWriterHelper.h"
 
 struct FitsWriterHelper_Fixture {
-  std::vector<Euclid::ChTable::ColumnInfo::info_type> info_list {
-      Euclid::ChTable::ColumnInfo::info_type("Boolean", typeid(bool)),
-      Euclid::ChTable::ColumnInfo::info_type("Integer", typeid(int32_t)),
-      Euclid::ChTable::ColumnInfo::info_type("Long", typeid(int64_t)),
-      Euclid::ChTable::ColumnInfo::info_type("Float", typeid(float)),
-      Euclid::ChTable::ColumnInfo::info_type("Double", typeid(double)),
-      Euclid::ChTable::ColumnInfo::info_type("String", typeid(std::string))
+  std::vector<Euclid::Table::ColumnInfo::info_type> info_list {
+      Euclid::Table::ColumnInfo::info_type("Boolean", typeid(bool)),
+      Euclid::Table::ColumnInfo::info_type("Integer", typeid(int32_t)),
+      Euclid::Table::ColumnInfo::info_type("Long", typeid(int64_t)),
+      Euclid::Table::ColumnInfo::info_type("Float", typeid(float)),
+      Euclid::Table::ColumnInfo::info_type("Double", typeid(double)),
+      Euclid::Table::ColumnInfo::info_type("String", typeid(std::string))
   };
-  std::shared_ptr<Euclid::ChTable::ColumnInfo> column_info {new Euclid::ChTable::ColumnInfo {info_list}};
-  std::vector<Euclid::ChTable::Row::cell_type> values0 {true, 1, int64_t{123}, 0.f, 0., std::string{"first"}};
-  Euclid::ChTable::Row row0 {values0, column_info};
-  std::vector<Euclid::ChTable::Row::cell_type> values1 {false, 12345, int64_t{123456789}, 2.3e-2f, 1.12345e-18, std::string{"second"}};
-  Euclid::ChTable::Row row1 {values1, column_info};
-  std::vector<Euclid::ChTable::Row> row_list {row0, row1};
-  Euclid::ChTable::Table table {row_list};
+  std::shared_ptr<Euclid::Table::ColumnInfo> column_info {new Euclid::Table::ColumnInfo {info_list}};
+  std::vector<Euclid::Table::Row::cell_type> values0 {true, 1, int64_t{123}, 0.f, 0., std::string{"first"}};
+  Euclid::Table::Row row0 {values0, column_info};
+  std::vector<Euclid::Table::Row::cell_type> values1 {false, 12345, int64_t{123456789}, 2.3e-2f, 1.12345e-18, std::string{"second"}};
+  Euclid::Table::Row row1 {values1, column_info};
+  std::vector<Euclid::Table::Row> row_list {row0, row1};
+  Euclid::Table::Table table {row_list};
 };
 
 //-----------------------------------------------------------------------------
@@ -40,7 +40,7 @@ BOOST_AUTO_TEST_SUITE (FitsWriterHelper_test)
 BOOST_FIXTURE_TEST_CASE(getAsciiFormatList, FitsWriterHelper_Fixture) {
 
   // When
-  auto format_list = Euclid::ChTable::getAsciiFormatList(table);
+  auto format_list = Euclid::Table::getAsciiFormatList(table);
 
   // Then
   BOOST_CHECK_EQUAL(format_list.size(), 6);
@@ -60,7 +60,7 @@ BOOST_FIXTURE_TEST_CASE(getAsciiFormatList, FitsWriterHelper_Fixture) {
 BOOST_FIXTURE_TEST_CASE(getBinaryFormatList, FitsWriterHelper_Fixture) {
 
   // When
-  auto format_list = Euclid::ChTable::getBinaryFormatList(table);
+  auto format_list = Euclid::Table::getBinaryFormatList(table);
 
   // Then
   BOOST_CHECK_EQUAL(format_list.size(), 6);

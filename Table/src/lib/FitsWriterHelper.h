@@ -4,8 +4,8 @@
  * @author Nikolaos Apostolakos
  */
 
-#ifndef CHTABLE_FITSWRITERHELPER_H
-#define	CHTABLE_FITSWRITERHELPER_H
+#ifndef TABLE_FITSWRITERHELPER_H
+#define	TABLE_FITSWRITERHELPER_H
 
 #include <string>
 #include <vector>
@@ -17,7 +17,7 @@
 #include "Table/Table.h"
 
 namespace Euclid {
-namespace ChTable {
+namespace Table {
 
 /**
  * @brief
@@ -50,5 +50,5 @@ void populateColumn(const Table& table, size_t column_index, CCfits::Table* tabl
 }
 } // end of namespace Euclid
 
-#endif	/* CHTABLE_FITSWRITERHELPER_H */
+#endif	/* TABLE_FITSWRITERHELPER_H */
 

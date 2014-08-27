@@ -17,7 +17,7 @@
 #include "Table/Row.h"
 
 namespace Euclid {
-namespace ChTable {
+namespace Table {
 
 /**
  * @brief

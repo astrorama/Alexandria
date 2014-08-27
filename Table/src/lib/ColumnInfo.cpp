@@ -17,7 +17,7 @@ using boost::regex_match;
 #include "Table/ColumnInfo.h"
 
 namespace Euclid {
-namespace ChTable {
+namespace Table {
 
 ColumnInfo::ColumnInfo(std::vector<info_type> info_list)
         : m_info_list{std::move(info_list)} {

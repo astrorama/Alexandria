@@ -4,8 +4,8 @@
  * @author Nikolaos Apostolakos
  */
 
-#ifndef CHTABLE_ASCIIWRITERHELPER_H
-#define	CHTABLE_ASCIIWRITERHELPER_H
+#ifndef TABLE_ASCIIWRITERHELPER_H
+#define	TABLE_ASCIIWRITERHELPER_H
 
 #include <vector>
 #include <typeindex>
@@ -16,7 +16,7 @@
 #include "Table/Table.h"
 
 namespace Euclid {
-namespace ChTable {
+namespace Table {
 
 /**
  * @brief
@@ -44,5 +44,5 @@ ELEMENTS_API std::vector<size_t> calculateColumnLengths(const Table& table);
 }
 } // end of namespace Euclid
 
-#endif	/* CHTABLE_ASCIIWRITERHELPER_H */
+#endif	/* TABLE_ASCIIWRITERHELPER_H */
 

@@ -13,21 +13,21 @@
 #include "Table/FitsWriter.h"
 
 struct FitsWriter_Fixture {
-  std::vector<Euclid::ChTable::ColumnInfo::info_type> info_list {
-      Euclid::ChTable::ColumnInfo::info_type("Boolean", typeid(bool)),
-      Euclid::ChTable::ColumnInfo::info_type("Integer", typeid(int32_t)),
-      Euclid::ChTable::ColumnInfo::info_type("Long", typeid(int64_t)),
-      Euclid::ChTable::ColumnInfo::info_type("Float", typeid(float)),
-      Euclid::ChTable::ColumnInfo::info_type("Double", typeid(double)),
-      Euclid::ChTable::ColumnInfo::info_type("String", typeid(std::string))
+  std::vector<Euclid::Table::ColumnInfo::info_type> info_list {
+      Euclid::Table::ColumnInfo::info_type("Boolean", typeid(bool)),
+      Euclid::Table::ColumnInfo::info_type("Integer", typeid(int32_t)),
+      Euclid::Table::ColumnInfo::info_type("Long", typeid(int64_t)),
+      Euclid::Table::ColumnInfo::info_type("Float", typeid(float)),
+      Euclid::Table::ColumnInfo::info_type("Double", typeid(double)),
+      Euclid::Table::ColumnInfo::info_type("String", typeid(std::string))
   };
-  std::shared_ptr<Euclid::ChTable::ColumnInfo> column_info {new Euclid::ChTable::ColumnInfo {info_list}};
-  std::vector<Euclid::ChTable::Row::cell_type> values0 {true, 1, int64_t{123}, 0.F, 0., std::string{"first"}};
-  Euclid::ChTable::Row row0 {values0, column_info};
-  std::vector<Euclid::ChTable::Row::cell_type> values1 {false, 12345, int64_t{123456789}, 2.3e-2F, 1.12345e-18, std::string{"second"}};
-  Euclid::ChTable::Row row1 {values1, column_info};
-  std::vector<Euclid::ChTable::Row> row_list {row0, row1};
-  Euclid::ChTable::Table table {row_list};
+  std::shared_ptr<Euclid::Table::ColumnInfo> column_info {new Euclid::Table::ColumnInfo {info_list}};
+  std::vector<Euclid::Table::Row::cell_type> values0 {true, 1, int64_t{123}, 0.F, 0., std::string{"first"}};
+  Euclid::Table::Row row0 {values0, column_info};
+  std::vector<Euclid::Table::Row::cell_type> values1 {false, 12345, int64_t{123456789}, 2.3e-2F, 1.12345e-18, std::string{"second"}};
+  Euclid::Table::Row row1 {values1, column_info};
+  std::vector<Euclid::Table::Row> row_list {row0, row1};
+  Euclid::Table::Table table {row_list};
   Elements::TempDir temp_dir;
   std::unique_ptr<CCfits::FITS> fits {new CCfits::FITS(
          (temp_dir.path()/"FitsWriter_test.fits").native(), CCfits::RWmode::Write)};
@@ -44,7 +44,7 @@ BOOST_AUTO_TEST_SUITE (FitsWriter_test)
 BOOST_FIXTURE_TEST_CASE(writeBinary, FitsWriter_Fixture) {
 
   // Given
-  Euclid::ChTable::FitsWriter writer (Euclid::ChTable::FitsWriter::Format::BINARY);
+  Euclid::Table::FitsWriter writer (Euclid::Table::FitsWriter::Format::BINARY);
 
   // When
   writer.write(*fits, "BinaryTable", table);
@@ -125,7 +125,7 @@ BOOST_FIXTURE_TEST_CASE(writeBinary, FitsWriter_Fixture) {
 BOOST_FIXTURE_TEST_CASE(writeAscii, FitsWriter_Fixture) {
 
   // Given
-  Euclid::ChTable::FitsWriter writer (Euclid::ChTable::FitsWriter::Format::ASCII);
+  Euclid::Table::FitsWriter writer (Euclid::Table::FitsWriter::Format::ASCII);
 
   // When
   writer.write(*fits, "AsciiTable", table);

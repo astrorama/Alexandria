@@ -10,7 +10,7 @@
 #include "AsciiWriterHelper.h"
 
 namespace Euclid {
-namespace ChTable {
+namespace Table {
 
 std::string typeToKeyword(std::type_index type) {
   if (type == typeid(bool)) {

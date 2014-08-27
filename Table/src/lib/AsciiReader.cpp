@@ -20,7 +20,7 @@ using boost::regex_match;
 #include "AsciiReaderHelper.h"
 
 namespace Euclid {
-namespace ChTable {
+namespace Table {
 
 AsciiReader::AsciiReader(std::vector<std::type_index> column_types,
                          std::vector<std::string> column_names, std::string comment)

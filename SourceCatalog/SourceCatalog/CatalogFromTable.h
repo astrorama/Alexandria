@@ -23,13 +23,13 @@ namespace SourceCatalog {
 
 class ELEMENTS_API CatalogFromTable {
 public:
-  CatalogFromTable(std::shared_ptr<Euclid::ChTable::ColumnInfo> column_info_ptr,
+  CatalogFromTable(std::shared_ptr<Euclid::Table::ColumnInfo> column_info_ptr,
                    const std::string& source_id_column_name,
                    std::vector<std::unique_ptr<AttributeFromRow>> attribute_from_row_ptr_vector);
 
   virtual ~CatalogFromTable();
 
-  Euclid::SourceCatalog::Catalog createCatalog(const Euclid::ChTable::Table& input_table);
+  Euclid::SourceCatalog::Catalog createCatalog(const Euclid::Table::Table& input_table);
 
 private:
   size_t m_source_id_index;

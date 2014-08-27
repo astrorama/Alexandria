@@ -4,8 +4,8 @@
  * @author Nikolaos Apostolakos
  */
 
-#ifndef CHTABLE_READERHELPER_H
-#define	CHTABLE_READERHELPER_H
+#ifndef TABLE_READERHELPER_H
+#define	TABLE_READERHELPER_H
 
 #include <memory>
 #include <string>
@@ -14,7 +14,7 @@
 #include "Table/ColumnInfo.h"
 
 namespace Euclid {
-namespace ChTable {
+namespace Table {
 
 /// Creates a ColumnInfo object from the given names and types
 std::shared_ptr<ColumnInfo> createColumnInfo(const std::vector<std::string>& names,
@@ -23,5 +23,5 @@ std::shared_ptr<ColumnInfo> createColumnInfo(const std::vector<std::string>& nam
 }
 } // end of namespace Euclid
 
-#endif	/* CHTABLE_READERHELPER_H */
+#endif	/* TABLE_READERHELPER_H */
 

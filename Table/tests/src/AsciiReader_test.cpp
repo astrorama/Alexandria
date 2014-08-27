@@ -92,7 +92,7 @@ BOOST_FIXTURE_TEST_CASE(ConstructorEmptyComment, AsciiReader_Fixture) {
   std::string comment = "";
   
   // Then
-  BOOST_CHECK_THROW(Euclid::ChTable::AsciiReader({} ,{} ,comment), Elements::Exception);
+  BOOST_CHECK_THROW(Euclid::Table::AsciiReader({} ,{} ,comment), Elements::Exception);
   
 }
 
@@ -106,7 +106,7 @@ BOOST_FIXTURE_TEST_CASE(ConstructorDuplicateColumnNames, AsciiReader_Fixture) {
   std::vector<std::string> names {"First", "Second", "Third", "Second"};
   
   // Then
-  BOOST_CHECK_THROW(Euclid::ChTable::AsciiReader({} , names), Elements::Exception);
+  BOOST_CHECK_THROW(Euclid::Table::AsciiReader({} , names), Elements::Exception);
   
 }
 
@@ -120,7 +120,7 @@ BOOST_FIXTURE_TEST_CASE(ConstructorEmptyColumnNames, AsciiReader_Fixture) {
   std::vector<std::string> names {"First", "Second", "", "Forth"};
   
   // Then
-  BOOST_CHECK_THROW(Euclid::ChTable::AsciiReader({}, names), Elements::Exception);
+  BOOST_CHECK_THROW(Euclid::Table::AsciiReader({}, names), Elements::Exception);
   
 }
 
@@ -138,11 +138,11 @@ BOOST_FIXTURE_TEST_CASE(ConstructorColumnNamesWithWhitespaces, AsciiReader_Fixtu
   std::vector<std::string> new_page {"New\fPage"};
   
   // Then
-  BOOST_CHECK_THROW(Euclid::ChTable::AsciiReader({}, space), Elements::Exception);
-  BOOST_CHECK_THROW(Euclid::ChTable::AsciiReader({}, tab), Elements::Exception);
-  BOOST_CHECK_THROW(Euclid::ChTable::AsciiReader({}, carriage_return), Elements::Exception);
-  BOOST_CHECK_THROW(Euclid::ChTable::AsciiReader({}, new_line), Elements::Exception);
-  BOOST_CHECK_THROW(Euclid::ChTable::AsciiReader({}, new_page), Elements::Exception);
+  BOOST_CHECK_THROW(Euclid::Table::AsciiReader({}, space), Elements::Exception);
+  BOOST_CHECK_THROW(Euclid::Table::AsciiReader({}, tab), Elements::Exception);
+  BOOST_CHECK_THROW(Euclid::Table::AsciiReader({}, carriage_return), Elements::Exception);
+  BOOST_CHECK_THROW(Euclid::Table::AsciiReader({}, new_line), Elements::Exception);
+  BOOST_CHECK_THROW(Euclid::Table::AsciiReader({}, new_page), Elements::Exception);
   
 }
 
@@ -157,7 +157,7 @@ BOOST_FIXTURE_TEST_CASE(ConstructorColumnNameTypeDifferentSize, AsciiReader_Fixt
   std::vector<std::type_index> types {typeid(int)};
   
   // Then
-  BOOST_CHECK_THROW(Euclid::ChTable::AsciiReader(types, names), Elements::Exception);
+  BOOST_CHECK_THROW(Euclid::Table::AsciiReader(types, names), Elements::Exception);
   
 }
 
@@ -168,11 +168,11 @@ BOOST_FIXTURE_TEST_CASE(ConstructorColumnNameTypeDifferentSize, AsciiReader_Fixt
 BOOST_FIXTURE_TEST_CASE(ReadSuccess, AsciiReader_Fixture) {
   
   // Given
-  Euclid::ChTable::AsciiReader reader {};
+  Euclid::Table::AsciiReader reader {};
   std::stringstream in {all_types};
   
   // When
-  Euclid::ChTable::Table table = reader.read(in);
+  Euclid::Table::Table table = reader.read(in);
   auto column_info = table.getColumnInfo();
   
   // Then
@@ -222,11 +222,11 @@ BOOST_FIXTURE_TEST_CASE(ReadSuccess, AsciiReader_Fixture) {
 BOOST_FIXTURE_TEST_CASE(ReadOverrideTypes, AsciiReader_Fixture) {
   
   // Given
-  Euclid::ChTable::AsciiReader reader {{typeid(bool), typeid(std::string), typeid(int32_t), typeid(int32_t), typeid(int32_t)}};
+  Euclid::Table::AsciiReader reader {{typeid(bool), typeid(std::string), typeid(int32_t), typeid(int32_t), typeid(int32_t)}};
   std::stringstream in {multiple_comments};
   
   // When
-  Euclid::ChTable::Table table = reader.read(in);
+  Euclid::Table::Table table = reader.read(in);
   auto column_info = table.getColumnInfo();
   
   // Then
@@ -245,11 +245,11 @@ BOOST_FIXTURE_TEST_CASE(ReadOverrideTypes, AsciiReader_Fixture) {
 BOOST_FIXTURE_TEST_CASE(ReadOverrideNames, AsciiReader_Fixture) {
   
   // Given
-  Euclid::ChTable::AsciiReader reader {{}, {"A","B","C","D","E"}};
+  Euclid::Table::AsciiReader reader {{}, {"A","B","C","D","E"}};
   std::stringstream in {multiple_comments};
   
   // When
-  Euclid::ChTable::Table table = reader.read(in);
+  Euclid::Table::Table table = reader.read(in);
   auto column_info = table.getColumnInfo();
   
   // Then
@@ -268,8 +268,8 @@ BOOST_FIXTURE_TEST_CASE(ReadOverrideNames, AsciiReader_Fixture) {
 BOOST_FIXTURE_TEST_CASE(ReadNoData, AsciiReader_Fixture) {
   
   // Given
-  Euclid::ChTable::AsciiReader hashReader {{},{},"#"};
-  Euclid::ChTable::AsciiReader doubleSlashReader {{},{},"//"};
+  Euclid::Table::AsciiReader hashReader {{},{},"#"};
+  Euclid::Table::AsciiReader doubleSlashReader {{},{},"//"};
   std::stringstream in1 {only_hash_comments};
   std::stringstream in2 {only_double_slash_comments};
   
@@ -288,8 +288,8 @@ BOOST_FIXTURE_TEST_CASE(ReadWrongColumnNamesNumber, AsciiReader_Fixture) {
   // Given
   std::vector<std::string> wrong_names_less {"1","2","3"};
   std::vector<std::string> wrong_names_more {"1","2","3","4","5","6","7","8","9","10"};
-  Euclid::ChTable::AsciiReader lessReader {{}, wrong_names_less};
-  Euclid::ChTable::AsciiReader moreReader {{}, wrong_names_more};
+  Euclid::Table::AsciiReader lessReader {{}, wrong_names_less};
+  Euclid::Table::AsciiReader moreReader {{}, wrong_names_more};
   std::stringstream inless {all_types};
   std::stringstream inmore {all_types};
   
@@ -310,8 +310,8 @@ BOOST_FIXTURE_TEST_CASE(ReadWrongColumnTypesNumber, AsciiReader_Fixture) {
   std::vector<std::type_index> wrong_types_more {typeid(bool),typeid(bool),typeid(bool),typeid(bool),
                                                  typeid(bool),typeid(bool),typeid(bool),typeid(bool),
                                                  typeid(bool),typeid(bool),typeid(bool),typeid(bool)};
-  Euclid::ChTable::AsciiReader lessReader {wrong_types_less};
-  Euclid::ChTable::AsciiReader moreReader {wrong_types_more};
+  Euclid::Table::AsciiReader lessReader {wrong_types_less};
+  Euclid::Table::AsciiReader moreReader {wrong_types_more};
   std::stringstream inless {all_types};
   std::stringstream inmore {all_types};
   
@@ -328,7 +328,7 @@ BOOST_FIXTURE_TEST_CASE(ReadWrongColumnTypesNumber, AsciiReader_Fixture) {
 BOOST_FIXTURE_TEST_CASE(ReadDifferentNumberOfColumns, AsciiReader_Fixture) {
   
   // Given
-  Euclid::ChTable::AsciiReader hashReader {};
+  Euclid::Table::AsciiReader hashReader {};
   std::stringstream in {different_number_of_columns};
   
   // Then
@@ -343,7 +343,7 @@ BOOST_FIXTURE_TEST_CASE(ReadDifferentNumberOfColumns, AsciiReader_Fixture) {
 BOOST_FIXTURE_TEST_CASE(ReadDuplicateColumnNames, AsciiReader_Fixture) {
   
   // Given
-  Euclid::ChTable::AsciiReader reader {};
+  Euclid::Table::AsciiReader reader {};
   std::stringstream in {duplicate_column_names};
   
   // Then
@@ -358,7 +358,7 @@ BOOST_FIXTURE_TEST_CASE(ReadDuplicateColumnNames, AsciiReader_Fixture) {
 BOOST_FIXTURE_TEST_CASE(ReadWrongCellValues, AsciiReader_Fixture) {
   
   // Given
-  Euclid::ChTable::AsciiReader reader {};
+  Euclid::Table::AsciiReader reader {};
   std::stringstream bool_in {wrong_bool};
   std::stringstream int32_in {wrong_int32};
   std::stringstream int64_in {wrong_int64};

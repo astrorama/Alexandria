@@ -4,8 +4,8 @@
  * @author Nikolaos Apostolakos
  */
 
-#ifndef CHTABLE_ASCIIWRITER_H
-#define	CHTABLE_ASCIIWRITER_H
+#ifndef TABLE_ASCIIWRITER_H
+#define	TABLE_ASCIIWRITER_H
 
 #include <string>
 #include <ostream>
@@ -15,7 +15,7 @@
 #include "Table/Table.h"
 
 namespace Euclid {
-namespace ChTable {
+namespace Table {
 
 /**
  * @class AsciiWriter
@@ -79,5 +79,5 @@ private:
 }
 } // end of namespace Euclid
 
-#endif	/* CHTABLE_ASCIIWRITER_H */
+#endif	/* TABLE_ASCIIWRITER_H */
 

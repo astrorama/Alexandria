@@ -9,7 +9,7 @@
 #include "ElementsKernel/Exception.h"
 
 namespace Euclid {
-namespace ChTable {
+namespace Table {
 
 FitsWriter::FitsWriter(Format format) : m_format{format} { }
 

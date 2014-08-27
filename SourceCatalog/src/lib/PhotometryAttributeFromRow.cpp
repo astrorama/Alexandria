@@ -15,7 +15,7 @@ namespace Euclid {
 namespace SourceCatalog {
 
 PhotometryAttributeFromRow::PhotometryAttributeFromRow(
-    std::shared_ptr<Euclid::ChTable::ColumnInfo> column_info_ptr,
+    std::shared_ptr<Euclid::Table::ColumnInfo> column_info_ptr,
     const vector<pair<string, std::pair<string, string>>>& filter_name_mapping) {
 
   unique_ptr<size_t> flux_column_index_ptr;
@@ -49,13 +49,13 @@ PhotometryAttributeFromRow::~PhotometryAttributeFromRow() {
 }
 
 unique_ptr<Attribute> PhotometryAttributeFromRow::createAttribute(
-    const Euclid::ChTable::Row& row) {
+    const Euclid::Table::Row& row) {
 
   vector<FluxErrorPair> photometry_vector {};
 
   for (auto& filter_index_pair : m_table_index_vector) {
-    Euclid::ChTable::Row::cell_type flux_cell = row[filter_index_pair.first];
-    Euclid::ChTable::Row::cell_type error_cell = row[filter_index_pair.second];
+    Euclid::Table::Row::cell_type flux_cell = row[filter_index_pair.first];
+    Euclid::Table::Row::cell_type error_cell = row[filter_index_pair.second];
     photometry_vector.push_back(FluxErrorPair {boost::get<double>(flux_cell), boost::get<double>(error_cell) } );
   }
 

@@ -4,8 +4,8 @@
  * @author Nikolaos Apostolakos
  */
 
-#ifndef CHTABLE_FITSWRITER_H
-#define	CHTABLE_FITSWRITER_H
+#ifndef TABLE_FITSWRITER_H
+#define	TABLE_FITSWRITER_H
 
 #include <CCfits/CCfits>
 #include <string>
@@ -15,7 +15,7 @@
 #include "Table/Table.h"
 
 namespace Euclid {
-namespace ChTable {
+namespace Table {
 
 /**
  * @class FitsWriter
@@ -89,5 +89,5 @@ private:
 }
 } // end of namespace Euclid
 
-#endif	/* CHTABLE_FITSWRITER_H */
+#endif	/* TABLE_FITSWRITER_H */
 

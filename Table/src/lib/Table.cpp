@@ -8,7 +8,7 @@
 #include "Table/Table.h"
 
 namespace Euclid {
-namespace ChTable {
+namespace Table {
 
 Table::Table(std::vector<Row> row_list) : m_row_list {std::move(row_list)} ,
                                           m_column_info {} {

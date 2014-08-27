@@ -14,7 +14,7 @@
 #include "ElementsKernel/Exception.h"
 
 namespace Euclid {
-namespace ChTable {
+namespace Table {
 
 template<typename T>
 std::string scientificFormat(T value) {
@@ -84,7 +84,7 @@ std::vector<std::string> getBinaryFormatList(const Table& table) {
 }
 
 template<typename T>
-std::vector<T> createColumnData(const Euclid::ChTable::Table& table, size_t column_index) {
+std::vector<T> createColumnData(const Euclid::Table::Table& table, size_t column_index) {
   std::vector<T> data {};
   for (const auto& row : table) {
     data.push_back(boost::get<T>(row[column_index]));

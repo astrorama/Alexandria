@@ -52,7 +52,7 @@ public:
    * @exception
    *  An exception is thrown if the names provided in the mapping are not present in the columnInfo.
    */
-  PhotometryAttributeFromRow(std::shared_ptr<Euclid::ChTable::ColumnInfo> column_info_ptr,
+  PhotometryAttributeFromRow(std::shared_ptr<Euclid::Table::ColumnInfo> column_info_ptr,
       const std::vector<std::pair<std::string, std::pair<std::string, std::string>>>& filter_name_mapping);
 
   virtual ~PhotometryAttributeFromRow();
@@ -60,10 +60,10 @@ public:
   /**
    * @brief Create a photometricAttribute from a Table row
    * @details Create a photometricAttribute from a Table row using the mapping included in this object
-   * @param row A ChTable row
+   * @param row A Table row
    * @return A unique pointer to a (Photometry) Attribute
    */
-  std::unique_ptr<Attribute> createAttribute(const Euclid::ChTable::Row& row) override;
+  std::unique_ptr<Attribute> createAttribute(const Euclid::Table::Row& row) override;
 
 private:
   /*

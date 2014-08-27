@@ -27,7 +27,7 @@ namespace po = boost::program_options;
 using namespace std;
 using namespace Euclid::XYDataset;
 using namespace Euclid::PhzDataModel;
-using namespace Euclid::ChTable;
+using namespace Euclid::Table;
 
 class ExportModelDataset : public Elements::Program {
   

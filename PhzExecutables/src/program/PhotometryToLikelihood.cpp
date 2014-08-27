@@ -25,7 +25,7 @@ namespace po = boost::program_options;
 
 using namespace std;
 using namespace Euclid::SourceCatalog;
-using namespace Euclid::ChTable;
+using namespace Euclid::Table;
 using namespace Euclid::PhzDataModel;
 using namespace Euclid::PhzLikelihood;
 

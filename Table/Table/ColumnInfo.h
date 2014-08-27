@@ -4,8 +4,8 @@
  * @author Nikolaos Apostolakos
  */
 
-#ifndef CHTABLE_COLUMNINFO_H
-#define	CHTABLE_COLUMNINFO_H
+#ifndef TABLE_COLUMNINFO_H
+#define	TABLE_COLUMNINFO_H
 
 #include <string>
 #include <vector>
@@ -16,7 +16,7 @@
 #include "ElementsKernel/Export.h"
 
 namespace Euclid {
-namespace ChTable {
+namespace Table {
 
 /**
  * @class ColumnInfo
@@ -137,5 +137,5 @@ private:
 }
 } // end of namespace Euclid
 
-#endif	/* CHTABLE_COLUMNINFO_H */
+#endif	/* TABLE_COLUMNINFO_H */
 

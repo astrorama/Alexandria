@@ -7,7 +7,7 @@
 #include "ReaderHelper.h"
 
 namespace Euclid {
-namespace ChTable {
+namespace Table {
 
 std::shared_ptr<ColumnInfo> createColumnInfo(const std::vector<std::string>& names,
                                              const std::vector<std::type_index>& types) {

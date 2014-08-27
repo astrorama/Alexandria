@@ -14,7 +14,7 @@ using boost::regex_match;
 #include "AsciiReaderHelper.h"
 
 namespace Euclid {
-namespace ChTable {
+namespace Table {
 
 size_t countColumns(std::istream& in, const std::string& comment) {
   StreamRewinder rewinder {in};

@@ -1,21 +1,21 @@
 namespace Euclid {
-namespace ChTable {
+namespace Table {
 
-/** \page chtable ChTable module
+/** \page table Table module
 
 \tableofcontents
 
-The ChTable module provides the means for reading and writing tables from/to
+The Table module provides the means for reading and writing tables from/to
 ASCII or FITS files. It provides a set of classes describing a table in the
 memory, which constitute its data model, and methods for reading and writing
 these classes from/to ASCII and FITS formats. The following sections describe
 briefly how to use the module and can be used as a quick-start guide. For more
 detailed information refer to the documentation of each individual class and
-method in the ChTable namespace.
+method in the Table namespace.
 
-\section datamodel ChTable Data Model
+\section datamodel Table Data Model
 
-The main class of the ChTable is the Table class, which represents a table in
+The main class of the Table is the Table class, which represents a table in
 memory. It can be seen as a collection of Row%s, with the restriction that
 all share the same columns. Each of the columns is defined by its name (which
 must be unique, not be empty and not contain whitespace characters) and the
@@ -23,7 +23,7 @@ type of its objects. The information of the columns, which can be both
 retrieved from the Table object itself or from any of its Row%s, is represented
 by the ColumnInfo class. Each cell of a Row is stored in a boost::variant
 (redefined as Row::cell_type), so the boost::get method must be used to retrieve
-their content. Note that all the ChTable data model classes are designed to
+their content. Note that all the Table data model classes are designed to
 be immutable (cannot be modified).
 
 \subsection dmexamples Examples
@@ -34,12 +34,12 @@ lines are assumed for each example:
 
 \code{.cpp}
   #include "Table/Table.h"
-  using namespace ChTable;
+  using namespace Euclid::Table;
   using namespace std;
 \endcode
 
 Note that the second and third lines are used to make the example code more
-readable and they will introduce all the symbols of the ChTable and std
+readable and they will introduce all the symbols of the Table and std
 namespaces, so they must be sparingly used.
 
 \subsubsection createtable Create a Table
@@ -302,13 +302,13 @@ Sum of all Y values is 3.07768
 
 \section tableio Table I/O
 
-The ChTable module provides functionality for importing and exporting Table%s
+The Table module provides functionality for importing and exporting Table%s
 from/to files. The currently supported formats are ASCII space separated text
 files and FITS tables. The following examples demonstrate this functionality.
 
 \subsection readascii Reading a Table from an ASCII stream
 
-The ChTable module provides the class AsciiReader, which can be used for
+The Table module provides the class AsciiReader, which can be used for
 reading a table from an input stream. Note that a generic `std::istream` is used
 instead of a file name. This is done to provide more flexibility. To open a file
 as a stream the following code can be used:
@@ -423,7 +423,7 @@ sequence (column names and types will be detected automatically):
 
 \subsection writeascii Writing a Table in an ASCII stream
 
-To export a Table as an ASCII character sequence, the ChTable module provides
+To export a Table as an ASCII character sequence, the Table module provides
 the AsciiWriter class. Similarly with the AsciiReader, the AsciiWriter writes
 the table in a generic std:ostream instead of a file, to provide more
 flexibility. If the table should be exported in a file, a file stream can be
@@ -499,7 +499,7 @@ Output:
 
 \subsection readfits Reading a Table from a FITS file
 
-The ChTable functionality related with reading a Table from a FITS file is
+The Table functionality related with reading a Table from a FITS file is
 provided by the FitsReader class. This class can read Table%s from
 `CCfits::HDU` objects which contain either ASCII or binary tables. Note that
 the input of the FitsReader is the HDU object, so the user has the flexibility
@@ -540,7 +540,7 @@ of the FitsReader::read() method.
 
 \subsection writefits Writing a Table in a FITS file
 
-To export a Table in a FITS file, the ChTable module provides the FitsWriter
+To export a Table in a FITS file, the Table module provides the FitsWriter
 class. This class can append to a `CCfits::FITS` object both ASCII and binary
 table HDUs. Note that the `CCfits::FITS` object must be opened in write mode:
 
@@ -577,7 +577,7 @@ append the table on, the new HDUs name and the table with the data:
 #include "Table/AsciiReader.h"
 #include "Table/AsciiWriter.h"
 
-using namespace ChTable;
+using namespace Euclid::Table;
 using namespace std;
 
 int main() {

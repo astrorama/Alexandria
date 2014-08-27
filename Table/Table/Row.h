@@ -4,8 +4,8 @@
  * @author Nikolaos Apostolakos
  */
 
-#ifndef CHTABLE_ROW_H
-#define	CHTABLE_ROW_H
+#ifndef TABLE_ROW_H
+#define	TABLE_ROW_H
 
 #include <memory>
 #include <vector>
@@ -18,7 +18,7 @@
 #include "Table/ColumnInfo.h"
 
 namespace Euclid {
-namespace ChTable {
+namespace Table {
 
 /**
  * @class Row
@@ -132,5 +132,5 @@ private:
 }
 } // end of namespace Euclid
 
-#endif	/* CHTABLE_ROW_H */
+#endif	/* TABLE_ROW_H */
 

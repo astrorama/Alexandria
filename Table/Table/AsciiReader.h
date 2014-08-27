@@ -4,8 +4,8 @@
  * @author Nikolaos Apostolakos
  */
 
-#ifndef CHTABLE_ASCII_READER_H
-#define	CHTABLE_ASCII_READER_H
+#ifndef TABLE_ASCII_READER_H
+#define	TABLE_ASCII_READER_H
 
 #include <istream>
 #include <vector>
@@ -17,7 +17,7 @@
 #include "Table/Table.h"
 
 namespace Euclid {
-namespace ChTable {
+namespace Table {
 
 /**
  * @class AsciiReader
@@ -128,5 +128,5 @@ private:
 }
 } // end of namespace Euclid
 
-#endif	/* CHTABLE_ASCII_READER_H */
+#endif	/* TABLE_ASCII_READER_H */
 

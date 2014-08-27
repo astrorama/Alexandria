@@ -9,7 +9,7 @@
 #include "FitsReaderHelper.h"
 
 namespace Euclid {
-namespace ChTable {
+namespace Table {
 
 std::vector<std::string> autoDetectColumnNames(const CCfits::Table& table_hdu) {
   std::vector<std::string> names {};

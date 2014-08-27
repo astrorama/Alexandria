@@ -52,7 +52,7 @@ public:
    *  An exception is thrown if the names provided in the mapping are not present in the columnInfo.
    */
   SpectroscopicRedshiftAttributeFromRow(
-      std::shared_ptr<Euclid::ChTable::ColumnInfo> column_info_ptr,
+      std::shared_ptr<Euclid::Table::ColumnInfo> column_info_ptr,
       const std::string& specz_value_column_name,
       const std::string& specz_error_column_name) {
 
@@ -83,10 +83,10 @@ public:
   /**
    * @brief Create a photometricAttribute from a Table row
    * @details Create a photometricAttribute from a Table row using the mapping included in this object
-   * @param row A ChTable row
+   * @param row A Table row
    * @return A unique pointer to a (SpectroscopicRedshift) Attribute
    */
-  std::unique_ptr<Attribute> createAttribute(const Euclid::ChTable::Row& row) override {
+  std::unique_ptr<Attribute> createAttribute(const Euclid::Table::Row& row) override {
     return std::unique_ptr<Attribute> { new SpectroscopicRedshift {
       boost::get<double>(row[m_value_column_index]),
       boost::get<double>(row[m_error_column_index]) } };

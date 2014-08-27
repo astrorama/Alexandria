@@ -4,8 +4,8 @@
  * @author Nikolaos Apostolakos
  */
 
-#ifndef CHTABLE_FITSREADER_H
-#define	CHTABLE_FITSREADER_H
+#ifndef TABLE_FITSREADER_H
+#define	TABLE_FITSREADER_H
 
 #include <CCfits/CCfits>
 
@@ -14,7 +14,7 @@
 #include "Table/Table.h"
 
 namespace Euclid {
-namespace ChTable {
+namespace Table {
 
 /**
  * @class FitsReader
@@ -93,7 +93,7 @@ public:
    * @throws Elements::Exception
    *    if any column has a format that is not supported
    */
-  const Euclid::ChTable::Table read(const CCfits::HDU& hdu);
+  const Euclid::Table::Table read(const CCfits::HDU& hdu);
 
 private:
   std::vector<std::string> m_column_names;
@@ -103,5 +103,5 @@ private:
 }
 } // end of namespace Euclid
 
-#endif	/* CHTABLE_FITSREADER_H */
+#endif	/* TABLE_FITSREADER_H */
 

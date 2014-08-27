@@ -77,7 +77,7 @@ BOOST_FIXTURE_TEST_CASE(StreamRewinder, AsciiReaderHelper_Fixture) {
   std::string line;
   {
     getline(stream, line);
-    Euclid::ChTable::StreamRewinder rewinder {stream};
+    Euclid::Table::StreamRewinder rewinder {stream};
     getline(stream, line);
     getline(stream, line);
   }
@@ -99,7 +99,7 @@ BOOST_FIXTURE_TEST_CASE(countColumnsNoDataLines, AsciiReaderHelper_Fixture) {
   std::stringstream stream {only_comments};
   
   // Then
-  BOOST_CHECK_THROW(Euclid::ChTable::countColumns(stream, "#"), Elements::Exception);
+  BOOST_CHECK_THROW(Euclid::Table::countColumns(stream, "#"), Elements::Exception);
   
 }
 
@@ -113,7 +113,7 @@ BOOST_FIXTURE_TEST_CASE(countColumns, AsciiReaderHelper_Fixture) {
   std::stringstream stream {two_columns};
   
   // When
-  size_t size = Euclid::ChTable::countColumns(stream, "#");
+  size_t size = Euclid::Table::countColumns(stream, "#");
   
   // Then
   BOOST_CHECK_EQUAL(size, 2);
@@ -130,7 +130,7 @@ BOOST_FIXTURE_TEST_CASE(countColumnsRewinds, AsciiReaderHelper_Fixture) {
   std::stringstream stream {two_columns};
   
   // When
-  Euclid::ChTable::countColumns(stream, "#");
+  Euclid::Table::countColumns(stream, "#");
   std::string line {};
   getline(stream, line);
   
@@ -149,7 +149,7 @@ BOOST_FIXTURE_TEST_CASE(autoDetectColumnNamesNoNames, AsciiReaderHelper_Fixture)
   std::stringstream stream {no_names};
   
   // When
-  auto names = Euclid::ChTable::autoDetectColumnNames(stream, "#", 5);
+  auto names = Euclid::Table::autoDetectColumnNames(stream, "#", 5);
   
   // Then
   BOOST_CHECK_EQUAL(names.size(), 5);
@@ -171,7 +171,7 @@ BOOST_FIXTURE_TEST_CASE(autoDetectColumnNamesSuccess, AsciiReaderHelper_Fixture)
   std::stringstream stream {five_names};
   
   // When
-  auto names = Euclid::ChTable::autoDetectColumnNames(stream, "#", 5);
+  auto names = Euclid::Table::autoDetectColumnNames(stream, "#", 5);
   
   // Then
   BOOST_CHECK_EQUAL(names.size(), 5);
@@ -193,7 +193,7 @@ BOOST_FIXTURE_TEST_CASE(autoDetectColumnNamesDuplicate, AsciiReaderHelper_Fixtur
   std::stringstream stream {duplicate_names};
   
   // Then
-  BOOST_CHECK_THROW(Euclid::ChTable::autoDetectColumnNames(stream, "#", 5), Elements::Exception);
+  BOOST_CHECK_THROW(Euclid::Table::autoDetectColumnNames(stream, "#", 5), Elements::Exception);
   
 }
 
@@ -207,7 +207,7 @@ BOOST_FIXTURE_TEST_CASE(autoDetectColumnTypesSuccess, AsciiReaderHelper_Fixture)
   std::stringstream stream {all_types};
   
   // When
-  auto types = Euclid::ChTable::autoDetectColumnTypes(stream, "#", 9);
+  auto types = Euclid::Table::autoDetectColumnTypes(stream, "#", 9);
   
   // Then
   BOOST_CHECK_EQUAL(types.size(), 9);
@@ -233,7 +233,7 @@ BOOST_FIXTURE_TEST_CASE(autoDetectColumnTypesNoTypes, AsciiReaderHelper_Fixture)
   std::stringstream stream {five_names};
   
   // When
-  auto types = Euclid::ChTable::autoDetectColumnTypes(stream, "#", 5);
+  auto types = Euclid::Table::autoDetectColumnTypes(stream, "#", 5);
   
   // Then
   BOOST_CHECK_EQUAL(types.size(), 5);
@@ -255,7 +255,7 @@ BOOST_FIXTURE_TEST_CASE(autoDetectColumnTypeWrongKeywords, AsciiReaderHelper_Fix
   std::stringstream stream {invalid_type};
   
   // Then
-  BOOST_CHECK_THROW(Euclid::ChTable::autoDetectColumnTypes(stream, "#", 5), Elements::Exception);
+  BOOST_CHECK_THROW(Euclid::Table::autoDetectColumnTypes(stream, "#", 5), Elements::Exception);
   
 }
 

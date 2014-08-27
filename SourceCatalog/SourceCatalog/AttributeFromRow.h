@@ -37,7 +37,7 @@ public:
    * @return A unique pointer to the newly created Attribute
    */
   virtual std::unique_ptr<Attribute> createAttribute(
-      const Euclid::ChTable::Row& row) = 0;
+      const Euclid::Table::Row& row) = 0;
 
 };
 

@@ -9,21 +9,21 @@
 #include "Table/Table.h"
 
 struct Table_Fixture {
-  std::vector<Euclid::ChTable::ColumnInfo::info_type> info_list {
-      Euclid::ChTable::ColumnInfo::info_type("First", typeid(std::string)),
-      Euclid::ChTable::ColumnInfo::info_type("Second", typeid(std::string)),
-      Euclid::ChTable::ColumnInfo::info_type("Third", typeid(double)),
-      Euclid::ChTable::ColumnInfo::info_type("Fourth", typeid(double)),
-      Euclid::ChTable::ColumnInfo::info_type("Fifth", typeid(int))
+  std::vector<Euclid::Table::ColumnInfo::info_type> info_list {
+      Euclid::Table::ColumnInfo::info_type("First", typeid(std::string)),
+      Euclid::Table::ColumnInfo::info_type("Second", typeid(std::string)),
+      Euclid::Table::ColumnInfo::info_type("Third", typeid(double)),
+      Euclid::Table::ColumnInfo::info_type("Fourth", typeid(double)),
+      Euclid::Table::ColumnInfo::info_type("Fifth", typeid(int))
   };
-  std::shared_ptr<Euclid::ChTable::ColumnInfo> column_info {new Euclid::ChTable::ColumnInfo {info_list}};
-  std::vector<Euclid::ChTable::Row::cell_type> values0 {std::string{"One-1"}, std::string{"Two-1"}, 3.1, 4.1, 51};
-  Euclid::ChTable::Row row0 {values0, column_info};
-  std::vector<Euclid::ChTable::Row::cell_type> values1 {std::string{"One-2"}, std::string{"Two-2"}, 3.2, 4.2, 52};
-  Euclid::ChTable::Row row1 {values1, column_info};
-  std::vector<Euclid::ChTable::Row::cell_type> values2 {std::string{"One-3"}, std::string{"Two-3"}, 3.3, 4.3, 53};
-  Euclid::ChTable::Row row2 {values2, column_info};
-  std::vector<Euclid::ChTable::Row> row_list {row0, row1, row2};
+  std::shared_ptr<Euclid::Table::ColumnInfo> column_info {new Euclid::Table::ColumnInfo {info_list}};
+  std::vector<Euclid::Table::Row::cell_type> values0 {std::string{"One-1"}, std::string{"Two-1"}, 3.1, 4.1, 51};
+  Euclid::Table::Row row0 {values0, column_info};
+  std::vector<Euclid::Table::Row::cell_type> values1 {std::string{"One-2"}, std::string{"Two-2"}, 3.2, 4.2, 52};
+  Euclid::Table::Row row1 {values1, column_info};
+  std::vector<Euclid::Table::Row::cell_type> values2 {std::string{"One-3"}, std::string{"Two-3"}, 3.3, 4.3, 53};
+  Euclid::Table::Row row2 {values2, column_info};
+  std::vector<Euclid::Table::Row> row_list {row0, row1, row2};
 };
 
 //-----------------------------------------------------------------------------
@@ -37,15 +37,15 @@ BOOST_AUTO_TEST_SUITE (ColumnInfo_test)
 BOOST_FIXTURE_TEST_CASE(ConstructorDifferentColumnInfo, Table_Fixture) {
   
   // Given
-  std::vector<Euclid::ChTable::ColumnInfo::info_type> wrong_info_list {
-      Euclid::ChTable::ColumnInfo::info_type("First", typeid(std::string))
+  std::vector<Euclid::Table::ColumnInfo::info_type> wrong_info_list {
+      Euclid::Table::ColumnInfo::info_type("First", typeid(std::string))
   };
-  std::shared_ptr<Euclid::ChTable::ColumnInfo> wrong_column_info {new Euclid::ChTable::ColumnInfo(wrong_info_list)};
-  Euclid::ChTable::Row wrong_row ({std::string{"Test"}}, wrong_column_info);
-  std::vector<Euclid::ChTable::Row> wrong_row_list {row_list.cbegin(), row_list.cend()};
+  std::shared_ptr<Euclid::Table::ColumnInfo> wrong_column_info {new Euclid::Table::ColumnInfo(wrong_info_list)};
+  Euclid::Table::Row wrong_row ({std::string{"Test"}}, wrong_column_info);
+  std::vector<Euclid::Table::Row> wrong_row_list {row_list.cbegin(), row_list.cend()};
   wrong_row_list.push_back(wrong_row);
   
-  BOOST_CHECK_THROW(Euclid::ChTable::Table{wrong_row_list}, Elements::Exception);
+  BOOST_CHECK_THROW(Euclid::Table::Table{wrong_row_list}, Elements::Exception);
   
 }
 
@@ -56,9 +56,9 @@ BOOST_FIXTURE_TEST_CASE(ConstructorDifferentColumnInfo, Table_Fixture) {
 BOOST_FIXTURE_TEST_CASE(ConstructorNoRows, Table_Fixture) {
   
   // Given
-  std::vector<Euclid::ChTable::Row> wrong_row_list {};
+  std::vector<Euclid::Table::Row> wrong_row_list {};
   
-  BOOST_CHECK_THROW(Euclid::ChTable::Table{wrong_row_list}, Elements::Exception);
+  BOOST_CHECK_THROW(Euclid::Table::Table{wrong_row_list}, Elements::Exception);
   
 }
 
@@ -69,7 +69,7 @@ BOOST_FIXTURE_TEST_CASE(ConstructorNoRows, Table_Fixture) {
 BOOST_FIXTURE_TEST_CASE(getColumnInfo, Table_Fixture) {
   
   // Given
-  Euclid::ChTable::Table table{row_list};
+  Euclid::Table::Table table{row_list};
   
   // When
   auto result = table.getColumnInfo();
@@ -86,7 +86,7 @@ BOOST_FIXTURE_TEST_CASE(getColumnInfo, Table_Fixture) {
 BOOST_FIXTURE_TEST_CASE(size, Table_Fixture) {
   
   // Given
-  Euclid::ChTable::Table table{row_list};
+  Euclid::Table::Table table{row_list};
   
   // When
   std::size_t size = table.size();
@@ -103,7 +103,7 @@ BOOST_FIXTURE_TEST_CASE(size, Table_Fixture) {
 BOOST_FIXTURE_TEST_CASE(BracketOperator, Table_Fixture) {
   
   // Given
-  Euclid::ChTable::Table table{row_list};
+  Euclid::Table::Table table{row_list};
   
   // When
   auto result0 = table[0];
@@ -127,7 +127,7 @@ BOOST_FIXTURE_TEST_CASE(BracketOperator, Table_Fixture) {
 BOOST_FIXTURE_TEST_CASE(Iterator, Table_Fixture) {
   
   // Given
-  Euclid::ChTable::Table table{row_list};
+  Euclid::Table::Table table{row_list};
   auto rows_iter = row_list.cbegin();
   
   // When
