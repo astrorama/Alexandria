@@ -6,7 +6,7 @@
 
 #include <boost/test/unit_test.hpp>
 #include <strstream>
-#include "ElementsKernel/ElementsException.h"
+#include "ElementsKernel/Exception.h"
 #include "ChTable/AsciiWriter.h"
 
 struct AsciiWriter_Fixture {
@@ -42,7 +42,7 @@ BOOST_FIXTURE_TEST_CASE(ConstructorEmptyComment, AsciiWriter_Fixture) {
   std::string comment = "";
   
   // Then
-  BOOST_CHECK_THROW(Euclid::ChTable::AsciiWriter {comment}, ElementsException);
+  BOOST_CHECK_THROW(Euclid::ChTable::AsciiWriter {comment}, Elements::Exception);
   
 }
 

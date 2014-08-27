@@ -9,7 +9,7 @@
 #include "ChCatalog/Source.h"
 #include "ChCatalog/Catalog.h"
 
-#include "ElementsKernel/ElementsException.h"
+#include "ElementsKernel/Exception.h"
 
 #include <iostream>
 #include <map>
@@ -82,7 +82,7 @@ BOOST_FIXTURE_TEST_CASE( identical_sources_test, CatalogFixture ) {
   try {
     Catalog catalog {source_vector_identical};
   }
-  catch (ElementsException& e) {
+  catch (Elements::Exception& e) {
     identical = true;
   };
 

@@ -10,7 +10,7 @@
 #include <map>
 #include "ChCatalog/SourceAttributes/SpectroscopicRedshiftAttributeFromRow.h"
 #include "ChCatalog/SourceAttributes/SpectroscopicRedshift.h"
-#include "ElementsKernel/ElementsException.h"
+#include "ElementsKernel/Exception.h"
 #include "ChCatalog/AttributeFromRow.h"
 
 //-----------------------------------------------------------------------------

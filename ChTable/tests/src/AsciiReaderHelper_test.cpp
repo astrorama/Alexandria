@@ -5,7 +5,7 @@
  */
 
 #include <boost/test/unit_test.hpp>
-#include "ElementsKernel/ElementsException.h"
+#include "ElementsKernel/Exception.h"
 #include "src/lib/AsciiReaderHelper.h"
 
 struct AsciiReaderHelper_Fixture {
@@ -99,7 +99,7 @@ BOOST_FIXTURE_TEST_CASE(countColumnsNoDataLines, AsciiReaderHelper_Fixture) {
   std::stringstream stream {only_comments};
   
   // Then
-  BOOST_CHECK_THROW(Euclid::ChTable::countColumns(stream, "#"), ElementsException);
+  BOOST_CHECK_THROW(Euclid::ChTable::countColumns(stream, "#"), Elements::Exception);
   
 }
 
@@ -193,7 +193,7 @@ BOOST_FIXTURE_TEST_CASE(autoDetectColumnNamesDuplicate, AsciiReaderHelper_Fixtur
   std::stringstream stream {duplicate_names};
   
   // Then
-  BOOST_CHECK_THROW(Euclid::ChTable::autoDetectColumnNames(stream, "#", 5), ElementsException);
+  BOOST_CHECK_THROW(Euclid::ChTable::autoDetectColumnNames(stream, "#", 5), Elements::Exception);
   
 }
 
@@ -255,7 +255,7 @@ BOOST_FIXTURE_TEST_CASE(autoDetectColumnTypeWrongKeywords, AsciiReaderHelper_Fix
   std::stringstream stream {invalid_type};
   
   // Then
-  BOOST_CHECK_THROW(Euclid::ChTable::autoDetectColumnTypes(stream, "#", 5), ElementsException);
+  BOOST_CHECK_THROW(Euclid::ChTable::autoDetectColumnTypes(stream, "#", 5), Elements::Exception);
   
 }
 

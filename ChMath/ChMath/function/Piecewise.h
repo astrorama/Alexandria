@@ -38,10 +38,10 @@ public:
    * with index 1 to the range [knot1,knot2], etc.
    * @param knots The knots of the piecewise function
    * @param functions The sub-functions in the knot ranges
-   * @throws ElementsException
+   * @throws Elements::Exception
    *    if the size of the sub-functions vector is not ine less than the knots
    *    vector size
-   * @throws ElementsException
+   * @throws Elements::Exception
    *    if the knots are not strictly increasing
    */
   Piecewise(std::vector<double> knots, std::vector<std::shared_ptr<Function>> functions);

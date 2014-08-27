@@ -11,7 +11,7 @@
 #include <CCfits/CCfits>
 #include "FitsWriterHelper.h"
 #include "ChTable/Table.h"
-#include "ElementsKernel/ElementsException.h"
+#include "ElementsKernel/Exception.h"
 
 namespace Euclid {
 namespace ChTable {

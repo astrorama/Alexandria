@@ -11,7 +11,7 @@
 #include <boost/program_options.hpp>
 namespace po = boost::program_options;
 #include <CCfits/CCfits>
-#include "ElementsKernel/ElementsProgram.h"
+#include "ElementsKernel/Program.h"
 #include "ElementsKernel/Version.h"
 #include "ChTable/AsciiReader.h"
 #include "PhzDataModel/PhotometryGrid.h"
@@ -29,7 +29,7 @@ using namespace Euclid::ChTable;
 using namespace Euclid::PhzDataModel;
 using namespace Euclid::PhzLikelihood;
 
-class PhotometryToLikelihood : public ElementsProgram {
+class PhotometryToLikelihood : public Elements::Program {
   
 public:
   
@@ -51,8 +51,8 @@ public:
     return config_file_options;
   }
   
-  void mainMethod() {
-    ElementsLogging logger = ElementsLogging::getLogger("PhotometryToLikelihood");
+  Elements::ExitCode mainMethod() {
+    Elements::Logging logger = Elements::Logging::getLogger("PhotometryToLikelihood");
     
     const po::variables_map options = this->getVariablesMap();
     
@@ -139,10 +139,12 @@ public:
       ofstream out {options["phz-catalog"].as<string>()};
       AsciiWriter().write(out, phz_table);
     }
+    
+    return Elements::ExitCode::OK;
   }
   
   string getVersion() {
-    return getVersionFromSvnKeywords(SVN_URL, SVN_ID);
+    return Elements::getVersionFromSvnKeywords(SVN_URL, SVN_ID);
   }
   
 private:

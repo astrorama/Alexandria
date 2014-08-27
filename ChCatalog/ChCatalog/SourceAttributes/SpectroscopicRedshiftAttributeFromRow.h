@@ -61,7 +61,7 @@ public:
     if (specz_value_column_index_ptr == nullptr
         || type_index(typeid(double))
             != column_info_ptr->getType(*(specz_value_column_index_ptr))) {
-      throw ElementsException()
+      throw Elements::Exception()
           << "Column info does not have the expected spectroscopic redshift value column of type: double";
     }
     unique_ptr<size_t> specz_error_column_index_ptr = column_info_ptr->find(
@@ -69,7 +69,7 @@ public:
     if (specz_error_column_index_ptr == nullptr
         || type_index(typeid(double))
             != column_info_ptr->getType(*(specz_error_column_index_ptr))) {
-      throw ElementsException()
+      throw Elements::Exception()
           << "Column info does not have the expected spectroscopic redshift error column of type: double";
     }
     m_value_column_index = *(specz_value_column_index_ptr);

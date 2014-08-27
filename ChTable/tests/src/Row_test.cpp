@@ -5,7 +5,7 @@
  */
 
 #include <boost/test/unit_test.hpp>
-#include "ElementsKernel/ElementsException.h"
+#include "ElementsKernel/Exception.h"
 #include "ChTable/Row.h"
 
 struct Row_Fixture {
@@ -33,7 +33,7 @@ BOOST_FIXTURE_TEST_CASE(ConstructorWrongNumberOfValues, Row_Fixture) {
   std::vector<Euclid::ChTable::Row::cell_type> values {std::string{"One"}, std::string{"Two"}, 3.};
   
   // Then
-  BOOST_CHECK_THROW(Euclid::ChTable::Row(values, column_info), ElementsException);
+  BOOST_CHECK_THROW(Euclid::ChTable::Row(values, column_info), Elements::Exception);
   
 }
 
@@ -48,7 +48,7 @@ BOOST_FIXTURE_TEST_CASE(ConstructorNullColumnInfo, Row_Fixture) {
   std::shared_ptr<Euclid::ChTable::ColumnInfo> null_col_info {};
   
   // Then
-  BOOST_CHECK_THROW(Euclid::ChTable::Row(values, null_col_info), ElementsException);
+  BOOST_CHECK_THROW(Euclid::ChTable::Row(values, null_col_info), Elements::Exception);
   
 }
 
@@ -62,7 +62,7 @@ BOOST_FIXTURE_TEST_CASE(ConstructorWrongCellType, Row_Fixture) {
   std::vector<Euclid::ChTable::Row::cell_type> values {std::string{"One"}, std::string{"Two"}, std::string{"Three"}, 4., 5};
 
   // Then
-  BOOST_CHECK_THROW(Euclid::ChTable::Row(values, column_info), ElementsException);
+  BOOST_CHECK_THROW(Euclid::ChTable::Row(values, column_info), Elements::Exception);
   
 }
 
@@ -76,7 +76,7 @@ BOOST_FIXTURE_TEST_CASE(ConstructorEmptyCellValue, Row_Fixture) {
   std::vector<Euclid::ChTable::Row::cell_type> values {std::string{"One"}, std::string{""}, 3., 4., 5};
   
   // Then
-  BOOST_CHECK_THROW(Euclid::ChTable::Row(values, column_info), ElementsException);
+  BOOST_CHECK_THROW(Euclid::ChTable::Row(values, column_info), Elements::Exception);
   
 }
 
@@ -94,11 +94,11 @@ BOOST_FIXTURE_TEST_CASE(ConstructorCellValueWithWhitespace, Row_Fixture) {
   std::vector<Euclid::ChTable::Row::cell_type> new_page {std::string{"One"}, std::string{"New\fPage"}, 3., 4., 5};
   
   // Then
-  BOOST_CHECK_THROW(Euclid::ChTable::Row(space, column_info), ElementsException);
-  BOOST_CHECK_THROW(Euclid::ChTable::Row(tab, column_info), ElementsException);
-  BOOST_CHECK_THROW(Euclid::ChTable::Row(carriage_return, column_info), ElementsException);
-  BOOST_CHECK_THROW(Euclid::ChTable::Row(new_line, column_info), ElementsException);
-  BOOST_CHECK_THROW(Euclid::ChTable::Row(new_page, column_info), ElementsException);
+  BOOST_CHECK_THROW(Euclid::ChTable::Row(space, column_info), Elements::Exception);
+  BOOST_CHECK_THROW(Euclid::ChTable::Row(tab, column_info), Elements::Exception);
+  BOOST_CHECK_THROW(Euclid::ChTable::Row(carriage_return, column_info), Elements::Exception);
+  BOOST_CHECK_THROW(Euclid::ChTable::Row(new_line, column_info), Elements::Exception);
+  BOOST_CHECK_THROW(Euclid::ChTable::Row(new_page, column_info), Elements::Exception);
   
 }
 
@@ -161,7 +161,7 @@ BOOST_FIXTURE_TEST_CASE(IndexBracketOperator, Row_Fixture) {
   BOOST_CHECK_EQUAL(value2, values[2]);
   BOOST_CHECK_EQUAL(value3, values[3]);
   BOOST_CHECK_EQUAL(value4, values[4]);
-  BOOST_CHECK_THROW(row[5], ElementsException);
+  BOOST_CHECK_THROW(row[5], Elements::Exception);
   
 }
 
@@ -188,7 +188,7 @@ BOOST_FIXTURE_TEST_CASE(StringBracketOperator, Row_Fixture) {
   BOOST_CHECK_EQUAL(value2, values[2]);
   BOOST_CHECK_EQUAL(value3, values[3]);
   BOOST_CHECK_EQUAL(value4, values[4]);
-  BOOST_CHECK_THROW(row["None"], ElementsException);
+  BOOST_CHECK_THROW(row["None"], Elements::Exception);
   
 }
 

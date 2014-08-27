@@ -41,9 +41,9 @@ public:
    * given a name as "col1", "col2, etc (starting from 1).
    *
    * @param column_names The names of the columns or empty for auto-detection (default)
-   * @throws ElementsException
+   * @throws Elements::Exception
    *    if there are duplicate column names
-   * @throws ElementsException
+   * @throws Elements::Exception
    *    if any of the given column names is empty or contains whitespace characters
    */
   FitsReader(std::vector<std::string> column_names = {});
@@ -85,12 +85,12 @@ public:
    *
    * @param hdu The HDU containing the table
    * @return the table
-   * @throws ElementsException
+   * @throws Elements::Exception
    *    if the given HDU is not a binary or ASCII table HDU
-   * @throws ElementsException
+   * @throws Elements::Exception
    *    if column names are given to the constructor and the HDU  contains data
    *    with different number of columns
-   * @throws ElementsException
+   * @throws Elements::Exception
    *    if any column has a format that is not supported
    */
   const Euclid::ChTable::Table read(const CCfits::HDU& hdu);

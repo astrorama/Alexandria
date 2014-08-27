@@ -71,7 +71,7 @@ class ELEMENTS_API FitsParser : public FileParser
    * Filename of the FITS file to be read (including the absolute path).
    * @return
    * A unique pointer to a XYDatatset object or null pointer.
-   * @throw ElementsException
+   * @throw Elements::Exception
    * A FITS exception occured
    */
   std::unique_ptr<XYDataset> getDataset(const std::string& file) override;

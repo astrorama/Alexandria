@@ -11,7 +11,7 @@
 #include <boost/program_options.hpp>
 #include <fstream>
 namespace po = boost::program_options;
-#include "ElementsKernel/ElementsProgram.h"
+#include "ElementsKernel/Program.h"
 #include "ElementsKernel/Version.h"
 #include "ChMath/function/Function.h"
 #include "ChMath/function/function_tools.h"
@@ -22,7 +22,7 @@ namespace po = boost::program_options;
 
 using namespace std;
 
-class CreateModelPhotometry : public ElementsProgram {
+class CreateModelPhotometry : public Elements::Program {
 
 public:
   
@@ -60,8 +60,8 @@ public:
     return config_file_options;
   }
   
-  void mainMethod() {
-    ElementsLogging logger = ElementsLogging::getLogger("CreateModelPhotometry");
+  Elements::ExitCode mainMethod() {
+    Elements::Logging logger = Elements::Logging::getLogger("CreateModelPhotometry");
     
     const po::variables_map options = this->getVariablesMap();
     
@@ -127,10 +127,11 @@ public:
       std::ofstream out {options["binary-photometry-grid"].as<std::string>()};
       Euclid::Grid::gridBinaryExport(out, photometry_grid);
     }
+    return Elements::ExitCode::OK;
   }
   
   string getVersion() {
-    return getVersionFromSvnKeywords(SVN_URL, SVN_ID);
+    return Elements::getVersionFromSvnKeywords(SVN_URL, SVN_ID);
   }
 
 }; // end of class CreateModelPhotometry

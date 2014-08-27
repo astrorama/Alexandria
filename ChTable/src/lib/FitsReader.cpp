@@ -9,7 +9,7 @@
 #include <CCfits/CCfits>
 using boost::regex;
 using boost::regex_match;
-#include "ElementsKernel/ElementsException.h"
+#include "ElementsKernel/Exception.h"
 #include "ChTable/Row.h"
 #include "ChTable/FitsReader.h"
 #include "ReaderHelper.h"
@@ -24,14 +24,14 @@ FitsReader::FitsReader(std::vector<std::string> column_names)
   regex whitespace {".*\\s.*"}; // Checks if input contains any whitespace characters
   for (const auto& name : m_column_names) {
     if (name.empty()) {
-      throw ElementsException() << "Empty string column names are not allowed";
+      throw Elements::Exception() << "Empty string column names are not allowed";
     }
     if (regex_match(name, whitespace)) {
-      throw ElementsException() << "Column name '" << name << "' contains "
+      throw Elements::Exception() << "Column name '" << name << "' contains "
                                 << "whitespace characters";
     }
     if (!set.insert(name).second) {  // Check for duplicate names
-      throw ElementsException() << "Duplicate column name " << name;
+      throw Elements::Exception() << "Duplicate column name " << name;
     }
   }
 }
@@ -41,7 +41,7 @@ const Euclid::ChTable::Table FitsReader::read(const CCfits::HDU& hdu) {
   try {
     dynamic_cast<const CCfits::Table&>(hdu);
   } catch (std::bad_cast&) {
-    throw ElementsException() << "Given HDU is not a table";
+    throw Elements::Exception() << "Given HDU is not a table";
   }
   const CCfits::Table& table_hdu = dynamic_cast<const CCfits::Table&>(hdu);
   
@@ -49,7 +49,7 @@ const Euclid::ChTable::Table FitsReader::read(const CCfits::HDU& hdu) {
   if (m_column_names.empty()) {
     names = autoDetectColumnNames(table_hdu);
   } else if (m_column_names.size() != static_cast<size_t>(table_hdu.numCols())) {
-    throw ElementsException() << "Columns number in HDU (" << table_hdu.numCols()
+    throw Elements::Exception() << "Columns number in HDU (" << table_hdu.numCols()
                               << ") does not match the column names number ("
                               << m_column_names.size() << ")";
   } else {

@@ -8,7 +8,7 @@
 #include <iostream>
 #include <boost/test/unit_test.hpp>
 
-#include "ElementsKernel/ElementsException.h"
+#include "ElementsKernel/Exception.h"
 #include "XYDataset/XYDataset.h"
 
 using namespace std;
@@ -85,7 +85,7 @@ BOOST_FIXTURE_TEST_CASE(exception_test, XYDataset_Fixture) {
   BOOST_TEST_MESSAGE("--> Testing the constructor exception");
   BOOST_TEST_MESSAGE(" ");
 
-  BOOST_CHECK_THROW(Euclid::XYDataset::XYDataset::factory(vector1, vector3), ElementsException);
+  BOOST_CHECK_THROW(Euclid::XYDataset::XYDataset::factory(vector1, vector3), Elements::Exception);
 
 }
 

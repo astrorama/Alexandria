@@ -36,7 +36,7 @@ public:
    * Constructs a new AsciiWriter
    *
    * @param comment The pattern to use for comment lines
-   * @throws ElementsException
+   * @throws Elements::Exception
    *    if the comment string is the empty string
    */
   AsciiWriter(std::string comment = "#");

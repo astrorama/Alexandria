@@ -50,13 +50,13 @@ class ELEMENTS_API FileSystemProvider : public XYDatasetProvider
    * Absolute path to the dataset
    * @param parser
    * FileParser object
-   * @throw ElementsException
+   * @throw Elements::Exception
    * Path to the files not found
-   * @throw ElementsException
+   * @throw Elements::Exception
    * Root path not found
-   * @throw ElementsException
+   * @throw Elements::Exception
    * Root path is not a directory
-   * @throw ElementsException
+   * @throw Elements::Exception
    * Qualified name can not be inserted
    */
   FileSystemProvider(const std::string& root_path, std::unique_ptr<FileParser> parser);

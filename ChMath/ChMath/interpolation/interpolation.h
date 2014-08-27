@@ -30,9 +30,9 @@ enum class InterpolationType {
  * @param y The y values of the data points
  * @param type The type of the interpolation to perform
  * @return A function representing the interpolation
- * @throws ElementsException
+ * @throws Elements::Exception
  *    if the x and y vectors do not have the same size
- * @throws ElementsException
+ * @throws Elements::Exception
  *    if the x values are not strictly increasing
  */
 ELEMENTS_API std::unique_ptr<Function> interpolate(const std::vector<double>& x, const std::vector<double>& y, InterpolationType type);
@@ -43,9 +43,9 @@ ELEMENTS_API std::unique_ptr<Function> interpolate(const std::vector<double>& x,
  * @param dataset The dataset containing the data points
  * @param type The type of the interpolation to perform
  * @return A function representing the interpolation
- * @throws ElementsException
+ * @throws Elements::Exception
  *    if the x and y vectors do not have the same size
- * @throws ElementsException
+ * @throws Elements::Exception
  *    if the x values are not strictly increasing
  */
 ELEMENTS_API std::unique_ptr<Function> interpolate(const Euclid::XYDataset::XYDataset& dataset, InterpolationType type);

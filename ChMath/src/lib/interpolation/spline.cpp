@@ -4,7 +4,7 @@
  * @author Nikolaos Apostolakos
  */
 
-#include "ElementsKernel/ElementsException.h"
+#include "ElementsKernel/Exception.h"
 #include "ChMath/interpolation/interpolation.h"
 #include "ChMath/function/Polynomial.h"
 #include "ChMath/function/Piecewise.h"
@@ -14,11 +14,11 @@ namespace ChMath {
 
 std::unique_ptr<Function> splineInterpolation(const std::vector<double>& x, const std::vector<double>& y) {
   if (x.size() != y.size()) {
-    throw ElementsException("Input X and Y vectors must have the same size");
+    throw Elements::Exception("Input X and Y vectors must have the same size");
   }
   for (auto iter=(x.begin()+1); iter!=x.end(); ++iter) {
     if (*iter <= *(iter-1)) {
-      throw ElementsException("Only strictly increasing X values allowed");
+      throw Elements::Exception("Only strictly increasing X values allowed");
     }
   }
   

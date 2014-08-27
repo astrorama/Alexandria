@@ -12,7 +12,7 @@
 #include "ChCatalog/SourceAttributes/Photometry.h"
 #include "ChCatalog/SourceAttributes/SpectroscopicRedshift.h"
 
-#include "ElementsKernel/ElementsException.h"
+#include "ElementsKernel/Exception.h"
 
 #include <iostream>
 #include <map>

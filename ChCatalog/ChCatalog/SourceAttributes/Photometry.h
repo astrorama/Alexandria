@@ -13,7 +13,7 @@
 #include <iterator>
 
 #include "ElementsKernel/Export.h"
-#include "ElementsKernel/ElementsException.h"
+#include "ElementsKernel/Exception.h"
 
 #include "ChCatalog/Attribute.h"
 
@@ -82,7 +82,7 @@ public:
           std::move(value_vector)) {
     // Only check the size, but not the consistency
     if (m_filter_name_vector_ptr->size() != m_value_vector.size()) {
-      throw ElementsException()
+      throw Elements::Exception()
           << "The std::string and the flux vectors have different size";
     }
   }

@@ -12,7 +12,7 @@
 #include <boost/test/unit_test.hpp>
 #include <boost/filesystem.hpp>
 
-#include "ElementsKernel/ElementsException.h"
+#include "ElementsKernel/Exception.h"
 #include "ElementsKernel/Temporary.h"
 #include "XYDataset/AsciiParser.h"
 #include "XYDataset/XYDataset.h"
@@ -35,7 +35,7 @@ struct AsciiParser_Fixture {
   std::string no_file {"nofile.txt"};
   std::string file {"Gext_ACSf435w.txt"};
   std::string file_nodataset_name {"Nodataset_name_inside_file.txt"};
-  TempDir temp_dir;
+  Elements::TempDir temp_dir;
   std::string base_directory = makeDir(temp_dir.path().native()+"/euclid/filter/MER/");
 
   AsciiParser_Fixture() {
@@ -78,7 +78,7 @@ BOOST_FIXTURE_TEST_CASE(exception_getName_function_test, AsciiParser_Fixture) {
 
   AsciiParser parser{};
 
-  BOOST_CHECK_THROW(parser.getName(base_directory + no_file), ElementsException);
+  BOOST_CHECK_THROW(parser.getName(base_directory + no_file), Elements::Exception);
 }
 
 //-----------------------------------------------------------------------------

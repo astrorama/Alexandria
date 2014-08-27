@@ -5,7 +5,7 @@
  */
 
 #include <boost/test/unit_test.hpp>
-#include "ElementsKernel/ElementsException.h"
+#include "ElementsKernel/Exception.h"
 #include <memory>
 #include "ChMath/function/Function.h"
 #include "ChMath/function/Integrable.h"
@@ -61,7 +61,7 @@ BOOST_FIXTURE_TEST_CASE(ConstructorUnorderedKnots, Piecewise_Fixture) {
   functions.pop_back();
   
   // Then
-  BOOST_CHECK_THROW(Euclid::ChMath::Piecewise(knots, functions), ElementsException);
+  BOOST_CHECK_THROW(Euclid::ChMath::Piecewise(knots, functions), Elements::Exception);
   
 }
 
@@ -79,7 +79,7 @@ BOOST_FIXTURE_TEST_CASE(ConstructorWrongSizes, Piecewise_Fixture) {
   }
   
   // Then
-  BOOST_CHECK_THROW(Euclid::ChMath::Piecewise(knots, functions), ElementsException);
+  BOOST_CHECK_THROW(Euclid::ChMath::Piecewise(knots, functions), Elements::Exception);
   
 }
 

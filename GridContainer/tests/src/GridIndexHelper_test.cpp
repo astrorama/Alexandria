@@ -5,7 +5,7 @@
  */
 
 #include <boost/test/unit_test.hpp>
-#include "ElementsKernel/ElementsException.h"
+#include "ElementsKernel/Exception.h"
 #include "GridContainer/GridIndexHelper.h"
 
 struct GridIndexHelper_Fixture {
@@ -107,10 +107,10 @@ BOOST_FIXTURE_TEST_CASE(totalIndexCheckedOutOfBounds, GridIndexHelper_Fixture) {
   auto helper = Euclid::Grid::makeGridIndexHelper(axes_tuple);
             
   // Then
-  BOOST_CHECK_THROW(helper.totalIndexChecked(axis1.size(), 0, 0, 0), ElementsException);
-  BOOST_CHECK_THROW(helper.totalIndexChecked(0, axis2.size(), 0, 0), ElementsException);
-  BOOST_CHECK_THROW(helper.totalIndexChecked(0, 0, axis3.size(), 0), ElementsException);
-  BOOST_CHECK_THROW(helper.totalIndexChecked(0, 0, 0, axis4.size()), ElementsException);
+  BOOST_CHECK_THROW(helper.totalIndexChecked(axis1.size(), 0, 0, 0), Elements::Exception);
+  BOOST_CHECK_THROW(helper.totalIndexChecked(0, axis2.size(), 0, 0), Elements::Exception);
+  BOOST_CHECK_THROW(helper.totalIndexChecked(0, 0, axis3.size(), 0), Elements::Exception);
+  BOOST_CHECK_THROW(helper.totalIndexChecked(0, 0, 0, axis4.size()), Elements::Exception);
   
 }
 

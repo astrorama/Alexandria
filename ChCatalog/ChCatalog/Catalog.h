@@ -41,7 +41,7 @@ public:
    *  object in the vector container
    * @param source_vector
    *  Vector container of Source objects
-   * @throw ElementsException
+   * @throw Elements::Exception
    *  A Source object can not be inserted twice in the map
    */
   Catalog(std::vector<Source> source_vector);

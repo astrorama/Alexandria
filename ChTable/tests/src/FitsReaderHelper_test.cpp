@@ -6,12 +6,12 @@
 
 #include <boost/test/unit_test.hpp>
 #include <CCfits/CCfits>
-#include "ElementsKernel/ElementsException.h"
+#include "ElementsKernel/Exception.h"
 #include "ElementsKernel/Temporary.h"
 #include "src/lib/FitsReaderHelper.h"
 
 struct FitsReaderHelper_Fixture {
-  TempDir temp_dir;
+  Elements::TempDir temp_dir;
   std::unique_ptr<CCfits::FITS> fits {new CCfits::FITS(
         (temp_dir.path()/"FitsReaderHelper_test.fits").native(), CCfits::RWmode::Write)};
 };
@@ -107,7 +107,7 @@ BOOST_FIXTURE_TEST_CASE(autoDetectColumnTypesBinaryUnsupportedTypes, FitsReaderH
   CCfits::Table* table_hdu = fits->addTable("Bit", 0, names, types);
   
   // Then
-  BOOST_CHECK_THROW(Euclid::ChTable::autoDetectColumnTypes(*table_hdu), ElementsException);
+  BOOST_CHECK_THROW(Euclid::ChTable::autoDetectColumnTypes(*table_hdu), Elements::Exception);
   
   // Given
   names = {"FloatComplex"};
@@ -115,7 +115,7 @@ BOOST_FIXTURE_TEST_CASE(autoDetectColumnTypesBinaryUnsupportedTypes, FitsReaderH
   table_hdu = fits->addTable("FloatComplex", 0, names, types);
   
   // Then
-  BOOST_CHECK_THROW(Euclid::ChTable::autoDetectColumnTypes(*table_hdu), ElementsException);
+  BOOST_CHECK_THROW(Euclid::ChTable::autoDetectColumnTypes(*table_hdu), Elements::Exception);
   
   // Given
   names = {"DoubleComplex"};
@@ -123,7 +123,7 @@ BOOST_FIXTURE_TEST_CASE(autoDetectColumnTypesBinaryUnsupportedTypes, FitsReaderH
   table_hdu = fits->addTable("DoubleComplex", 0, names, types);
   
   // Then
-  BOOST_CHECK_THROW(Euclid::ChTable::autoDetectColumnTypes(*table_hdu), ElementsException);
+  BOOST_CHECK_THROW(Euclid::ChTable::autoDetectColumnTypes(*table_hdu), Elements::Exception);
   
   // Given
   names = {"IntArray"};
@@ -131,7 +131,7 @@ BOOST_FIXTURE_TEST_CASE(autoDetectColumnTypesBinaryUnsupportedTypes, FitsReaderH
   table_hdu = fits->addTable("IntArray", 0, names, types);
   
   // Then
-  BOOST_CHECK_THROW(Euclid::ChTable::autoDetectColumnTypes(*table_hdu), ElementsException);
+  BOOST_CHECK_THROW(Euclid::ChTable::autoDetectColumnTypes(*table_hdu), Elements::Exception);
   
 }
 

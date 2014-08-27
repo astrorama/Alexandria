@@ -6,7 +6,7 @@
 
 #include <algorithm>
 #include <boost/lexical_cast.hpp>
-#include "ElementsKernel/ElementsException.h"
+#include "ElementsKernel/Exception.h"
 #include "AsciiWriterHelper.h"
 
 namespace Euclid {
@@ -26,7 +26,7 @@ std::string typeToKeyword(std::type_index type) {
   } if (type == typeid(std::string)) {
     return "string";
   }
-  throw ElementsException() << "Conversion to string for type " << type.name()
+  throw Elements::Exception() << "Conversion to string for type " << type.name()
                             << " is not supported";
 }
 

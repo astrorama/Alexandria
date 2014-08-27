@@ -7,7 +7,7 @@
 #include <utility>
 #include <iomanip>
 #include <boost/lexical_cast.hpp>
-#include "ElementsKernel/ElementsException.h"
+#include "ElementsKernel/Exception.h"
 #include "ChTable/AsciiWriter.h"
 #include "AsciiWriterHelper.h"
 
@@ -16,7 +16,7 @@ namespace ChTable {
 
 AsciiWriter::AsciiWriter(std::string comment) : m_comment{std::move(comment)} {
   if (m_comment.empty()) {
-    throw ElementsException() << "Empty string as comment indicator";
+    throw Elements::Exception() << "Empty string as comment indicator";
   }
 }
 

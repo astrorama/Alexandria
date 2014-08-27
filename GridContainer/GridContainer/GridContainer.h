@@ -170,7 +170,7 @@ public:
    * 
    * @param indices The indices of the axes
    * @return A reference to the cell
-   * @throws ElementsException
+   * @throws Elements::Exception
    *    if any of the indices is out of range
    */
   const cell_type& at(decltype(std::declval<GridAxis<AxesTypes>>().size())... indices) const;
@@ -256,7 +256,7 @@ public:
    * @tparam I the index of the axis to fix
    * @param index the index to fix the axis to
    * @return the iterator over the grid slice
-   * @throws ElementsException
+   * @throws Elements::Exception
    *    if the given index is out of the bounds of the axis
    */
   template<int I>
@@ -274,7 +274,7 @@ public:
    * @tparam I the index of the axis to fix
    * @param value the value to fix the axis to
    * @return the iterator over the grid slice
-   * @throws ElementsException
+   * @throws Elements::Exception
    *    if the axis does not contain the given value
    */
   template<int I>

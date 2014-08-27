@@ -24,7 +24,7 @@ namespace ChTable {
  *
  * @param type The type to convert
  * @return The string representation
- * @throws ElementsException
+ * @throws Elements::Exception
  *    if the given type is not supported
  */
 ELEMENTS_API std::string typeToKeyword(std::type_index type);

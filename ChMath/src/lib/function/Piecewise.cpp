@@ -5,7 +5,7 @@
  */
 
 #include <algorithm>
-#include "ElementsKernel/ElementsException.h"
+#include "ElementsKernel/Exception.h"
 #include "ChMath/function/Piecewise.h"
 #include "ChMath/function/function_tools.h"
 
@@ -15,13 +15,13 @@ namespace ChMath {
 Piecewise::Piecewise(std::vector<double> knots, std::vector<std::shared_ptr<Function> > functions)
                     : m_knots{std::move(knots)}, m_functions{std::move(functions)} {
   if (m_knots.size() - m_functions.size() != 1) {
-    throw ElementsException() << "Invalid number of knots(" << m_knots.size()
+    throw Elements::Exception() << "Invalid number of knots(" << m_knots.size()
                               << ")-functions(" << m_functions.size() << ")";
   }
   auto knotsIter = m_knots.begin();
   while (++knotsIter != m_knots.end()) {
     if (*knotsIter <= *(knotsIter-1)) {
-      throw ElementsException("knots must be strictly increasing");
+      throw Elements::Exception("knots must be strictly increasing");
     }
   }
 }

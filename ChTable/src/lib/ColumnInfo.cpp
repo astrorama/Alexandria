@@ -13,7 +13,7 @@
 #include <boost/regex.hpp>
 using boost::regex;
 using boost::regex_match;
-#include "ElementsKernel/ElementsException.h"
+#include "ElementsKernel/Exception.h"
 #include "ChTable/ColumnInfo.h"
 
 namespace Euclid {
@@ -22,21 +22,21 @@ namespace ChTable {
 ColumnInfo::ColumnInfo(std::vector<info_type> info_list)
         : m_info_list{std::move(info_list)} {
   if (m_info_list.empty()) {
-    throw ElementsException() << "Empty info_list is not allowed";
+    throw Elements::Exception() << "Empty info_list is not allowed";
   }
   std::set<std::string> set {};
   regex whitespace {".*\\s.*"}; // Checks if input contains any whitespace characters
   for (const auto& info_pair : m_info_list) {
     const auto& name = info_pair.first;
     if (name.empty()) {
-      throw ElementsException() << "Empty string column names are not allowed";
+      throw Elements::Exception() << "Empty string column names are not allowed";
     }
     if (regex_match(name, whitespace)) {
-      throw ElementsException() << "Column name '" << name << "' contains "
+      throw Elements::Exception() << "Column name '" << name << "' contains "
                                 << "whitespace characters";
     }
     if (!set.insert(name).second) {  // Check for duplicate names
-      throw ElementsException() << "Duplicate column name " << name;
+      throw Elements::Exception() << "Duplicate column name " << name;
     }
   }
 }
@@ -58,14 +58,14 @@ std::size_t ColumnInfo::size() const {
 
 const std::string& ColumnInfo::getName(std::size_t index) const {
   if (index >= size()) {
-    throw ElementsException("Index out of bounds");
+    throw Elements::Exception("Index out of bounds");
   }
   return m_info_list[index].first;
 }
 
 const std::type_index& ColumnInfo::getType(std::size_t index) const {
   if (index >= size()) {
-    throw ElementsException("Index out of bounds");
+    throw Elements::Exception("Index out of bounds");
   }
   return m_info_list[index].second;
 }

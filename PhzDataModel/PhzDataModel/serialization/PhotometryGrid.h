@@ -8,7 +8,7 @@
 #define	PHZDATAMODEL_SERIALIZATION_PHOTOMETRYGRID_H
 
 #include <boost/serialization/split_free.hpp>
-#include "ElementsKernel/ElementsException.h"
+#include "ElementsKernel/Exception.h"
 #include "ChCatalog/SourceAttributes/Photometry.h"
 #include "GridContainer/serialization/GridContainer.h"
 #include "PhzDataModel/PhotometryGrid.h"
@@ -20,7 +20,7 @@ template<typename Archive>
 void save(Archive& ar, const Euclid::PhzDataModel::PhotometryGrid& grid, const unsigned int) {
   size_t size = grid.size();
   if (size == 0) {
-    throw ElementsException() << "Serialization of empty PhotometryGrid is not supported";
+    throw Elements::Exception() << "Serialization of empty PhotometryGrid is not supported";
   }
   // We store the filter names only once. We require that all photometries have
   // the same filters
@@ -33,13 +33,13 @@ void save(Archive& ar, const Euclid::PhzDataModel::PhotometryGrid& grid, const u
   // filters are matching the common ones
   for (auto& photometry : grid) {
     if (photometry.size() != filter_names.size()) {
-      throw ElementsException() << "Serialization of grids of Photometries with "
+      throw Elements::Exception() << "Serialization of grids of Photometries with "
                                 << "different filters is not supported";
     }
     auto filt_iter = filter_names.begin();
     for (auto phot_iter=photometry.begin(); phot_iter!=photometry.end(); ++phot_iter, ++ filt_iter) {
       if (*filt_iter != phot_iter.filterName()) {
-        throw ElementsException() << "Serialization of grids of Photometries with "
+        throw Elements::Exception() << "Serialization of grids of Photometries with "
                                   << "different filters is not supported";
       }
       ar << (*phot_iter).flux;

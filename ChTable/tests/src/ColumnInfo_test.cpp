@@ -5,7 +5,7 @@
  */
 
 #include <boost/test/unit_test.hpp>
-#include "ElementsKernel/ElementsException.h"
+#include "ElementsKernel/Exception.h"
 #include "ChTable/ColumnInfo.h"
 
 //-----------------------------------------------------------------------------
@@ -22,7 +22,7 @@ BOOST_AUTO_TEST_CASE(ConstructorEmptyNamesList) {
   std::vector<Euclid::ChTable::ColumnInfo::info_type> info_list {};
   
   // Then
-  BOOST_CHECK_THROW(Euclid::ChTable::ColumnInfo {info_list}, ElementsException);
+  BOOST_CHECK_THROW(Euclid::ChTable::ColumnInfo {info_list}, Elements::Exception);
   
 }
 
@@ -41,7 +41,7 @@ BOOST_AUTO_TEST_CASE(ConstructorDuplicateNames) {
   info_list.push_back(Euclid::ChTable::ColumnInfo::info_type("Fifth", typeid(int)));
   
   // Then
-  BOOST_CHECK_THROW(Euclid::ChTable::ColumnInfo {info_list}, ElementsException);
+  BOOST_CHECK_THROW(Euclid::ChTable::ColumnInfo {info_list}, Elements::Exception);
   
 }
 
@@ -60,7 +60,7 @@ BOOST_AUTO_TEST_CASE(ConstructorEmptyStringName) {
   info_list.push_back(Euclid::ChTable::ColumnInfo::info_type("Fifth", typeid(int)));
   
   // Then
-  BOOST_CHECK_THROW(Euclid::ChTable::ColumnInfo {info_list}, ElementsException);
+  BOOST_CHECK_THROW(Euclid::ChTable::ColumnInfo {info_list}, Elements::Exception);
   
 }
 
@@ -78,11 +78,11 @@ BOOST_AUTO_TEST_CASE(ConstructorNameWithWhitespaceChars) {
   std::vector<Euclid::ChTable::ColumnInfo::info_type> new_page {Euclid::ChTable::ColumnInfo::info_type("New\fPage", typeid(int))};
   
   // Then
-  BOOST_CHECK_THROW(Euclid::ChTable::ColumnInfo {space}, ElementsException);
-  BOOST_CHECK_THROW(Euclid::ChTable::ColumnInfo {tab}, ElementsException);
-  BOOST_CHECK_THROW(Euclid::ChTable::ColumnInfo {carriage_return}, ElementsException);
-  BOOST_CHECK_THROW(Euclid::ChTable::ColumnInfo {new_line}, ElementsException);
-  BOOST_CHECK_THROW(Euclid::ChTable::ColumnInfo {new_page}, ElementsException);
+  BOOST_CHECK_THROW(Euclid::ChTable::ColumnInfo {space}, Elements::Exception);
+  BOOST_CHECK_THROW(Euclid::ChTable::ColumnInfo {tab}, Elements::Exception);
+  BOOST_CHECK_THROW(Euclid::ChTable::ColumnInfo {carriage_return}, Elements::Exception);
+  BOOST_CHECK_THROW(Euclid::ChTable::ColumnInfo {new_line}, Elements::Exception);
+  BOOST_CHECK_THROW(Euclid::ChTable::ColumnInfo {new_page}, Elements::Exception);
   
 }
 
@@ -196,7 +196,7 @@ BOOST_AUTO_TEST_CASE(getName) {
   BOOST_CHECK_EQUAL(name2, "Third");
   BOOST_CHECK_EQUAL(name3, "Fourth");
   BOOST_CHECK_EQUAL(name4, "Fifth");
-  BOOST_CHECK_THROW(columnInfo.getName(5), ElementsException);
+  BOOST_CHECK_THROW(columnInfo.getName(5), Elements::Exception);
   
 }
 
@@ -228,7 +228,7 @@ BOOST_AUTO_TEST_CASE(getType) {
   BOOST_CHECK(type2 == typeid(double));
   BOOST_CHECK(type3 == typeid(double));
   BOOST_CHECK(type4 == typeid(int));
-  BOOST_CHECK_THROW(columnInfo.getType(5), ElementsException);
+  BOOST_CHECK_THROW(columnInfo.getType(5), Elements::Exception);
   
 }
 

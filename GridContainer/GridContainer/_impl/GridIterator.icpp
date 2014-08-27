@@ -5,7 +5,7 @@
  */
 
 #include <algorithm>
-#include "ElementsKernel/ElementsException.h"
+#include "ElementsKernel/Exception.h"
 
 namespace Euclid {
 namespace Grid {
@@ -84,7 +84,7 @@ template<typename CellType>
 template<int I>
 auto GridContainer<GridCellManager, AxesTypes...>::iter<CellType>::fixAxisByIndex(size_t index) -> iter& {
   if (index >= m_owner.getAxis<I>().size()) {
-    throw ElementsException() << "Index (" << index << ") out of axis " 
+    throw Elements::Exception() << "Index (" << index << ") out of axis " 
                               << m_owner.getAxis<I>().name() << " size ("
                               << m_owner.getAxis<I>().size() << ")";
   }
@@ -100,7 +100,7 @@ auto GridContainer<GridCellManager, AxesTypes...>::iter<CellType>::fixAxisByValu
   auto axis = m_owner.getAxis<I>();
   auto iter = std::find(axis.begin(), axis.end(), value);
   if (iter == axis.end()) {
-    throw ElementsException() << "Failed to fix axis " << m_owner.getAxis<I>().name()
+    throw Elements::Exception() << "Failed to fix axis " << m_owner.getAxis<I>().name()
                               << " (given value not found)";
   }
   return fixAxisByIndex<I>(iter - axis.begin());

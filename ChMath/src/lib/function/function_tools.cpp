@@ -4,7 +4,7 @@
  * @author Nikolaos Apostolakos
  */
 
-#include "ElementsKernel/ElementsException.h"
+#include "ElementsKernel/Exception.h"
 #include "ChMath/function/Integrable.h"
 #include "ChMath/function/function_tools.h"
 #include "ChMath/function/multiplication.h"
@@ -17,7 +17,7 @@ double integrate(const Function& function, const double min, const double max) {
   if (integrable) {
     return integrable->integrate(min, max);
   }
-  throw ElementsException() << "Numerical integration of non-Integrable Functions "
+  throw Elements::Exception() << "Numerical integration of non-Integrable Functions "
                             << "is not yet implemented";
 }
     

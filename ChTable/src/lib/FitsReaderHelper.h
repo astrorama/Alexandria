@@ -39,7 +39,7 @@ ELEMENTS_API std::vector<std::string> autoDetectColumnNames(const CCfits::Table&
  *
  * @param table_hdu The HDU to read the types from
  * @return the column types
- * @throws ElementsException
+ * @throws Elements::Exception
  *    if a column type is not supported
  */
 ELEMENTS_API std::vector<std::type_index> autoDetectColumnTypes(const CCfits::Table& table_hdu);

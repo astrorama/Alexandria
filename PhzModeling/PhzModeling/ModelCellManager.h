@@ -12,7 +12,7 @@
 #include <vector>
 #include <cmath>
 #include <functional>
-#include "ElementsKernel/ElementsException.h"
+#include "ElementsKernel/Exception.h"
 #include "ChMath/function/Function.h"
 #include "ChMath/interpolation/interpolation.h"
 #include "GridContainer/GridIndexHelper.h"
@@ -122,7 +122,7 @@ public:
     for (auto& sed_name : std::get<Euclid::PhzDataModel::ModelParameter::SED>(m_axes_tuple)) {
       auto sed_data = sed_provider->getDataset(sed_name);
       if (!sed_data) {
-        throw ElementsException() << "SED with name " << sed_name.qualifiedName()
+        throw Elements::Exception() << "SED with name " << sed_name.qualifiedName()
                                   << " does not exist";
       }
       m_sed_data_vector.push_back(std::move(sed_data));
@@ -132,7 +132,7 @@ public:
     for (auto& reddening_curve_name : std::get<Euclid::PhzDataModel::ModelParameter::REDDENING_CURVE>(m_axes_tuple)) {
       auto reddening_curve_data = reddening_curve_provider->getDataset(reddening_curve_name);
       if (!reddening_curve_data) {
-        throw ElementsException() << "Reddening curve with name " << reddening_curve_name.qualifiedName()
+        throw Elements::Exception() << "Reddening curve with name " << reddening_curve_name.qualifiedName()
                                   << " does not exist";
       }
       m_reddening_curve_functor_vector.emplace_back(*reddening_curve_data);

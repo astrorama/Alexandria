@@ -10,7 +10,7 @@
 #include <iostream>
 #include <CCfits/CCfits>
 
-#include "ElementsKernel/ElementsException.h"
+#include "ElementsKernel/Exception.h"
 #include "ChTable/FitsReader.h"
 #include "XYDataset/FitsParser.h"
 #include "StringFunctions.h"
@@ -31,7 +31,7 @@ std::string FitsParser::getName(const std::string& file) {
 
   // Check file exists
   if (!sfile) {
-    throw ElementsException() << "File not found : " << file;
+    throw Elements::Exception() << "File not found : " << file;
   }
 
   // Read first HDU
@@ -80,7 +80,7 @@ std::unique_ptr<XYDataset> FitsParser::getDataset(const std::string& file) {
       dataset_ptr = std::unique_ptr<XYDataset> { new XYDataset(vector_pair) };
     }
     catch(CCfits::FitsException& fits_except){
-      throw ElementsException() << "FitsException catched! File: " << file;
+      throw Elements::Exception() << "FitsException catched! File: " << file;
     } // Eof try-catch
   } // Eof if
 

@@ -9,7 +9,7 @@
 #include "ChCatalog/Catalog.h"
 #include "ChCatalog/Source.h"
 
-#include "ElementsKernel/ElementsException.h"
+#include "ElementsKernel/Exception.h"
 
 using namespace std;
 
@@ -26,7 +26,7 @@ Catalog::Catalog(vector<Source> source_vector): m_source_vector(source_vector)
      // Make sure the element does not already exist
      if (!it.second)
      {
-       throw ElementsException("Euclid::ChCatalog::Catalog: Source object already exist "
+       throw Elements::Exception("Euclid::ChCatalog::Catalog: Source object already exist "
              "in the map for source ID : %d, index: %d\n",
              m_source_vector[index].getId(), index);
      }

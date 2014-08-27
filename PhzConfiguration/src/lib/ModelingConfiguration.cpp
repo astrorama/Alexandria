@@ -6,8 +6,8 @@
 
 #include <set>
 #include <sstream>
-#include "ElementsKernel/ElementsException.h"
-#include "ElementsKernel/ElementsLogging.h"
+#include "ElementsKernel/Exception.h"
+#include "ElementsKernel/Logging.h"
 #include "XYDataset/FileParser.h"
 #include "XYDataset/AsciiParser.h"
 #include "XYDataset/FileSystemProvider.h"
@@ -16,7 +16,7 @@
 namespace Euclid {
 namespace PhzConfiguration {
 
-ElementsLogging logger = ElementsLogging::getLogger("ModelingConfiguration");
+Elements::Logging logger = Elements::Logging::getLogger("ModelingConfiguration");
 
 ModelingConfiguration::ModelingConfiguration(std::map<std::string, option_type> options)
           : m_options{std::move(options)} { }
@@ -32,7 +32,7 @@ std::unique_ptr<Euclid::XYDataset::XYDatasetProvider> ModelingConfiguration::sed
     };
   }
   logger.error() << "The option 'sed-root-path' is not set";
-  throw ElementsException {"Missing or unknown SED dataset provider options"};
+  throw Elements::Exception {"Missing or unknown SED dataset provider options"};
 }
 
 std::unique_ptr<Euclid::XYDataset::XYDatasetProvider> ModelingConfiguration::reddeningCurveDatasetProvider() {
@@ -46,7 +46,7 @@ std::unique_ptr<Euclid::XYDataset::XYDatasetProvider> ModelingConfiguration::red
     };
   }
   logger.error() << "The option 'reddening-curve-root-path' is not set";
-  throw ElementsException {"Missing or unknown Reddening Curve dataset provider options"};
+  throw Elements::Exception {"Missing or unknown Reddening Curve dataset provider options"};
 }
 
 std::unique_ptr<Euclid::XYDataset::XYDatasetProvider> ModelingConfiguration::filterDatasetProvider() {
@@ -60,7 +60,7 @@ std::unique_ptr<Euclid::XYDataset::XYDatasetProvider> ModelingConfiguration::fil
     };
   }
   logger.error() << "The option 'filter-root-path' is not set";
-  throw ElementsException {"Missing or unknown Filter dataset provider options"};
+  throw Elements::Exception {"Missing or unknown Filter dataset provider options"};
 }
 
 std::vector<Euclid::XYDataset::QualifiedName> ModelingConfiguration::sedList() {
@@ -86,7 +86,7 @@ std::vector<Euclid::XYDataset::QualifiedName> ModelingConfiguration::sedList() {
   }
   if (selected.empty()) {
     logger.error() << "SED list is empty (check the options sed-group and sed-list)";
-    throw ElementsException() << "Empty SED list";
+    throw Elements::Exception() << "Empty SED list";
   }
   return std::vector<Euclid::XYDataset::QualifiedName> {selected.begin(), selected.end()};
 }
@@ -114,7 +114,7 @@ std::vector<Euclid::XYDataset::QualifiedName> ModelingConfiguration::reddeningCu
   }
   if (selected.empty()) {
     logger.error() << "Reddening Curve list is empty (check the options reddening-curve-group and reddening-curve-list)";
-    throw ElementsException() << "Empty Reddening Curve list";
+    throw Elements::Exception() << "Empty Reddening Curve list";
   }
   return std::vector<Euclid::XYDataset::QualifiedName> {selected.begin(), selected.end()};
 }
@@ -142,7 +142,7 @@ std::vector<Euclid::XYDataset::QualifiedName> ModelingConfiguration::filterList(
   }
   if (selected.empty()) {
     logger.error() << "Filter list is empty (check the options filter-group and filter-list)";
-    throw ElementsException() << "Empty Filter list";
+    throw Elements::Exception() << "Empty Filter list";
   }
   return std::vector<Euclid::XYDataset::QualifiedName> {selected.begin(), selected.end()};
 }
@@ -180,7 +180,7 @@ std::vector<double> ModelingConfiguration::zList() {
   }
   if (selected.empty()) {
     logger.error() << "Z list is empty (check the options z-range and z-list)";
-    throw ElementsException() << "Empty Z list";
+    throw Elements::Exception() << "Empty Z list";
   }
   return std::vector<double> {selected.begin(), selected.end()};
 }
@@ -218,7 +218,7 @@ std::vector<double> ModelingConfiguration::ebvList() {
   }
   if (selected.empty()) {
     logger.error() << "E(B-V) list is empty (check the options ebv-range and ebv-list)";
-    throw ElementsException() << "Empty E(B-V) list";
+    throw Elements::Exception() << "Empty E(B-V) list";
   }
   return std::vector<double> {selected.begin(), selected.end()};
 }

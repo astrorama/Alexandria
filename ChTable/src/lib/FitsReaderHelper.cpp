@@ -5,7 +5,7 @@
  */
 
 #include <CCfits/CCfits>
-#include "ElementsKernel/ElementsException.h"
+#include "ElementsKernel/Exception.h"
 #include "FitsReaderHelper.h"
 
 namespace Euclid {
@@ -35,7 +35,7 @@ std::type_index asciiFormatToType(const std::string& format) {
   } else if (format[0] == 'D') {
     return typeid(double);
   }
-  throw ElementsException() << "FITS ASCII table format " << format << " is not "
+  throw Elements::Exception() << "FITS ASCII table format " << format << " is not "
                             << "yet supported";
 }
 
@@ -57,7 +57,7 @@ std::type_index binaryFormatToType(const std::string& format) {
   } else if (format[0] == 'D') {
     return typeid(double);
   }
-  throw ElementsException() << "FITS binary table format " << format << " is not "
+  throw Elements::Exception() << "FITS binary table format " << format << " is not "
                             << "yet supported";
 }
 
@@ -98,7 +98,7 @@ std::vector<Row::cell_type> translateColumn(CCfits::Column& column, std::type_in
   } if (type == typeid(std::string)) {
     return convertScalarColumn<std::string>(column);
   }
-  throw ElementsException() << "Unsupported column type " << type.name();
+  throw Elements::Exception() << "Unsupported column type " << type.name();
 }
 
 }

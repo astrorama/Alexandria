@@ -4,7 +4,7 @@
  * @author Nikolaos Apostolakos
  */
 
-#include "ElementsKernel/ElementsException.h"
+#include "ElementsKernel/Exception.h"
 
 namespace Euclid {
 namespace Grid {
@@ -44,7 +44,7 @@ size_t GridIndexHelper<AxesTypes...>::totalIndex(decltype(std::declval<GridAxis<
 template <typename Coord>
 void checkBounds(const std::vector<size_t>& axes_sizes, Coord coord) {
   if (coord >= axes_sizes[axes_sizes.size()-1]) {
-    throw ElementsException() << "Coordinate " << coord << " for axis "
+    throw Elements::Exception() << "Coordinate " << coord << " for axis "
                               << (axes_sizes.size()-1) << " (size " 
                               << axes_sizes[axes_sizes.size()-1]
                               << ") is out of bound";
@@ -54,7 +54,7 @@ void checkBounds(const std::vector<size_t>& axes_sizes, Coord coord) {
 template <typename Coord, typename... RestCoords>
 void checkBounds(const std::vector<size_t>& axes_sizes, Coord coord, RestCoords... rest_coords) {
   if (coord >= axes_sizes[axes_sizes.size()-sizeof...(RestCoords)-1]) {
-    throw ElementsException() << "Coordinate " << coord << " for axis "
+    throw Elements::Exception() << "Coordinate " << coord << " for axis "
                               << (axes_sizes.size()-sizeof...(RestCoords)-1) << " (size " 
                               << axes_sizes[axes_sizes.size()-sizeof...(RestCoords)-1]
                               << ") is out of bound";

@@ -9,7 +9,7 @@
 #include <fstream>
 #include <iostream>
 
-#include "ElementsKernel/ElementsException.h"
+#include "ElementsKernel/Exception.h"
 #include "ChTable/AsciiReader.h"
 #include "XYDataset/AsciiParser.h"
 #include "StringFunctions.h"
@@ -28,7 +28,7 @@ std::string AsciiParser::getName(const std::string& file) {
   std::ifstream sfile(file);
   // Check file exists
   if (!sfile) {
-    throw ElementsException() << "File does not exist : " << file;
+    throw Elements::Exception() << "File does not exist : " << file;
   }
 
   std::string line{};

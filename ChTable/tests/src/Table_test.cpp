@@ -5,7 +5,7 @@
  */
 
 #include <boost/test/unit_test.hpp>
-#include "ElementsKernel/ElementsException.h"
+#include "ElementsKernel/Exception.h"
 #include "ChTable/Table.h"
 
 struct Table_Fixture {
@@ -45,7 +45,7 @@ BOOST_FIXTURE_TEST_CASE(ConstructorDifferentColumnInfo, Table_Fixture) {
   std::vector<Euclid::ChTable::Row> wrong_row_list {row_list.cbegin(), row_list.cend()};
   wrong_row_list.push_back(wrong_row);
   
-  BOOST_CHECK_THROW(Euclid::ChTable::Table{wrong_row_list}, ElementsException);
+  BOOST_CHECK_THROW(Euclid::ChTable::Table{wrong_row_list}, Elements::Exception);
   
 }
 
@@ -58,7 +58,7 @@ BOOST_FIXTURE_TEST_CASE(ConstructorNoRows, Table_Fixture) {
   // Given
   std::vector<Euclid::ChTable::Row> wrong_row_list {};
   
-  BOOST_CHECK_THROW(Euclid::ChTable::Table{wrong_row_list}, ElementsException);
+  BOOST_CHECK_THROW(Euclid::ChTable::Table{wrong_row_list}, Elements::Exception);
   
 }
 
@@ -116,7 +116,7 @@ BOOST_FIXTURE_TEST_CASE(BracketOperator, Table_Fixture) {
     BOOST_CHECK_EQUAL(result1[i], row1[i]);
     BOOST_CHECK_EQUAL(result2[i], row2[i]);
   }
-  BOOST_CHECK_THROW(table[3], ElementsException);
+  BOOST_CHECK_THROW(table[3], Elements::Exception);
   
 }
 

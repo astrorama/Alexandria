@@ -9,7 +9,7 @@
 #include <algorithm>
 #include <iostream>
 
-#include "ElementsKernel/ElementsException.h"
+#include "ElementsKernel/Exception.h"
 #include "XYDataset/XYDataset.h"
 
 using namespace std;
@@ -34,7 +34,7 @@ unique_ptr<XYDataset> XYDataset::factory(vector<double> x_vector, vector<double>
   size_t y_size = y_vector.size();
   // Vector must have the same size
   if ( x_size != y_size) {
-    throw ElementsException() << " Vectors must have "
+    throw Elements::Exception() << " Vectors must have "
                               << "the same size! x size: %d" <<x_size
                               <<"  y_size : %d"<< y_size;
   }

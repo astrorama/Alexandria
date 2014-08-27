@@ -42,9 +42,9 @@ public:
    * same ColumnInfo. Rows with different columns are not allowed.
    *
    * @param row_list The rows of the table
-   * @throws ElementsException
+   * @throws Elements::Exception
    *    if the given list is empty
-   * @throws ElementsException
+   * @throws Elements::Exception
    *    if not all the rows have the same columns
    */
   Table(std::vector<Row> row_list);
@@ -73,7 +73,7 @@ public:
    *
    * @param index The index of the row (zero based)
    * @return The row
-   * @throws ElementsException
+   * @throws Elements::Exception
    *    if the index is out of range
    */
   const Row& operator[](std::size_t index) const;

@@ -221,14 +221,14 @@ BOOST_FIXTURE_TEST_CASE(atOutOfBound, GridContainer_Fixture) {
   }
   
   // Then
-  BOOST_CHECK_THROW(grid.at(axis1.size(), 0, 0, 0), ElementsException);
-  BOOST_CHECK_THROW(grid.at(0, axis2.size(), 0, 0), ElementsException);
-  BOOST_CHECK_THROW(grid.at(0, 0, axis3.size(), 0), ElementsException);
-  BOOST_CHECK_THROW(grid.at(0, 0, 0, axis4.size()), ElementsException);
-  BOOST_CHECK_THROW(const_grid.at(axis1.size(), 0, 0, 0), ElementsException);
-  BOOST_CHECK_THROW(const_grid.at(0, axis2.size(), 0, 0), ElementsException);
-  BOOST_CHECK_THROW(const_grid.at(0, 0, axis3.size(), 0), ElementsException);
-  BOOST_CHECK_THROW(const_grid.at(0, 0, 0, axis4.size()), ElementsException);
+  BOOST_CHECK_THROW(grid.at(axis1.size(), 0, 0, 0), Elements::Exception);
+  BOOST_CHECK_THROW(grid.at(0, axis2.size(), 0, 0), Elements::Exception);
+  BOOST_CHECK_THROW(grid.at(0, 0, axis3.size(), 0), Elements::Exception);
+  BOOST_CHECK_THROW(grid.at(0, 0, 0, axis4.size()), Elements::Exception);
+  BOOST_CHECK_THROW(const_grid.at(axis1.size(), 0, 0, 0), Elements::Exception);
+  BOOST_CHECK_THROW(const_grid.at(0, axis2.size(), 0, 0), Elements::Exception);
+  BOOST_CHECK_THROW(const_grid.at(0, 0, axis3.size(), 0), Elements::Exception);
+  BOOST_CHECK_THROW(const_grid.at(0, 0, 0, axis4.size()), Elements::Exception);
   
 }
 
@@ -514,14 +514,14 @@ BOOST_FIXTURE_TEST_CASE(fixIteratorByIndexOutOfBound, GridContainer_Fixture) {
   auto const_iterator = const_grid.begin();
   
   // Then
-  BOOST_CHECK_THROW(iterator.fixAxisByIndex<0>(axis1.size()), ElementsException);
-  BOOST_CHECK_THROW(iterator.fixAxisByIndex<1>(axis2.size()), ElementsException);
-  BOOST_CHECK_THROW(iterator.fixAxisByIndex<2>(axis3.size()), ElementsException);
-  BOOST_CHECK_THROW(iterator.fixAxisByIndex<3>(axis4.size()), ElementsException);
-  BOOST_CHECK_THROW(const_iterator.fixAxisByIndex<0>(axis1.size()), ElementsException);
-  BOOST_CHECK_THROW(const_iterator.fixAxisByIndex<1>(axis2.size()), ElementsException);
-  BOOST_CHECK_THROW(const_iterator.fixAxisByIndex<2>(axis3.size()), ElementsException);
-  BOOST_CHECK_THROW(const_iterator.fixAxisByIndex<3>(axis4.size()), ElementsException);
+  BOOST_CHECK_THROW(iterator.fixAxisByIndex<0>(axis1.size()), Elements::Exception);
+  BOOST_CHECK_THROW(iterator.fixAxisByIndex<1>(axis2.size()), Elements::Exception);
+  BOOST_CHECK_THROW(iterator.fixAxisByIndex<2>(axis3.size()), Elements::Exception);
+  BOOST_CHECK_THROW(iterator.fixAxisByIndex<3>(axis4.size()), Elements::Exception);
+  BOOST_CHECK_THROW(const_iterator.fixAxisByIndex<0>(axis1.size()), Elements::Exception);
+  BOOST_CHECK_THROW(const_iterator.fixAxisByIndex<1>(axis2.size()), Elements::Exception);
+  BOOST_CHECK_THROW(const_iterator.fixAxisByIndex<2>(axis3.size()), Elements::Exception);
+  BOOST_CHECK_THROW(const_iterator.fixAxisByIndex<3>(axis4.size()), Elements::Exception);
   
 }
 
@@ -688,14 +688,14 @@ BOOST_FIXTURE_TEST_CASE(fixIteratorByValueNotFound, GridContainer_Fixture) {
   auto const_iterator = const_grid.begin();
   
   // Then
-  BOOST_CHECK_THROW(iterator.fixAxisByValue<0>(axis1.size()+1), ElementsException);
-  BOOST_CHECK_THROW(iterator.fixAxisByValue<1>(axis2.size()+1), ElementsException);
-  BOOST_CHECK_THROW(iterator.fixAxisByValue<2>(axis3.size()+1), ElementsException);
-  BOOST_CHECK_THROW(iterator.fixAxisByValue<3>(axis4.size()+1), ElementsException);
-  BOOST_CHECK_THROW(const_iterator.fixAxisByValue<0>(axis1.size()+1), ElementsException);
-  BOOST_CHECK_THROW(const_iterator.fixAxisByValue<1>(axis2.size()+1), ElementsException);
-  BOOST_CHECK_THROW(const_iterator.fixAxisByValue<2>(axis3.size()+1), ElementsException);
-  BOOST_CHECK_THROW(const_iterator.fixAxisByValue<3>(axis4.size()+1), ElementsException);
+  BOOST_CHECK_THROW(iterator.fixAxisByValue<0>(axis1.size()+1), Elements::Exception);
+  BOOST_CHECK_THROW(iterator.fixAxisByValue<1>(axis2.size()+1), Elements::Exception);
+  BOOST_CHECK_THROW(iterator.fixAxisByValue<2>(axis3.size()+1), Elements::Exception);
+  BOOST_CHECK_THROW(iterator.fixAxisByValue<3>(axis4.size()+1), Elements::Exception);
+  BOOST_CHECK_THROW(const_iterator.fixAxisByValue<0>(axis1.size()+1), Elements::Exception);
+  BOOST_CHECK_THROW(const_iterator.fixAxisByValue<1>(axis2.size()+1), Elements::Exception);
+  BOOST_CHECK_THROW(const_iterator.fixAxisByValue<2>(axis3.size()+1), Elements::Exception);
+  BOOST_CHECK_THROW(const_iterator.fixAxisByValue<3>(axis4.size()+1), Elements::Exception);
   
 }
 

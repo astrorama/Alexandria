@@ -8,7 +8,7 @@
 #define	CHMATH_FUNCTION_H
 
 #include <memory>
-#include "ElementsKernel/ElementsException.h"
+#include "ElementsKernel/Exception.h"
 
 namespace Euclid {
 namespace ChMath {

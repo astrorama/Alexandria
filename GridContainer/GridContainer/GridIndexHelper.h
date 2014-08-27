@@ -78,7 +78,7 @@ public:
    * 
    * @param coords The GridContainer coordinates
    * @return the one dimensional array index
-   * @throws ElementsException
+   * @throws Elements::Exception
    *    if any coordinate is out of bound
    */
   size_t totalIndexChecked(decltype(std::declval<GridAxis<AxesTypes>>().size())... coords) const;

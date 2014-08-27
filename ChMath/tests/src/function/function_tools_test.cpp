@@ -5,7 +5,7 @@
  */
 
 #include <boost/test/unit_test.hpp>
-#include "ElementsKernel/ElementsException.h"
+#include "ElementsKernel/Exception.h"
 #include "ChMath/function/function_tools.h"
 #include "ChMath/function/Function.h"
 #include "ChMath/function/Integrable.h"
@@ -62,7 +62,7 @@ BOOST_AUTO_TEST_CASE(NonIntegrableIntegration) {
   FunctionMock f = FunctionMock{0.};
   
   // Then
-  BOOST_CHECK_THROW(Euclid::ChMath::integrate(f,0,1), ElementsException);
+  BOOST_CHECK_THROW(Euclid::ChMath::integrate(f,0,1), Elements::Exception);
   
 }
 

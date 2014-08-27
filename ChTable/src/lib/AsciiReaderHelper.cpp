@@ -10,7 +10,7 @@ using boost::regex;
 using boost::regex_match;
 #include <boost/algorithm/string.hpp>
 #include <boost/lexical_cast.hpp>
-#include "ElementsKernel/ElementsException.h"
+#include "ElementsKernel/Exception.h"
 #include "AsciiReaderHelper.h"
 
 namespace Euclid {
@@ -40,7 +40,7 @@ size_t countColumns(std::istream& in, const std::string& comment) {
     }
   }
   if (count == 0) {
-    throw ElementsException() << "No data lines found";
+    throw Elements::Exception() << "No data lines found";
   }
   return count;
 }
@@ -89,7 +89,7 @@ std::vector<std::string> autoDetectColumnNames(std::istream& in,
     std::set<std::string> set {};
     for (auto name : names) {
       if (!set.insert(name).second) {
-        throw ElementsException() << "Duplicate column name " << name;
+        throw Elements::Exception() << "Duplicate column name " << name;
       }
     }
   }
@@ -110,7 +110,7 @@ std::type_index keywordToType(const std::string& keyword) {
   } else if (keyword == "string") {
     return typeid(std::string);
   }
-  throw ElementsException() << "Unknown column type keyword " << keyword;
+  throw Elements::Exception() << "Unknown column type keyword " << keyword;
 }
 
 std::vector<std::type_index> autoDetectColumnTypes(std::istream& in,
@@ -186,9 +186,9 @@ Row::cell_type convertToCellType(const std::string& value, std::type_index type)
       return Row::cell_type {boost::lexical_cast<std::string>(value)};
     }
   } catch( boost::bad_lexical_cast const& ) {
-    throw ElementsException() << "Cannot convert " << value << " to " << type.name();
+    throw Elements::Exception() << "Cannot convert " << value << " to " << type.name();
   }
-  throw ElementsException() << "Unknown type name " << type.name();
+  throw Elements::Exception() << "Unknown type name " << type.name();
 }
 
 }

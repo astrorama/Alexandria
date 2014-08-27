@@ -48,7 +48,7 @@ private:
  * @param in The string to read from
  * @param comment The comment pattern
  * @return The number of columns
- * @throws ElementsException
+ * @throws Elements::Exception
  *    if there is no uncommented, non-empty line
  */
 ELEMENTS_API size_t countColumns(std::istream& in, const std::string& comment);
@@ -65,7 +65,7 @@ ELEMENTS_API size_t countColumns(std::istream& in, const std::string& comment);
  * @param comment The comment pattern
  * @param columns_number The number of columns
  * @return The auto-detected names of the columns
- * @throws ElementsException
+ * @throws Elements::Exception
  *    if there are duplicate column names
  */
 ELEMENTS_API std::vector<std::string> autoDetectColumnNames(std::istream& in,
@@ -84,7 +84,7 @@ ELEMENTS_API std::vector<std::string> autoDetectColumnNames(std::istream& in,
  * @param comment The comment pattern
  * @param columns_number The number of columns
  * @return The auto-detected types of the columns
- * @throws ElementsException
+ * @throws Elements::Exception
  *    if any of the types is not one of the valid keywords
  */
 ELEMENTS_API std::vector<std::type_index> autoDetectColumnTypes(std::istream& in,
@@ -101,7 +101,7 @@ ELEMENTS_API std::vector<std::type_index> autoDetectColumnTypes(std::istream& in
  * @param value The value to convert
  * @param type The type of the cell
  * @return The Row::cell_type representing the value
- * @throws ElementsException
+ * @throws Elements::Exception
  *    if the conversion fails
  */
 ELEMENTS_API Row::cell_type convertToCellType(const std::string& value, std::type_index type);

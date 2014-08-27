@@ -8,7 +8,7 @@
 #include <exception>
 #include <boost/filesystem.hpp>
 #include <boost/algorithm/string.hpp>
-#include "ElementsKernel/ElementsException.h"
+#include "ElementsKernel/Exception.h"
 #include "XYDataset/FileSystemProvider.h"
 #include "StringFunctions.h"
 
@@ -32,7 +32,7 @@ FileSystemProvider::FileSystemProvider(const std::string& root_path, std::unique
   // Convert path to boost filesytem object
   fs::path fspath(m_root_path);
   if (!fs::exists(fspath)) {
-    throw ElementsException() << "Root path not found : " << fspath;
+    throw Elements::Exception() << "Root path not found : " << fspath;
   }
 
   // Get all files below the root directory
@@ -57,7 +57,7 @@ FileSystemProvider::FileSystemProvider(const std::string& root_path, std::unique
         auto ret = m_map.insert(make_pair(qualified_name, it->path().string()));
         // Check for unique record
         if (!ret.second) {
-          throw ElementsException() << "Qualified name can not be inserted "
+          throw Elements::Exception() << "Qualified name can not be inserted "
                                     << "in the map. Qualify name : "
                                     << qualified_name.qualifiedName()
                                     << " Path :" << it->path().string();
@@ -67,7 +67,7 @@ FileSystemProvider::FileSystemProvider(const std::string& root_path, std::unique
     }
   }
   else {
-    throw ElementsException() << " Root path : " << fspath.string() << " is not a directory!";
+    throw Elements::Exception() << " Root path : " << fspath.string() << " is not a directory!";
   }
 
 }

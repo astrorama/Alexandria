@@ -10,7 +10,7 @@
 #include <map>
 #include "ChCatalog/SourceAttributes/PhotometryAttributeFromRow.h"
 #include "ChCatalog/SourceAttributes/Photometry.h"
-#include "ElementsKernel/ElementsException.h"
+#include "ElementsKernel/Exception.h"
 #include "ChCatalog/AttributeFromRow.h"
 
 //-----------------------------------------------------------------------------

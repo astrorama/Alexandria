@@ -4,7 +4,7 @@
  * @author Nikolaos Apostolakos
  */
 
-#include "ElementsKernel/ElementsException.h"
+#include "ElementsKernel/Exception.h"
 #include "ChTable/Table.h"
 
 namespace Euclid {
@@ -14,7 +14,7 @@ Table::Table(std::vector<Row> row_list) : m_row_list {std::move(row_list)} ,
                                           m_column_info {} {
   // Check we have some rows
   if (m_row_list.empty()) {
-    throw ElementsException() << "Construction of empty tables is not allowed";
+    throw Elements::Exception() << "Construction of empty tables is not allowed";
   }
   // We cannot initialize the m_column_info before this point because we must
   // be sure the row list is not empty
@@ -22,7 +22,7 @@ Table::Table(std::vector<Row> row_list) : m_row_list {std::move(row_list)} ,
   // Check that all the rows have the same column info
   for (auto row : m_row_list) {
     if (*row.getColumnInfo() != *m_column_info) {
-      throw ElementsException() << "Construction of table from rows with different "
+      throw Elements::Exception() << "Construction of table from rows with different "
                                 << "columns is not allowed";
     }
   }
@@ -38,7 +38,7 @@ std::size_t Table::size() const {
 
 const Row& Table::operator [](std::size_t index) const {
   if (index >= m_row_list.size()) {
-    throw ElementsException("Index out of bounds");
+    throw Elements::Exception("Index out of bounds");
   }
   return m_row_list[index];
 }

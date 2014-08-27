@@ -11,7 +11,7 @@
 #include <vector>
 #include <memory>
 
-#include "ElementsKernel/ElementsException.h"
+#include "ElementsKernel/Exception.h"
 
 #include "ChCatalog/SourceAttributes/Photometry.h"
 #include "ChCatalog/SourceAttributes/SpectroscopicRedshift.h"

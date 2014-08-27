@@ -5,7 +5,7 @@
  */
 
 #include <boost/test/unit_test.hpp>
-#include "ElementsKernel/ElementsException.h"
+#include "ElementsKernel/Exception.h"
 #include "ElementsKernel/Temporary.h"
 #include "ChTable/Table.h"
 #include "ChTable/ColumnInfo.h"
@@ -28,7 +28,7 @@ struct FitsWriter_Fixture {
   Euclid::ChTable::Row row1 {values1, column_info};
   std::vector<Euclid::ChTable::Row> row_list {row0, row1};
   Euclid::ChTable::Table table {row_list};
-  TempDir temp_dir;
+  Elements::TempDir temp_dir;
   std::unique_ptr<CCfits::FITS> fits {new CCfits::FITS(
          (temp_dir.path()/"FitsWriter_test.fits").native(), CCfits::RWmode::Write)};
 };

@@ -48,21 +48,21 @@ public:
    * Constructs a Row with the given cell values and column info descriptor
    * @details
    * The number and type of the cells must match the ones of the columns, otherwise a
-   * ElementsException is thrown. The column_info cannot be the nullptr and the
+   * Elements::Exception is thrown. The column_info cannot be the nullptr and the
    * values of the cells cannot be the empty string or contain any whitespace
    * characters (if they are of type std::string).
    *
    * @param values The values of the row cells
    * @param column_info The information of the columns
-   * @throws ElementsException
+   * @throws Elements::Exception
    *    if column_info is null
-   * @throws ElementsException
+   * @throws Elements::Exception
    *    if the values vector have different size than the number of columns
-   * @throws ElementsException
+   * @throws Elements::Exception
    *    if the values have different types than the columns
-   * @throws ElementsException
+   * @throws Elements::Exception
    *    if any of the cell values is the empty string
-   * @throws ElementsException
+   * @throws Elements::Exception
    *    if any of the cell values contains whitespace characters
    */
   Row(std::vector<cell_type> values, std::shared_ptr<ColumnInfo> column_info);
@@ -92,7 +92,7 @@ public:
    *
    * @param index The index of the column (zero based)
    * @return The value of the column
-   * @throws ElementsException
+   * @throws Elements::Exception
    *    if the index is out of range
    */
   const cell_type& operator[](const size_t index) const;
@@ -103,7 +103,7 @@ public:
    *
    * @param column The name of the column
    * @return The value of the row for the column
-   * @throws ElementsException
+   * @throws Elements::Exception
    *    if there is no column with such name
    */
   const cell_type& operator[](const std::string& column) const;

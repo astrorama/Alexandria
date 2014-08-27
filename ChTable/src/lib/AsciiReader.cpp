@@ -14,7 +14,7 @@
 using boost::regex;
 using boost::regex_match;
 #include <boost/algorithm/string.hpp>
-#include "ElementsKernel/ElementsException.h"
+#include "ElementsKernel/Exception.h"
 #include "ChTable/AsciiReader.h"
 #include "ReaderHelper.h"
 #include "AsciiReaderHelper.h"
@@ -28,25 +28,25 @@ AsciiReader::AsciiReader(std::vector<std::type_index> column_types,
                   m_column_names{std::move(column_names)},
                   m_comment{std::move(comment)} {
   if (m_comment.empty()) {
-    throw ElementsException() << "Empty string as comment indicator";
+    throw Elements::Exception() << "Empty string as comment indicator";
   }
   std::set<std::string> set {};
   regex whitespace {".*\\s.*"}; // Checks if input contains any whitespace characters
   for (const auto& name : m_column_names) {
     if (name.empty()) {
-      throw ElementsException() << "Empty string column names are not allowed";
+      throw Elements::Exception() << "Empty string column names are not allowed";
     }
     if (regex_match(name, whitespace)) {
-      throw ElementsException() << "Column name '" << name << "' contains "
+      throw Elements::Exception() << "Column name '" << name << "' contains "
                                 << "whitespace characters";
     }
     if (!set.insert(name).second) {  // Check for duplicate names
-      throw ElementsException() << "Duplicate column name " << name;
+      throw Elements::Exception() << "Duplicate column name " << name;
     }
   }
   if (!m_column_names.empty() && !m_column_types.empty()
       && m_column_names.size() != m_column_types.size()) {
-    throw ElementsException() << "Different number of column names and types";
+    throw Elements::Exception() << "Different number of column names and types";
   }
 }
 
@@ -56,7 +56,7 @@ const Table AsciiReader::read(std::istream& in) const {
   if (m_column_names.empty()) {
     names = autoDetectColumnNames(in, m_comment, columns_number);
   } else if (m_column_names.size() != columns_number) {
-      throw ElementsException() << "Columns number in stream (" << columns_number
+      throw Elements::Exception() << "Columns number in stream (" << columns_number
                                 << ") does not match the column names number ("
                                 << m_column_names.size() << ")";
   } else {
@@ -66,7 +66,7 @@ const Table AsciiReader::read(std::istream& in) const {
   if (m_column_types.empty()) {
     types = autoDetectColumnTypes(in, m_comment, columns_number);
   } else if (m_column_types.size() != columns_number) {
-      throw ElementsException() << "Columns number in stream (" << columns_number
+      throw Elements::Exception() << "Columns number in stream (" << columns_number
                                 << ") does not match the column types number ("
                                 << m_column_types.size() << ")";
   } else {
@@ -91,7 +91,7 @@ const Table AsciiReader::read(std::istream& in) const {
       std::vector<Row::cell_type> values {};
       while (i != j) {
         if (count >= types.size()) {
-          throw ElementsException() << "Line with wrong number of cells: " << line;
+          throw Elements::Exception() << "Line with wrong number of cells: " << line;
         }
         values.push_back(convertToCellType(*i, types[count]));
         ++count;

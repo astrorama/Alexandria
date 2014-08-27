@@ -8,7 +8,7 @@
 #include <set>
 #include <boost/test/unit_test.hpp>
 
-#include "ElementsKernel/ElementsException.h"
+#include "ElementsKernel/Exception.h"
 #include "XYDataset/QualifiedName.h"
 
 //-----------------------------------------------------------------------------
@@ -21,10 +21,10 @@ BOOST_AUTO_TEST_SUITE (QualifiedName_test)
 
 BOOST_AUTO_TEST_CASE(constructorExceptions_test) {
   
-  BOOST_CHECK_THROW((Euclid::XYDataset::QualifiedName{{"","g"}, "b"}),ElementsException);
-  BOOST_CHECK_THROW((Euclid::XYDataset::QualifiedName{{"asd/sad", "g"}, "b"}), ElementsException);
-  BOOST_CHECK_THROW((Euclid::XYDataset::QualifiedName{{"a","g"}, ""}), ElementsException);
-  BOOST_CHECK_THROW((Euclid::XYDataset::QualifiedName{{"a","g"}, "bdf/sdf"}), ElementsException);
+  BOOST_CHECK_THROW((Euclid::XYDataset::QualifiedName{{"","g"}, "b"}),Elements::Exception);
+  BOOST_CHECK_THROW((Euclid::XYDataset::QualifiedName{{"asd/sad", "g"}, "b"}), Elements::Exception);
+  BOOST_CHECK_THROW((Euclid::XYDataset::QualifiedName{{"a","g"}, ""}), Elements::Exception);
+  BOOST_CHECK_THROW((Euclid::XYDataset::QualifiedName{{"a","g"}, "bdf/sdf"}), Elements::Exception);
   
 }
 

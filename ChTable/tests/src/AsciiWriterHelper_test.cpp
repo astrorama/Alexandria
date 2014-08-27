@@ -6,7 +6,7 @@
 
 #include <boost/test/unit_test.hpp>
 #include <strstream>
-#include "ElementsKernel/ElementsException.h"
+#include "ElementsKernel/Exception.h"
 #include "ChTable/ColumnInfo.h"
 #include "ChTable/Row.h"
 #include "ChTable/Table.h"

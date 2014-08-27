@@ -55,13 +55,13 @@ public:
    * semantics if the passed object is an rvalue.
    *
    * @param info_list A vector containing the names and types of the columns
-   * @throws ElementsException
+   * @throws Elements::Exception
    *    if the info_list is empty
-   * @throws ElementsException
+   * @throws Elements::Exception
    *    if the info_list contains duplicate name entries
-   * @throws ElementsException
+   * @throws Elements::Exception
    *    if any of the given column names is the empty string
-   * @throws ElementsException
+   * @throws Elements::Exception
    *    if any of the given column names contains whitespace characters
    */
   ColumnInfo(std::vector<info_type> info_list);
@@ -102,7 +102,7 @@ public:
    *
    * @param index The index to search for
    * @return The name of the column
-   * @throws ElementsException
+   * @throws Elements::Exception
    *    if the index is out of bounds
    */
   const std::string& getName(std::size_t index) const;
@@ -114,7 +114,7 @@ public:
    *
    * @param index The index to search for
    * @return The type of the column cells
-   * @throws ElementsException
+   * @throws Elements::Exception
    *    if the index is out of bounds
    */
   const std::type_index& getType(std::size_t index) const;

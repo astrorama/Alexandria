@@ -23,7 +23,7 @@ CatalogFromTable::CatalogFromTable(
   if (source_id_index_ptr == nullptr
       || type_index(typeid(int64_t))
           != column_info_ptr->getType(*(source_id_index_ptr))) {
-    throw ElementsException()
+    throw Elements::Exception()
         << "Column info does not have the expected source_id column of type: double";
   }
   m_source_id_index = *(source_id_index_ptr);

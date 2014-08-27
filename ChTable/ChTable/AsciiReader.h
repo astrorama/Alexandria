@@ -68,13 +68,13 @@ public:
    * @param column_types The types of the columns or empty for auto-detection (default)
    * @param column_names The names of the columns or empty for auto-detection (default)
    * @param comment The sequence of characters to mark the beginning of a comment (defaults to "#")
-   * @throws ElementsException
+   * @throws Elements::Exception
    *    if the comment string is the empty string
-   * @throws ElementsException
+   * @throws Elements::Exception
    *    if there are duplicate column names
-   * @throws ElementsException
+   * @throws Elements::Exception
    *    if any of the given column names is empty or contains whitespace characters
-   * @throws ElementsException
+   * @throws Elements::Exception
    *    if none of column_types and column_names are set for auto-detection and
    *    they have different size
    */
@@ -101,19 +101,19 @@ public:
    *
    * @param in the stream to read the table from
    * @return the table
-   * @throws ElementsException
+   * @throws Elements::Exception
    *    if the stream does not contain any non comment lines
-   * @throws ElementsException
+   * @throws Elements::Exception
    *    if column names are given to the constructor and the stream contains
    *    data with different number of columns
-   * @throws ElementsException
+   * @throws Elements::Exception
    *    if column types are given to the constructor and the stream contains
    *    data with different number of columns
-   * @throws ElementsException
+   * @throws Elements::Exception
    *    if the stream contains lines with different number of columns
-   * @throws ElementsException
+   * @throws Elements::Exception
    *    if column name auto-detection is enabled and there are duplicate names
-   * @throws ElementsException
+   * @throws Elements::Exception
    *    if any cell cannot be converted to the correct type
    */
   const Table read(std::istream& in) const;

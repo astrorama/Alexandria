@@ -7,7 +7,7 @@
 
 #include <typeindex>
 #include "ChCatalog/SourceAttributes/PhotometryAttributeFromRow.h"
-#include "ElementsKernel/ElementsException.h"
+#include "ElementsKernel/Exception.h"
 
 using namespace std;
 
@@ -28,10 +28,10 @@ PhotometryAttributeFromRow::PhotometryAttributeFromRow(
         filter_name_pair.second.second);
 
     if (flux_column_index_ptr == nullptr || type_index(typeid(double)) != column_info_ptr->getType(*(flux_column_index_ptr)) ) {
-      throw ElementsException() << "Column info does not have the expected flux column of double type";
+      throw Elements::Exception() << "Column info does not have the expected flux column of double type";
     }
     if (error_column_index_ptr == nullptr || type_index(typeid(double)) != column_info_ptr->getType(*(error_column_index_ptr)) ) {
-      throw ElementsException() << "Column info does not have the expected flux column of double type";
+      throw Elements::Exception() << "Column info does not have the expected flux column of double type";
     }
     m_table_index_vector.push_back(make_pair(*(flux_column_index_ptr), *(error_column_index_ptr)));
   }

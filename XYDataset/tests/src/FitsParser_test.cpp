@@ -13,7 +13,7 @@
 #include <boost/test/unit_test.hpp>
 #include <boost/filesystem.hpp>
 
-#include "ElementsKernel/ElementsException.h"
+#include "ElementsKernel/Exception.h"
 #include "ElementsKernel/Temporary.h"
 #include <CCfits/CCfits>
 #include "ChTable/FitsReader.h"
@@ -36,7 +36,7 @@ CCfits::Table* addTable(CCfits::FITS& fits) {
 }
 
 struct FitsParser_Fixture {
-  TempDir temp_dir;
+  Elements::TempDir temp_dir;
   std::string fits_file        = temp_dir.path().native()+"/FitsParser_test.fits";
   std::string fits_nodata_file = temp_dir.path().native()+"/FitsParser_nodata_test.fits";
 
@@ -68,7 +68,7 @@ BOOST_FIXTURE_TEST_CASE(exception_getName_function_test, FitsParser_Fixture) {
 
   FitsParser parser{};
 
-  BOOST_CHECK_THROW(parser.getName("File_does_not_exist.fits"), ElementsException);
+  BOOST_CHECK_THROW(parser.getName("File_does_not_exist.fits"), Elements::Exception);
 }
 
 //-----------------------------------------------------------------------------
@@ -109,7 +109,7 @@ BOOST_FIXTURE_TEST_CASE(getDataset_function_test, FitsParser_Fixture) {
   // Catch exception if FITS file incorrect
   FitsParser fits_parser_nodata { };
 
-  BOOST_CHECK_THROW(fits_parser_nodata.getDataset(fits_nodata_file), ElementsException);
+  BOOST_CHECK_THROW(fits_parser_nodata.getDataset(fits_nodata_file), Elements::Exception);
 
 }
 
