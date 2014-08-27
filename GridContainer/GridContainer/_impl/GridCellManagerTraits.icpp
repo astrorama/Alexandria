@@ -5,7 +5,7 @@
  */
 
 namespace Euclid {
-namespace Grid {
+namespace GridContainer {
 
 template<typename GridCellManager>
 std::unique_ptr<GridCellManager> GridCellManagerTraits<GridCellManager>::factory(size_t size) {
@@ -47,5 +47,5 @@ auto GridCellManagerTraits<std::vector<T>>::end(std::vector<T>& vector) -> itera
   return vector.end();
 }
 
-} // end of namespace Grid
+} // end of namespace GridContainer
 } // end of namespace Euclid

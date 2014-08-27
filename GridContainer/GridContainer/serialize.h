@@ -15,7 +15,7 @@
 #include "GridContainer/serialization/GridContainer.h"
 
 namespace Euclid {
-namespace Grid {
+namespace GridContainer {
 
 /**
  * @brief Exports to the given output stream the given grid
@@ -71,7 +71,7 @@ GridContainer<GridCellManager, AxesTypes...> gridBinaryImport(std::istream& in) 
   return std::move(*matr_ptr);
 }
 
-} // end of namespace Grid
+} // end of namespace GridContainer
 } // end of namespace Euclid
 
 #endif	/* GRIDCONTAINER_SERIALIZE_H */

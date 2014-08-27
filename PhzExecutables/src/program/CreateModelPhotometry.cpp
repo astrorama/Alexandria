@@ -125,7 +125,7 @@ public:
     
     {
       std::ofstream out {options["binary-photometry-grid"].as<std::string>()};
-      Euclid::Grid::gridBinaryExport(out, photometry_grid);
+      Euclid::GridContainer::gridBinaryExport(out, photometry_grid);
     }
     return Elements::ExitCode::OK;
   }

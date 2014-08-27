@@ -30,7 +30,7 @@ BOOST_AUTO_TEST_CASE(defaultOperations) {
   };
   
   // When
-  typedef Euclid::Grid::GridCellManagerTraits<DefaultCellManager> traits;
+  typedef Euclid::GridContainer::GridCellManagerTraits<DefaultCellManager> traits;
   auto result = traits::factory(5);
   
   // Then
@@ -54,7 +54,7 @@ BOOST_AUTO_TEST_CASE(vectorOperations) {
   typedef std::vector<double> VectorCellManager;
   
   // When
-  typedef Euclid::Grid::GridCellManagerTraits<VectorCellManager> traits;
+  typedef Euclid::GridContainer::GridCellManagerTraits<VectorCellManager> traits;
   auto result = traits::factory(5);
   
   // Then

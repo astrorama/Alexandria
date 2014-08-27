@@ -11,7 +11,7 @@
 #include <vector>
 
 namespace Euclid {
-namespace Grid {
+namespace GridContainer {
 
 /**
  * @class GridAxis
@@ -63,7 +63,7 @@ private:
   
 };
 
-} // end of namespace Grid
+} // end of namespace GridContainer
 } // end of namespace Euclid
 
 #include "GridContainer/_impl/GridAxis.icpp"

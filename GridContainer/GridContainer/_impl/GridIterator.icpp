@@ -8,7 +8,7 @@
 #include "ElementsKernel/Exception.h"
 
 namespace Euclid {
-namespace Grid {
+namespace GridContainer {
 
 template<typename GridCellManager, typename... AxesTypes>
 template<typename CellType>

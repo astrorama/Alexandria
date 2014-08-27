@@ -13,7 +13,7 @@
 #include "_impl/GridConstructionHelper.h"
 
 namespace Euclid {
-namespace Grid {
+namespace GridContainer {
 
 /**
  * @class GridIndexHelper
@@ -101,7 +101,7 @@ GridIndexHelper<AxesTypes...> makeGridIndexHelper(const std::tuple<GridAxis<Axes
   return GridIndexHelper<AxesTypes...>(axes_tuple);
 }
 
-} // end of namespace Grid
+} // end of namespace GridContainer
 } // end of namespace Euclid
 
 #include "GridContainer/_impl/GridIndexHelper.icpp"

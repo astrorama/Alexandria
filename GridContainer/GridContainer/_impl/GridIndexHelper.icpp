@@ -7,7 +7,7 @@
 #include "ElementsKernel/Exception.h"
 
 namespace Euclid {
-namespace Grid {
+namespace GridContainer {
 
 template<typename... AxesTypes>
 GridIndexHelper<AxesTypes...>::GridIndexHelper(const std::tuple<GridAxis<AxesTypes>...>& axes_tuple)

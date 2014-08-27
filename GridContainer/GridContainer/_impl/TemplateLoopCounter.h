@@ -8,7 +8,7 @@
 #define	GRIDCONTAINER_TEMPLATELOOPCOUNTER_H
 
 namespace Euclid {
-namespace Grid {
+namespace GridContainer {
 
 /// This is a dummy class with a integer template parameter, which is used
 /// as a counter for the template recursions.

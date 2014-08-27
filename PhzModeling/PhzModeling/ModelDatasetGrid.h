@@ -23,7 +23,7 @@ struct ModelDatasetCellManager {
 } // end of namespace Euclid
 
 namespace Euclid {
-namespace Grid {
+namespace GridContainer {
 
 template<>
 struct GridCellManagerTraits<Euclid::PhzModeling::ModelDatasetCellManager> {

@@ -23,7 +23,7 @@ typedef PhzGrid<PhotometryCellManager> PhotometryGrid;
 
 
 namespace Euclid {
-namespace Grid {
+namespace GridContainer {
 
 // We define the GridCellManagerTraits for a vector of Photometries to redefine the
 // factory method because the Photometry does not have default constructor.
@@ -49,7 +49,7 @@ struct GridCellManagerTraits<Euclid::PhzDataModel::PhotometryCellManager> {
   static const bool enable_boost_serialize = true;
 }; // end of GridCellManagerTraits
 
-} // end of namespace Grid
+} // end of namespace GridContainer
 } // end of namespace Euclid
 
 // Here we include the serialization of the photometry grid. This is done here

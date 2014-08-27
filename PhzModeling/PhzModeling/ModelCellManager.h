@@ -97,8 +97,8 @@ public:
   private:
     ModelCellManager& m_owner;
     size_t m_current_index;
-    decltype(Euclid::Grid::makeGridIndexHelper(std::declval<Euclid::PhzDataModel::ModelAxesTuple>()))
-        m_index_helper = Euclid::Grid::makeGridIndexHelper(m_owner.m_axes_tuple);
+    decltype(Euclid::GridContainer::makeGridIndexHelper(std::declval<Euclid::PhzDataModel::ModelAxesTuple>()))
+        m_index_helper = Euclid::GridContainer::makeGridIndexHelper(m_owner.m_axes_tuple);
     size_t m_current_sed_index {0};
     size_t m_current_reddening_curve_index {0};
     size_t m_current_ebv_index {0};

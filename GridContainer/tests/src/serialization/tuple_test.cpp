@@ -112,19 +112,19 @@ BOOST_AUTO_TEST_CASE(combinationOfValues) {
   // Given
   std::string name0 = "FundamentalAxis";
   std::vector<double> knots0 {0., 3.4, 12E-15};
-  Euclid::Grid::GridAxis<double> axis0 {name0, knots0};
+  Euclid::GridContainer::GridAxis<double> axis0 {name0, knots0};
   std::string name1 = "DefaultConstructibleAxis";
   std::vector<DCC> knots1 {DCC{}, DCC{}, DCC{}};
   knots1[0].value = 0.;
   knots1[1].value = 3.4;
   knots1[2].value = 12E-15;
-  Euclid::Grid::GridAxis<DCC> axis1 {name1, knots1};
+  Euclid::GridContainer::GridAxis<DCC> axis1 {name1, knots1};
   std::string name2 = "NonDefaultConstructibleAxis";
   std::vector<NDCC> knots2 {};
   knots2.push_back(NDCC{0.});
   knots2.push_back(NDCC{3.4});
   knots2.push_back(NDCC{12E-15});
-  Euclid::Grid::GridAxis<NDCC> axis2 {name2, knots2};
+  Euclid::GridContainer::GridAxis<NDCC> axis2 {name2, knots2};
   auto tuple = std::make_tuple(axis0, axis1, axis2);
   
   // When
@@ -135,9 +135,9 @@ BOOST_AUTO_TEST_CASE(combinationOfValues) {
   // some dummy default values which will be replaced with the ones from the
   // stream
   auto result = std::make_tuple(
-    Euclid::Grid::GridAxis<double>{"", {}},
-    Euclid::Grid::GridAxis<DCC>{"", {}},
-    Euclid::Grid::GridAxis<NDCC>{"", {}}
+    Euclid::GridContainer::GridAxis<double>{"", {}},
+    Euclid::GridContainer::GridAxis<DCC>{"", {}},
+    Euclid::GridContainer::GridAxis<NDCC>{"", {}}
   );
   boost::archive::binary_iarchive bia {stream};
   bia >> result;

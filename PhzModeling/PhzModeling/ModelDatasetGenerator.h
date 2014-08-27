@@ -22,12 +22,12 @@ public:
                         const std::vector<std::unique_ptr<Euclid::XYDataset::XYDataset>>& sed_data_vector,
                         const std::vector<ExtinctionFunctor>& reddening_curve_functor_vector,
                         size_t current_index)
-      : m_index_helper{Euclid::Grid::makeGridIndexHelper(axes_tuple)}, m_axes_tuple(axes_tuple), m_current_index{current_index},
+      : m_index_helper{Euclid::GridContainer::makeGridIndexHelper(axes_tuple)}, m_axes_tuple(axes_tuple), m_current_index{current_index},
         m_size{m_index_helper.m_axes_index_factors.back()}, m_sed_data_vector(sed_data_vector),
         m_reddening_curve_functor_vector(reddening_curve_functor_vector) { }
        
   ModelDatasetGenerator(const ModelDatasetGenerator& other) 
-      : m_index_helper{Euclid::Grid::makeGridIndexHelper(other.m_axes_tuple)}, m_axes_tuple(other.m_axes_tuple), m_current_index{other.m_current_index},
+      : m_index_helper{Euclid::GridContainer::makeGridIndexHelper(other.m_axes_tuple)}, m_axes_tuple(other.m_axes_tuple), m_current_index{other.m_current_index},
         m_size{other.m_size}, m_sed_data_vector(other.m_sed_data_vector),
         m_reddening_curve_functor_vector(other.m_reddening_curve_functor_vector) { }
   
@@ -130,7 +130,7 @@ public:
 private:
   
   // An object to convert the parameter space coordinates to a long index and vice versa
-  decltype(Euclid::Grid::makeGridIndexHelper(std::declval<Euclid::PhzDataModel::ModelAxesTuple>())) m_index_helper;
+  decltype(Euclid::GridContainer::makeGridIndexHelper(std::declval<Euclid::PhzDataModel::ModelAxesTuple>())) m_index_helper;
   const Euclid::PhzDataModel::ModelAxesTuple& m_axes_tuple;
   
   // The current long 1D index

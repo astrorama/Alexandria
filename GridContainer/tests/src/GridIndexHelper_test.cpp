@@ -9,7 +9,7 @@
 #include "GridContainer/GridIndexHelper.h"
 
 struct GridIndexHelper_Fixture {
-  typedef Euclid::Grid::GridAxis<int> IntAxis;
+  typedef Euclid::GridContainer::GridAxis<int> IntAxis;
   IntAxis axis1 {"Axis 1", {1, 2, 3, 4, 5}};
   IntAxis axis2 {"Axis 2", {1, 2, 3}};
   IntAxis axis3 {"Axis 3", {1, 2, 3, 4, 5, 6}};
@@ -29,7 +29,7 @@ BOOST_AUTO_TEST_SUITE (GridIndexHelper_test)
 BOOST_FIXTURE_TEST_CASE(axisIndex, GridIndexHelper_Fixture) {
   
   // When
-  auto helper = Euclid::Grid::makeGridIndexHelper(axes_tuple);
+  auto helper = Euclid::GridContainer::makeGridIndexHelper(axes_tuple);
             
   // Then
   size_t array_index {0};
@@ -56,7 +56,7 @@ BOOST_FIXTURE_TEST_CASE(axisIndex, GridIndexHelper_Fixture) {
 BOOST_FIXTURE_TEST_CASE(totalIndex, GridIndexHelper_Fixture) {
   
   // When
-  auto helper = Euclid::Grid::makeGridIndexHelper(axes_tuple);
+  auto helper = Euclid::GridContainer::makeGridIndexHelper(axes_tuple);
             
   // Then
   size_t array_index {0};
@@ -80,7 +80,7 @@ BOOST_FIXTURE_TEST_CASE(totalIndex, GridIndexHelper_Fixture) {
 BOOST_FIXTURE_TEST_CASE(totalIndexChecked, GridIndexHelper_Fixture) {
   
   // When
-  auto helper = Euclid::Grid::makeGridIndexHelper(axes_tuple);
+  auto helper = Euclid::GridContainer::makeGridIndexHelper(axes_tuple);
             
   // Then
   size_t array_index {0};
@@ -104,7 +104,7 @@ BOOST_FIXTURE_TEST_CASE(totalIndexChecked, GridIndexHelper_Fixture) {
 BOOST_FIXTURE_TEST_CASE(totalIndexCheckedOutOfBounds, GridIndexHelper_Fixture) {
   
   // When
-  auto helper = Euclid::Grid::makeGridIndexHelper(axes_tuple);
+  auto helper = Euclid::GridContainer::makeGridIndexHelper(axes_tuple);
             
   // Then
   BOOST_CHECK_THROW(helper.totalIndexChecked(axis1.size(), 0, 0, 0), Elements::Exception);

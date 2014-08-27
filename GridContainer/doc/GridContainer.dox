@@ -1,5 +1,5 @@
 namespace Euclid {
-namespace Grid {
+namespace GridContainer {
 
 /** \page gridcontainer GridContainer module
 
@@ -15,7 +15,7 @@ This page contains multiple code examples. To improve readability, the following
 two lines are assumed for each example:
 
 \code{.cpp}
-  using namespace Grid;
+  using namespace Euclid::GridContainer;
   using namespace std;
 \endcode
 
@@ -211,7 +211,7 @@ Third axis name: Strings
 Third axis knots: one two three
 \endcode
 
-Note that the axes information is retrieved by the Grid::getAxis()
+Note that the axes information is retrieved by the GridContainer::getAxis()
 method, which returns a reference to an GridAxis object. The axis to get the
 information for is specified with an integer template parameter representing its
 (zero based) index.
@@ -234,7 +234,7 @@ given indices. If any of the indices is out of bounds will result to *undefined
 behavior*. For cases the indices are not guaranteed to be in bounds, the
 alternative method at() should be used (with the implied performance cost),
 which behaves the same way like the parenthesis operator, but it throws an
-ElementsException in the case any of the indices is out of bounds:
+Elements::Exception in the case any of the indices is out of bounds:
 
 \code{.cpp}
   size_t coord = .....;
@@ -243,7 +243,7 @@ ElementsException in the case any of the indices is out of bounds:
     grid.at(coord, 0, 1) = 50;
     // Read the value of a specific cell
     cout << grid.at(coord, 0, 1) << "\n";
-  } catch (ElementsException e) {
+  } catch (Elements::Exception e) {
     cout << e.what() << "\n";
   }
 \endcode
@@ -289,7 +289,7 @@ The order the cells are iterated is such so that the first axis varies the
 fastest and the last the slowest. Note that using the iterator for accessing the
 grid cells is the most efficient way, but it does not provide any information
 about the axes of each cell. This information can be retrieved by using the
-special methods of the Grid::iterator when needed (which implies some
+special methods of the GridContainer::iterator when needed (which implies some
 computing overhead):
 
 \code{.cpp}
@@ -336,8 +336,8 @@ Cell (5, 0.2, three): 30
 \endcode
 
 The methods provided by the iterator for accessing the axes information are the
-Grid::iterator::axisIndex(), which returns the related coordinate, and
-the Grid::iterator::axisValue(), which returns the world value of the
+GridContainer::iterator::axisIndex(), which returns the related coordinate, and
+the GridContainer::iterator::axisValue(), which returns the world value of the
 axis knot. Both methods receive the axis (zero based) index as an integer
 template parameter. Note that the overhead of the second method is higher than
 the one of the first, so it should be avoided in cases performance is an issue.
@@ -345,8 +345,8 @@ the one of the first, so it should be avoided in cases performance is an issue.
 \subsubsection gridslicing GridContainer slicing
 
 The GridContainer module provides very efficient iteration over slices of a
-GridContainer. This is provided by the Grid::iterator::fixAxisByIndex()
-and Grid::iterator::fixAxisByValue() methods, as demonstrated by the
+GridContainer. This is provided by the GridContainer::iterator::fixAxisByIndex()
+and GridContainer::iterator::fixAxisByValue() methods, as demonstrated by the
 following code:
 
 \code{.cpp}
@@ -397,7 +397,7 @@ Cell (3, 0.1, two): 13
 The order in which the axes are fixed is not important, but keep in mind that if
 the current cell does not have the requested axis coordinate the iterator is
 shifted. For this reason it is best to fix the iterator axes right after
-retrieving the iterator with the Grid::begin() method. If an axis is
+retrieving the iterator with the GridContainer::begin() method. If an axis is
 fixed a second time, the iterator will ignore the first fixing and will iterate
 through the new slice.
 
@@ -655,7 +655,7 @@ The specialization of the GridCellManagerTraits for our `MemoryManager` type can
 be done with the following code:
 
 \code{.cpp}
-namespace Grid {
+namespace GridContainer {
 
 template<typename T>
 struct GridCellManagerTraits<MemoryManager<T>> {
@@ -696,7 +696,7 @@ here.
 #include "GridContainer/GridContainer.h"
 #include "GridContainer/serialize.h"
 
-using namespace Grid;
+using namespace Euclid::GridContainer;
 using namespace std;
 
 // /////////////////////////////////////
@@ -724,7 +724,8 @@ private:
   T* m_start;
 };
 
-namespace Grid {
+namespace Euclid {
+namespace GridContainer {
 
 template<typename T>
 struct GridCellManagerTraits<MemoryManager<T>> {
@@ -746,6 +747,7 @@ struct GridCellManagerTraits<MemoryManager<T>> {
 };
 
 } // End of GridContainer namespace
+} // End of Euclid namespace
 
 // /////////////////////////////////////////
 // End of custom GridCellManager definitions
@@ -862,7 +864,7 @@ int main() {
     grid.at(coord, 0, 1) = 50;
     // Read the value of a specific cell
     cout << "GridContainer cell (" << coord << ", 0, 1):" << grid.at(coord, 0, 1) << "\n";
-  } catch (ElementsException e) {
+  } catch (Elements::Exception e) {
     cout << e.what() << "\n";
   }
   
@@ -873,7 +875,7 @@ int main() {
     grid.at(coord, 0, 1) = 50;
     // Read the value of a specific cell
     cout << "GridContainer cell (" << coord << ", 0, 1):" << grid.at(coord, 0, 1) << "\n";
-  } catch (ElementsException e) {
+  } catch (Elements::Exception e) {
     cout << e.what() << "\n";
   }
 

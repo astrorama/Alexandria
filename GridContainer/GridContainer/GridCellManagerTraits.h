@@ -11,7 +11,7 @@
 #include <memory>
 
 namespace Euclid {
-namespace Grid {
+namespace GridContainer {
 
 /**
  * @class GridCellManagerTraits
@@ -120,7 +120,7 @@ struct GridCellManagerTraits<std::vector<T>> {
   
 }; // end of GridCellManagerTraits vector specialization
 
-} // end of namespace Grid
+} // end of namespace GridContainer
 } // end of namespace Euclid
 
 #include "GridContainer/_impl/GridCellManagerTraits.icpp"

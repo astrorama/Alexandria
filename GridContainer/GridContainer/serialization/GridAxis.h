@@ -18,7 +18,7 @@ namespace serialization {
 /// Method which saves/loads an GridAxis instance to/from an archive. It
 /// does nothing as everything is done with the data passed to the constructor.
 template<typename Archive, typename T>
-void serialize(Archive&, Euclid::Grid::GridAxis<T>&, const unsigned int) {
+void serialize(Archive&, Euclid::GridContainer::GridAxis<T>&, const unsigned int) {
   // Nothing here as everything is done with the data passed to the constructor
 }
 
@@ -48,7 +48,7 @@ void saveType(Archive& ar, const T& t, typename std::enable_if<!std::is_default_
 /// NOTE: Any changes in this method should be reflected in the
 /// load_construct_data method.
 template<typename Archive, typename T>
-void save_construct_data(Archive& ar, const Euclid::Grid::GridAxis<T>* t,
+void save_construct_data(Archive& ar, const Euclid::GridContainer::GridAxis<T>* t,
                                 const unsigned int) {
   std::string name = t->name();
   ar << name;
@@ -91,7 +91,7 @@ T loadType(Archive& ar, typename std::enable_if<!std::is_default_constructible<T
 /// NOTE: Any changes in this method should be reflected in the
 /// save_construct_data method.
 template<typename Archive, typename T>
-void load_construct_data(Archive& ar, Euclid::Grid::GridAxis<T>* t,
+void load_construct_data(Archive& ar, Euclid::GridContainer::GridAxis<T>* t,
                                 const unsigned int) {
   std::string name;
   ar >> name;
@@ -102,7 +102,7 @@ void load_construct_data(Archive& ar, Euclid::Grid::GridAxis<T>* t,
     T value = loadType<Archive, T>(ar);
     values.push_back(value);
   }
-  ::new(t) Euclid::Grid::GridAxis<T>(name, values);
+  ::new(t) Euclid::GridContainer::GridAxis<T>(name, values);
 }
 
 } /* end of namespace serialization */

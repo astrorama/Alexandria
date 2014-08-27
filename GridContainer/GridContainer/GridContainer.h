@@ -16,7 +16,7 @@
 #include "_impl/GridConstructionHelper.h"
 
 namespace Euclid {
-namespace Grid {
+namespace GridContainer {
 
 /**
  * @class GridContainer
@@ -289,7 +289,7 @@ private:
   
 }; // end of class iter
 
-} // end of namespace Grid
+} // end of namespace GridContainer
 } // end of namespace Euclid
 
 #include "GridContainer/_impl/GridContainer.icpp"
