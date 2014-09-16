@@ -13,24 +13,53 @@
 namespace Euclid {
 namespace PhzModeling {
 
+/**
+ * @class Euclid::PhzModeling::RedshiftFunctor
+ * @brief
+ * This functor is in charge of redshifting the SED
+ * @details
+ * This functor is redshifting a SED to a given value z of the redshift. The shift is applied to all the pair of the SED.
+ * For a given z, the wavelength component of the SED is multiplied by the factor(1+z)
+ * while the corresponding flux is multiplied by 1/(1+z)²
+ */
 class RedshiftFunctor {
 
 public:
+	/**
+	    * @brief Default Constructor
+	    */
 	RedshiftFunctor() = default;
 
+	/**
+	    * @brief Move Constructor
+		*/
 	RedshiftFunctor(RedshiftFunctor&&) = default;
 
+	/**
+		* @brief Move operator
+		*/
 	RedshiftFunctor& operator=(RedshiftFunctor&&) = default;
 
+	/**
+		* @brief Destructor
+		*/
 	virtual ~RedshiftFunctor() = default;
 
-	Euclid::XYDataset::XYDataset operator()(const Euclid::XYDataset::XYDataset& sed, double z) const {
-	    std::vector<std::pair<double, double>> redshifted_values {};
-	    for (auto& sed_pair : sed) {
-	    	redshifted_values.push_back(std::make_pair(sed_pair.first*(1+z),sed_pair.second/((1+z)*(1+z))));
-	    }
-	    return  Euclid::XYDataset::XYDataset {std::move(redshifted_values)};
-	  }
+	/**
+		* @brief Function Call Operator
+		* @details
+		* Execute the redshifting of a SED
+		*
+	    * @param sed
+		* A XYDataset representing the SED to be redshifted.
+		*
+		* @param z
+		* The redshift to be applied as a double.
+		*
+		* @return
+		* A XYDataset representing the redshifted SED.
+		*/
+	Euclid::XYDataset::XYDataset operator()(const Euclid::XYDataset::XYDataset& sed, double z) const;
 };
 
 } // end of namespace PhzModeling

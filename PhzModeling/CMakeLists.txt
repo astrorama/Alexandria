@@ -10,7 +10,13 @@ elements_depends_on_subdirs(PhzDataModel)
 
 find_package(Boost REQUIRED COMPONENTS serialization)
 
+#===== Libraries ===============================================================
+elements_add_library(PhzModeling src/lib/*.cpp
+                  LINK_LIBRARIES ${CMAKE_DL_LIBS} Boost XYDataset
+                  INCLUDE_DIRS Boost XYDataset
+                  PUBLIC_HEADERS PhzModeling )
+
 #===== Boost tests =============================================================
 
 elements_add_unit_test(RedshiftFunctor_test tests/src/RedshiftFunctor_test.cpp
-                       LINK_LIBRARIES XYDataset TYPE Boost)
+                       LINK_LIBRARIES XYDataset PhzModeling TYPE Boost)
