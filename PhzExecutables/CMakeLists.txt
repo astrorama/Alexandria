@@ -14,15 +14,15 @@ find_package(Boost REQUIRED COMPONENTS program_options serialization)
 #===== Executables =============================================================
                   
 elements_add_executable(CreateModelPhotometry src/program/CreateModelPhotometry.cpp
-                  LINK_LIBRARIES Boost ElementsKernel PhzConfiguration SourceCatalog MathUtils
+                  LINK_LIBRARIES Boost ElementsKernel PhzConfiguration SourceCatalog MathUtils PhzModeling
                   INCLUDE_DIRS Boost ElementsKernel PhzConfiguration PhzDataModel GridContainer PhzModeling)
                   
 elements_add_executable(PhotometryToLikelihood src/program/PhotometryToLikelihood.cpp
-                  LINK_LIBRARIES Boost ElementsKernel PhzConfiguration SourceCatalog MathUtils
+                  LINK_LIBRARIES Boost ElementsKernel PhzConfiguration SourceCatalog MathUtils PhzModeling
                   INCLUDE_DIRS Boost ElementsKernel PhzConfiguration PhzDataModel GridContainer PhzLikelihood)
                   
 elements_add_executable(ExportModelDataset src/program/ExportModelDataset.cpp
-                  LINK_LIBRARIES Boost ElementsKernel PhzConfiguration SourceCatalog MathUtils
+                  LINK_LIBRARIES Boost ElementsKernel PhzConfiguration SourceCatalog MathUtils PhzModeling
                   INCLUDE_DIRS Boost ElementsKernel PhzConfiguration PhzDataModel GridContainer PhzModeling)
 
 #---Python modules, Scripts, conf and aux files --------------------------------

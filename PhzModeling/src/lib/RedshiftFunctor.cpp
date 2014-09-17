@@ -4,8 +4,6 @@
  * @author Florian Dubath
  */
 
-
-#include "XYDataset/XYDataset.h"
 #include "PhzModeling/RedshiftFunctor.h"
 
 namespace Euclid {

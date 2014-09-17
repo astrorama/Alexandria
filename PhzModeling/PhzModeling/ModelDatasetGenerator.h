@@ -10,122 +10,164 @@
 #include "XYDataset/XYDataset.h"
 #include "PhzDataModel/PhzModel.h"
 #include "PhzModeling/ExtinctionFunctor.h"
+#include "PhzModeling/RedshiftFunctor.h"
 
 namespace Euclid {
 namespace PhzModeling {
 
+/**
+ * @class Euclid::PhzModeling::ModelDatasetGenerator
+ * @brief Provides the Model for the current index of the Model parameter space iterator
+ */
 class ModelDatasetGenerator {
   
 public:
-  
+  /**
+	* @brief Constructor
+	* @details
+	* Constructor.
+	*
+	* @param axes_tuple
+	* A ModelAxesTuple defining the axes of the the Grid.
+	*
+	* @param sed_data_vector
+	* A vector<XYDataset> containing the SED templates.
+	*
+	* @param reddening_curve_functor_vector
+	* A vector<ExtinctionFunctor> containing the extinction functors.
+	*
+	* @param current_index
+	* The current index.
+	*/
   ModelDatasetGenerator(const Euclid::PhzDataModel::ModelAxesTuple& axes_tuple,
-                        const std::vector<std::unique_ptr<Euclid::XYDataset::XYDataset>>& sed_data_vector,
+                        const std::vector<Euclid::XYDataset::XYDataset>& sed_data_vector,
                         const std::vector<ExtinctionFunctor>& reddening_curve_functor_vector,
-                        size_t current_index)
-      : m_index_helper{Euclid::GridContainer::makeGridIndexHelper(axes_tuple)}, m_axes_tuple(axes_tuple), m_current_index{current_index},
-        m_size{m_index_helper.m_axes_index_factors.back()}, m_sed_data_vector(sed_data_vector),
-        m_reddening_curve_functor_vector(reddening_curve_functor_vector) { }
-       
-  ModelDatasetGenerator(const ModelDatasetGenerator& other) 
-      : m_index_helper{Euclid::GridContainer::makeGridIndexHelper(other.m_axes_tuple)}, m_axes_tuple(other.m_axes_tuple), m_current_index{other.m_current_index},
-        m_size{other.m_size}, m_sed_data_vector(other.m_sed_data_vector),
-        m_reddening_curve_functor_vector(other.m_reddening_curve_functor_vector) { }
+                        size_t current_index);
+  /**
+    * @brief Copy constructor.
+    */
+  ModelDatasetGenerator(const ModelDatasetGenerator& other);
   
-  ModelDatasetGenerator& operator=(const ModelDatasetGenerator& other) {
-    m_current_index = other.m_current_index;
-    m_current_reddened_sed.reset();
-    return *this;
-  }
+  /**
+    * @brief Assignment operator. Set the current index to the one of the other instance.
+    *
+    * @param other
+    * A ModelDatasetGenerator: the index has to be copied from.
+    *
+    */
+  ModelDatasetGenerator& operator=(const ModelDatasetGenerator& other);
   
-  ModelDatasetGenerator& operator=(size_t other) {
-    m_current_index = other;
-    m_current_reddened_sed.reset();
-    return *this;
-  }
+  /**
+    * @brief Assignment operator. Set the current index to the provided one and reset the current reddened SED.
+    *
+    * @param other
+    * A size_t: the new index.
+    *
+    */
+  ModelDatasetGenerator& operator=(size_t other);
   
-  ModelDatasetGenerator& operator++() {
-    if (m_current_index < m_size) {
-      ++m_current_index;
-    }
-    return *this;
-  }
+  /**
+    * @brief Increment operator. Increase the current index and reset the current model.
+    */
+  ModelDatasetGenerator& operator++();
   
-  ModelDatasetGenerator& operator+=(int n) {
-    m_current_index += n;
-    if (m_current_index > m_size) {
-      m_current_index = m_size;
-    }
-    return *this;
-  }
+  /**
+    * @brief Increment by addition operator. Increase the current index by the provided value and reset the current reddened SED.
+    *
+    * @param n
+    * An int: the index increment.
+    */
+  ModelDatasetGenerator& operator+=(int n) ;
   
-  int operator-(size_t other) const {
-    return m_current_index - other;
-  }
+  /**
+    * @brief Subtraction operator. Decrease the current index by the provided value and reset the current reddened SED.
+    *
+    * @param n
+    * A size_t: the index decrement.
+    */
+  int operator-(size_t other) const;
   
-  int operator-(const ModelDatasetGenerator& other) const {
-    return m_current_index - other.m_current_index;
-  }
+  /**
+    * @brief Subtraction operator. Decrease the current index by the index of the provided ModelDatasetGenerator and reset the current reddened SED.
+    *
+    * @param other
+    * A ModelDatasetGenerator from which index value the current index will be decremented.
+    */
+  int operator-(const ModelDatasetGenerator& other) const;
   
-  bool operator==(size_t other) const {
-    return m_current_index == other;
-  }
+  /**
+    * @brief Equality operator. True if the provided value match the current index.
+    *
+    * @param other
+    * A size_t the current index will be compared to.
+    */
+  bool operator==(size_t other) const;
   
-  bool operator==(const ModelDatasetGenerator& other) const {
-    return m_current_index == other.m_current_index;
-  }
+  /**
+    * @brief Equality operator. Test the equality of the current indexes.
+    *
+    * @param other
+    * A ModelDatasetGenerator from which the the current index will be compared to.
+    */
+  bool operator==(const ModelDatasetGenerator& other) const;
   
-  bool operator!=(size_t other) const {
-    return m_current_index != other;
-  }
+  /**
+    * @brief Inequality operator. False if the provided value match the current index.
+    *
+    * @param other
+    * An size_t the current index will be compared to.
+    */
+  bool operator!=(size_t other) const;
   
-  bool operator!=(const ModelDatasetGenerator& other) const {
-    return m_current_index != other.m_current_index;
-  }
+  /**
+    * @brief Inequality operator. Test the inequality of the current indexes.
+    *
+    * @param other
+    * A ModelDatasetGenerator from which the the current index will be compared to.
+    */
+  bool operator!=(const ModelDatasetGenerator& other) const;
   
-  bool operator>(size_t other) const {
-    return m_current_index > other;
-  }
+  /**
+    * @brief Greater than operator. True if the current index is bigger than the provided value.
+    *
+    * @param other
+    * A size_t the current index will be compared to.
+    */
+  bool operator>(size_t other) const;
   
-  bool operator>(const ModelDatasetGenerator& other) const {
-    return m_current_index > other.m_current_index;
-  }
+  /**
+    * @brief Greater than operator. True if the current index is bigger than the current index of the provided Generator.
+    *
+    * @param other
+    * A ModelDatasetGenerator the current index will be compared to.
+    */
+  bool operator>(const ModelDatasetGenerator& other) const;
   
-  bool operator<(size_t other) const {
-    return m_current_index < other;
-  }
+  /**
+    * @brief Lower than operator. True if the current index is smaller than the provided value.
+    *
+    * @param other
+    * A size_t the current index will be compared to.
+    */
+  bool operator<(size_t other) const;
   
-  bool operator<(const ModelDatasetGenerator& other) const {
-    return m_current_index < other.m_current_index;
-  }
+  /**
+    * @brief Lower than operator. True if the current index is smaller than the current index of the provided Generator.
+    *
+    * @param other
+    * A ModelDatasetGenerator the current index will be compared to.
+    */
+  bool operator<(const ModelDatasetGenerator& other) const;
   
-  Euclid::XYDataset::XYDataset& operator*() {
-    // We calculate the parameter indices for the current index
-    size_t new_sed_index = m_index_helper.axisIndex(Euclid::PhzDataModel::ModelParameter::SED, m_current_index);
-    size_t new_reddening_curve_index = m_index_helper.axisIndex(Euclid::PhzDataModel::ModelParameter::REDDENING_CURVE, m_current_index);
-    size_t new_ebv_index = m_index_helper.axisIndex(Euclid::PhzDataModel::ModelParameter::EBV, m_current_index);
-    size_t new_z_index = m_index_helper.axisIndex(Euclid::PhzDataModel::ModelParameter::Z, m_current_index);
-    // We check if we need to recalculate the reddened SED
-    if (new_sed_index != m_current_sed_index || new_reddening_curve_index != m_current_reddening_curve_index
-        || new_ebv_index != m_current_ebv_index || !m_current_reddened_sed) {
-      const ExtinctionFunctor& extinction_functor = m_reddening_curve_functor_vector[new_reddening_curve_index];
-      double ebv = std::get<Euclid::PhzDataModel::ModelParameter::EBV>(m_axes_tuple)[new_ebv_index];
-      m_current_reddened_sed = extinction_functor(*m_sed_data_vector[new_sed_index], ebv);
-    }
-    if (new_sed_index != m_current_sed_index || new_reddening_curve_index != m_current_reddening_curve_index
-        || new_ebv_index != m_current_ebv_index || new_z_index != m_current_z_index || !m_current_redshifted_sed) {
-      double z = std::get<Euclid::PhzDataModel::ModelParameter::Z>(m_axes_tuple)[new_z_index];
-      std::vector<std::pair<double, double>> new_redshifted_values {};
-      for (auto& sed_pair : *m_current_reddened_sed) {
-        new_redshifted_values.push_back(std::make_pair(sed_pair.first*(1+z),sed_pair.second/((1+z)*(1+z))));
-      }
-      m_current_redshifted_sed.reset(new Euclid::XYDataset::XYDataset{new_redshifted_values});
-    }
-    m_current_sed_index = new_sed_index;
-    m_current_reddening_curve_index = new_reddening_curve_index;
-    m_current_ebv_index = new_ebv_index;
-    m_current_z_index = new_z_index;
-    return *m_current_redshifted_sed;
-  }
+  /**
+    * @brief Indirection operator.
+    * @details
+    * Compute the Model SED for the current index and return a reference on it
+    *
+    * @return
+    * A XYDataset representing the Model for the current index
+    */
+  Euclid::XYDataset::XYDataset& operator*();
   
 private:
   
@@ -148,7 +190,7 @@ private:
   std::unique_ptr<Euclid::XYDataset::XYDataset> m_current_redshifted_sed;
   
   // vector with the SED datasets the generator uses
-  const std::vector<std::unique_ptr<Euclid::XYDataset::XYDataset>>& m_sed_data_vector;
+  const std::vector<Euclid::XYDataset::XYDataset>& m_sed_data_vector;
   
   // vector with the reddening curves the generator uses
   const std::vector<ExtinctionFunctor>& m_reddening_curve_functor_vector;

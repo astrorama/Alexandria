@@ -8,6 +8,7 @@
 #define	PHZMODELING_EXTINCTIONFUNCTOR_H
 
 #include <memory>
+#include <cmath>
 #include "XYDataset/XYDataset.h"
 #include "MathUtils/function/Function.h"
 #include "MathUtils/interpolation/interpolation.h"
