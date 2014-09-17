@@ -25,11 +25,11 @@ XYDataset::const_iterator XYDataset::end() const {
   return m_values.cend();
 }
 
-unique_ptr<XYDataset> XYDataset::factory(vector<pair<double, double>> vector_pair) {
-  return (unique_ptr<XYDataset> (new XYDataset(vector_pair)));
+XYDataset XYDataset::factory(vector<pair<double, double>> vector_pair) {
+  return (XYDataset(move(vector_pair)));
 }
 
-unique_ptr<XYDataset> XYDataset::factory(vector<double> x_vector, vector<double> y_vector) {
+XYDataset XYDataset::factory(const vector<double>& x_vector, const vector<double>& y_vector) {
   size_t x_size = x_vector.size();
   size_t y_size = y_vector.size();
   // Vector must have the same size
@@ -46,7 +46,7 @@ unique_ptr<XYDataset> XYDataset::factory(vector<double> x_vector, vector<double>
   transform(x_vector.begin(), x_vector.end(), y_vector.begin(), back_inserter(vector_pair),
                  [](double a, double b) { return std::make_pair(a, b); });
 
-  return ( unique_ptr<XYDataset> (new XYDataset(vector_pair)) );
+  return ( XYDataset(move(vector_pair)) );
 }
 
 } /* namespace XYDataset */

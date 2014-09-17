@@ -29,18 +29,35 @@ struct XYDataset_Fixture {
 BOOST_AUTO_TEST_SUITE (XYDataset_test)
 
 //-----------------------------------------------------------------------------
+// Test the move constructor
+//-----------------------------------------------------------------------------
+
+BOOST_FIXTURE_TEST_CASE(MoveConstructor_test, XYDataset_Fixture) {
+
+  BOOST_TEST_MESSAGE(" ");
+  BOOST_TEST_MESSAGE("--> Testing the move constructor");
+  BOOST_TEST_MESSAGE(" ");
+
+  auto xydataset = Euclid::XYDataset::XYDataset::factory(vector_pair);
+  auto xy_move(std::move(xydataset));
+
+  BOOST_CHECK(3 == xy_move.size());
+
+}
+
+//-----------------------------------------------------------------------------
 // Test the factory function (the constructor)
 //-----------------------------------------------------------------------------
 
 BOOST_FIXTURE_TEST_CASE(Constructor1_test, XYDataset_Fixture) {
 
   BOOST_TEST_MESSAGE(" ");
-  BOOST_TEST_MESSAGE("--> Testing the first constructor(with the vector pair)");
+  BOOST_TEST_MESSAGE("--> Testing the first constructor (with the vector pair)");
   BOOST_TEST_MESSAGE(" ");
 
-  auto xy_ptr = Euclid::XYDataset::XYDataset::factory(vector_pair);
-  // xy_ptr should not be null
-  BOOST_CHECK(nullptr != xy_ptr);
+  auto xydataset = Euclid::XYDataset::XYDataset::factory(vector_pair);
+
+  BOOST_CHECK(3 == xydataset.size());
 
 }
 
@@ -51,12 +68,12 @@ BOOST_FIXTURE_TEST_CASE(Constructor1_test, XYDataset_Fixture) {
 BOOST_FIXTURE_TEST_CASE(Constructor2_test, XYDataset_Fixture) {
 
   BOOST_TEST_MESSAGE(" ");
-  BOOST_TEST_MESSAGE("--> Testing the second constructor(with 2 vectors)");
+  BOOST_TEST_MESSAGE("--> Testing the second constructor (with 2 vectors)");
   BOOST_TEST_MESSAGE(" ");
 
-  auto xy_ptr = Euclid::XYDataset::XYDataset::factory(vector1, vector2);
-  // xy_ptr should not be null
-  BOOST_CHECK(nullptr != xy_ptr);
+  auto xydataset = Euclid::XYDataset::XYDataset::factory(vector1, vector2);
+
+  BOOST_CHECK(5 == xydataset.size());
 
 }
 
@@ -70,8 +87,8 @@ BOOST_FIXTURE_TEST_CASE(factory_test, XYDataset_Fixture) {
   BOOST_TEST_MESSAGE("--> Testing the size function");
   BOOST_TEST_MESSAGE(" ");
 
-  auto xy_ptr = Euclid::XYDataset::XYDataset::factory(vector1, vector2);
-  BOOST_CHECK(5 == xy_ptr->size());
+  auto xydataset = Euclid::XYDataset::XYDataset::factory(vector1, vector2);
+  BOOST_CHECK(5 == xydataset.size());
 
 }
 
@@ -99,12 +116,15 @@ BOOST_FIXTURE_TEST_CASE(const_iterator_test, XYDataset_Fixture) {
   BOOST_TEST_MESSAGE("--> Testing the begin, end functions");
   BOOST_TEST_MESSAGE(" ");
 
-  auto xy_ptr = Euclid::XYDataset::XYDataset::factory(vector1, vector2);
-  auto it = xy_ptr->begin();
+  auto xydataset = Euclid::XYDataset::XYDataset::factory(vector1, vector2);
+  auto it = xydataset.begin();
 
   BOOST_CHECK(1   == it->first);
   BOOST_CHECK(1.1 == it->second);
-  it = --xy_ptr->end();
+  ++it;
+  BOOST_CHECK(2   == it->first);
+  BOOST_CHECK(2.2 == it->second);
+  it = --xydataset.end();
   BOOST_CHECK(5   == it->first);
   BOOST_CHECK(5.5 == it->second);
 

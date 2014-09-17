@@ -58,7 +58,10 @@ namespace XYDataset {
     *
     */
    XYDataset(std::vector<std::pair<double, double>> values)
-             : m_values(values) {  };
+             : m_values(std::move(values)) {  };
+
+   /// Move constructor
+   XYDataset(XYDataset&&) = default;
 
    /**
     * @brief
@@ -68,7 +71,7 @@ namespace XYDataset {
      * @return
     * A unique pointer of XYDataset type
     */
-   static std::unique_ptr<XYDataset> factory(std::vector<std::pair<double, double>> vector_pair);
+   static XYDataset factory(std::vector<std::pair<double, double>> vector_pair);
 
    /**
     * @brief
@@ -80,7 +83,7 @@ namespace XYDataset {
      * @return
     * A unique pointer of XYDataset type
     */
-   static std::unique_ptr<XYDataset> factory(std::vector<double> x, std::vector<double> y);
+   static XYDataset factory(const std::vector<double>& x, const std::vector<double>& y);
 
    /**
     * @brief Destructor
