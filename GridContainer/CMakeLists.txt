@@ -3,6 +3,10 @@ elements_subdir(GridContainer 0.1)
 elements_depends_on_subdirs(ElementsKernel)
 find_package(Boost REQUIRED COMPONENTS serialization)
 
+# Install the headers. This is necessary because we have only templates and not
+# library, so the headers will not be installed automatically
+elements_install_headers(GridContainer)
+
 #===== Boost tests =============================================================
 
 elements_add_unit_test(GridAxis_test tests/src/GridAxis_test.cpp
