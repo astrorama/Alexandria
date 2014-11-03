@@ -7,7 +7,7 @@
 #include <boost/algorithm/string.hpp>
 #include <ElementsKernel/Exception.h>
 #include "XYDataset/QualifiedName.h"
-#include <iostream> //zzz
+
 namespace Euclid {
 namespace XYDataset {
 
