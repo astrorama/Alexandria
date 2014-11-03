@@ -7,7 +7,7 @@
 #include <boost/algorithm/string.hpp>
 #include <ElementsKernel/Exception.h>
 #include "XYDataset/QualifiedName.h"
-
+#include <iostream> //zzz
 namespace Euclid {
 namespace XYDataset {
 
@@ -15,12 +15,13 @@ QualifiedName::QualifiedName(std::vector<std::string> groups, std::string name)
             : m_groups {std::move(groups)}, m_dataset_name {std::move(name)} {
   for (auto& group : m_groups) {
     if (group.empty() || group.find('/') != std::string::npos) {
-      throw Elements::Exception() << "Invalid group name " << group;
+      throw Elements::Exception() << "Invalid group name : \"" << group << "\""
+          << " in qualified name : \"" << m_qualified_name.append(group).append("/") << "\"";
     }
     m_qualified_name.append(group).append("/");
   }
   if (m_dataset_name.empty() || m_dataset_name.find('/') != std::string::npos) {
-    throw Elements::Exception() << "Invalid name " << m_dataset_name;
+    throw Elements::Exception() << "Invalid name : \"" << m_dataset_name << "\"";
   }
   m_qualified_name.append(m_dataset_name);
 }
