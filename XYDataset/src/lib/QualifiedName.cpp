@@ -21,7 +21,7 @@ QualifiedName::QualifiedName(std::vector<std::string> groups, std::string name)
     m_qualified_name.append(group).append("/");
   }
   if (m_dataset_name.empty() || m_dataset_name.find('/') != std::string::npos) {
-    throw Elements::Exception() << "Invalid name : \"" << m_dataset_name << "\"";
+    throw Elements::Exception() << "Invalid name : \"" << m_qualified_name.append(m_dataset_name) << "\"";
   }
   m_qualified_name.append(m_dataset_name);
 }
