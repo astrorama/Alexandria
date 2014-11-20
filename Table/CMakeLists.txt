@@ -1,4 +1,4 @@
-elements_subdir(Table 0.1)
+elements_subdir(Table)
 
 elements_depends_on_subdirs(ElementsKernel)
 

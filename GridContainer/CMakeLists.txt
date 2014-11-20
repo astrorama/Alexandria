@@ -1,4 +1,4 @@
-elements_subdir(GridContainer 0.1)
+elements_subdir(GridContainer)
 
 elements_depends_on_subdirs(ElementsKernel)
 find_package(Boost REQUIRED COMPONENTS serialization)

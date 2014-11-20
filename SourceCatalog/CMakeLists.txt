@@ -1,4 +1,4 @@
-elements_subdir(SourceCatalog 1.0)
+elements_subdir(SourceCatalog)
 
 elements_depends_on_subdirs(Table)
 

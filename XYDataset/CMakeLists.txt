@@ -1,4 +1,4 @@
-elements_subdir(XYDataset 1.0)
+elements_subdir(XYDataset)
 elements_depends_on_subdirs(Table)
 
 find_package(Boost REQUIRED COMPONENTS filesystem thread system)

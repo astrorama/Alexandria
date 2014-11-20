@@ -1,4 +1,4 @@
-elements_subdir(MathUtils 1.0)
+elements_subdir(MathUtils)
 
 elements_depends_on_subdirs(XYDataset)
 
