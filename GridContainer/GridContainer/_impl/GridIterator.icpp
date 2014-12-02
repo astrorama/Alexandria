@@ -53,6 +53,12 @@ auto GridContainer<GridCellManager, AxesTypes...>::iter<CellType>::operator*() -
 
 template<typename GridCellManager, typename... AxesTypes>
 template<typename CellType>
+auto GridContainer<GridCellManager, AxesTypes...>::iter<CellType>::operator->() -> CellType* {
+  return &(*m_data_iter);
+}
+
+template<typename GridCellManager, typename... AxesTypes>
+template<typename CellType>
 bool GridContainer<GridCellManager, AxesTypes...>::iter<CellType>::operator==(const iter& other) const {
   return m_data_iter == other.m_data_iter;
 }

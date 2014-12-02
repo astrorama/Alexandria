@@ -230,6 +230,9 @@ public:
   /// Returns a reference to the cell value
   CellType& operator*();
   
+  /// Returns a pointer to the cell value
+  CellType* operator->();
+  
   /// Compares two iterators for equality. Should be used only for iterators
   /// of the same grid.
   bool operator==(const iter& other) const;
