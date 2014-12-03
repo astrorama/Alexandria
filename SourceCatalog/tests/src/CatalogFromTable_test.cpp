@@ -34,7 +34,7 @@ BOOST_FIXTURE_TEST_CASE(createCatalog_test, TableFixture) {
 
   unique_ptr<AttributeFromRow> photmetryAft_ptr {new PhotometryAttributeFromRow {column_info_ptr, filter_name_mapping} };
 
-  vector<unique_ptr<AttributeFromRow>> attribute_from_table_vector;
+  vector<shared_ptr<AttributeFromRow>> attribute_from_table_vector;
 
   attribute_from_table_vector.push_back( move(photmetryAft_ptr) );
 

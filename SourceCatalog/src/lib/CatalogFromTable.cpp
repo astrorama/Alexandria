@@ -16,7 +16,7 @@ namespace SourceCatalog {
 CatalogFromTable::CatalogFromTable(
     std::shared_ptr<Euclid::Table::ColumnInfo> column_info_ptr,
     const string& source_id_column_name,
-    std::vector<std::unique_ptr<AttributeFromRow>> attribute_from_row_ptr_vector) {
+    std::vector<std::shared_ptr<AttributeFromRow>> attribute_from_row_ptr_vector) {
 
   unique_ptr<size_t> source_id_index_ptr = column_info_ptr->find(
       source_id_column_name);
