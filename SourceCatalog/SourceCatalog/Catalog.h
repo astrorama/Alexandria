@@ -59,7 +59,7 @@ public:
    *  Returns a const_iterator pointing to the first element in the m_source_vector
    *  container
    */
-  std::vector<Source>::const_iterator cbegin()  { return m_source_vector.cbegin() ; }
+  std::vector<Source>::const_iterator begin() const { return m_source_vector.cbegin() ; }
 
   /**
    * @brief
@@ -69,7 +69,7 @@ public:
    *  Returns a const_iterator pointing to the past-the-end element in the
    *  m_source_vector container
    */
-  std::vector<Source>::const_iterator cend()  { return m_source_vector.cend() ; }
+  std::vector<Source>::const_iterator end() const { return m_source_vector.cend() ; }
 
   /**
    * @brief
