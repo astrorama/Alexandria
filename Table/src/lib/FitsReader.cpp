@@ -39,7 +39,12 @@ FitsReader::FitsReader(std::vector<std::string> column_names)
 const Euclid::Table::Table FitsReader::read(const CCfits::HDU& hdu) {
   // First we check that we have a table HDU
   try {
+// The following line just checks that the cast is possible. We are not interested
+// on using the result. The pragma suppres the related warning.
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-value"
     dynamic_cast<const CCfits::Table&>(hdu);
+#pragma GCC diagnostic pop
   } catch (std::bad_cast&) {
     throw Elements::Exception() << "Given HDU is not a table";
   }
