@@ -87,7 +87,13 @@ std::unique_ptr<Function> multiplyPiecewises(const Function& f1, const Function&
   int i1 {};
   int i2 {};
   for (double knot : knots) {
+// The following line compares two doubles which are keys of the knots. This
+// means that the much sticter bitewise equality must be used (and not equality
+// of real representations). This pragma will hide the misidentified warning
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wfloat-equal"
     if (knot == knots.back()) {
+#pragma GCC diagnostic pop
       break;
     }
     while (p1.getKnots()[i1+1] <= knot) {

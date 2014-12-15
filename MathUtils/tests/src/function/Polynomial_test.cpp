@@ -8,11 +8,24 @@
 #include <boost/test/floating_point_comparison.hpp>
 #include <boost/test/test_tools.hpp>
 #include <memory>
+#include <sstream>
+#include "ElementsKernel/Real.h"
 #include "MathUtils/function/Polynomial.h"
 
 struct Polynomial_Fixture {
-  double close_tolerance {1E-10};
-  double small_tolerance {1E-20};
+  double relative_error_tolerance {1E-10};
+  template<typename T>
+  void AlmostEqualRelative(T expected, T actual) {
+    T relative_error =  (expected - actual) / actual;
+    if (relative_error < 0) {
+      relative_error = -relative_error;
+    }
+    if (relative_error > relative_error_tolerance) {
+      std::stringstream error_message;
+      error_message << "Expected " << expected << " but got " << actual;
+      BOOST_ERROR(error_message.str());
+    }
+  }
 };
 
 //-----------------------------------------------------------------------------
@@ -76,11 +89,7 @@ BOOST_FIXTURE_TEST_CASE(FunctionOperator, Polynomial_Fixture) {
     double polValue = polynomial(x);
     
     // Then
-    if (polValue == 0 || expected == 0) {
-      BOOST_CHECK_SMALL(polValue+expected, small_tolerance);
-    } else {
-      BOOST_CHECK_CLOSE(polValue, expected, close_tolerance);
-    }
+    AlmostEqualRelative(expected, polValue);
   }
 
 }

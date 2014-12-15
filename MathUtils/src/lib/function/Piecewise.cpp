@@ -39,7 +39,13 @@ double Piecewise::operator()(const double x) const {
   if (x < *knotsBegin) {
     return 0;
   }
+// The following line compares two doubles which are keys of the knots. This
+// means that the much sticter bitewise equality must be used (and not equality
+// of real representations). This pragma will hide the misidentified warning
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wfloat-equal"
   if (x == *knotsBegin) {
+#pragma GCC diagnostic pop
     return (*m_functions[0])(x);
   }
   auto knotsEnd = m_knots.end();
@@ -55,7 +61,16 @@ std::unique_ptr<Function> Piecewise::clone() const {
 }
 
 double Piecewise::integrate(const double x1, const double x2) const {
+// The following check tests if the two parameters are bitwise equal. A broader
+// less string equality check (checking if they represent the same real number)
+// cannot be performed without unecessary complication of the method interface
+// because Piecewise is a generic usage class. For this reason only a bitwise
+// equality check is performed and the rest equality cases will be handled by
+// the rest of the code.
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wfloat-equal"
   if (x1 == x2) {
+#pragma GCC diagnostic pop
     return 0;
   }
   int direction = 1;

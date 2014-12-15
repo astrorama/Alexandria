@@ -119,6 +119,16 @@ BOOST_FIXTURE_TEST_CASE(const_iterator_test, XYDataset_Fixture) {
   auto xydataset = Euclid::XYDataset::XYDataset::factory(vector1, vector2);
   auto it = xydataset.begin();
 
+// The XYDataset specification guarantees that the iterator will iterate over
+// the exact same double representations in the memory (which is a stricter
+// guarantee than just the same real number representation). To allow testing
+// the float-equal warning must be dissabled.
+// WARNING: In the following lines the double literals are NOT representing the
+// real values (1, 1.1, etc) but the double representation of these values as
+// converted by the compiler. The test guarantees that the XYDataset does not
+// perform any arithmetics with them.
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wfloat-equal"
   BOOST_CHECK(1   == it->first);
   BOOST_CHECK(1.1 == it->second);
   ++it;
@@ -127,6 +137,7 @@ BOOST_FIXTURE_TEST_CASE(const_iterator_test, XYDataset_Fixture) {
   it = --xydataset.end();
   BOOST_CHECK(5   == it->first);
   BOOST_CHECK(5.5 == it->second);
+#pragma GCC diagnostic pop
 
 }
 
