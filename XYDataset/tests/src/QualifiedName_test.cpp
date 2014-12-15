@@ -187,10 +187,10 @@ BOOST_AUTO_TEST_CASE(hashOrdering_test) {
 }
 
 //-----------------------------------------------------------------------------
-// Check the ordering alphabetically
+// Check the ordering lexicographically
 //-----------------------------------------------------------------------------
 
-BOOST_AUTO_TEST_CASE(alphabeticalOrdering_test) {
+BOOST_AUTO_TEST_CASE(lexicographicalOrdering_test) {
   
   // Given
   Euclid::XYDataset::QualifiedName qualifiedName1 {{"SDSS"}, "g"};
@@ -198,7 +198,7 @@ BOOST_AUTO_TEST_CASE(alphabeticalOrdering_test) {
   Euclid::XYDataset::QualifiedName qualifiedName3 {{"COSMOS"}, "z"};
   
   // When
-  std::set<Euclid::XYDataset::QualifiedName, Euclid::XYDataset::QualifiedName::AlphabeticalComparator> filterSet {};
+  std::set<Euclid::XYDataset::QualifiedName, Euclid::XYDataset::QualifiedName::LexicographicalComparator> filterSet {};
   filterSet.insert(qualifiedName1);
   filterSet.insert(qualifiedName2);
   filterSet.insert(qualifiedName3);

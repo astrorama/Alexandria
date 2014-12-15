@@ -10,6 +10,7 @@
 #include <string>
 #include <vector>
 #include <functional>
+#include <algorithm>
 
 #include "ElementsKernel/Export.h"
 
@@ -158,14 +159,16 @@ public:
 
   /**
    * @class AlphabeticalComparator
-   * @brief Provides alphabetical comparison for the QualifiedNames a and b
+   * @brief Provides lexicographical comparison for the QualifiedNames a and b
    * @param a The first QualifiedName to compare
    * @param b The second QualifiedName to compare
-   * @return true if the a < b alphabetically, false otherwise
+   * @return true if the a < b lexicographical, false otherwise
    */
-  struct AlphabeticalComparator {
+  struct LexicographicalComparator {
     bool operator()(const QualifiedName& a, const QualifiedName& b) const {
-        return a.qualifiedName() < b.qualifiedName();
+      auto first = a.qualifiedName();
+      auto second = b.qualifiedName();
+      return std::lexicographical_compare(first.begin(), first.end(), second.begin(), second.end());
     }
   };
 
