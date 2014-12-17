@@ -12,29 +12,30 @@ using namespace std;
 namespace Euclid {
 namespace SourceCatalog {
 
-Photometry::const_iterator::const_iterator(const std::vector<string>::const_iterator& filters_iter,
-                                           const std::vector<FluxErrorPair>::const_iterator& values_iter)
+Photometry::PhotometryConstIterator::PhotometryConstIterator(
+                        const std::vector<string>::const_iterator& filters_iter,
+                        const std::vector<FluxErrorPair>::const_iterator& values_iter)
                 : m_filters_iter{filters_iter}, m_values_iter{values_iter} { }
                 
-auto Photometry::const_iterator::operator ++() -> const_iterator& {
+auto Photometry::PhotometryConstIterator::operator ++() -> const_iterator& {
   ++m_filters_iter;
   ++m_values_iter;
   return *this;
 }
 
-auto Photometry::const_iterator::operator *() -> reference {
+auto Photometry::PhotometryConstIterator::operator *() -> reference {
   return *m_values_iter;
 }
 
-bool Photometry::const_iterator::operator ==(const const_iterator& other) const {
+bool Photometry::PhotometryConstIterator::operator ==(const const_iterator& other) const {
   return m_filters_iter == other.m_filters_iter;
 }
 
-bool Photometry::const_iterator::operator !=(const const_iterator& other) const {
+bool Photometry::PhotometryConstIterator::operator !=(const const_iterator& other) const {
   return m_filters_iter != other.m_filters_iter;
 }
 
-const string& Photometry::const_iterator::filterName() const {
+const string& Photometry::PhotometryConstIterator::filterName() const {
   return *m_filters_iter;
 }
 

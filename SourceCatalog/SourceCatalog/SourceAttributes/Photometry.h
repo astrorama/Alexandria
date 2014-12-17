@@ -50,20 +50,21 @@ public:
    * Iterator for the photometry flux and error values. See the Photometry_test to see
    * how this can be used to iterate through the flux and error the different filters.
    */
-  class const_iterator: public std::iterator<std::forward_iterator_tag,
+  class PhotometryConstIterator : public std::iterator<std::forward_iterator_tag,
       const FluxErrorPair> {
   public:
-    const_iterator(const std::vector<std::string>::const_iterator& filters_iter,
-        const std::vector<FluxErrorPair>::const_iterator& values_iter);
-    const_iterator& operator++();
+    PhotometryConstIterator(const std::vector<std::string>::const_iterator& filters_iter,
+                            const std::vector<FluxErrorPair>::const_iterator& values_iter);
+    PhotometryConstIterator& operator++();
     reference operator*();
-    bool operator==(const const_iterator& other) const;
-    bool operator!=(const const_iterator& other) const;
+    bool operator==(const PhotometryConstIterator& other) const;
+    bool operator!=(const PhotometryConstIterator& other) const;
     const std::string& filterName() const;
   private:
     std::vector<std::string>::const_iterator m_filters_iter;
     std::vector<FluxErrorPair>::const_iterator m_values_iter;
   };
+  typedef PhotometryConstIterator const_iterator;
 
 
   /**
