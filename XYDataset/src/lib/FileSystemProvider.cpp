@@ -113,14 +113,9 @@ std::vector<QualifiedName> FileSystemProvider::listContents(const std::string& g
 
 std::unique_ptr<XYDataset> FileSystemProvider::getDataset(const QualifiedName & qualified_name) {
 
- std::string filename {};
-
  auto it = m_map.find(qualified_name);
- if (it != m_map.end()) {
-    filename = it->second;
- }
+ return (it != m_map.end()) ? m_parser->getDataset(it->second) : nullptr;
 
- return (m_parser->getDataset(filename));
 }
 
 } /* namespace XYDataset */
