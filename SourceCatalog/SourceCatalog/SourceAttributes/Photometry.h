@@ -26,6 +26,12 @@ struct FluxErrorPair {
   FluxErrorPair(double flux, double error) :
       flux(flux), error(error) {
   }
+  bool operator==(const FluxErrorPair& other) const {
+	  return this->flux == other.flux && this->error == other.error;
+  }
+  bool operator!=(const FluxErrorPair& other) const {
+	  return !(*this == other);
+  }
 };
 
 /**
