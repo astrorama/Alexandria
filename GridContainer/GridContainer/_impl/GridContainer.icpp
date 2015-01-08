@@ -1,4 +1,4 @@
-/** 
+/**
  * @file GridContainer/_impl/GridContainer.icpp
  * @date May 13, 2014
  * @author Nikolaos Apostolakos
@@ -16,7 +16,7 @@ GridContainer<GridCellManager, AxesTypes...>::GridContainer(GridAxis<AxesTypes>.
 template<typename GridCellManager, typename... AxesTypes>
 GridContainer<GridCellManager, AxesTypes...>::GridContainer(std::tuple<GridAxis<AxesTypes>...> axes_tuple)
       : m_axes{std::move(axes_tuple)} { }
-                     
+
 template<typename GridCellManager, typename... AxesTypes>
 size_t GridContainer<GridCellManager, AxesTypes...>::axisNumber() const {
   return std::tuple_size<decltype(m_axes)>::value;
@@ -44,12 +44,22 @@ auto GridContainer<GridCellManager, AxesTypes...>::begin() const -> const_iterat
 }
 
 template<typename GridCellManager, typename... AxesTypes>
+auto GridContainer<GridCellManager, AxesTypes...>::cbegin() -> const_iterator {
+  return const_iterator{*this, GridCellManagerTraits<GridCellManager>::begin(*m_cell_manager)};
+}
+
+template<typename GridCellManager, typename... AxesTypes>
 auto GridContainer<GridCellManager, AxesTypes...>::end() -> iterator {
   return iterator{*this, GridCellManagerTraits<GridCellManager>::end(*m_cell_manager)};
 }
 
 template<typename GridCellManager, typename... AxesTypes>
 auto GridContainer<GridCellManager, AxesTypes...>::end() const -> const_iterator {
+  return const_iterator{*this, GridCellManagerTraits<GridCellManager>::end(*m_cell_manager)};
+}
+
+template<typename GridCellManager, typename... AxesTypes>
+auto GridContainer<GridCellManager, AxesTypes...>::cend() -> const_iterator {
   return const_iterator{*this, GridCellManagerTraits<GridCellManager>::end(*m_cell_manager)};
 }
 
