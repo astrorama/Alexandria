@@ -142,6 +142,38 @@ BOOST_FIXTURE_TEST_CASE(const_iterator_test, XYDataset_Fixture) {
 }
 
 //-----------------------------------------------------------------------------
+//                      Test the front and back
+//-----------------------------------------------------------------------------
+
+BOOST_FIXTURE_TEST_CASE(front_back_test, XYDataset_Fixture) {
+
+  BOOST_TEST_MESSAGE(" ");
+  BOOST_TEST_MESSAGE("--> Testing the front, back functions");
+  BOOST_TEST_MESSAGE(" ");
+
+  auto xydataset = Euclid::XYDataset::XYDataset::factory(vector1, vector2);
+  auto& front = xydataset.front();
+  auto& back = xydataset.back();
+
+// The XYDataset specification guarantees that the iterator will iterate over
+// the exact same double representations in the memory (which is a stricter
+// guarantee than just the same real number representation). To allow testing
+// the float-equal warning must be dissabled.
+// WARNING: In the following lines the double literals are NOT representing the
+// real values (1, 1.1, etc) but the double representation of these values as
+// converted by the compiler. The test guarantees that the XYDataset does not
+// perform any arithmetics with them.
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wfloat-equal"
+  BOOST_CHECK(1   == front.first);
+  BOOST_CHECK(1.1 == front.second);
+  BOOST_CHECK(5   == back.first);
+  BOOST_CHECK(5.5 == back.second);
+#pragma GCC diagnostic pop
+
+}
+
+//-----------------------------------------------------------------------------
 
 BOOST_AUTO_TEST_SUITE_END ()
 

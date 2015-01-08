@@ -25,6 +25,14 @@ XYDataset::const_iterator XYDataset::end() const {
   return m_values.cend();
 }
 
+const std::pair<double, double>& XYDataset::front() const {
+  return m_values.front();
+}
+
+const std::pair<double, double>& XYDataset::back() const {
+  return m_values.back();
+}
+
 XYDataset XYDataset::factory(vector<pair<double, double>> vector_pair) {
   return (XYDataset(move(vector_pair)));
 }
