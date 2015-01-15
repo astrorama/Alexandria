@@ -13,7 +13,6 @@
 
 CCfits::Table* addTable(CCfits::FITS& fits) {
 
-  BOOST_FAIL("HERE");
   std::vector<std::string> names {"Bool","Int","Long","String","Float","Double"};
   std::vector<std::string> types {"L","J","K","10A","E","D"};
   CCfits::Table* table_hdu = fits.addTable("Success", 2, names, types);
