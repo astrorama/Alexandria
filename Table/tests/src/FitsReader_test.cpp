@@ -1,4 +1,4 @@
-/** 
+/**
  * @file tests/src/FitsReader_test.cpp
  * @date April 17, 2014
  * @author Nikolaos Apostolakos
@@ -12,6 +12,8 @@
 #include "Table/FitsReader.h"
 
 CCfits::Table* addTable(CCfits::FITS& fits) {
+
+  BOOST_FAIL("HERE");
   std::vector<std::string> names {"Bool","Int","Long","String","Float","Double"};
   std::vector<std::string> types {"L","J","K","10A","E","D"};
   CCfits::Table* table_hdu = fits.addTable("Success", 2, names, types);
@@ -49,13 +51,13 @@ BOOST_AUTO_TEST_SUITE (AsciiReader_test)
 //-----------------------------------------------------------------------------
 
 BOOST_AUTO_TEST_CASE(ConstructorDuplicateColumnNames) {
-  
+
   // Given
   std::vector<std::string> names {"First", "Second", "Third", "Second"};
-  
+
   // Then
   BOOST_CHECK_THROW(Euclid::Table::FitsReader reader {names}, Elements::Exception);
-  
+
 }
 
 //-----------------------------------------------------------------------------
@@ -63,13 +65,13 @@ BOOST_AUTO_TEST_CASE(ConstructorDuplicateColumnNames) {
 //-----------------------------------------------------------------------------
 
 BOOST_AUTO_TEST_CASE(ConstructorEmptyColumnNames) {
-  
+
   // Given
   std::vector<std::string> names {"First", "Second", "", "Forth"};
-  
+
   // Then
   BOOST_CHECK_THROW(Euclid::Table::FitsReader reader {names}, Elements::Exception);
-  
+
 }
 
 //-----------------------------------------------------------------------------
@@ -77,21 +79,21 @@ BOOST_AUTO_TEST_CASE(ConstructorEmptyColumnNames) {
 //-----------------------------------------------------------------------------
 
 BOOST_AUTO_TEST_CASE(ConstructorColumnNamesWithWhitespaces) {
-  
+
   // Given
   std::vector<std::string> space {"Sp ace"};
   std::vector<std::string> tab {"T\tab"};
   std::vector<std::string> carriage_return {"Carriage\rReturn"};
   std::vector<std::string> new_line {"New\nLine"};
   std::vector<std::string> new_page {"New\fPage"};
-  
+
   // Then
   BOOST_CHECK_THROW(Euclid::Table::FitsReader reader {space}, Elements::Exception);
   BOOST_CHECK_THROW(Euclid::Table::FitsReader reader {tab}, Elements::Exception);
   BOOST_CHECK_THROW(Euclid::Table::FitsReader reader {carriage_return}, Elements::Exception);
   BOOST_CHECK_THROW(Euclid::Table::FitsReader reader {new_line}, Elements::Exception);
   BOOST_CHECK_THROW(Euclid::Table::FitsReader reader {new_page}, Elements::Exception);
-  
+
 }
 
 //-----------------------------------------------------------------------------
@@ -99,14 +101,14 @@ BOOST_AUTO_TEST_CASE(ConstructorColumnNamesWithWhitespaces) {
 //-----------------------------------------------------------------------------
 
 BOOST_FIXTURE_TEST_CASE(readNonTable, FitsReader_Fixture) {
-  
+
   // Given
   Euclid::Table::FitsReader reader {};
 
   // Then
   BOOST_CHECK_THROW(reader.read(primary_hdu), Elements::Exception);
   BOOST_CHECK_THROW(reader.read(*image_hdu), Elements::Exception);
-  
+
 }
 
 //-----------------------------------------------------------------------------
@@ -114,14 +116,14 @@ BOOST_FIXTURE_TEST_CASE(readNonTable, FitsReader_Fixture) {
 //-----------------------------------------------------------------------------
 
 BOOST_FIXTURE_TEST_CASE(ReadWrongColumnNamesNumber, FitsReader_Fixture) {
-  
+
   // Given
   std::vector<std::string> names {"First","Second"};
   Euclid::Table::FitsReader reader {names};
 
   // Then
   BOOST_CHECK_THROW(reader.read(*table_hdu), Elements::Exception);
-  
+
 }
 
 //-----------------------------------------------------------------------------
@@ -129,10 +131,10 @@ BOOST_FIXTURE_TEST_CASE(ReadWrongColumnNamesNumber, FitsReader_Fixture) {
 //-----------------------------------------------------------------------------
 
 BOOST_FIXTURE_TEST_CASE(ReadSuccess, FitsReader_Fixture) {
-  
+
   // Given
   Euclid::Table::FitsReader reader {};
-  
+
   // When
   Euclid::Table::Table table = reader.read(*table_hdu);
   auto column_info = table.getColumnInfo();
@@ -145,14 +147,14 @@ BOOST_FIXTURE_TEST_CASE(ReadSuccess, FitsReader_Fixture) {
   BOOST_CHECK_EQUAL(column_info->getName(3), "String");
   BOOST_CHECK_EQUAL(column_info->getName(4), "Float");
   BOOST_CHECK_EQUAL(column_info->getName(5), "Double");
-  
+
   BOOST_CHECK(column_info->getType(0) == typeid(bool));
   BOOST_CHECK(column_info->getType(1) == typeid(int32_t));
   BOOST_CHECK(column_info->getType(2) == typeid(int64_t));
   BOOST_CHECK(column_info->getType(3) == typeid(std::string));
   BOOST_CHECK(column_info->getType(4) == typeid(float));
   BOOST_CHECK(column_info->getType(5) == typeid(double));
-  
+
   BOOST_CHECK_EQUAL(boost::get<bool>(table[0][0]), true);
   BOOST_CHECK_EQUAL(boost::get<int32_t>(table[0][1]), 3);
   BOOST_CHECK_EQUAL(boost::get<int64_t>(table[0][2]), 123456789);
@@ -165,7 +167,7 @@ BOOST_FIXTURE_TEST_CASE(ReadSuccess, FitsReader_Fixture) {
   BOOST_CHECK_EQUAL(boost::get<std::string>(table[1][3]), "1234567890");
   BOOST_CHECK_EQUAL(boost::get<float>(table[1][4]), 2.1e-3f);
   BOOST_CHECK_EQUAL(boost::get<double>(table[1][5]), 2.1e-13);
-  
+
 }
 
 //-----------------------------------------------------------------------------
