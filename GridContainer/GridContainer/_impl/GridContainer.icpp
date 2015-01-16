@@ -104,6 +104,10 @@ size_t GridContainer<GridCellManager, AxesTypes...>::size() const {
 template<typename GridCellManager, typename... AxesTypes>
 auto GridContainer<GridCellManager, AxesTypes...>::operator()(decltype(std::declval<GridAxis<AxesTypes>>().size())... indices) const -> const cell_type& {
   size_t total_index = m_index_helper.totalIndex(indices...);
+  // If we have fixed axes we need to move the index accordingly
+  for (auto& pair : m_fixed_indices) {
+    total_index += pair.second * m_index_helper.m_axes_index_factors[pair.first];
+  }
   return (*m_cell_manager)[total_index];
 }
 
@@ -114,7 +118,13 @@ auto GridContainer<GridCellManager, AxesTypes...>::operator()(decltype(std::decl
 
 template<typename GridCellManager, typename... AxesTypes>
 auto GridContainer<GridCellManager, AxesTypes...>::at(decltype(std::declval<GridAxis<AxesTypes>>().size())... indices) const -> const cell_type& {
+  // First make a check that all the fixed axes are zero
+  m_index_helper.checkAllFixedAreZero(m_fixed_indices, indices...);
   size_t total_index = m_index_helper.totalIndexChecked(indices...);
+  // If we have fixed axes we need to move the index accordingly
+  for (auto& pair : m_fixed_indices) {
+    total_index += pair.second * m_index_helper.m_axes_index_factors[pair.first];
+  }
   return (*m_cell_manager)[total_index];
 }
 

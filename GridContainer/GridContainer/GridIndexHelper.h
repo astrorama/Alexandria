@@ -83,6 +83,15 @@ public:
    */
   size_t totalIndexChecked(decltype(std::declval<GridAxis<AxesTypes>>().size())... coords) const;
   
+  /// Checks if any of the given coordinates is fixed and not zero
+  template <typename Coord>
+  void checkAllFixedAreZero(const std::map<size_t, size_t>& fixed_indices, Coord coord) const;
+
+  /// Checks if any of the given coordinates is fixed and not zero
+  template <typename Coord, typename... RestCoords>
+  void checkAllFixedAreZero(const std::map<size_t, size_t>& fixed_indices,
+                            Coord coord, RestCoords... rest_coords) const;
+
   std::vector<size_t> m_axes_sizes;
   std::vector<size_t> m_axes_index_factors;
 };

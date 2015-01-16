@@ -28,7 +28,7 @@ elements_add_unit_test(GridCellManagerTraits_test tests/src/GridCellManagerTrait
                        LINK_LIBRARIES Boost TYPE Boost)
 
 elements_add_unit_test(GridContainer_test tests/src/GridContainer_test.cpp
-                       LINK_LIBRARIES Boost TYPE Boost)
+                       LINK_LIBRARIES Boost ElementsKernel TYPE Boost)
 
 elements_add_unit_test(serialize_test tests/src/serialize_test.cpp
                        LINK_LIBRARIES Boost TYPE Boost)
