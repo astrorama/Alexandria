@@ -62,9 +62,13 @@ namespace GridContainer {
  * iterator.axisIndex() and iterator.axisValue() methods (with the implied
  * performance penalty).
  *
- * Slicing the grid is supported by the iterator.fixAxisIndex() and
- * iterator.fixAxisValue() methods, which will modify the way the iterator
- * traverses the cells. For example:
+ * Slicing the grid is supported by two ways. The iterator.fixAxisIndex() and
+ * iterator.fixAxisValue() methods modify the way an iterator traverses through
+ * a grid object. The GridContainer.fixAxisIndex() and GridContainer.fisAxisValue()
+ * methods return grid objects representing silces of the original grid. Note that
+ * these slices share the same underling data with the original grid and any
+ * modifications will be reflected. For more information see the documentation
+ * of the related methods.
  *
  * @tparam GridCellManager The class to which the handling of the cell values is
  *                     delegated
@@ -112,6 +116,10 @@ public:
   /// Default move constructor
   GridContainer(GridContainer<GridCellManager, AxesTypes...>&&) = default;
 
+  // Do not allow copying of GridContainer objects. This is done because these
+  // objects will most of the time be very big and copying them will be a
+  // bottleneck. To avoid unvoluntary copy constructor calls, this constructor
+  // is deleted.
   GridContainer(const GridContainer<GridCellManager, AxesTypes...>&) = delete;
 
   /// Default destructor
@@ -184,33 +192,152 @@ public:
   /// @copydoc at(decltype(std::declval<GridAxis<AxesTypes>>().size())...) const
   cell_type& at(decltype(std::declval<GridAxis<AxesTypes>>().size())... indices);
   
+  /**
+   * @brief Returns a slice of the grid based on an axis index
+   * @details
+   * The returned GridContainer has the same number of axes with the original,
+   * with the fixed axis having a single value. The two grids (original and shared)
+   * share the same data and any modifications are reflected to both.
+   * 
+   * @tparam I
+   *    the (zero based) index of the axis to fix
+   * @param index
+   *    the index (zero based) to fix the axis to
+   * @return
+   *    A GridContainer representing the slice
+   * @throws Elements::Exception 
+   *    if the given index is out of the bounds of the axis
+   * @throws Elements::Exception
+   *    if the grid container is a slice and has this axis already fixed
+   */
   template <int I>
   GridContainer<GridCellManager, AxesTypes...> fixAxisByIndex(size_t index);
   
+  /**
+   * @brief
+   * const version of the fixAxisByIndex(size_t) method
+   * @details
+   * <b>Important note:</b> Because the returned GridContainer shares the same
+   * underlying data with the original one, the returned object is a constant
+   * grid (othewise it could be used for modifying the original object, which is
+   * constant). This, with combination that the GridContainer does not have a
+   * copy constructor (to avoid performance pitfalls), does not allow for creating
+   * a new object from the returned rvalue. For example the following are wrong:
+   * 
+   * \code {.cpp}
+   * const GridContainer grid1 = ...;
+   * GridContainer grid2 = grid1.fixAxisByIndex<0>(0); // WRONG - DO NOT DO THAT
+   * const GridContainer grid3 = grid1.fixAxisByIndex<0>(0); // WRONG - DO NOT DO THAT
+   * auto grid3 = grid4.fixAxisByIndex<0>(0); // WRONG - DO NOT DO THAT
+   * \endcode
+   * 
+   * All the above will try to create a new GridContainer object by using the
+   * deleted copy constructor, which will result to the compilation failing with
+   * the related message.
+   * 
+   * The way to use the object returned by this method is to assign a constant
+   * reference to it. This action will extend the life of the temporary rvalue
+   * object to the lifetime of the reference. For example:
+   * 
+   * \code {.cpp}
+   * const GridContainer grid1 = ...;
+   * const GridContainer& grid2 = grid1.fixAxisByIndex<0>(0); // CORRECT
+   * auto& grid3 = grid1.fixAxisByIndex<0>(0); // CORRECT
+   * \endcode
+   */
   template <int I>
   const GridContainer<GridCellManager, AxesTypes...> fixAxisByIndex(size_t index) const;
   
+  /**
+   * @brief Returns a slice of the grid based on an axis value
+   * @details
+   * The returned GridContainer has the same number of axes with the original,
+   * with the fixed axis having a single value. The two grids (original and shared)
+   * share the same data and any modifications are reflected to both.
+   * 
+   * @tparam I
+   *    the (zero based) index of the axis to fix
+   * @param value
+   *    the value to fix the axis to
+   * @return
+   *    A GridContainer representing the slice
+   * @throws Elements::Exception 
+   *    if the axis does not contain the given value
+   * @throws Elements::Exception
+   *    if the grid container is a slice and has this axis already fixed
+   */
   template <int I>
   GridContainer<GridCellManager, AxesTypes...> fixAxisByValue(const axis_type<I>& value);
   
+  /**
+   * @brief
+   * const version of the fixAxisByValue(const axis_type<I>&) method
+   * @details
+   * <b>Important note:</b> Because the returned GridContainer shares the same
+   * underlying data with the original one, the returned object is a constant
+   * grid (othewise it could be used for modifying the original object, which is
+   * constant). This, with combination that the GridContainer does not have a
+   * copy constructor (to avoid performance pitfalls), does not allow for creating
+   * a new object from the returned rvalue. For example the following are wrong:
+   * 
+   * \code {.cpp}
+   * const GridContainer grid1 = ...;
+   * GridContainer grid2 = grid1.fixAxisByValue<0>(0); // WRONG - DO NOT DO THAT
+   * const GridContainer grid3 = grid1.fixAxisByValue<0>(0); // WRONG - DO NOT DO THAT
+   * auto grid3 = grid4.fixAxisByValue<0>(0); // WRONG - DO NOT DO THAT
+   * \endcode
+   * 
+   * All the above will try to create a new GridContainer object by using the
+   * deleted copy constructor, which will result to the compilation failing with
+   * the related message.
+   * 
+   * The way to use the object returned by this method is to assign a constant
+   * reference to it. This action will extend the life of the temporary rvalue
+   * object to the lifetime of the reference. For example:
+   * 
+   * \code {.cpp}
+   * const GridContainer grid1 = ...;
+   * const GridContainer& grid2 = grid1.fixAxisByValue<0>(0); // CORRECT
+   * auto& grid3 = grid1.fixAxisByValue<0>(0); // CORRECT
+   * \endcode
+   */
   template <int I>
   const GridContainer<GridCellManager, AxesTypes...> fixAxisByValue(const axis_type<I>& value) const;
 
 private:
 
+  /// A tuple containing the axes of the grid
   std::tuple<GridAxis<AxesTypes>...> m_axes;
+  /// A helper class used for calculations of the axes indices
   GridIndexHelper<AxesTypes...> m_index_helper {m_axes};
+  /// a tuple containing the original axes of the full grid, if this grid is a slice
   std::tuple<GridAxis<AxesTypes>...> m_axes_fixed {m_axes};
+  /// a helper class for calculations of the original axes indices
   GridIndexHelper<AxesTypes...> m_index_helper_fixed {m_axes_fixed};
+  /// A map containing the axes which have been fixed, if this grid is a slice
   std::map<size_t, size_t> m_fixed_indices {};
+  /// A pointer to the data of the grid
   std::shared_ptr<GridCellManager> m_cell_manager {
           GridCellManagerTraits<GridCellManager>::factory(
                   GridConstructionHelper<AxesTypes...>::getAxisIndexFactor(
                           m_axes, TemplateLoopCounter<sizeof...(AxesTypes)-1>{}))
   };
   
+  /**
+   * @brief Slice constructor
+   * @details
+   * This constructor creates a GridContainer which represents a slice of the
+   * given one. It is private and it should be used only by the fixAxisByIndex
+   * and fixAxisByValue methods.
+   * @param other The original grid
+   * @param axis The axis to fix (zero based)
+   * @param index The index to fix the axis to (zero based)
+   */
   GridContainer(const GridContainer<GridCellManager, AxesTypes...>& other, size_t axis, size_t index);
   
+  /// Returns the original axis. This behaves the same like the getAxis() with
+  /// exception the case that the grid is a slice. In that case, it will return
+  /// the original axes and not the single value fixed ones.
   template<int I>
   const GridAxis<axis_type<I>>& getOriginalAxis() const;
 

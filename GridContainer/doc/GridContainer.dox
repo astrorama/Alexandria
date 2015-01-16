@@ -345,9 +345,13 @@ the one of the first, so it should be avoided in cases performance is an issue.
 \subsubsection gridslicing GridContainer slicing
 
 The GridContainer module provides very efficient iteration over slices of a
-GridContainer. This is provided by the GridContainer::iterator::fixAxisByIndex()
-and GridContainer::iterator::fixAxisByValue() methods, as demonstrated by the
-following code:
+GridContainer. This can be done with two ways:
+
+\paragraph iteratorslicing Slicing using iterators
+
+The GridContainer::iterator::fixAxisByIndex() and
+GridContainer::iterator::fixAxisByValue() methods can be used for slicing, as
+demonstrated by the following code:
 
 \code{.cpp}
   // Get an iterator and fix the third axis
@@ -400,6 +404,132 @@ shifted. For this reason it is best to fix the iterator axes right after
 retrieving the iterator with the GridContainer::begin() method. If an axis is
 fixed a second time, the iterator will ignore the first fixing and will iterate
 through the new slice.
+
+\paragraph directslicing Direct Grid slicing
+
+The second way to slice a grid is to use the methods gixAxisByValue() and
+fixAxisByIndex() of the GridContainer class itself. These methods will return
+a GridContainer object which represents the slice of the original grid. For
+example:
+
+\code{.cpp}
+// Get a slice of the grid by fixing the third axis
+auto slice = grid.fixAxisByValue<2>("two");
+
+// Print detailed information for the slice
+cout << "Slice size: " << slice.size() << "\n";
+for (auto iter=slice.begin(); iter!=slice.end(); ++iter) {
+  cout << "Cell (" << iter.axisValue<0>() << ", " << iter.axisValue<1>()
+       << ", " << iter.axisValue<2>() << "): " << *iter << "\n";
+}
+\endcode
+
+Output:
+
+\code
+Slice size: 10
+Cell (1, 0.1, two): 11
+Cell (2, 0.1, two): 12
+Cell (3, 0.1, two): 13
+Cell (4, 0.1, two): 14
+Cell (5, 0.1, two): 15
+Cell (1, 0.2, two): 16
+Cell (2, 0.2, two): 17
+Cell (3, 0.2, two): 18
+Cell (4, 0.2, two): 19
+Cell (5, 0.2, two): 20
+\endcode
+
+Note that the grid representing the slice has the same number of axes with the
+original grid, but the fixed axis has a single value:
+
+\code{.cpp}
+// The original grid and the slice have the same dimensionality
+cout << "Original dimensionality: " << grid.axisNumber() << "\n";
+cout << "Slice dimensionality: " << slice.axisNumber() << "\n";
+
+// The slice fixed axis has a single value
+auto& fixed_axis = slice.getAxis<2>();
+cout << "Fixed axis name: " << fixed_axis.name() << "\n";
+cout << "Fixed axis knots: ";
+for (auto& knot : fixed_axis) {
+  cout << knot << " ";
+}
+\endcode
+
+Output:
+
+\code
+Original dimensionality: 3
+Slice dimensionality: 3
+Fixed axis name: Strings
+Fixed axis knots: two
+\endcode
+
+The functions for slicing a grid can be chained to fix more than one axes. For
+example:
+
+\code{.cpp}
+auto slice2 = grid.fixAxisByValue<2>("two").fixAxisByIndex<0>(2).fixAxisByValue<1>(.1);
+cout << "Slice size: " << slice2.size() << "\n";
+for (auto iter=slice2.begin(); iter!=slice2.end(); ++iter) {
+  cout << "Cell (" << iter.axisValue<0>() << ", " << iter.axisValue<1>()
+       << ", " << iter.axisValue<2>() << "): " << *iter << "\n";
+}
+\endcode
+
+Output:
+
+\code
+Slice size: 1
+Cell (3, 0.1, two): 13
+\endcode
+
+There are two important notes for when using grid slices. The first is that both
+the original grid and the slice use the same underlying data. This means that
+any modifications on the slice cells will be reflected to the original grid and
+vice versa. For example:
+
+\code{.cpp}
+cout << "Original cell before: " << grid(2, 0, 1) << "\n";
+// Modify the first element of the slice2
+*(slice2.begin()) = -15;
+// The modification is reflected to the original grid
+cout << "Original cell after: " << grid(2, 0, 1) << "\n";
+\endcode
+
+Output:
+
+\code
+Original cell: 13
+Original cell: -15
+\endcode
+
+The second important note is that the const versions of the fixAxisByIndex() and
+fixAxisByValue() return an object of type <b>const GridContainer</b>. This is
+necessary because otherwise the returned slice could be used for modifying the
+original (constant) grid (because they share the same underlying data). This,
+with combination that the GridContainer does not provide a copy constructor,
+makes it impossible to store the result to a new GridContainer instance (the
+move constructor cannot be used because of the constness of the returned type).
+The solution to this problem is to use a const reference to store the result:
+
+\code{.cpp}
+// A constant reference to the grid
+const auto& const_grid = grid;
+
+// The following two lines will not compile. They will fail with a message saying
+// that the GridContainer copy constructor is deleted.
+auto const_slice1 = const_grid.fixAxisByValue<2>("two"); // WRONG - DONT DO THAT
+const GridContainer<vector<int>, int, double, string> const_slice2
+                  = const_grid.fixAxisByValue<2>("two"); // WRONG - DONT DO THAT
+
+// The following two lines do not create new objects. They only create references
+// to the temporary, which works fine. (Note the &)
+auto& const_slice1 = const_grid.fixAxisByValue<2>("two"); // CORRECT - works fine
+const GridContainer<vector<int>, int, double, string>& const_slice2
+                   = const_grid.fixAxisByValue<2>("two"); // CORRECT - works fine
+\endcode
 
 \section serialization GridContainer I/O
 
