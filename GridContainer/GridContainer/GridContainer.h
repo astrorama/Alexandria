@@ -183,16 +183,36 @@ public:
 
   /// @copydoc at(decltype(std::declval<GridAxis<AxesTypes>>().size())...) const
   cell_type& at(decltype(std::declval<GridAxis<AxesTypes>>().size())... indices);
+  
+  template <int I>
+  GridContainer<GridCellManager, AxesTypes...> fixAxisByIndex(size_t index);
+  
+  template <int I>
+  const GridContainer<GridCellManager, AxesTypes...> fixAxisByIndex(size_t index) const;
+  
+  template <int I>
+  GridContainer<GridCellManager, AxesTypes...> fixAxisByValue(const axis_type<I>& value);
+  
+  template <int I>
+  const GridContainer<GridCellManager, AxesTypes...> fixAxisByValue(const axis_type<I>& value) const;
 
 private:
 
   std::tuple<GridAxis<AxesTypes>...> m_axes;
   GridIndexHelper<AxesTypes...> m_index_helper {m_axes};
-  std::unique_ptr<GridCellManager> m_cell_manager {
+  std::tuple<GridAxis<AxesTypes>...> m_axes_fixed {m_axes};
+  GridIndexHelper<AxesTypes...> m_index_helper_fixed {m_axes_fixed};
+  std::map<size_t, size_t> m_fixed_indices {};
+  std::shared_ptr<GridCellManager> m_cell_manager {
           GridCellManagerTraits<GridCellManager>::factory(
                   GridConstructionHelper<AxesTypes...>::getAxisIndexFactor(
                           m_axes, TemplateLoopCounter<sizeof...(AxesTypes)-1>{}))
   };
+  
+  GridContainer(const GridContainer<GridCellManager, AxesTypes...>& other, size_t axis, size_t index);
+  
+  template<int I>
+  const GridAxis<axis_type<I>>& getOriginalAxis() const;
 
 }; // end of class GridContainer
 
