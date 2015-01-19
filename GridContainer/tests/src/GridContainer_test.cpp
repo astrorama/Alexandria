@@ -542,12 +542,12 @@ BOOST_FIXTURE_TEST_CASE(fixIteratorByIndexTwiceForSameAxis, GridContainer_Fixtur
                                           .fixAxisByIndex<2>(0).fixAxisByIndex<3>(0);
   
   // Then
-  BOOST_CHECK_THROW(iterator.fixAxisByIndex<0>(0), Elements::Exception);
-  BOOST_CHECK_THROW(iterator.fixAxisByIndex<1>(0), Elements::Exception);
+  iterator.fixAxisByIndex<0>(0);
+  iterator.fixAxisByIndex<1>(0);
   BOOST_CHECK_THROW(iterator.fixAxisByIndex<2>(1), Elements::Exception);
   BOOST_CHECK_THROW(iterator.fixAxisByIndex<3>(1), Elements::Exception);
-  BOOST_CHECK_THROW(const_iterator.fixAxisByIndex<0>(0), Elements::Exception);
-  BOOST_CHECK_THROW(const_iterator.fixAxisByIndex<1>(0), Elements::Exception);
+  const_iterator.fixAxisByIndex<0>(0);
+  const_iterator.fixAxisByIndex<1>(0);
   BOOST_CHECK_THROW(const_iterator.fixAxisByIndex<2>(1), Elements::Exception);
   BOOST_CHECK_THROW(const_iterator.fixAxisByIndex<3>(1), Elements::Exception);
   
@@ -744,12 +744,12 @@ BOOST_FIXTURE_TEST_CASE(fixIteratorByValueTwiceForSameAxis, GridContainer_Fixtur
                                           .fixAxisByValue<2>(1).fixAxisByValue<3>(1);
   
   // Then
-  BOOST_CHECK_THROW(iterator.fixAxisByValue<0>(1), Elements::Exception);
-  BOOST_CHECK_THROW(iterator.fixAxisByValue<1>(1), Elements::Exception);
+  iterator.fixAxisByValue<0>(1);
+  iterator.fixAxisByValue<1>(1);
   BOOST_CHECK_THROW(iterator.fixAxisByValue<2>(2), Elements::Exception);
   BOOST_CHECK_THROW(iterator.fixAxisByValue<3>(2), Elements::Exception);
-  BOOST_CHECK_THROW(const_iterator.fixAxisByValue<0>(1), Elements::Exception);
-  BOOST_CHECK_THROW(const_iterator.fixAxisByValue<1>(1), Elements::Exception);
+  const_iterator.fixAxisByValue<0>(1);
+  const_iterator.fixAxisByValue<1>(1);
   BOOST_CHECK_THROW(const_iterator.fixAxisByValue<2>(2), Elements::Exception);
   BOOST_CHECK_THROW(const_iterator.fixAxisByValue<3>(2), Elements::Exception);
   
