@@ -89,6 +89,10 @@ template<typename GridCellManager, typename... AxesTypes>
 template<typename CellType>
 template<int I>
 auto GridContainer<GridCellManager, AxesTypes...>::iter<CellType>::fixAxisByIndex(size_t index) -> iter& {
+  if (m_fixed_indices.find(I) != m_fixed_indices.end()) {
+    throw Elements::Exception() << "Axis " <<m_owner.getOriginalAxis<I>().name()
+                                << " is already fixed";
+  }
   if (index >= m_owner.getOriginalAxis<I>().size()) {
     throw Elements::Exception() << "Index (" << index << ") out of axis " 
                               << m_owner.getOriginalAxis<I>().name() << " size ("
@@ -103,6 +107,10 @@ template<typename GridCellManager, typename... AxesTypes>
 template<typename CellType>
 template<int I>
 auto GridContainer<GridCellManager, AxesTypes...>::iter<CellType>::fixAxisByValue(const axis_type<I>& value) -> iter& {
+  if (m_fixed_indices.find(I) != m_fixed_indices.end()) {
+    throw Elements::Exception() << "Axis " <<m_owner.getOriginalAxis<I>().name()
+                                << " is already fixed";
+  }
   auto axis = m_owner.getOriginalAxis<I>();
   auto iter = std::find(axis.begin(), axis.end(), value);
   if (iter == axis.end()) {

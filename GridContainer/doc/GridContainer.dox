@@ -378,7 +378,7 @@ Cell (2, 0.2, two): 17
 Cell (3, 0.2, two): 18
 Cell (4, 0.2, two): 19
 Cell (5, 0.2, two): 20
-\endcode
+\endcode`
 
 When a method for fixing an axis is called, the iterator moves to the next cell
 with the given axis coordinate (or stays where it is if the current cell has
@@ -401,9 +401,9 @@ Cell (3, 0.1, two): 13
 The order in which the axes are fixed is not important, but keep in mind that if
 the current cell does not have the requested axis coordinate the iterator is
 shifted. For this reason it is best to fix the iterator axes right after
-retrieving the iterator with the GridContainer::begin() method. If an axis is
-fixed a second time, the iterator will ignore the first fixing and will iterate
-through the new slice.
+retrieving the iterator with the GridContainer::begin() method. Fixing the same
+axis for a second time (moving to a different slice) is not allowed and an
+exception is thrown.
 
 \paragraph directslicing Direct Grid slicing
 

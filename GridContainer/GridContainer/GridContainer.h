@@ -414,6 +414,8 @@ public:
    * @return the iterator over the grid slice
    * @throws Elements::Exception
    *    if the given index is out of the bounds of the axis
+   * @throws Elements::Exception
+   *    if the axis has already been fixed for this iterator
    */
   template<int I>
   iter& fixAxisByIndex(size_t index);
@@ -432,6 +434,8 @@ public:
    * @return the iterator over the grid slice
    * @throws Elements::Exception
    *    if the axis does not contain the given value
+   * @throws Elements::Exception
+   *    if the axis has already been fixed for this iterator
    */
   template<int I>
   iter& fixAxisByValue(const axis_type<I>& value);

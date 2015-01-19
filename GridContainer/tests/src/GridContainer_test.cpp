@@ -526,6 +526,34 @@ BOOST_FIXTURE_TEST_CASE(fixIteratorByIndexOutOfBound, GridContainer_Fixture) {
 }
 
 //-----------------------------------------------------------------------------
+// Test fixing iterator by index twice for same axis throws exception
+//-----------------------------------------------------------------------------
+    
+BOOST_FIXTURE_TEST_CASE(fixIteratorByIndexTwiceForSameAxis, GridContainer_Fixture) {
+  
+  // Given
+  GridContainerType grid {axes_tuple};
+  const GridContainerType& const_grid = grid;
+  
+  // When
+  auto iterator = grid.begin().fixAxisByIndex<0>(0).fixAxisByIndex<1>(0)
+                              .fixAxisByIndex<2>(0).fixAxisByIndex<3>(0);
+  auto const_iterator = const_grid.begin().fixAxisByIndex<0>(0).fixAxisByIndex<1>(0)
+                                          .fixAxisByIndex<2>(0).fixAxisByIndex<3>(0);
+  
+  // Then
+  BOOST_CHECK_THROW(iterator.fixAxisByIndex<0>(0), Elements::Exception);
+  BOOST_CHECK_THROW(iterator.fixAxisByIndex<1>(0), Elements::Exception);
+  BOOST_CHECK_THROW(iterator.fixAxisByIndex<2>(1), Elements::Exception);
+  BOOST_CHECK_THROW(iterator.fixAxisByIndex<3>(1), Elements::Exception);
+  BOOST_CHECK_THROW(const_iterator.fixAxisByIndex<0>(0), Elements::Exception);
+  BOOST_CHECK_THROW(const_iterator.fixAxisByIndex<1>(0), Elements::Exception);
+  BOOST_CHECK_THROW(const_iterator.fixAxisByIndex<2>(1), Elements::Exception);
+  BOOST_CHECK_THROW(const_iterator.fixAxisByIndex<3>(1), Elements::Exception);
+  
+}
+
+//-----------------------------------------------------------------------------
 // Test fixing iterator by value
 //-----------------------------------------------------------------------------
     
@@ -696,6 +724,34 @@ BOOST_FIXTURE_TEST_CASE(fixIteratorByValueNotFound, GridContainer_Fixture) {
   BOOST_CHECK_THROW(const_iterator.fixAxisByValue<1>(axis2.size()+1), Elements::Exception);
   BOOST_CHECK_THROW(const_iterator.fixAxisByValue<2>(axis3.size()+1), Elements::Exception);
   BOOST_CHECK_THROW(const_iterator.fixAxisByValue<3>(axis4.size()+1), Elements::Exception);
+  
+}
+
+//-----------------------------------------------------------------------------
+// Test fixing iterator by value twice for same axis throws exception
+//-----------------------------------------------------------------------------
+    
+BOOST_FIXTURE_TEST_CASE(fixIteratorByValueTwiceForSameAxis, GridContainer_Fixture) {
+  
+  // Given
+  GridContainerType grid {axes_tuple};
+  const GridContainerType& const_grid = grid;
+  
+  // When
+  auto iterator = grid.begin().fixAxisByValue<0>(1).fixAxisByValue<1>(1)
+                              .fixAxisByValue<2>(1).fixAxisByValue<3>(1);
+  auto const_iterator = const_grid.begin().fixAxisByValue<0>(1).fixAxisByValue<1>(1)
+                                          .fixAxisByValue<2>(1).fixAxisByValue<3>(1);
+  
+  // Then
+  BOOST_CHECK_THROW(iterator.fixAxisByValue<0>(1), Elements::Exception);
+  BOOST_CHECK_THROW(iterator.fixAxisByValue<1>(1), Elements::Exception);
+  BOOST_CHECK_THROW(iterator.fixAxisByValue<2>(2), Elements::Exception);
+  BOOST_CHECK_THROW(iterator.fixAxisByValue<3>(2), Elements::Exception);
+  BOOST_CHECK_THROW(const_iterator.fixAxisByValue<0>(1), Elements::Exception);
+  BOOST_CHECK_THROW(const_iterator.fixAxisByValue<1>(1), Elements::Exception);
+  BOOST_CHECK_THROW(const_iterator.fixAxisByValue<2>(2), Elements::Exception);
+  BOOST_CHECK_THROW(const_iterator.fixAxisByValue<3>(2), Elements::Exception);
   
 }
 
