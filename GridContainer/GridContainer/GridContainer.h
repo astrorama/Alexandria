@@ -80,11 +80,12 @@ class GridContainer {
   // The following aliases are used to simplify the definitions inside the class
   typedef typename GridCellManagerTraits<GridCellManager>::data_type cell_type;
   typedef typename GridCellManagerTraits<GridCellManager>::iterator cell_manager_iter_type;
+
+public:
+
   // The following is a shortcut to retrieve the type of each axis
   template<int I>
   using axis_type = typename std::tuple_element<I, std::tuple<AxesTypes...>>::type;
-
-public:
 
   // The iterator type of the GridContainer. See at the end of the file for its declaration
   template<typename CellType>
