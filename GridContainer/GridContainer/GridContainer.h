@@ -11,6 +11,7 @@
 #include <tuple>
 #include <iterator>
 #include <map>
+#include <type_traits>
 #include "GridContainer/GridCellManagerTraits.h"
 #include "GridContainer/GridIndexHelper.h"
 #include "_impl/GridConstructionHelper.h"
@@ -384,8 +385,14 @@ public:
   /// Returns a reference to the cell value
   CellType& operator*();
 
+  /// Returns a reference to the cell value (const version)
+  typename std::add_const<CellType>::type& operator*() const;
+
   /// Returns a pointer to the cell value
   CellType* operator->();
+
+  /// Returns a pointer to the cell value (const version)
+  typename std::add_const<CellType>::type* operator->() const;
 
   /// Compares two iterators for equality. Should be used only for iterators
   /// of the same grid.
