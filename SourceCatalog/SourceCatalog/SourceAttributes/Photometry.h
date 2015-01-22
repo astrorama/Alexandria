@@ -23,18 +23,9 @@ namespace SourceCatalog {
 struct FluxErrorPair {
   double flux;
   double error;
-  FluxErrorPair(double flux, double error) :
-      flux(flux), error(error) {
-  }
-  bool operator==(const FluxErrorPair& other) const {
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wfloat-equal"
-	  return this->flux == other.flux && this->error == other.error;
-#pragma GCC diagnostic pop
-  }
-  bool operator!=(const FluxErrorPair& other) const {
-	  return !(*this == other);
-  }
+  FluxErrorPair(double flux, double error);
+  bool operator==(const FluxErrorPair& other) const;
+  bool operator!=(const FluxErrorPair& other) const;
 };
 
 /**
