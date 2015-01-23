@@ -6,7 +6,17 @@ elements_depends_on_subdirs(XYDataset)
 
 elements_add_library(MathUtils src/lib/function/*.cpp src/lib/interpolation/*.cpp
                      LINK_LIBRARIES XYDataset
-                     PUBLIC_HEADERS MathUtils XYDataset)
+                     PUBLIC_HEADERS MathUtils)
+
+if(ELEMENTS_HIDE_WARNINGS)
+  if(UNIX)
+    set_property(SOURCE src/lib/function/multiplication.cpp
+                 PROPERTY COMPILE_FLAGS -Wno-float-equal)
+    set_property(SOURCE src/lib/function/Piecewise.cpp
+                 PROPERTY COMPILE_FLAGS -Wno-float-equal)
+  endif()
+endif()
+
 
 #===== Boost tests =============================================================
 

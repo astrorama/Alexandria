@@ -127,8 +127,6 @@ BOOST_FIXTURE_TEST_CASE(const_iterator_test, XYDataset_Fixture) {
 // real values (1, 1.1, etc) but the double representation of these values as
 // converted by the compiler. The test guarantees that the XYDataset does not
 // perform any arithmetics with them.
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wfloat-equal"
   BOOST_CHECK(1   == it->first);
   BOOST_CHECK(1.1 == it->second);
   ++it;
@@ -137,7 +135,6 @@ BOOST_FIXTURE_TEST_CASE(const_iterator_test, XYDataset_Fixture) {
   it = --xydataset.end();
   BOOST_CHECK(5   == it->first);
   BOOST_CHECK(5.5 == it->second);
-#pragma GCC diagnostic pop
 
 }
 
@@ -163,13 +160,10 @@ BOOST_FIXTURE_TEST_CASE(front_back_test, XYDataset_Fixture) {
 // real values (1, 1.1, etc) but the double representation of these values as
 // converted by the compiler. The test guarantees that the XYDataset does not
 // perform any arithmetics with them.
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wfloat-equal"
   BOOST_CHECK(1   == front.first);
   BOOST_CHECK(1.1 == front.second);
   BOOST_CHECK(5   == back.first);
   BOOST_CHECK(5.5 == back.second);
-#pragma GCC diagnostic pop
 
 }
 

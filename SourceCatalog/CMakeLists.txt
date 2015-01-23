@@ -15,6 +15,12 @@ elements_add_library(SourceCatalog src/lib/*.cpp
                   INCLUDE_DIRS Eigen3 Boost Table
                   PUBLIC_HEADERS SourceCatalog)
 
+if(ELEMENTS_HIDE_WARNINGS)
+  if(UNIX)
+    set_property(SOURCE src/lib/FluxErrorPair.cpp
+                 PROPERTY COMPILE_FLAGS -Wno-float-equal)
+  endif()
+endif()
 
 #===== Boost tests =============================================================
 

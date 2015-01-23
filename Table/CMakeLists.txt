@@ -13,6 +13,14 @@ elements_add_library(Table src/lib/*.cpp
                      INCLUDE_DIRS ElementsKernel Cfitsio CCfits
                      PUBLIC_HEADERS Table)
 
+if(ELEMENTS_HIDE_WARNINGS)
+  if(UNIX)
+    set_property(SOURCE src/lib/FitsReader.cpp
+                 PROPERTY COMPILE_FLAGS -Wno-unused-value)
+  endif()
+endif()
+
+
 #===== Boost tests =============================================================
 
 elements_add_unit_test(ColumnInfo_test tests/src/ColumnInfo_test.cpp
