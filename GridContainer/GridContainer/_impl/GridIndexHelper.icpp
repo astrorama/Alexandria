@@ -17,6 +17,9 @@ GridIndexHelper<AxesTypes...>::GridIndexHelper(const std::tuple<GridAxis<AxesTyp
           }, m_axes_index_factors {
                 GridConstructionHelper<AxesTypes...>::createAxisIndexFactorVector(
                      axes_tuple, TemplateLoopCounter<sizeof...(AxesTypes)>{})
+          }, m_axes_names { 
+                GridConstructionHelper<AxesTypes...>::createAxesNamesVector(
+                        axes_tuple, TemplateLoopCounter<sizeof...(AxesTypes)>{})
           } { }
 
 template<typename... AxesTypes>
@@ -42,29 +45,31 @@ size_t GridIndexHelper<AxesTypes...>::totalIndex(decltype(std::declval<GridAxis<
 }
 
 template <typename Coord>
-void checkBounds(const std::vector<size_t>& axes_sizes, Coord coord) {
+void checkBounds(const std::vector<std::string>& axes_names,
+                 const std::vector<size_t>& axes_sizes, Coord coord) {
   if (coord >= axes_sizes[axes_sizes.size()-1]) {
     throw Elements::Exception() << "Coordinate " << coord << " for axis "
-                              << (axes_sizes.size()-1) << " (size " 
+                              << axes_names[axes_sizes.size()-1] << " (size " 
                               << axes_sizes[axes_sizes.size()-1]
                               << ") is out of bound";
   }
 }
 
 template <typename Coord, typename... RestCoords>
-void checkBounds(const std::vector<size_t>& axes_sizes, Coord coord, RestCoords... rest_coords) {
+void checkBounds(const std::vector<std::string>& axes_names,
+                 const std::vector<size_t>& axes_sizes, Coord coord, RestCoords... rest_coords) {
   if (coord >= axes_sizes[axes_sizes.size()-sizeof...(RestCoords)-1]) {
     throw Elements::Exception() << "Coordinate " << coord << " for axis "
-                              << (axes_sizes.size()-sizeof...(RestCoords)-1) << " (size " 
+                              << axes_names[axes_sizes.size()-sizeof...(RestCoords)-1] << " (size " 
                               << axes_sizes[axes_sizes.size()-sizeof...(RestCoords)-1]
                               << ") is out of bound";
   }
-  checkBounds(axes_sizes, rest_coords...);
+  checkBounds(axes_names, axes_sizes, rest_coords...);
 }
 
 template<typename... AxesTypes>
 size_t GridIndexHelper<AxesTypes...>::totalIndexChecked(decltype(std::declval<GridAxis<AxesTypes>>().size())... coords) const {
-  checkBounds(m_axes_sizes, coords...);
+  checkBounds(m_axes_names, m_axes_sizes, coords...);
   return calculateTotalIndex(m_axes_index_factors, coords...);
 }
 
@@ -74,7 +79,7 @@ void GridIndexHelper<AxesTypes...>::checkAllFixedAreZero(const std::map<size_t, 
   if (coord != 0) {
     if (fixed_indices.find(m_axes_sizes.size()-1) != fixed_indices.end()) {
       throw Elements::Exception() << "Coordinate " << coord << " for axis "
-                              << m_axes_sizes.size()-1 << " (size 1) is out of bound";
+                              << m_axes_names[m_axes_sizes.size()-1] << " (size 1) is out of bound";
     }
   }
 }
@@ -87,7 +92,7 @@ void GridIndexHelper<AxesTypes...>::checkAllFixedAreZero(const std::map<size_t, 
     size_t axis_index = m_axes_sizes.size() - sizeof...(RestCoords) - 1;
     if (fixed_indices.find(axis_index) != fixed_indices.end()) {
       throw Elements::Exception() << "Coordinate " << coord << " for axis "
-                              << axis_index << " (size 1) is out of bound";
+                              << m_axes_names[axis_index] << " (size 1) is out of bound";
     }
   }
   checkAllFixedAreZero(fixed_indices, rest_coords...);

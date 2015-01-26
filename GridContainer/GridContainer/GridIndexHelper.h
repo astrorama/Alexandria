@@ -94,6 +94,7 @@ public:
 
   std::vector<size_t> m_axes_sizes;
   std::vector<size_t> m_axes_index_factors;
+  std::vector<std::string> m_axes_names;
 };
 
 /**

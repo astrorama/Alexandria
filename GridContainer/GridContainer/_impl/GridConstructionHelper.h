@@ -63,6 +63,32 @@ public:
   
   /**
    * @brief
+   * Creates a vector which contains the names of the given axes
+   * @details
+   * Note that this method is using variadic template iteration by using the
+   * second parameter (TemplateLoopCounter). To initiate the iteration the
+   * counter must be equal with the number of axes in the tuple.
+   * 
+   * @tparam I the index of the axis until which the results are calculated 
+   * @param axes A tuple containing the GridAxis objects describing the axes
+   * @return A vector containing the names of the axes
+   */
+  template<int I>
+  static std::vector<std::string> createAxesNamesVector(const std::tuple<GridAxis<Axes>...>& axes,
+                                                      const TemplateLoopCounter<I>&) {
+    std::vector<std::string> result {createAxesNamesVector(axes, TemplateLoopCounter<I-1>{})};
+    result.push_back(std::get<I-1>(axes).name());
+    return result;
+  }
+
+  /// Method which terminates the iteration when creating the axes names vector
+  static std::vector<std::string> createAxesNamesVector(const std::tuple<GridAxis<Axes>...>&,
+                                                     const TemplateLoopCounter<0>&) {
+    return std::vector<std::string>{};
+  }
+  
+  /**
+   * @brief
    * Returns the index factor of an axis
    * @details
    * The index factor of an axis is the step needed to be done in the single
