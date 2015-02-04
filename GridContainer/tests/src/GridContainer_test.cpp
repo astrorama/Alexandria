@@ -756,6 +756,30 @@ BOOST_FIXTURE_TEST_CASE(fixIteratorByValueTwiceForSameAxis, GridContainer_Fixtur
 }
 
 //-----------------------------------------------------------------------------
+// Test fixing all exes of iterator by other iterator
+//-----------------------------------------------------------------------------
+    
+BOOST_FIXTURE_TEST_CASE(fixIteratorAllAxes, GridContainer_Fixture) {
+  
+  // Given
+  GridContainerType grid1 {axes_tuple};
+  auto iter1 = grid1.begin();
+  GridContainerType grid2 {axes_tuple};
+  auto iter2 = grid2.begin();
+  
+  // When
+  iter1.fixAxisByIndex<0>(3).fixAxisByIndex<1>(2).fixAxisByIndex<2>(1).fixAxisByIndex<3>(0);
+  iter2.fixAllAxes(iter1);
+  
+  // Then
+  BOOST_CHECK_EQUAL(iter2.axisIndex<0>(), 3);
+  BOOST_CHECK_EQUAL(iter2.axisIndex<1>(), 2);
+  BOOST_CHECK_EQUAL(iter2.axisIndex<2>(), 1);
+  BOOST_CHECK_EQUAL(iter2.axisIndex<3>(), 0);
+  
+}
+
+//-----------------------------------------------------------------------------
 // Test slicing using index out of bound exception
 //-----------------------------------------------------------------------------
     

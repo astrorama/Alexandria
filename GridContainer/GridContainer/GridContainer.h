@@ -447,7 +447,19 @@ public:
    */
   template<int I>
   iter& fixAxisByValue(const axis_type<I>& value);
-
+  
+  /**
+   * Fixes all the axes of this iterator to the values of the axes of the given
+   * iterator. The given iterator is assumed to be an iterator of a grid with
+   * the same number of axes, with the same names. It is the responsibility of
+   * the caller to guarantee that.
+   * @tparam OtherIter The type of the other iterator
+   * @param other The iterator to get the axes values from
+   * @return the iterator with all its axes fixed
+   */
+  template<typename OtherIter>
+  iter& fixAllAxes(const OtherIter& other);
+  
 private:
 
   const GridContainer<GridCellManager, AxesTypes...>& m_owner;

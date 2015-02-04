@@ -6,6 +6,7 @@
 
 #include <algorithm>
 #include "ElementsKernel/Exception.h"
+#include "TemplateLoopCounter.h"
 
 namespace Euclid {
 namespace GridContainer {
@@ -142,6 +143,24 @@ void GridContainer<GridCellManager, AxesTypes...>::iter<CellType>::forwardToInde
           : m_owner.m_index_helper.m_axes_sizes[axis] + fixed_index - current_index;
     m_data_iter += distance * axis_factor;
   }
+}
+
+template<typename IterFrom, typename IterTo, int I>
+static void fixSameAxes(IterFrom& from, IterTo& to, const TemplateLoopCounter<I>&) {
+  to.template fixAxisByValue<I>(from.template axisValue<I>());
+  fixSameAxes(from, to, TemplateLoopCounter<I-1>{});
+}
+
+template<typename IterFrom, typename IterTo>
+static void fixSameAxes(IterFrom&, IterTo&, const TemplateLoopCounter<-1>&) {
+}
+
+template<typename GridCellManager, typename... AxesTypes>
+template<typename CellType>
+template<typename OtherIter>
+auto GridContainer<GridCellManager, AxesTypes...>::iter<CellType>::fixAllAxes(const OtherIter& other) -> iter& {
+  fixSameAxes(other, *this, TemplateLoopCounter<sizeof...(AxesTypes)-1>{});
+  return *this;
 }
 
 } // end of GridContainer namespace
