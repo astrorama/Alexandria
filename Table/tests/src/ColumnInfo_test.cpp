@@ -164,7 +164,7 @@ BOOST_AUTO_TEST_CASE(size) {
   std::size_t size = columnInfo.size();
   
   // Then
-  BOOST_CHECK_EQUAL(size, 5);
+  BOOST_CHECK_EQUAL(size, 5u);
   
 }
 
@@ -257,15 +257,15 @@ BOOST_AUTO_TEST_CASE(find) {
   
   // Then
   BOOST_CHECK(index0);
-  BOOST_CHECK_EQUAL(*index0, 0);
+  BOOST_CHECK_EQUAL(*index0, 0u);
   BOOST_CHECK(index1);
-  BOOST_CHECK_EQUAL(*index1, 1);
+  BOOST_CHECK_EQUAL(*index1, 1u);
   BOOST_CHECK(index2);
-  BOOST_CHECK_EQUAL(*index2, 2);
+  BOOST_CHECK_EQUAL(*index2, 2u);
   BOOST_CHECK(index3);
-  BOOST_CHECK_EQUAL(*index3, 3);
+  BOOST_CHECK_EQUAL(*index3, 3u);
   BOOST_CHECK(index4);
-  BOOST_CHECK_EQUAL(*index4, 4);
+  BOOST_CHECK_EQUAL(*index4, 4u);
   BOOST_CHECK(!index5);
   
 }

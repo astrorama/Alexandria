@@ -102,7 +102,7 @@ BOOST_FIXTURE_TEST_CASE(rank, GridContainer_Fixture) {
   GridContainerType grid {axes_tuple};
   
   // Then
-  BOOST_CHECK_EQUAL(grid.axisNumber(), 4);
+  BOOST_CHECK_EQUAL(grid.axisNumber(), 4u);
   
 }
 
@@ -772,10 +772,10 @@ BOOST_FIXTURE_TEST_CASE(fixIteratorAllAxes, GridContainer_Fixture) {
   iter2.fixAllAxes(iter1);
   
   // Then
-  BOOST_CHECK_EQUAL(iter2.axisIndex<0>(), 3);
-  BOOST_CHECK_EQUAL(iter2.axisIndex<1>(), 2);
-  BOOST_CHECK_EQUAL(iter2.axisIndex<2>(), 1);
-  BOOST_CHECK_EQUAL(iter2.axisIndex<3>(), 0);
+  BOOST_CHECK_EQUAL(iter2.axisIndex<0>(), 3u);
+  BOOST_CHECK_EQUAL(iter2.axisIndex<1>(), 2u);
+  BOOST_CHECK_EQUAL(iter2.axisIndex<2>(), 1u);
+  BOOST_CHECK_EQUAL(iter2.axisIndex<3>(), 0u);
   
 }
 
