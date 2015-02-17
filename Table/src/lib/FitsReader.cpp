@@ -10,6 +10,7 @@
 using boost::regex;
 using boost::regex_match;
 #include "ElementsKernel/Exception.h"
+#include "ElementsKernel/Unused.h"
 #include "Table/Row.h"
 #include "Table/FitsReader.h"
 #include "ReaderHelper.h"
@@ -39,7 +40,7 @@ FitsReader::FitsReader(std::vector<std::string> column_names)
 const Euclid::Table::Table FitsReader::read(const CCfits::HDU& hdu) {
   // First we check that we have a table HDU
   try {
-    dynamic_cast<const CCfits::Table&>(hdu);
+    ELEMENTS_UNUSED auto& temp = dynamic_cast<const CCfits::Table&>(hdu);
   } catch (std::bad_cast&) {
     throw Elements::Exception() << "Given HDU is not a table";
   }
