@@ -62,4 +62,3 @@ ELEMENTS_API std::vector<Row::cell_type> translateColumn(CCfits::Column& column,
 } // end of namespace Euclid
 
 #endif /* FITSREADERHELPER_H */
-

@@ -24,4 +24,3 @@ std::shared_ptr<ColumnInfo> createColumnInfo(const std::vector<std::string>& nam
 } // end of namespace Euclid
 
 #endif /* TABLE_READERHELPER_H */
-

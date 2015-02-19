@@ -110,4 +110,3 @@ ELEMENTS_API Row::cell_type convertToCellType(const std::string& value, std::typ
 } // end of namespace Euclid
 
 #endif /* TABLE_ASCIIREADERHELPER_H */
-

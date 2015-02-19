@@ -51,4 +51,3 @@ void populateColumn(const Table& table, size_t column_index, CCfits::Table* tabl
 } // end of namespace Euclid
 
 #endif /* TABLE_FITSWRITERHELPER_H */
-

@@ -45,4 +45,3 @@ ELEMENTS_API std::vector<size_t> calculateColumnLengths(const Table& table);
 } // end of namespace Euclid
 
 #endif /* TABLE_ASCIIWRITERHELPER_H */
-
