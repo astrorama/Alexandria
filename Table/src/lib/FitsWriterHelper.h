@@ -5,7 +5,7 @@
  */
 
 #ifndef TABLE_FITSWRITERHELPER_H
-#define	TABLE_FITSWRITERHELPER_H
+#define TABLE_FITSWRITERHELPER_H
 
 #include <string>
 #include <vector>
@@ -50,5 +50,5 @@ void populateColumn(const Table& table, size_t column_index, CCfits::Table* tabl
 }
 } // end of namespace Euclid
 
-#endif	/* TABLE_FITSWRITERHELPER_H */
+#endif /* TABLE_FITSWRITERHELPER_H */
 

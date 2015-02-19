@@ -5,7 +5,7 @@
  */
 
 #ifndef FITSREADERHELPER_H
-#define	FITSREADERHELPER_H
+#define FITSREADERHELPER_H
 
 #include <vector>
 #include <string>
@@ -61,5 +61,5 @@ ELEMENTS_API std::vector<Row::cell_type> translateColumn(CCfits::Column& column,
 }
 } // end of namespace Euclid
 
-#endif	/* FITSREADERHELPER_H */
+#endif /* FITSREADERHELPER_H */
 
