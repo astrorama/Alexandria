@@ -83,5 +83,39 @@ BOOST_FIXTURE_TEST_CASE(write, AsciiWriter_Fixture) {
 }
 
 //-----------------------------------------------------------------------------
+// Test the write method without types line
+//-----------------------------------------------------------------------------
+
+BOOST_FIXTURE_TEST_CASE(writeNoTypes, AsciiWriter_Fixture) {
+  
+  // Given
+  std::stringstream stream_hash {};
+  std::stringstream stream_double_slash {};
+  Euclid::Table::AsciiWriter writer_hash {};
+  Euclid::Table::AsciiWriter writer_double_slash {"//"};
+  
+  // When
+  writer_hash.write(stream_hash, table, false);
+  writer_double_slash.write(stream_double_slash, table, false);
+  
+  // Then
+  BOOST_CHECK_EQUAL(stream_hash.str(),
+    "# Boolean ThisIsAVeryLongColumnName    Integer       D     F\n"
+    "\n"
+    "        1                     Two-1          1     4.1     0\n"
+    "        0                     Two-2 1234567890 4.2e-15     0\n"
+    "        1                     Two-3        234     4.3     0\n"
+  );
+  BOOST_CHECK_EQUAL(stream_double_slash.str(),
+    "// Boolean ThisIsAVeryLongColumnName    Integer       D     F\n"
+    "\n"
+    "         1                     Two-1          1     4.1     0\n"
+    "         0                     Two-2 1234567890 4.2e-15     0\n"
+    "         1                     Two-3        234     4.3     0\n"
+  );
+  
+}
+
+//-----------------------------------------------------------------------------
 
 BOOST_AUTO_TEST_SUITE_END ()
