@@ -115,6 +115,24 @@ BOOST_FIXTURE_TEST_CASE(getDataset_function_test, FitsParser_Fixture) {
 
 //-----------------------------------------------------------------------------
 
+//-----------------------------------------------------------------------------
+// Test the getDataset function
+//-----------------------------------------------------------------------------
+
+BOOST_FIXTURE_TEST_CASE(isDatatsetFile_function_test, FitsParser_Fixture) {
+
+  BOOST_TEST_MESSAGE(" ");
+  BOOST_TEST_MESSAGE("--> Testing the isDatatsetFile function");
+  BOOST_TEST_MESSAGE(" ");
+
+  FitsParser fits_parser {"TEST_NAME"};
+
+  BOOST_CHECK_EQUAL(fits_parser.isDatasetFile(fits_file), true);
+  BOOST_CHECK_EQUAL(fits_parser.isDatasetFile(fits_nodata_file), false);
+
+}
+
+
 BOOST_AUTO_TEST_SUITE_END ()
 
 

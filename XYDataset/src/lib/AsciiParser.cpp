@@ -8,6 +8,7 @@
 #include <boost/regex.hpp>
 #include <fstream>
 #include <iostream>
+#include <sstream>
 
 #include "ElementsKernel/Exception.h"
 #include "Table/AsciiReader.h"
@@ -36,7 +37,7 @@ std::string AsciiParser::getName(const std::string& file) {
   // Check dataset name is in the file
   // Convention: read until found first non empty line, removing empty lines.
   while (line.empty() && sfile.good()) {
-    std::getline( sfile, line );
+    std::getline(sfile, line);
   }
 
   boost::regex expression(m_regex_name);
@@ -75,6 +76,41 @@ std::unique_ptr<XYDataset> AsciiParser::getDataset(const std::string& file) {
   }
 
  return(dataset_ptr);
+}
+
+bool AsciiParser::isDatasetFile(const std::string& file) {
+  bool is_a_dataset_file = false;
+  std::ifstream sfile(file);
+  // Check file exists
+  if (sfile) {
+    std::string line{};
+    // Convention: read until found first non empty line, removing empty lines.
+    // Escape also the dataset name and comment lines
+    boost::regex expression("\\s*#.*");
+    boost::smatch s_match;
+    while ((line.empty() || boost::regex_match(line, s_match, expression)) && sfile.good()) {
+      std::getline(sfile, line);
+    }
+    if (sfile.good()) {
+      // We should have 2 double values only on one line
+      try {
+        std::stringstream ss(line);
+        std::string empty_string{};
+        double d1{},d2{};
+        ss >> d1 >> d2 >> empty_string;
+        if (!empty_string.empty()){
+          is_a_dataset_file = false;
+        }
+        else {
+          is_a_dataset_file = true;
+        }
+      }
+      catch(...){
+        is_a_dataset_file = false;
+      }
+    }// Eof sfile.good()
+  } // Eof sfile
+ return is_a_dataset_file;
 }
 
 } // XYDataset namespace

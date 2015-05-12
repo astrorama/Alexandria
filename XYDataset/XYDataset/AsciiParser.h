@@ -78,6 +78,20 @@ class ELEMENTS_API AsciiParser : public FileParser
    */
   std::unique_ptr<XYDataset> getDataset(const std::string& file) override;
 
+  /**
+    * @brief
+    * Check that the ASCII file is a dataset file(with at least one line with
+    * 2 double values)
+    * @details
+    * This checking should avoid reading any files which do not contain
+    * any dataset.
+    * @param file
+    * Filename of the FITS file to be read including the absolute path.
+    * @return
+    * true if it is a FITS file with dataset(at least with one HDU table)
+    */
+  bool isDatasetFile(const std::string& file) override;
+
   /// Default destructor
   virtual ~AsciiParser() = default;
 

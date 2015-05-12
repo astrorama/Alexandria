@@ -76,6 +76,19 @@ class ELEMENTS_API FitsParser : public FileParser
    */
   std::unique_ptr<XYDataset> getDataset(const std::string& file) override;
 
+  /**
+   * @brief
+   * Check that the FITS file is a dataset file(with at least one HDU table)
+   * @details
+   * This checking should avoid reading any files which do not contain
+   * any dataset.
+   * @param file
+   * Filename of the FITS file to be read including the absolute path.
+   * @return
+   * true if it is a FITS file with dataset(at least with one HDU table)
+   */
+  bool isDatasetFile(const std::string& file) override;
+
  private:
 
   // keyword name of the dataset

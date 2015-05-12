@@ -40,7 +40,7 @@ FileSystemProvider::FileSystemProvider(const std::string& root_path, std::unique
   if (fs::is_directory(fspath)) {
     for (fs::recursive_directory_iterator it {m_root_path}; it != fs::recursive_directory_iterator{}; ++it)
     {
-      if (fs::is_regular_file(*it))
+      if (fs::is_regular_file(*it) && m_parser->isDatasetFile(it->path().string()))
       {
         std::string dataset_name = m_parser->getName(it->path().string());
         // Remove empty dataset name
