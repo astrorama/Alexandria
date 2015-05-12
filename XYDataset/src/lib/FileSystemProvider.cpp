@@ -38,16 +38,13 @@ FileSystemProvider::FileSystemProvider(const std::string& root_path, std::unique
 
   // Get all files below the root directory
   if (fs::is_directory(fspath)) {
-    fs::recursive_directory_iterator it {m_root_path};
-    fs::recursive_directory_iterator endit;
-    while(it != endit)
+    for (fs::recursive_directory_iterator it {m_root_path}; it != fs::recursive_directory_iterator{}; ++it)
     {
       if (fs::is_regular_file(*it))
       {
         std::string dataset_name = m_parser->getName(it->path().string());
         // Remove empty dataset name
         if (dataset_name.empty()) {
-           ++it;
            continue;
         }
         // Remove the root part
@@ -69,7 +66,6 @@ FileSystemProvider::FileSystemProvider(const std::string& root_path, std::unique
                                     << " Path :" << it->path().string();
         }
       }
-      ++it;
     }
   }
   else {
