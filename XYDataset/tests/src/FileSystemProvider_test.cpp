@@ -49,6 +49,7 @@ struct FileSystemProvider_Fixture {
     // Create files
     std::ofstream file1_mer(mer_directory + "/file1.txt");
     std::ofstream file2_mer(mer_directory + "/file2.txt");
+    std::ofstream dotfile_mer(mer_directory + "/.DS_Store");
     // Fill up file
     file1_mer << "\n";
     file1_mer << "# Dataset_name_for_file1\n";
@@ -59,6 +60,12 @@ struct FileSystemProvider_Fixture {
     file2_mer << "111.1 111.1\n";
     file2_mer << "222.2 222.2\n";
     file2_mer.close();
+    // Fill up 3rd file
+    dotfile_mer << "\n";
+    dotfile_mer << ".......\n";
+    dotfile_mer << ".......\n";
+    dotfile_mer.close();
+
   }
 
   ~FileSystemProvider_Fixture() {
@@ -75,6 +82,27 @@ BOOST_AUTO_TEST_SUITE (FileSystemProvider_test)
 
 
 //-----------------------------------------------------------------------------
+// Test the empty name
+//-----------------------------------------------------------------------------
+
+BOOST_FIXTURE_TEST_CASE(empty_datasetname_test, FileSystemProvider_Fixture) {
+
+  BOOST_TEST_MESSAGE(" ");
+  BOOST_TEST_MESSAGE("--> Testing the empty dataset name, .DS_Store file must be ignored");
+  BOOST_TEST_MESSAGE(" ");
+
+  FileSystemProvider fsp {temp_dir.path().native()+"/euclid/", std::move(fp)};
+
+  // Even with two slashes in the group it must work
+  group = { "filter/MER/" };
+  std::vector<QualifiedName> result_vector = fsp.listContents(group);
+  BOOST_CHECK_EQUAL(2, result_vector.size());
+  BOOST_CHECK(std::find(result_vector.begin(), result_vector.end(), QualifiedName{{"filter","MER"},"Dataset_name_for_file1"})!=result_vector.end());
+  BOOST_CHECK(std::find(result_vector.begin(), result_vector.end(), QualifiedName{{"filter","MER"},"file2"})!=result_vector.end());
+
+}
+
+//-----------------------------------------------------------------------------
 // Test the exceptions
 //-----------------------------------------------------------------------------
 
@@ -89,7 +117,7 @@ BOOST_FIXTURE_TEST_CASE(exceptions_test, FileSystemProvider_Fixture) {
   BOOST_CHECK_THROW( FileSystemProvider fsp (base_directory, std::move(fp)),
                      Elements::Exception);
 
-  // Path as a file is not valid
+  // Path to a file which is not valid
   base_directory = base_directory + "filter/MER/Gext_ACSf435w.txt";
   BOOST_CHECK_THROW( FileSystemProvider fsp (base_directory, std::move(fp)),
                      Elements::Exception);

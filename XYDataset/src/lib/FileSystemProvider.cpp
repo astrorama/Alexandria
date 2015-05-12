@@ -32,7 +32,8 @@ FileSystemProvider::FileSystemProvider(const std::string& root_path, std::unique
   // Convert path to boost filesytem object
   fs::path fspath(m_root_path);
   if (!fs::exists(fspath)) {
-    throw Elements::Exception() << "Root path not found : " << fspath;
+    throw Elements::Exception() << "From FileSystemProvider: root path not found : "
+                                << fspath;
   }
 
   // Get all files below the root directory
@@ -44,6 +45,11 @@ FileSystemProvider::FileSystemProvider(const std::string& root_path, std::unique
       if (fs::is_regular_file(*it))
       {
         std::string dataset_name = m_parser->getName(it->path().string());
+        // Remove empty dataset name
+        if (dataset_name.empty()) {
+           ++it;
+           continue;
+        }
         // Remove the root part
         std::string str = it->path().string();
         str = str.substr(m_root_path.length(), str.length());
