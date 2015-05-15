@@ -52,7 +52,7 @@ std::string AsciiParser::getName(const std::string& file) {
      dataset_name = removeExtension(str);
  }
 
-  return (dataset_name);
+  return dataset_name;
 }
 
 //
@@ -75,7 +75,7 @@ std::unique_ptr<XYDataset> AsciiParser::getDataset(const std::string& file) {
     dataset_ptr = std::unique_ptr<XYDataset> { new XYDataset(vector_pair) };
   }
 
- return(dataset_ptr);
+ return dataset_ptr;
 }
 
 bool AsciiParser::isDatasetFile(const std::string& file) {
