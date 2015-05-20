@@ -56,7 +56,7 @@ unique_ptr<FluxErrorPair> Photometry::find(string filter_name) const
     ++photometry_iter;
   }
   if (filter_iter != m_filter_name_vector_ptr->end()) {
-    flux_found_ptr = unique_ptr<FluxErrorPair>{new FluxErrorPair{(*photometry_iter).flux, (*photometry_iter).error} };
+    flux_found_ptr = unique_ptr<FluxErrorPair>{new FluxErrorPair{*photometry_iter} };
   }
 
   return move(flux_found_ptr);

@@ -23,8 +23,9 @@ namespace SourceCatalog {
 struct FluxErrorPair {
   double flux;
   double error;
-  bool no_data;
-  FluxErrorPair(double flux, double error, bool no_data=false);
+  bool   missing_photometry_flag;
+  FluxErrorPair(double flux, double error, bool missing_photometry_flag=false);
+  FluxErrorPair(const FluxErrorPair&) = default;
   bool operator==(const FluxErrorPair& other) const;
   bool operator!=(const FluxErrorPair& other) const;
 };
