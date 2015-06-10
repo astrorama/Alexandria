@@ -106,8 +106,8 @@ class ELEMENTS_API FileSystemProvider : public XYDatasetProvider
 
   std::string                          m_root_path;
   std::unique_ptr<FileParser>          m_parser;
-  std::map<QualifiedName, std::string> m_map;
-
+  std::map<QualifiedName, std::string> m_name_file_map;
+  std::vector<QualifiedName>           m_order_names;
 };
 
 } /* namespace XYDataset */

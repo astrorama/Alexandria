@@ -104,8 +104,6 @@ FileSystemProvider::FileSystemProvider(const std::string& root_path, std::unique
   // Get all files below the root directory
   if (fs::is_directory(fspath)) {
     auto dir_contents = getRecursiveDirectoryContents(fspath);
-//    for (fs::recursive_directory_iterator it {m_root_path}; it != fs::recursive_directory_iterator{}; ++it)
-//    {
     for (auto& file : dir_contents) {
       if (fs::is_regular_file(file) && m_parser->isDatasetFile(file.string()))
       {
@@ -124,7 +122,8 @@ FileSystemProvider::FileSystemProvider(const std::string& root_path, std::unique
         groups.pop_back();
         QualifiedName qualified_name {groups, dataset_name};
         // Fill up a map
-        auto ret = m_map.insert(make_pair(qualified_name, file.string()));
+        auto ret = m_name_file_map.insert(make_pair(qualified_name, file.string()));
+        m_order_names.push_back(qualified_name);
         // Check for unique record
         if (!ret.second) {
           throw Elements::Exception() << "Qualified name can not be inserted "
@@ -166,8 +165,7 @@ std::vector<QualifiedName> FileSystemProvider::listContents(const std::string& g
  // Fill up vector with qualified name from the map
  // Insert all qualified name where path contains the group name at the
  // first position
- for (auto it : m_map ) {
-     auto qualified_name = it.first;
+ for (auto qualified_name : m_order_names ) {
       if (boost::starts_with(qualified_name.qualifiedName(), my_group)) {
          qualified_name_vector.push_back(qualified_name);
      }
@@ -182,8 +180,8 @@ std::vector<QualifiedName> FileSystemProvider::listContents(const std::string& g
 
 std::unique_ptr<XYDataset> FileSystemProvider::getDataset(const QualifiedName & qualified_name) {
 
- auto it = m_map.find(qualified_name);
- return (it != m_map.end()) ? m_parser->getDataset(it->second) : nullptr;
+ auto it = m_name_file_map.find(qualified_name);
+ return (it != m_name_file_map.end()) ? m_parser->getDataset(it->second) : nullptr;
 
 }
 

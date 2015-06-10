@@ -10,6 +10,8 @@
 #include <iostream>
 #include <sstream>
 
+#include "boost/lexical_cast.hpp"
+
 #include "ElementsKernel/Exception.h"
 #include "Table/AsciiReader.h"
 #include "XYDataset/AsciiParser.h"
@@ -96,8 +98,10 @@ bool AsciiParser::isDatasetFile(const std::string& file) {
       try {
         std::stringstream ss(line);
         std::string empty_string{};
-        double d1{},d2{};
+        std::string d1, d2;
         ss >> d1 >> d2 >> empty_string;
+        boost::lexical_cast<double>(d1);
+        boost::lexical_cast<double>(d2);
         if (!empty_string.empty()){
           is_a_dataset_file = false;
         }
