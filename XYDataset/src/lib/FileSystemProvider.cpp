@@ -8,6 +8,7 @@
 #include <fstream>
 #include <string>
 #include <unordered_set>
+#include <set>
 #include <boost/filesystem.hpp>
 #include <boost/algorithm/string.hpp>
 #include "ElementsKernel/Exception.h"
@@ -59,12 +60,19 @@ static std::vector<fs::path> getOrder(const fs::path& dir) {
   }
   
   // Now we add any other files in the directory, which were not in the order.txt
+  std::set<fs::path> remaining_files {};
+
   for (fs::directory_iterator iter {dir}; iter != fs::directory_iterator{}; ++ iter) {
     if (ordered_names.count(iter->path().filename().string()) == 0) {
-      result.emplace_back(*iter);
+      remaining_files.emplace(*iter);
+      //zzs result.emplace_back(*iter);
     }
   }
   
+  for (auto& file : remaining_files){
+    result.emplace_back(file);
+  }
+
   return result;
 }
 
