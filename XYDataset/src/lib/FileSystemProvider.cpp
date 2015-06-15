@@ -60,21 +60,22 @@ static std::vector<fs::path> getOrder(const fs::path& dir) {
   }
   
   // Now we add any other files in the directory, which were not in the order.txt
+  // file. We use a set in order to avoid sorting problem between platforms.
   std::set<fs::path> remaining_files {};
-
   for (fs::directory_iterator iter {dir}; iter != fs::directory_iterator{}; ++ iter) {
     if (ordered_names.count(iter->path().filename().string()) == 0) {
       remaining_files.emplace(*iter);
-      //zzs result.emplace_back(*iter);
     }
   }
   
+  // Put the remaining files into the result vector
   for (auto& file : remaining_files){
     result.emplace_back(file);
   }
 
   return result;
 }
+
 
 static std::vector<fs::path> getRecursiveDirectoryContents(const fs::path& dir) {
   std::vector<fs::path> result {};
