@@ -43,6 +43,7 @@ struct FileSystemProvider_Fixture {
 
 
   FileSystemProvider_Fixture() {
+
     makeDirectory(base_directory);
     makeDirectory(mer_directory);
     makeDirectory(cosmos_directory);
@@ -186,6 +187,65 @@ BOOST_FIXTURE_TEST_CASE(getDataset_test, FileSystemProvider_Fixture) {
   dataset_ptr = fsp.getDataset(identifier);
 
   BOOST_CHECK(!dataset_ptr);
+
+}
+
+//-----------------------------------------------------------------------------
+// Test when using an empty order.txt file
+//-----------------------------------------------------------------------------
+
+BOOST_FIXTURE_TEST_CASE(empty_order_file_listContents_test, FileSystemProvider_Fixture) {
+
+  BOOST_TEST_MESSAGE(" ");
+  BOOST_TEST_MESSAGE("--> Testing the listContents function when using an empty order.txt file");
+  BOOST_TEST_MESSAGE(" ");
+
+  std::ofstream order_mer(mer_directory + "/order.txt");
+  // Empty order.txt file
+  order_mer.close();
+
+  FileSystemProvider fsp {temp_dir.path().native()+"/euclid/", std::move(fp)};
+
+  // Even with two slashes in the group it must work
+  group = { "filter/MER//" };
+  std::vector<QualifiedName> result_vector = fsp.listContents(group);
+  for(auto& elt : result_vector){
+    std::cout<<elt.datasetName()<<std::endl;
+  }
+  BOOST_CHECK_EQUAL(2, result_vector.size());
+  BOOST_CHECK_EQUAL(result_vector[0].datasetName(), "Dataset_name_for_file1");
+  BOOST_CHECK_EQUAL(result_vector[1].datasetName(), "file2");
+
+}
+
+//-----------------------------------------------------------------------------
+// Test when using the order.txt file
+//-----------------------------------------------------------------------------
+
+BOOST_FIXTURE_TEST_CASE(ordering_listContents_test, FileSystemProvider_Fixture) {
+
+  BOOST_TEST_MESSAGE(" ");
+  BOOST_TEST_MESSAGE("--> Testing the listContents function when using the order.txt file");
+  BOOST_TEST_MESSAGE(" ");
+
+  std::ofstream order_mer(mer_directory + "/order.txt");
+  // Empty order.txt file
+  order_mer << "file2.txt\n";
+  order_mer << "file1.txt\n";
+  order_mer << "file3.txt\n"; // This file should have no effect to the result
+  order_mer.close();
+
+  FileSystemProvider fsp {temp_dir.path().native()+"/euclid/", std::move(fp)};
+
+  // Even with two slashes in the group it must work
+  group = { "filter/MER//" };
+  std::vector<QualifiedName> result_vector = fsp.listContents(group);
+  for(auto& elt : result_vector){
+    std::cout<<elt.datasetName()<<std::endl;
+  }
+  BOOST_CHECK_EQUAL(2, result_vector.size());
+  BOOST_CHECK_EQUAL(result_vector[0].datasetName(), "file2");
+  BOOST_CHECK_EQUAL(result_vector[1].datasetName(), "Dataset_name_for_file1");
 
 }
 
