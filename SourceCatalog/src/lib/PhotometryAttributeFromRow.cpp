@@ -57,12 +57,20 @@ unique_ptr<Attribute> PhotometryAttributeFromRow::createAttribute(
   for (auto& filter_index_pair : m_table_index_vector) {
     Euclid::Table::Row::cell_type flux_cell = row[filter_index_pair.first];
     Euclid::Table::Row::cell_type error_cell = row[filter_index_pair.second];
+
     // Set the photometry flag if any
     if (boost::get<double>(flux_cell) == m_missing_photometry_flag) {
-      photometry_vector.push_back(FluxErrorPair {boost::get<double>(flux_cell), boost::get<double>(error_cell), true } );
+      photometry_vector.push_back(FluxErrorPair {boost::get<double>(flux_cell), boost::get<double>(error_cell), true,false } );
     }
     else {
-      photometry_vector.push_back(FluxErrorPair {boost::get<double>(flux_cell), boost::get<double>(error_cell), false } );
+      // Test for upper limit
+      bool is_upper_limit=false;
+      double error =  boost::get<double>(error_cell);
+      if (error<0){
+        error*=-1;
+        is_upper_limit=true;
+      }
+      photometry_vector.push_back(FluxErrorPair {boost::get<double>(flux_cell), error, false, is_upper_limit } );
     }
   }//Eof for
 
