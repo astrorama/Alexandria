@@ -29,34 +29,34 @@ Cosmology::Cosmology(double omega_m,
 }
 
 
-double Cosmology::getOmegaM(){
+double Cosmology::getOmegaM() const{
   return m_omega_m;
 }
 
-double Cosmology::getOmegaLambda(){
+double Cosmology::getOmegaLambda() const{
   return m_omega_lambda;
 }
 
-double Cosmology::getOmegaK(){
+double Cosmology::getOmegaK() const{
   return m_omega_k;
 }
 
-double Cosmology::getHubbleDistance(){
+double Cosmology::getHubbleDistance() const{
   return m_d_H;
 }
 
-double Cosmology::hubbleParameter(double z){
+double Cosmology::hubbleParameter(double z) const{
   auto sqr=(1.+z)*(1.+z);
   return sqrt(m_omega_m*sqr*(1.+z)+m_omega_k*sqr+m_omega_lambda);
 }
 
-double Cosmology::comovingDistance(double z){
+double Cosmology::comovingDistance(double z) const{
    MathUtils::IntegrationWithMeshRefinement<Euclid::MathUtils::SimpsonsRule> integraton_functor{m_relative_precision,Euclid::MathUtils::SimpsonsRule::minimal_order};
 
    return m_d_H*integraton_functor([this](double x) {return 1./hubbleParameter(x);},0.,z);
 }
 
-double Cosmology::transverseComovingDistance(double z){
+double Cosmology::transverseComovingDistance(double z) const{
   double comoving = comovingDistance(z);
   if (Elements::isEqual(0.,m_omega_k)){
     return comoving;
@@ -71,12 +71,12 @@ double Cosmology::transverseComovingDistance(double z){
   }
 }
 
-double Cosmology::luminousDistance(double z){
+double Cosmology::luminousDistance(double z) const{
   return (1.+z)*transverseComovingDistance(z);
 }
 
 
-double Cosmology::DistanceModulus(double z){
+double Cosmology::DistanceModulus(double z) const{
   return 5.*std::log10(luminousDistance(z)/10);
 }
 

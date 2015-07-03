@@ -37,49 +37,49 @@ public:
   /**
    * @brief Get Omega matter for the cosmology
    */
-  double getOmegaM();
+  double getOmegaM() const;
 
   /**
    * @brief Get Omega Lambda for the cosmology
    */
-  double getOmegaLambda();
+  double getOmegaLambda() const;
 
   /**
    * @brief Get the (computed) Omega curvature for the cosmology
    */
-  double getOmegaK();
+  double getOmegaK() const;
 
   /**
    * @brief Get the computed Hubble distance for the cosmology.
    * @return the Hubble distance in [pc]
    */
-  double getHubbleDistance();
+  double getHubbleDistance() const;
 
   /**
    * @brief Returns the (unit-less) Hubble parameter E(z)
    */
-  double hubbleParameter(double z);
+  double hubbleParameter(double z) const;
 
   /**
    * @brief return the comoving distance in [pc]
    */
-  double comovingDistance(double z);
+  double comovingDistance(double z) const;
 
   /**
     * @brief return the transverse comoving distance in [pc]
     */
-  double transverseComovingDistance(double z);
+  double transverseComovingDistance(double z) const;
 
   /**
     * @brief return the luminous distance in [pc]
     */
-  double luminousDistance(double z);
+  double luminousDistance(double z) const;
 
   /**
    * @brief return the correction for the Magnitude due to the distance:
    * DM =5*log_10(DL/10pc)
    */
-  double DistanceModulus(double z);
+  double DistanceModulus(double z) const;
 
 private:
   double m_omega_m;
