@@ -11,6 +11,11 @@
 namespace Euclid {
 namespace PhysicsUtils {
 
+/**
+ * @class Cosmology
+ *
+ * @brief Model the cosmology and compute the distances according to it.
+ */
 class Cosmology{
 public:
   /**
@@ -59,18 +64,31 @@ public:
    * @brief return the comoving distance in [pc]
    */
   double comovingDistance(double z);
+
+  /**
+    * @brief return the transverse comoving distance in [pc]
+    */
   double transverseComovingDistance(double z);
+
+  /**
+    * @brief return the luminous distance in [pc]
+    */
   double luminousDistance(double z);
 
-
+  /**
+   * @brief return the correction for the Magnitude due to the distance:
+   * DM =5*log_10(DL/10pc)
+   */
+  double DM(double z);
 
 private:
   double m_omega_m;
   double m_omega_lambda;
   double m_omega_k;
   double m_d_H;
-  double m_relative_precision = 0.0000001;
 
+  // for the integration
+  double m_relative_precision = 0.0000001;
 };
 
 }

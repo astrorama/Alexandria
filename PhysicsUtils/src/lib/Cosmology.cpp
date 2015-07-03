@@ -7,8 +7,13 @@
 #include <cmath>
 #include "PhysicsUtils/Cosmology.h"
 #include "ElementsKernel/PhysConstants.h"
+#include "ElementsKernel/Real.h"
 #include "MathUtils/numericalIntegration/IntegrationWithMeshRefinement.h"
 #include "MathUtils/numericalIntegration/SimpsonsRule.h"
+using std::abs;
+using std::sqrt;
+using std::sinh;
+using std::sin;
 
 namespace Euclid {
 namespace PhysicsUtils {
@@ -52,13 +57,28 @@ double Cosmology::comovingDistance(double z){
 }
 
 double Cosmology::transverseComovingDistance(double z){
-  return 1.;
+  double comoving = comovingDistance(z);
+  if (Elements::isEqual(0.,m_omega_k)){
+    return comoving;
+  }
+
+  double dHOverSqrtOmegaK = m_d_H/sqrt(abs(m_omega_k));
+
+  if (m_omega_k>0){
+    return dHOverSqrtOmegaK*sinh(comoving/dHOverSqrtOmegaK);
+  } else {
+    return dHOverSqrtOmegaK*sin(comoving/dHOverSqrtOmegaK);
+  }
 }
 
 double Cosmology::luminousDistance(double z){
-  return 1.;
+  return (1.+z)*transverseComovingDistance(z);
 }
 
+
+double Cosmology::DM(double z){
+  return 5.*std::log10(luminousDistance(z)/10);
+}
 
 
 }
