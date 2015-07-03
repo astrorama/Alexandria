@@ -76,7 +76,7 @@ double Cosmology::luminousDistance(double z){
 }
 
 
-double Cosmology::DM(double z){
+double Cosmology::DistanceModulus(double z){
   return 5.*std::log10(luminousDistance(z)/10);
 }
 

@@ -132,7 +132,7 @@ BOOST_FIXTURE_TEST_CASE(DM_test, Cosmology_Fixture) {
   auto cosmology = Cosmology{omega_m,omega_lambda,H_0};
   auto lum_distance = cosmology.luminousDistance(1.1);
   auto expected = 5.*std::log10(lum_distance/10);
-  BOOST_CHECK(isEqual(cosmology.DM(1.1),expected));
+  BOOST_CHECK(isEqual(cosmology.DistanceModulus(1.1),expected));
 }
 
 //-----------------------------------------------------------------------------

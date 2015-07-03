@@ -79,7 +79,7 @@ public:
    * @brief return the correction for the Magnitude due to the distance:
    * DM =5*log_10(DL/10pc)
    */
-  double DM(double z);
+  double DistanceModulus(double z);
 
 private:
   double m_omega_m;
