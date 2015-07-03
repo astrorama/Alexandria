@@ -8,11 +8,12 @@
 #include <iostream>
 #include <boost/test/unit_test.hpp>
 
+#include "ElementsKernel/Real.h"
 #include "ElementsKernel/Exception.h"
 #include "XYDataset/XYDataset.h"
 
 using namespace std;
-
+using Elements::isEqual;
 
 namespace Euclid {
 namespace XYDataset {
@@ -168,6 +169,21 @@ BOOST_FIXTURE_TEST_CASE(front_back_test, XYDataset_Fixture) {
 }
 
 //-----------------------------------------------------------------------------
+
+BOOST_FIXTURE_TEST_CASE(scaleX_test, XYDataset_Fixture) {
+  XYDataset xydataset = Euclid::XYDataset::XYDataset::factory(vector_pair);
+  auto scaled = xydataset.scaleX(2.);
+
+  auto scaled_Iterator = scaled.begin();
+
+  for (auto ref_iterator : xydataset){
+    BOOST_CHECK(isEqual(scaled_Iterator->first, 2.*ref_iterator.first));
+    BOOST_CHECK(isEqual(scaled_Iterator->second, ref_iterator.second));
+
+    ++scaled_Iterator;
+  }
+}
+
 
 BOOST_AUTO_TEST_SUITE_END ()
 

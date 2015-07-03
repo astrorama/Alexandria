@@ -57,5 +57,13 @@ XYDataset XYDataset::factory(const vector<double>& x_vector, const vector<double
   return ( XYDataset(move(vector_pair)) );
 }
 
+XYDataset XYDataset::scaleX(double factor) const{
+  vector<pair<double, double>> vector_pair{};
+  for (auto pair : *this){
+    vector_pair.push_back(std::make_pair(pair.first*factor,pair.second));
+  }
+  return XYDataset::factory(std::move(vector_pair));
+}
+
 } /* namespace XYDataset */
 } // end of namespace Euclid

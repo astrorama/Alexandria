@@ -91,6 +91,11 @@ namespace XYDataset {
    virtual ~XYDataset() = default;
 
    /**
+    * @brief create a copy of the XYDataset with x values multiplied by "factor"
+    */
+   XYDataset scaleX(double factor) const;
+
+   /**
     * @brief
     * Returns a const iterator to the first pair of the dataset
     * @return
