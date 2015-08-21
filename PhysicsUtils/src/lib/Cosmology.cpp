@@ -25,7 +25,7 @@ Cosmology::Cosmology(double omega_m,
                                                m_omega_lambda{omega_lambda},
                                                m_omega_k{1.0-omega_m-omega_lambda}{
 
- m_d_H = Elements::Units::c_light * 3.6E6 / hubble_constant;
+ m_d_H = Elements::Units::c_light * 1E3 / hubble_constant; // in [pc]
 }
 
 
@@ -71,13 +71,31 @@ double Cosmology::transverseComovingDistance(double z) const{
   }
 }
 
-double Cosmology::luminousDistance(double z) const{
-  return (1.+z)*transverseComovingDistance(z);
+double Cosmology::luminousDistance(double z) {
+  auto map_iter = m_Luminous_distance_cache.find(z);
+   if (map_iter != m_Luminous_distance_cache.end()){
+     return map_iter->second;
+   }
+
+   double ld = (1.+z)*transverseComovingDistance(z);
+
+   m_Luminous_distance_cache.insert(std::make_pair(z,ld));
+
+   return ld;
 }
 
 
-double Cosmology::DistanceModulus(double z) const{
-  return 5.*std::log10(luminousDistance(z)/10);
+double Cosmology::DistanceModulus(double z){
+  auto map_iter = m_distance_modulus_cache.find(z);
+  if (map_iter != m_distance_modulus_cache.end()){
+    return map_iter->second;
+  }
+
+  double dm = 5.*std::log10(luminousDistance(z)/10);
+
+  m_distance_modulus_cache.insert(std::make_pair(z,dm));
+
+  return dm;
 }
 
 

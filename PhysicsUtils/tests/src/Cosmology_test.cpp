@@ -41,10 +41,12 @@ BOOST_FIXTURE_TEST_CASE(Constructor, Cosmology_Fixture) {
  BOOST_CHECK(isEqual(1.0,cosmology.getOmegaM()+cosmology.getOmegaLambda()+cosmology.getOmegaK()));
 
  // check the Hubble distance
- auto H_0_pc = H_0*(Elements::Units::kilometer/3600.)/(1.0E6); // H_O in [(m/s)/pc]
+ auto H_0_pc = H_0*Elements::Units::kilometer/1E6; // H_O in [(m/s)/pc]
  auto d_h= Elements::Units::c_light/H_0_pc; // in [pc]
 
  BOOST_CHECK(isEqual(d_h,cosmology.getHubbleDistance()));
+ BOOST_CHECK_EQUAL(d_h,cosmology.getHubbleDistance());
+
 }
 
 
@@ -97,7 +99,6 @@ BOOST_FIXTURE_TEST_CASE(transverse_comoving_distance, Cosmology_Fixture) {
   auto omega_k = cosmology.getOmegaK();
   BOOST_CHECK(omega_k<0);
   auto expected = (hubble/sqrt(abs(omega_k)))*sin(sqrt(abs(omega_k))*comoving/hubble);
-  BOOST_CHECK_EQUAL(cosmology.transverseComovingDistance(1.5),expected);
   BOOST_CHECK(isEqual(cosmology.transverseComovingDistance(1.5),expected));
 
   // case with 0 omega_k
@@ -120,7 +121,7 @@ BOOST_FIXTURE_TEST_CASE(transverse_comoving_distance, Cosmology_Fixture) {
 }
 
 BOOST_FIXTURE_TEST_CASE(luminous_distance, Cosmology_Fixture) {
-  auto cosmology = Cosmology{omega_m,omega_lambda,H_0};
+  auto cosmology = Cosmology{};
   for (auto z=0;z<6000;z++){
     auto transverse = cosmology.transverseComovingDistance(z/1000.);
     auto expected = (1.+z/1000.)*transverse;
@@ -129,11 +130,22 @@ BOOST_FIXTURE_TEST_CASE(luminous_distance, Cosmology_Fixture) {
 }
 
 BOOST_FIXTURE_TEST_CASE(DM_test, Cosmology_Fixture) {
-  auto cosmology = Cosmology{omega_m,omega_lambda,H_0};
+  auto cosmology = Cosmology{};
   auto lum_distance = cosmology.luminousDistance(1.1);
   auto expected = 5.*std::log10(lum_distance/10);
   BOOST_CHECK(isEqual(cosmology.DistanceModulus(1.1),expected));
+  BOOST_CHECK_EQUAL(cosmology.DistanceModulus(0.),0.);
 }
+
+//BOOST_FIXTURE_TEST_CASE(export_data, Cosmology_Fixture) {
+//  auto cosmology = Cosmology{0.25,0.75,70.};
+//
+//
+//  std::cout<<cosmology.getHubbleDistance();
+//  for (auto z=0;z<6000;z++){
+//    std::cout<<z/1000.<<" "<<cosmology.comovingDistance(z/1000.)<<" "<<cosmology.luminousDistance(z/1000.)<< " "<<cosmology.DistanceModulus(z/1000.)<<"\n";
+//  }
+//}
 
 //-----------------------------------------------------------------------------
 

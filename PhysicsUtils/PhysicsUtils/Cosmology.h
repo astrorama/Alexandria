@@ -8,6 +8,8 @@
 #ifndef PHYSICSUTILS_PHYSICSUTILS_COSMOLOGY_H_
 #define PHYSICSUTILS_PHYSICSUTILS_COSMOLOGY_H_
 
+#include <map>
+
 namespace Euclid {
 namespace PhysicsUtils {
 
@@ -73,13 +75,13 @@ public:
   /**
     * @brief return the luminous distance in [pc]
     */
-  double luminousDistance(double z) const;
+  double luminousDistance(double z);
 
   /**
    * @brief return the correction for the Magnitude due to the distance:
    * DM =5*log_10(DL/10pc)
    */
-  double DistanceModulus(double z) const;
+  double DistanceModulus(double z);
 
 private:
   double m_omega_m;
@@ -89,6 +91,9 @@ private:
 
   // for the integration
   double m_relative_precision = 0.0000001;
+
+  std::map<double,double> m_Luminous_distance_cache{{0.,1.}};
+  std::map<double,double> m_distance_modulus_cache{{0.,0.}};
 };
 
 }
