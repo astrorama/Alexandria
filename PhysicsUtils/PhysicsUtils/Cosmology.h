@@ -13,6 +13,9 @@
 namespace Euclid {
 namespace PhysicsUtils {
 
+thread_local std::map<double,double> m_Luminous_distance_cache{{0.,10.}};
+thread_local std::map<double,double> m_distance_modulus_cache{{0.,0.}};
+
 /**
  * @class Cosmology
  *
@@ -92,8 +95,7 @@ private:
   // for the integration
   double m_relative_precision = 0.0000001;
 
-  std::map<double,double> m_Luminous_distance_cache{{0.,10.}};
-  std::map<double,double> m_distance_modulus_cache{{0.,0.}};
+
 };
 
 }

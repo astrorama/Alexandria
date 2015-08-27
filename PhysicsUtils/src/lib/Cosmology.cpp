@@ -79,7 +79,7 @@ double Cosmology::luminousDistance(double z) {
 
    double ld = (1.+z)*transverseComovingDistance(z);
 
-   m_Luminous_distance_cache.insert(std::make_pair(z,ld));
+   m_Luminous_distance_cache[z]=ld;
 
    return ld;
 }
@@ -93,7 +93,7 @@ double Cosmology::DistanceModulus(double z){
 
   double dm = 5.*std::log10(luminousDistance(z)/10);
 
-  m_distance_modulus_cache.insert(std::make_pair(z,dm));
+  m_distance_modulus_cache[z]=dm;
 
   return dm;
 }
