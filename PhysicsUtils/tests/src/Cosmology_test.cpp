@@ -126,7 +126,6 @@ BOOST_FIXTURE_TEST_CASE(luminous_distance, Cosmology_Fixture) {
     auto transverse = cosmology.transverseComovingDistance(z/1000.);
     auto expected = (1.+z/1000.)*transverse;
     BOOST_CHECK(isEqual(cosmology.luminousDistance(z/1000.),expected));
-    BOOST_CHECK_EQUAL(cosmology.luminousDistance(z/1000.),expected);
   }
 }
 

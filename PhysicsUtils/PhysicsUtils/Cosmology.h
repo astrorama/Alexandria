@@ -92,7 +92,7 @@ private:
   // for the integration
   double m_relative_precision = 0.0000001;
 
-  std::map<double,double> m_Luminous_distance_cache{{0.,1.}};
+  std::map<double,double> m_Luminous_distance_cache{{0.,10.}};
   std::map<double,double> m_distance_modulus_cache{{0.,0.}};
 };
 
