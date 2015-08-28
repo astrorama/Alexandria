@@ -25,6 +25,8 @@ namespace PhysicsUtils {
 thread_local std::map<size_t,std::map<double,double>> m_Luminous_distance_cache{};
 thread_local std::map<size_t,std::map<double,double>> m_distance_modulus_cache{};
 
+
+
 Cosmology::Cosmology(double omega_m,
                      double omega_lambda,
                      double hubble_constant) : m_omega_m{omega_m},
@@ -38,8 +40,6 @@ Cosmology::Cosmology(double omega_m,
  boost::hash_combine(seed, omega_lambda);
  boost::hash_combine(seed, hubble_constant);
  m_hash=seed;
- m_Luminous_distance_cache[m_hash][0.]=10.;
- m_distance_modulus_cache[m_hash][0.]=0.;
 }
 
 
@@ -91,7 +91,11 @@ double Cosmology::luminousDistance(double z) const{
    if (map_iter != m_Luminous_distance_cache[m_hash].end()){
      ld= map_iter->second;
    } else {
-     ld= (1.+z)*transverseComovingDistance(z);
+     if (z==0.){
+       ld=10.;
+     } else {
+       ld= (1.+z)*transverseComovingDistance(z);
+     }
 
      m_Luminous_distance_cache[m_hash][z]=ld;
 
