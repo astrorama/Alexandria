@@ -22,10 +22,6 @@ using std::sin;
 namespace Euclid {
 namespace PhysicsUtils {
 
-thread_local std::map<size_t,std::map<double,double>> m_Luminous_distance_cache{};
-thread_local std::map<size_t,std::map<double,double>> m_distance_modulus_cache{};
-
-
 
 Cosmology::Cosmology(double omega_m,
                      double omega_lambda,
@@ -34,12 +30,6 @@ Cosmology::Cosmology(double omega_m,
                                                m_omega_k{1.0-omega_m-omega_lambda}{
 
  m_d_H = Elements::Units::c_light * 1E3 / hubble_constant; // in [pc]
-
- std::size_t seed = 0;
- boost::hash_combine(seed, omega_m);
- boost::hash_combine(seed, omega_lambda);
- boost::hash_combine(seed, hubble_constant);
- m_hash=seed;
 }
 
 
@@ -87,35 +77,15 @@ double Cosmology::transverseComovingDistance(double z) const{
 
 double Cosmology::luminousDistance(double z) const{
   double ld;
-  auto map_iter = m_Luminous_distance_cache[m_hash].find(z);
-   if (map_iter != m_Luminous_distance_cache[m_hash].end()){
-     ld= map_iter->second;
-   } else {
-     if (z==0.){
-       ld=10.;
-     } else {
-       ld= (1.+z)*transverseComovingDistance(z);
-     }
-
-     m_Luminous_distance_cache[m_hash][z]=ld;
-
-   }
-   return ld;
+  if (z==0.){
+       return 10.;
+  } else {
+       return (1.+z)*transverseComovingDistance(z);
+  }
 }
 
-
-double Cosmology::DistanceModulus(double z) const{
-  double dm;
-  auto map_iter = m_distance_modulus_cache[m_hash].find(z);
-  if (map_iter != m_distance_modulus_cache[m_hash].end()){
-    dm= map_iter->second;
-  } else {
-    dm = 5.*std::log10(luminousDistance(z)/10);
-
-    m_distance_modulus_cache[m_hash][z]=dm;
-
-  }
-  return dm;
+double Cosmology::distanceModulus(double z) const{
+  return 5.*std::log10(luminousDistance(z)/10);
 }
 
 

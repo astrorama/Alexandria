@@ -83,10 +83,9 @@ public:
    * @brief return the correction for the Magnitude due to the distance:
    * DM =5*log_10(DL/10pc)
    */
-  double DistanceModulus(double z) const;
+  double distanceModulus(double z) const;
 
 private:
-  size_t m_hash;
   double m_omega_m;
   double m_omega_lambda;
   double m_omega_k;
@@ -95,8 +94,6 @@ private:
   // for the integration
   double m_relative_precision = 0.0000001;
 
-//  mutable std::map<double,double> m_Luminous_distance_cache{{0.,10.}};
-//  mutable std::map<double,double> m_distance_modulus_cache{{0.,0.}};
 
 
 };
