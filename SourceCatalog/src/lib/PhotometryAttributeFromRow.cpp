@@ -6,6 +6,7 @@
  */
 
 #include <typeindex>
+#include "ElementsKernel/Real.h"
 #include "SourceCatalog/SourceAttributes/PhotometryAttributeFromRow.h"
 #include "ElementsKernel/Exception.h"
 #include "ElementsKernel/Real.h"
@@ -59,7 +60,7 @@ unique_ptr<Attribute> PhotometryAttributeFromRow::createAttribute(
     Euclid::Table::Row::cell_type error_cell = row[filter_index_pair.second];
 
     // Set the photometry flag if any
-    if (boost::get<double>(flux_cell) == m_missing_photometry_flag) {
+    if (Elements::isEqual(boost::get<double>(flux_cell), m_missing_photometry_flag)) {
       photometry_vector.push_back(FluxErrorPair {boost::get<double>(flux_cell), boost::get<double>(error_cell), true,false } );
     }
     else {
