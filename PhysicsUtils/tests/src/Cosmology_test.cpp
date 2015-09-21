@@ -22,10 +22,43 @@ struct Cosmology_Fixture {
   double H_0=77.0;
 
   double E(double O_m, double O_l, double O_k, double z){
-    return sqrt(pow(1.+z,3)*O_m+pow(1.+z,2)*O_k+O_l);
+    return std::sqrt(std::pow(1.+z,3)*O_m+std::pow(1.+z,2)*O_k+O_l);
   }
 
-
+  std::vector<double> zs{0,0.001,0.01,0.1,0.5,1.,1.5,2.,4.,6.};
+  std::vector<double> hubble_parameters {1.,
+                                 1.0004002699919667,
+                                 1.0040269916690487,
+                                 1.042688831818966,
+                                 1.2649110640673518,
+                                 1.6431676725154984,
+                                 2.1095023109728985,
+                                 2.6457513110645907,
+                                 5.3103672189407014,
+                                 8.6139421869432127
+                               };
+  std::vector<double> comoving {0.,
+                                3892629.7211428746,
+                                38856076.082309492,
+                                381426775.30670536,
+                                1743252275.3547294,
+                                3097511958.8287911,
+                                4144034048.8586593,
+                                4968125488.521699,
+                                7037575806.8509665,
+                                8185617947.9015932
+                               };
+  std::vector<double> luminous {10.,
+                                4429033.2516768286,
+                                44595140.97263521,
+                                475341190.49684501,
+                                2918477377.0888844,
+                                6792421919.9330025,
+                                11199033877.97576,
+                                15937134721.927008,
+                                36706225562.921059 ,
+                                59064863879.408623
+                               };
 };
 
 //-----------------------------------------------------------------------------
@@ -36,104 +69,90 @@ BOOST_FIXTURE_TEST_CASE(Constructor, Cosmology_Fixture) {
  auto cosmology = Cosmology{omega_m,omega_lambda,H_0};
 
  // Check the Omega parameters
- BOOST_CHECK(isEqual(omega_m,cosmology.getOmegaM()));
- BOOST_CHECK(isEqual(omega_lambda,cosmology.getOmegaLambda()));
- BOOST_CHECK(isEqual(1.0,cosmology.getOmegaM()+cosmology.getOmegaLambda()+cosmology.getOmegaK()));
+ BOOST_CHECK(isEqual(omega_m, cosmology.getOmegaM()));
+ BOOST_CHECK(isEqual(omega_lambda, cosmology.getOmegaLambda()));
+ BOOST_CHECK(isEqual(1.0, cosmology.getOmegaM() + cosmology.getOmegaLambda() + cosmology.getOmegaK()));
 
  // check the Hubble distance
- auto H_0_pc = H_0*Elements::Units::kilometer/1E6; // H_O in [(m/s)/pc]
- auto d_h= Elements::Units::c_light/H_0_pc; // in [pc]
-
- BOOST_CHECK(isEqual(d_h,cosmology.getHubbleDistance()));
- BOOST_CHECK_EQUAL(d_h,cosmology.getHubbleDistance());
-
+ auto d_h= 2.99792458e+11/H_0; // in [pc]
+ BOOST_CHECK(isEqual(d_h, cosmology.getHubbleDistance()));
 }
+
+
 
 
 BOOST_FIXTURE_TEST_CASE(hubble_parameter, Cosmology_Fixture) {
 
+  std::vector<double> result_1 {1.,
+                                1.0015003749375231,
+                                1.0150374377332099,
+                                1.1536897329871669,
+                                1.8371173070873836,
+                                2.8284271247461903,
+                                3.9528470752104741,
+                                5.196152422706632,
+                                11.180339887498949,
+                                18.520259177452136
+                              };
  // check the limit cases
  auto cosmology = Cosmology{1.,0.,H_0};
- for (auto z=0;z<6000;z++){
-     BOOST_CHECK(isEqual(pow(1.+z/1000.,1.5),cosmology.hubbleParameter(z/1000.)));
+ for (size_t i=0; i<zs.size();++i){
+   BOOST_CHECK(isEqual(result_1[i], cosmology.hubbleParameter(zs[i])));
  }
 
  cosmology = Cosmology{0.,0.,H_0};
- for (auto z=0;z<6000;z++){
-      BOOST_CHECK(isEqual(1.+z/1000.,cosmology.hubbleParameter(z/1000.)));
+ for (size_t i=0; i<zs.size();++i){
+   BOOST_CHECK(isEqual(1.+zs[i], cosmology.hubbleParameter(zs[i])));
  }
 
  cosmology = Cosmology{0.,1.,H_0};
- for (auto z=0;z<6000;z++){
-      BOOST_CHECK(isEqual(1.,cosmology.hubbleParameter(z/1000.)));
+ for (size_t i=0; i<zs.size();++i){
+   BOOST_CHECK(isEqual(1., cosmology.hubbleParameter(zs[i])));
  }
 
  cosmology = Cosmology{omega_m,omega_lambda,H_0};
  auto omega_k = cosmology.getOmegaK();
- for (auto z=0;z<6000;z++){
-   BOOST_CHECK(isEqual(E(omega_m,omega_lambda,omega_k,z/1000.),cosmology.hubbleParameter(z/1000.)));
+ for (size_t i=0; i<zs.size();++i){
+   BOOST_CHECK(isEqual(hubble_parameters[i], cosmology.hubbleParameter(zs[i])));
  }
 }
 
 
 BOOST_FIXTURE_TEST_CASE(comoving_distance, Cosmology_Fixture) {
   auto cosmology = Cosmology{omega_m,omega_lambda,H_0};
-  for (auto z=0;z<6000;z++){
+  for (size_t i=0; i<zs.size();++i){
+    BOOST_CHECK(isEqual(comoving[i],cosmology.comovingDistance(zs[i])));
 
-    auto comovingDistance_z=cosmology.comovingDistance(z/1000.);
-
-    double omega_k= cosmology.getOmegaK();
-    Euclid::MathUtils::IntegrationWithMeshRefinement<Euclid::MathUtils::SimpsonsRule> integrator{0.0000001,3};
-
-    double integral = integrator([this,&omega_k](double x) { return 1/sqrt(pow(1.+x,3)*omega_m+pow(1.+x,2)*omega_k+omega_lambda);},0.,z/1000.);
-    double expected = integral*cosmology.getHubbleDistance();
-    BOOST_CHECK(isEqual(comovingDistance_z,expected));
   }
 }
 
 BOOST_FIXTURE_TEST_CASE(transverse_comoving_distance, Cosmology_Fixture) {
   // case with negative omega_k
   auto cosmology = Cosmology{omega_m,1.1-omega_m,H_0};
-  auto comoving = cosmology.comovingDistance(1.5);
-  auto hubble = cosmology.getHubbleDistance();
-  auto omega_k = cosmology.getOmegaK();
-  BOOST_CHECK(omega_k<0);
-  auto expected = (hubble/sqrt(abs(omega_k)))*sin(sqrt(abs(omega_k))*comoving/hubble);
-  BOOST_CHECK(isEqual(cosmology.transverseComovingDistance(1.5),expected));
+  BOOST_CHECK(cosmology.getOmegaK()<0);
+  BOOST_CHECK(isEqual(4423595310.7368011,cosmology.transverseComovingDistance(1.5)));
 
   // case with 0 omega_k
   cosmology = Cosmology{omega_m,1.0-omega_m,H_0};
-  comoving = cosmology.comovingDistance(1.5);
-  hubble = cosmology.getHubbleDistance();
-  omega_k = cosmology.getOmegaK();
-  BOOST_CHECK(isEqual(omega_k,0.));
-  BOOST_CHECK(isEqual(cosmology.transverseComovingDistance(1.5),comoving));
-
+  BOOST_CHECK(isEqual(cosmology.getOmegaK(),0.));
+  BOOST_CHECK(isEqual(4319113837.9162245,cosmology.transverseComovingDistance(1.5)));
 
   // case with positive omega_k
   cosmology = Cosmology{omega_m,0.9-omega_m,H_0};
-  comoving = cosmology.comovingDistance(1.5);
-  hubble = cosmology.getHubbleDistance();
-  omega_k = cosmology.getOmegaK();
-  BOOST_CHECK(omega_k>0);
-  expected = (hubble/sqrt(omega_k))*sinh(sqrt(omega_k)*comoving/hubble);
-  BOOST_CHECK(isEqual(cosmology.transverseComovingDistance(1.5),expected));
+  BOOST_CHECK(cosmology.getOmegaK()>0);
+  BOOST_CHECK(isEqual(4222723848.5923686,cosmology.transverseComovingDistance(1.5)));
 }
 
 BOOST_FIXTURE_TEST_CASE(luminous_distance, Cosmology_Fixture) {
   auto cosmology = Cosmology{};
-  for (auto z=1;z<6000;z++){
-    auto transverse = cosmology.transverseComovingDistance(z/1000.);
-    auto expected = (1.+z/1000.)*transverse;
-    BOOST_CHECK(isEqual(cosmology.luminousDistance(z/1000.),expected));
+  for (size_t i=0; i<zs.size();++i){
+    BOOST_CHECK(isEqual(luminous[i],cosmology.luminousDistance(zs[i])));
   }
 }
 
 BOOST_FIXTURE_TEST_CASE(DM_test, Cosmology_Fixture) {
   auto cosmology = Cosmology{};
-  auto lum_distance = cosmology.luminousDistance(1.1);
-  auto expected = 5.*std::log10(lum_distance/10);
-  BOOST_CHECK(isEqual(cosmology.distanceModulus(1.1),expected));
+  BOOST_CHECK(isEqual(44.415392424409184,cosmology.distanceModulus(1.1)));
   BOOST_CHECK_EQUAL(cosmology.distanceModulus(0.),0.);
 }
 
