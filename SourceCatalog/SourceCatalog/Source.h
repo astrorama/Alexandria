@@ -55,9 +55,12 @@ public:
    * @brief Get a pointer to source attribute of type T or a null pointer
    *    if the source do not contain an attribute of type T
    *
-   * @details Typical usage is std::shared_ptr<Photometry>
-   *  a_photometric_attribute = source.getAttribute<Photometry>(), where Photometry can be replaced
-   *  by any other attributes
+   * @details An example usage is
+   *
+   * std::shared_ptr<Photometry> a_photometric_attribute = source.getAttribute<Photometry>()
+   *
+   * where Photometry can be replaced by any other attributes.
+   *
    * @return The pointer to the attribute or nullptr if the attribute is
    *  not found
    */
