@@ -3,14 +3,13 @@ elements_subdir(Table)
 elements_depends_on_subdirs(ElementsKernel)
 
 find_package(Boost REQUIRED COMPONENTS regex)
-find_package(Cfitsio)
 find_package(CCfits)
 
 #===== Libraries ===============================================================
 
 elements_add_library(Table src/lib/*.cpp
-                     LINK_LIBRARIES ElementsKernel Cfitsio CCfits
-                     INCLUDE_DIRS ElementsKernel Cfitsio CCfits
+                     LINK_LIBRARIES ElementsKernel CCfits
+                     INCLUDE_DIRS ElementsKernel CCfits
                      PUBLIC_HEADERS Table)
 
 #===== Boost tests =============================================================
