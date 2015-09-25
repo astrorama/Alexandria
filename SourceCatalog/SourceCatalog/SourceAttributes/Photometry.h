@@ -24,7 +24,9 @@ struct FluxErrorPair {
   double flux;
   double error;
   bool   missing_photometry_flag;
-  FluxErrorPair(double flux, double error, bool missing_photometry_flag=false);
+  bool   upper_limit_flag;
+  FluxErrorPair(double flux, double error, bool missing_photometry_flag=false,
+                bool upper_limit_flag=false);
   FluxErrorPair(const FluxErrorPair&) = default;
   bool operator==(const FluxErrorPair& other) const;
   bool operator!=(const FluxErrorPair& other) const;
