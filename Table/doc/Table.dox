@@ -13,7 +13,7 @@ briefly how to use the module and can be used as a quick-start guide. For more
 detailed information refer to the documentation of each individual class and
 method in the Table namespace.
 
-\section datamodel Table Data Model
+\section tabledatamodel Table Data Model
 
 The main class of the Table is the Table class, which represents a table in
 memory. It can be seen as a collection of Row%s, with the restriction that
