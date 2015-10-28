@@ -21,10 +21,6 @@ struct Cosmology_Fixture {
   // so we expect omega_k to be 0.1 !=0
   double H_0=77.0;
 
-  double E(double O_m, double O_l, double O_k, double z){
-    return std::sqrt(std::pow(1.+z,3)*O_m+std::pow(1.+z,2)*O_k+O_l);
-  }
-
   std::vector<double> zs{0,0.001,0.01,0.1,0.5,1.,1.5,2.,4.,6.};
   std::vector<double> hubble_parameters {1.,
                                  1.0004002699919667,
