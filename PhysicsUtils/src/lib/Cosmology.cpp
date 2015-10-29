@@ -8,10 +8,12 @@
 #include <boost/functional/hash.hpp>
 
 #include "PhysicsUtils/Cosmology.h"
+
+#include "MathUtils/numericalIntegration/AdaptativeIntegration.h"
 #include "ElementsKernel/PhysConstants.h"
 #include "ElementsKernel/Real.h"
-#include "MathUtils/numericalIntegration/IntegrationWithMeshRefinement.h"
 #include "MathUtils/numericalIntegration/SimpsonsRule.h"
+#include "MathUtils/function/function_tools.h"
 
 
 using std::abs;
@@ -54,10 +56,30 @@ double Cosmology::hubbleParameter(double z) const{
   return sqrt(m_omega_m*sqr*(1.+z)+m_omega_k*sqr+m_omega_lambda);
 }
 
-double Cosmology::comovingDistance(double z) const{
-   MathUtils::IntegrationWithMeshRefinement<Euclid::MathUtils::SimpsonsRule> integraton_functor{m_relative_precision,Euclid::MathUtils::SimpsonsRule::minimal_order};
+class FunctionWrapper: public MathUtils::Function{
+public:
+  FunctionWrapper(std::function<double(double)> function):m_function{function}{};
 
-   return m_d_H*integraton_functor([this](double x) {return 1./hubbleParameter(x);},0.,z);
+  double operator()(const double x) const override {
+         return m_function(x);
+       }
+
+  std::unique_ptr<Function> clone() const override{
+         return std::unique_ptr<Function> { new FunctionWrapper(m_function) };
+       }
+private:
+  std::function<double(double)> m_function;
+};
+
+double Cosmology::comovingDistance(double z) const{
+
+  std::unique_ptr<MathUtils::NumericalIntegrationScheme> integrationScheme{
+    new MathUtils::AdaptativeIntegration<MathUtils::SimpsonsRule>(m_relative_precision,MathUtils::SimpsonsRule::minimal_order)
+  };
+
+  FunctionWrapper wrapper([this](double x) {return 1./hubbleParameter(x);});
+
+  return m_d_H*integrate(wrapper,0.,z,std::move(integrationScheme));
 }
 
 double Cosmology::transverseComovingDistance(double z) const{

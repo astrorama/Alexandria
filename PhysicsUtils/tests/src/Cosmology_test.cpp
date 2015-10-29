@@ -3,7 +3,8 @@
 #include <boost/test/unit_test.hpp>
 #include "ElementsKernel/Real.h"
 #include "PhysicsUtils/Cosmology.h"
-#include "MathUtils/numericalIntegration/IntegrationWithMeshRefinement.h"
+
+#include "../../../MathUtils/MathUtils/numericalIntegration/AdaptativeIntegration.h"
 #include "MathUtils/numericalIntegration/SimpsonsRule.h"
 #include "ElementsKernel/PhysConstants.h"
 

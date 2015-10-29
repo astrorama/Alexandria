@@ -1,4 +1,4 @@
-/** 
+/**
  * @file src/lib/function/function_tools.cpp
  * @date February 19, 2014
  * @author Nikolaos Apostolakos
@@ -12,15 +12,23 @@
 namespace Euclid {
 namespace MathUtils {
 
-double integrate(const Function& function, const double min, const double max) {
+double integrate(const Function& function,
+                 const double min,
+                 const double max,
+                 std::unique_ptr<NumericalIntegrationScheme> numericalIntegrationScheme) {
   const Integrable* integrable = dynamic_cast<const Integrable*>(&function);
   if (integrable) {
     return integrable->integrate(min, max);
   }
+
+  if (numericalIntegrationScheme!=nullptr){
+    return (*numericalIntegrationScheme)(function,min,max);
+  }
+
   throw Elements::Exception() << "Numerical integration of non-Integrable Functions "
-                            << "is not yet implemented";
+                            << "requiere that you provide a NumericalIntegrationScheme";
 }
-    
+
 class DefaultMultiplication : public Function {
 public:
   DefaultMultiplication(const Function& f1, const Function& f2) : m_f1{f1.clone()}, m_f2{f2.clone()} {}

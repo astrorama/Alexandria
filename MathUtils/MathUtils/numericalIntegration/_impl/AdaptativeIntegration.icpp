@@ -1,0 +1,37 @@
+/**
+ * @file MathUtils/numericalIntegration/_impl/AdaptativeIntegration.icpp
+ * @date July 2, 2015
+ * @author Florian Dubath
+ */
+
+
+
+
+namespace Euclid {
+namespace MathUtils {
+
+template<typename Quadrature>
+AdaptativeIntegration<Quadrature>::AdaptativeIntegration(double relative_precion, int initial_order):
+    m_relative_precion{relative_precion},
+    m_initial_order{initial_order}{}
+
+
+template<typename Quadrature>
+double AdaptativeIntegration<Quadrature>::operator()(const Function& function,double min, double max){
+    int m = m_initial_order;
+    double value_order_m=0.;
+    double value_order_m_1 = m_quadrature(function,min,max,m);
+    double diff=0.;
+    do{
+      ++m;
+      value_order_m=value_order_m_1;
+      value_order_m_1 = m_quadrature(function,min,max,value_order_m,m);
+      diff=value_order_m_1-value_order_m;
+    } while ( std::abs(diff/value_order_m)>m_relative_precion);
+
+    return value_order_m_1;
+  }
+
+}
+}
+
