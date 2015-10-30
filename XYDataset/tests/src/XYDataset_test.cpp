@@ -8,12 +8,11 @@
 #include <iostream>
 #include <boost/test/unit_test.hpp>
 
-#include "ElementsKernel/Real.h"
 #include "ElementsKernel/Exception.h"
 #include "XYDataset/XYDataset.h"
 
 using namespace std;
-using Elements::isEqual;
+
 
 namespace Euclid {
 namespace XYDataset {
@@ -168,6 +167,7 @@ BOOST_FIXTURE_TEST_CASE(front_back_test, XYDataset_Fixture) {
 
 }
 
+//-----------------------------------------------------------------------------
 
 BOOST_AUTO_TEST_SUITE_END ()
 
