@@ -56,7 +56,7 @@ of the table:
     ColumnInfo::info_type {"X", typeid(double)},
     ColumnInfo::info_type {"Y", typeid(double)}
   };
-  shared_ptr<ColumnInfo> column_info {new ColumnInfo {move(info_list)}};
+  auto column_info = make_shared<ColumnInfo>(move(info_list));
 \endcode
 
 Each column is described by a ColumnInfo::info_type object, which contains the
@@ -87,7 +87,7 @@ construction.
 
 \code{.cpp}
   vector<Row::cell_type> cell_values {string{"example"}, 5., 2E-15};
-  Row row {move(cell_values), column_info};
+  Row row {std::move(cell_values), column_info};
 \endcode
 
 Because the Row::cell_type is a boost::variant, extra care must be taken so
