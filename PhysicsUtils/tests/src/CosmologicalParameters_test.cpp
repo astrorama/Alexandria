@@ -1,4 +1,8 @@
-
+/**
+ * @file tests/src/lib/CosmologicalParameters_test.h
+ * @date November 29, 2015
+ * @author Florian Dubath
+ */
 #include <cmath>
 #include <boost/test/unit_test.hpp>
 #include "ElementsKernel/Real.h"
@@ -6,8 +10,6 @@
 
 using namespace Euclid;
 using namespace PhysicsUtils;
-
-
 
 //-----------------------------------------------------------------------------
 
@@ -24,23 +26,29 @@ BOOST_AUTO_TEST_CASE(Constructor) {
       auto cosmologicalParameters = CosmologicalParameters { omega_m,
           omega_lambda, H_0 };
       // check H_0
-       BOOST_CHECK(Elements::isEqual(H_0, cosmologicalParameters.getHubbleConstant()));
+      BOOST_CHECK(
+          Elements::isEqual(H_0, cosmologicalParameters.getHubbleConstant()));
 
       // Check the Omega parameters
-      BOOST_CHECK(Elements::isEqual(omega_m, cosmologicalParameters.getOmegaM()));
-      BOOST_CHECK(Elements::isEqual(omega_lambda, cosmologicalParameters.getOmegaLambda()));
-      BOOST_CHECK(Elements::isEqual(1 - omega_m - omega_lambda, cosmologicalParameters.getOmegaK()));
+      BOOST_CHECK(
+          Elements::isEqual(omega_m, cosmologicalParameters.getOmegaM()));
+      BOOST_CHECK(
+          Elements::isEqual(omega_lambda,
+              cosmologicalParameters.getOmegaLambda()));
+      BOOST_CHECK(
+          Elements::isEqual(1 - omega_m - omega_lambda,
+              cosmologicalParameters.getOmegaK()));
 
       // check again the sum
-      BOOST_CHECK(Elements::isEqual(1.0, cosmologicalParameters.getOmegaM()
-                               + cosmologicalParameters.getOmegaLambda()
-                               + cosmologicalParameters.getOmegaK()));
+      BOOST_CHECK(
+          Elements::isEqual(1.0,
+              cosmologicalParameters.getOmegaM()
+                  + cosmologicalParameters.getOmegaLambda()
+                  + cosmologicalParameters.getOmegaK()));
     }
   }
-
 
 }
 
 BOOST_AUTO_TEST_SUITE_END ()
-
 

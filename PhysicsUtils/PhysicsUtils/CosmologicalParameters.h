@@ -17,7 +17,7 @@ namespace PhysicsUtils {
  * Omega_m, Omega_lambda, Omega_k and hubble_constant.
  * Guarantee that the sum of the Omegas is 1
  */
-class CosmologicalParameters{
+class CosmologicalParameters {
 public:
   /**
    * @brief Constructor taking the cosmologycal parameters
@@ -31,7 +31,8 @@ public:
    * @param hubble_constant
    * H_0 in (km/s)/Mpc
    */
-  CosmologicalParameters(double omega_m = 0.3089, double omega_lambda = 0.6911, double hubble_constant = 67.74);
+  CosmologicalParameters(double omega_m = 0.3089, double omega_lambda = 0.6911,
+      double hubble_constant = 67.74);
 
   virtual ~CosmologicalParameters() = default;
 
@@ -54,7 +55,6 @@ public:
    * @brief Get the Hubble constant H_0 in (km/s)/Mpc
    */
   double getHubbleConstant() const;
-
 
 private:
   double m_omega_m;

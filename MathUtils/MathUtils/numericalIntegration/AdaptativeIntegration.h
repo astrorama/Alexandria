@@ -11,7 +11,6 @@
 #include "MathUtils/function/Function.h"
 #include "MathUtils/function/function_tools.h"
 
-
 namespace Euclid {
 namespace MathUtils {
 
@@ -59,10 +58,10 @@ public:
    * @param min The minimum range of the integration.
    * @param max The maximum range of the integration.
    */
-   double operator()(const Function& function,double min, double max) override;
+  double operator()(const Function& function, double min, double max) override;
 
 private:
-  Quadrature m_quadrature{};
+  Quadrature m_quadrature { };
   double m_relative_precion;
   int m_initial_order;
 };

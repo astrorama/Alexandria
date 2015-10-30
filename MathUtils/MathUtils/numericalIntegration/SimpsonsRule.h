@@ -7,7 +7,6 @@
 #ifndef MATHUTILS_MATHUTILS_NUMERCALINTEGRATION_SIMPSONSRULE_H_
 #define MATHUTILS_MATHUTILS_NUMERCALINTEGRATION_SIMPSONSRULE_H_
 
-
 #include "MathUtils/function/Function.h"
 
 namespace Euclid {
@@ -19,7 +18,7 @@ namespace MathUtils {
  * @details
  * Implement numerical integration (quadrature) based on the fit of a polynom of
  * degree 3 on 4 successive points.
- * For polynom of degree 3 the integration is exact even at low order.
+ * For polynome of degree 3 the integration is exact even at low order.
  * The formula is taken from "Numerical Recipes" (Third edition)
  * W.H.Press, S.A.Teukolsky, A.T. Vetterling & B.P. Flannery. p160 Equ 4.1.14.
  * With a shift in the notation N-1 -> N. As we use N = 2^m where we call m the order.
@@ -29,7 +28,7 @@ namespace MathUtils {
 class SimpsonsRule {
 
 public:
-  const static int minimal_order =3;
+  const static int minimal_order = 3;
   /**
    * @brief Integrate a function between min and max using a mesh of 2^order steps. order>=3
    *
@@ -46,7 +45,7 @@ public:
    * the order of the approximation.
    * The mesh used to compute the integration will have 2^order steps.
    */
-  double operator()(const Function& function,double min, double max, int order);
+  double operator()(const Function& function, double min, double max, int order);
 
   /**
    * @detail
@@ -70,12 +69,12 @@ public:
    * @param previous_value
    * The value of the integration at the previous order.
    */
-  double operator()(const Function& function,double min, double max, double previous_value, int order);
+  double operator()(const Function& function, double min, double max,
+      double previous_value, int order);
 
 };
 
 }
 }
-
 
 #endif /* MATHUTILS_MATHUTILS_NUMERCALINTEGRATION_SIMPSONSRULE_H_ */
