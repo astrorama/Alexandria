@@ -24,6 +24,8 @@ namespace MathUtils {
  * With a shift in the notation N-1 -> N. As we use N = 2^m where we call m the order.
  * One may compute the approximation at order = m+1 by adding only the missing
  * terms and thus deducting by ~2 the computational cost.
+ * Note that at order m there is (2^m)+1 evaluations of the function for the direct case
+ * and (2^(m-1))+4 in the case where the result of the previous order is provided.
  */
 class SimpsonsRule {
 
