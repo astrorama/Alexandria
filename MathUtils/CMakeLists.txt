@@ -37,6 +37,10 @@ elements_add_unit_test(function_tools_test tests/src/function/function_tools_tes
                          LINK_LIBRARIES GMock MathUtils TYPE Boost
                          INCLUDE_DIRS GMock)
 
+elements_add_unit_test(FunctionAdapter_test tests/src/function/FunctionAdapter_test_mock.cpp
+                         LINK_LIBRARIES GMock MathUtils TYPE Boost
+                         INCLUDE_DIRS GMock)
+                         
 elements_add_unit_test(AdaptativeIntegration_test tests/src/numericalIntegration/AdaptativeIntegration_test.cpp
                          LINK_LIBRARIES GMock MathUtils TYPE Boost
                          INCLUDE_DIRS GMock)

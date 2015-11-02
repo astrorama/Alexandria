@@ -9,6 +9,7 @@
 #include "ElementsKernel/Real.h"
 
 #include "MathUtils/function/function_tools.h"
+#include "MathUtils/function/FunctionAdapter.h"
 #include "MathUtils/numericalIntegration/AdaptativeIntegration.h"
 #include "MathUtils/numericalIntegration/SimpsonsRule.h"
 
@@ -30,24 +31,6 @@ double CosmologicalDistances::hubbleParameter(double z,
           + parameters.getOmegaLambda());
 }
 
-class FunctionWrapper: public MathUtils::Function {
-public:
-  FunctionWrapper(std::function<double(double)> function) :
-      m_function { function } {
-  }
-  ;
-
-  double operator()(const double x) const override {
-    return m_function(x);
-  }
-
-  std::unique_ptr<Function> clone() const override {
-    return std::unique_ptr<Function> { new FunctionWrapper(m_function) };
-  }
-private:
-  std::function<double(double)> m_function;
-};
-
 double CosmologicalDistances::comovingDistance(double z,
     const CosmologicalParameters& parameters, double relative_precision) const {
   if (Elements::isEqual(0., z)) {
@@ -58,11 +41,11 @@ double CosmologicalDistances::comovingDistance(double z,
       new MathUtils::AdaptativeIntegration<MathUtils::SimpsonsRule>(
           relative_precision, MathUtils::SimpsonsRule::minimal_order) };
 
-  FunctionWrapper wrapper(
+  MathUtils::FunctionAdapter adpater(
       [&parameters,this](double x) {return 1./hubbleParameter(x,parameters);});
 
   return hubbleDistance(parameters)
-      * integrate(wrapper, 0., z, std::move(integrationScheme));
+      * integrate(adpater, 0., z, std::move(integrationScheme));
 
 }
 
