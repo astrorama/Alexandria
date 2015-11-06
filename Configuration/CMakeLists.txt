@@ -62,6 +62,9 @@ elements_add_unit_test(ConfigManager_test tests/src/ConfigManager_test.cpp
 elements_add_unit_test(CatalogConfig_test tests/src/CatalogConfig_test.cpp 
                      LINK_LIBRARIES Configuration
                      TYPE Boost)
+elements_add_unit_test(SpecZCatalogConfig_test tests/src/SpecZCatalogConfig_test.cpp 
+                     LINK_LIBRARIES Configuration
+                     TYPE Boost)
 
 #===============================================================================
 # Declare the Python programs here
