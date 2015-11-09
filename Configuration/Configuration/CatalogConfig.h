@@ -91,12 +91,14 @@ public:
    * Checks that all the options are valid. See the exceptions thrown for a
    * detailed list of the checks.
    * 
+   * @param args
+   *    The user parameters
    * @throws Elements::Exception
    *    If both the source-id-column-name and source-id-column-index are given
    * @throws Elements::Exception
-   *    If none the source-id-column-name and source-id-column-index are given
+   *    If the source-id-column-index is an invalid one-based index (less than 1)
    * @throws Elements::Exception
-   *    If the input-catalog-format is not one of FITS or ASCII
+   *    If the input-catalog-format is not one of AUTO, FITS or ASCII
    */
   void preInitialize(const UserValues& args) override;
   
@@ -105,10 +107,35 @@ public:
    * Initializes the CatalogConfig instance
    * 
    * @details
-   * During the initialization 
+   * During the initialization the file defined by the input-catalog-file option
+   * is parsed into a Table::Table object.
+   * 
+   * @param args
+   *    The user parameters
+   * @throws Elements::Exception
+   *    If there is any I/O error with reading the input-catalog-file
+   * @throws Elements::Exception
+   *    If the file has wrong format type
    */
   void initialize(const UserValues& args) override;
 
+  /**
+   * @brief
+   * Post-initializes the CatalogConfig instance
+   * 
+   * @details
+   * During the post-initialization, the already parsed Table::Table object is
+   * converted to a SourceCatalog::Catalog object, using the attribute handlers
+   * set by the addAttributeHandler() method.
+   * 
+   * @param args
+   *    The user parameters
+   * @throws Elements::Exception
+   *    If the given file has no ID column, as described by the source-id-column-name
+   *    and source-id-column-index parameters
+   * @throws Elements::Exception
+   *    If any of the registered attribute handlers fails
+   */
   void postInitialize(const UserValues& args) override;
 
   /**

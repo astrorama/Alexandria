@@ -72,10 +72,11 @@ void CatalogConfig::preInitialize(const UserValues& args) {
   }
   
   if (args.find(INPUT_CATALOG_FORMAT) != args.end()
+      && args.at(INPUT_CATALOG_FORMAT).as<std::string>() != "AUTO"
       && args.at(INPUT_CATALOG_FORMAT).as<std::string>() != "FITS"
       && args.at(INPUT_CATALOG_FORMAT).as<std::string>() != "ASCII") {
     throw Elements::Exception() << INPUT_CATALOG_FORMAT << "must be one of "
-        << "FITS or ASCII, but was " << args.at(INPUT_CATALOG_FORMAT).as<std::string>();
+        << "AUTO, FITS or ASCII, but was " << args.at(INPUT_CATALOG_FORMAT).as<std::string>();
   }
 }
 
@@ -118,7 +119,7 @@ static FormatType autoDetectFormatType(fs::path file) {
 static FormatType getFormatTypeFromOptions(const Configuration::UserValues& args,
                                            const fs::path& file) {
   FormatType format;
-  if (args.find(INPUT_CATALOG_FORMAT) == args.end()) {
+  if (args.at(INPUT_CATALOG_FORMAT).as<std::string>().compare("AUTO") == 0) {
     format = autoDetectFormatType(file);
   } else if (args.at(INPUT_CATALOG_FORMAT).as<std::string>().compare("FITS") == 0) {
     format = FormatType::FITS;
@@ -129,8 +130,13 @@ static FormatType getFormatTypeFromOptions(const Configuration::UserValues& args
 }
 
 static Table::Table readFitsTable(fs::path file) {
-  CCfits::FITS fits {file.string()};
-  return Table::FitsReader().read(fits.extension(1));
+  try {
+    CCfits::FITS fits {file.string()};
+    return Table::FitsReader().read(fits.extension(1));
+  } catch (CCfits::FitsException ex) {
+    throw Elements::Exception() << "Error while reading file " << file
+                                << ": " << ex.message();
+  }
 }
 
 static Table::Table readAsciiTable(fs::path file) {
