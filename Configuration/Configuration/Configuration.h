@@ -70,6 +70,8 @@ public:
   
   State& getCurrentState();
   
+  State getCurrentState() const;
+  
 protected:
   
   template <typename T>

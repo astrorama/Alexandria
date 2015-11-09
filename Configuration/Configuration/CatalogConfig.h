@@ -35,34 +35,141 @@ namespace Configuration {
 
 /**
  * @class CatalogConfig
+ * 
  * @brief
+ * Configuration class for enabling catalog input
+ * 
+ * @details
+ * The CatalogConfiguration class provides the basis for reading input catalogs.
+ * It provides all the functionality for reading an input catalog as an object
+ * of type Table::Table and for converting it to an object of type
+ * SourceCatalog::Catalog.
  *
+ * Because this is a generic class, it has no knowledge of the specific catalog
+ * attributes. By default it does not use any attribute handlers and it only
+ * parses the ID of the catalog entries. The more specific catalog configurations
+ * (for example coordinates catalog), should declare the CatalogConfig
+ * as a dependency and they should add an attribute handler during the initialize
+ * phase. The CatalogConfig class reads the catalog from the file as a Table::Table
+ * during the initialize phase, so the more specific catalog configuration classes
+ * can use the getAsTable() method to get the catalog columns information (if
+ * needed).
+ * 
+ * Note that the SourceCatalog::Catalog object is initialized during the
+ * post-initialize phase, so all the catalog specific configurations have already
+ * register their handlers.
  */
 class CatalogConfig : public Configuration {
 
 public:
 
+  /// Constructs a new CatalogConfig object
   CatalogConfig(long manager_id);
 
-  /**
-   * @brief Destructor
-   */
+  /// Destructor
   virtual ~CatalogConfig() = default;
 
+  /**
+   * @brief
+   * Returns the program options defined by the CatalogConfig
+   *
+   * @details
+   * These options are:
+   * - input-catalog-file     : The file containing the input catalog
+   * - input-catalog-format   : The format of the input catalog (one of AUTO, FITS or ASCII)
+   * - source-id-column-name  : The name of the column representing the source ID
+   * - source-id-column-index : The index (1-based) of the column representing the source ID
+   *
+   * All options are in a group called "Input catalog options".
+   * 
+   * @return The map with the option descriptions
+   */
   std::map<std::string, OptionDescriptionList> getProgramOptions() override;
   
+  /**
+   * @brief
+   * Checks that all the options are valid. See the exceptions thrown for a
+   * detailed list of the checks.
+   * 
+   * @throws Elements::Exception
+   *    If both the source-id-column-name and source-id-column-index are given
+   * @throws Elements::Exception
+   *    If none the source-id-column-name and source-id-column-index are given
+   * @throws Elements::Exception
+   *    If the input-catalog-format is not one of FITS or ASCII
+   */
   void preInitialize(const UserValues& args) override;
   
+  /**
+   * @brief
+   * Initializes the CatalogConfig instance
+   * 
+   * @details
+   * During the initialization 
+   */
   void initialize(const UserValues& args) override;
 
   void postInitialize(const UserValues& args) override;
 
+  /**
+   * @brief
+   * Sets the directory used when resolving relative paths
+   * 
+   * @details
+   * This method can be called by other Configuration classes during the pre-
+   * initialization phase. By default the current working directory is used.
+   * 
+   * @param base_dir
+   *    The directory to use for resolving relative paths
+   * @throws Elements::Exception
+   *    If the CatalogConfig instance has already been initialized
+   */
   void setBaseDir(const boost::filesystem::path& base_dir);
   
+  /**
+   * @brief
+   * Adds an attribute handler which will be used for adding attributes at the
+   * catalog objects
+   * 
+   * @details
+   * This method can be called by other configuration classes before the post-
+   * initialization phase, to add extra attributes to the catalog.
+   * 
+   * @param handler
+   *    The AttributeHandler to add
+   * @throws Elements::Exception
+   *    If the CatalogConfig instance has already been finalized
+   */
   void addAttributeHandler(std::shared_ptr<SourceCatalog::AttributeFromRow> handler);
 
+  /**
+   * @brief
+   * Returns the catalog as a Table::Table object
+   * 
+   * @details
+   * This method can be called after the CatalogConfig has been initialized, and
+   * it can be used by other configurations which need the catalog column info.
+   * 
+   * @return 
+   *    The catalog as a Table::Table
+   * @throws Elements::Exception
+   *    If the instance is not yet initialized
+   */
   const Table::Table& getAsTable() const;
   
+  /**
+   * @brief
+   * Returns the Catalog object
+   * 
+   * @details
+   * This method can be called only on instances of CatalogConfig which are
+   * finalized.
+   * 
+   * @return
+   *    The source catalog
+   * @throws Elements::Exception
+   *    If the instance is not yet final
+   */
   const SourceCatalog::Catalog& getCatalog() const;
 
 private:

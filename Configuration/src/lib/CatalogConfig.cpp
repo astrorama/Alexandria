@@ -48,8 +48,8 @@ auto CatalogConfig::getProgramOptions() -> std::map<std::string, OptionDescripti
   return {{"Input catalog options", {
     {INPUT_CATALOG_FILE.c_str(), po::value<std::string>()->required(),
         "The file containing the input catalog"},
-    {INPUT_CATALOG_FORMAT.c_str(), po::value<std::string>(),
-        "The format of the input catalog (FITS or ASCII)"},
+    {INPUT_CATALOG_FORMAT.c_str(), po::value<std::string>()->default_value("AUTO"),
+        "The format of the input catalog (AUTO, FITS or ASCII)"},
     {SOURCE_ID_COLUMN_NAME.c_str(), po::value<std::string>(),
         "The name of the column representing the source ID"},
     {SOURCE_ID_COLUMN_INDEX.c_str(), po::value<int>(),
@@ -95,7 +95,7 @@ static fs::path getCatalogFileFromOptions(const Configuration::UserValues& args,
 }
 
 enum class FormatType {
-  FITS, ASCII
+  AUTO, FITS, ASCII
 };
 
 static FormatType autoDetectFormatType(fs::path file) {
@@ -172,23 +172,29 @@ void CatalogConfig::postInitialize(const UserValues& args) {
 }
 
 void CatalogConfig::setBaseDir(const fs::path& base_dir) {
+  if (getCurrentState() >= State::INITIALIZED) {
+    throw Elements::Exception() << "setBaseDir() call to initialized CatalogConfig";
+  }
   m_base_dir = base_dir;
 }
 
 void CatalogConfig::addAttributeHandler(std::shared_ptr<SourceCatalog::AttributeFromRow> handler) {
+  if (getCurrentState() >= State::FINAL) {
+    throw Elements::Exception() << "addAttributeHandler() call to finalized CatalogConfig";
+  }
   m_attribute_handlers.push_back(handler);
 }
 
 const Table::Table& CatalogConfig::getAsTable() const {
-  if (m_table_ptr == nullptr) {
+  if (getCurrentState() < State::INITIALIZED) {
     throw Elements::Exception() << "getAsTable() call to uninitialized CatalogConfig";
   }
   return *m_table_ptr;
 }
 
 const SourceCatalog::Catalog& CatalogConfig::getCatalog() const {
-  if (m_catalog_ptr == nullptr) {
-    throw Elements::Exception() << "getCatalog() call to uninitialized CatalogConfig";
+  if (getCurrentState() < State::FINAL) {
+    throw Elements::Exception() << "getCatalog() call to not finalized CatalogConfig";
   }
   return *m_catalog_ptr;
 }

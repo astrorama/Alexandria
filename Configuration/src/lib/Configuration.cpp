@@ -45,6 +45,9 @@ Configuration::State& Configuration::getCurrentState() {
   return m_state;
 }
 
+Configuration::State Configuration::getCurrentState() const {
+  return m_state;
+}
 } // Configuration namespace
 } // Euclid namespace
 
