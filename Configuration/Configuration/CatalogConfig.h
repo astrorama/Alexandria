@@ -116,6 +116,8 @@ public:
    *    If there is any I/O error with reading the input-catalog-file
    * @throws Elements::Exception
    *    If the file has wrong format type
+   * @throws Elements::Exception
+   *    If the defined ID column does not exist
    */
   void initialize(const UserValues& args) override;
 
