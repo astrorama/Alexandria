@@ -14,7 +14,7 @@
 #include "ElementsKernel/Exception.h"
 #include "ElementsKernel/Logging.h"
 #include "XYDataset/FileSystemProvider.h"
-#include "XYDataset/StringFunctions.h"
+#include "StringFunctions.h"
 
 namespace fs = boost::filesystem;
 

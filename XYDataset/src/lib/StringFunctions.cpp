@@ -5,7 +5,7 @@
  * @author Nicolas Morisset
  */
 
-#include "XYDataset/StringFunctions.h"
+#include "StringFunctions.h"
 
 namespace Euclid {
 namespace XYDataset {
