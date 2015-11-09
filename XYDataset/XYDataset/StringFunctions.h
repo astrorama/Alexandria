@@ -1,5 +1,5 @@
 /**
- * @file src/lib/StringFunctions.h
+ * @file XYDataset/StringFunctions.h
  *
  * @date May 21, 2014
  * @author Nicolas Morisset

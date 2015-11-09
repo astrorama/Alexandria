@@ -15,7 +15,7 @@
 #include "ElementsKernel/Exception.h"
 #include "Table/AsciiReader.h"
 #include "XYDataset/AsciiParser.h"
-#include "StringFunctions.h"
+#include "XYDataset/StringFunctions.h"
 
 using boost::regex;
 using boost::regex_match;

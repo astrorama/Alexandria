@@ -15,7 +15,7 @@
 
 #include "Table/FitsReader.h"
 #include "XYDataset/FitsParser.h"
-#include "StringFunctions.h"
+#include "XYDataset/StringFunctions.h"
 
 using boost::regex;
 using boost::regex_match;

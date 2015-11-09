@@ -13,7 +13,7 @@
 #include <boost/test/unit_test.hpp>
 #include <boost/filesystem.hpp>
 
-#include "../../XYDataset/src/lib/StringFunctions.h"
+#include "XYDataset/StringFunctions.h"
 
 using namespace Euclid::XYDataset;
 
