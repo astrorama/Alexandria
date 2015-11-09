@@ -159,9 +159,17 @@ static std::string getIdColumnFromOptions(const Configuration::UserValues& args,
   std::string id_column_name = "ID";
   if (args.find(SOURCE_ID_COLUMN_NAME) != args.end()) {
     id_column_name = args.at(SOURCE_ID_COLUMN_NAME).as<std::string>();
+    if (table.getColumnInfo()->find(id_column_name) == nullptr) {
+      throw Elements::Exception() << "Input catalog file does not contain the "
+          << "ID column with name " << id_column_name;
+    }
   }
   if (args.find(SOURCE_ID_COLUMN_INDEX) != args.end()) {
-    int index = args.at(SOURCE_ID_COLUMN_INDEX).as<int>();
+    std::size_t index = args.at(SOURCE_ID_COLUMN_INDEX).as<int>();
+    if (index > table.getColumnInfo()->size()) {
+      throw Elements::Exception() << SOURCE_ID_COLUMN_INDEX << " (" << index
+          << ") is out of range (" << table.getColumnInfo()->size() << ")";
+    }
     id_column_name = table.getColumnInfo()->getName(index-1);
   }
   logger.info() << "Using ID column \"" << id_column_name << '"';

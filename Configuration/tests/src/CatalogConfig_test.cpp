@@ -256,6 +256,38 @@ BOOST_FIXTURE_TEST_CASE(wrongFormatAscii_test, CatalogConfig_fixture) {
 
 //-----------------------------------------------------------------------------
 
+BOOST_FIXTURE_TEST_CASE(wrongIdName_test, CatalogConfig_fixture) {
+  
+  // Given
+  config_manager.registerConfiguration<CatalogConfig>();
+  config_manager.closeRegistration();
+  
+  // When
+  options_map[SOURCE_ID_COLUMN_NAME].value() = boost::any(std::string("Unknown"));
+  
+  //Then
+  BOOST_CHECK_THROW(config_manager.initialize(options_map), Elements::Exception);
+  
+}
+
+//-----------------------------------------------------------------------------
+
+BOOST_FIXTURE_TEST_CASE(wrongIdIndex_test, CatalogConfig_fixture) {
+  
+  // Given
+  config_manager.registerConfiguration<CatalogConfig>();
+  config_manager.closeRegistration();
+  
+  // When
+  options_map[SOURCE_ID_COLUMN_INDEX].value() = boost::any(10);
+  
+  //Then
+  BOOST_CHECK_THROW(config_manager.initialize(options_map), Elements::Exception);
+  
+}
+
+//-----------------------------------------------------------------------------
+
 BOOST_FIXTURE_TEST_CASE(ascii_test, CatalogConfig_fixture) {
   
   // Given
