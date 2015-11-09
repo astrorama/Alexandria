@@ -41,6 +41,10 @@ const std::set<std::type_index>& Configuration::getDependencies() {
   return m_dependencies;
 }
 
+Configuration::State& Configuration::getCurrentState() {
+  return m_state;
+}
+
 } // Configuration namespace
 } // Euclid namespace
 

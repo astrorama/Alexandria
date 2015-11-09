@@ -65,30 +65,31 @@ po::options_description ConfigManager::closeRegistration() {
 
 static void recursiveInitialization(const std::map<std::type_index, std::unique_ptr<Configuration>>& dictionary,
                                     const std::map<std::string, po::variable_value>& user_values,
-                                    const std::type_index& config, std::set<std::type_index>& already_initialized) {
-  if (already_initialized.find(config) != already_initialized.end()) {
+                                    const std::type_index& config) {
+  if (dictionary.at(config)->getCurrentState() >= Configuration::State::INITIALIZED) {
     return;
   }
   
   for (auto& dependency : dictionary.at(config)->getDependencies()) {
-    recursiveInitialization(dictionary, user_values, dependency, already_initialized);
+    recursiveInitialization(dictionary, user_values, dependency);
   }
   
   dictionary.at(config)->initialize(user_values);
-  already_initialized.emplace(config);
+  dictionary.at(config)->getCurrentState() = Configuration::State::INITIALIZED;
 }
 
 void ConfigManager::initialize(const std::map<std::string, po::variable_value>& user_values) {
   m_state = State::INITIALIZED;
   for (auto& pair : m_config_dictionary) {
     pair.second->preInitialize(user_values);
+    pair.second->getCurrentState() = Configuration::State::PRE_INITIALIZED;
   }
-  std::set<std::type_index> already_initialized {};
   for (auto& pair : m_config_dictionary) {
-    recursiveInitialization(m_config_dictionary, user_values, pair.first, already_initialized);
+    recursiveInitialization(m_config_dictionary, user_values, pair.first);
   }
   for (auto& pair : m_config_dictionary) {
     pair.second->postInitialize(user_values);
+    pair.second->getCurrentState() = Configuration::State::FINAL;
   }
 }
 

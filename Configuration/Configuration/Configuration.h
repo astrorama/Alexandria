@@ -40,6 +40,13 @@ namespace Configuration {
 class Configuration {
 
 public:
+  
+  enum class State {
+    CONSTRUCTED,
+    PRE_INITIALIZED,
+    INITIALIZED,
+    FINAL
+  };
 
   using OptionDescriptionList = std::vector<boost::program_options::option_description>;
   using UserValues = std::map<std::string, boost::program_options::variable_value>;
@@ -61,6 +68,8 @@ public:
 
   const std::set<std::type_index>& getDependencies();
   
+  State& getCurrentState();
+  
 protected:
   
   template <typename T>
@@ -72,7 +81,8 @@ protected:
 private:
   
   long m_manager_id;
-  std::set<std::type_index> m_dependencies;
+  std::set<std::type_index> m_dependencies {};
+  State m_state {State::CONSTRUCTED};
 
 }; /* End of Configuration class */
 
