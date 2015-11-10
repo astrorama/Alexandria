@@ -54,6 +54,9 @@ public:
   template <typename T>
   void registerConfiguration();
   
+  template <typename T1, typename T2>
+  void registerDependency();
+  
   boost::program_options::options_description closeRegistration();
   
   void initialize(const std::map<std::string, boost::program_options::variable_value>& user_values);
@@ -73,6 +76,7 @@ private:
   State m_state = State::REGISTRATION;
   std::unique_ptr<std::type_index> m_root_config {nullptr};
   std::map<std::type_index, std::unique_ptr<Configuration>> m_config_dictionary {};
+  std::map<std::type_index, std::set<std::type_index>> m_dependency_map {};
 
 }; /* End of ConfigManager class */
 

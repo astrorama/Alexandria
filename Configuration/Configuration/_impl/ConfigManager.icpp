@@ -36,8 +36,20 @@ void ConfigManager::registerConfiguration() {
   // If the configuration is already registered we do nothing
   if (m_config_dictionary[{typeid(T)}] == nullptr) {
     m_config_dictionary[{typeid(T)}].reset(new T{m_id});
-
   }
+}
+
+template <typename T1, typename T2>
+void ConfigManager::registerDependency() {
+  static_assert(std::is_base_of<Configuration, T1>::value,
+      "T1 template parameter must inherit from Configuration");
+  static_assert(std::is_base_of<Configuration, T2>::value,
+      "T2 template parameter must inherit from Configuration");
+  if (m_state != State::REGISTRATION) {
+    throw Elements::Exception() << "Manager with id '" << m_id << "' is closed "
+                                << "for dependency registration";
+  }
+  m_dependency_map[typeid(T1)].emplace(typeid(T2));
 }
 
 template <typename T>
