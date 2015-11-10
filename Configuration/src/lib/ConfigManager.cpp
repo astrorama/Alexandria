@@ -20,6 +20,7 @@
  */
 
 #include "ElementsKernel/Exception.h"
+#include "ElementsKernel/Logging.h"
 #include "Configuration/Configuration.h"
 #include "Configuration/ConfigManager.h"
 
@@ -27,6 +28,8 @@ namespace po = boost::program_options;
 
 namespace Euclid {
 namespace Configuration {
+
+static Elements::Logging logger = Elements::Logging::getLogger("ConfigManager");
 
 ConfigManager& ConfigManager::getInstance(long id) {
   static std::map<long, std::unique_ptr<ConfigManager>> manager_map {};
@@ -40,18 +43,22 @@ ConfigManager& ConfigManager::getInstance(long id) {
 ConfigManager::ConfigManager(long id) : m_id{id} {
 }
 
-std::unique_ptr<std::type_index> hasCircularDependencies(const std::map<std::type_index, std::set<std::type_index>>& dependency_map,
-                                                         const std::type_index& root, const std::pair<const std::type_index, std::set<std::type_index>>& config_pair) {
+std::vector<std::type_index> hasCircularDependencies(const std::map<std::type_index, std::set<std::type_index>>& dependency_map,
+                                                     const std::type_index& root, const std::pair<const std::type_index, std::set<std::type_index>>& config_pair) {
   if (config_pair.second.find(root) != config_pair.second.end()) {
-    return std::unique_ptr<std::type_index> {new std::type_index{config_pair.first}};
+    return {root};
   }
   for (auto& config : config_pair.second) {
     auto found = hasCircularDependencies(dependency_map, root, *dependency_map.find(config));
-    if (found) {
-      return found;
+    if (!found.empty()) {
+      std::vector<std::type_index> result {config};
+      for (auto& type : found) {
+        result.emplace_back(type);
+      }
+      return result;
     }
   }
-  return nullptr;
+  return {};
 }
 
 po::options_description ConfigManager::closeRegistration() {
@@ -65,9 +72,14 @@ po::options_description ConfigManager::closeRegistration() {
   // Check for circular dependencies
   for (auto& pair : m_config_dictionary) {
     auto found = hasCircularDependencies(m_dependency_map, pair.first, *m_dependency_map.find(pair.first));
-    if (found) {
-      throw Elements::Exception() << "Circular dependency between configurations "
-          << pair.first.name() << " and " << found->name();
+    if (!found.empty()) {
+      logger.error() << "Found circular dependency between configurations:";
+      int count = 0;
+      logger.error() << "    " << ++count << " : " << pair.first.name();
+      for (auto& type : found) {
+        logger.error() << "    " << ++count << " : " << type.name();
+      }
+      throw Elements::Exception() << "Circular dependency between configurations";
     }
   }
   
