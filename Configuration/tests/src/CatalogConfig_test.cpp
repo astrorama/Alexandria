@@ -152,8 +152,6 @@ BOOST_FIXTURE_TEST_CASE(getProgramOptions_test, CatalogConfig_fixture) {
   BOOST_CHECK_NO_THROW(options.find(SOURCE_ID_COLUMN_NAME, false));
   BOOST_CHECK_NO_THROW(options.find(SOURCE_ID_COLUMN_INDEX, false));
 
-  
-  
 }
 
 //-----------------------------------------------------------------------------
