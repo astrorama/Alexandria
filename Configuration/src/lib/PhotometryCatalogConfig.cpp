@@ -146,10 +146,16 @@ void PhotometryCatalogConfig::initialize(const UserValues& args) {
 }
 
 void PhotometryCatalogConfig::setBaseDir(const boost::filesystem::path& base_dir) {
+  if (getCurrentState() >= State::INITIALIZED) {
+    throw Elements::Exception() << "setBaseDir() call to initialized PhotometryCatalogConfig";
+  }
   m_base_dir = base_dir;
 }
 
 const std::vector<std::string>& PhotometryCatalogConfig::getPhotometricBands() {
+  if (getCurrentState() < State::INITIALIZED) {
+    throw Elements::Exception() << "getPhotometricBands() call to uninitialized PhotometryCatalogConfig";
+  }
   return m_photometric_bands;
 }
 
