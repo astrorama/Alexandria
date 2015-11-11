@@ -44,7 +44,7 @@ BOOST_AUTO_TEST_CASE(DirectCall) {
   Euclid::MathUtils::FunctionAdapter adapter{TestFunction()};
 
   BOOST_CHECK_EQUAL(adapter(1.0),3.14);
-
+  mock_std_function_singleton.reset(nullptr);
 }
 
 BOOST_AUTO_TEST_CASE(CloneCall) {
@@ -55,6 +55,7 @@ BOOST_AUTO_TEST_CASE(CloneCall) {
   auto cloned = adapter.clone();
 
   BOOST_CHECK_EQUAL((*cloned)(1.0),3.14);
+  mock_std_function_singleton.reset(nullptr);
 
 }
 
