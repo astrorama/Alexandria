@@ -49,9 +49,9 @@ static Table createTestTable() {
   auto column_info = std::make_shared<ColumnInfo>(std::move(info_list));
   
   std::vector<Row> row_list {
-    {{1l, 1.1, 0.1}, column_info},
-    {{2l, 1.2, 0.2}, column_info},
-    {{3l, 1.3, 0.3}, column_info}
+    {{std::int64_t{1}, 1.1, 0.1}, column_info},
+    {{std::int64_t{2}, 1.2, 0.2}, column_info},
+    {{std::int64_t{3}, 1.3, 0.3}, column_info}
   };
   
   return Table {std::move(row_list)};

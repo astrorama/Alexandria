@@ -13,7 +13,7 @@
 #include "mocks.h"
 
 class DummyMultiplyFunction : public Euclid::MathUtils::Function {
-  double operator()(const double) const {
+  double operator()(const double) const override {
     return 0;
   }
   std::unique_ptr<Function> clone() const override {
@@ -26,7 +26,7 @@ std::unique_ptr<Euclid::MathUtils::Function> dummyMultiply(const Euclid::MathUti
 }
 
 class FunctionType1 : public Euclid::MathUtils::Function {
-  double operator()(const double) const {
+  double operator()(const double) const override {
     return 0;
   }
   std::unique_ptr<Function> clone() const override {
@@ -35,7 +35,7 @@ class FunctionType1 : public Euclid::MathUtils::Function {
 };
 
 class FunctionType2 : public Euclid::MathUtils::Function {
-  double operator()(const double) const {
+  double operator()(const double) const override {
     return 0;
   }
   std::unique_ptr<Function> clone() const override {
