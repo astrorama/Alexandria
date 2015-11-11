@@ -56,14 +56,9 @@ public:
    * @details
    * These options are:
    * - missing-photometry-flag : The flux value to indicate missing photometry data
-   * - filter-mapping-file     : The file containing the catalog columns mapping
-   * - exclude-filter          : The photometries to ignore
    *
    * All options are in a group called "Input catalog options". They are all
-   * optional. The missing-photometr-flag defaults to the value -99 and the
-   * filter-mapping-file to the file filter_mapping.txt. If the filter-mapping-file
-   * is a relative path, it is relative to the directory set via the setBaseDir()
-   * method, during the pre-initialize phase.
+   * optional. The missing-photometr-flag defaults to the value -99.
    * 
    * @return The map with the option descriptions
    */
@@ -71,52 +66,13 @@ public:
 
   /**
    * @brief
-   * Adds the PhotometryAttributeFromRow handler to the CatalogConfig and it
-   * initializes the photometric bands list
+   * Adds the PhotometryAttributeFromRow handler to the CatalogConfig
    * 
    * @param args
    *    The user parameters
-   * @throws Elements::Exception
-   *    If the filter mapping file does not exist
-   * @throws Elements::Exception
-   *    If there are syntax errors in the filter mapping file (all non comment
-   *    lines must be like "FILTER_NAME FLUX_COLUMN_NAME ERROR_COLUMN_NAME")
-   * @throws Elements::Exception
-   *    If any filter in the exclude-filter list does not exist in the file
    */
   void initialize(const UserValues& args) override;
-
-  /**
-   * @brief
-   * Sets the directory used when resolving relative paths
-   * 
-   * @details
-   * This method can be called by other Configuration classes during the pre-
-   * initialization phase. By default the current working directory is used.
-   * 
-   * @param base_dir
-   *    The directory to use for resolving relative paths
-   * @throws Elements::Exception
-   *    If the PhotometryCatalogConfig instance has already been initialized
-   */
-  void setBaseDir(const boost::filesystem::path& base_dir);
-
-  /**
-   * @brief
-   * Returns the list of the photometric bands which are included in the catalog
-   * 
-   * @return
-   *    The list of the photometric bands
-   * @throws Elements::Exception
-   *    If the instance is not yet initialized
-   */
-  const std::vector<std::string>& getPhotometricBands();
   
-private:
-  
-  boost::filesystem::path m_base_dir {};
-  std::vector<std::string> m_photometric_bands {};
-
 }; /* End of PhotometryCatalogConfig class */
 
 } /* namespace Configuration */
