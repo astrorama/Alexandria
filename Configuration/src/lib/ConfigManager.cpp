@@ -63,7 +63,7 @@ std::vector<std::type_index> hasCircularDependencies(const std::map<std::type_in
 
 static void cleanupNonRegisteredDependencies(std::map<std::type_index, std::set<std::type_index>>& dep_map,
                                              const std::map<std::type_index, std::unique_ptr<Configuration>>& dict) {
-  logger.info() << "Cleaning dependencies of unregistered configurations...";
+  logger.debug() << "Cleaning dependencies of unregistered configurations...";
   std::vector<std::type_index> unregistered_keys {};
   for (auto& pair : dep_map) {
     if (dict.find(pair.first) == dict.end()) {
