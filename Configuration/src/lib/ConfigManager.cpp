@@ -61,6 +61,36 @@ std::vector<std::type_index> hasCircularDependencies(const std::map<std::type_in
   return {};
 }
 
+static void cleanupNonRegisteredDependencies(std::map<std::type_index, std::set<std::type_index>>& dep_map,
+                                             const std::map<std::type_index, std::unique_ptr<Configuration>>& dict) {
+  logger.info() << "Cleaning dependencies of unregistered configurations...";
+  std::vector<std::type_index> unregistered_keys {};
+  for (auto& pair : dep_map) {
+    if (dict.find(pair.first) == dict.end()) {
+      unregistered_keys.emplace_back(pair.first);
+      continue;
+    }
+    std::vector<std::type_index> unregistered_values {};
+    for (auto& value : pair.second) {
+      if (dict.find(value) == dict.end()) {
+        unregistered_values.emplace_back(value);
+      }
+    }
+    for (auto& to_remove : unregistered_values) {
+      logger.info() << "Removing configuration dependency " << pair.first.name()
+                    << " -> " << to_remove.name();
+      pair.second.erase(to_remove);
+    }
+  }
+  for (auto& to_remove : unregistered_keys) {
+    for (auto& value : dep_map.at(to_remove)) {
+      logger.info() << "Removing configuration dependency " << to_remove.name()
+                    << " -> " << value.name();
+    }
+    dep_map.erase(to_remove);
+  }
+}
+
 po::options_description ConfigManager::closeRegistration() {
   m_state = State::WAITING_INITIALIZATION;
   
@@ -69,6 +99,10 @@ po::options_description ConfigManager::closeRegistration() {
     m_dependency_map[pair.first].insert(pair.second->getDependencies().begin(),
                                         pair.second->getDependencies().end());
   }
+  
+  // Cleanup any dependencies related with non register configurations
+  cleanupNonRegisteredDependencies(m_dependency_map, m_config_dictionary);
+  
   // Check for circular dependencies
   for (auto& pair : m_config_dictionary) {
     auto found = hasCircularDependencies(m_dependency_map, pair.first, *m_dependency_map.find(pair.first));

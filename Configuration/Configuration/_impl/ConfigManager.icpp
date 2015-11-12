@@ -49,16 +49,6 @@ void ConfigManager::registerDependency() {
     throw Elements::Exception() << "Manager with id '" << m_id << "' is closed "
                                 << "for dependency registration";
   }
-  if (m_config_dictionary.find(typeid(T1)) == m_config_dictionary.end()) {
-    throw Elements::Exception() << "Failed to register configuration dependency. "
-                                << "No configuration with type " << typeid(T1).name()
-                                << " has been registered (manager with id '" << m_id << "')";
-  }
-  if (m_config_dictionary.find(typeid(T2)) == m_config_dictionary.end()) {
-    throw Elements::Exception() << "Failed to register configuration dependency. "
-                                << "No configuration with type " << typeid(T2).name()
-                                << " has been registered (manager with id '" << m_id << "')";
-  }
   m_dependency_map[typeid(T1)].emplace(typeid(T2));
 }
 
