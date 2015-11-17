@@ -200,10 +200,26 @@ public:
    *    If the instance is not yet final
    */
   const SourceCatalog::Catalog& getCatalog() const;
+  
+  /**
+   * @brief
+   * Returns the filename of the input catalog
+   * 
+   * @details
+   * This method can be called only on instances of CatalogConfig which are
+   * finalized.
+   * 
+   * @return
+   *    The filename of the input catalog
+   * @throws Elements::Exception
+   *    If the instance is not yet final
+   */
+  const boost::filesystem::path& getFilename() const;
 
 private:
 
   boost::filesystem::path m_base_dir {};
+  boost::filesystem::path m_filename {};
   std::unique_ptr<Table::Table> m_table_ptr {};
   std::vector<std::shared_ptr<SourceCatalog::AttributeFromRow>> m_attribute_handlers {};
   std::unique_ptr<SourceCatalog::Catalog> m_catalog_ptr {};

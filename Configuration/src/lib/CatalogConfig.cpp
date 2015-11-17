@@ -145,12 +145,12 @@ static Table::Table readAsciiTable(fs::path file) {
 }
 
 void CatalogConfig::initialize(const UserValues& args) {
-  auto catalog_file = getCatalogFileFromOptions(args, m_base_dir);
-  auto format = getFormatTypeFromOptions(args, catalog_file);
-  logger.info() << "Reading table from file " << catalog_file;
+  m_filename = getCatalogFileFromOptions(args, m_base_dir);
+  auto format = getFormatTypeFromOptions(args, m_filename);
+  logger.info() << "Reading table from file " << m_filename;
   Table::Table table = (format == FormatType::FITS)
-                       ? readFitsTable(catalog_file)
-                       : readAsciiTable(catalog_file);
+                       ? readFitsTable(m_filename)
+                       : readAsciiTable(m_filename);
   m_table_ptr.reset(new Table::Table{std::move(table)});
 }
 
@@ -211,6 +211,13 @@ const SourceCatalog::Catalog& CatalogConfig::getCatalog() const {
     throw Elements::Exception() << "getCatalog() call to not finalized CatalogConfig";
   }
   return *m_catalog_ptr;
+}
+
+const boost::filesystem::path& CatalogConfig::getFilename() const {
+  if (getCurrentState() < State::INITIALIZED) {
+    throw Elements::Exception() << "getFilename() call to not finalized CatalogConfig";
+  }
+  return m_filename;
 }
 
 } // Configuration namespace
