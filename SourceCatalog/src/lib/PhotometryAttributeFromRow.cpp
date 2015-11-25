@@ -62,9 +62,6 @@ unique_ptr<Attribute> PhotometryAttributeFromRow::createAttribute(
     double flux = boost::get<double>(flux_cell);
     double error = boost::get<double>(error_cell);
     bool missing_data = Elements::isEqual(flux, m_missing_photometry_flag);
-    if (!missing_data && flux < 0) {
-      throw Elements::Exception() << "Input catalog contains negative flux value " << flux;
-    }
     bool upper_limit = error < 0;
     error = std::abs(error);
     
