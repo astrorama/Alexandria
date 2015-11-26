@@ -5,14 +5,13 @@ elements_depends_on_subdirs(Table)
 elements_depends_on_subdirs(ElementsKernel)
 
 find_package(Boost REQUIRED COMPONENTS filesystem thread system)
-find_package(Eigen3)
 
 
 #===== Libraries ===============================================================
 
 elements_add_library(SourceCatalog src/lib/*.cpp
                   LINK_LIBRARIES ${CMAKE_DL_LIBS} Boost Table
-                  INCLUDE_DIRS Eigen3 Boost Table
+                  INCLUDE_DIRS Boost Table
                   PUBLIC_HEADERS SourceCatalog)
 
 if(ELEMENTS_HIDE_WARNINGS)
