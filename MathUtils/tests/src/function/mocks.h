@@ -14,7 +14,7 @@
 class FunctionMock : public Euclid::MathUtils::Function {
 public:
   FunctionMock(const double value) : m_value{value} { }
-  double operator()(const double)  const override {
+  double operator()(const double) const override {
     return m_value;
   }
   std::unique_ptr<Function> clone() const override {
