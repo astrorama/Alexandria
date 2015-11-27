@@ -91,7 +91,7 @@ public:
     *
     * @param parameters The cosmological parameters the distance has to be computed for.
     */
-  double dimensionlessComovingColumeClement(double z, const CosmologicalParameters& parameters) const;
+  double dimensionlessComovingVolumeElement(double z, const CosmologicalParameters& parameters) const;
 
 };
 

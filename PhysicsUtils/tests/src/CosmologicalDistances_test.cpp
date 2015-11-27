@@ -148,7 +148,7 @@ BOOST_FIXTURE_TEST_CASE(VE_test, CosmologicalDistances_Fixture) {
   for (size_t i = 0; i < zs.size(); ++i) {
      BOOST_CHECK_CLOSE(
          volumeElement[i],
-         distances.dimensionlessComovingColumeClement(zs[i], parameters),
+         distances.dimensionlessComovingVolumeElement(zs[i], parameters),
          0.00001);
    }
 }

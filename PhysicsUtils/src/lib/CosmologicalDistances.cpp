@@ -81,7 +81,7 @@ double CosmologicalDistances::distanceModulus(double z,
 }
 
 
-double CosmologicalDistances::dimensionlessComovingColumeClement(double z,
+double CosmologicalDistances::dimensionlessComovingVolumeElement(double z,
     const CosmologicalParameters& parameters) const{
   double D_H = hubbleDistance(parameters);
   double E = hubbleParameter(z,parameters);
