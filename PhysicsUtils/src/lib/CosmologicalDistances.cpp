@@ -68,7 +68,6 @@ double CosmologicalDistances::transverseComovingDistance(double z,
 
 double CosmologicalDistances::luminousDistance(double z,
     const CosmologicalParameters& parameters) const {
-  double ld;
   if (Elements::isEqual(0., z)) {
     return 10.;
   } else {
@@ -79,6 +78,15 @@ double CosmologicalDistances::luminousDistance(double z,
 double CosmologicalDistances::distanceModulus(double z,
     const CosmologicalParameters& parameters) const {
   return 5. * std::log10(luminousDistance(z, parameters) / 10.);
+}
+
+
+double CosmologicalDistances::dimensionlessComovingColumeClement(double z,
+    const CosmologicalParameters& parameters) const{
+  double D_H = hubbleDistance(parameters);
+  double E = hubbleParameter(z,parameters);
+  double D_M = comovingDistance(z,parameters);
+  return D_M*D_M/(E*D_H*D_H);
 }
 
 }

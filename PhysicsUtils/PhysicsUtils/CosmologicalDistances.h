@@ -14,9 +14,9 @@ namespace Euclid {
 namespace PhysicsUtils {
 
 /**
- * @class Cosmology
+ * @class CosmologicalDistance
  *
- * @brief Model the cosmology and compute the distances according to it.
+ * @brief Compute the distances according to it. See http://xxx.lanl.gov/abs/astro-ph/9905116
  */
 class CosmologicalDistances{
 public:
@@ -83,6 +83,15 @@ public:
    * @param parameters The cosmological parameters the distance has to be computed for.
    */
   double distanceModulus(double z, const CosmologicalParameters& parameters) const;
+
+  /**
+    * @brief return the dimensionless comoving volume element.
+    *
+    * @param z The redshift for which the volume element has to be computed.
+    *
+    * @param parameters The cosmological parameters the distance has to be computed for.
+    */
+  double dimensionlessComovingColumeClement(double z, const CosmologicalParameters& parameters) const;
 
 };
 

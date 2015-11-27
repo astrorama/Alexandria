@@ -30,6 +30,11 @@ struct CosmologicalDistances_Fixture {
       475341190.49684501, 2918477377.0888844, 6792421919.9330025,
       11199033877.97576, 15937134721.927008, 36706225562.921059,
       59064863879.408623 };
+
+  std::vector<double> volumeElement {0.0, 9.990733333168602e-07,
+    9.907367503391648e-05, 0.009081033159604667,
+    0.14679118615652445, 0.33115915506673393, 0.4361667073426341,
+    0.47945673110160303, 0.43890675385247246, 0.35200068850695454};
 };
 
 //-----------------------------------------------------------------------------
@@ -135,6 +140,17 @@ BOOST_FIXTURE_TEST_CASE(DM_test, CosmologicalDistances_Fixture) {
       Elements::isEqual(44.415392424409184,
           distances.distanceModulus(1.1, parameters)));
   BOOST_CHECK_EQUAL(0., distances.distanceModulus(0., parameters));
+}
+
+BOOST_FIXTURE_TEST_CASE(VE_test, CosmologicalDistances_Fixture) {
+  CosmologicalDistances distances { };
+  CosmologicalParameters parameters { };
+  for (size_t i = 0; i < zs.size(); ++i) {
+     BOOST_CHECK_CLOSE(
+         volumeElement[i],
+         distances.dimensionlessComovingColumeClement(zs[i], parameters),
+         0.00001);
+   }
 }
 
 //BOOST_FIXTURE_TEST_CASE(export_data, CosmologicalDistances_Fixture) {
