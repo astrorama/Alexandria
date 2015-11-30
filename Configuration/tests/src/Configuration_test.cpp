@@ -22,8 +22,27 @@
 #include <boost/test/unit_test.hpp>
 
 #include "Configuration/Configuration.h"
+#include "ConfigManager_fixture.h"
 
 using namespace Euclid::Configuration;
+
+class Config1 : public Configuration {
+public:
+  Config1(long id) : Configuration(id) {}
+};
+
+class Config2 : public Configuration {
+public:
+  Config2(long id) : Configuration(id) {}
+};
+
+class Config3 : public Configuration {
+public:
+  Config3(long id) : Configuration(id) {
+    declareDependency<Config1>();
+    declareDependency<Config2>();
+  }
+};
 
 //-----------------------------------------------------------------------------
 
@@ -31,10 +50,55 @@ BOOST_AUTO_TEST_SUITE (Configuration_test)
 
 //-----------------------------------------------------------------------------
 
-BOOST_AUTO_TEST_CASE( example_test ) {
+BOOST_FIXTURE_TEST_CASE(state_test, ConfigManager_fixture) {
 
-  BOOST_FAIL("!!!! Please implement your tests !!!!");
+  // When
+  Config1 config {timestamp};
+  
+  // Then
+  BOOST_CHECK(config.getCurrentState() == Configuration::State::CONSTRUCTED);
+  
+  // When
+  config.getCurrentState() = Configuration::State::PRE_INITIALIZED;
+  
+  // Then
+  BOOST_CHECK(config.getCurrentState() == Configuration::State::PRE_INITIALIZED);
+  
+  // When
+  config.getCurrentState() = Configuration::State::PRE_INITIALIZED;
+  
+  // Then
+  BOOST_CHECK(config.getCurrentState() == Configuration::State::PRE_INITIALIZED);
+  
+  // When
+  config.getCurrentState() = Configuration::State::INITIALIZED;
+  
+  // Then
+  BOOST_CHECK(config.getCurrentState() == Configuration::State::INITIALIZED);
+  
+  // When
+  config.getCurrentState() = Configuration::State::FINAL;
+  
+  // Then
+  BOOST_CHECK(config.getCurrentState() == Configuration::State::FINAL);
 
+}
+
+//-----------------------------------------------------------------------------
+
+BOOST_FIXTURE_TEST_CASE(dependencies_test, ConfigManager_fixture) {
+
+  // When
+  Config3 config {timestamp};
+  
+  // Given
+  auto& dependencies = config.getDependencies();
+  
+  // Then
+  BOOST_CHECK_EQUAL(dependencies.size(), 2);
+  BOOST_CHECK_EQUAL(dependencies.count(typeid(Config1)), 1);
+  BOOST_CHECK_EQUAL(dependencies.count(typeid(Config2)), 1);
+  
 }
 
 //-----------------------------------------------------------------------------
