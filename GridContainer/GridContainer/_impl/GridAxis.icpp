@@ -4,6 +4,8 @@
  * @author Nikolaos Apostolakos
  */
 
+#include <algorithm>
+
 namespace Euclid {
 namespace GridContainer {
 
@@ -35,6 +37,22 @@ auto GridAxis<T>::begin() const -> const_iterator {
 template<typename T>
 auto GridAxis<T>::end() const -> const_iterator {
   return m_values.end();
+}
+
+template<typename T>
+template<typename U>
+bool GridAxis<T>::operator==(const GridAxis<U>& other) const {
+  bool same = false;
+  if (this->size() == other.size()) {
+    same = std::equal(this->begin(), this->end(), other.begin());
+  }
+  return same;
+}
+
+template<typename T>
+template<typename U>
+bool GridAxis<T>::operator!=(const GridAxis<U>& other) const {
+  return !this->operator==(other);
 }
 
 } // end of namespace GridContainer
