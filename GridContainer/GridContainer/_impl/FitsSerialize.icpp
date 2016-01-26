@@ -1,0 +1,233 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+/* 
+ * @file FitsSerialize.icpp
+ * @author nikoapos
+ */
+
+#include <valarray>
+#include <type_traits>
+#include <boost/filesystem.hpp>
+#include <CCfits/CCfits>
+#include "XYDataset/QualifiedName.h"
+#include "Table/Table.h"
+#include "Table/FitsWriter.h"
+#include "GridContainer/GridContainer.h"
+#include "GridConstructionHelper.h"
+
+namespace Euclid {
+namespace GridContainer {
+
+template <typename T>
+struct FitsBpixTraits {
+  static_assert(!std::is_same<T,T>::value, "FITS arrays of type T are not supported");
+};
+
+template <>
+struct FitsBpixTraits<std::int8_t> {
+  static constexpr int BPIX = BYTE_IMG;
+};
+
+template <>
+struct FitsBpixTraits<std::int16_t> {
+  static constexpr int BPIX = SHORT_IMG;
+};
+
+template <>
+struct FitsBpixTraits<std::int32_t> {
+  static constexpr int BPIX = LONG_IMG;
+};
+
+template <>
+struct FitsBpixTraits<std::int64_t> {
+  static constexpr int BPIX = LONGLONG_IMG;
+};
+
+template <>
+struct FitsBpixTraits<float> {
+  static constexpr int BPIX = FLOAT_IMG;
+};
+
+template <>
+struct FitsBpixTraits<double> {
+  static constexpr int BPIX = DOUBLE_IMG;
+};
+
+template<typename T>
+struct GridAxisValueFitsHelper {
+  using FitsType = T;
+  static FitsType axisToFits(const T& value) {
+    return value;
+  }
+  static T FitsToAxis(const FitsType& value) {
+    return value;
+  }
+};
+
+template<>
+struct GridAxisValueFitsHelper<XYDataset::QualifiedName> {
+  using FitsType = std::string;
+  static FitsType axisToFits(const XYDataset::QualifiedName& value) {
+    return value.qualifiedName();
+  }
+  static XYDataset::QualifiedName FitsToAxis(const FitsType& value) {
+    return value;
+  }
+};
+
+template<typename... AxesTypes>
+struct GridAxesToFitsHelper {
+  
+  template<int I>
+  static void addGridAxesToFitsFile(const boost::filesystem::path& filename,
+                                    const std::string& array_hdu_name,
+                                    const std::tuple<GridAxis<AxesTypes>...>& axes_tuple,
+                                    const TemplateLoopCounter<I>&) {
+    addGridAxesToFitsFile(filename, array_hdu_name, axes_tuple, TemplateLoopCounter<I-1>{});
+    
+    auto& axis = std::get<I-1>(axes_tuple);
+    using AxisType = typename std::remove_reference<decltype(axis)>::type::data_type;
+    using FitsType = typename GridAxisValueFitsHelper<AxisType>::FitsType;
+  
+    std::vector<Table::ColumnInfo::info_type> info_list {
+      Table::ColumnInfo::info_type {"Index", typeid(int32_t)},
+      Table::ColumnInfo::info_type {"Value", typeid(FitsType)}
+    };
+    std::shared_ptr<Table::ColumnInfo> column_info {new Table::ColumnInfo {std::move(info_list)}};
+
+    std::vector<Table::Row> row_list {};
+    for (size_t i=0; i<axis.size(); ++i) {
+      auto fits_value = GridAxisValueFitsHelper<AxisType>::axisToFits(axis[i]);
+      row_list.push_back(Table::Row{{(int)i, fits_value}, column_info});
+    }
+    Table::Table table {row_list};
+
+    CCfits::FITS fits {filename.string(), CCfits::RWmode::Write};
+    Table::FitsWriter writer {Table::FitsWriter::Format::BINARY};
+    writer.write(fits, axis.name()+"_"+array_hdu_name, table);
+  }
+  
+  static void addGridAxesToFitsFile(const boost::filesystem::path&,
+                                    const std::string&,
+                                    const std::tuple<GridAxis<AxesTypes>...>&,
+                                    const TemplateLoopCounter<0>&) {
+  }
+  
+};
+
+template<typename GridCellManager, typename... AxesTypes>
+void gridFitsExport(const boost::filesystem::path& filename,
+                    const std::string& hdu_name,
+                    const GridContainer<GridCellManager, AxesTypes...>& grid) {
+  auto& axes = grid.getAxesTuple();
+
+  // Create the first HDU with the array. We do that in a scope so the file is
+  // created and the data are flushed into it before we continue.
+  {
+    CCfits::FITS fits (filename.string(), CCfits::Write);
+
+    auto ext_ax_size_t = GridConstructionHelper<AxesTypes...>::createAxesSizesVector(
+                                      axes, TemplateLoopCounter<sizeof...(AxesTypes)>{});
+    std::vector<long> ext_ax {ext_ax_size_t.begin(), ext_ax_size_t.end()};
+
+    using cell_type = typename GridCellManagerTraits<GridCellManager>::data_type;
+    auto bpix = FitsBpixTraits<cell_type>::BPIX;
+    fits.addImage(hdu_name, bpix, ext_ax);
+    std::valarray<cell_type> data (grid.size());
+    int i = 0;
+    for (auto value : grid) {
+      data[i] = value;
+      ++i;
+    }
+    fits.currentExtension().write(1, grid.size(), data);
+  }
+  
+  GridAxesToFitsHelper<AxesTypes...>::addGridAxesToFitsFile(filename, hdu_name,
+                              axes, TemplateLoopCounter<sizeof...(AxesTypes)>{});
+}
+
+template <typename GridType>
+class GridAxisFitsReader {
+  
+  template <int I>
+  using AxisType = typename std::remove_reference<decltype(std::declval<GridType>().template getAxis<I>())>::type;
+  
+  template <int I, typename=void>
+  struct AxesTupleType {
+    using previous = typename AxesTupleType<I-1>::type;
+    using type = decltype(std::tuple_cat(std::declval<previous>(), std::declval<std::tuple<AxisType<I>>>()));
+  };
+  
+  template <int I>
+  struct AxesTupleType<I, typename std::enable_if<I == -1>::type> {
+    using type = std::tuple<>;
+  };
+  
+  template <int I>
+  using GridAxisType = typename std::remove_reference<decltype(std::declval<GridType>().template getAxis<I>())>::type;
+  
+  template <int I>
+  static GridAxisType<I> readAxis(const std::string& grid_name, CCfits::ExtHDU& hdu) {
+    using KnotType = typename GridAxisType<I>::data_type;
+    using FitsType = typename GridAxisValueFitsHelper<KnotType>::FitsType;
+
+    auto axis_name = hdu.name().substr(0, hdu.name().size() - grid_name.size() - 1);
+    std::vector<FitsType> data {};
+    try {
+      auto& column = hdu.column("Value");
+      column.read(data, 1, column.rows());
+    } catch (CCfits::FitsException e) {
+      throw Elements::Exception() << e.message();
+    }
+    std::vector<KnotType> knots {};
+    for (std::size_t i = 0; i < data.size(); ++i) {
+      knots.emplace_back(GridAxisValueFitsHelper<KnotType>::FitsToAxis(data[i]));
+    }
+    return {std::move(axis_name), std::move(knots)};
+  }
+  
+  template <int I>
+  static typename AxesTupleType<I>::type readAxesTuple(CCfits::FITS& fits, const std::string& grid_name, int hdu_index, const TemplateLoopCounter<I>&) {
+    auto axis = readAxis<I>(grid_name, fits.extension(hdu_index));
+    auto previous = readAxesTuple(fits, grid_name, hdu_index-1, TemplateLoopCounter<I-1>{});
+    return std::tuple_cat(std::move(previous), std::tuple<decltype(axis)>{std::move(axis)});
+  }
+  
+  static std::tuple<> readAxesTuple(CCfits::FITS&, const std::string&, int, const TemplateLoopCounter<-1>&) {
+    return {};
+  }
+  
+public:
+  
+  static typename AxesTupleType<GridType::axisNumber()-1>::type readAllAxes(CCfits::FITS& fits, int hdu_index) {
+    auto name = fits.extension(hdu_index).name();
+    return readAxesTuple(fits, name, hdu_index + GridType::axisNumber(), TemplateLoopCounter<GridType::axisNumber()-1>{});
+  }
+  
+};
+
+template<typename GridType>
+GridType gridFitsImport(const boost::filesystem::path& filename, int hdu_index) {
+  CCfits::FITS fits (filename.string(), CCfits::Read);
+  
+  auto axes = GridAxisFitsReader<GridType>::readAllAxes(fits, hdu_index);
+  
+  GridType grid {std::move(axes)};
+  
+  std::valarray<typename GridType::cell_type> data {};
+  fits.extension(hdu_index).read(data);
+  
+  int i = 0;
+  for (auto iter = grid.begin(); iter != grid.end(); ++iter, ++i) {
+    *iter = data[i];
+  }
+  
+  return grid;
+}
+
+} // end of namespace GridContainer
+} // end of namespace Euclid

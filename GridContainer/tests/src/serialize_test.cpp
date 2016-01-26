@@ -7,9 +7,20 @@
 #include <sstream>
 #include <boost/test/unit_test.hpp>
 #include <boost/test/test_tools.hpp>
+#include "ElementsKernel/Temporary.h"
 #include "GridContainer/serialize.h"
 #include "serialization/DefaultConstructibleClass.h"
 #include "serialization/NonDefaultConstructibleClass.h"
+#include "XYDataset/XYDataset.h"
+
+namespace std {
+
+std::ostream& operator<<(std::ostream& stream, const Euclid::XYDataset::QualifiedName& name) {
+  stream << name.qualifiedName();
+  return stream;
+}
+
+}
 
 //-----------------------------------------------------------------------------
 
@@ -158,6 +169,79 @@ BOOST_AUTO_TEST_CASE(GridContainerSerializationNonDefaultConstructibleCells) {
     ++result_iter;
     ++grid_iter;
   }
+  
+}
+
+//-----------------------------------------------------------------------------
+// Test FITS serialization
+//-----------------------------------------------------------------------------
+    
+BOOST_AUTO_TEST_CASE(GridContainerSerializationFits) {
+  
+  using namespace Euclid::GridContainer;
+  using namespace Euclid::XYDataset;
+  typedef GridContainer<std::vector<int>, std::string> SmallGridContainerType;
+  typedef GridContainer<std::vector<double>, int, double, QualifiedName> BigGridContainerType;
+  
+  // Given
+  std::string name11 = "StringAxis";
+  std::vector<std::string> knots11 {"one", "two", "three"};
+  Euclid::GridContainer::GridAxis<std::string> axis11 {name11, knots11};
+  SmallGridContainerType grid1 {axis11};
+  int i = 0;
+  for (auto& cell : grid1) {
+    cell = i;
+    ++i;
+  }
+  std::string name21 = "IntAxis";
+  std::vector<int> knots21 {1, 2, 3};
+  Euclid::GridContainer::GridAxis<int> axis21 {name21, knots21};
+  std::string name22 = "DoubleAxis";
+  std::vector<double> knots22 {0.1, 0.2, 0.3};
+  Euclid::GridContainer::GridAxis<double> axis22 {name22, knots22};
+  std::string name23 = "QualifiedNameAxis";
+  std::vector<QualifiedName> knots23 {{"One"}, {"Two"}, {"Three"}};
+  Euclid::GridContainer::GridAxis<QualifiedName> axis23 {name23, knots23};
+  BigGridContainerType grid2 {axis21, axis22, axis23};
+  double d = 0.;
+  for (auto& cell : grid2) {
+    cell = d;
+    d += 0.1;
+  }
+  
+  // When
+  Elements::TempDir dir {};
+  auto fits_file = dir.path() / "test.fits";
+  gridFitsExport(fits_file, "first", grid1);
+  gridFitsExport(fits_file, "second", grid2);
+  auto result1 = gridFitsImport<SmallGridContainerType>(fits_file, 1);
+  auto result2 = gridFitsImport<BigGridContainerType>(fits_file, 3);
+  
+  // Then
+  BOOST_CHECK_EQUAL(result1.axisNumber(), grid1.axisNumber());
+  BOOST_CHECK_EQUAL(result1.getAxis<0>().name(), name11);
+  BOOST_CHECK_EQUAL_COLLECTIONS(
+      result1.getAxis<0>().begin(), result1.getAxis<0>().end(),
+      knots11.begin(), knots11.end());
+  BOOST_CHECK_EQUAL_COLLECTIONS(
+      result1.begin(), result1.end(),
+      grid1.begin(), grid1.end());
+  BOOST_CHECK_EQUAL(result2.axisNumber(), grid2.axisNumber());
+  BOOST_CHECK_EQUAL(result2.getAxis<0>().name(), name21);
+  BOOST_CHECK_EQUAL_COLLECTIONS(
+      result2.getAxis<0>().begin(), result2.getAxis<0>().end(),
+      knots21.begin(), knots21.end());
+  BOOST_CHECK_EQUAL(result2.getAxis<1>().name(), name22);
+  BOOST_CHECK_EQUAL_COLLECTIONS(
+      result2.getAxis<1>().begin(), result2.getAxis<1>().end(),
+      knots22.begin(), knots22.end());
+  BOOST_CHECK_EQUAL(result2.getAxis<2>().name(), name23);
+  BOOST_CHECK_EQUAL_COLLECTIONS(
+      result2.getAxis<2>().begin(), result2.getAxis<2>().end(),
+      knots23.begin(), knots23.end());
+  BOOST_CHECK_EQUAL_COLLECTIONS(
+      result2.begin(), result2.end(),
+      grid2.begin(), grid2.end());
   
 }
 

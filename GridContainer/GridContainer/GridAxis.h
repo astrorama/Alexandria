@@ -32,6 +32,9 @@ class GridAxis {
 
 public:
   
+  /// The type of the axis values
+  typedef T data_type;
+  
   /// The iterator type of the GridAxis
   typedef typename std::vector<T>::const_iterator const_iterator;
   

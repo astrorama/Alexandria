@@ -11,6 +11,7 @@
 #include <memory>
 #include <boost/archive/binary_iarchive.hpp>
 #include <boost/archive/binary_oarchive.hpp>
+#include <boost/filesystem.hpp>
 #include "GridContainer/GridContainer.h"
 #include "GridContainer/serialization/GridContainer.h"
 
@@ -71,8 +72,52 @@ GridContainer<GridCellManager, AxesTypes...> gridBinaryImport(std::istream& in) 
   return std::move(*matr_ptr);
 }
 
+/**
+ * @brief Exports a Grid as a FITS file
+ * @details
+ * The grid cell values are stored in an array HDU. Grids with cell types which
+ * are not one of the default FITS array types are not supported (compilation
+ * will fail). The name of this HDU is the name given with the parameter hdu_name.
+ * 
+ * The array HDU is followed with one binary table HDU per grid axis, where the
+ * axes knot values are stored. The names of these HDUs are following the
+ * format: <AXISNAME>_<hdu_name>, where the hdu_name is the one of the array HDU.
+ * Note that the axes knots must be of one of the default FITS binary table types.
+ * This behavior can be extended by specializing the GridAxisValueFitsHelper
+ * template (this is already done for the XYDataset::QualifiedName).
+ * 
+ * If the FITS file does not already exist, this method will create it. If it
+ * exists, the grid related HDUs will be appended to the file. Note that if the
+ * FITS file is being created, the primary HDU is left empty and the array HDU
+ * with the grid data is the first extension.
+ * 
+ * @param filename The FITS file to store the grid
+ * @param hdu_name The name of the array HDU
+ * @param grid The grid to store
+ */
+template<typename GridCellManager, typename... AxesTypes>
+void gridFitsExport(const boost::filesystem::path& filename,
+                    const std::string& hdu_name,
+                    const GridContainer<GridCellManager, AxesTypes...>& grid);
+
+/**
+ * @brief Imports a Grid from a FITS file
+ * @details
+ * The FITS file must follow the format as described in the gridFitsExport()
+ * documentation. The given HDU index is the index of the array HDU with the
+ * grid data.
+ * 
+ * @param filename The FITS file containing the grid
+ * @param hdu_index The index of the array HDU with the grid data
+ * @return The grid
+ */
+template<typename GridType>
+GridType gridFitsImport(const boost::filesystem::path& filename, int hdu_index);
+
 } // end of namespace GridContainer
 } // end of namespace Euclid
+
+#include "_impl/FitsSerialize.icpp"
 
 #endif	/* GRIDCONTAINER_SERIALIZE_H */
 
