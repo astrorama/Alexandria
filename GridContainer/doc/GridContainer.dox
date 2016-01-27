@@ -550,8 +550,10 @@ the grids can work *out-of-the-box*:
 \code{.cpp}
   stringstream stream {};
   gridBinaryExport(stream, grid);
-  auto stream_grid = gridBinaryImport<vector<int>, int, double, string>(stream);
+  auto stream_grid = gridBinaryImport<GridType>(stream);
 \endcode
+
+where GridType is the type of the variable grid.
 
 To be more flexible, the GridContainer module provides GridContainer
 serialization to generic streams. To make the example more readable a string
@@ -627,23 +629,6 @@ generic) definition can be used:
 template <typename GridCellManager>
 using MyGridContainer = GridContainer<GridCellManager, int, double, string>;
 \endcode
-
-\subsection binaryimportspecialization gridBinaryImport() specialization
-
-If serialization is to be used, it is recommended to wrap the gridBinaryImport()
-method with a more specialized templated function. This is because this method
-cannot infer the GridContainer template parameters (there is no grid argument),
-with result lengthy calls. The following code can simplify that:
-
-\code{.cpp}
-template <typename T>
-MyGridContainer<T> myBinaryImport(istream& in) {
-  return gridBinaryImport<vector<T>, int, double, string>(in);
-}
-\endcode
-
-Note that, on the contrary, the gridBinaryExport() method can infer all the
-template parameters from its arguments, so no specialization is required.
 
 \subsection specializationuse Using the specialized types
 

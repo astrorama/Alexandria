@@ -55,18 +55,17 @@ void gridBinaryExport(std::ostream& out, const GridContainer<GridCellManager, Ax
  * of this method will fail. Non serializable grids of this type can still 
  * be used if there is no call to this method.
  * 
- * @tparam GridCellManager the type of the cell manager of the GridContainer
- * @tparam AxesTypes the types of the GridContainer axes knot values
+ * @tparam GridType the type of the grid to read from the stream
  * @param in The stream to read the grid from
  * @return The grid red from the stream
  */
-template<typename GridCellManager, typename... AxesTypes>
-GridContainer<GridCellManager, AxesTypes...> gridBinaryImport(std::istream& in) {
+template<typename GridType>
+GridType gridBinaryImport(std::istream& in) {
   boost::archive::binary_iarchive bia {in};
   // Do NOT delete manually this pointer. It is wrapped with a unique_ptr later.
-  GridContainer<GridCellManager, AxesTypes...>* ptr;
+  GridType* ptr;
   bia >> ptr;
-  std::unique_ptr<GridContainer<GridCellManager, AxesTypes...>> matr_ptr {ptr};
+  std::unique_ptr<GridType> matr_ptr {ptr};
   // We move out to the result the grid pointed by the pointer. The unique_ptr
   // will delete the (now empty) pointed object
   return std::move(*matr_ptr);

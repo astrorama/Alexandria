@@ -62,7 +62,7 @@ BOOST_AUTO_TEST_CASE(GridContainerSerializationDefaultConstructibleCells) {
   // When
   std::stringstream stream {};
   Euclid::GridContainer::gridBinaryExport(stream, grid);
-  GridContainerType result = Euclid::GridContainer::gridBinaryImport<std::vector<DCC>, double, DCC, NDCC>(stream);
+  GridContainerType result = Euclid::GridContainer::gridBinaryImport<GridContainerType>(stream);
   
   // Then
   BOOST_CHECK_EQUAL(result.axisNumber(), 3u);
@@ -135,7 +135,7 @@ BOOST_AUTO_TEST_CASE(GridContainerSerializationNonDefaultConstructibleCells) {
   // When
   std::stringstream stream {};
   Euclid::GridContainer::gridBinaryExport(stream, grid);
-  GridContainerType result = Euclid::GridContainer::gridBinaryImport<std::vector<NDCC>, double, DCC, NDCC>(stream);
+  GridContainerType result = Euclid::GridContainer::gridBinaryImport<GridContainerType>(stream);
   
   // Then
   BOOST_CHECK_EQUAL(result.axisNumber(), 3u);
