@@ -85,7 +85,7 @@ double CosmologicalDistances::dimensionlessComovingVolumeElement(double z,
     const CosmologicalParameters& parameters) const{
   double D_H = hubbleDistance(parameters);
   double E = hubbleParameter(z,parameters);
-  double D_M = comovingDistance(z,parameters);
+  double D_M = transverseComovingDistance(z,parameters);
   return D_M*D_M/(E*D_H*D_H);
 }
 
