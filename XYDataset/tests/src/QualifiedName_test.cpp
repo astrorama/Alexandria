@@ -87,6 +87,7 @@ BOOST_AUTO_TEST_CASE(belongsInGroup_test) {
   BOOST_CHECK(!qualified_name.belongsInGroup(wrong_group_1));
   BOOST_CHECK(!qualified_name.belongsInGroup(wrong_group_2));
   BOOST_CHECK(!qualified_name.belongsInGroup(wrong_group_3));
+  BOOST_CHECK(!qualified_name.belongsInGroup(qualified_name));
   
 }
 
