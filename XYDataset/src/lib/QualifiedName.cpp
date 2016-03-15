@@ -4,6 +4,7 @@
  * @author Nikolaos Apostolakos
  */
 
+#include <algorithm>
 #include <boost/algorithm/string.hpp>
 #include <ElementsKernel/Exception.h>
 #include "XYDataset/QualifiedName.h"
@@ -53,6 +54,16 @@ const std::string& QualifiedName::datasetName() const {
 
 const std::string& QualifiedName::qualifiedName() const {
   return m_qualified_name;
+}
+
+bool QualifiedName::belongsInGroup(const QualifiedName& group) const {
+  if (group.m_groups.size()+1 > this->m_groups.size()) {
+    return false;
+  }
+  bool group_check = std::equal(group.m_groups.begin(), group.m_groups.end(), this->m_groups.begin());
+  return group_check 
+        ? group.m_dataset_name == this->m_groups.at(group.m_groups.size())
+        : false;
 }
 
 size_t QualifiedName::hash() const {
