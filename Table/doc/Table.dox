@@ -299,6 +299,21 @@ Output:
 Sum of all Y values is 3.07768
 \endcode
 
+If you want to avoid using the `boost::get` method (and avoid its limitation of
+having to use the exact type of the column) you can use the `boost::apply_visitor`
+with the Table::CastVisitor class. To use the Table::CastVisitor class, you have
+to give as its template parameter the type you want to cast the cell (it has to
+be one of the Row::cell_type types):
+
+\code{.cpp}
+for (auto& row :table) {
+  string y_str = boost::apply_visitor(CastVisitor<string>{}, row["Y"]);
+  cout << "Y as string " << y_str << "\n";
+}
+\endcode
+
+Note that the Table::CastVisitor supports to and from string conversions, but it
+does not allow for down-casting cells with numerical values.
 
 \section tableio Table I/O
 

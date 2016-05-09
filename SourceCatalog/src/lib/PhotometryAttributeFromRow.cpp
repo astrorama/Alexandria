@@ -10,6 +10,7 @@
 #include "SourceCatalog/SourceAttributes/PhotometryAttributeFromRow.h"
 #include "ElementsKernel/Exception.h"
 #include "ElementsKernel/Real.h"
+#include "Table/CastVisitor.h"
 
 using namespace std;
 
@@ -29,11 +30,13 @@ PhotometryAttributeFromRow::PhotometryAttributeFromRow(
     flux_column_index_ptr = column_info_ptr->find(filter_name_pair.second.first);
     error_column_index_ptr = column_info_ptr->find(filter_name_pair.second.second);
 
-    if (flux_column_index_ptr == nullptr || type_index(typeid(double)) != column_info_ptr->getType(*(flux_column_index_ptr)) ) {
-      throw Elements::Exception() << "Column info does not have the expected flux column of double type";
+    if (flux_column_index_ptr == nullptr) {
+      throw Elements::Exception() << "Column info does not have the flux column "
+                                  << filter_name_pair.second.first;
     }
-    if (error_column_index_ptr == nullptr || type_index(typeid(double)) != column_info_ptr->getType(*(error_column_index_ptr)) ) {
-      throw Elements::Exception() << "Column info does not have the expected flux column of double type";
+    if (error_column_index_ptr == nullptr) {
+      throw Elements::Exception() << "Column info does not have the flux error column "
+                                  << filter_name_pair.second.second;
     }
     m_table_index_vector.push_back(make_pair(*(flux_column_index_ptr), *(error_column_index_ptr)));
   }
@@ -59,8 +62,8 @@ unique_ptr<Attribute> PhotometryAttributeFromRow::createAttribute(
     Euclid::Table::Row::cell_type flux_cell = row[filter_index_pair.first];
     Euclid::Table::Row::cell_type error_cell = row[filter_index_pair.second];
 
-    double flux = boost::get<double>(flux_cell);
-    double error = boost::get<double>(error_cell);
+    double flux = boost::apply_visitor(Table::CastVisitor<double>{}, flux_cell);
+    double error = boost::apply_visitor(Table::CastVisitor<double>{}, error_cell);
     bool missing_data = Elements::isEqual(flux, m_missing_photometry_flag);
     bool upper_limit = error < 0;
     error = std::abs(error);
