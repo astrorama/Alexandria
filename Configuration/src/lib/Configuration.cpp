@@ -28,7 +28,7 @@ Configuration::Configuration(long manager_id) : m_manager_id{manager_id} {
 }
 
 std::map<std::string, Configuration::OptionDescriptionList> Configuration::getProgramOptions() {
-  return {};
+  return std::map<std::string, Configuration::OptionDescriptionList>{};
 }
 
 void Configuration::preInitialize(const UserValues&) { }

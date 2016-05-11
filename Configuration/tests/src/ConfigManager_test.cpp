@@ -132,7 +132,7 @@ BOOST_FIXTURE_TEST_CASE(registerConfiguration, ConfigManager_fixture) {
   
   // When
   config_manager.closeRegistration();
-  config_manager.initialize({});
+  config_manager.initialize(std::map<std::string, po::variable_value>{});
   
   // Then
   BOOST_CHECK_NO_THROW(config_manager.getConfiguration<Config1>());
@@ -194,7 +194,7 @@ BOOST_FIXTURE_TEST_CASE(initialize, ConfigManager_fixture) {
   
   // When
   config_manager.closeRegistration();
-  config_manager.initialize({});
+  config_manager.initialize(std::map<std::string, po::variable_value>{});
   auto& conf1 = config_manager.getConfiguration<Config1>();
   auto& conf2 = config_manager.getConfiguration<Config2>();
   auto& conf3 = config_manager.getConfiguration<Config3>();
@@ -239,7 +239,7 @@ BOOST_FIXTURE_TEST_CASE(getConfigurationNotRegistered, ConfigManager_fixture) {
   
   // When
   config_manager.closeRegistration();
-  config_manager.initialize({});
+  config_manager.initialize(std::map<std::string, po::variable_value>{});
   
   // Then
   BOOST_CHECK_THROW(config_manager.getConfiguration<Config2>(), Elements::Exception);
