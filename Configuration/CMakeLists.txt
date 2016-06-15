@@ -71,6 +71,9 @@ elements_add_unit_test(PhotometryCatalogConfig_test tests/src/PhotometryCatalogC
 elements_add_unit_test(PhotometricBandMappingConfig_test tests/src/PhotometricBandMappingConfig_test.cpp 
                      LINK_LIBRARIES Configuration
                      TYPE Boost)
+elements_add_unit_test(ProgramOptionsHelper_test tests/src/ProgramOptionsHelper_test.cpp 
+                     LINK_LIBRARIES Configuration
+                     TYPE Boost)
 
 #===============================================================================
 # Declare the Python programs here
