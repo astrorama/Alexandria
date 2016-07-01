@@ -14,7 +14,7 @@
 #include <type_traits>
 #include "GridContainer/GridCellManagerTraits.h"
 #include "GridContainer/GridIndexHelper.h"
-#include "_impl/GridConstructionHelper.h"
+#include "GridContainer/_impl/GridConstructionHelper.h"
 
 namespace Euclid {
 namespace GridContainer {

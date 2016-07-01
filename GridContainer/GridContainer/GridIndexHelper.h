@@ -10,7 +10,7 @@
 #include <vector>
 #include <tuple>
 #include "GridContainer/GridAxis.h"
-#include "_impl/GridConstructionHelper.h"
+#include "GridContainer/_impl/GridConstructionHelper.h"
 
 namespace Euclid {
 namespace GridContainer {
