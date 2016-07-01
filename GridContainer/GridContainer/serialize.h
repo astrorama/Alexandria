@@ -116,7 +116,7 @@ GridType gridFitsImport(const boost::filesystem::path& filename, int hdu_index);
 } // end of namespace GridContainer
 } // end of namespace Euclid
 
-#include "_impl/FitsSerialize.icpp"
+#include "GridContainer/_impl/FitsSerialize.icpp"
 
 #endif	/* GRIDCONTAINER_SERIALIZE_H */
 
