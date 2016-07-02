@@ -10,6 +10,7 @@ using boost::regex;
 using boost::regex_match;
 #include <boost/algorithm/string.hpp>
 #include <boost/lexical_cast.hpp>
+#include <boost/tokenizer.hpp>
 #include "ElementsKernel/Exception.h"
 #include "AsciiReaderHelper.h"
 
@@ -109,6 +110,16 @@ std::type_index keywordToType(const std::string& keyword) {
     return typeid(double);
   } else if (keyword == "string") {
     return typeid(std::string);
+  } else if (keyword == "[bool]" || keyword == "[boolean]") {
+    return typeid(std::vector<bool>);
+  } else if (keyword == "[int]" || keyword == "[int32]") {
+    return typeid(std::vector<int32_t>);
+  } else if (keyword == "[long]" || keyword == "[int64]") {
+    return typeid(std::vector<int64_t>);
+  } else if (keyword == "[float]") {
+    return typeid(std::vector<float>);
+  } else if (keyword == "[double]") {
+    return typeid(std::vector<double>);
   }
   throw Elements::Exception() << "Unknown column type keyword " << keyword;
 }
@@ -165,6 +176,21 @@ std::vector<std::type_index> autoDetectColumnTypes(std::istream& in,
   return types;
 }
 
+namespace {
+
+template <typename T>
+std::vector<T> convertStringToVector(const std::string& str) {
+  std::vector<T> result {};
+  boost::char_separator<char> sep {","};
+  boost::tokenizer< boost::char_separator<char> > tok {str, sep};
+  for (auto& s : tok) {
+    result.push_back(boost::get<T>(convertToCellType(s, typeid(T))));
+  }
+  return result;
+}
+
+}
+
 Row::cell_type convertToCellType(const std::string& value, std::type_index type) {
   try {
     if (type == typeid(bool)) {
@@ -184,6 +210,16 @@ Row::cell_type convertToCellType(const std::string& value, std::type_index type)
       return Row::cell_type {boost::lexical_cast<double>(value)};
     } else if (type == typeid(std::string)) {
       return Row::cell_type {boost::lexical_cast<std::string>(value)};
+    } else if (type == typeid(std::vector<bool>)) {
+      return Row::cell_type {convertStringToVector<bool>(value)};
+    } else if (type == typeid(std::vector<int32_t>)) {
+      return Row::cell_type {convertStringToVector<int32_t>(value)};
+    } else if (type == typeid(std::vector<int64_t>)) {
+      return Row::cell_type {convertStringToVector<int64_t>(value)};
+    } else if (type == typeid(std::vector<float>)) {
+      return Row::cell_type {convertStringToVector<float>(value)};
+    } else if (type == typeid(std::vector<double>)) {
+      return Row::cell_type {convertStringToVector<double>(value)};
     }
   } catch( boost::bad_lexical_cast const& ) {
     throw Elements::Exception() << "Cannot convert " << value << " to " << type.name();

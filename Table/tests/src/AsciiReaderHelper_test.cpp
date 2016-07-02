@@ -43,15 +43,15 @@ struct AsciiReaderHelper_Fixture {
   };
   
   std::string all_types {
-    "# Bool1 Bool2   Int1 Int2  Long1 Long2 Float Double String\n"
+    "# Bool1 Bool2   Int1 Int2  Long1 Long2 Float Double String DoubleVector\n"
     "# Dummy line\n"
-    "# bool #boolean int# int32 long  int64 float double string #\n"
+    "# bool #boolean int# int32 long  int64 float double string [double]#\n"
     "# Trying to confuse with comments\n"
-    "  true  t       1    2     3     4     5.    6.     7\n"
-    "  yes   y       8    9     10    11    1.2   1.3    14\n"
-    "  1     false   15   16    17    18    1.9   2.0    21\n"
-    "  f     no      22   23    24    25    2.6   2.7    28\n"
-    "  n     0       29   30    31    32    3.3   3.4    35\n"
+    "  true  t       1    2     3     4     5.    6.     7      1.1,1.2,1.3\n"
+    "  yes   y       8    9     10    11    1.2   1.3    14     2.1,2.2,2.3,2.4\n"
+    "  1     false   15   16    17    18    1.9   2.0    21     3.1,3.2,3.3\n"
+    "  f     no      22   23    24    25    2.6   2.7    28     4.1,4.2\n"
+    "  n     0       29   30    31    32    3.3   3.4    35     5.1,5.2\n"
   };
   
   std::string invalid_type {
@@ -207,10 +207,10 @@ BOOST_FIXTURE_TEST_CASE(autoDetectColumnTypesSuccess, AsciiReaderHelper_Fixture)
   std::stringstream stream {all_types};
   
   // When
-  auto types = Euclid::Table::autoDetectColumnTypes(stream, "#", 9);
+  auto types = Euclid::Table::autoDetectColumnTypes(stream, "#", 10);
   
   // Then
-  BOOST_CHECK_EQUAL(types.size(), 9u);
+  BOOST_CHECK_EQUAL(types.size(), 10u);
   BOOST_CHECK(types[0] == typeid(bool));
   BOOST_CHECK(types[1] == typeid(bool));
   BOOST_CHECK(types[2] == typeid(int32_t));
@@ -220,6 +220,7 @@ BOOST_FIXTURE_TEST_CASE(autoDetectColumnTypesSuccess, AsciiReaderHelper_Fixture)
   BOOST_CHECK(types[6] == typeid(float));
   BOOST_CHECK(types[7] == typeid(double));
   BOOST_CHECK(types[8] == typeid(std::string));
+  BOOST_CHECK(types[9] == typeid(std::vector<double>));
   
 }
 

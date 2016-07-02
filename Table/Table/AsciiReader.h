@@ -61,9 +61,16 @@ public:
    *   - long, int64 : A 64 bit integer
    *   - float : Single (32 bit) precision floating point
    *   - double : Double (64 bit) precision floating point
-   *   - string : String without whitespaces
+   *   - [string] : String without whitespaces
+   *   - [bool], [boolean] : A vector of booleans
+   *   - [int], [int32] : A vector of 32 bit integers
+   *   - [long], [int64] : A vector of 64 bit integers
+   *   - [float] : Vector of single (32 bit) precision floating point
+   *   - [double] : Vector of double (64 bit) precision floating point
    *
    * If there is no such line all columns are treated as strings.
+   * 
+   * Note that the vector entries are values separated by "," (no spaces).
    *
    * @param column_types The types of the columns or empty for auto-detection (default)
    * @param column_names The names of the columns or empty for auto-detection (default)

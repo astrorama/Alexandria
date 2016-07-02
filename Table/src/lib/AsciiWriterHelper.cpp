@@ -25,6 +25,16 @@ std::string typeToKeyword(std::type_index type) {
     return "double";
   } if (type == typeid(std::string)) {
     return "string";
+  } if (type == typeid(std::vector<bool>)) {
+    return "[bool]";
+  } if (type == typeid(std::vector<int32_t>)) {
+    return "[int]";
+  } if (type == typeid(std::vector<int64_t>)) {
+    return "[long]";
+  } if (type == typeid(std::vector<float>)) {
+    return "[float]";
+  } if (type == typeid(std::vector<double>)) {
+    return "[double]";
   }
   throw Elements::Exception() << "Conversion to string for type " << type.name()
                             << " is not supported";

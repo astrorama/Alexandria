@@ -58,10 +58,16 @@ public:
    *   - float for 32 bit floating point
    *   - double for 64 bit floating point
    *   - string for string
+   *   - [bool] for boolean vector
+   *   - [int] for 32 bit integer vector
+   *   - [long] for 64 bit integer vector
+   *   - [float] for 32 bit floating point vector
+   *   - [double] for 64 bit floating point vector
    *
    * An empty line follows these two lines and then one line is written for each
    * Row of the table, which contains the values of the row. The boolean values
-   * are represented with "1" (meaning true) and "0" meaning false.
+   * are represented with "1" (meaning true) and "0" meaning false. The vector
+   * values are separated by ",".
    *
    * All the alignment between the columns is done with space characters. The size
    * in characters of each column is calculated as the size of the longest column
