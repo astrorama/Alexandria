@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <sstream>
 #include <iomanip>
+#include <valarray>
 #include <boost/lexical_cast.hpp>
 #include <CCfits/CCfits>
 #include "FitsWriterHelper.h"
@@ -55,9 +56,22 @@ std::vector<std::string> getAsciiFormatList(const Table& table) {
     } else if (type == typeid(std::string)) {
       size_t width = maxWidth(table, column_index);
       format_list.push_back("A" + boost::lexical_cast<std::string>(width));
+    } else {
+      throw Elements::Exception() << "Unsupported column format for FITS ASCII table export: " << type.name();
     }
   }
   return format_list;
+}
+
+template <typename T>
+size_t vectorSize(const Table& table, size_t column_index) {
+  size_t size = boost::get<std::vector<T>>(table[0][column_index]).size();
+  for (const auto& row : table) {
+    if (boost::get<std::vector<T>>(row[column_index]).size() != size) {
+      throw Elements::Exception() << "Bitnary FITS table variable length vector columns are not supported";
+    }
+  }
+  return size;
 }
 
 std::vector<std::string> getBinaryFormatList(const Table& table) {
@@ -78,6 +92,23 @@ std::vector<std::string> getBinaryFormatList(const Table& table) {
     } else if (type == typeid(std::string)) {
       size_t width = maxWidth(table, column_index);
       format_list.push_back(boost::lexical_cast<std::string>(width) + "A");
+    } else if (type == typeid(std::vector<bool>)) {
+      size_t size = vectorSize<bool>(table, column_index);
+      format_list.push_back(boost::lexical_cast<std::string>(size) + "L");
+    } else if (type == typeid(std::vector<int32_t>)) {
+      size_t size = vectorSize<int32_t>(table, column_index);
+      format_list.push_back(boost::lexical_cast<std::string>(size) + "J");
+    } else if (type == typeid(std::vector<int64_t>)) {
+      size_t size = vectorSize<int64_t>(table, column_index);
+      format_list.push_back(boost::lexical_cast<std::string>(size) + "K");
+    } else if (type == typeid(std::vector<float>)) {
+      size_t size = vectorSize<float>(table, column_index);
+      format_list.push_back(boost::lexical_cast<std::string>(size) + "E");
+    } else if (type == typeid(std::vector<double>)) {
+      size_t size = vectorSize<double>(table, column_index);
+      format_list.push_back(boost::lexical_cast<std::string>(size) + "D");
+    } else {
+      throw Elements::Exception() << "Unsupported column format for FITS binary table export: " << type.name();
     }
   }
   return format_list;
@@ -90,6 +121,16 @@ std::vector<T> createColumnData(const Euclid::Table::Table& table, size_t column
     data.push_back(boost::get<T>(row[column_index]));
   }
   return data;
+}
+
+template <typename T>
+std::vector<std::valarray<T>> createVectorColumnData(const Euclid::Table::Table& table, size_t column_index) {
+  std::vector<std::valarray<T>> result {};
+  for (auto& row : table) {
+    const auto& vec = boost::get<std::vector<T>>(row[column_index]);
+    result.emplace_back(vec.data(), vec.size());
+  }
+  return result;
 }
 
 void populateColumn(const Table& table, size_t column_index, CCfits::Table* table_hdu) {
@@ -107,6 +148,16 @@ void populateColumn(const Table& table, size_t column_index, CCfits::Table* tabl
     table_hdu->column(column_index+1).write(createColumnData<double>(table, column_index), 1);
   } else if (type == typeid(std::string)) {
     table_hdu->column(column_index+1).write(createColumnData<std::string>(table, column_index), 1);
+  } else if (type == typeid(std::vector<int32_t>)) {
+    table_hdu->column(column_index+1).writeArrays(createVectorColumnData<int32_t>(table, column_index), 1);
+  } else if (type == typeid(std::vector<int64_t>)) {
+    table_hdu->column(column_index+1).writeArrays(createVectorColumnData<int64_t>(table, column_index), 1);
+  } else if (type == typeid(std::vector<float>)) {
+    table_hdu->column(column_index+1).writeArrays(createVectorColumnData<float>(table, column_index), 1);
+  } else if (type == typeid(std::vector<double>)) {
+    table_hdu->column(column_index+1).writeArrays(createVectorColumnData<double>(table, column_index), 1);
+  } else {
+    throw Elements::Exception() << "Cannot populate FITS column with data of type " << type.name();
   }
 }
 

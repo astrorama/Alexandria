@@ -74,6 +74,13 @@ public:
    * - float : E
    * - double : D
    * - std::string : wA, where w is the length required for the data of the column
+   * - vector<int32_t> : wJ, where w is the length of the vector
+   * - vector<int64_t> : wK, where w is the length of the vector
+   * - vector<float> : wE, where w is the length of the vector
+   * - vector<double> : wD, where w is the length of the vector
+   * 
+   * Note that, at the moment, only fixed length vector columns are supported
+   * and that there is no support for vector columns for ASCII FITS tables.
    *
    * @param fits The FITS object to add the table HDU
    * @param hdu_name The name of the HDU

@@ -80,7 +80,7 @@ public:
    * - Q (Array Descriptor 64-bit) : NOT SUPPORTED
    *
    * Note that repeat counts (which create arrays) in the binary table formats
-   * are not supported, with exception the "A" format, which is translated to
+   * are translated to vectors, with exception the "A" format, which is translated to
    * a string.
    *
    * @param hdu The HDU containing the table
