@@ -12,8 +12,31 @@
 #include <boost/regex.hpp>
 using boost::regex;
 using boost::regex_match;
+#include <boost/algorithm/string/join.hpp>
 #include "ElementsKernel/Exception.h"
 #include "Table/Row.h"
+
+namespace std {
+
+template <typename T>
+std::ostream& operator<< (std::ostream& s, const std::vector<T>& v) {
+  auto it = v.begin();
+  if (it != v.end()) {
+    s << *it;
+  }
+  while (++it != v.end()) {
+    s << ',' << *it;
+  }
+  return s;
+}
+
+template std::ostream& operator<< <double> (std::ostream& s, const std::vector<double>& v);
+template std::ostream& operator<< <float> (std::ostream& s, const std::vector<float>& v);
+template std::ostream& operator<< <std::int64_t> (std::ostream& s, const std::vector<std::int64_t>& v);
+template std::ostream& operator<< <std::int32_t> (std::ostream& s, const std::vector<std::int32_t>& v);
+template std::ostream& operator<< <bool> (std::ostream& s, const std::vector<bool>& v);
+
+}
 
 namespace Euclid {
 namespace Table {
