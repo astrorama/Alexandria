@@ -20,7 +20,17 @@ AsciiWriter::AsciiWriter(std::string comment) : m_comment{std::move(comment)} {
   }
 }
 
-void AsciiWriter::write(std::ostream& out, const Table& table, bool types) const {
+void AsciiWriter::write(std::ostream& out, const Table& table,
+        const std::vector<std::string>& comments, bool types) const {
+  
+  // Write the comments
+  if (!comments.empty()) {
+    for (auto& c : comments) {
+      out << m_comment << ' ' << c << '\n';
+    }
+    out << '\n';
+  }
+  
   auto column_lengths = calculateColumnLengths(table);
   auto column_info = table.getColumnInfo();
   // Write the column names

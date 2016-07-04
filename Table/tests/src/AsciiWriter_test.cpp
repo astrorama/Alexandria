@@ -95,8 +95,8 @@ BOOST_FIXTURE_TEST_CASE(writeNoTypes, AsciiWriter_Fixture) {
   Euclid::Table::AsciiWriter writer_double_slash {"//"};
   
   // When
-  writer_hash.write(stream_hash, table, false);
-  writer_double_slash.write(stream_double_slash, table, false);
+  writer_hash.write(stream_hash, table, {}, false);
+  writer_double_slash.write(stream_double_slash, table, {}, false);
   
   // Then
   BOOST_CHECK_EQUAL(stream_hash.str(),
@@ -108,6 +108,52 @@ BOOST_FIXTURE_TEST_CASE(writeNoTypes, AsciiWriter_Fixture) {
   );
   BOOST_CHECK_EQUAL(stream_double_slash.str(),
     "// Boolean ThisIsAVeryLongColumnName    Integer       D     F    DoubleVector\n"
+    "\n"
+    "         1                     Two-1          1     4.1     0         1.1,1.2\n"
+    "         0                     Two-2 1234567890 4.2e-15     0         2.1,2.2\n"
+    "         1                     Two-3        234     4.3     0 3.1,3.2,3.3,3.4\n"
+  );
+  
+}
+
+//-----------------------------------------------------------------------------
+// Test the write method with comments
+//-----------------------------------------------------------------------------
+
+BOOST_FIXTURE_TEST_CASE(writeComments, AsciiWriter_Fixture) {
+  
+  // Given
+  std::stringstream stream_hash {};
+  std::stringstream stream_double_slash {};
+  Euclid::Table::AsciiWriter writer_hash {};
+  Euclid::Table::AsciiWriter writer_double_slash {"//"};
+  std::vector<std::string> comments {
+    "First comment",
+    "Second comment"
+  };
+  
+  // When
+  writer_hash.write(stream_hash, table, comments);
+  writer_double_slash.write(stream_double_slash, table, comments);
+  
+  // Then
+  BOOST_CHECK_EQUAL(stream_hash.str(),
+    "# First comment\n"
+    "# Second comment\n"
+    "\n"
+    "# Boolean ThisIsAVeryLongColumnName    Integer       D     F    DoubleVector\n"
+    "#    bool                    string        int  double float        [double]\n"
+    "\n"
+    "        1                     Two-1          1     4.1     0         1.1,1.2\n"
+    "        0                     Two-2 1234567890 4.2e-15     0         2.1,2.2\n"
+    "        1                     Two-3        234     4.3     0 3.1,3.2,3.3,3.4\n"
+  );
+  BOOST_CHECK_EQUAL(stream_double_slash.str(),
+    "// First comment\n"
+    "// Second comment\n"
+    "\n"
+    "// Boolean ThisIsAVeryLongColumnName    Integer       D     F    DoubleVector\n"
+    "//    bool                    string        int  double float        [double]\n"
     "\n"
     "         1                     Two-1          1     4.1     0         1.1,1.2\n"
     "         0                     Two-2 1234567890 4.2e-15     0         2.1,2.2\n"
