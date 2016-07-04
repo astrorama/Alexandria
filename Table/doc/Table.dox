@@ -78,7 +78,8 @@ be used later to construct the Table. The Row constructor gets as parameters a
 list with its cell values and the shared pointer of the ColumnInfo object. Note
 that all the cells are of the type Row::cell_type, which is a boost::variant
 specialization allowing for the types  `bool`, `int32_t`, `int64_t`, `float`,
-`double` and `std::string`.
+`double`, `std::string`, `std::vector<bool>`, `std::vector<int32_t>`,
+`std::vector<int64_t>`, `std::vector<float>` and `std::vector<double>`.
 
 The following code is an example of how to construct a Row in a verbose and
 easy way to understand, by first creating a vector with the cell values. Note
@@ -112,6 +113,10 @@ gives some examples of types and literals, and can be used to avoid mistakes.
 | `float`       | `5.F` or `2E-15F` | Recommended `float` literal syntax                                   |
 | `double`      | `5.` or `2E-15`   | Recommended `double` literal syntax                                  |
 | `long double` | `5.L` or `2E-15L` | **do not use!**                                                      |
+
+For the same reason, when passing `vector` types to the Row::cell_type
+constructor, you should use the full constructor name and the initialization
+list, for example: `vector<double>{1.1, 2.2, 3.3}`.
 
 A more complicated and realistic Row creation example is the following, which
 creates some Row%s with the results of the `sin` and `cos` functions. Note that
@@ -250,6 +255,12 @@ sin 3.14159 1.22465e-16
 cos 3.14159 -1
 \endcode
 
+Note that the Table module defines the stream `<<` operator for the vector types
+which are allowed as cell values, so the above example will work even if a
+column is of a vector type. The convention used for converting the vector to
+string is to print all the values separated by the "," character (without any
+white spaces).
+
 Except of the iterators, the Table and Row classes provide also indexed access
 to their contents. The syntax is similar to the STL containers, but a range
 check does take place:
@@ -313,7 +324,14 @@ for (auto& row :table) {
 \endcode
 
 Note that the Table::CastVisitor supports to and from string conversions, but it
-does not allow for down-casting cells with numerical values.
+does not allow for down-casting cells with numerical values. Vector types can be
+converted to other vector types, as long as the type of their contents can be
+converted without down-casting. Finally, converting a scalar (single value)
+column to vector, will result to a vector with a single element. Be careful when
+you use the CastVisitor for vector types! If the type of the vector elements
+does not match the original one, you are going to make a copy of the full
+vector.
+
 
 \section tableio Table I/O
 
@@ -341,14 +359,22 @@ columns are named as `col1`, `col2`, etc (starting from 1). The types of the
 columns are extracted from the second such line, by using the following
 conventions:
 
-- bool, boolean : A boolean value as the following (case is ignored):
-                  - true,  t, yes, y, 1
-                  - false, f,  no, n, 0
-- int,  int32   : A 32 bit integer
-- long, int64   : A 64 bit integer
-- float         : Single (32 bit) precision floating point
-- double        : Double (64 bit) precision floating point
-- string        : String without whitespaces
+- bool, boolean     : A boolean value as the following (case is ignored):
+                      - true,  t, yes, y, 1
+                      - false, f,  no, n, 0
+- int,  int32       : A 32 bit integer
+- long, int64       : A 64 bit integer
+- float             : Single (32 bit) precision floating point
+- double            : Double (64 bit) precision floating point
+- string            : String without whitespaces
+- [bool], [boolean] : A vector of booleans
+- [int],  [int32]   : A vector of 32 bit integer
+- [long], [int64]   : A vector of 64 bit integer
+- [float]           : A vector of single (32 bit) precision floating point
+- [double]          : A vector of double (64 bit) precision floating point
+
+The vector columns should contain the values of the vector separated by the ","
+character, without any white spaces.
 
 If there is no line describing the types of the columns, all the types are
 assumed to be strings.
