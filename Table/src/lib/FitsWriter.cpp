@@ -13,7 +13,8 @@ namespace Table {
 
 FitsWriter::FitsWriter(Format format) : m_format{format} { }
 
-void FitsWriter::write(CCfits::FITS& fits, const std::string& hdu_name, const Table& table) const {
+void FitsWriter::write(CCfits::FITS& fits, const std::string& hdu_name, const Table& table,
+                       const std::vector<std::string>& comments) const {
   auto column_info = table.getColumnInfo();
   std::vector<std::string> column_name_list {};
   std::vector<std::string> column_unit_list {};
@@ -31,6 +32,11 @@ void FitsWriter::write(CCfits::FITS& fits, const std::string& hdu_name, const Ta
                                            column_format_list, column_unit_list, hdu_type);
   for (size_t column_index=0; column_index<column_info->size(); ++column_index) {
     populateColumn(table, column_index, table_hdu);
+  }
+  if (!comments.empty()) {
+    for (auto& c : comments) {
+      table_hdu->writeComment(c);
+    }
   }
 }
 

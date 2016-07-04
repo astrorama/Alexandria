@@ -85,8 +85,10 @@ public:
    * @param fits The FITS object to add the table HDU
    * @param hdu_name The name of the HDU
    * @param table The table to output
+   * @param the comments to add to the table HDU
    */
-  void write(CCfits::FITS& fits, const std::string& hdu_name, const Table& table) const;
+  void write(CCfits::FITS& fits, const std::string& hdu_name, const Table& table,
+             const std::vector<std::string>& comments={}) const;
 
 private:
   Format m_format;
