@@ -37,5 +37,11 @@ T& Configuration::getDependency() {
   return manager.getConfiguration<T>();
 }
 
+template <typename T>
+const T& Configuration::getDependency() const {
+  auto& manager = ConfigManager::getInstance(m_manager_id);
+  return manager.getConfiguration<T>();
+}
+
 } // Configuration namespace
 } // Euclid namespace
