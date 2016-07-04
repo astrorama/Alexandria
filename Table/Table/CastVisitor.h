@@ -208,6 +208,11 @@ public:
     }
     return result;
   }
+    
+  // If the types match exactly we avoid an expensive copying
+  const std::vector<VectorType>& operator() (const std::vector<VectorType>& from) const {
+    return from;
+  }
   
 };
 
