@@ -6,5 +6,9 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.8.5)
 find_package(ElementsProject)
 #---------------------------------------------------------------
 
+set(CXX_SUGGEST_OVERRIDE ON
+    CACHE STRING "Enable the -Wsuggest-override warning"
+    FORCE)
+
 # Declare project name and version
 elements_project(Alexandria 2.6 USE Elements 4.0)

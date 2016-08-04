@@ -65,11 +65,11 @@ struct AdaptativeIntegration_Fixture {
   public:
     ConstFunction(double a) : m_a { a } {};
 
-    double operator()(const double) const {
+    double operator()(const double) const override {
       return m_a;
     }
 
-    std::unique_ptr<Function> clone() const {
+    std::unique_ptr<Function> clone() const override {
       return std::unique_ptr<Function> { new ConstFunction(m_a) };
     }
   private:

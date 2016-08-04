@@ -30,25 +30,25 @@ namespace po = boost::program_options;
 class Config1 : public Configuration {
 public:
   Config1(long id) : Configuration(id) {}
-  std::map<std::string, OptionDescriptionList> getProgramOptions() {
+  std::map<std::string, OptionDescriptionList> getProgramOptions() override {
     return {{"Test",{{"par-1", po::value<int>(), ""}}}};
   }
   bool pre_initialized = false;
   bool initialized = false;
   bool post_initialized = false;
-  void preInitialize(const UserValues&) {
+  void preInitialize(const UserValues&) override {
     BOOST_CHECK(!pre_initialized);
     BOOST_CHECK(!initialized);
     BOOST_CHECK(!post_initialized);
     pre_initialized = true;
   }
-  void initialize(const UserValues&) {
+  void initialize(const UserValues&) override {
     BOOST_CHECK(pre_initialized);
     BOOST_CHECK(!initialized);
     BOOST_CHECK(!post_initialized);
     initialized = true;
   }
-  void postInitialize(const UserValues&) {
+  void postInitialize(const UserValues&) override {
     BOOST_CHECK(pre_initialized);
     BOOST_CHECK(initialized);
     BOOST_CHECK(!post_initialized);
@@ -59,25 +59,25 @@ public:
 class Config2 : public Configuration {
 public:
   Config2(long id) : Configuration(id) {}
-  std::map<std::string, OptionDescriptionList> getProgramOptions() {
+  std::map<std::string, OptionDescriptionList> getProgramOptions() override {
     return {{"Test",{{"par-2", po::value<int>(), ""}}}};
   }
   bool pre_initialized = false;
   bool initialized = false;
   bool post_initialized = false;
-  void preInitialize(const UserValues&) {
+  void preInitialize(const UserValues&) override {
     BOOST_CHECK(!pre_initialized);
     BOOST_CHECK(!initialized);
     BOOST_CHECK(!post_initialized);
     pre_initialized = true;
   }
-  void initialize(const UserValues&) {
+  void initialize(const UserValues&) override {
     BOOST_CHECK(pre_initialized);
     BOOST_CHECK(!initialized);
     BOOST_CHECK(!post_initialized);
     initialized = true;
   }
-  void postInitialize(const UserValues&) {
+  void postInitialize(const UserValues&) override {
     BOOST_CHECK(pre_initialized);
     BOOST_CHECK(initialized);
     BOOST_CHECK(!post_initialized);
@@ -91,19 +91,19 @@ public:
     declareDependency<Config1>();
     declareDependency<Config2>();
   }
-  std::map<std::string, OptionDescriptionList> getProgramOptions() {
+  std::map<std::string, OptionDescriptionList> getProgramOptions() override {
     return {{"Test",{{"par-3", po::value<int>(), ""}}}};
   }
   bool pre_initialized = false;
   bool initialized = false;
   bool post_initialized = false;
-  void preInitialize(const UserValues&) {
+  void preInitialize(const UserValues&) override {
     BOOST_CHECK(!pre_initialized);
     BOOST_CHECK(!initialized);
     BOOST_CHECK(!post_initialized);
     pre_initialized = true;
   }
-  void initialize(const UserValues&) {
+  void initialize(const UserValues&) override {
     BOOST_CHECK(getDependency<Config1>().getCurrentState() == State::INITIALIZED);
     BOOST_CHECK(getDependency<Config2>().getCurrentState() == State::INITIALIZED);
     BOOST_CHECK(pre_initialized);
@@ -111,7 +111,7 @@ public:
     BOOST_CHECK(!post_initialized);
     initialized = true;
   }
-  void postInitialize(const UserValues&) {
+  void postInitialize(const UserValues&) override {
     BOOST_CHECK(pre_initialized);
     BOOST_CHECK(initialized);
     BOOST_CHECK(!post_initialized);
