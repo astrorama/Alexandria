@@ -42,11 +42,10 @@ std::string typeToKeyword(std::type_index type) {
 
 std::vector<size_t> calculateColumnLengths(const Table& table) {
   std::vector<size_t> sizes {};
-  // We initialize the values to the required size for the column name and type
+  // We initialize the values to the required size for the column name
   auto column_info = table.getColumnInfo();
   for (size_t i=0; i<column_info->size(); ++i) {
-    sizes.push_back(std::max(column_info->getName(i).size(),
-                             typeToKeyword(column_info->getType(i)).size()));
+    sizes.push_back(column_info->getDescription(i).name.size());
   }
   for (auto row : table) {
     for (size_t i=0; i<sizes.size(); ++i) {

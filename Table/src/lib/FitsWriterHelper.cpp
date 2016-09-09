@@ -44,7 +44,7 @@ std::vector<std::string> getAsciiFormatList(const Table& table) {
   auto column_info = table.getColumnInfo();
   std::vector<std::string> format_list {};
   for (size_t column_index=0; column_index<column_info->size(); ++column_index) {
-    auto type = column_info->getType(column_index);
+    auto type = column_info->getDescription(column_index).type;
     if (type == typeid(bool)) {
       format_list.push_back("I1");
     } else if (type == typeid(int32_t) || type == typeid(int64_t)) {
@@ -78,7 +78,7 @@ std::vector<std::string> getBinaryFormatList(const Table& table) {
   auto column_info = table.getColumnInfo();
   std::vector<std::string> format_list {};
   for (size_t column_index=0; column_index<column_info->size(); ++column_index) {
-    auto type = column_info->getType(column_index);
+    auto type = column_info->getDescription(column_index).type;
     if (type == typeid(bool)) {
       format_list.push_back("L");
     } else if (type == typeid(int32_t)) {
@@ -134,7 +134,7 @@ std::vector<std::valarray<T>> createVectorColumnData(const Euclid::Table::Table&
 }
 
 void populateColumn(const Table& table, size_t column_index, CCfits::Table* table_hdu) {
-  auto type = table.getColumnInfo()->getType(column_index);
+  auto type = table.getColumnInfo()->getDescription(column_index).type;
   // CCfits indices start from 1
   if (type == typeid(bool)) {
     table_hdu->column(column_index+1).write(createColumnData<bool>(table, column_index), 1);

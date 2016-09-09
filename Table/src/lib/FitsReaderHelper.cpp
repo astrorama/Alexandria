@@ -85,6 +85,27 @@ std::vector<std::type_index> autoDetectColumnTypes(const CCfits::Table& table_hd
   return types;
 }
 
+std::vector<std::string> autoDetectColumnUnits(const CCfits::Table& table_hdu) {
+  std::vector<std::string> units {};
+  for (int i=1; i<=table_hdu.numCols(); ++i) {
+    units.push_back(table_hdu.column(i).unit());
+  }
+  return units;
+}
+
+std::vector<std::string> autoDetectColumnDescriptions(const CCfits::Table& table_hdu) {
+  std::vector<std::string> descriptions {};
+  for (int i=1; i<=table_hdu.numCols(); ++i) {
+    std::string desc;
+    auto key = table_hdu.keyWord().find("TDESC" + std::to_string(i));
+    if (key != table_hdu.keyWord().end()) {
+      key->second->value(desc);
+    }
+    descriptions.push_back(desc);
+  }
+  return descriptions;
+}
+
 template<typename T>
 std::vector<Row::cell_type> convertScalarColumn(CCfits::Column& column) {
   std::vector<T> data;

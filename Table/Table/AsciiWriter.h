@@ -49,10 +49,12 @@ public:
    * Writes a Table in the given stream
    * @details
    * The file starts with all the given comments, with one comment per line. The
-   * comments are followed by one empty line. After that, the first row written
-   * is a comment line containing the names of the columns, as described by the
-   * ColumnInfo of the table. The next (optional) row is a comment containing
-   * the types of the columns. The strings used are:
+   * comments are followed by one empty line.
+   * 
+   * The next rows are comment lines describing the columns of the table. They
+   * follow the format: "Column: NAME TYPE (UNIT) - DESCRIPTION", where the unit
+   * and description parts are presented only when they are not empty. The strings
+   * used as the column types are:
    *   - bool for boolean
    *   - int for 32 bit integer
    *   - long for 64 bit integer
@@ -64,8 +66,12 @@ public:
    *   - [long] for 64 bit integer vector
    *   - [float] for 32 bit floating point vector
    *   - [double] for 64 bit floating point vector
-   *
-   * An empty line follows these two lines and then one line is written for each
+   * 
+   * The column descriptions are following the same order as the columns of the
+   * table and are followed by one empty line.
+   * 
+   * After that, the first row written is a comment line containing the names of
+   * the columns, followed by one empty line. Then one line is written for each
    * Row of the table, which contains the values of the row. The boolean values
    * are represented with "1" (meaning true) and "0" meaning false. The vector
    * values are separated by ",".
@@ -77,9 +83,9 @@ public:
    * @param out The stream to output the table
    * @param table The table to output
    * @param comments The comments to add at the beginning of the file
-   * @param types A flag to write the types line or not
+   * @param show_column_info A flag to write the column info comments or not
    */
-  void write(std::ostream& out, const Table& table, const std::vector<std::string>& comments={}, bool types=true) const;
+  void write(std::ostream& out, const Table& table, const std::vector<std::string>& comments={}, bool show_column_info=true) const;
 
 private:
   std::string m_comment;

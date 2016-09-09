@@ -51,7 +51,7 @@ Row::Row(std::vector<cell_type> values, std::shared_ptr<ColumnInfo> column_info)
                               << " instead of " << m_column_info->size();
   }
   for (std::size_t i=0; i<m_values.size(); ++i) {
-    if (std::type_index{m_values[i].type()} != column_info->getType(i)) {
+    if (std::type_index{m_values[i].type()} != column_info->getDescription(i).type) {
       throw Elements::Exception() << "Incompatible cell type";
     }
   }

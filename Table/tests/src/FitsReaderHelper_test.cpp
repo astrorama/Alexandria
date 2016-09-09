@@ -135,6 +135,80 @@ BOOST_FIXTURE_TEST_CASE(autoDetectColumnTypesBinaryUnsupportedTypes, FitsReaderH
 }
 
 //-----------------------------------------------------------------------------
+// Test the autoDetectColumnUnits method
+//-----------------------------------------------------------------------------
+ 
+BOOST_FIXTURE_TEST_CASE(autoDetectColumnUnits, FitsReaderHelper_Fixture) {
+  
+  // Given
+  std::vector<std::string> names {"First","Second","","Fourth"};
+  std::vector<std::string> types {"J","J","J","J"};
+  std::vector<std::string> units {"m","mag","pc",""};
+  CCfits::Table* table_hdu = fits->addTable("CheckNames", 0, names, types, units);
+  
+  // When
+  std::vector<std::string> result = Euclid::Table::autoDetectColumnUnits(*table_hdu);
+  
+  // Then
+  BOOST_CHECK_EQUAL(result.size(), 4);
+  BOOST_CHECK_EQUAL(result[0], "m");
+  BOOST_CHECK_EQUAL(result[1], "mag");
+  BOOST_CHECK_EQUAL(result[2], "pc");
+  BOOST_CHECK_EQUAL(result[3], "");
+  
+}
+
+//-----------------------------------------------------------------------------
+// Test the autoDetectColumnUnits method when TUNITn keywords are missing
+//-----------------------------------------------------------------------------
+ 
+BOOST_FIXTURE_TEST_CASE(autoDetectColumnUnitsMissingKeywords, FitsReaderHelper_Fixture) {
+  
+  // Given
+  std::vector<std::string> names {"First","Second","","Fourth"};
+  std::vector<std::string> types {"J","J","J","J"};
+  CCfits::Table* table_hdu = fits->addTable("CheckNames", 0, names, types);
+  
+  // When
+  std::vector<std::string> result = Euclid::Table::autoDetectColumnUnits(*table_hdu);
+  
+  // Then
+  BOOST_CHECK_EQUAL(result.size(), 4);
+  BOOST_CHECK_EQUAL(result[0], "");
+  BOOST_CHECK_EQUAL(result[1], "");
+  BOOST_CHECK_EQUAL(result[2], "");
+  BOOST_CHECK_EQUAL(result[3], "");
+  
+}
+
+//-----------------------------------------------------------------------------
+// Test the autoDetectColumnDescriptions method
+//-----------------------------------------------------------------------------
+ 
+BOOST_FIXTURE_TEST_CASE(autoDetectColumnDescriptions, FitsReaderHelper_Fixture) {
+  
+  // Given
+  std::vector<std::string> names {"First","Second","","Fourth"};
+  std::vector<std::string> types {"J","J","J","J"};
+  std::vector<std::string> units {"m","mag","pc",""};
+  CCfits::Table* table_hdu = fits->addTable("CheckNames", 0, names, types, units);
+  table_hdu->addKey("TDESC1", "Desc1", "");
+  table_hdu->addKey("TDESC2", "", "");
+  table_hdu->addKey("TDESC4", "Desc4", "");
+  
+  // When
+  std::vector<std::string> result = Euclid::Table::autoDetectColumnDescriptions(*table_hdu);
+  
+  // Then
+  BOOST_CHECK_EQUAL(result.size(), 4);
+  BOOST_CHECK_EQUAL(result[0], "Desc1");
+  BOOST_CHECK_EQUAL(result[1], "");
+  BOOST_CHECK_EQUAL(result[2], "");
+  BOOST_CHECK_EQUAL(result[3], "Desc4");
+  
+}
+
+//-----------------------------------------------------------------------------
 // Test the translateColumn method
 //-----------------------------------------------------------------------------
  

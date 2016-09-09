@@ -18,6 +18,7 @@ using boost::regex_match;
 #include "Table/AsciiReader.h"
 #include "ReaderHelper.h"
 #include "AsciiReaderHelper.h"
+#include "FitsReaderHelper.h"
 
 namespace Euclid {
 namespace Table {
@@ -52,27 +53,50 @@ AsciiReader::AsciiReader(std::vector<std::type_index> column_types,
 
 const Table AsciiReader::read(std::istream& in) const {
   size_t columns_number = countColumns(in, m_comment);
-  std::vector<std::string> names {};
-  if (m_column_names.empty()) {
-    names = autoDetectColumnNames(in, m_comment, columns_number);
-  } else if (m_column_names.size() != columns_number) {
-      throw Elements::Exception() << "Columns number in stream (" << columns_number
+  if (!m_column_names.empty() && m_column_names.size() != columns_number) {
+    throw Elements::Exception() << "Columns number in stream (" << columns_number
                                 << ") does not match the column names number ("
                                 << m_column_names.size() << ")";
-  } else {
-    names = m_column_names;
   }
-  std::vector<std::type_index> types {};
-  if (m_column_types.empty()) {
-    types = autoDetectColumnTypes(in, m_comment, columns_number);
-  } else if (m_column_types.size() != columns_number) {
-      throw Elements::Exception() << "Columns number in stream (" << columns_number
+  if (!m_column_types.empty() && m_column_types.size() != columns_number) {
+    throw Elements::Exception() << "Columns number in stream (" << columns_number
                                 << ") does not match the column types number ("
                                 << m_column_types.size() << ")";
-  } else {
-    types = m_column_types;
   }
-  auto column_info = createColumnInfo(names, types);
+  
+  auto auto_names = autoDetectColumnNames(in, m_comment, columns_number);
+  auto auto_desc = autoDetectColumnDescriptions(in, m_comment);
+  
+  std::vector<std::string> names {};
+  std::vector<std::type_index> types {};
+  std::vector<std::string> units {};
+  std::vector<std::string> descriptions {};
+  for (int i=0; i<columns_number; ++i) {
+    if (m_column_names.empty()) {
+      names.emplace_back(auto_names[i]);
+    } else {
+      names.emplace_back(m_column_names[i]);
+    }
+    auto info = auto_desc.find(auto_names[i]);
+    if (info != auto_desc.end()) {
+      if (m_column_types.empty()) {
+        types.emplace_back(info->second.type);
+      } else {
+        types.emplace_back(m_column_types[i]);
+      }
+      units.emplace_back(info->second.unit);
+      descriptions.emplace_back(info->second.description);
+    } else {
+      if (m_column_types.empty()) {
+        types.emplace_back(typeid(std::string));
+      } else {
+        types.emplace_back(m_column_types[i]);
+      }
+      units.emplace_back("");
+      descriptions.emplace_back("");
+    }
+  }
+  auto column_info = createColumnInfo(names, types, units, descriptions);
   
   std::vector<Row> row_list;
   regex column_separator {"\\s+"};

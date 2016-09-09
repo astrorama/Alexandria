@@ -10,10 +10,10 @@
 
 struct AsciiWriter_Fixture {
   std::vector<Euclid::Table::ColumnInfo::info_type> info_list {
-      Euclid::Table::ColumnInfo::info_type("Boolean", typeid(bool)),
+      Euclid::Table::ColumnInfo::info_type("Boolean", typeid(bool), "unit1", "Desc1"),
       Euclid::Table::ColumnInfo::info_type("ThisIsAVeryLongColumnName", typeid(std::string)),
-      Euclid::Table::ColumnInfo::info_type("Integer", typeid(int32_t)),
-      Euclid::Table::ColumnInfo::info_type("D", typeid(double)),
+      Euclid::Table::ColumnInfo::info_type("Integer", typeid(int32_t), "unit3"),
+      Euclid::Table::ColumnInfo::info_type("D", typeid(double), "", "Desc4"),
       Euclid::Table::ColumnInfo::info_type("F", typeid(float)),
       Euclid::Table::ColumnInfo::info_type("DoubleVector", typeid(std::vector<double>))
   };
@@ -64,29 +64,41 @@ BOOST_FIXTURE_TEST_CASE(write, AsciiWriter_Fixture) {
   
   // Then
   BOOST_CHECK_EQUAL(stream_hash.str(),
-    "# Boolean ThisIsAVeryLongColumnName    Integer       D     F    DoubleVector\n"
-    "#    bool                    string        int  double float        [double]\n"
+    "# Column: Boolean bool (unit1) - Desc1\n"
+    "# Column: ThisIsAVeryLongColumnName string\n"
+    "# Column: Integer int (unit3)\n"
+    "# Column: D double - Desc4\n"
+    "# Column: F float\n"
+    "# Column: DoubleVector [double]\n"
     "\n"
-    "        1                     Two-1          1     4.1     0         1.1,1.2\n"
-    "        0                     Two-2 1234567890 4.2e-15     0         2.1,2.2\n"
-    "        1                     Two-3        234     4.3     0 3.1,3.2,3.3,3.4\n"
+    "# Boolean ThisIsAVeryLongColumnName    Integer       D F    DoubleVector\n"
+    "\n"
+    "        1                     Two-1          1     4.1 0         1.1,1.2\n"
+    "        0                     Two-2 1234567890 4.2e-15 0         2.1,2.2\n"
+    "        1                     Two-3        234     4.3 0 3.1,3.2,3.3,3.4\n"
   );
   BOOST_CHECK_EQUAL(stream_double_slash.str(),
-    "// Boolean ThisIsAVeryLongColumnName    Integer       D     F    DoubleVector\n"
-    "//    bool                    string        int  double float        [double]\n"
+    "// Column: Boolean bool (unit1) - Desc1\n"
+    "// Column: ThisIsAVeryLongColumnName string\n"
+    "// Column: Integer int (unit3)\n"
+    "// Column: D double - Desc4\n"
+    "// Column: F float\n"
+    "// Column: DoubleVector [double]\n"
     "\n"
-    "         1                     Two-1          1     4.1     0         1.1,1.2\n"
-    "         0                     Two-2 1234567890 4.2e-15     0         2.1,2.2\n"
-    "         1                     Two-3        234     4.3     0 3.1,3.2,3.3,3.4\n"
+    "// Boolean ThisIsAVeryLongColumnName    Integer       D F    DoubleVector\n"
+    "\n"
+    "         1                     Two-1          1     4.1 0         1.1,1.2\n"
+    "         0                     Two-2 1234567890 4.2e-15 0         2.1,2.2\n"
+    "         1                     Two-3        234     4.3 0 3.1,3.2,3.3,3.4\n"
   );
   
 }
 
 //-----------------------------------------------------------------------------
-// Test the write method without types line
+// Test the write method without column info comments
 //-----------------------------------------------------------------------------
 
-BOOST_FIXTURE_TEST_CASE(writeNoTypes, AsciiWriter_Fixture) {
+BOOST_FIXTURE_TEST_CASE(writeNoColumnInfo, AsciiWriter_Fixture) {
   
   // Given
   std::stringstream stream_hash {};
@@ -100,18 +112,18 @@ BOOST_FIXTURE_TEST_CASE(writeNoTypes, AsciiWriter_Fixture) {
   
   // Then
   BOOST_CHECK_EQUAL(stream_hash.str(),
-    "# Boolean ThisIsAVeryLongColumnName    Integer       D     F    DoubleVector\n"
+    "# Boolean ThisIsAVeryLongColumnName    Integer       D F    DoubleVector\n"
     "\n"
-    "        1                     Two-1          1     4.1     0         1.1,1.2\n"
-    "        0                     Two-2 1234567890 4.2e-15     0         2.1,2.2\n"
-    "        1                     Two-3        234     4.3     0 3.1,3.2,3.3,3.4\n"
+    "        1                     Two-1          1     4.1 0         1.1,1.2\n"
+    "        0                     Two-2 1234567890 4.2e-15 0         2.1,2.2\n"
+    "        1                     Two-3        234     4.3 0 3.1,3.2,3.3,3.4\n"
   );
   BOOST_CHECK_EQUAL(stream_double_slash.str(),
-    "// Boolean ThisIsAVeryLongColumnName    Integer       D     F    DoubleVector\n"
+    "// Boolean ThisIsAVeryLongColumnName    Integer       D F    DoubleVector\n"
     "\n"
-    "         1                     Two-1          1     4.1     0         1.1,1.2\n"
-    "         0                     Two-2 1234567890 4.2e-15     0         2.1,2.2\n"
-    "         1                     Two-3        234     4.3     0 3.1,3.2,3.3,3.4\n"
+    "         1                     Two-1          1     4.1 0         1.1,1.2\n"
+    "         0                     Two-2 1234567890 4.2e-15 0         2.1,2.2\n"
+    "         1                     Two-3        234     4.3 0 3.1,3.2,3.3,3.4\n"
   );
   
 }
@@ -141,23 +153,35 @@ BOOST_FIXTURE_TEST_CASE(writeComments, AsciiWriter_Fixture) {
     "# First comment\n"
     "# Second comment\n"
     "\n"
-    "# Boolean ThisIsAVeryLongColumnName    Integer       D     F    DoubleVector\n"
-    "#    bool                    string        int  double float        [double]\n"
+    "# Column: Boolean bool (unit1) - Desc1\n"
+    "# Column: ThisIsAVeryLongColumnName string\n"
+    "# Column: Integer int (unit3)\n"
+    "# Column: D double - Desc4\n"
+    "# Column: F float\n"
+    "# Column: DoubleVector [double]\n"
     "\n"
-    "        1                     Two-1          1     4.1     0         1.1,1.2\n"
-    "        0                     Two-2 1234567890 4.2e-15     0         2.1,2.2\n"
-    "        1                     Two-3        234     4.3     0 3.1,3.2,3.3,3.4\n"
+    "# Boolean ThisIsAVeryLongColumnName    Integer       D F    DoubleVector\n"
+    "\n"
+    "        1                     Two-1          1     4.1 0         1.1,1.2\n"
+    "        0                     Two-2 1234567890 4.2e-15 0         2.1,2.2\n"
+    "        1                     Two-3        234     4.3 0 3.1,3.2,3.3,3.4\n"
   );
   BOOST_CHECK_EQUAL(stream_double_slash.str(),
     "// First comment\n"
     "// Second comment\n"
     "\n"
-    "// Boolean ThisIsAVeryLongColumnName    Integer       D     F    DoubleVector\n"
-    "//    bool                    string        int  double float        [double]\n"
+    "// Column: Boolean bool (unit1) - Desc1\n"
+    "// Column: ThisIsAVeryLongColumnName string\n"
+    "// Column: Integer int (unit3)\n"
+    "// Column: D double - Desc4\n"
+    "// Column: F float\n"
+    "// Column: DoubleVector [double]\n"
     "\n"
-    "         1                     Two-1          1     4.1     0         1.1,1.2\n"
-    "         0                     Two-2 1234567890 4.2e-15     0         2.1,2.2\n"
-    "         1                     Two-3        234     4.3     0 3.1,3.2,3.3,3.4\n"
+    "// Boolean ThisIsAVeryLongColumnName    Integer       D F    DoubleVector\n"
+    "\n"
+    "         1                     Two-1          1     4.1 0         1.1,1.2\n"
+    "         0                     Two-2 1234567890 4.2e-15 0         2.1,2.2\n"
+    "         1                     Two-3        234     4.3 0 3.1,3.2,3.3,3.4\n"
   );
   
 }

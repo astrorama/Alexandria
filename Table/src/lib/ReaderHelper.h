@@ -18,7 +18,9 @@ namespace Table {
 
 /// Creates a ColumnInfo object from the given names and types
 std::shared_ptr<ColumnInfo> createColumnInfo(const std::vector<std::string>& names,
-                                             const std::vector<std::type_index>& types);
+                                             const std::vector<std::type_index>& types,
+                                             const std::vector<std::string>& units,
+                                             const std::vector<std::string>& descriptions);
 
 }
 } // end of namespace Euclid

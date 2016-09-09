@@ -38,22 +38,13 @@ public:
    * @brief
    * Constructs a new AsciiReader with the given parameters
    * @details
-   * The reader will use the column types and names given as parameters and will
-   * ignore any configuration in the stream. To enable auto-detection of column
-   * names or types based on the comments of the stream, an empty vector should be
-   * passed as an argument (which is the default behavior).
-   *
-   * If auto-detection of column names is enabled, the names of the columns are
-   * extracted from the first non empty comment
-   * line, which contains the same number of whitespace separated words as the
-   * columns of the table. If there is no such comment line, the columns are
-   * named with an increasing counter as "col1", "col2", etc (starting from 1).
-   * Note that any comment characters are stripped out of the beginning and ending
-   * of the names.
-   *
-   * If auto-detection of column types is enabled, the types are extracted from
-   * the first comment line right after the column names comment, which has that
-   * many keywords as the number of columns. The available types are:
+   * The given file can contain in its comments (before the data starts) the
+   * descriptions of the columns. This is done by comment lines following the
+   * format: "Column: NAME TYPE (UNIT) - DESCRIPTION", where the type, unit and
+   * description parts are optional. Note that if the type is missing, the
+   * column is read as a string column.
+   * 
+   * The strings which can be used as the column types are:
    *   - bool, boolean : A boolean value as the following (case is ignored):
    *     - true, t, yes, y, 1
    *     - false, f, no, n, 0
@@ -61,17 +52,28 @@ public:
    *   - long, int64 : A 64 bit integer
    *   - float : Single (32 bit) precision floating point
    *   - double : Double (64 bit) precision floating point
-   *   - [string] : String without whitespaces
+   *   - string : String without whitespaces
    *   - [bool], [boolean] : A vector of booleans
    *   - [int], [int32] : A vector of 32 bit integers
    *   - [long], [int64] : A vector of 64 bit integers
    *   - [float] : Vector of single (32 bit) precision floating point
    *   - [double] : Vector of double (64 bit) precision floating point
-   *
-   * If there is no such line all columns are treated as strings.
+   * 
+   * The last non empty comment line (before the data) can repeat the column
+   * names and, if the column description comments are missing, is used for
+   * detecting the column names. If both the column descriptions and the line
+   * with the column names are missing, the columns  are named with an increasing
+   * counter as "col1", "col2", etc (starting from 1).
+   * 
+   * If the column names comment is present, the column descriptions can be missing
+   * and be given in any order.
+   * 
+   * The above automatic detection of the names and types of the columns can be
+   * overridden by used defined values, given as constructor parameters (empty
+   * vectors enable the automatic detection).
    * 
    * Note that the vector entries are values separated by "," (no spaces).
-   *
+   * 
    * @param column_types The types of the columns or empty for auto-detection (default)
    * @param column_names The names of the columns or empty for auto-detection (default)
    * @param comment The sequence of characters to mark the beginning of a comment (defaults to "#")

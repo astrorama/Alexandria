@@ -14,12 +14,12 @@
 
 struct FitsWriter_Fixture {
   std::vector<Euclid::Table::ColumnInfo::info_type> info_list {
-      Euclid::Table::ColumnInfo::info_type("Boolean", typeid(bool)),
-      Euclid::Table::ColumnInfo::info_type("Integer", typeid(int32_t)),
-      Euclid::Table::ColumnInfo::info_type("Long", typeid(int64_t)),
-      Euclid::Table::ColumnInfo::info_type("Float", typeid(float)),
-      Euclid::Table::ColumnInfo::info_type("Double", typeid(double)),
-      Euclid::Table::ColumnInfo::info_type("String", typeid(std::string))
+      Euclid::Table::ColumnInfo::info_type("Boolean", typeid(bool), "deg", "Desc1"),
+      Euclid::Table::ColumnInfo::info_type("Integer", typeid(int32_t), "mag", "Desc2"),
+      Euclid::Table::ColumnInfo::info_type("Long", typeid(int64_t), "", "Desc3"),
+      Euclid::Table::ColumnInfo::info_type("Float", typeid(float), "ph", "Desc4"),
+      Euclid::Table::ColumnInfo::info_type("Double", typeid(double), "s", "Desc5"),
+      Euclid::Table::ColumnInfo::info_type("String", typeid(std::string), "m", "Desc6")
   };
   std::shared_ptr<Euclid::Table::ColumnInfo> column_info {new Euclid::Table::ColumnInfo {info_list}};
   std::vector<Euclid::Table::Row::cell_type> values0 {true, 1, int64_t{123}, 0.F, 0., std::string{"first"}};
@@ -67,6 +67,21 @@ BOOST_FIXTURE_TEST_CASE(writeBinary, FitsWriter_Fixture) {
   BOOST_CHECK_EQUAL(result.column(4).format(), "E");
   BOOST_CHECK_EQUAL(result.column(5).format(), "D");
   BOOST_CHECK_EQUAL(result.column(6).format(), "6A");
+
+  BOOST_CHECK_EQUAL(result.column(1).unit(), "deg");
+  BOOST_CHECK_EQUAL(result.column(2).unit(), "mag");
+  BOOST_CHECK_EQUAL(result.column(3).unit(), "");
+  BOOST_CHECK_EQUAL(result.column(4).unit(), "ph");
+  BOOST_CHECK_EQUAL(result.column(5).unit(), "s");
+  BOOST_CHECK_EQUAL(result.column(6).unit(), "m");
+
+  std::string tmp;
+  BOOST_CHECK_EQUAL(result.keyWord("TDESC1").value(tmp), "Desc1");
+  BOOST_CHECK_EQUAL(result.keyWord("TDESC2").value(tmp), "Desc2");
+  BOOST_CHECK_EQUAL(result.keyWord("TDESC3").value(tmp), "Desc3");
+  BOOST_CHECK_EQUAL(result.keyWord("TDESC4").value(tmp), "Desc4");
+  BOOST_CHECK_EQUAL(result.keyWord("TDESC5").value(tmp), "Desc5");
+  BOOST_CHECK_EQUAL(result.keyWord("TDESC6").value(tmp), "Desc6");
 
   // When
   std::vector<bool> bool_data {};
@@ -148,6 +163,22 @@ BOOST_FIXTURE_TEST_CASE(writeAscii, FitsWriter_Fixture) {
   BOOST_CHECK_EQUAL(result.column(4).format(), "E12");
   BOOST_CHECK_EQUAL(result.column(5).format(), "E12");
   BOOST_CHECK_EQUAL(result.column(6).format(), "A6");
+
+  BOOST_CHECK_EQUAL(result.column(1).unit(), "deg");
+  BOOST_CHECK_EQUAL(result.column(2).unit(), "mag");
+  BOOST_CHECK_EQUAL(result.column(3).unit(), "");
+  BOOST_CHECK_EQUAL(result.column(4).unit(), "ph");
+  BOOST_CHECK_EQUAL(result.column(5).unit(), "s");
+  BOOST_CHECK_EQUAL(result.column(6).unit(), "m");
+
+  std::string tmp;
+  BOOST_CHECK_EQUAL(result.keyWord("TDESC1").value(tmp), "Desc1");
+  BOOST_CHECK_EQUAL(result.keyWord("TDESC2").value(tmp), "Desc2");
+  BOOST_CHECK_EQUAL(result.keyWord("TDESC3").value(tmp), "Desc3");
+  BOOST_CHECK_EQUAL(result.keyWord("TDESC4").value(tmp), "Desc4");
+  BOOST_CHECK_EQUAL(result.keyWord("TDESC5").value(tmp), "Desc5");
+  BOOST_CHECK_EQUAL(result.keyWord("TDESC6").value(tmp), "Desc6");
+
 
   // When
   std::vector<int32_t> bool_data {};

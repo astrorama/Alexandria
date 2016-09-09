@@ -170,7 +170,7 @@ static std::string getIdColumnFromOptions(const Configuration::UserValues& args,
       throw Elements::Exception() << SOURCE_ID_COLUMN_INDEX << " (" << index
           << ") is out of range (" << table.getColumnInfo()->size() << ")";
     }
-    id_column_name = table.getColumnInfo()->getName(index-1);
+    id_column_name = table.getColumnInfo()->getDescription(index-1).name;
   }
   logger.info() << "Using ID column \"" << id_column_name << '"';
   return id_column_name;

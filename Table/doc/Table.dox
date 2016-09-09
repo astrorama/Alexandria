@@ -1,36 +1,43 @@
 namespace Euclid {
 namespace Table {
 
-/** \page table Table module
+/** \page table %Table module
 
 \tableofcontents
 
-The Table module provides the means for reading and writing tables from/to
+The %Table module provides the means for reading and writing tables from/to
 ASCII or FITS files. It provides a set of classes describing a table in the
 memory, which constitute its data model, and methods for reading and writing
 these classes from/to ASCII and FITS formats. The following sections describe
 briefly how to use the module and can be used as a quick-start guide. For more
 detailed information refer to the documentation of each individual class and
-method in the Table namespace.
+method in the %Table namespace.
+
+\note The %Table module requires that the full table fits in memory. The purpose
+of the module is to simplify the generic usage of tables, abstracting the file
+format from the user. For more application specific or performance oriented
+tasks (like handling of tables bigger than the memory) the dedicated libraries
+should be used directly.
 
 \section tabledatamodel Table Data Model
 
-The main class of the Table is the Table class, which represents a table in
-memory. It can be seen as a collection of Row%s, with the restriction that
+The main class of the %Table module is the Table class, which represents a table
+in memory. It can be seen as a collection of Row%s, with the restriction that
 all share the same columns. Each of the columns is defined by its name (which
-must be unique, not be empty and not contain whitespace characters) and the
-type of its objects. The information of the columns, which can be both
-retrieved from the Table object itself or from any of its Row%s, is represented
-by the ColumnInfo class. Each cell of a Row is stored in a boost::variant
-(redefined as Row::cell_type), so the boost::get method must be used to retrieve
-their content. Note that all the Table data model classes are designed to
-be immutable (cannot be modified).
+must be unique, not be empty and not contain whitespace characters), the type of
+the objects it contains, the unit they are expressed and a short text
+description. The information of the columns, which can be both retrieved from
+the Table object itself or from any of its Row%s, is represented by the
+ColumnInfo class. Each cell of a Row is stored in a boost::variant (redefined as
+Row::cell_type), so the boost::get method should be used to retrieve their
+content. Note that all the %Table data model classes are designed to be
+immutable (cannot be modified).
 
 \subsection dmexamples Examples
 
 The following examples demonstrate how to create new Table%s from the scratch
-and some basic operations on them. To avoid duplication, the following two
-lines are assumed for each example:
+and some basic operations on them. To avoid duplication, the following lines are
+assumed for each example:
 
 \code{.cpp}
   #include "Table/Table.h"
@@ -52,16 +59,18 @@ of the table:
 
 \code{.cpp}
   vector<ColumnInfo::info_type> info_list {
-    ColumnInfo::info_type {"Function", typeid(string)},
-    ColumnInfo::info_type {"X", typeid(double)},
-    ColumnInfo::info_type {"Y", typeid(double)}
+    {"Function", typeid(string), "", "The name of the function"},
+    {"X", typeid(double), "x_unit", "The input value X of the function"},
+    {"Y", typeid(double), "y_unit", "The output value F(X) of the function"}
   };
-  auto column_info = make_shared<ColumnInfo>(move(info_list));
+auto column_info = make_shared<ColumnInfo>(move(info_list));
 \endcode
 
-Each column is described by a ColumnInfo::info_type object, which contains the
-column name and its type. As can be seen above, our table will have three
-columns defined as:
+Each column is described by a ColumnInfo::info_type object (which is an alias
+for the ColumnDescription class). It gets as arguments the column name, type,
+unit and description (in this order). From the above, only the name is required.
+The type defaults to the std::string and the unit and description to empty
+strings. As can be seen above, our table will have three columns defined as:
 
 - **Function**: representing the name of a function,
 - **X**: an X value and
@@ -77,9 +86,18 @@ Row%s of the Table. In this step we store the Row%s in a vector, which will
 be used later to construct the Table. The Row constructor gets as parameters a
 list with its cell values and the shared pointer of the ColumnInfo object. Note
 that all the cells are of the type Row::cell_type, which is a boost::variant
-specialization allowing for the types  `bool`, `int32_t`, `int64_t`, `float`,
-`double`, `std::string`, `std::vector<bool>`, `std::vector<int32_t>`,
-`std::vector<int64_t>`, `std::vector<float>` and `std::vector<double>`.
+specialization allowing for the following types:
+- `bool`
+- `int32_t`
+- `int64_t`
+- `float`
+- `double`
+- `std::string`
+- `std::vector<bool>`
+- `std::vector<int32_t>`
+- `std::vector<int64_t>`
+- `std::vector<float>`
+- `std::vector<double>`
 
 The following code is an example of how to construct a Row in a verbose and
 easy way to understand, by first creating a vector with the cell values. Note
@@ -133,7 +151,7 @@ constructed at the same time.
 \endcode
 
 The final step is to create the Table object itself. The constructor of the
-Table takes only one argument, which is the vector of its Row%s. At the moment
+Table takes only one argument, which is the vector of its Row%s. At the moment,
 there is no support of heterogeneous Table%s, which means that all the Row%s
 of a Table must have the same ColumnInfo (an exception is thrown otherwise).
 
@@ -152,28 +170,34 @@ retrieved either from a Table object or from a Row.
   auto row_column_info = row.getColumnInfo();
 \endcode
 
-The ColumnInfo object provides the methods ColumnInfo::getName() and
-ColumnInfo::getType(), which can be used for retrieving the information of a
-specific column by using its index. The total number of columns can be
-retrieved by the ColumnInfo::size() method. The following code uses these
-methods to print the information of all the columns:
+The ColumnInfo object provides the method ColumnInfo::getDescription(), which
+can be used for retrieving the information of a specific column by using its
+index. The total number of columns can be retrieved by the ColumnInfo::size()
+method. The following code uses these methods to print the information of all
+the columns:
 
 \code{.cpp}
-  size_t column_no = table_column_info->size();
-  cout << "The table has " << column_no << " columns\n";
-  for (size_t i = 0; i < column_no; ++i) {
-    cout << "Column " << i << ": "<< table_column_info->getName(i)
-         << " (type: " << table_column_info->getType(i).name() << ")\n";
-  }
+    size_t column_no = table_column_info->size();
+    cout << "The table has " << column_no << " columns\n";
+
+    for (size_t i = 0; i < column_no; ++i) {
+      auto& desc = table_column_info->getDescription(i);
+
+      cout << "Column " << i << ": "<< desc.name
+           << " (type: " << desc.type.name() << ")"
+           << " (unit: " << desc.unit << ")"
+           << " (description: " << desc.description << ")\n";
+    }
 \endcode
 
 Output:
 
 \code
 The table has 3 columns
-Column 0: Function (type: Ss)
-Column 1: X (type: d)
-Column 2: Y (type: d)
+Column 0: Function (type: Ss) (unit: ) (description: The name of the function)
+Column 1: X (type: d) (unit: x_unit) (description: The input value X of the function)
+Column 2: Y (type: d) (unit: y_unit) (description: The output value F(X) of the function)
+
 \endcode
 
 If the index of a column is not known it can be found by using the method
@@ -213,21 +237,25 @@ before trying to read the data from the Row%s cells. This can easily be done
 by using the `typeid()` method: 
 
 \code{.cpp}
-  if (table_column_info->getType(*x_index) == typeid(double)) {
+  if (table_column_info->getDescription(*x_index).type == typeid(double)) {
     // Here is safe to access the X column data
   }
 \endcode
 
+If you do not know the exact types of a Table (for example when reading from a
+file) or you want to allow casting to take place, you should use the CastVisitor
+as described at the following section.
+
 \subsubsection accessdata Access the table data
 
-The easiest way to access the data of a Table is by using the iterators
-provided by the Table and Row classes. The Table::begin() method provides an
-iterator which can be used to iterate through all the Row%s of the table and
-the Row::begin() method provides an iterator which can be used to iterate
-through all the cells of the Row. Note that each cell of the Row is of the
-type `boost::variant`, so if a specific type is not required it can be used
-directly. The following lines of code demonstrate how to print on the screen
-all the contents of a table, by using these iterators:
+The easiest way to access the data of a Table is by using the iterators provided
+by the Table and Row classes. The Table::Table::begin() method provides an
+iterator which can be used to iterate through all the Row%s of the table and the
+Row::begin() method provides an iterator which can be used to iterate through
+all the cells of the Row. Note that each cell of the Row is of the type
+`boost::variant`, so if a specific type is not required it can be used directly.
+The following lines of code demonstrate how to print on the screen all the
+contents of a table, by using these iterators:
 
 \code{.cpp}
   for (auto& row : table) {
@@ -291,7 +319,7 @@ Third rows Y value is 0.587785
 
 Most of the time, to use the data of the Table cells, they must be retrieved with
 the correct type. The Row::cell_type objects can be converted to the actual
-type by using the `boost::get` method. Note that trying to convert the cell
+type by using the `boost::get()` method. Note that trying to convert the cell
 value to a wrong type will result to a `boost::bad_get` exception. For example,
 the following lines of code calculate the sum of the Y column values 
 (column of `double` type): 
@@ -311,10 +339,11 @@ Sum of all Y values is 3.07768
 \endcode
 
 If you want to avoid using the `boost::get` method (and avoid its limitation of
-having to use the exact type of the column) you can use the `boost::apply_visitor`
-with the Table::CastVisitor class. To use the Table::CastVisitor class, you have
-to give as its template parameter the type you want to cast the cell (it has to
-be one of the Row::cell_type types):
+having to use the exact type of the column), for example when you read a table
+from a file and you do not know the exact types in advance, you can use the
+`boost::apply_visitor` with the Table::CastVisitor class. To use the
+Table::CastVisitor class, you have to give as its template parameter the type
+you want to cast the cell (it has to be one of the Row::cell_type types):
 
 \code{.cpp}
 for (auto& row :table) {
@@ -327,10 +356,11 @@ Note that the Table::CastVisitor supports to and from string conversions, but it
 does not allow for down-casting cells with numerical values. Vector types can be
 converted to other vector types, as long as the type of their contents can be
 converted without down-casting. Finally, converting a scalar (single value)
-column to vector, will result to a vector with a single element. Be careful when
-you use the CastVisitor for vector types! If the type of the vector elements
-does not match the original one, you are going to make a copy of the full
-vector.
+column to vector, will result to a vector with a single element.
+
+\warning Be careful when you use the CastVisitor for vector types! If the type
+of the vector elements does not match the original one, you are going to make a
+copy of the full vector.
 
 
 \section tableio Table I/O
@@ -351,40 +381,51 @@ as a stream the following code can be used:
 \endcode
 
 The AsciiReader class, by default will interpret the `#` as comment character
-and will try to detect automatically the names and the types of the columns
-in the file. The column names are extracted from the first non empty comment
-line, which contains the same number of words as the
-number of data columns in the file. If there is no such comment line, the
-columns are named as `col1`, `col2`, etc (starting from 1). The types of the
-columns are extracted from the second such line, by using the following
-conventions:
+and will try to detect automatically the names and the types of the columns in
+the file, based on the information in the comments before the data. This is done
+by comment lines following the format:
 
-- bool, boolean     : A boolean value as the following (case is ignored):
-                      - true,  t, yes, y, 1
-                      - false, f,  no, n, 0
-- int,  int32       : A 32 bit integer
-- long, int64       : A 64 bit integer
-- float             : Single (32 bit) precision floating point
-- double            : Double (64 bit) precision floating point
-- string            : String without whitespaces
-- [bool], [boolean] : A vector of booleans
-- [int],  [int32]   : A vector of 32 bit integer
-- [long], [int64]   : A vector of 64 bit integer
-- [float]           : A vector of single (32 bit) precision floating point
-- [double]          : A vector of double (64 bit) precision floating point
+`# Column: NAME TYPE (UNIT) - DESCRIPTION`
+
+The NAME is the only required field and it must not contain whitespaces. The
+TYPE field is interpreted using the following conventions:
+
+| TYPE string       | Interpretation|
+|-------------------|---------------|
+| bool, boolean     | A boolean value as the following (case is ignored):<br/>- true,  t, yes, y, 1<br/>- false, f,  no, n, 0|
+| int,  int32       | A 32 bit integer|
+| long, int64       | A 64 bit integer|
+| float             | Single (32 bit) precision floating point|
+| double            | Double (64 bit) precision floating point|
+| string            | String without whitespaces|
+| [bool], [boolean] | A vector of booleans|
+| [int],  [int32]   | A vector of 32 bit integer|
+| [long], [int64]   | A vector of 64 bit integer|
+| [float]           | A vector of single (32 bit) precision floating point|
+| [double]          | A vector of double (64 bit) precision floating point|
 
 The vector columns should contain the values of the vector separated by the ","
-character, without any white spaces.
+(comma) character, without any white spaces. If the type of a column is missing,
+it is interpreted as a string column.
 
-If there is no line describing the types of the columns, all the types are
-assumed to be strings.
+Note that the column description comments are optional. If there are less column
+descriptions than the actual columns in the file (or if they are missing
+completely) the columns are named as col1, col2, etc (starting from 1) and are
+considered to be of type string.
+
+Optionally, the last non empty comment line can also contain the names of the
+columns, separated by whitespaces. to allow for easier reading of the file. In
+this case, the names of this line define the names of the columns and they are
+matched with the column description comment lines to find the column info.
 
 Reading a file that follows the above rules is straight forward. For example,
 if a file contains the following text:
 
 \code
+# Column: X double
+# Column: Y double
+
 # Function        X           Y
-#   string   double      double
 
        sin        0           0
        cos        0           1
@@ -403,7 +444,7 @@ if a file contains the following text:
 it can be read directly by using the command:
 
 \code{.cpp}
-  table = AsciiReader{}.read(in_stream);
+table = AsciiReader{}.read(in_stream);
 \endcode
 
 Note that the above command will read till the end of the stream, so any further
@@ -475,10 +516,10 @@ opened using the following code:
 \endcode
 
 By default, the AsciiWriter will use as a comment indicator the `#` character,
-it will add the column name and type lines and it will right-align all the
-columns. The width of the columns will be automatically calculated based on the
-contents of the table cells. For example, the following code will print on the
-screen our table:
+it will add the column description comments, the names of the columns as the
+last comment line and it will right-align all the columns. The width of the
+columns will be automatically calculated based on the contents of the table
+cells. For example, the following code will print on the screen our table:
 
 \code{.cpp}
   AsciiWriter{}.write(cout, table);
@@ -487,8 +528,11 @@ screen our table:
 Output:
 
 \code
+# Column: Function string - The name of the function
+# Column: X double (x_unit) - The input value X of the function
+# Column: Y double (y_unit) - The output value F(X) of the function
+
 # Function        X           Y
-#   string   double      double
 
        sin        0           0
        cos        0           1
@@ -521,8 +565,11 @@ code will use the `//` comment indicator:
 Output:
 
 \code
+// Column: Function string - The name of the function
+// Column: X double (x_unit) - The input value X of the function
+// Column: Y double (y_unit) - The output value F(X) of the function
+
 // Function        X           Y
-//   string   double      double
 
         sin        0           0
         cos        0           1
@@ -536,6 +583,7 @@ Output:
         cos  2.51327   -0.809017
         sin  3.14159 1.22465e-16
         cos  3.14159          -1
+
 \endcode
 
 \subsection readfits Reading a Table from a FITS file
@@ -552,14 +600,15 @@ retrieved the standard CCfits way, using the following code:
   auto& table_hdu = fits.extension(1);
 \endcode
 
-In the above code note that the `table_hdu` is a reference. This is obligatory
-because the result of the `extension()` method is a sublcass of the
+\warning In the above code note that the `table_hdu` is a reference. This is
+obligatory because the result of the `extension()` method is a sublcass of the
 `CCfits::HDU`.
 
-Having the reference of the table HDU, using the FitsReader class to convert
-it to a Table object is straight forward. The column names and types will
-automatically be detected from the HDU keywords, so reading the Table is as
-simple as:
+Having the reference of the table HDU, using the FitsReader class to convert it
+to a Table object is straight forward. The column names, types and units will
+automatically be detected from the standard HDU keywords (TTYPEn, TFORMn and
+TUNITn keywords accordingly). The column descriptions are read from the (non
+standard) keyword TDESCn. Reading the Table is as simple as:
 
 \code{.cpp}
   auto table = FitsReader{}.read(table_hdu);
@@ -575,9 +624,9 @@ overridden:
   auto table = reader.read(table_hdu);
 \endcode
 
-Overriding the column types is not. The conventions of the FITS
-types conversions to the Table cell values can be found in the documentation
-of the FitsReader::read() method.
+Overriding the column types on the other hand is not allowed. The conventions of
+the FITS types conversions to the Table cell values (both for ASCII and binary
+FITS tables) can be found in the documentation of the FitsReader::read() method.
 
 \subsection writefits Writing a Table in a FITS file
 
@@ -617,10 +666,9 @@ append the table on, the new HDUs name and the table with the data:
 #include "Table/Table.h"
 #include "Table/AsciiReader.h"
 #include "Table/AsciiWriter.h"
-
+#include "Table/CastVisitor.h"
 using namespace Euclid::Table;
 using namespace std;
-
 int main() {
   
   // //////////////////////////////////
@@ -630,9 +678,9 @@ int main() {
   
   // Step 1: Create the ColumnInfo object
   vector<ColumnInfo::info_type> info_list {
-    ColumnInfo::info_type {"Function", typeid(string)},
-    ColumnInfo::info_type {"X", typeid(double)},
-    ColumnInfo::info_type {"Y", typeid(double)}
+    {"Function", typeid(string), "", "The name of the function"},
+    {"X", typeid(double), "x_unit", "The input value X of the function"},
+    {"Y", typeid(double), "y_unit", "The output value F(X) of the function"}
   };
   shared_ptr<ColumnInfo> column_info {new ColumnInfo {move(info_list)}};
   
@@ -646,7 +694,7 @@ int main() {
   
   // Verbose way to create rows
   vector<Row::cell_type> cell_values {string{"example"}, 5., 2E-15};
-  Row row {move(cell_values), column_info};
+  Row row {std::move(cell_values), column_info};
   
   // Step 3: Create the table instance
   Table table {row_list};
@@ -663,9 +711,14 @@ int main() {
   // Printing the column information
   size_t column_no = table_column_info->size();
   cout << "The table has " << column_no << " columns\n";
+  
   for (size_t i = 0; i < column_no; ++i) {
-    cout << "Column " << i << ": "<< table_column_info->getName(i)
-         << " (type: " << table_column_info->getType(i).name() << ")\n";
+    auto& desc = table_column_info->getDescription(i);
+    
+    cout << "Column " << i << ": "<< desc.name
+         << " (type: " << desc.type.name() << ")"
+         << " (unit: " << desc.unit << ")"
+         << " (description: " << desc.description << ")\n";
   }
   
   // Searching for a column by name
@@ -683,7 +736,7 @@ int main() {
   }
   
   // Checking the type of a column
-  if (table_column_info->getType(*x_index) == typeid(double)) {
+  if (table_column_info->getDescription(*x_index).type == typeid(double)) {
     cout << "Safe to access X column data\n";
   }
   
@@ -713,13 +766,21 @@ int main() {
   }
   cout << "Sum of all Y values is " << sum << "\n";
   
+  // Use the CastVisitor
+  cout << "Using the CastVisitor to access Y as string:\n";
+  for (auto& row :table) {
+    string y_str = boost::apply_visitor(CastVisitor<string>{}, row["Y"]);
+    cout << "  Y as string " << y_str << "\n";
+  }
+  
   // //////////////////////////////////
   // Reading a Table from an ASCII stream
   // //////////////////////////////////
   cout << "\nReading a Table from an ASCII stream\n";
   
-  stringstream in_stream { "# Function        X           Y\n" 
-                           "#   string   double      double\n" 
+  stringstream in_stream { "# Column: X double\n"
+                           "# Column: Y double\n"
+                           "# Function        X           Y\n" 
                            "       sin        0           0\n" 
                            "       cos        0           1\n" 
                            "       sin 0.628319    0.587785\n" 

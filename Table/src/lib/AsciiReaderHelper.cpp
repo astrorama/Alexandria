@@ -5,6 +5,7 @@
  */
 
 #include <set>
+#include <sstream>
 #include <boost/regex.hpp>
 using boost::regex;
 using boost::regex_match;
@@ -12,10 +13,13 @@ using boost::regex_match;
 #include <boost/lexical_cast.hpp>
 #include <boost/tokenizer.hpp>
 #include "ElementsKernel/Exception.h"
+#include "ElementsKernel/Logging.h"
 #include "AsciiReaderHelper.h"
 
 namespace Euclid {
 namespace Table {
+
+static Elements::Logging logger = Elements::Logging::getLogger("AsciiReader");
 
 size_t countColumns(std::istream& in, const std::string& comment) {
   StreamRewinder rewinder {in};
@@ -46,57 +50,6 @@ size_t countColumns(std::istream& in, const std::string& comment) {
   return count;
 }
 
-std::vector<std::string> autoDetectColumnNames(std::istream& in,
-                                               const std::string& comment,
-                                               size_t columns_number) {
-  StreamRewinder rewinder {in};
-  std::vector<std::string> names {};
-  regex column_separator {"\\s+"};
-  while (in) {
-    std::string line;
-    getline(in, line);
-    boost::trim(line);
-    if (line.empty()) {
-      continue; // We skip empty lines
-    }
-    if (boost::starts_with(line, comment)) {
-      // If we have a comment we remove all comment characters and check if we have
-      // the correct number of tokens
-      boost::replace_all(line, comment, "");
-      boost::trim(line);
-      if (!line.empty()) {
-        boost::sregex_token_iterator i (line.begin(), line.end(), column_separator, -1);
-        boost::sregex_token_iterator j;
-        while (i != j) {
-          names.push_back(*i);
-          ++i;
-        }
-        if (names.size() == columns_number) {
-          break;
-        } else {
-          names.clear();
-        }
-      }
-    } else {
-      break; // here we reached the first data line
-    }
-  }
-  if (names.empty()) {
-    for (size_t i=1; i<=columns_number; ++i) {
-      names.push_back("col" + std::to_string(i));
-    }
-  } else {
-    // Check for duplicate names
-    std::set<std::string> set {};
-    for (auto name : names) {
-      if (!set.insert(name).second) {
-        throw Elements::Exception() << "Duplicate column name " << name;
-      }
-    }
-  }
-  return names;
-}
-
 std::type_index keywordToType(const std::string& keyword) {
   if (keyword == "bool" || keyword == "boolean") {
     return typeid(bool);
@@ -124,13 +77,77 @@ std::type_index keywordToType(const std::string& keyword) {
   throw Elements::Exception() << "Unknown column type keyword " << keyword;
 }
 
-std::vector<std::type_index> autoDetectColumnTypes(std::istream& in,
-                                                   const std::string& comment,
-                                                   size_t columns_number) {
+std::map<std::string, ColumnDescription> autoDetectColumnDescriptions(
+                                      std::istream& in, const std::string& comment) {
   StreamRewinder rewinder {in};
-  bool names_found {false};
-  std::vector<std::type_index> types {};
-  regex column_separator {"\\s+"};
+  std::map<std::string, ColumnDescription> descriptions;
+  while (in) {
+    std::string line;
+    getline(in, line);
+    boost::trim(line);
+    if (line.empty()) {
+      continue; // We skip empty lines
+    }
+    if (boost::starts_with(line, comment)) {
+      // If we have a comment we remove all comment characters and check if we have
+      // a column description
+      boost::replace_all(line, comment, "");
+      boost::trim(line);
+      if (boost::starts_with(line, "Column:")) {
+        line.erase(0, 7);
+        boost::trim(line);
+        if (!line.empty()) {
+          boost::sregex_token_iterator token (line.begin(), line.end(), regex{"\\s+"}, -1);
+          boost::sregex_token_iterator end;
+          std::string name = *token;
+          if (descriptions.count(name) != 0) {
+            throw Elements::Exception() << "Duplicate column name " << name;
+          }
+          ++token;
+          std::type_index type = typeid(std::string);
+          if (token!=end && !boost::starts_with(*token, "(") && *token!="-") {
+            type = keywordToType(*token);
+            ++token;
+          }
+          std::string unit = "";
+          if (token!=end && boost::starts_with(*token, "(")) {
+            unit = *token;
+            unit.erase(unit.begin());
+            unit.erase(unit.end()-1);
+            ++token;
+          }
+          if (token!=end && *token=="-") {
+            ++token;
+          }
+          std::stringstream desc;
+          while (token!=end) {
+            desc << *token << ' ';
+            ++token;
+          }
+          std::string desc_str = desc.str();
+          boost::trim(desc_str);
+          descriptions.emplace(std::piecewise_construct,
+                               std::forward_as_tuple(name),
+                               std::forward_as_tuple(name, type, unit, desc_str));
+        }
+      }
+    } else {
+      break; // here we reached the first data line
+    }
+  }
+  return descriptions;
+}
+
+std::vector<std::string> autoDetectColumnNames(std::istream& in,
+                                               const std::string& comment,
+                                               size_t columns_number) {
+  StreamRewinder rewinder {in};
+  std::vector<std::string> names {};
+  
+  // Find the last comment line and at the same time read the names of the
+  // column info description comments
+  std::string last_comment {};
+  std::vector<std::string> desc_names {};
   while (in) {
     std::string line;
     getline(in, line);
@@ -143,37 +160,59 @@ std::vector<std::type_index> autoDetectColumnTypes(std::istream& in,
       // the correct number of tokens
       boost::replace_all(line, comment, "");
       boost::trim(line);
-      std::vector<std::string> keywords {};
       if (!line.empty()) {
-        boost::sregex_token_iterator i (line.begin(), line.end(), column_separator, -1);
-        boost::sregex_token_iterator j;
-        while (i != j) {
-          keywords.push_back(*i);
-          ++i;
+        last_comment = line;
+      }
+      if (boost::starts_with(line, "Column:")) {
+        std::string temp = line;
+        temp.erase(0, 7);
+        boost::trim(temp);
+        auto space_i = temp.find(' ');
+        if (space_i > 0) {
+          temp = temp.substr(0, space_i);
         }
-        if (keywords.size() == columns_number) {
-          // The first comment having correct number of columns is the names and
-          // we skip it
-          if (names_found) {
-            for (auto keyword : keywords) {
-              types.push_back(keywordToType(keyword));
-            }
-            break;
-          } else {
-            names_found = true;
-          }
-        }
+        desc_names.emplace_back(std::move(temp));
       }
     } else {
       break; // here we reached the first data line
     }
   }
-  if (types.empty()) {
-    for (size_t i=1; i<=columns_number; ++i) {
-      types.push_back(typeid(std::string));
+  
+  // Check if the last comment line contains the names of the columns
+  if (!last_comment.empty()){
+    boost::sregex_token_iterator i (last_comment.begin(), last_comment.end(), regex{"\\s+"}, -1);
+    boost::sregex_token_iterator j;
+    while (i != j) {
+      names.push_back(*i);
+      ++i;
+    }
+    if (names.size() != columns_number) {
+      names.clear();
     }
   }
-  return types;
+  
+  // If the names are empty we fill them with the column descriprion ones
+  if (names.empty()) {
+    if (desc_names.size() != 0 && desc_names.size() != columns_number) {
+      logger.warn() << "Number of column descriptions does not matches the number"
+              << " of the columns";
+    }
+    names = desc_names;
+  }
+  
+  if (names.size() < columns_number) {
+    for (size_t i=names.size()+1; i<=columns_number; ++i) {
+      names.push_back("col" + std::to_string(i));
+    }
+  }
+  // Check for duplicate names
+  std::set<std::string> set {};
+  for (auto name : names) {
+    if (!set.insert(name).second) {
+      throw Elements::Exception() << "Duplicate column name " << name;
+    }
+  }
+  return names;
 }
 
 namespace {

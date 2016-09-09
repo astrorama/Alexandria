@@ -81,6 +81,10 @@ public:
    * 
    * Note that, at the moment, only fixed length vector columns are supported
    * and that there is no support for vector columns for ASCII FITS tables.
+   * 
+   * The TUNITn fits keywords are populated using the unit of the of the
+   * ColumnDescriptions of the Table. The descriptions of the columns are
+   * set as the values of the (non standard) keywords TDESCn.
    *
    * @param fits The FITS object to add the table HDU
    * @param hdu_name The name of the HDU

@@ -97,7 +97,7 @@ static std::string getFluxColumnFromOptions(const Configuration::UserValues& arg
       throw Elements::Exception() << SPECZ_COLUMN_INDEX << " (" << index
           << ") is out of range (" << column_info.size() << ")";
     }
-    return column_info.getName(index-1);
+    return column_info.getDescription(index-1).name;
   }
 }
 
@@ -116,7 +116,7 @@ static std::string getErrColumnFromOptions(const Configuration::UserValues& args
       throw Elements::Exception() << SPECZ_ERR_COLUMN_INDEX << " (" << index
           << ") is out of range (" << column_info.size() << ")";
     }
-    return column_info.getName(index-1);
+    return column_info.getDescription(index-1).name;
   }
 }
 

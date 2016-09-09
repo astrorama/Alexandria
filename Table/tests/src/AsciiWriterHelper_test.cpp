@@ -83,7 +83,7 @@ BOOST_FIXTURE_TEST_CASE(calculateColumnLengths, AsciiWriterHelper_Fixture) {
   BOOST_CHECK_EQUAL(sizes[1], 26);
   BOOST_CHECK_EQUAL(sizes[2], 11);
   BOOST_CHECK_EQUAL(sizes[3], 8);
-  BOOST_CHECK_EQUAL(sizes[4], 6);
+  BOOST_CHECK_EQUAL(sizes[4], 2);
   BOOST_CHECK_EQUAL(sizes[5], 16);
   
 }
