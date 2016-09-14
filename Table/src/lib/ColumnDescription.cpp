@@ -22,7 +22,13 @@
  * @author nikoapos
  */
 
-#include <regex>
+// The std regex library is not fully implemented in GCC 4.8. The following lines
+// make use of the BOOST library and can be modified if GCC 4.9 will be used in
+// the future.
+// #include <regex>
+#include <boost/regex.hpp>
+using boost::regex;
+using boost::regex_match;
 #include "ElementsKernel/Exception.h"
 
 #include "Table/ColumnDescription.h"
@@ -36,7 +42,7 @@ ColumnDescription::ColumnDescription(std::string name, std::type_index type,
     if (name.empty()) {
       throw Elements::Exception() << "Empty string name is not allowed";
     }
-    if (std::regex_match(name, std::regex{".*\\s.*"})) {
+    if (regex_match(name, regex{".*\\s.*"})) {
       throw Elements::Exception() << "Column name '" << name << "' contains "
                                 << "whitespace characters";
     }
