@@ -105,23 +105,29 @@ std::map<std::string, ColumnDescription> autoDetectColumnDescriptions(
           }
           ++token;
           std::type_index type = typeid(std::string);
-          if (token!=end && !boost::starts_with(*token, "(") && *token!="-") {
-            type = keywordToType(*token);
-            ++token;
+          if (token != end) {
+            std::string token_str {*token};
+            if (!boost::starts_with(token_str, "(") && token_str != "-") {
+              type = keywordToType(token_str);
+              ++token;
+            }
           }
           std::string unit = "";
-          if (token!=end && boost::starts_with(*token, "(")) {
-            unit = *token;
-            unit.erase(unit.begin());
-            unit.erase(unit.end()-1);
-            ++token;
+          if (token != end) {
+            std::string token_str {*token};
+            if (boost::starts_with(token_str, "(")) {
+              unit = token_str;
+              unit.erase(unit.begin());
+              unit.erase(unit.end()-1);
+              ++token;
+            }
           }
-          if (token!=end && *token=="-") {
+          if (token != end && std::string{*token} == "-") {
             ++token;
           }
           std::stringstream desc;
-          while (token!=end) {
-            desc << *token << ' ';
+          while (token != end) {
+            desc << std::string{*token} << ' ';
             ++token;
           }
           std::string desc_str = desc.str();

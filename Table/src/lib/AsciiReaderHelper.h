@@ -10,6 +10,7 @@
 #include <istream>
 #include <string>
 #include <typeindex>
+#include <map>
 
 
 #include "ElementsKernel/Export.h"
