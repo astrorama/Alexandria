@@ -1,0 +1,10 @@
+
+# /
+/build.*
+/InstallArea
+/.settings
+/.cproject
+/.project
+/.pydevproject
+/*.log
+/.agignore
