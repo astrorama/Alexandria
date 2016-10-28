@@ -71,7 +71,7 @@ const Table AsciiReader::read(std::istream& in) const {
   std::vector<std::type_index> types {};
   std::vector<std::string> units {};
   std::vector<std::string> descriptions {};
-  for (int i=0; i<columns_number; ++i) {
+  for (size_t i=0; i<columns_number; ++i) {
     if (m_column_names.empty()) {
       names.emplace_back(auto_names[i]);
     } else {

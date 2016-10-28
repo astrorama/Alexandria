@@ -167,12 +167,12 @@ BOOST_FIXTURE_TEST_CASE(ReadSuccess, FitsReader_Fixture) {
   BOOST_CHECK(column_info->getDescription(7).type == typeid(std::vector<double>));
   
   std::vector<std::string> units {"deg","mag","erg","ph","s","m","pc","count"};
-  for (int i=0; i < column_info->size(); ++i) {
+  for (size_t i=0; i < column_info->size(); ++i) {
     BOOST_CHECK_EQUAL(column_info->getDescription(i).unit,  units[i]);
   }
   
   std::vector<std::string> descriptions {"Desc1","","Desc3","","Desc5","","Desc7",""};
-  for (int i=0; i < column_info->size(); ++i) {
+  for (size_t i=0; i < column_info->size(); ++i) {
     BOOST_CHECK_EQUAL(column_info->getDescription(i).description,  descriptions[i]);
   }
 
