@@ -8,3 +8,6 @@
 /.pydevproject
 /*.log
 /.agignore
+/.sonar
+/PAQA
+/sonar-project.properties
