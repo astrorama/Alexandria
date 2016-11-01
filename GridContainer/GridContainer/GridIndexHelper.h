@@ -46,8 +46,9 @@ public:
    */
   GridIndexHelper(const std::tuple<GridAxis<AxesTypes>...>& axes_tuple);
   
-  /// Default move constructor
+  /// Default move constructor and assignment operator
   GridIndexHelper(GridIndexHelper<AxesTypes...>&&) = default;
+  GridIndexHelper& operator=(GridIndexHelper<AxesTypes...>&&) = default;
   
   /// Default destructor
   virtual ~GridIndexHelper() = default;
