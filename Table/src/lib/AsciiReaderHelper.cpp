@@ -106,7 +106,7 @@ std::map<std::string, ColumnDescription> autoDetectColumnDescriptions(
           ++token;
           std::type_index type = typeid(std::string);
           if (token != end) {
-            std::string token_str {*token};
+            std::string token_str =*token;
             if (!boost::starts_with(token_str, "(") && token_str != "-") {
               type = keywordToType(token_str);
               ++token;
@@ -114,7 +114,7 @@ std::map<std::string, ColumnDescription> autoDetectColumnDescriptions(
           }
           std::string unit = "";
           if (token != end) {
-            std::string token_str {*token};
+            std::string token_str = *token;
             if (boost::starts_with(token_str, "(")) {
               unit = token_str;
               unit.erase(unit.begin());
@@ -122,12 +122,12 @@ std::map<std::string, ColumnDescription> autoDetectColumnDescriptions(
               ++token;
             }
           }
-          if (token != end && std::string{*token} == "-") {
+          if (token != end && *token == "-") {
             ++token;
           }
           std::stringstream desc;
           while (token != end) {
-            desc << std::string{*token} << ' ';
+            desc << *token << ' ';
             ++token;
           }
           std::string desc_str = desc.str();
