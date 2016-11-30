@@ -4,6 +4,7 @@ elements_depends_on_subdirs(ElementsKernel)
 
 find_package(Boost REQUIRED COMPONENTS regex)
 find_package(CCfits)
+find_package(GMock)
 
 #===== Libraries ===============================================================
 elements_add_library(Table src/lib/*.cpp
@@ -12,6 +13,14 @@ elements_add_library(Table src/lib/*.cpp
                      PUBLIC_HEADERS Table)
 
 #===== Boost tests =============================================================
+
+if(GMOCK_FOUND)
+elements_add_unit_test(TableWriter_test tests/src/TableWriter_test.cpp 
+                     LINK_LIBRARIES Table GMock
+                     TYPE Boost)
+endif(GMOCK_FOUND)
+
+
 elements_add_unit_test(ColumnInfo_test tests/src/ColumnInfo_test.cpp 
                      LINK_LIBRARIES Table
                      TYPE Boost)
