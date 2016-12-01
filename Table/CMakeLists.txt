@@ -19,8 +19,6 @@ elements_add_unit_test(TableWriter_test tests/src/TableWriter_test.cpp
                      LINK_LIBRARIES Table GMock
                      TYPE Boost)
 endif(GMOCK_FOUND)
-
-
 elements_add_unit_test(ColumnInfo_test tests/src/ColumnInfo_test.cpp 
                      LINK_LIBRARIES Table
                      TYPE Boost)
@@ -36,7 +34,7 @@ elements_add_unit_test(AsciiReader_test tests/src/AsciiReader_test.cpp
 elements_add_unit_test(AsciiReaderHelper_test tests/src/AsciiReaderHelper_test.cpp 
                      LINK_LIBRARIES Table
                      TYPE Boost)
-elements_add_unit_test(AsciiWriter_test tests/src/AsciiWriter_test.cpp 
+elements_add_unit_test(AsciiWriterOld_test tests/src/AsciiWriterOld_test.cpp 
                      LINK_LIBRARIES Table
                      TYPE Boost)
 elements_add_unit_test(AsciiWriterHelper_test tests/src/AsciiWriterHelper_test.cpp 
@@ -58,5 +56,8 @@ elements_add_unit_test(CastVisitor_test tests/src/CastVisitor_test.cpp
                      LINK_LIBRARIES Table
                      TYPE Boost)
 elements_add_unit_test(ColumnDescription_test tests/src/ColumnDescription_test.cpp 
+                     LINK_LIBRARIES Table
+                     TYPE Boost)
+elements_add_unit_test(AsciiWriter_test tests/src/AsciiWriter_test.cpp 
                      LINK_LIBRARIES Table
                      TYPE Boost)

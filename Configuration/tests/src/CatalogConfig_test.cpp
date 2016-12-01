@@ -25,7 +25,7 @@
 #include <CCfits/CCfits>
 
 #include "ElementsKernel/Temporary.h"
-#include "Table/AsciiWriter.h"
+#include "Table/AsciiWriterOld.h"
 #include "Table/FitsWriter.h"
 
 #include "Configuration/CatalogConfig.h"
@@ -110,17 +110,17 @@ struct CatalogConfig_fixture : public ConfigManager_fixture {
     }
     {
       std::ofstream out {(temp_dir.path()/ascii_filename).string()};
-      AsciiWriter{}.write(out, table);
+      AsciiWriterOld{}.write(out, table);
     }
     {
       fs::create_directories((temp_dir.path()/relative_filename).parent_path());
       std::ofstream out {(temp_dir.path()/relative_filename).string()};
-      AsciiWriter{}.write(out, table);
+      AsciiWriterOld{}.write(out, table);
     }
     {
       fs::create_directories(absolute_filename.parent_path());
       std::ofstream out {absolute_filename.string()};
-      AsciiWriter{}.write(out, table);
+      AsciiWriterOld{}.write(out, table);
     }
     
     config_manager.registerConfiguration<BaseDirConfig>();

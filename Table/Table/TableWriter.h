@@ -40,10 +40,15 @@ namespace Table {
 class TableWriter {
 
 public:
+  
+  TableWriter() = default;
+  
+  TableWriter(TableWriter&&) = default;
+  TableWriter& operator=(TableWriter&&) = default;
+  
+  TableWriter(const TableWriter&) = delete;
+  TableWriter& operator=(const TableWriter&) = delete;
 
-  /**
-   * @brief Destructor
-   */
   virtual ~TableWriter() = default;
   
   virtual void addComment(const std::string&) = 0;

@@ -29,10 +29,11 @@ namespace Euclid {
 namespace Table {
 
 void TableWriter::addData(const Table& table) {
+  auto& info = *table.getColumnInfo();
   if (m_column_info == nullptr) {
-    m_column_info.reset(new ColumnInfo(*table.getColumnInfo()));
-    init(*m_column_info);
-  } else if (*m_column_info != *table.getColumnInfo()) {
+    m_column_info.reset(new ColumnInfo(info));
+    init(info);
+  } else if (*m_column_info != info) {
     throw Elements::Exception() << "Cannot append table with different columns";
   }
   append(table);

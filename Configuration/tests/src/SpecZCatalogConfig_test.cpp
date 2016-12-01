@@ -27,7 +27,7 @@
 #include <boost/filesystem.hpp>
 
 #include "ElementsKernel/Temporary.h"
-#include "Table/AsciiWriter.h"
+#include "Table/AsciiWriterOld.h"
 #include "SourceCatalog/SourceAttributes/SpectroscopicRedshift.h"
 
 #include "Configuration/CatalogConfig.h"
@@ -84,7 +84,7 @@ struct SpecZCatalogConfig_fixture : public ConfigManager_fixture {
     
     {
       std::ofstream out {(temp_dir.path()/filename).string()};
-      AsciiWriter{}.write(out, table);
+      AsciiWriterOld{}.write(out, table);
     }
     
     config_manager.registerConfiguration<BaseDirConfig>();

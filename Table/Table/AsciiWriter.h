@@ -1,99 +1,90 @@
-/**
- * @file Table/AsciiWriter.h
- * @date April 16, 2014
- * @author Nikolaos Apostolakos
+/*
+ * Copyright (C) 2012-2020 Euclid Science Ground Segment
+ *
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 3.0 of the License, or (at your option)
+ * any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#ifndef TABLE_ASCIIWRITER_H
-#define	TABLE_ASCIIWRITER_H
+/**
+ * @file Table/AsciiWriter.h
+ * @date 11/30/16
+ * @author nikoapos
+ */
 
-#include <string>
-#include <ostream>
+#ifndef _TABLE_ASCIIWRITER_H
+#define _TABLE_ASCIIWRITER_H
 
-#include "ElementsKernel/Export.h"
-
-#include "Table/Table.h"
+#include "Table/TableWriter.h"
 
 namespace Euclid {
 namespace Table {
 
 /**
  * @class AsciiWriter
+ * @brief
  *
- * @brief Tool for writing ASCII tables to streams
- *
- * @details
- * The AsciiWriter class is a tool for writing ASCII representations of Table
- * objects in output streams. It can be parameterised with the arguments of its
- * constructors and it provides write() methods for writing the tables.
  */
-class ELEMENTS_API AsciiWriter {
+class AsciiWriter : public TableWriter {
 
 public:
-
+  
+  template <typename StreamType, typename... Args>
+  static AsciiWriter create(Args&&... args);
+  
+  static AsciiWriter create(std::ostream& stream);
+  
+  AsciiWriter(AsciiWriter&&) = default;
+  AsciiWriter& operator=(AsciiWriter&&) = default;
+  
+  AsciiWriter(const AsciiWriter&) = delete;
+  AsciiWriter& operator=(const AsciiWriter&) = delete;
+  
   /**
-   * @brief
-   * Constructs a new AsciiWriter
-   *
-   * @param comment The pattern to use for comment lines
-   * @throws Elements::Exception
-   *    if the comment string is the empty string
+   * @brief Destructor
    */
-  AsciiWriter(std::string comment = "#");
-
-  /// Default destructor
   virtual ~AsciiWriter() = default;
+  
+  AsciiWriter& setCommentIndicator(const std::string& indicator);
+  
+  AsciiWriter& showColumnInfo(bool show);
 
-  /**
-   * @brief
-   * Writes a Table in the given stream
-   * @details
-   * The file starts with all the given comments, with one comment per line. The
-   * comments are followed by one empty line.
-   * 
-   * The next rows are comment lines describing the columns of the table. They
-   * follow the format: "Column: NAME TYPE (UNIT) - DESCRIPTION", where the unit
-   * and description parts are presented only when they are not empty. The strings
-   * used as the column types are:
-   *   - bool for boolean
-   *   - int for 32 bit integer
-   *   - long for 64 bit integer
-   *   - float for 32 bit floating point
-   *   - double for 64 bit floating point
-   *   - string for string
-   *   - [bool] for boolean vector
-   *   - [int] for 32 bit integer vector
-   *   - [long] for 64 bit integer vector
-   *   - [float] for 32 bit floating point vector
-   *   - [double] for 64 bit floating point vector
-   * 
-   * The column descriptions are following the same order as the columns of the
-   * table and are followed by one empty line.
-   * 
-   * After that, the first row written is a comment line containing the names of
-   * the columns, followed by one empty line. Then one line is written for each
-   * Row of the table, which contains the values of the row. The boolean values
-   * are represented with "1" (meaning true) and "0" meaning false. The vector
-   * values are separated by ",".
-   *
-   * All the alignment between the columns is done with space characters. The size
-   * in characters of each column is calculated as the size of the longest column
-   * entry (including type and name) plus one. All the values are right aligned.
-   *
-   * @param out The stream to output the table
-   * @param table The table to output
-   * @param comments The comments to add at the beginning of the file
-   * @param show_column_info A flag to write the column info comments or not
-   */
-  void write(std::ostream& out, const Table& table, const std::vector<std::string>& comments={}, bool show_column_info=true) const;
+  void addComment(const std::string& message) override;
+  
+protected:
+  
+  void init(const ColumnInfo& info) override;
+  
+  void append(const Table& table) override;
 
 private:
-  std::string m_comment;
+  
+  struct StreamHolder;
 
-};
+  AsciiWriter(std::unique_ptr<StreamHolder> stream_holder);
+  
+  std::unique_ptr<StreamHolder> m_stream_holder;
+  bool m_writing_started = false;
+  bool m_initialized = false;
+  std::string m_comment = "#";
+  bool m_show_column_info = true;
+  std::vector<size_t> m_column_lengths;
 
-}
-} // end of namespace Euclid
+}; // End of AsciiWriter class
 
-#endif	/* TABLE_ASCIIWRITER_H */
+} // namespace Table
+} // namespace Euclid
 
+#include "Table/_impl/AsciiWriter.icpp"
+
+#endif
