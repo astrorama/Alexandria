@@ -35,7 +35,7 @@ class MockTableWriter : public TableWriter {
 public:
   
   MOCK_METHOD1(addComment, void(const std::string&));
-  MOCK_METHOD1(init, void(const ColumnInfo&));
+  MOCK_METHOD1(init, void(const Table&));
   MOCK_METHOD1(append, void(const Table&));
   
 };
@@ -67,7 +67,7 @@ struct TableWriter_Fixture {
 };
 
 MATCHER_P(ColumnInfoFirstName, expected, "") {
-  return arg.getDescription(0).name == expected;
+  return arg.getColumnInfo()->getDescription(0).name == expected;
 }
 
 MATCHER_P(TableFirstValue, expected, "") {

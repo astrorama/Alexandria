@@ -27,7 +27,7 @@ namespace Table {
  * can be parameterized with the arguments of its constructor and it provides
  * write() methods for writing the tables.
  */
-class ELEMENTS_API FitsWriter {
+class ELEMENTS_API FitsWriterOld {
 
 public:
 
@@ -45,10 +45,10 @@ public:
    *
    * @param format The output HDU format
    */
-  FitsWriter(Format format = Format::BINARY);
+  FitsWriterOld(Format format = Format::BINARY);
 
   /// Default destructor
-  virtual ~FitsWriter() = default;
+  virtual ~FitsWriterOld() = default;
 
   /**
    * @brief

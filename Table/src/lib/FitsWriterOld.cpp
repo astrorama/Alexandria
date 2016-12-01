@@ -5,15 +5,15 @@
  */
 
 #include "FitsWriterHelper.h"
-#include "Table/FitsWriter.h"
+#include "Table/FitsWriterOld.h"
 #include "ElementsKernel/Exception.h"
 
 namespace Euclid {
 namespace Table {
 
-FitsWriter::FitsWriter(Format format) : m_format{format} { }
+FitsWriterOld::FitsWriterOld(Format format) : m_format{format} { }
 
-void FitsWriter::write(CCfits::FITS& fits, const std::string& hdu_name, const Table& table,
+void FitsWriterOld::write(CCfits::FITS& fits, const std::string& hdu_name, const Table& table,
                        const std::vector<std::string>& comments) const {
   auto column_info = table.getColumnInfo();
   std::vector<std::string> column_name_list {};
@@ -33,7 +33,7 @@ void FitsWriter::write(CCfits::FITS& fits, const std::string& hdu_name, const Ta
   for (size_t column_index=0; column_index<column_info->size(); ++column_index) {
     auto& desc = column_info->getDescription(column_index).description;
     table_hdu->addKey("TDESC" + std::to_string(column_index+1), desc, "");
-    populateColumn(table, column_index, table_hdu);
+    populateColumn(table, column_index, *table_hdu);
   }
   if (!comments.empty()) {
     for (auto& c : comments) {

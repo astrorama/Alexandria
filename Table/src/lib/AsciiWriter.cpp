@@ -77,7 +77,7 @@ void AsciiWriter::addComment(const std::string& message) {
   }
 }
 
-void AsciiWriter::init(const ColumnInfo& info) {
+void AsciiWriter::init(const Table& table) {
   m_initialized = true;
   // If we have already written anything we leave an empty line
   if (m_writing_started) {
@@ -88,6 +88,7 @@ void AsciiWriter::init(const ColumnInfo& info) {
   auto& out = m_stream_holder->getStream();
   
   // Write the column descriptions
+  auto& info = *table.getColumnInfo();
   if (m_show_column_info) {
     for (size_t i=0; i<info.size(); ++i) {
       auto& desc = info.getDescription(i);
@@ -104,9 +105,10 @@ void AsciiWriter::init(const ColumnInfo& info) {
   }
   
   // Write the column names
+  auto column_lengths = calculateColumnLengths(table);
   out << m_comment.c_str();
   for (size_t i=0; i<info.size(); ++i) {
-    out << ' ' << info.getDescription(i).name;
+    out << std::setw(column_lengths[i]) << info.getDescription(i).name;
   }
   out << "\n\n";
 }

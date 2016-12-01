@@ -57,7 +57,7 @@ public:
 
 protected:
   
-  virtual void init(const ColumnInfo& info) = 0;
+  virtual void init(const Table& table) = 0;
   
   virtual void append(const Table& table) = 0;
 

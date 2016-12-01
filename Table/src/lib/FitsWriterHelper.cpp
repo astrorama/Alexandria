@@ -144,38 +144,38 @@ std::vector<T> createSingleValueVectorColumnData(const Euclid::Table::Table& tab
 }
 
 template <typename T>
-void populateVectorColumn(const Table& table, size_t column_index, CCfits::Table* table_hdu) {
+void populateVectorColumn(const Table& table, size_t column_index, CCfits::ExtHDU& table_hdu, long first_row) {
   const auto& vec = boost::get<std::vector<T>>(table[0][column_index]);
   if (vec.size() > 1) {
-    table_hdu->column(column_index+1).writeArrays(createVectorColumnData<double>(table, column_index), 1);
+    table_hdu.column(column_index+1).writeArrays(createVectorColumnData<double>(table, column_index), first_row);
   } else {
-    table_hdu->column(column_index+1).write(createSingleValueVectorColumnData<double>(table, column_index), 1);
+    table_hdu.column(column_index+1).write(createSingleValueVectorColumnData<double>(table, column_index), first_row);
   }
 }
 
-void populateColumn(const Table& table, size_t column_index, CCfits::Table* table_hdu) {
+void populateColumn(const Table& table, size_t column_index, CCfits::ExtHDU& table_hdu, long first_row) {
   auto type = table.getColumnInfo()->getDescription(column_index).type;
   // CCfits indices start from 1
   if (type == typeid(bool)) {
-    table_hdu->column(column_index+1).write(createColumnData<bool>(table, column_index), 1);
+    table_hdu.column(column_index+1).write(createColumnData<bool>(table, column_index), first_row);
   } else if (type == typeid(int32_t)) {
-    table_hdu->column(column_index+1).write(createColumnData<int32_t>(table, column_index), 1);
+    table_hdu.column(column_index+1).write(createColumnData<int32_t>(table, column_index), first_row);
   } else if (type == typeid(int64_t)) {
-    table_hdu->column(column_index+1).write(createColumnData<int64_t>(table, column_index), 1);
+    table_hdu.column(column_index+1).write(createColumnData<int64_t>(table, column_index), first_row);
   } else if (type == typeid(float)) {
-    table_hdu->column(column_index+1).write(createColumnData<float>(table, column_index), 1);
+    table_hdu.column(column_index+1).write(createColumnData<float>(table, column_index), first_row);
   } else if (type == typeid(double)) {
-    table_hdu->column(column_index+1).write(createColumnData<double>(table, column_index), 1);
+    table_hdu.column(column_index+1).write(createColumnData<double>(table, column_index), first_row);
   } else if (type == typeid(std::string)) {
-    table_hdu->column(column_index+1).write(createColumnData<std::string>(table, column_index), 1);
+    table_hdu.column(column_index+1).write(createColumnData<std::string>(table, column_index), first_row);
   } else if (type == typeid(std::vector<int32_t>)) {
-    populateVectorColumn<int32_t>(table, column_index, table_hdu);
+    populateVectorColumn<int32_t>(table, column_index, table_hdu, first_row);
   } else if (type == typeid(std::vector<int64_t>)) {
-    populateVectorColumn<int64_t>(table, column_index, table_hdu);
+    populateVectorColumn<int64_t>(table, column_index, table_hdu, first_row);
   } else if (type == typeid(std::vector<float>)) {
-    populateVectorColumn<float>(table, column_index, table_hdu);
+    populateVectorColumn<float>(table, column_index, table_hdu, first_row);
   } else if (type == typeid(std::vector<double>)) {
-    populateVectorColumn<double>(table, column_index, table_hdu);
+    populateVectorColumn<double>(table, column_index, table_hdu, first_row);
   } else {
     throw Elements::Exception() << "Cannot populate FITS column with data of type " << type.name();
   }

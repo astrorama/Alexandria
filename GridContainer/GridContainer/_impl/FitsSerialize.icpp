@@ -15,7 +15,7 @@
 #include <CCfits/CCfits>
 #include "XYDataset/QualifiedName.h"
 #include "Table/Table.h"
-#include "Table/FitsWriter.h"
+#include "Table/FitsWriterOld.h"
 #include "GridContainer/GridContainer.h"
 #include "GridConstructionHelper.h"
 
@@ -107,7 +107,7 @@ struct GridAxesToFitsHelper {
     Table::Table table {row_list};
 
     CCfits::FITS fits {filename.string(), CCfits::RWmode::Write};
-    Table::FitsWriter writer {Table::FitsWriter::Format::BINARY};
+    Table::FitsWriterOld writer {Table::FitsWriterOld::Format::BINARY};
     writer.write(fits, axis.name()+"_"+array_hdu_name, table);
   }
   

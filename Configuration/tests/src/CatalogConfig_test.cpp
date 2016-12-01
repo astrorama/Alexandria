@@ -26,7 +26,7 @@
 
 #include "ElementsKernel/Temporary.h"
 #include "Table/AsciiWriterOld.h"
-#include "Table/FitsWriter.h"
+#include "Table/FitsWriterOld.h"
 
 #include "Configuration/CatalogConfig.h"
 #include "ConfigManager_fixture.h"
@@ -106,7 +106,7 @@ struct CatalogConfig_fixture : public ConfigManager_fixture {
     
     {
       CCfits::FITS fits {(temp_dir.path()/fits_filename).string(), CCfits::RWmode::Write};
-      FitsWriter{}.write(fits, "Test", table);
+      FitsWriterOld{}.write(fits, "Test", table);
     }
     {
       std::ofstream out {(temp_dir.path()/ascii_filename).string()};

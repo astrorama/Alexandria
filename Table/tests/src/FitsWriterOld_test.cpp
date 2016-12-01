@@ -10,7 +10,7 @@
 #include "Table/Table.h"
 #include "Table/ColumnInfo.h"
 #include "Table/Row.h"
-#include "Table/FitsWriter.h"
+#include "Table/FitsWriterOld.h"
 
 struct FitsWriter_Fixture {
   std::vector<Euclid::Table::ColumnInfo::info_type> info_list {
@@ -44,7 +44,7 @@ BOOST_AUTO_TEST_SUITE (FitsWriter_test)
 BOOST_FIXTURE_TEST_CASE(writeBinary, FitsWriter_Fixture) {
 
   // Given
-  Euclid::Table::FitsWriter writer (Euclid::Table::FitsWriter::Format::BINARY);
+  Euclid::Table::FitsWriterOld writer (Euclid::Table::FitsWriterOld::Format::BINARY);
 
   // When
   writer.write(*fits, "BinaryTable", table);
@@ -140,7 +140,7 @@ BOOST_FIXTURE_TEST_CASE(writeBinary, FitsWriter_Fixture) {
 BOOST_FIXTURE_TEST_CASE(writeAscii, FitsWriter_Fixture) {
 
   // Given
-  Euclid::Table::FitsWriter writer (Euclid::Table::FitsWriter::Format::ASCII);
+  Euclid::Table::FitsWriterOld writer (Euclid::Table::FitsWriterOld::Format::ASCII);
 
   // When
   writer.write(*fits, "AsciiTable", table);

@@ -17,13 +17,13 @@
  */
 
 /**
- * @file Table/AsciiWriter.h
- * @date 11/30/16
+ * @file Table/FitsWriter.h
+ * @date 12/01/16
  * @author nikoapos
  */
 
-#ifndef _TABLE_ASCIIWRITER_H
-#define _TABLE_ASCIIWRITER_H
+#ifndef _TABLE_FITSWRITER_H
+#define _TABLE_FITSWRITER_H
 
 #include "Table/TableWriter.h"
 
@@ -31,35 +31,40 @@ namespace Euclid {
 namespace Table {
 
 /**
- * @class AsciiWriter
+ * @class FitsWriter
  * @brief
  *
  */
-class AsciiWriter : public TableWriter {
+class FitsWriter : public TableWriter {
 
 public:
+
+  /// The format of the HDUs a FitsWriter creates
+  enum class Format {
+    /// FITS ASCII table HDU format
+    ASCII,
+    /// FITS binary table HDU format
+    BINARY
+  };
   
-  template <typename StreamType, typename... Args>
-  static AsciiWriter create(Args&&... args);
+  FitsWriter(const std::string& filename);
   
-  static AsciiWriter create(std::ostream& stream);
+  FitsWriter(FitsWriter&&) = default;
+  FitsWriter& operator=(FitsWriter&&) = default;
   
-  static AsciiWriter create(const std::string& filename);
-  
-  AsciiWriter(AsciiWriter&&) = default;
-  AsciiWriter& operator=(AsciiWriter&&) = default;
-  
-  AsciiWriter(const AsciiWriter&) = delete;
-  AsciiWriter& operator=(const AsciiWriter&) = delete;
-  
+  FitsWriter(const FitsWriter&) = delete;
+  FitsWriter& operator=(const FitsWriter&) = delete;
+
   /**
    * @brief Destructor
    */
-  virtual ~AsciiWriter() = default;
+  virtual ~FitsWriter() = default;
+
+  FitsWriter& overrideFile(bool override);
   
-  AsciiWriter& setCommentIndicator(const std::string& indicator);
+  FitsWriter& setFormat(Format format);
   
-  AsciiWriter& showColumnInfo(bool show);
+  FitsWriter& setHduName(const std::string& name);
 
   void addComment(const std::string& message) override;
   
@@ -71,22 +76,19 @@ protected:
 
 private:
   
-  struct StreamHolder;
-
-  AsciiWriter(std::unique_ptr<StreamHolder> stream_holder);
-  
-  std::unique_ptr<StreamHolder> m_stream_holder;
-  bool m_writing_started = false;
+  std::string m_filename;
   bool m_initialized = false;
-  std::string m_comment = "#";
-  bool m_show_column_info = true;
-  std::vector<size_t> m_column_lengths;
+  bool m_override_file = true;
+  Format m_format = Format::BINARY;
+  std::string m_hdu_name = "";
+  std::vector<std::string> m_comments {};
+  int m_hdu_index = -1;
+  long m_current_line = 0;
 
-}; // End of AsciiWriter class
+}; /* End of FitsWriter class */
 
-} // namespace Table
-} // namespace Euclid
+} /* namespace Table */
+} /* namespace Euclid */
 
-#include "Table/_impl/AsciiWriter.icpp"
 
 #endif

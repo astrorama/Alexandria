@@ -32,7 +32,7 @@ void TableWriter::addData(const Table& table) {
   auto& info = *table.getColumnInfo();
   if (m_column_info == nullptr) {
     m_column_info.reset(new ColumnInfo(info));
-    init(info);
+    init(table);
   } else if (*m_column_info != info) {
     throw Elements::Exception() << "Cannot append table with different columns";
   }
