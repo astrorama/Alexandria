@@ -15,7 +15,7 @@
 #include <CCfits/CCfits>
 #include "XYDataset/QualifiedName.h"
 #include "Table/Table.h"
-#include "Table/FitsWriterOld.h"
+#include "Table/FitsWriter.h"
 #include "GridContainer/GridContainer.h"
 #include "GridConstructionHelper.h"
 
@@ -106,9 +106,10 @@ struct GridAxesToFitsHelper {
     }
     Table::Table table {row_list};
 
-    CCfits::FITS fits {filename.string(), CCfits::RWmode::Write};
-    Table::FitsWriterOld writer {Table::FitsWriterOld::Format::BINARY};
-    writer.write(fits, axis.name()+"_"+array_hdu_name, table);
+    Table::FitsWriter{filename.string()}.overrideFile(false)
+            .setFormat(Table::FitsWriter::Format::BINARY)
+            .setHduName(axis.name()+"_"+array_hdu_name)
+            .addData(table);
   }
   
   static void addGridAxesToFitsFile(const boost::filesystem::path&,

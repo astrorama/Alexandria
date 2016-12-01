@@ -26,7 +26,7 @@
 
 #include "ElementsKernel/Temporary.h"
 #include "Table/AsciiWriter.h"
-#include "Table/FitsWriterOld.h"
+#include "Table/FitsWriter.h"
 
 #include "Configuration/CatalogConfig.h"
 #include "ConfigManager_fixture.h"
@@ -105,8 +105,7 @@ struct CatalogConfig_fixture : public ConfigManager_fixture {
   CatalogConfig_fixture() {
     
     {
-      CCfits::FITS fits {(temp_dir.path()/fits_filename).string(), CCfits::RWmode::Write};
-      FitsWriterOld{}.write(fits, "Test", table);
+      FitsWriter{(temp_dir.path()/fits_filename).string()}.setHduName("Test").addData(table);
     }
     {
       std::ofstream out {(temp_dir.path()/ascii_filename).string()};

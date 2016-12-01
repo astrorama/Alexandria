@@ -43,9 +43,6 @@ elements_add_unit_test(FitsReader_test tests/src/FitsReader_test.cpp
 elements_add_unit_test(FitsReaderHelper_test tests/src/FitsReaderHelper_test.cpp 
                      LINK_LIBRARIES Table
                      TYPE Boost)
-elements_add_unit_test(FitsWriterOld_test tests/src/FitsWriterOld_test.cpp 
-                     LINK_LIBRARIES Table
-                     TYPE Boost)
 elements_add_unit_test(FitsWriterHelper_test tests/src/FitsWriterHelper_test.cpp 
                      LINK_LIBRARIES Table
                      TYPE Boost)
