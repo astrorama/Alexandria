@@ -27,7 +27,7 @@
 #include <boost/filesystem.hpp>
 
 #include "ElementsKernel/Temporary.h"
-#include "Table/AsciiWriterOld.h"
+#include "Table/AsciiWriter.h"
 #include "SourceCatalog/SourceAttributes/Photometry.h"
 
 #include "Configuration/CatalogConfig.h"
@@ -87,7 +87,7 @@ struct PhotometryCatalogConfig_fixture : public ConfigManager_fixture {
     
     {
       std::ofstream out {catalog_filename.string()};
-      AsciiWriterOld{}.write(out, table);
+      AsciiWriter::create(out).addData(table);
     }
     std::string mapping {
       "#Comment\n"

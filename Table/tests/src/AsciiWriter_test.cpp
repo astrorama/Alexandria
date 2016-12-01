@@ -24,59 +24,202 @@
 
 #include <boost/test/unit_test.hpp>
 
+#include "ElementsKernel/Exception.h"
 #include "Table/AsciiWriter.h"
 
 
-#include <iostream>
-#include <fstream>
-
 using namespace Euclid::Table;
+
+struct AsciiWriter_Fixture {
+  std::vector<ColumnInfo::info_type> info_list {
+      ColumnInfo::info_type("Boolean", typeid(bool), "unit1", "Desc1"),
+      ColumnInfo::info_type("ThisIsAVeryLongColumnName", typeid(std::string)),
+      ColumnInfo::info_type("Integer", typeid(int32_t), "unit3"),
+      ColumnInfo::info_type("D", typeid(double), "", "Desc4"),
+      ColumnInfo::info_type("F", typeid(float)),
+      ColumnInfo::info_type("DoubleVector", typeid(std::vector<double>))
+  };
+  std::shared_ptr<ColumnInfo> column_info {new ColumnInfo {info_list}};
+  std::vector<Row::cell_type> values0 {true, std::string{"Two-1"}, 1, 4.1, 0.f, std::vector<double>{1.1, 1.2}};
+  Row row0 {values0, column_info};
+  std::vector<Row::cell_type> values1 {false, std::string{"Two-2"}, 1234567890, 42e-16, 0.f, std::vector<double>{2.1, 2.2}};
+  Row row1 {values1, column_info};
+  std::vector<Row::cell_type> values2 {true, std::string{"Two-3"}, 234, 4.3, 0.f, std::vector<double>{3.1, 3.2, 3.3, 3.4}};
+  Row row2 {values2, column_info};
+  std::vector<Row> row_list {row0, row1, row2};
+  Table table {row_list};
+};
+
 
 //-----------------------------------------------------------------------------
 
 BOOST_AUTO_TEST_SUITE (AsciiWriter_test)
 
 //-----------------------------------------------------------------------------
-
-BOOST_AUTO_TEST_CASE( example_test ) {
-  std::cout << "-------------------------\n";
-
-  AsciiWriter writer = AsciiWriter::create(std::cout);
-  
-  writer.addComment("testing");
-  writer.addComment("Another comment");
-  writer.addComment("Another comment but now it has a\nnew line");
-  
-  std::vector<ColumnInfo::info_type> info_list {
-      ColumnInfo::info_type("Column", typeid(int))
-  };
-  std::shared_ptr<ColumnInfo> column_info {new ColumnInfo {info_list}};
-  
-  Row row1 {{1}, column_info};
-  Table table1 {{row1}};
-  
-  writer.addData(table1);
-
-  std::cout << "-------------------------\n";
-}
-//
-////-----------------------------------------------------------------------------
-//
-//BOOST_AUTO_TEST_CASE( example_test2) {
-//
-//  std::ofstream out_file {"/home/nikoapos/temp/testing.stream"};
-//  AsciiWriter writer = AsciiWriter::create(out_file);
-//  writer.addComment("testing\n");
-//
-//}
-
+// Test that setting the empty string as comment indicator throws exception
 //-----------------------------------------------------------------------------
 
-BOOST_AUTO_TEST_CASE( example_test3) {
+BOOST_AUTO_TEST_CASE(EmptyCommentIndicator) {
+  
+  // Given
+  std::stringstream stream {};
+  std::string comment = "";
+  
+  // When
+  auto writer = AsciiWriter::create(stream);
+  
+  // Then
+  BOOST_CHECK_THROW(writer.setCommentIndicator(comment), Elements::Exception);
+  
+}
 
-  AsciiWriter writer = AsciiWriter::create("/home/nikoapos/temp/testing2.stream");
-  writer.addComment("testing2");
+//-----------------------------------------------------------------------------
+// Test the addData method
+//-----------------------------------------------------------------------------
 
+BOOST_FIXTURE_TEST_CASE(addData, AsciiWriter_Fixture) {
+  
+  // Given
+  std::stringstream stream_hash {};
+  std::stringstream stream_double_slash {};
+  auto writer_hash = AsciiWriter::create(stream_hash);
+  auto writer_double_slash = AsciiWriter::create(stream_double_slash);
+  writer_double_slash.setCommentIndicator("//");
+  
+  // When
+  writer_hash.addData(table);
+  writer_double_slash.addData(table);
+  
+  // Then
+  BOOST_CHECK_EQUAL(stream_hash.str(),
+    "# Column: Boolean bool (unit1) - Desc1\n"
+    "# Column: ThisIsAVeryLongColumnName string\n"
+    "# Column: Integer int (unit3)\n"
+    "# Column: D double - Desc4\n"
+    "# Column: F float\n"
+    "# Column: DoubleVector [double]\n"
+    "\n"
+    "# Boolean ThisIsAVeryLongColumnName    Integer       D F    DoubleVector\n"
+    "\n"
+    "        1                     Two-1          1     4.1 0         1.1,1.2\n"
+    "        0                     Two-2 1234567890 4.2e-15 0         2.1,2.2\n"
+    "        1                     Two-3        234     4.3 0 3.1,3.2,3.3,3.4\n"
+  );
+  BOOST_CHECK_EQUAL(stream_double_slash.str(),
+    "// Column: Boolean bool (unit1) - Desc1\n"
+    "// Column: ThisIsAVeryLongColumnName string\n"
+    "// Column: Integer int (unit3)\n"
+    "// Column: D double - Desc4\n"
+    "// Column: F float\n"
+    "// Column: DoubleVector [double]\n"
+    "\n"
+    "// Boolean ThisIsAVeryLongColumnName    Integer       D F    DoubleVector\n"
+    "\n"
+    "         1                     Two-1          1     4.1 0         1.1,1.2\n"
+    "         0                     Two-2 1234567890 4.2e-15 0         2.1,2.2\n"
+    "         1                     Two-3        234     4.3 0 3.1,3.2,3.3,3.4\n"
+  );
+  
+}
+
+//-----------------------------------------------------------------------------
+// Test the addData method without column info comments
+//-----------------------------------------------------------------------------
+
+BOOST_FIXTURE_TEST_CASE(addDataNoColumnInfo, AsciiWriter_Fixture) {
+  
+  // Given
+  std::stringstream stream_hash {};
+  std::stringstream stream_double_slash {};
+  auto writer_hash = AsciiWriter::create(stream_hash);
+  auto writer_double_slash = AsciiWriter::create(stream_double_slash);
+  writer_double_slash.setCommentIndicator("//");
+  
+  // When
+  writer_hash.showColumnInfo(false);
+  writer_hash.addData(table);
+  writer_double_slash.showColumnInfo(false);
+  writer_double_slash.addData(table);
+  
+  // Then
+  BOOST_CHECK_EQUAL(stream_hash.str(),
+    "# Boolean ThisIsAVeryLongColumnName    Integer       D F    DoubleVector\n"
+    "\n"
+    "        1                     Two-1          1     4.1 0         1.1,1.2\n"
+    "        0                     Two-2 1234567890 4.2e-15 0         2.1,2.2\n"
+    "        1                     Two-3        234     4.3 0 3.1,3.2,3.3,3.4\n"
+  );
+  BOOST_CHECK_EQUAL(stream_double_slash.str(),
+    "// Boolean ThisIsAVeryLongColumnName    Integer       D F    DoubleVector\n"
+    "\n"
+    "         1                     Two-1          1     4.1 0         1.1,1.2\n"
+    "         0                     Two-2 1234567890 4.2e-15 0         2.1,2.2\n"
+    "         1                     Two-3        234     4.3 0 3.1,3.2,3.3,3.4\n"
+  );
+  
+}
+
+//-----------------------------------------------------------------------------
+// Test the addData method with comments
+//-----------------------------------------------------------------------------
+
+BOOST_FIXTURE_TEST_CASE(addDataComments, AsciiWriter_Fixture) {
+  
+  // Given
+  std::stringstream stream_hash {};
+  std::stringstream stream_double_slash {};
+  auto writer_hash = AsciiWriter::create(stream_hash);
+  auto writer_double_slash = AsciiWriter::create(stream_double_slash);
+  writer_double_slash.setCommentIndicator("//");
+  std::vector<std::string> comments {
+    "First comment",
+    "Second comment"
+  };
+  
+  // When
+  for (auto& c : comments) {
+    writer_hash.addComment(c);
+    writer_double_slash.addComment(c);
+  }
+  writer_hash.addData(table);
+  writer_double_slash.addData(table);
+  
+  // Then
+  BOOST_CHECK_EQUAL(stream_hash.str(),
+    "# First comment\n"
+    "# Second comment\n"
+    "\n"
+    "# Column: Boolean bool (unit1) - Desc1\n"
+    "# Column: ThisIsAVeryLongColumnName string\n"
+    "# Column: Integer int (unit3)\n"
+    "# Column: D double - Desc4\n"
+    "# Column: F float\n"
+    "# Column: DoubleVector [double]\n"
+    "\n"
+    "# Boolean ThisIsAVeryLongColumnName    Integer       D F    DoubleVector\n"
+    "\n"
+    "        1                     Two-1          1     4.1 0         1.1,1.2\n"
+    "        0                     Two-2 1234567890 4.2e-15 0         2.1,2.2\n"
+    "        1                     Two-3        234     4.3 0 3.1,3.2,3.3,3.4\n"
+  );
+  BOOST_CHECK_EQUAL(stream_double_slash.str(),
+    "// First comment\n"
+    "// Second comment\n"
+    "\n"
+    "// Column: Boolean bool (unit1) - Desc1\n"
+    "// Column: ThisIsAVeryLongColumnName string\n"
+    "// Column: Integer int (unit3)\n"
+    "// Column: D double - Desc4\n"
+    "// Column: F float\n"
+    "// Column: DoubleVector [double]\n"
+    "\n"
+    "// Boolean ThisIsAVeryLongColumnName    Integer       D F    DoubleVector\n"
+    "\n"
+    "         1                     Two-1          1     4.1 0         1.1,1.2\n"
+    "         0                     Two-2 1234567890 4.2e-15 0         2.1,2.2\n"
+    "         1                     Two-3        234     4.3 0 3.1,3.2,3.3,3.4\n"
+  );
+  
 }
 
 //-----------------------------------------------------------------------------

@@ -34,9 +34,6 @@ elements_add_unit_test(AsciiReader_test tests/src/AsciiReader_test.cpp
 elements_add_unit_test(AsciiReaderHelper_test tests/src/AsciiReaderHelper_test.cpp 
                      LINK_LIBRARIES Table
                      TYPE Boost)
-elements_add_unit_test(AsciiWriterOld_test tests/src/AsciiWriterOld_test.cpp 
-                     LINK_LIBRARIES Table
-                     TYPE Boost)
 elements_add_unit_test(AsciiWriterHelper_test tests/src/AsciiWriterHelper_test.cpp 
                      LINK_LIBRARIES Table
                      TYPE Boost)

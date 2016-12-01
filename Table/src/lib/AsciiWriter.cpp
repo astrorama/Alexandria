@@ -49,6 +49,9 @@ AsciiWriter& AsciiWriter::setCommentIndicator(const std::string& indicator) {
     throw Elements::Exception() << "Changing comment indicator after writing "
             << "has started is not allowed";
   }
+  if (indicator.empty()) {
+    throw Elements::Exception() << "Empty string as comment indicator";
+  }
   m_comment = indicator;
   return *this;
 }
