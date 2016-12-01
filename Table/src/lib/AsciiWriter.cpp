@@ -36,6 +36,10 @@ AsciiWriter AsciiWriter::create(std::ostream& stream) {
   return create<std::reference_wrapper < std::ostream >> (stream);
 }
 
+AsciiWriter AsciiWriter::create(const std::string& filename) {
+  return AsciiWriter::create<std::ofstream>(filename);
+}
+
 AsciiWriter::AsciiWriter(std::unique_ptr<StreamHolder> stream_holder)
         : m_stream_holder(std::move(stream_holder)) {
 }

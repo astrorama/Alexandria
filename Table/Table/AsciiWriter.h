@@ -44,6 +44,8 @@ public:
   
   static AsciiWriter create(std::ostream& stream);
   
+  static AsciiWriter create(const std::string& filename);
+  
   AsciiWriter(AsciiWriter&&) = default;
   AsciiWriter& operator=(AsciiWriter&&) = default;
   

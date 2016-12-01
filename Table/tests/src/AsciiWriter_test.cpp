@@ -69,15 +69,15 @@ BOOST_AUTO_TEST_CASE( example_test ) {
 //  writer.addComment("testing\n");
 //
 //}
-//
-////-----------------------------------------------------------------------------
-//
-//BOOST_AUTO_TEST_CASE( example_test3) {
-//
-//  AsciiWriter writer = AsciiWriter::create<std::ofstream>("/home/nikoapos/temp/testing2.stream");
-//  writer.addComment("testing2\n");
-//
-//}
+
+//-----------------------------------------------------------------------------
+
+BOOST_AUTO_TEST_CASE( example_test3) {
+
+  AsciiWriter writer = AsciiWriter::create("/home/nikoapos/temp/testing2.stream");
+  writer.addComment("testing2");
+
+}
 
 //-----------------------------------------------------------------------------
 
