@@ -109,17 +109,17 @@ struct CatalogConfig_fixture : public ConfigManager_fixture {
     }
     {
       std::ofstream out {(temp_dir.path()/ascii_filename).string()};
-      AsciiWriter::create(out).addData(table);
+      AsciiWriter(out).addData(table);
     }
     {
       fs::create_directories((temp_dir.path()/relative_filename).parent_path());
       std::ofstream out {(temp_dir.path()/relative_filename).string()};
-      AsciiWriter::create(out).addData(table);
+      AsciiWriter(out).addData(table);
     }
     {
       fs::create_directories(absolute_filename.parent_path());
       std::ofstream out {absolute_filename.string()};
-      AsciiWriter::create(out).addData(table);
+      AsciiWriter(out).addData(table);
     }
     
     config_manager.registerConfiguration<BaseDirConfig>();

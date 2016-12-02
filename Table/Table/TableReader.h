@@ -43,7 +43,7 @@ public:
 
   virtual ~TableReader() = default;
   
-  virtual ColumnInfo getInfo() = 0;
+  virtual const ColumnInfo& getInfo() = 0;
 
   virtual Table read(long rows=-1) = 0;
   

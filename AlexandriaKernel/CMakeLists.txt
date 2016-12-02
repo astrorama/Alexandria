@@ -30,6 +30,8 @@ elements_depends_on_subdirs(ElementsKernel)
 #                     INCLUDE_DIRS Boost ElementsKernel
 #                     PUBLIC_HEADERS ElementsExamples)
 #===============================================================================
+elements_add_library(AlexandriaKernel src/lib/*.cpp
+                     PUBLIC_HEADERS AlexandriaKernel)
 
 #===============================================================================
 # Declare the executables here

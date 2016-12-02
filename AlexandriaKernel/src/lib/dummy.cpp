@@ -17,17 +17,6 @@
  */
 
 /* 
- * @file AsciiWriter.icpp
+ * @file dummy.cpp
  * @author nikoapos
  */
-
-namespace Euclid {
-namespace Table {
-
-template <typename StreamType, typename... Args>
-AsciiWriter AsciiWriter::create(Args&&... args) {
-  return AsciiWriter(InstOrRefHolder<std::ostream>::create<StreamType>(std::forward<Args>(args)...));
-}
-
-} // namespace Table
-} // namespace Euclid

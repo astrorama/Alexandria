@@ -17,17 +17,36 @@
  */
 
 /* 
- * @file AsciiWriter.icpp
+ * @file InstanceOrReferenceHolder.h
  * @author nikoapos
  */
 
+#ifndef _ALEXANDRIAKERNEL_INSTANCEORREFERENCEHOLDER_H
+#define _ALEXANDRIAKERNEL_INSTANCEORREFERENCEHOLDER_H
+
+#include <memory>
+
 namespace Euclid {
-namespace Table {
 
-template <typename StreamType, typename... Args>
-AsciiWriter AsciiWriter::create(Args&&... args) {
-  return AsciiWriter(InstOrRefHolder<std::ostream>::create<StreamType>(std::forward<Args>(args)...));
-}
+template <typename InterfaceType>
+class InstOrRefHolder {
+  
+public:
+  
+  template <typename InstanceType=InterfaceType, typename... Args>
+  static std::unique_ptr<InstOrRefHolder<InterfaceType>> create(Args... args);
+  
+  static std::unique_ptr<InstOrRefHolder<InterfaceType>> create(InterfaceType& ref);
+  
+  virtual ~InstOrRefHolder() = default;
+  
+  virtual InterfaceType& ref() = 0;
+  
+};
 
-} // namespace Table
-} // namespace Euclid
+} // end of namespace Euclid
+
+#include "AlexandriaKernel/_impl/InstOrRefHolder.icpp"
+
+#endif /* _ALEXANDRIAKERNEL_INSTANCEORREFERENCEHOLDER_H */
+

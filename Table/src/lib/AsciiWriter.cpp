@@ -32,15 +32,13 @@
 namespace Euclid {
 namespace Table {
 
-AsciiWriter AsciiWriter::create(std::ostream& stream) {
-  return create<std::reference_wrapper < std::ostream >> (stream);
+AsciiWriter::AsciiWriter(std::ostream& stream) : AsciiWriter(InstOrRefHolder<std::ostream>::create(stream)) {
 }
 
-AsciiWriter AsciiWriter::create(const std::string& filename) {
-  return AsciiWriter::create<std::ofstream>(filename);
+AsciiWriter::AsciiWriter(const std::string& filename) : AsciiWriter(create<std::ofstream>(filename)) {
 }
 
-AsciiWriter::AsciiWriter(std::unique_ptr<StreamHolder> stream_holder)
+AsciiWriter::AsciiWriter(std::unique_ptr<InstOrRefHolder<std::ostream>> stream_holder)
         : m_stream_holder(std::move(stream_holder)) {
 }
 
@@ -76,7 +74,7 @@ void AsciiWriter::addComment(const std::string& message) {
   while (!message_stream.eof()) {
     std::string line;
     std::getline(message_stream, line);
-    m_stream_holder->getStream() << m_comment << ' ' << line << '\n';
+    m_stream_holder->ref() << m_comment << ' ' << line << '\n';
   }
 }
 
@@ -84,11 +82,11 @@ void AsciiWriter::init(const Table& table) {
   m_initialized = true;
   // If we have already written anything we leave an empty line
   if (m_writing_started) {
-    m_stream_holder->getStream() << '\n';
+    m_stream_holder->ref() << '\n';
   }
   m_writing_started = true;
   
-  auto& out = m_stream_holder->getStream();
+  auto& out = m_stream_holder->ref();
   
   // Write the column descriptions
   auto& info = *table.getColumnInfo();
@@ -117,7 +115,7 @@ void AsciiWriter::init(const Table& table) {
 }
 
 void AsciiWriter::append(const Table& table) {
-  auto& out = m_stream_holder->getStream();
+  auto& out = m_stream_holder->ref();
   auto column_lengths = calculateColumnLengths(table);
   // The data lines are not prefixed with the comment string, so we need to fix
   // the length of the first column to get the alignment correctly

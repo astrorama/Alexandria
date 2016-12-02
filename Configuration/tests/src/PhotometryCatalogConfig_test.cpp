@@ -87,7 +87,7 @@ struct PhotometryCatalogConfig_fixture : public ConfigManager_fixture {
     
     {
       std::ofstream out {catalog_filename.string()};
-      AsciiWriter::create(out).addData(table);
+      AsciiWriter(out).addData(table);
     }
     std::string mapping {
       "#Comment\n"

@@ -66,7 +66,7 @@ BOOST_AUTO_TEST_CASE(EmptyCommentIndicator) {
   std::string comment = "";
   
   // When
-  auto writer = AsciiWriter::create(stream);
+  AsciiWriter writer {stream};
   
   // Then
   BOOST_CHECK_THROW(writer.setCommentIndicator(comment), Elements::Exception);
@@ -82,8 +82,8 @@ BOOST_FIXTURE_TEST_CASE(addData, AsciiWriter_Fixture) {
   // Given
   std::stringstream stream_hash {};
   std::stringstream stream_double_slash {};
-  auto writer_hash = AsciiWriter::create(stream_hash);
-  auto writer_double_slash = AsciiWriter::create(stream_double_slash);
+  AsciiWriter writer_hash {stream_hash};
+  AsciiWriter writer_double_slash {stream_double_slash};
   writer_double_slash.setCommentIndicator("//");
   
   // When
@@ -131,8 +131,8 @@ BOOST_FIXTURE_TEST_CASE(addDataNoColumnInfo, AsciiWriter_Fixture) {
   // Given
   std::stringstream stream_hash {};
   std::stringstream stream_double_slash {};
-  auto writer_hash = AsciiWriter::create(stream_hash);
-  auto writer_double_slash = AsciiWriter::create(stream_double_slash);
+  AsciiWriter writer_hash {stream_hash};
+  AsciiWriter writer_double_slash {stream_double_slash};
   writer_double_slash.setCommentIndicator("//");
   
   // When
@@ -168,8 +168,8 @@ BOOST_FIXTURE_TEST_CASE(addDataComments, AsciiWriter_Fixture) {
   // Given
   std::stringstream stream_hash {};
   std::stringstream stream_double_slash {};
-  auto writer_hash = AsciiWriter::create(stream_hash);
-  auto writer_double_slash = AsciiWriter::create(stream_double_slash);
+  AsciiWriter writer_hash {stream_hash};
+  AsciiWriter writer_double_slash {stream_double_slash};
   writer_double_slash.setCommentIndicator("//");
   std::vector<std::string> comments {
     "First comment",
@@ -223,6 +223,11 @@ BOOST_FIXTURE_TEST_CASE(addDataComments, AsciiWriter_Fixture) {
 }
 
 //-----------------------------------------------------------------------------
+
+BOOST_FIXTURE_TEST_CASE(ttt, AsciiWriter_Fixture) {
+  AsciiWriter writer {"/home/nikoapos/temp/test.cat"};
+  writer.addComment("This is a comment");
+}
 
 BOOST_AUTO_TEST_SUITE_END ()
 

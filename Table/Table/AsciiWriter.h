@@ -25,6 +25,7 @@
 #ifndef _TABLE_ASCIIWRITER_H
 #define _TABLE_ASCIIWRITER_H
 
+#include "AlexandriaKernel/InstOrRefHolder.h"
 #include "Table/TableWriter.h"
 
 namespace Euclid {
@@ -42,9 +43,9 @@ public:
   template <typename StreamType, typename... Args>
   static AsciiWriter create(Args&&... args);
   
-  static AsciiWriter create(std::ostream& stream);
+  AsciiWriter(std::ostream& stream);
   
-  static AsciiWriter create(const std::string& filename);
+  AsciiWriter(const std::string& filename);
   
   AsciiWriter(AsciiWriter&&) = default;
   AsciiWriter& operator=(AsciiWriter&&) = default;
@@ -70,12 +71,10 @@ protected:
   void append(const Table& table) override;
 
 private:
-  
-  struct StreamHolder;
 
-  AsciiWriter(std::unique_ptr<StreamHolder> stream_holder);
+  AsciiWriter(std::unique_ptr<InstOrRefHolder<std::ostream>> stream_holder);
   
-  std::unique_ptr<StreamHolder> m_stream_holder;
+  std::unique_ptr<InstOrRefHolder<std::ostream>> m_stream_holder;
   bool m_writing_started = false;
   bool m_initialized = false;
   std::string m_comment = "#";

@@ -84,7 +84,7 @@ struct SpecZCatalogConfig_fixture : public ConfigManager_fixture {
     
     {
       std::ofstream out {(temp_dir.path()/filename).string()};
-      AsciiWriter::create(out).addData(table);
+      AsciiWriter(out).addData(table);
     }
     
     config_manager.registerConfiguration<BaseDirConfig>();
