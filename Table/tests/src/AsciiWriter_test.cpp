@@ -224,11 +224,6 @@ BOOST_FIXTURE_TEST_CASE(addDataComments, AsciiWriter_Fixture) {
 
 //-----------------------------------------------------------------------------
 
-BOOST_FIXTURE_TEST_CASE(ttt, AsciiWriter_Fixture) {
-  AsciiWriter writer {"/home/nikoapos/temp/test.cat"};
-  writer.addComment("This is a comment");
-}
-
 BOOST_AUTO_TEST_SUITE_END ()
 
 

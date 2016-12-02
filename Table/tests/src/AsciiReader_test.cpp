@@ -25,6 +25,11 @@
 #include <boost/test/unit_test.hpp>
 
 #include "Table/AsciiReader.h"
+#include "Table/TableWriter.h"
+
+
+#include <iostream>
+#include "Table/AsciiWriter.h"
 
 using namespace Euclid::Table;
 
@@ -36,7 +41,11 @@ BOOST_AUTO_TEST_SUITE (AsciiReader_test)
 
 BOOST_AUTO_TEST_CASE( example_test ) {
 
-//  AsciiReader reader {};
+  AsciiReader reader {"/home/nikoapos/temp/test.cat"};
+  
+  AsciiWriter(std::cout).addData(reader.read(2));
+  AsciiWriter(std::cout).addData(reader.read(2));
+  AsciiWriter(std::cout).addData(reader.read(2));
 
 }
 

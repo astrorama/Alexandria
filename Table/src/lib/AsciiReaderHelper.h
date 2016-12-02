@@ -107,6 +107,8 @@ ELEMENTS_API std::vector<std::string> autoDetectColumnNames(std::istream& in,
  */
 ELEMENTS_API Row::cell_type convertToCellType(const std::string& value, std::type_index type);
 
+ELEMENTS_API bool hasNextRow(std::istream& in, const std::string& comment);
+
 }
 } // end of namespace Euclid
 

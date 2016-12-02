@@ -25,6 +25,7 @@
 #ifndef _TABLE_ASCIIREADER_H
 #define _TABLE_ASCIIREADER_H
 
+#include "AlexandriaKernel/InstOrRefHolder.h"
 #include "Table/TableReader.h"
 
 namespace Euclid {
@@ -39,7 +40,12 @@ class AsciiReader : public TableReader {
 
 public:
   
-  AsciiReader() = default;
+  template <typename StreamType, typename... Args>
+  static AsciiReader create(Args&&... args);
+  
+  AsciiReader(std::istream& stream);
+  
+  AsciiReader(const std::string& filename);
   
   AsciiReader(AsciiReader&&) = default;
   AsciiReader& operator=(AsciiReader&&) = default;
@@ -53,6 +59,10 @@ public:
   virtual ~AsciiReader() = default;
   
   AsciiReader& setCommentIndicator(const std::string& indicator);
+  
+  AsciiReader& fixColumnNames(std::vector<std::string> column_names);
+  
+  AsciiReader& fixColumnTypes(std::vector<std::type_index> column_types);
 
   const ColumnInfo& getInfo() override;
 
@@ -63,14 +73,23 @@ public:
   bool hasMoreRows() override;
 
 private:
+
+  AsciiReader(std::unique_ptr<InstOrRefHolder<std::istream>> stream_holder);
   
+  void readColumnInfo();
+  
+  std::unique_ptr<InstOrRefHolder<std::istream>> m_stream_holder;
   bool m_reading_started = false;
   std::string m_comment = "#";
+  std::vector<std::type_index> m_column_types {};
+  std::vector<std::string> m_column_names {};
+  std::shared_ptr<ColumnInfo> m_column_info;
 
 }; /* End of AsciiReader class */
 
 } /* namespace Table */
 } /* namespace Euclid */
 
+#include "_impl/AsciiReader.icpp"
 
 #endif
