@@ -145,7 +145,7 @@ public:
   }
   
   int64_t operator() (const std::string& from) const {
-    return std::atoi(from.c_str());
+    return std::atol(from.c_str());
   }
 
 };
