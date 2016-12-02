@@ -24,7 +24,7 @@
 #include <CCfits/CCfits>
 #include "ElementsKernel/Exception.h"
 #include "ElementsKernel/Logging.h"
-#include "Table/AsciiReader.h"
+#include "Table/AsciiReaderOld.h"
 #include "Table/FitsReader.h"
 #include "Configuration/CatalogConfig.h"
 #include "SourceCatalog/CatalogFromTable.h"
@@ -141,7 +141,7 @@ static Table::Table readFitsTable(fs::path file) {
 
 static Table::Table readAsciiTable(fs::path file) {
   std::ifstream in {file.string()};
-  return Table::AsciiReader().read(in);
+  return Table::AsciiReaderOld().read(in);
 }
 
 void CatalogConfig::initialize(const UserValues& args) {

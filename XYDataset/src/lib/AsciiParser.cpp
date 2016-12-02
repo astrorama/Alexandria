@@ -13,7 +13,7 @@
 #include "boost/lexical_cast.hpp"
 
 #include "ElementsKernel/Exception.h"
-#include "Table/AsciiReader.h"
+#include "Table/AsciiReaderOld.h"
 #include "XYDataset/AsciiParser.h"
 #include "StringFunctions.h"
 
@@ -67,7 +67,7 @@ std::unique_ptr<XYDataset> AsciiParser::getDataset(const std::string& file) {
   // Check file exists
   if (sfile) {
     // Read file into a Table object
-    Euclid::Table::AsciiReader ascii_reader {{typeid(double), typeid(double)}};
+    Euclid::Table::AsciiReaderOld ascii_reader {{typeid(double), typeid(double)}};
     auto table = ascii_reader.read(sfile);
     // Put the Table data into vector pair
     std::vector<std::pair<double, double>> vector_pair;

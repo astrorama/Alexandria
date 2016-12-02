@@ -30,7 +30,7 @@ namespace Table {
  * for more than one format of files) and it provides read() methods for reading
  * the tables.
  */
-class ELEMENTS_API AsciiReader {
+class ELEMENTS_API AsciiReaderOld {
 
 public:
 
@@ -87,12 +87,12 @@ public:
    *    if none of column_types and column_names are set for auto-detection and
    *    they have different size
    */
-  AsciiReader(std::vector<std::type_index> column_types = {},
+  AsciiReaderOld(std::vector<std::type_index> column_types = {},
               std::vector<std::string> column_names = {},
               std::string comment = "#");
 
   /// Default destructor
-  virtual ~AsciiReader() = default;
+  virtual ~AsciiReaderOld() = default;
 
   /**
    * @brief

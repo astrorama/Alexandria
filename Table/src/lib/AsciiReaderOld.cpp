@@ -15,7 +15,7 @@ using boost::regex;
 using boost::regex_match;
 #include <boost/algorithm/string.hpp>
 #include "ElementsKernel/Exception.h"
-#include "Table/AsciiReader.h"
+#include "Table/AsciiReaderOld.h"
 #include "ReaderHelper.h"
 #include "AsciiReaderHelper.h"
 #include "FitsReaderHelper.h"
@@ -23,7 +23,7 @@ using boost::regex_match;
 namespace Euclid {
 namespace Table {
 
-AsciiReader::AsciiReader(std::vector<std::type_index> column_types,
+AsciiReaderOld::AsciiReaderOld(std::vector<std::type_index> column_types,
                          std::vector<std::string> column_names, std::string comment)
                 : m_column_types{std::move(column_types)},
                   m_column_names{std::move(column_names)},
@@ -51,7 +51,7 @@ AsciiReader::AsciiReader(std::vector<std::type_index> column_types,
   }
 }
 
-const Table AsciiReader::read(std::istream& in) const {
+const Table AsciiReaderOld::read(std::istream& in) const {
   size_t columns_number = countColumns(in, m_comment);
   if (!m_column_names.empty() && m_column_names.size() != columns_number) {
     throw Elements::Exception() << "Columns number in stream (" << columns_number
