@@ -172,7 +172,7 @@ const ColumnInfo& AsciiReader::getInfo() {
   return *m_column_info;
 }
 
-Table AsciiReader::read(long rows) {
+Table AsciiReader::readImpl(long rows) {
   readColumnInfo();
   auto& in = m_stream_holder->ref();
   

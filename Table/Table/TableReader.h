@@ -45,15 +45,17 @@ public:
   
   virtual const ColumnInfo& getInfo() = 0;
   
-  Table read() {
-    return read(-1);
+  Table read(long rows=-1) {
+    return readImpl(rows);
   }
-
-  virtual Table read(long rows) = 0;
   
   virtual void skip(long rows) = 0;
   
   virtual bool hasMoreRows() = 0;
+  
+protected:
+
+  virtual Table readImpl(long rows) = 0;
   
 };
 

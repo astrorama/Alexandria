@@ -59,4 +59,7 @@ elements_add_unit_test(FitsWriter_test tests/src/FitsWriter_test.cpp
 elements_add_unit_test(AsciiReader_test tests/src/AsciiReader_test.cpp 
                      LINK_LIBRARIES Table
                      TYPE Boost)
+elements_add_unit_test(FitsReader_test tests/src/FitsReader_test.cpp 
+                     LINK_LIBRARIES Table
+                     TYPE Boost)
 

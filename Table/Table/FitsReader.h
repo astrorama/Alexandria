@@ -17,52 +17,48 @@
  */
 
 /**
- * @file Table/AsciiReader.h
- * @date 12/02/16
+ * @file Table/FitsReader.h
+ * @date 12/05/16
  * @author nikoapos
  */
 
-#ifndef _TABLE_ASCIIREADER_H
-#define _TABLE_ASCIIREADER_H
+#ifndef _TABLE_FITSREADER_H
+#define _TABLE_FITSREADER_H
 
-#include "AlexandriaKernel/InstOrRefHolder.h"
+#include <functional>
+#include <CCfits/CCfits>
 #include "Table/TableReader.h"
 
 namespace Euclid {
 namespace Table {
 
 /**
- * @class AsciiReader
+ * @class FitsReader
  * @brief
  *
  */
-class AsciiReader : public TableReader {
+class FitsReader : public TableReader {
 
 public:
   
-  template <typename StreamType, typename... Args>
-  static AsciiReader create(Args&&... args);
+  FitsReader(const CCfits::HDU& hdu);
   
-  AsciiReader(std::istream& stream);
+  FitsReader(const std::string& filename, int hdu_index=1);
   
-  AsciiReader(const std::string& filename);
+  FitsReader(const std::string& filename, const std::string& hduName);
   
-  AsciiReader(AsciiReader&&) = default;
-  AsciiReader& operator=(AsciiReader&&) = default;
+  FitsReader(FitsReader&&) = default;
+  FitsReader& operator=(FitsReader&&) = default;
   
-  AsciiReader(const AsciiReader&) = delete;
-  AsciiReader& operator=(const AsciiReader&) = delete;
+  FitsReader(const FitsReader&) = delete;
+  FitsReader& operator=(const FitsReader&) = delete;
 
   /**
    * @brief Destructor
    */
-  virtual ~AsciiReader() = default;
+  virtual ~FitsReader() = default;
   
-  AsciiReader& setCommentIndicator(const std::string& indicator);
-  
-  AsciiReader& fixColumnNames(std::vector<std::string> column_names);
-  
-  AsciiReader& fixColumnTypes(std::vector<std::type_index> column_types);
+  FitsReader& fixColumnNames(std::vector<std::string> column_names);
 
   const ColumnInfo& getInfo() override;
   
@@ -75,23 +71,21 @@ protected:
   Table readImpl(long rows) override;
 
 private:
-
-  AsciiReader(std::unique_ptr<InstOrRefHolder<std::istream>> stream_holder);
   
   void readColumnInfo();
   
-  std::unique_ptr<InstOrRefHolder<std::istream>> m_stream_holder;
+  std::unique_ptr<CCfits::FITS> m_fits {nullptr};
+  std::reference_wrapper<const CCfits::HDU> m_hdu; 
   bool m_reading_started = false;
-  std::string m_comment = "#";
-  std::vector<std::type_index> m_column_types {};
+  long m_total_rows = -1;
+  long m_current_row = 1;
   std::vector<std::string> m_column_names {};
   std::shared_ptr<ColumnInfo> m_column_info;
 
-}; /* End of AsciiReader class */
+}; /* End of FitsReader class */
 
 } /* namespace Table */
 } /* namespace Euclid */
 
-#include "_impl/AsciiReader.icpp"
 
 #endif

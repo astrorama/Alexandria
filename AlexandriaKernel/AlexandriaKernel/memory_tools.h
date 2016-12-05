@@ -24,6 +24,8 @@
 #ifndef _ALEXANDRIAKERNEL_MEMORY_TOOLS_H
 #define _ALEXANDRIAKERNEL_MEMORY_TOOLS_H
 
+#include <memory>
+
 namespace Euclid {
 
 /**
