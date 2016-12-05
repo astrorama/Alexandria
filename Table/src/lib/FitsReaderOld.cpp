@@ -12,14 +12,14 @@ using boost::regex_match;
 #include "ElementsKernel/Exception.h"
 #include "ElementsKernel/Unused.h"
 #include "Table/Row.h"
-#include "Table/FitsReader.h"
+#include "Table/FitsReaderOld.h"
 #include "ReaderHelper.h"
 #include "FitsReaderHelper.h"
 
 namespace Euclid {
 namespace Table {
 
-FitsReader::FitsReader(std::vector<std::string> column_names)
+FitsReaderOld::FitsReaderOld(std::vector<std::string> column_names)
                 : m_column_names{std::move(column_names)} {
   std::set<std::string> set {};
   regex whitespace {".*\\s.*"}; // Checks if input contains any whitespace characters
@@ -37,7 +37,7 @@ FitsReader::FitsReader(std::vector<std::string> column_names)
   }
 }
 
-const Euclid::Table::Table FitsReader::read(const CCfits::HDU& hdu) {
+const Euclid::Table::Table FitsReaderOld::read(const CCfits::HDU& hdu) {
   // First we check that we have a table HDU
   try {
     ELEMENTS_UNUSED auto& temp = dynamic_cast<const CCfits::Table&>(hdu);

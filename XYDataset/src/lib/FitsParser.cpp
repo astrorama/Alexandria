@@ -13,7 +13,7 @@
 #include "ElementsKernel/Exception.h"
 #include "ElementsKernel/Unused.h"
 
-#include "Table/FitsReader.h"
+#include "Table/FitsReaderOld.h"
 #include "XYDataset/FitsParser.h"
 #include "StringFunctions.h"
 
@@ -71,7 +71,7 @@ std::unique_ptr<XYDataset> FitsParser::getDataset(const std::string& file) {
     try {
       const CCfits::ExtHDU& table_hdu = fits->extension(1);
       // Read first HDU
-      Euclid::Table::FitsReader fits_reader {};
+      Euclid::Table::FitsReaderOld fits_reader {};
       auto table = fits_reader.read(table_hdu);
 
       // Put the Table data into vector pair

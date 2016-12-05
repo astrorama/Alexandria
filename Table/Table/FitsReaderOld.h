@@ -26,7 +26,7 @@ namespace Table {
  * can be parameterized with the arguments of its constructor and it provides
  * read() methods for reading the tables.
  */
-class ELEMENTS_API FitsReader {
+class ELEMENTS_API FitsReaderOld {
 
 public:
 
@@ -46,10 +46,10 @@ public:
    * @throws Elements::Exception
    *    if any of the given column names is empty or contains whitespace characters
    */
-  FitsReader(std::vector<std::string> column_names = {});
+  FitsReaderOld(std::vector<std::string> column_names = {});
 
   /// Default destructor
-  virtual ~FitsReader() = default;
+  virtual ~FitsReaderOld() = default;
 
   /**
    * @brief

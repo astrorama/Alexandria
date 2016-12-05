@@ -25,7 +25,7 @@
 #include "ElementsKernel/Exception.h"
 #include "ElementsKernel/Logging.h"
 #include "Table/AsciiReaderOld.h"
-#include "Table/FitsReader.h"
+#include "Table/FitsReaderOld.h"
 #include "Configuration/CatalogConfig.h"
 #include "SourceCatalog/CatalogFromTable.h"
 
@@ -132,7 +132,7 @@ static FormatType getFormatTypeFromOptions(const Configuration::UserValues& args
 static Table::Table readFitsTable(fs::path file) {
   try {
     CCfits::FITS fits {file.string()};
-    return Table::FitsReader().read(fits.extension(1));
+    return Table::FitsReaderOld().read(fits.extension(1));
   } catch (CCfits::FitsException ex) {
     throw Elements::Exception() << "Error while reading file " << file
                                 << ": " << ex.message();
