@@ -66,7 +66,7 @@ public:
 
   const ColumnInfo& getInfo() override;
 
-  Table read(long rows) override;
+  Table read(long rows=-1) override;
   
   void skip(long rows) override;
   

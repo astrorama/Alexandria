@@ -44,8 +44,12 @@ public:
   virtual ~TableReader() = default;
   
   virtual const ColumnInfo& getInfo() = 0;
+  
+  Table read() {
+    return read(-1);
+  }
 
-  virtual Table read(long rows=-1) = 0;
+  virtual Table read(long rows) = 0;
   
   virtual void skip(long rows) = 0;
   

@@ -29,9 +29,6 @@ elements_add_unit_test(Row_test tests/src/Row_test.cpp
 elements_add_unit_test(Table_test tests/src/Table_test.cpp 
                      LINK_LIBRARIES Table
                      TYPE Boost)
-elements_add_unit_test(AsciiReaderOld_test tests/src/AsciiReaderOld_test.cpp 
-                     LINK_LIBRARIES Table
-                     TYPE Boost)
 elements_add_unit_test(AsciiReaderHelper_test tests/src/AsciiReaderHelper_test.cpp 
                      LINK_LIBRARIES Table
                      TYPE Boost)
