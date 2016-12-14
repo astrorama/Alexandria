@@ -49,6 +49,8 @@ public:
   
   FitsWriter(const std::string& filename);
   
+  FitsWriter(std::shared_ptr<CCfits::FITS> fits);
+  
   FitsWriter(FitsWriter&&) = default;
   FitsWriter& operator=(FitsWriter&&) = default;
   
@@ -76,7 +78,8 @@ protected:
 
 private:
   
-  std::string m_filename;
+  std::string m_filename = "";
+  std::shared_ptr<CCfits::FITS> m_fits = nullptr;
   bool m_initialized = false;
   bool m_override_file = true;
   Format m_format = Format::BINARY;
