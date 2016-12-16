@@ -105,7 +105,7 @@ public:
    * has to be specified. The argument types will be inferred.
    * 
    * @tparam StreamType
-   *    The type of the stream to use for output
+   *    The type of the stream to use for reading
    * @tparam Args
    *    The types of arguments to pass to the StreamType constructor
    * @param args
