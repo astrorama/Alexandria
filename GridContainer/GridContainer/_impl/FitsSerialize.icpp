@@ -106,7 +106,7 @@ struct GridAxesToFitsHelper {
     }
     Table::Table table {row_list};
 
-    Table::FitsWriter{filename.string()}.overrideFile(false)
+    Table::FitsWriter{filename.string(), false}
             .setFormat(Table::FitsWriter::Format::BINARY)
             .setHduName(axis.name()+"_"+array_hdu_name)
             .addData(table);

@@ -168,12 +168,12 @@ public:
   
 protected:
   
-  // Writes to the stream the column info, following the rules explained at the
+  /// Writes to the stream the column info, following the rules explained at the
   /// class documentation
   void init(const Table& table) override;
   
-  // Writes to the stream the contents of the table, following the rules
-  // explained at the class documentation
+  /// Writes to the stream the contents of the table, following the rules
+  /// explained at the class documentation
   void append(const Table& table) override;
 
 private:

@@ -30,19 +30,11 @@
 namespace Euclid {
 namespace Table {
 
-FitsWriter::FitsWriter(const std::string& filename) : m_filename(filename) {
+FitsWriter::FitsWriter(const std::string& filename, bool override_flag)
+        : m_filename(filename), m_override_file(override_flag) {
 }
 
 FitsWriter::FitsWriter(std::shared_ptr<CCfits::FITS> fits) : m_fits(fits) {
-}
-
-FitsWriter& FitsWriter::overrideFile(bool flag) {
-  if (m_initialized) {
-    throw Elements::Exception() << "Changing the override flag after writing "
-            << "has started is not allowed";
-  }
-  m_override_file = flag;
-  return *this;
 }
 
 FitsWriter& FitsWriter::setFormat(Format format) {
