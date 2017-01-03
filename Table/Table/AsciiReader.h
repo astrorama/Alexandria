@@ -187,8 +187,10 @@ public:
    */
   const ColumnInfo& getInfo() override;
   
+  /// Implements the TableReader::skip() contract
   void skip(long rows) override;
   
+  /// Implements the TableReader::hasMoreRows() contract
   bool hasMoreRows() override;
   
 protected:
