@@ -25,6 +25,7 @@
 #ifndef _TABLE_FITSWRITER_H
 #define _TABLE_FITSWRITER_H
 
+#include <CCfits/FITS.h>
 #include "Table/TableWriter.h"
 
 namespace Euclid {
