@@ -289,5 +289,23 @@ bool hasNextRow(std::istream& in, const std::string& comment) {
   return false;
 }
 
+std::size_t countRemainingRows(std::istream& in, const std::string& comment) {
+  StreamRewinder rewinder {in};
+  std::size_t count = 0;
+  while(in) {
+    std::string line;
+    getline(in, line);
+    size_t comment_pos = line.find(comment);
+    if (comment_pos != std::string::npos) {
+      line = line.substr(0, comment_pos);
+    }
+    boost::trim(line);
+    if (!line.empty()) {
+      ++count;
+    }
+  }
+  return count;
+}
+
 }
 } // end of namespace Euclid

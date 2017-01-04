@@ -193,6 +193,9 @@ public:
   /// Implements the TableReader::hasMoreRows() contract
   bool hasMoreRows() override;
   
+  /// Implements the TableReader::rowsLeft() contract
+  std::size_t rowsLeft() override;
+  
 protected:
 
   /**

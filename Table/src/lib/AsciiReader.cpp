@@ -232,6 +232,10 @@ bool AsciiReader::hasMoreRows() {
   return hasNextRow(m_stream_holder->ref(), m_comment);
 }
 
+std::size_t AsciiReader::rowsLeft() {
+  return countRemainingRows(m_stream_holder->ref(), m_comment);
+}
+
 } // Table namespace
 } // Euclid namespace
 

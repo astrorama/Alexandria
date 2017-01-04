@@ -113,6 +113,16 @@ public:
    */
   virtual bool hasMoreRows() = 0;
   
+  /**
+   * @brief Returns the number of rows left to read
+   * @details
+   * When using this method keep in mind that some formats (like ASCII) might
+   * require to parse the full file.
+   * @return 
+   *    The number of rows left to read
+   */
+  virtual std::size_t rowsLeft() = 0;
+  
 protected:
 
   /**
