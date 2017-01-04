@@ -409,7 +409,7 @@ explained later at this document
 \subsubsection tablereader TableReader interface
 
 The TableReader interface is designed to operate as a stream to a given table.
-It provides four methods:
+It provides the following methods:
 
 - TableReader::getInfo() : which can be used to retrieve the column
 information of the underlying table
@@ -418,6 +418,8 @@ a Table object
 - TableReader::skip() : which can be used to skip some rows
 - TableReader::hasMoreRows() : which can be used to check if there are any rows
 left for reading
+- TableReader::rowsLeft() : which can be used to count how many rows are left
+for reading
 
 The TableReader::read() method, when called without any arguments it will read
 all the remaining rows of the table. When it is called with a number as an
@@ -438,6 +440,12 @@ double sumBigTableColumn(TableReader& reader, int col_index) {
   return sum;
 }
 \endcode
+
+\warning When you use the TableReader::rowsLeft() method be careful for
+performance issues! The performance of this method strongly depends on the
+implementation. The FITS implementation is very fast, but the ASCII
+implementation needs to parse the rest of the file and can easily become a
+performance bottle neck.
 
 \subsubsection tablewriter TableWriter interface
 
