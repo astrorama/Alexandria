@@ -59,7 +59,8 @@ public:
 private:
   
   std::mutex m_queue_mutex {};
-  std::vector<std::atomic<bool>> m_worker_flags;
+  std::vector<std::atomic<bool>> m_worker_run_flags;
+  std::vector<std::atomic<bool>> m_worker_done_flags;
   std::deque<Task> m_queue {};
   uint m_empty_queue_wait_time;
 
