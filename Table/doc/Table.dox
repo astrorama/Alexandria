@@ -13,11 +13,6 @@ briefly how to use the module and can be used as a quick-start guide. For more
 detailed information refer to the documentation of each individual class and
 method in the %Table namespace.
 
-\note The %Table module requires that the full table fits in memory. The purpose
-of the module is to simplify the generic usage of tables, abstracting the file
-format from the user. For more application specific or performance oriented
-tasks (like handling of tables bigger than the memory) the dedicated libraries
-should be used directly.
 
 \section tabledatamodel Table Data Model
 
