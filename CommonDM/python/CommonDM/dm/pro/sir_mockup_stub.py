@@ -1,7 +1,7 @@
-# /home/nikoapos/ISDC/Projects/Alexandria/1.0/CommonDM/python/CommonDM/dm/pro/sir_mockup_stub.py
+# /home/nikoapos/ISDC/Projects/Alexandria/2.0/CommonDM/python/CommonDM/dm/pro/sir_mockup_stub.py
 # PyXB bindings for NamespaceModule
 # NSM:7377929d2e4063e13e3254db56c66c4116c61fe3
-# Generated 2014-03-17 18:50:36.641906 by PyXB version 1.1.2
+# Generated 2014-06-12 14:36:51.817604 by PyXB version 1.1.2
 import pyxb
 import pyxb.binding
 import pyxb.binding.saxer
@@ -11,7 +11,7 @@ import pyxb.utils.domutils
 import sys
 
 # Unique identifier for bindings created at the same time
-_GenerationUID = pyxb.utils.utility.UniqueIdentifier('urn:uuid:a3e7637c-adfc-11e3-9f2e-c4d98710dc86')
+_GenerationUID = pyxb.utils.utility.UniqueIdentifier('urn:uuid:399d4060-f22e-11e3-acaf-c4d98710dc86')
 
 # Import bindings for namespaces imported into schema
 import pyxb.binding.datatypes
@@ -89,6 +89,13 @@ class outputCatalog (pyxb.binding.basis.complexTypeDefinition):
     _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'outputCatalog')
     # Base type is pyxb.binding.datatypes.anyType
     
+    # Element {http://euclid.esa.org/schema/pro/sir-mockup}Magnitude uses Python identifier Magnitude
+    __Magnitude = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Magnitude'), 'Magnitude', '__httpeuclid_esa_orgschemaprosir_mockup_outputCatalog_httpeuclid_esa_orgschemaprosir_mockupMagnitude', False)
+
+    
+    Magnitude = property(__Magnitude.value, __Magnitude.set, None, None)
+
+    
     # Element {http://euclid.esa.org/schema/pro/sir-mockup}DataContainer uses Python identifier DataContainer
     __DataContainer = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'DataContainer'), 'DataContainer', '__httpeuclid_esa_orgschemaprosir_mockup_outputCatalog_httpeuclid_esa_orgschemaprosir_mockupDataContainer', False)
 
@@ -102,71 +109,16 @@ class outputCatalog (pyxb.binding.basis.complexTypeDefinition):
     
     StellarSpectralType = property(__StellarSpectralType.value, __StellarSpectralType.set, None, None)
 
-    
-    # Element {http://euclid.esa.org/schema/pro/sir-mockup}Magnitude uses Python identifier Magnitude
-    __Magnitude = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Magnitude'), 'Magnitude', '__httpeuclid_esa_orgschemaprosir_mockup_outputCatalog_httpeuclid_esa_orgschemaprosir_mockupMagnitude', False)
-
-    
-    Magnitude = property(__Magnitude.value, __Magnitude.set, None, None)
-
 
     _ElementMap = {
+        __Magnitude.name() : __Magnitude,
         __DataContainer.name() : __DataContainer,
-        __StellarSpectralType.name() : __StellarSpectralType,
-        __Magnitude.name() : __Magnitude
+        __StellarSpectralType.name() : __StellarSpectralType
     }
     _AttributeMap = {
         
     }
 Namespace.addCategoryObject('typeBinding', u'outputCatalog', outputCatalog)
-
-
-# Complex type nispImage with content type ELEMENT_ONLY
-class nispImage (pyxb.binding.basis.complexTypeDefinition):
-    _TypeDefinition = None
-    _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
-    _Abstract = False
-    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'nispImage')
-    # Base type is pyxb.binding.datatypes.anyType
-    
-    # Element DataContainer uses Python identifier DataContainer
-    __DataContainer = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(None, u'DataContainer'), 'DataContainer', '__httpeuclid_esa_orgschemaprosir_mockup_nispImage_DataContainer', False)
-
-    
-    DataContainer = property(__DataContainer.value, __DataContainer.set, None, None)
-
-
-    _ElementMap = {
-        __DataContainer.name() : __DataContainer
-    }
-    _AttributeMap = {
-        
-    }
-Namespace.addCategoryObject('typeBinding', u'nispImage', nispImage)
-
-
-# Complex type parentCatalog with content type ELEMENT_ONLY
-class parentCatalog (pyxb.binding.basis.complexTypeDefinition):
-    _TypeDefinition = None
-    _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
-    _Abstract = False
-    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'parentCatalog')
-    # Base type is pyxb.binding.datatypes.anyType
-    
-    # Element DataContainer uses Python identifier DataContainer
-    __DataContainer = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(None, u'DataContainer'), 'DataContainer', '__httpeuclid_esa_orgschemaprosir_mockup_parentCatalog_DataContainer', False)
-
-    
-    DataContainer = property(__DataContainer.value, __DataContainer.set, None, None)
-
-
-    _ElementMap = {
-        __DataContainer.name() : __DataContainer
-    }
-    _AttributeMap = {
-        
-    }
-Namespace.addCategoryObject('typeBinding', u'parentCatalog', parentCatalog)
 
 
 # Complex type inputParameters with content type ELEMENT_ONLY
@@ -201,35 +153,67 @@ class inputParameters (pyxb.binding.basis.complexTypeDefinition):
 Namespace.addCategoryObject('typeBinding', u'inputParameters', inputParameters)
 
 
+# Complex type parentCatalog with content type ELEMENT_ONLY
+class parentCatalog (pyxb.binding.basis.complexTypeDefinition):
+    _TypeDefinition = None
+    _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
+    _Abstract = False
+    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'parentCatalog')
+    # Base type is pyxb.binding.datatypes.anyType
+    
+    # Element DataContainer uses Python identifier DataContainer
+    __DataContainer = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(None, u'DataContainer'), 'DataContainer', '__httpeuclid_esa_orgschemaprosir_mockup_parentCatalog_DataContainer', False)
 
+    
+    DataContainer = property(__DataContainer.value, __DataContainer.set, None, None)
+
+
+    _ElementMap = {
+        __DataContainer.name() : __DataContainer
+    }
+    _AttributeMap = {
+        
+    }
+Namespace.addCategoryObject('typeBinding', u'parentCatalog', parentCatalog)
+
+
+# Complex type nispImage with content type ELEMENT_ONLY
+class nispImage (pyxb.binding.basis.complexTypeDefinition):
+    _TypeDefinition = None
+    _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
+    _Abstract = False
+    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'nispImage')
+    # Base type is pyxb.binding.datatypes.anyType
+    
+    # Element DataContainer uses Python identifier DataContainer
+    __DataContainer = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(None, u'DataContainer'), 'DataContainer', '__httpeuclid_esa_orgschemaprosir_mockup_nispImage_DataContainer', False)
+
+    
+    DataContainer = property(__DataContainer.value, __DataContainer.set, None, None)
+
+
+    _ElementMap = {
+        __DataContainer.name() : __DataContainer
+    }
+    _AttributeMap = {
+        
+    }
+Namespace.addCategoryObject('typeBinding', u'nispImage', nispImage)
+
+
+
+
+outputCatalog._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Magnitude'), pyxb.binding.datatypes.float, scope=outputCatalog))
 
 outputCatalog._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'DataContainer'), CommonDM.dm.sys.sgs_stub.dataContainer, scope=outputCatalog))
 
 outputCatalog._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'StellarSpectralType'), stellarSpectralType, scope=outputCatalog))
-
-outputCatalog._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Magnitude'), pyxb.binding.datatypes.float, scope=outputCatalog))
 outputCatalog._GroupModel = pyxb.binding.content.GroupSequence(
     pyxb.binding.content.ParticleModel(outputCatalog._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'DataContainer')), min_occurs=1, max_occurs=1),
     pyxb.binding.content.ParticleModel(outputCatalog._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'StellarSpectralType')), min_occurs=1, max_occurs=1),
     pyxb.binding.content.ParticleModel(outputCatalog._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Magnitude')), min_occurs=1, max_occurs=1)
     )
 outputCatalog._ContentModel = pyxb.binding.content.ParticleModel(outputCatalog._GroupModel, min_occurs=1, max_occurs=1)
-
-
-
-nispImage._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(None, u'DataContainer'), CommonDM.dm.sys.sgs_stub.dataContainer, scope=nispImage))
-nispImage._GroupModel = pyxb.binding.content.GroupSequence(
-    pyxb.binding.content.ParticleModel(nispImage._UseForTag(pyxb.namespace.ExpandedName(None, u'DataContainer')), min_occurs=1, max_occurs=1)
-    )
-nispImage._ContentModel = pyxb.binding.content.ParticleModel(nispImage._GroupModel, min_occurs=1, max_occurs=1)
-
-
-
-parentCatalog._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(None, u'DataContainer'), CommonDM.dm.sys.sgs_stub.dataContainer, scope=parentCatalog))
-parentCatalog._GroupModel = pyxb.binding.content.GroupSequence(
-    pyxb.binding.content.ParticleModel(parentCatalog._UseForTag(pyxb.namespace.ExpandedName(None, u'DataContainer')), min_occurs=1, max_occurs=1)
-    )
-parentCatalog._ContentModel = pyxb.binding.content.ParticleModel(parentCatalog._GroupModel, min_occurs=1, max_occurs=1)
 
 
 
@@ -241,3 +225,19 @@ inputParameters._GroupModel = pyxb.binding.content.GroupSequence(
     pyxb.binding.content.ParticleModel(inputParameters._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Offset')), min_occurs=1, max_occurs=1)
     )
 inputParameters._ContentModel = pyxb.binding.content.ParticleModel(inputParameters._GroupModel, min_occurs=1, max_occurs=1)
+
+
+
+parentCatalog._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(None, u'DataContainer'), CommonDM.dm.sys.sgs_stub.dataContainer, scope=parentCatalog))
+parentCatalog._GroupModel = pyxb.binding.content.GroupSequence(
+    pyxb.binding.content.ParticleModel(parentCatalog._UseForTag(pyxb.namespace.ExpandedName(None, u'DataContainer')), min_occurs=1, max_occurs=1)
+    )
+parentCatalog._ContentModel = pyxb.binding.content.ParticleModel(parentCatalog._GroupModel, min_occurs=1, max_occurs=1)
+
+
+
+nispImage._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(None, u'DataContainer'), CommonDM.dm.sys.sgs_stub.dataContainer, scope=nispImage))
+nispImage._GroupModel = pyxb.binding.content.GroupSequence(
+    pyxb.binding.content.ParticleModel(nispImage._UseForTag(pyxb.namespace.ExpandedName(None, u'DataContainer')), min_occurs=1, max_occurs=1)
+    )
+nispImage._ContentModel = pyxb.binding.content.ParticleModel(nispImage._GroupModel, min_occurs=1, max_occurs=1)

@@ -1,7 +1,7 @@
-# /home/nikoapos/ISDC/Projects/Alexandria/1.0/CommonDM/python/CommonDM/dm/ins/tel_stub.py
+# /home/nikoapos/ISDC/Projects/Alexandria/2.0/CommonDM/python/CommonDM/dm/ins/tel_stub.py
 # PyXB bindings for NamespaceModule
 # NSM:a659c9609d911b0b0de7dec344c20026ccc5f00c
-# Generated 2014-03-17 18:50:36.638682 by PyXB version 1.1.2
+# Generated 2014-06-12 14:36:51.818504 by PyXB version 1.1.2
 import pyxb
 import pyxb.binding
 import pyxb.binding.saxer
@@ -11,14 +11,14 @@ import pyxb.utils.domutils
 import sys
 
 # Unique identifier for bindings created at the same time
-_GenerationUID = pyxb.utils.utility.UniqueIdentifier('urn:uuid:a3e7637c-adfc-11e3-9f2e-c4d98710dc86')
+_GenerationUID = pyxb.utils.utility.UniqueIdentifier('urn:uuid:399d4060-f22e-11e3-acaf-c4d98710dc86')
 
 # Import bindings for namespaces imported into schema
 import pyxb.binding.datatypes
-import CommonDM.dm.ins_stub
 import CommonDM.dm.sys_stub
-import CommonDM.dm.sys.sgs_stub
 import CommonDM.dm.bas.utd_stub
+import CommonDM.dm.sys.sgs_stub
+import CommonDM.dm.ins_stub
 
 Namespace = pyxb.namespace.NamespaceForURI(u'http://euclid.esa.org/schema/ins/tel', create_if_missing=True)
 Namespace.configureCategories(['typeBinding', 'elementBinding'])
@@ -46,118 +46,6 @@ def CreateFromDOM (node, default_namespace=None):
     return pyxb.binding.basis.element.AnyCreateFromDOM(node, _fallback_namespace=default_namespace)
 
 
-# Complex type telescopeNoiseModel with content type ELEMENT_ONLY
-class telescopeNoiseModel (pyxb.binding.basis.complexTypeDefinition):
-    _TypeDefinition = None
-    _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
-    _Abstract = False
-    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'telescopeNoiseModel')
-    # Base type is pyxb.binding.datatypes.anyType
-    
-    # Element {http://euclid.esa.org/schema/ins/tel}Flux uses Python identifier Flux
-    __Flux = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Flux'), 'Flux', '__httpeuclid_esa_orgschemainstel_telescopeNoiseModel_httpeuclid_esa_orgschemainstelFlux', False)
-
-    
-    Flux = property(__Flux.value, __Flux.set, None, None)
-
-    
-    # Element {http://euclid.esa.org/schema/ins/tel}ComputationDate uses Python identifier ComputationDate
-    __ComputationDate = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'ComputationDate'), 'ComputationDate', '__httpeuclid_esa_orgschemainstel_telescopeNoiseModel_httpeuclid_esa_orgschemainstelComputationDate', False)
-
-    
-    ComputationDate = property(__ComputationDate.value, __ComputationDate.set, None, None)
-
-    
-    # Element {http://euclid.esa.org/schema/ins/tel}Version uses Python identifier Version
-    __Version = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Version'), 'Version', '__httpeuclid_esa_orgschemainstel_telescopeNoiseModel_httpeuclid_esa_orgschemainstelVersion', False)
-
-    
-    Version = property(__Version.value, __Version.set, None, None)
-
-    
-    # Element {http://euclid.esa.org/schema/ins/tel}CalibrationDataPath uses Python identifier CalibrationDataPath
-    __CalibrationDataPath = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'CalibrationDataPath'), 'CalibrationDataPath', '__httpeuclid_esa_orgschemainstel_telescopeNoiseModel_httpeuclid_esa_orgschemainstelCalibrationDataPath', False)
-
-    
-    CalibrationDataPath = property(__CalibrationDataPath.value, __CalibrationDataPath.set, None, None)
-
-    
-    # Element {http://euclid.esa.org/schema/ins/tel}Wavelength uses Python identifier Wavelength
-    __Wavelength = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Wavelength'), 'Wavelength', '__httpeuclid_esa_orgschemainstel_telescopeNoiseModel_httpeuclid_esa_orgschemainstelWavelength', False)
-
-    
-    Wavelength = property(__Wavelength.value, __Wavelength.set, None, None)
-
-
-    _ElementMap = {
-        __Flux.name() : __Flux,
-        __ComputationDate.name() : __ComputationDate,
-        __Version.name() : __Version,
-        __CalibrationDataPath.name() : __CalibrationDataPath,
-        __Wavelength.name() : __Wavelength
-    }
-    _AttributeMap = {
-        
-    }
-Namespace.addCategoryObject('typeBinding', u'telescopeNoiseModel', telescopeNoiseModel)
-
-
-# Complex type scatteredNoiseModel with content type ELEMENT_ONLY
-class scatteredNoiseModel (pyxb.binding.basis.complexTypeDefinition):
-    _TypeDefinition = None
-    _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
-    _Abstract = False
-    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'scatteredNoiseModel')
-    # Base type is pyxb.binding.datatypes.anyType
-    
-    # Element {http://euclid.esa.org/schema/ins/tel}Flux uses Python identifier Flux
-    __Flux = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Flux'), 'Flux', '__httpeuclid_esa_orgschemainstel_scatteredNoiseModel_httpeuclid_esa_orgschemainstelFlux', False)
-
-    
-    Flux = property(__Flux.value, __Flux.set, None, None)
-
-    
-    # Element {http://euclid.esa.org/schema/ins/tel}ComputationDate uses Python identifier ComputationDate
-    __ComputationDate = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'ComputationDate'), 'ComputationDate', '__httpeuclid_esa_orgschemainstel_scatteredNoiseModel_httpeuclid_esa_orgschemainstelComputationDate', False)
-
-    
-    ComputationDate = property(__ComputationDate.value, __ComputationDate.set, None, None)
-
-    
-    # Element {http://euclid.esa.org/schema/ins/tel}Wavelength uses Python identifier Wavelength
-    __Wavelength = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Wavelength'), 'Wavelength', '__httpeuclid_esa_orgschemainstel_scatteredNoiseModel_httpeuclid_esa_orgschemainstelWavelength', False)
-
-    
-    Wavelength = property(__Wavelength.value, __Wavelength.set, None, None)
-
-    
-    # Element {http://euclid.esa.org/schema/ins/tel}Version uses Python identifier Version
-    __Version = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Version'), 'Version', '__httpeuclid_esa_orgschemainstel_scatteredNoiseModel_httpeuclid_esa_orgschemainstelVersion', False)
-
-    
-    Version = property(__Version.value, __Version.set, None, None)
-
-    
-    # Element {http://euclid.esa.org/schema/ins/tel}CalibrationDataPath uses Python identifier CalibrationDataPath
-    __CalibrationDataPath = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'CalibrationDataPath'), 'CalibrationDataPath', '__httpeuclid_esa_orgschemainstel_scatteredNoiseModel_httpeuclid_esa_orgschemainstelCalibrationDataPath', False)
-
-    
-    CalibrationDataPath = property(__CalibrationDataPath.value, __CalibrationDataPath.set, None, None)
-
-
-    _ElementMap = {
-        __Flux.name() : __Flux,
-        __ComputationDate.name() : __ComputationDate,
-        __Wavelength.name() : __Wavelength,
-        __Version.name() : __Version,
-        __CalibrationDataPath.name() : __CalibrationDataPath
-    }
-    _AttributeMap = {
-        
-    }
-Namespace.addCategoryObject('typeBinding', u'scatteredNoiseModel', scatteredNoiseModel)
-
-
 # Complex type telescopeOptics with content type ELEMENT_ONLY
 class telescopeOptics (pyxb.binding.basis.complexTypeDefinition):
     _TypeDefinition = None
@@ -173,13 +61,6 @@ class telescopeOptics (pyxb.binding.basis.complexTypeDefinition):
     Obscuration = property(__Obscuration.value, __Obscuration.set, None, None)
 
     
-    # Element {http://euclid.esa.org/schema/ins/tel}ComputationDate uses Python identifier ComputationDate
-    __ComputationDate = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'ComputationDate'), 'ComputationDate', '__httpeuclid_esa_orgschemainstel_telescopeOptics_httpeuclid_esa_orgschemainstelComputationDate', False)
-
-    
-    ComputationDate = property(__ComputationDate.value, __ComputationDate.set, None, None)
-
-    
     # Element {http://euclid.esa.org/schema/ins/tel}Version uses Python identifier Version
     __Version = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Version'), 'Version', '__httpeuclid_esa_orgschemainstel_telescopeOptics_httpeuclid_esa_orgschemainstelVersion', False)
 
@@ -193,12 +74,19 @@ class telescopeOptics (pyxb.binding.basis.complexTypeDefinition):
     
     Diameter = property(__Diameter.value, __Diameter.set, None, None)
 
+    
+    # Element {http://euclid.esa.org/schema/ins/tel}ComputationDate uses Python identifier ComputationDate
+    __ComputationDate = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'ComputationDate'), 'ComputationDate', '__httpeuclid_esa_orgschemainstel_telescopeOptics_httpeuclid_esa_orgschemainstelComputationDate', False)
+
+    
+    ComputationDate = property(__ComputationDate.value, __ComputationDate.set, None, None)
+
 
     _ElementMap = {
         __Obscuration.name() : __Obscuration,
-        __ComputationDate.name() : __ComputationDate,
         __Version.name() : __Version,
-        __Diameter.name() : __Diameter
+        __Diameter.name() : __Diameter,
+        __ComputationDate.name() : __ComputationDate
     }
     _AttributeMap = {
         
@@ -270,55 +158,127 @@ class obscuration (pyxb.binding.basis.complexTypeDefinition):
 Namespace.addCategoryObject('typeBinding', u'obscuration', obscuration)
 
 
+# Complex type telescopeNoiseModel with content type ELEMENT_ONLY
+class telescopeNoiseModel (pyxb.binding.basis.complexTypeDefinition):
+    _TypeDefinition = None
+    _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
+    _Abstract = False
+    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'telescopeNoiseModel')
+    # Base type is pyxb.binding.datatypes.anyType
+    
+    # Element {http://euclid.esa.org/schema/ins/tel}CalibrationDataPath uses Python identifier CalibrationDataPath
+    __CalibrationDataPath = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'CalibrationDataPath'), 'CalibrationDataPath', '__httpeuclid_esa_orgschemainstel_telescopeNoiseModel_httpeuclid_esa_orgschemainstelCalibrationDataPath', False)
+
+    
+    CalibrationDataPath = property(__CalibrationDataPath.value, __CalibrationDataPath.set, None, None)
+
+    
+    # Element {http://euclid.esa.org/schema/ins/tel}Wavelength uses Python identifier Wavelength
+    __Wavelength = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Wavelength'), 'Wavelength', '__httpeuclid_esa_orgschemainstel_telescopeNoiseModel_httpeuclid_esa_orgschemainstelWavelength', False)
+
+    
+    Wavelength = property(__Wavelength.value, __Wavelength.set, None, None)
+
+    
+    # Element {http://euclid.esa.org/schema/ins/tel}Flux uses Python identifier Flux
+    __Flux = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Flux'), 'Flux', '__httpeuclid_esa_orgschemainstel_telescopeNoiseModel_httpeuclid_esa_orgschemainstelFlux', False)
+
+    
+    Flux = property(__Flux.value, __Flux.set, None, None)
+
+    
+    # Element {http://euclid.esa.org/schema/ins/tel}Version uses Python identifier Version
+    __Version = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Version'), 'Version', '__httpeuclid_esa_orgschemainstel_telescopeNoiseModel_httpeuclid_esa_orgschemainstelVersion', False)
+
+    
+    Version = property(__Version.value, __Version.set, None, None)
+
+    
+    # Element {http://euclid.esa.org/schema/ins/tel}ComputationDate uses Python identifier ComputationDate
+    __ComputationDate = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'ComputationDate'), 'ComputationDate', '__httpeuclid_esa_orgschemainstel_telescopeNoiseModel_httpeuclid_esa_orgschemainstelComputationDate', False)
+
+    
+    ComputationDate = property(__ComputationDate.value, __ComputationDate.set, None, None)
 
 
-telescopeNoiseModel._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Flux'), CommonDM.dm.ins_stub.flux, scope=telescopeNoiseModel))
-
-telescopeNoiseModel._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'ComputationDate'), pyxb.binding.datatypes.dateTime, scope=telescopeNoiseModel))
-
-telescopeNoiseModel._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Version'), CommonDM.dm.sys_stub.version, scope=telescopeNoiseModel))
-
-telescopeNoiseModel._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'CalibrationDataPath'), CommonDM.dm.sys.sgs_stub.dataContainer, scope=telescopeNoiseModel))
-
-telescopeNoiseModel._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Wavelength'), CommonDM.dm.ins_stub.wavelength, scope=telescopeNoiseModel))
-telescopeNoiseModel._GroupModel = pyxb.binding.content.GroupSequence(
-    pyxb.binding.content.ParticleModel(telescopeNoiseModel._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Version')), min_occurs=1, max_occurs=1),
-    pyxb.binding.content.ParticleModel(telescopeNoiseModel._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'ComputationDate')), min_occurs=1, max_occurs=1),
-    pyxb.binding.content.ParticleModel(telescopeNoiseModel._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'CalibrationDataPath')), min_occurs=1, max_occurs=1),
-    pyxb.binding.content.ParticleModel(telescopeNoiseModel._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Wavelength')), min_occurs=1, max_occurs=1),
-    pyxb.binding.content.ParticleModel(telescopeNoiseModel._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Flux')), min_occurs=1, max_occurs=1)
-    )
-telescopeNoiseModel._ContentModel = pyxb.binding.content.ParticleModel(telescopeNoiseModel._GroupModel, min_occurs=1, max_occurs=1)
+    _ElementMap = {
+        __CalibrationDataPath.name() : __CalibrationDataPath,
+        __Wavelength.name() : __Wavelength,
+        __Flux.name() : __Flux,
+        __Version.name() : __Version,
+        __ComputationDate.name() : __ComputationDate
+    }
+    _AttributeMap = {
+        
+    }
+Namespace.addCategoryObject('typeBinding', u'telescopeNoiseModel', telescopeNoiseModel)
 
 
+# Complex type scatteredNoiseModel with content type ELEMENT_ONLY
+class scatteredNoiseModel (pyxb.binding.basis.complexTypeDefinition):
+    _TypeDefinition = None
+    _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
+    _Abstract = False
+    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'scatteredNoiseModel')
+    # Base type is pyxb.binding.datatypes.anyType
+    
+    # Element {http://euclid.esa.org/schema/ins/tel}Version uses Python identifier Version
+    __Version = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Version'), 'Version', '__httpeuclid_esa_orgschemainstel_scatteredNoiseModel_httpeuclid_esa_orgschemainstelVersion', False)
 
-scatteredNoiseModel._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Flux'), CommonDM.dm.ins_stub.flux, scope=scatteredNoiseModel))
+    
+    Version = property(__Version.value, __Version.set, None, None)
 
-scatteredNoiseModel._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'ComputationDate'), pyxb.binding.datatypes.dateTime, scope=scatteredNoiseModel))
+    
+    # Element {http://euclid.esa.org/schema/ins/tel}ComputationDate uses Python identifier ComputationDate
+    __ComputationDate = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'ComputationDate'), 'ComputationDate', '__httpeuclid_esa_orgschemainstel_scatteredNoiseModel_httpeuclid_esa_orgschemainstelComputationDate', False)
 
-scatteredNoiseModel._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Wavelength'), CommonDM.dm.ins_stub.wavelength, scope=scatteredNoiseModel))
+    
+    ComputationDate = property(__ComputationDate.value, __ComputationDate.set, None, None)
 
-scatteredNoiseModel._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Version'), CommonDM.dm.sys_stub.version, scope=scatteredNoiseModel))
+    
+    # Element {http://euclid.esa.org/schema/ins/tel}Flux uses Python identifier Flux
+    __Flux = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Flux'), 'Flux', '__httpeuclid_esa_orgschemainstel_scatteredNoiseModel_httpeuclid_esa_orgschemainstelFlux', False)
 
-scatteredNoiseModel._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'CalibrationDataPath'), CommonDM.dm.sys.sgs_stub.dataContainer, scope=scatteredNoiseModel))
-scatteredNoiseModel._GroupModel = pyxb.binding.content.GroupSequence(
-    pyxb.binding.content.ParticleModel(scatteredNoiseModel._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Version')), min_occurs=1, max_occurs=1),
-    pyxb.binding.content.ParticleModel(scatteredNoiseModel._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'ComputationDate')), min_occurs=1, max_occurs=1),
-    pyxb.binding.content.ParticleModel(scatteredNoiseModel._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'CalibrationDataPath')), min_occurs=1, max_occurs=1),
-    pyxb.binding.content.ParticleModel(scatteredNoiseModel._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Wavelength')), min_occurs=1, max_occurs=1),
-    pyxb.binding.content.ParticleModel(scatteredNoiseModel._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Flux')), min_occurs=1, max_occurs=1)
-    )
-scatteredNoiseModel._ContentModel = pyxb.binding.content.ParticleModel(scatteredNoiseModel._GroupModel, min_occurs=1, max_occurs=1)
+    
+    Flux = property(__Flux.value, __Flux.set, None, None)
+
+    
+    # Element {http://euclid.esa.org/schema/ins/tel}Wavelength uses Python identifier Wavelength
+    __Wavelength = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Wavelength'), 'Wavelength', '__httpeuclid_esa_orgschemainstel_scatteredNoiseModel_httpeuclid_esa_orgschemainstelWavelength', False)
+
+    
+    Wavelength = property(__Wavelength.value, __Wavelength.set, None, None)
+
+    
+    # Element {http://euclid.esa.org/schema/ins/tel}CalibrationDataPath uses Python identifier CalibrationDataPath
+    __CalibrationDataPath = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'CalibrationDataPath'), 'CalibrationDataPath', '__httpeuclid_esa_orgschemainstel_scatteredNoiseModel_httpeuclid_esa_orgschemainstelCalibrationDataPath', False)
+
+    
+    CalibrationDataPath = property(__CalibrationDataPath.value, __CalibrationDataPath.set, None, None)
+
+
+    _ElementMap = {
+        __Version.name() : __Version,
+        __ComputationDate.name() : __ComputationDate,
+        __Flux.name() : __Flux,
+        __Wavelength.name() : __Wavelength,
+        __CalibrationDataPath.name() : __CalibrationDataPath
+    }
+    _AttributeMap = {
+        
+    }
+Namespace.addCategoryObject('typeBinding', u'scatteredNoiseModel', scatteredNoiseModel)
+
 
 
 
 telescopeOptics._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Obscuration'), obscuration, scope=telescopeOptics))
 
-telescopeOptics._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'ComputationDate'), pyxb.binding.datatypes.dateTime, scope=telescopeOptics))
-
 telescopeOptics._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Version'), CommonDM.dm.sys_stub.version, scope=telescopeOptics))
 
 telescopeOptics._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Diameter'), diameter, scope=telescopeOptics))
+
+telescopeOptics._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'ComputationDate'), pyxb.binding.datatypes.dateTime, scope=telescopeOptics))
 telescopeOptics._GroupModel = pyxb.binding.content.GroupSequence(
     pyxb.binding.content.ParticleModel(telescopeOptics._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Version')), min_occurs=1, max_occurs=1),
     pyxb.binding.content.ParticleModel(telescopeOptics._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'ComputationDate')), min_occurs=1, max_occurs=1),
@@ -348,3 +308,43 @@ obscuration._GroupModel = pyxb.binding.content.GroupSequence(
     pyxb.binding.content.ParticleModel(obscuration._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Unit')), min_occurs=1, max_occurs=1)
     )
 obscuration._ContentModel = pyxb.binding.content.ParticleModel(obscuration._GroupModel, min_occurs=1, max_occurs=1)
+
+
+
+telescopeNoiseModel._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'CalibrationDataPath'), CommonDM.dm.sys.sgs_stub.dataContainer, scope=telescopeNoiseModel))
+
+telescopeNoiseModel._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Wavelength'), CommonDM.dm.ins_stub.wavelength, scope=telescopeNoiseModel))
+
+telescopeNoiseModel._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Flux'), CommonDM.dm.ins_stub.flux, scope=telescopeNoiseModel))
+
+telescopeNoiseModel._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Version'), CommonDM.dm.sys_stub.version, scope=telescopeNoiseModel))
+
+telescopeNoiseModel._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'ComputationDate'), pyxb.binding.datatypes.dateTime, scope=telescopeNoiseModel))
+telescopeNoiseModel._GroupModel = pyxb.binding.content.GroupSequence(
+    pyxb.binding.content.ParticleModel(telescopeNoiseModel._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Version')), min_occurs=1, max_occurs=1),
+    pyxb.binding.content.ParticleModel(telescopeNoiseModel._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'ComputationDate')), min_occurs=1, max_occurs=1),
+    pyxb.binding.content.ParticleModel(telescopeNoiseModel._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'CalibrationDataPath')), min_occurs=1, max_occurs=1),
+    pyxb.binding.content.ParticleModel(telescopeNoiseModel._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Wavelength')), min_occurs=1, max_occurs=1),
+    pyxb.binding.content.ParticleModel(telescopeNoiseModel._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Flux')), min_occurs=1, max_occurs=1)
+    )
+telescopeNoiseModel._ContentModel = pyxb.binding.content.ParticleModel(telescopeNoiseModel._GroupModel, min_occurs=1, max_occurs=1)
+
+
+
+scatteredNoiseModel._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Version'), CommonDM.dm.sys_stub.version, scope=scatteredNoiseModel))
+
+scatteredNoiseModel._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'ComputationDate'), pyxb.binding.datatypes.dateTime, scope=scatteredNoiseModel))
+
+scatteredNoiseModel._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Flux'), CommonDM.dm.ins_stub.flux, scope=scatteredNoiseModel))
+
+scatteredNoiseModel._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Wavelength'), CommonDM.dm.ins_stub.wavelength, scope=scatteredNoiseModel))
+
+scatteredNoiseModel._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'CalibrationDataPath'), CommonDM.dm.sys.sgs_stub.dataContainer, scope=scatteredNoiseModel))
+scatteredNoiseModel._GroupModel = pyxb.binding.content.GroupSequence(
+    pyxb.binding.content.ParticleModel(scatteredNoiseModel._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Version')), min_occurs=1, max_occurs=1),
+    pyxb.binding.content.ParticleModel(scatteredNoiseModel._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'ComputationDate')), min_occurs=1, max_occurs=1),
+    pyxb.binding.content.ParticleModel(scatteredNoiseModel._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'CalibrationDataPath')), min_occurs=1, max_occurs=1),
+    pyxb.binding.content.ParticleModel(scatteredNoiseModel._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Wavelength')), min_occurs=1, max_occurs=1),
+    pyxb.binding.content.ParticleModel(scatteredNoiseModel._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Flux')), min_occurs=1, max_occurs=1)
+    )
+scatteredNoiseModel._ContentModel = pyxb.binding.content.ParticleModel(scatteredNoiseModel._GroupModel, min_occurs=1, max_occurs=1)

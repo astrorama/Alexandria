@@ -1,7 +1,7 @@
-# /home/nikoapos/ISDC/Projects/Alexandria/1.0/CommonDM/python/CommonDM/dm/bas/spm_stub.py
+# /home/nikoapos/ISDC/Projects/Alexandria/2.0/CommonDM/python/CommonDM/dm/bas/spm_stub.py
 # PyXB bindings for NamespaceModule
 # NSM:8f3807dbd7e5a83390236640f018e76f2abc9bfa
-# Generated 2014-03-17 18:50:36.639769 by PyXB version 1.1.2
+# Generated 2014-06-12 14:36:51.814762 by PyXB version 1.1.2
 import pyxb
 import pyxb.binding
 import pyxb.binding.saxer
@@ -11,14 +11,14 @@ import pyxb.utils.domutils
 import sys
 
 # Unique identifier for bindings created at the same time
-_GenerationUID = pyxb.utils.utility.UniqueIdentifier('urn:uuid:a3e7637c-adfc-11e3-9f2e-c4d98710dc86')
+_GenerationUID = pyxb.utils.utility.UniqueIdentifier('urn:uuid:399d4060-f22e-11e3-acaf-c4d98710dc86')
 
 # Import bindings for namespaces imported into schema
 import pyxb.binding.datatypes
 import CommonDM.dm.bas.utd_stub
 import CommonDM.dm.bas.dtd_stub
-import CommonDM.dm.bas.imp.stc_stub
 import CommonDM.dm.bas_stub
+import CommonDM.dm.bas.imp.stc_stub
 
 Namespace = pyxb.namespace.NamespaceForURI(u'http://euclid.esa.org/schema/bas/spm', create_if_missing=True)
 Namespace.configureCategories(['typeBinding', 'elementBinding'])
@@ -47,24 +47,6 @@ def CreateFromDOM (node, default_namespace=None):
 
 
 # Atomic SimpleTypeDefinition
-class spectrumClass (pyxb.binding.datatypes.string, pyxb.binding.basis.enumeration_mixin):
-
-    """The spectrum class, which specifies whether the spectrum is a sub-spectrum or a co-added, and which one."""
-
-    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'spectrumClass')
-    _Documentation = u'The spectrum class, which specifies whether the spectrum is a sub-spectrum or a co-added, and which one.'
-spectrumClass._CF_enumeration = pyxb.binding.facets.CF_enumeration(value_datatype=spectrumClass, enum_prefix=None)
-spectrumClass.SUB_B0 = spectrumClass._CF_enumeration.addEnumeration(unicode_value=u'SUB_B0')
-spectrumClass.SUB_B90 = spectrumClass._CF_enumeration.addEnumeration(unicode_value=u'SUB_B90')
-spectrumClass.SUB_R0 = spectrumClass._CF_enumeration.addEnumeration(unicode_value=u'SUB_R0')
-spectrumClass.SUB_R90 = spectrumClass._CF_enumeration.addEnumeration(unicode_value=u'SUB_R90')
-spectrumClass.COADD_RB0 = spectrumClass._CF_enumeration.addEnumeration(unicode_value=u'COADD_RB0')
-spectrumClass.COADD_RB90 = spectrumClass._CF_enumeration.addEnumeration(unicode_value=u'COADD_RB90')
-spectrumClass.COADD_FULL = spectrumClass._CF_enumeration.addEnumeration(unicode_value=u'COADD_FULL')
-spectrumClass._InitializeFacetMap(spectrumClass._CF_enumeration)
-Namespace.addCategoryObject('typeBinding', u'spectrumClass', spectrumClass)
-
-# Atomic SimpleTypeDefinition
 class spectralRangeName (pyxb.binding.datatypes.string, pyxb.binding.basis.enumeration_mixin):
 
     """List of acronyms for spectral ranges"""
@@ -87,6 +69,64 @@ class spectrumId (pyxb.binding.datatypes.string):
     _Documentation = u'A string containing a unique ID for the spectrum.'
 spectrumId._InitializeFacetMap()
 Namespace.addCategoryObject('typeBinding', u'spectrumId', spectrumId)
+
+# Atomic SimpleTypeDefinition
+class spectrumClass (pyxb.binding.datatypes.string, pyxb.binding.basis.enumeration_mixin):
+
+    """The spectrum class, which specifies whether the spectrum is a sub-spectrum or a co-added, and which one."""
+
+    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'spectrumClass')
+    _Documentation = u'The spectrum class, which specifies whether the spectrum is a sub-spectrum or a co-added, and which one.'
+spectrumClass._CF_enumeration = pyxb.binding.facets.CF_enumeration(value_datatype=spectrumClass, enum_prefix=None)
+spectrumClass.SUB_B0 = spectrumClass._CF_enumeration.addEnumeration(unicode_value=u'SUB_B0')
+spectrumClass.SUB_B90 = spectrumClass._CF_enumeration.addEnumeration(unicode_value=u'SUB_B90')
+spectrumClass.SUB_R0 = spectrumClass._CF_enumeration.addEnumeration(unicode_value=u'SUB_R0')
+spectrumClass.SUB_R90 = spectrumClass._CF_enumeration.addEnumeration(unicode_value=u'SUB_R90')
+spectrumClass.COADD_RB0 = spectrumClass._CF_enumeration.addEnumeration(unicode_value=u'COADD_RB0')
+spectrumClass.COADD_RB90 = spectrumClass._CF_enumeration.addEnumeration(unicode_value=u'COADD_RB90')
+spectrumClass.COADD_FULL = spectrumClass._CF_enumeration.addEnumeration(unicode_value=u'COADD_FULL')
+spectrumClass._InitializeFacetMap(spectrumClass._CF_enumeration)
+Namespace.addCategoryObject('typeBinding', u'spectrumClass', spectrumClass)
+
+# Complex type spectralRangeId with content type ELEMENT_ONLY
+class spectralRangeId (pyxb.binding.basis.complexTypeDefinition):
+    _TypeDefinition = None
+    _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
+    _Abstract = False
+    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'spectralRangeId')
+    # Base type is pyxb.binding.datatypes.anyType
+    
+    # Element {http://euclid.esa.org/schema/bas/spm}SpectrumLength uses Python identifier SpectrumLength
+    __SpectrumLength = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'SpectrumLength'), 'SpectrumLength', '__httpeuclid_esa_orgschemabasspm_spectralRangeId_httpeuclid_esa_orgschemabasspmSpectrumLength', False)
+
+    
+    SpectrumLength = property(__SpectrumLength.value, __SpectrumLength.set, None, None)
+
+    
+    # Element {http://euclid.esa.org/schema/bas/spm}SpectralRangeName uses Python identifier SpectralRangeName
+    __SpectralRangeName = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'SpectralRangeName'), 'SpectralRangeName', '__httpeuclid_esa_orgschemabasspm_spectralRangeId_httpeuclid_esa_orgschemabasspmSpectralRangeName', False)
+
+    
+    SpectralRangeName = property(__SpectralRangeName.value, __SpectralRangeName.set, None, None)
+
+    
+    # Element {http://euclid.esa.org/schema/bas/spm}SpectralOrder uses Python identifier SpectralOrder
+    __SpectralOrder = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'SpectralOrder'), 'SpectralOrder', '__httpeuclid_esa_orgschemabasspm_spectralRangeId_httpeuclid_esa_orgschemabasspmSpectralOrder', False)
+
+    
+    SpectralOrder = property(__SpectralOrder.value, __SpectralOrder.set, None, None)
+
+
+    _ElementMap = {
+        __SpectrumLength.name() : __SpectrumLength,
+        __SpectralRangeName.name() : __SpectralRangeName,
+        __SpectralOrder.name() : __SpectralOrder
+    }
+    _AttributeMap = {
+        
+    }
+Namespace.addCategoryObject('typeBinding', u'spectralRangeId', spectralRangeId)
+
 
 # Complex type spectrum1DError with content type ELEMENT_ONLY
 class spectrum1DError (pyxb.binding.basis.complexTypeDefinition):
@@ -184,102 +224,6 @@ class spectrum1DFlag (pyxb.binding.basis.complexTypeDefinition):
 Namespace.addCategoryObject('typeBinding', u'spectrum1DFlag', spectrum1DFlag)
 
 
-# Complex type spectrumData with content type ELEMENT_ONLY
-class spectrumData (pyxb.binding.basis.complexTypeDefinition):
-    _TypeDefinition = None
-    _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
-    _Abstract = False
-    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'spectrumData')
-    # Base type is pyxb.binding.datatypes.anyType
-    
-    # Element {http://euclid.esa.org/schema/bas/spm}PixelQuality uses Python identifier PixelQuality
-    __PixelQuality = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'PixelQuality'), 'PixelQuality', '__httpeuclid_esa_orgschemabasspm_spectrumData_httpeuclid_esa_orgschemabasspmPixelQuality', False)
-
-    
-    PixelQuality = property(__PixelQuality.value, __PixelQuality.set, None, None)
-
-    
-    # Element {http://euclid.esa.org/schema/bas/spm}Flux uses Python identifier Flux
-    __Flux = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Flux'), 'Flux', '__httpeuclid_esa_orgschemabasspm_spectrumData_httpeuclid_esa_orgschemabasspmFlux', False)
-
-    
-    Flux = property(__Flux.value, __Flux.set, None, None)
-
-    
-    # Element {http://euclid.esa.org/schema/bas/spm}Wavelegth uses Python identifier Wavelegth
-    __Wavelegth = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Wavelegth'), 'Wavelegth', '__httpeuclid_esa_orgschemabasspm_spectrumData_httpeuclid_esa_orgschemabasspmWavelegth', False)
-
-    
-    Wavelegth = property(__Wavelegth.value, __Wavelegth.set, None, None)
-
-    
-    # Element {http://euclid.esa.org/schema/bas/spm}Noise uses Python identifier Noise
-    __Noise = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Noise'), 'Noise', '__httpeuclid_esa_orgschemabasspm_spectrumData_httpeuclid_esa_orgschemabasspmNoise', False)
-
-    
-    Noise = property(__Noise.value, __Noise.set, None, None)
-
-    
-    # Element {http://euclid.esa.org/schema/bas/spm}Contamination uses Python identifier Contamination
-    __Contamination = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Contamination'), 'Contamination', '__httpeuclid_esa_orgschemabasspm_spectrumData_httpeuclid_esa_orgschemabasspmContamination', False)
-
-    
-    Contamination = property(__Contamination.value, __Contamination.set, None, None)
-
-
-    _ElementMap = {
-        __PixelQuality.name() : __PixelQuality,
-        __Flux.name() : __Flux,
-        __Wavelegth.name() : __Wavelegth,
-        __Noise.name() : __Noise,
-        __Contamination.name() : __Contamination
-    }
-    _AttributeMap = {
-        
-    }
-Namespace.addCategoryObject('typeBinding', u'spectrumData', spectrumData)
-
-
-# Complex type spectralRangeId with content type ELEMENT_ONLY
-class spectralRangeId (pyxb.binding.basis.complexTypeDefinition):
-    _TypeDefinition = None
-    _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
-    _Abstract = False
-    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'spectralRangeId')
-    # Base type is pyxb.binding.datatypes.anyType
-    
-    # Element {http://euclid.esa.org/schema/bas/spm}SpectrumLength uses Python identifier SpectrumLength
-    __SpectrumLength = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'SpectrumLength'), 'SpectrumLength', '__httpeuclid_esa_orgschemabasspm_spectralRangeId_httpeuclid_esa_orgschemabasspmSpectrumLength', False)
-
-    
-    SpectrumLength = property(__SpectrumLength.value, __SpectrumLength.set, None, None)
-
-    
-    # Element {http://euclid.esa.org/schema/bas/spm}SpectralOrder uses Python identifier SpectralOrder
-    __SpectralOrder = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'SpectralOrder'), 'SpectralOrder', '__httpeuclid_esa_orgschemabasspm_spectralRangeId_httpeuclid_esa_orgschemabasspmSpectralOrder', False)
-
-    
-    SpectralOrder = property(__SpectralOrder.value, __SpectralOrder.set, None, None)
-
-    
-    # Element {http://euclid.esa.org/schema/bas/spm}SpectralRangeName uses Python identifier SpectralRangeName
-    __SpectralRangeName = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'SpectralRangeName'), 'SpectralRangeName', '__httpeuclid_esa_orgschemabasspm_spectralRangeId_httpeuclid_esa_orgschemabasspmSpectralRangeName', False)
-
-    
-    SpectralRangeName = property(__SpectralRangeName.value, __SpectralRangeName.set, None, None)
-
-
-    _ElementMap = {
-        __SpectrumLength.name() : __SpectrumLength,
-        __SpectralOrder.name() : __SpectralOrder,
-        __SpectralRangeName.name() : __SpectralRangeName
-    }
-    _AttributeMap = {
-        
-    }
-Namespace.addCategoryObject('typeBinding', u'spectralRangeId', spectralRangeId)
-
-
 # Complex type spectrumMetadata with content type ELEMENT_ONLY
 class spectrumMetadata (pyxb.binding.basis.complexTypeDefinition):
     _TypeDefinition = None
@@ -288,53 +232,11 @@ class spectrumMetadata (pyxb.binding.basis.complexTypeDefinition):
     _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'spectrumMetadata')
     # Base type is pyxb.binding.datatypes.anyType
     
-    # Element {http://euclid.esa.org/schema/bas/spm}Observation uses Python identifier Observation
-    __Observation = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Observation'), 'Observation', '__httpeuclid_esa_orgschemabasspm_spectrumMetadata_httpeuclid_esa_orgschemabasspmObservation', False)
+    # Element {http://euclid.esa.org/schema/bas/spm}ObjectName uses Python identifier ObjectName
+    __ObjectName = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'ObjectName'), 'ObjectName', '__httpeuclid_esa_orgschemabasspm_spectrumMetadata_httpeuclid_esa_orgschemabasspmObjectName', False)
 
     
-    Observation = property(__Observation.value, __Observation.set, None, u'')
-
-    
-    # Element {http://euclid.esa.org/schema/bas/spm}Array uses Python identifier Array
-    __Array = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Array'), 'Array', '__httpeuclid_esa_orgschemabasspm_spectrumMetadata_httpeuclid_esa_orgschemabasspmArray', False)
-
-    
-    Array = property(__Array.value, __Array.set, None, u'')
-
-    
-    # Element {http://euclid.esa.org/schema/bas/spm}OrigFile uses Python identifier OrigFile
-    __OrigFile = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'OrigFile'), 'OrigFile', '__httpeuclid_esa_orgschemabasspm_spectrumMetadata_httpeuclid_esa_orgschemabasspmOrigFile', False)
-
-    
-    OrigFile = property(__OrigFile.value, __OrigFile.set, None, u'Original file name')
-
-    
-    # Element {http://euclid.esa.org/schema/bas/spm}Coordinates uses Python identifier Coordinates
-    __Coordinates = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Coordinates'), 'Coordinates', '__httpeuclid_esa_orgschemabasspm_spectrumMetadata_httpeuclid_esa_orgschemabasspmCoordinates', False)
-
-    
-    Coordinates = property(__Coordinates.value, __Coordinates.set, None, u'')
-
-    
-    # Element {http://euclid.esa.org/schema/bas/spm}Frame uses Python identifier Frame
-    __Frame = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Frame'), 'Frame', '__httpeuclid_esa_orgschemabasspm_spectrumMetadata_httpeuclid_esa_orgschemabasspmFrame', False)
-
-    
-    Frame = property(__Frame.value, __Frame.set, None, u'')
-
-    
-    # Element {http://euclid.esa.org/schema/bas/spm}Class uses Python identifier Class
-    __Class = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Class'), 'Class', '__httpeuclid_esa_orgschemabasspm_spectrumMetadata_httpeuclid_esa_orgschemabasspmClass', False)
-
-    
-    Class = property(__Class.value, __Class.set, None, None)
-
-    
-    # Element {http://euclid.esa.org/schema/bas/spm}Id uses Python identifier Id
-    __Id = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Id'), 'Id', '__httpeuclid_esa_orgschemabasspm_spectrumMetadata_httpeuclid_esa_orgschemabasspmId', False)
-
-    
-    Id = property(__Id.value, __Id.set, None, u'')
+    ObjectName = property(__ObjectName.value, __ObjectName.set, None, u'')
 
     
     # Element {http://euclid.esa.org/schema/bas/spm}RangeID uses Python identifier RangeID
@@ -344,11 +246,32 @@ class spectrumMetadata (pyxb.binding.basis.complexTypeDefinition):
     RangeID = property(__RangeID.value, __RangeID.set, None, None)
 
     
-    # Element {http://euclid.esa.org/schema/bas/spm}Filename uses Python identifier Filename
-    __Filename = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Filename'), 'Filename', '__httpeuclid_esa_orgschemabasspm_spectrumMetadata_httpeuclid_esa_orgschemabasspmFilename', False)
+    # Element {http://euclid.esa.org/schema/bas/spm}TrasmissionCurve uses Python identifier TrasmissionCurve
+    __TrasmissionCurve = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'TrasmissionCurve'), 'TrasmissionCurve', '__httpeuclid_esa_orgschemabasspm_spectrumMetadata_httpeuclid_esa_orgschemabasspmTrasmissionCurve', False)
 
     
-    Filename = property(__Filename.value, __Filename.set, None, u'Source file name')
+    TrasmissionCurve = property(__TrasmissionCurve.value, __TrasmissionCurve.set, None, None)
+
+    
+    # Element {http://euclid.esa.org/schema/bas/spm}Class uses Python identifier Class
+    __Class = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Class'), 'Class', '__httpeuclid_esa_orgschemabasspm_spectrumMetadata_httpeuclid_esa_orgschemabasspmClass', False)
+
+    
+    Class = property(__Class.value, __Class.set, None, None)
+
+    
+    # Element {http://euclid.esa.org/schema/bas/spm}Array uses Python identifier Array
+    __Array = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Array'), 'Array', '__httpeuclid_esa_orgschemabasspm_spectrumMetadata_httpeuclid_esa_orgschemabasspmArray', False)
+
+    
+    Array = property(__Array.value, __Array.set, None, u'')
+
+    
+    # Element {http://euclid.esa.org/schema/bas/spm}Coordinates uses Python identifier Coordinates
+    __Coordinates = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Coordinates'), 'Coordinates', '__httpeuclid_esa_orgschemabasspm_spectrumMetadata_httpeuclid_esa_orgschemabasspmCoordinates', False)
+
+    
+    Coordinates = property(__Coordinates.value, __Coordinates.set, None, u'')
 
     
     # Element {http://euclid.esa.org/schema/bas/spm}Survey uses Python identifier Survey
@@ -358,25 +281,32 @@ class spectrumMetadata (pyxb.binding.basis.complexTypeDefinition):
     Survey = property(__Survey.value, __Survey.set, None, u'')
 
     
-    # Element {http://euclid.esa.org/schema/bas/spm}Exposure uses Python identifier Exposure
-    __Exposure = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Exposure'), 'Exposure', '__httpeuclid_esa_orgschemabasspm_spectrumMetadata_httpeuclid_esa_orgschemabasspmExposure', False)
+    # Element {http://euclid.esa.org/schema/bas/spm}Frame uses Python identifier Frame
+    __Frame = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Frame'), 'Frame', '__httpeuclid_esa_orgschemabasspm_spectrumMetadata_httpeuclid_esa_orgschemabasspmFrame', False)
 
     
-    Exposure = property(__Exposure.value, __Exposure.set, None, u'')
+    Frame = property(__Frame.value, __Frame.set, None, u'')
 
     
-    # Element {http://euclid.esa.org/schema/bas/spm}ObjectName uses Python identifier ObjectName
-    __ObjectName = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'ObjectName'), 'ObjectName', '__httpeuclid_esa_orgschemabasspm_spectrumMetadata_httpeuclid_esa_orgschemabasspmObjectName', False)
+    # Element {http://euclid.esa.org/schema/bas/spm}Id uses Python identifier Id
+    __Id = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Id'), 'Id', '__httpeuclid_esa_orgschemabasspm_spectrumMetadata_httpeuclid_esa_orgschemabasspmId', False)
 
     
-    ObjectName = property(__ObjectName.value, __ObjectName.set, None, u'')
+    Id = property(__Id.value, __Id.set, None, u'')
 
     
-    # Element {http://euclid.esa.org/schema/bas/spm}TrasmissionCurve uses Python identifier TrasmissionCurve
-    __TrasmissionCurve = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'TrasmissionCurve'), 'TrasmissionCurve', '__httpeuclid_esa_orgschemabasspm_spectrumMetadata_httpeuclid_esa_orgschemabasspmTrasmissionCurve', False)
+    # Element {http://euclid.esa.org/schema/bas/spm}Observation uses Python identifier Observation
+    __Observation = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Observation'), 'Observation', '__httpeuclid_esa_orgschemabasspm_spectrumMetadata_httpeuclid_esa_orgschemabasspmObservation', False)
 
     
-    TrasmissionCurve = property(__TrasmissionCurve.value, __TrasmissionCurve.set, None, None)
+    Observation = property(__Observation.value, __Observation.set, None, u'')
+
+    
+    # Element {http://euclid.esa.org/schema/bas/spm}Filename uses Python identifier Filename
+    __Filename = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Filename'), 'Filename', '__httpeuclid_esa_orgschemabasspm_spectrumMetadata_httpeuclid_esa_orgschemabasspmFilename', False)
+
+    
+    Filename = property(__Filename.value, __Filename.set, None, u'Source file name')
 
     
     # Element {http://euclid.esa.org/schema/bas/spm}Patch uses Python identifier Patch
@@ -385,22 +315,36 @@ class spectrumMetadata (pyxb.binding.basis.complexTypeDefinition):
     
     Patch = property(__Patch.value, __Patch.set, None, u'')
 
+    
+    # Element {http://euclid.esa.org/schema/bas/spm}Exposure uses Python identifier Exposure
+    __Exposure = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Exposure'), 'Exposure', '__httpeuclid_esa_orgschemabasspm_spectrumMetadata_httpeuclid_esa_orgschemabasspmExposure', False)
+
+    
+    Exposure = property(__Exposure.value, __Exposure.set, None, u'')
+
+    
+    # Element {http://euclid.esa.org/schema/bas/spm}OrigFile uses Python identifier OrigFile
+    __OrigFile = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'OrigFile'), 'OrigFile', '__httpeuclid_esa_orgschemabasspm_spectrumMetadata_httpeuclid_esa_orgschemabasspmOrigFile', False)
+
+    
+    OrigFile = property(__OrigFile.value, __OrigFile.set, None, u'Original file name')
+
 
     _ElementMap = {
-        __Observation.name() : __Observation,
-        __Array.name() : __Array,
-        __OrigFile.name() : __OrigFile,
-        __Coordinates.name() : __Coordinates,
-        __Frame.name() : __Frame,
-        __Class.name() : __Class,
-        __Id.name() : __Id,
-        __RangeID.name() : __RangeID,
-        __Filename.name() : __Filename,
-        __Survey.name() : __Survey,
-        __Exposure.name() : __Exposure,
         __ObjectName.name() : __ObjectName,
+        __RangeID.name() : __RangeID,
         __TrasmissionCurve.name() : __TrasmissionCurve,
-        __Patch.name() : __Patch
+        __Class.name() : __Class,
+        __Array.name() : __Array,
+        __Coordinates.name() : __Coordinates,
+        __Survey.name() : __Survey,
+        __Frame.name() : __Frame,
+        __Id.name() : __Id,
+        __Observation.name() : __Observation,
+        __Filename.name() : __Filename,
+        __Patch.name() : __Patch,
+        __Exposure.name() : __Exposure,
+        __OrigFile.name() : __OrigFile
     }
     _AttributeMap = {
         
@@ -416,27 +360,31 @@ class spectrum (spectrumMetadata):
     _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'spectrum')
     # Base type is spectrumMetadata
     
-    # Element Observation ({http://euclid.esa.org/schema/bas/spm}Observation) inherited from {http://euclid.esa.org/schema/bas/spm}spectrumMetadata
+    # Element ObjectName ({http://euclid.esa.org/schema/bas/spm}ObjectName) inherited from {http://euclid.esa.org/schema/bas/spm}spectrumMetadata
     
-    # Element Array ({http://euclid.esa.org/schema/bas/spm}Array) inherited from {http://euclid.esa.org/schema/bas/spm}spectrumMetadata
+    # Element RangeID ({http://euclid.esa.org/schema/bas/spm}RangeID) inherited from {http://euclid.esa.org/schema/bas/spm}spectrumMetadata
     
     # Element OrigFile ({http://euclid.esa.org/schema/bas/spm}OrigFile) inherited from {http://euclid.esa.org/schema/bas/spm}spectrumMetadata
     
-    # Element Coordinates ({http://euclid.esa.org/schema/bas/spm}Coordinates) inherited from {http://euclid.esa.org/schema/bas/spm}spectrumMetadata
-    
-    # Element Frame ({http://euclid.esa.org/schema/bas/spm}Frame) inherited from {http://euclid.esa.org/schema/bas/spm}spectrumMetadata
+    # Element Exposure ({http://euclid.esa.org/schema/bas/spm}Exposure) inherited from {http://euclid.esa.org/schema/bas/spm}spectrumMetadata
     
     # Element Class ({http://euclid.esa.org/schema/bas/spm}Class) inherited from {http://euclid.esa.org/schema/bas/spm}spectrumMetadata
     
+    # Element Array ({http://euclid.esa.org/schema/bas/spm}Array) inherited from {http://euclid.esa.org/schema/bas/spm}spectrumMetadata
+    
+    # Element Coordinates ({http://euclid.esa.org/schema/bas/spm}Coordinates) inherited from {http://euclid.esa.org/schema/bas/spm}spectrumMetadata
+    
+    # Element Survey ({http://euclid.esa.org/schema/bas/spm}Survey) inherited from {http://euclid.esa.org/schema/bas/spm}spectrumMetadata
+    
+    # Element Frame ({http://euclid.esa.org/schema/bas/spm}Frame) inherited from {http://euclid.esa.org/schema/bas/spm}spectrumMetadata
+    
     # Element Id ({http://euclid.esa.org/schema/bas/spm}Id) inherited from {http://euclid.esa.org/schema/bas/spm}spectrumMetadata
+    
+    # Element Observation ({http://euclid.esa.org/schema/bas/spm}Observation) inherited from {http://euclid.esa.org/schema/bas/spm}spectrumMetadata
     
     # Element Filename ({http://euclid.esa.org/schema/bas/spm}Filename) inherited from {http://euclid.esa.org/schema/bas/spm}spectrumMetadata
     
     # Element Patch ({http://euclid.esa.org/schema/bas/spm}Patch) inherited from {http://euclid.esa.org/schema/bas/spm}spectrumMetadata
-    
-    # Element Survey ({http://euclid.esa.org/schema/bas/spm}Survey) inherited from {http://euclid.esa.org/schema/bas/spm}spectrumMetadata
-    
-    # Element Exposure ({http://euclid.esa.org/schema/bas/spm}Exposure) inherited from {http://euclid.esa.org/schema/bas/spm}spectrumMetadata
     
     # Element {http://euclid.esa.org/schema/bas/spm}SpectrumData uses Python identifier SpectrumData
     __SpectrumData = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'SpectrumData'), 'SpectrumData', '__httpeuclid_esa_orgschemabasspm_spectrum_httpeuclid_esa_orgschemabasspmSpectrumData', False)
@@ -445,11 +393,7 @@ class spectrum (spectrumMetadata):
     SpectrumData = property(__SpectrumData.value, __SpectrumData.set, None, None)
 
     
-    # Element ObjectName ({http://euclid.esa.org/schema/bas/spm}ObjectName) inherited from {http://euclid.esa.org/schema/bas/spm}spectrumMetadata
-    
     # Element TrasmissionCurve ({http://euclid.esa.org/schema/bas/spm}TrasmissionCurve) inherited from {http://euclid.esa.org/schema/bas/spm}spectrumMetadata
-    
-    # Element RangeID ({http://euclid.esa.org/schema/bas/spm}RangeID) inherited from {http://euclid.esa.org/schema/bas/spm}spectrumMetadata
 
     _ElementMap = spectrumMetadata._ElementMap.copy()
     _ElementMap.update({
@@ -461,6 +405,76 @@ class spectrum (spectrumMetadata):
     })
 Namespace.addCategoryObject('typeBinding', u'spectrum', spectrum)
 
+
+# Complex type spectrumData with content type ELEMENT_ONLY
+class spectrumData (pyxb.binding.basis.complexTypeDefinition):
+    _TypeDefinition = None
+    _ContentTypeTag = pyxb.binding.basis.complexTypeDefinition._CT_ELEMENT_ONLY
+    _Abstract = False
+    _ExpandedName = pyxb.namespace.ExpandedName(Namespace, u'spectrumData')
+    # Base type is pyxb.binding.datatypes.anyType
+    
+    # Element {http://euclid.esa.org/schema/bas/spm}Noise uses Python identifier Noise
+    __Noise = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Noise'), 'Noise', '__httpeuclid_esa_orgschemabasspm_spectrumData_httpeuclid_esa_orgschemabasspmNoise', False)
+
+    
+    Noise = property(__Noise.value, __Noise.set, None, None)
+
+    
+    # Element {http://euclid.esa.org/schema/bas/spm}Contamination uses Python identifier Contamination
+    __Contamination = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Contamination'), 'Contamination', '__httpeuclid_esa_orgschemabasspm_spectrumData_httpeuclid_esa_orgschemabasspmContamination', False)
+
+    
+    Contamination = property(__Contamination.value, __Contamination.set, None, None)
+
+    
+    # Element {http://euclid.esa.org/schema/bas/spm}Wavelegth uses Python identifier Wavelegth
+    __Wavelegth = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Wavelegth'), 'Wavelegth', '__httpeuclid_esa_orgschemabasspm_spectrumData_httpeuclid_esa_orgschemabasspmWavelegth', False)
+
+    
+    Wavelegth = property(__Wavelegth.value, __Wavelegth.set, None, None)
+
+    
+    # Element {http://euclid.esa.org/schema/bas/spm}Flux uses Python identifier Flux
+    __Flux = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'Flux'), 'Flux', '__httpeuclid_esa_orgschemabasspm_spectrumData_httpeuclid_esa_orgschemabasspmFlux', False)
+
+    
+    Flux = property(__Flux.value, __Flux.set, None, None)
+
+    
+    # Element {http://euclid.esa.org/schema/bas/spm}PixelQuality uses Python identifier PixelQuality
+    __PixelQuality = pyxb.binding.content.ElementUse(pyxb.namespace.ExpandedName(Namespace, u'PixelQuality'), 'PixelQuality', '__httpeuclid_esa_orgschemabasspm_spectrumData_httpeuclid_esa_orgschemabasspmPixelQuality', False)
+
+    
+    PixelQuality = property(__PixelQuality.value, __PixelQuality.set, None, None)
+
+
+    _ElementMap = {
+        __Noise.name() : __Noise,
+        __Contamination.name() : __Contamination,
+        __Wavelegth.name() : __Wavelegth,
+        __Flux.name() : __Flux,
+        __PixelQuality.name() : __PixelQuality
+    }
+    _AttributeMap = {
+        
+    }
+Namespace.addCategoryObject('typeBinding', u'spectrumData', spectrumData)
+
+
+
+
+spectralRangeId._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'SpectrumLength'), pyxb.binding.datatypes.short, scope=spectralRangeId))
+
+spectralRangeId._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'SpectralRangeName'), spectralRangeName, scope=spectralRangeId))
+
+spectralRangeId._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'SpectralOrder'), pyxb.binding.datatypes.short, scope=spectralRangeId))
+spectralRangeId._GroupModel = pyxb.binding.content.GroupSequence(
+    pyxb.binding.content.ParticleModel(spectralRangeId._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'SpectralRangeName')), min_occurs=1, max_occurs=1),
+    pyxb.binding.content.ParticleModel(spectralRangeId._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'SpectralOrder')), min_occurs=1, max_occurs=1),
+    pyxb.binding.content.ParticleModel(spectralRangeId._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'SpectrumLength')), min_occurs=1, max_occurs=1)
+    )
+spectralRangeId._ContentModel = pyxb.binding.content.ParticleModel(spectralRangeId._GroupModel, min_occurs=1, max_occurs=1)
 
 
 
@@ -497,67 +511,33 @@ spectrum1DFlag._ContentModel = pyxb.binding.content.ParticleModel(spectrum1DFlag
 
 
 
-spectrumData._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'PixelQuality'), spectrum1DFlag, scope=spectrumData))
-
-spectrumData._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Flux'), spectrum1DData, scope=spectrumData))
-
-spectrumData._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Wavelegth'), spectrum1DData, scope=spectrumData))
-
-spectrumData._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Noise'), spectrum1DError, scope=spectrumData))
-
-spectrumData._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Contamination'), spectrum1DData, scope=spectrumData))
-spectrumData._GroupModel = pyxb.binding.content.GroupSequence(
-    pyxb.binding.content.ParticleModel(spectrumData._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Wavelegth')), min_occurs=1, max_occurs=1),
-    pyxb.binding.content.ParticleModel(spectrumData._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Flux')), min_occurs=1, max_occurs=1),
-    pyxb.binding.content.ParticleModel(spectrumData._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Noise')), min_occurs=1, max_occurs=1),
-    pyxb.binding.content.ParticleModel(spectrumData._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Contamination')), min_occurs=1, max_occurs=1),
-    pyxb.binding.content.ParticleModel(spectrumData._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'PixelQuality')), min_occurs=1, max_occurs=1)
-    )
-spectrumData._ContentModel = pyxb.binding.content.ParticleModel(spectrumData._GroupModel, min_occurs=1, max_occurs=1)
-
-
-
-spectralRangeId._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'SpectrumLength'), pyxb.binding.datatypes.short, scope=spectralRangeId))
-
-spectralRangeId._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'SpectralOrder'), pyxb.binding.datatypes.short, scope=spectralRangeId))
-
-spectralRangeId._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'SpectralRangeName'), spectralRangeName, scope=spectralRangeId))
-spectralRangeId._GroupModel = pyxb.binding.content.GroupSequence(
-    pyxb.binding.content.ParticleModel(spectralRangeId._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'SpectralRangeName')), min_occurs=1, max_occurs=1),
-    pyxb.binding.content.ParticleModel(spectralRangeId._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'SpectralOrder')), min_occurs=1, max_occurs=1),
-    pyxb.binding.content.ParticleModel(spectralRangeId._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'SpectrumLength')), min_occurs=1, max_occurs=1)
-    )
-spectralRangeId._ContentModel = pyxb.binding.content.ParticleModel(spectralRangeId._GroupModel, min_occurs=1, max_occurs=1)
-
-
-
-spectrumMetadata._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Observation'), pyxb.binding.datatypes.string, scope=spectrumMetadata, documentation=u''))
-
-spectrumMetadata._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Array'), pyxb.binding.datatypes.string, scope=spectrumMetadata, documentation=u''))
-
-spectrumMetadata._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'OrigFile'), pyxb.binding.datatypes.string, scope=spectrumMetadata, documentation=u'Original file name'))
-
-spectrumMetadata._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Coordinates'), CommonDM.dm.bas.imp.stc_stub.astroCoordSystem, scope=spectrumMetadata, documentation=u''))
-
-spectrumMetadata._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Frame'), pyxb.binding.datatypes.string, scope=spectrumMetadata, documentation=u''))
-
-spectrumMetadata._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Class'), spectrumClass, scope=spectrumMetadata))
-
-spectrumMetadata._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Id'), spectrumId, scope=spectrumMetadata, documentation=u''))
+spectrumMetadata._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'ObjectName'), CommonDM.dm.bas_stub.objectName, scope=spectrumMetadata, documentation=u''))
 
 spectrumMetadata._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'RangeID'), spectralRangeId, scope=spectrumMetadata))
 
-spectrumMetadata._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Filename'), pyxb.binding.datatypes.string, scope=spectrumMetadata, documentation=u'Source file name'))
+spectrumMetadata._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'TrasmissionCurve'), pyxb.binding.datatypes.string, scope=spectrumMetadata))
+
+spectrumMetadata._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Class'), spectrumClass, scope=spectrumMetadata))
+
+spectrumMetadata._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Array'), pyxb.binding.datatypes.string, scope=spectrumMetadata, documentation=u''))
+
+spectrumMetadata._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Coordinates'), CommonDM.dm.bas.imp.stc_stub.astroCoordSystem, scope=spectrumMetadata, documentation=u''))
 
 spectrumMetadata._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Survey'), pyxb.binding.datatypes.string, scope=spectrumMetadata, documentation=u''))
 
-spectrumMetadata._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Exposure'), pyxb.binding.datatypes.string, scope=spectrumMetadata, documentation=u''))
+spectrumMetadata._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Frame'), pyxb.binding.datatypes.string, scope=spectrumMetadata, documentation=u''))
 
-spectrumMetadata._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'ObjectName'), CommonDM.dm.bas_stub.objectName, scope=spectrumMetadata, documentation=u''))
+spectrumMetadata._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Id'), spectrumId, scope=spectrumMetadata, documentation=u''))
 
-spectrumMetadata._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'TrasmissionCurve'), pyxb.binding.datatypes.string, scope=spectrumMetadata))
+spectrumMetadata._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Observation'), pyxb.binding.datatypes.string, scope=spectrumMetadata, documentation=u''))
+
+spectrumMetadata._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Filename'), pyxb.binding.datatypes.string, scope=spectrumMetadata, documentation=u'Source file name'))
 
 spectrumMetadata._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Patch'), pyxb.binding.datatypes.string, scope=spectrumMetadata, documentation=u''))
+
+spectrumMetadata._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Exposure'), pyxb.binding.datatypes.string, scope=spectrumMetadata, documentation=u''))
+
+spectrumMetadata._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'OrigFile'), pyxb.binding.datatypes.string, scope=spectrumMetadata, documentation=u'Original file name'))
 spectrumMetadata._GroupModel = pyxb.binding.content.GroupSequence(
     pyxb.binding.content.ParticleModel(spectrumMetadata._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Id')), min_occurs=1, max_occurs=1),
     pyxb.binding.content.ParticleModel(spectrumMetadata._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'ObjectName')), min_occurs=1, max_occurs=1),
@@ -603,3 +583,23 @@ spectrum._GroupModel = pyxb.binding.content.GroupSequence(
     pyxb.binding.content.ParticleModel(spectrum._GroupModel_2, min_occurs=1, max_occurs=1)
     )
 spectrum._ContentModel = pyxb.binding.content.ParticleModel(spectrum._GroupModel, min_occurs=1, max_occurs=1)
+
+
+
+spectrumData._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Noise'), spectrum1DError, scope=spectrumData))
+
+spectrumData._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Contamination'), spectrum1DData, scope=spectrumData))
+
+spectrumData._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Wavelegth'), spectrum1DData, scope=spectrumData))
+
+spectrumData._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'Flux'), spectrum1DData, scope=spectrumData))
+
+spectrumData._AddElement(pyxb.binding.basis.element(pyxb.namespace.ExpandedName(Namespace, u'PixelQuality'), spectrum1DFlag, scope=spectrumData))
+spectrumData._GroupModel = pyxb.binding.content.GroupSequence(
+    pyxb.binding.content.ParticleModel(spectrumData._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Wavelegth')), min_occurs=1, max_occurs=1),
+    pyxb.binding.content.ParticleModel(spectrumData._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Flux')), min_occurs=1, max_occurs=1),
+    pyxb.binding.content.ParticleModel(spectrumData._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Noise')), min_occurs=1, max_occurs=1),
+    pyxb.binding.content.ParticleModel(spectrumData._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'Contamination')), min_occurs=1, max_occurs=1),
+    pyxb.binding.content.ParticleModel(spectrumData._UseForTag(pyxb.namespace.ExpandedName(Namespace, u'PixelQuality')), min_occurs=1, max_occurs=1)
+    )
+spectrumData._ContentModel = pyxb.binding.content.ParticleModel(spectrumData._GroupModel, min_occurs=1, max_occurs=1)
