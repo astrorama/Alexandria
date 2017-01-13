@@ -37,6 +37,3 @@ elements_add_unit_test(QualifiedName_test tests/src/QualifiedName_test.cpp
 elements_add_unit_test(FitsParser_test tests/src/FitsParser_test.cpp
                        LINK_LIBRARIES XYDataset TYPE Boost)
 
-elements_add_unit_test(StringFunctions_test tests/src/StringFunctions_test.cpp
-                       LINK_LIBRARIES XYDataset TYPE Boost)
-

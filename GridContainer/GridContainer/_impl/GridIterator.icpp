@@ -121,7 +121,7 @@ template<typename GridCellManager, typename... AxesTypes>
 template<typename CellType>
 template<int I>
 auto GridContainer<GridCellManager, AxesTypes...>::iter<CellType>::fixAxisByValue(const axis_type<I>& value) -> iter& {
-  auto axis = m_owner.getOriginalAxis<I>();
+  auto& axis = m_owner.getOriginalAxis<I>();
   auto iter = std::find(axis.begin(), axis.end(), value);
   if (iter == axis.end()) {
     throw Elements::Exception() << "Failed to fix axis " << m_owner.getOriginalAxis<I>().name()

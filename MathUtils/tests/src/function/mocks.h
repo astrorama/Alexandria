@@ -14,7 +14,7 @@
 class FunctionMock : public Euclid::MathUtils::Function {
 public:
   FunctionMock(const double value) : m_value{value} { }
-  double operator()(const double) const {
+  double operator()(const double) const override {
     return m_value;
   }
   std::unique_ptr<Function> clone() const override {
@@ -27,13 +27,13 @@ private:
 class IntegrableMock : public Euclid::MathUtils::Integrable {
 public:
   IntegrableMock(const double value) : m_value{value} { }
-  double operator()(const double) const {
+  double operator()(const double) const override {
     return m_value;
   }
   std::unique_ptr<Function> clone() const override {
     return std::unique_ptr<Function> {new IntegrableMock{m_value}};
   }
-  double integrate(const double min, const double max) const {
+  double integrate(const double min, const double max) const override {
     m_min = min;
     m_max = max;
     return m_value * (max - min);
@@ -46,7 +46,7 @@ private:
 
 class DifferentiableMock : public Euclid::MathUtils::Differentiable {
 public:
-  double operator()(const double x) const {
+  double operator()(const double x) const override {
     if (x < 0) {
       return 0;
     } else {
@@ -56,10 +56,10 @@ public:
   std::unique_ptr<Function> clone() const override {
     return std::unique_ptr<Function> {new DifferentiableMock{}};
   }
-  std::shared_ptr<Euclid::MathUtils::Function> derivative() const {
+  std::shared_ptr<Euclid::MathUtils::Function> derivative() const override {
     return nullptr;
   }
-  std::shared_ptr<Euclid::MathUtils::Function> indefiniteIntegral() const {
+  std::shared_ptr<Euclid::MathUtils::Function> indefiniteIntegral() const override {
     if (!m_func) {
       m_func.reset(new DifferentiableMock{});
     }
