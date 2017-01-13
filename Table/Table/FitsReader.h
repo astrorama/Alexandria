@@ -80,8 +80,12 @@ public:
    * - Q (Array Descriptor 64-bit) : NOT SUPPORTED
    *
    * Note that repeat counts (which create arrays) in the binary table formats
-   * are not supported, with exception the "A" format, which is translated to
+   * are translated to vectors, with exception the "A" format, which is translated to
    * a string.
+   * 
+   * The (non standard) keywords TDESCn are considered to contain the text
+   * description of the column. The unit is retrieved by using the standard
+   * TUNITn keyword.
    *
    * @param hdu The HDU containing the table
    * @return the table

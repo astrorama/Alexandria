@@ -164,6 +164,9 @@ protected:
    */
   template <typename T>
   T& getDependency();
+  
+  template <typename T>
+  const T& getDependency() const;
 
 private:
   

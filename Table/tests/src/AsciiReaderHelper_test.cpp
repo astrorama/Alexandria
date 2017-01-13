@@ -42,21 +42,38 @@ struct AsciiReaderHelper_Fixture {
     "1 2 3 4 5"
   };
   
+  std::string column_descriptions {
+    "# Column: First bool (unit1) - This is the first description\n"
+    "# Column: Second boolean\n"
+    "# Column: Third int (unit3)\n"
+    "# Column: Fourth int32 - This is the fourth description\n"
+  };
+  
   std::string all_types {
-    "# Bool1 Bool2   Int1 Int2  Long1 Long2 Float Double String\n"
-    "# Dummy line\n"
-    "# bool #boolean int# int32 long  int64 float double string #\n"
-    "# Trying to confuse with comments\n"
-    "  true  t       1    2     3     4     5.    6.     7\n"
-    "  yes   y       8    9     10    11    1.2   1.3    14\n"
-    "  1     false   15   16    17    18    1.9   2.0    21\n"
-    "  f     no      22   23    24    25    2.6   2.7    28\n"
-    "  n     0       29   30    31    32    3.3   3.4    35\n"
+    "# Column: Bool1 bool (unit1) - This is the first description\n"
+    "# Column: Bool2 boolean\n"
+    "# Column: Int1 int (unit3)\n"
+    "# Column: Int2 int32 - This is the fourth description\n"
+    "# Column: Long1 long\n"
+    "# Column: Long2 int64\n"
+    "# Column: Float float\n"
+    "# Column: Double double\n"
+    "# Column: String string\n"
+    "# Column: DoubleVector [double]\n"
+    "\n"
+    "# Bool1 Bool2   Int1 Int2  Long1 Long2 Float Double String DoubleVector\n"
+    "\n"
+    "  true  t       1    2     3     4     5.    6.     7      1.1,1.2,1.3\n"
+    "  yes   y       8    9     10    11    1.2   1.3    14     2.1,2.2,2.3,2.4\n"
+    "  1     false   15   16    17    18    1.9   2.0    21     3.1,3.2,3.3\n"
+    "  f     no      22   23    24    25    2.6   2.7    28     4.1,4.2\n"
+    "  n     0       29   30    31    32    3.3   3.4    35     5.1,5.2\n"
   };
   
   std::string invalid_type {
-    "# First Second# #Third #Second# Fifth\n"
-    "# Wrong int int int int\n"
+    "# Column: First Wrong\n"
+    "# Column: Second boolean\n"
+    "# Column: Third int\n"
   };
 };
 
@@ -140,6 +157,86 @@ BOOST_FIXTURE_TEST_CASE(countColumnsRewinds, AsciiReaderHelper_Fixture) {
 }
 
 //-----------------------------------------------------------------------------
+// Test the autoDetectColumnDescriptions
+//-----------------------------------------------------------------------------
+
+BOOST_FIXTURE_TEST_CASE(autoDetectColumnDescriptions, AsciiReaderHelper_Fixture) {
+  
+  // Given
+  std::stringstream stream {column_descriptions};
+  
+  // When
+  auto result = Euclid::Table::autoDetectColumnDescriptions(stream, "#");
+  
+  // Then
+  BOOST_CHECK_EQUAL(result.size(), 4);
+  
+  BOOST_CHECK_EQUAL(result.count("First"), 1);
+  BOOST_CHECK_EQUAL(result.count("Second"), 1);
+  BOOST_CHECK_EQUAL(result.count("Third"), 1);
+  BOOST_CHECK_EQUAL(result.count("Fourth"), 1);
+  
+  BOOST_CHECK_EQUAL(result.at("First").name, "First");
+  BOOST_CHECK_EQUAL(result.at("Second").name, "Second");
+  BOOST_CHECK_EQUAL(result.at("Third").name, "Third");
+  BOOST_CHECK_EQUAL(result.at("Fourth").name, "Fourth");
+  
+  BOOST_CHECK_EQUAL(result.at("First").type.name(), typeid(bool).name());
+  BOOST_CHECK_EQUAL(result.at("Second").type.name(), typeid(bool).name());
+  BOOST_CHECK_EQUAL(result.at("Third").type.name(), typeid(int).name());
+  BOOST_CHECK_EQUAL(result.at("Fourth").type.name(), typeid(int).name());
+  
+  BOOST_CHECK_EQUAL(result.at("First").unit, "unit1");
+  BOOST_CHECK_EQUAL(result.at("Second").unit, "");
+  BOOST_CHECK_EQUAL(result.at("Third").unit, "unit3");
+  BOOST_CHECK_EQUAL(result.at("Fourth").unit, "");
+  
+  BOOST_CHECK_EQUAL(result.at("First").description, "This is the first description");
+  BOOST_CHECK_EQUAL(result.at("Second").description, "");
+  BOOST_CHECK_EQUAL(result.at("Third").description, "");
+  BOOST_CHECK_EQUAL(result.at("Fourth").description, "This is the fourth description");
+  
+}
+
+//-----------------------------------------------------------------------------
+// Test the autoDetectColumnDescriptions
+//-----------------------------------------------------------------------------
+
+BOOST_AUTO_TEST_CASE(autoDetectColumnDescriptions_duplicateName) {
+  
+  // Given
+  std::stringstream stream {
+    "# Column: First bool (unit1) - This is the first description\n"
+    "# Column: Second boolean\n"
+    "# Column: Third int (unit3)\n"
+    "# Column: Second int32 - This is the fourth description\n"
+  };
+  
+  // Then
+  BOOST_CHECK_THROW(Euclid::Table::autoDetectColumnDescriptions(stream, "#"), Elements::Exception);
+  
+}
+
+//-----------------------------------------------------------------------------
+// Test the autoDetectColumnDescriptions
+//-----------------------------------------------------------------------------
+
+BOOST_AUTO_TEST_CASE(autoDetectColumnDescriptions_invalidType) {
+  
+  // Given
+  std::stringstream stream {
+    "# Column: First bool (unit1) - This is the first description\n"
+    "# Column: Second boolean\n"
+    "# Column: Third inta (unit3)\n"
+    "# Column: Fourth int32 - This is the fourth description\n"
+  };
+  
+  // Then
+  BOOST_CHECK_THROW(Euclid::Table::autoDetectColumnDescriptions(stream, "#"), Elements::Exception);
+  
+}
+
+//-----------------------------------------------------------------------------
 // Test the autoDetectColumnNames without names in stream
 //-----------------------------------------------------------------------------
 
@@ -184,6 +281,122 @@ BOOST_FIXTURE_TEST_CASE(autoDetectColumnNamesSuccess, AsciiReaderHelper_Fixture)
 }
 
 //-----------------------------------------------------------------------------
+// Test the autoDetectColumnNames with names in stream
+//-----------------------------------------------------------------------------
+
+BOOST_AUTO_TEST_CASE(autoDetectColumnNamesSuccess_fromDescription) {
+  
+  // Given
+  std::stringstream stream {
+    "# This is not a comment with the names\n"
+    "# Column: First\n"
+    "# Column: Second double\n"
+    "# Column: Third (unit)\n"
+    "# Comment in between\n"
+    "# Column: Fourth\n"
+    "# Column: Fifth - Description\n"
+    "# Some more comments here\n"
+    "\n"
+    "1 2 3 4 5"};
+  
+  // When
+  auto names = Euclid::Table::autoDetectColumnNames(stream, "#", 5);
+  
+  // Then
+  BOOST_CHECK_EQUAL(names.size(), 5u);
+  BOOST_CHECK_EQUAL(names[0], "First");
+  BOOST_CHECK_EQUAL(names[1], "Second");
+  BOOST_CHECK_EQUAL(names[2], "Third");
+  BOOST_CHECK_EQUAL(names[3], "Fourth");
+  BOOST_CHECK_EQUAL(names[4], "Fifth");
+  
+}
+
+//-----------------------------------------------------------------------------
+
+BOOST_AUTO_TEST_CASE(autoDetectColumnNames_descriptionsUnordered) {
+  
+  // Given
+  std::stringstream stream {
+    "# This is not a comment with the names\n"
+    "# Column: First\n"
+    "# Column: Fourth\n"
+    "# Column: Second double\n"
+    "# Column: Third (unit)\n"
+    "# Column: Fifth - Description\n"
+    "# Some more comments here\n"
+    "\n"
+    "# First Second Third Fourth Fifth\n"
+    "1 2 3 4 5"};
+  
+  // When
+  auto names = Euclid::Table::autoDetectColumnNames(stream, "#", 5);
+  
+  // Then
+  BOOST_CHECK_EQUAL(names.size(), 5u);
+  BOOST_CHECK_EQUAL(names[0], "First");
+  BOOST_CHECK_EQUAL(names[1], "Second");
+  BOOST_CHECK_EQUAL(names[2], "Third");
+  BOOST_CHECK_EQUAL(names[3], "Fourth");
+  BOOST_CHECK_EQUAL(names[4], "Fifth");
+  
+}
+
+//-----------------------------------------------------------------------------
+
+BOOST_AUTO_TEST_CASE(autoDetectColumnNames_descriptionsMissing) {
+  
+  // Given
+  std::stringstream stream {
+    "# This is not a comment with the names\n"
+    "# Column: First\n"
+    "# Column: Second double\n"
+    "# Column: Third (unit)\n"
+    "# Column: Fifth - Description\n"
+    "# Some more comments here\n"
+    "\n"
+    "# First Second Third Fourth Fifth\n"
+    "1 2 3 4 5"};
+  
+  // When
+  auto names = Euclid::Table::autoDetectColumnNames(stream, "#", 5);
+  
+  // Then
+  BOOST_CHECK_EQUAL(names.size(), 5u);
+  BOOST_CHECK_EQUAL(names[0], "First");
+  BOOST_CHECK_EQUAL(names[1], "Second");
+  BOOST_CHECK_EQUAL(names[2], "Third");
+  BOOST_CHECK_EQUAL(names[3], "Fourth");
+  BOOST_CHECK_EQUAL(names[4], "Fifth");
+  
+}
+
+//-----------------------------------------------------------------------------
+
+BOOST_AUTO_TEST_CASE(autoDetectColumnNames_lessDescriptions) {
+  
+  // Given
+  std::stringstream stream {
+    "# This is not a comment with the names\n"
+    "# Column: First\n"
+    "# Column: Second double\n"
+    "\n"
+    "1 2 3 4 5"};
+  
+  // When
+  auto names = Euclid::Table::autoDetectColumnNames(stream, "#", 5);
+  
+  // Then
+  BOOST_CHECK_EQUAL(names.size(), 5u);
+  BOOST_CHECK_EQUAL(names[0], "First");
+  BOOST_CHECK_EQUAL(names[1], "Second");
+  BOOST_CHECK_EQUAL(names[2], "col3");
+  BOOST_CHECK_EQUAL(names[3], "col4");
+  BOOST_CHECK_EQUAL(names[4], "col5");
+  
+}
+
+//-----------------------------------------------------------------------------
 // Test the autoDetectColumnNames throws exception for duplicate names
 //-----------------------------------------------------------------------------
 
@@ -194,68 +407,6 @@ BOOST_FIXTURE_TEST_CASE(autoDetectColumnNamesDuplicate, AsciiReaderHelper_Fixtur
   
   // Then
   BOOST_CHECK_THROW(Euclid::Table::autoDetectColumnNames(stream, "#", 5), Elements::Exception);
-  
-}
-
-//-----------------------------------------------------------------------------
-// Test the autoDetectColumnTypes with types in stream
-//-----------------------------------------------------------------------------
-
-BOOST_FIXTURE_TEST_CASE(autoDetectColumnTypesSuccess, AsciiReaderHelper_Fixture) {
-  
-  // Given
-  std::stringstream stream {all_types};
-  
-  // When
-  auto types = Euclid::Table::autoDetectColumnTypes(stream, "#", 9);
-  
-  // Then
-  BOOST_CHECK_EQUAL(types.size(), 9u);
-  BOOST_CHECK(types[0] == typeid(bool));
-  BOOST_CHECK(types[1] == typeid(bool));
-  BOOST_CHECK(types[2] == typeid(int32_t));
-  BOOST_CHECK(types[3] == typeid(int32_t));
-  BOOST_CHECK(types[4] == typeid(int64_t));
-  BOOST_CHECK(types[5] == typeid(int64_t));
-  BOOST_CHECK(types[6] == typeid(float));
-  BOOST_CHECK(types[7] == typeid(double));
-  BOOST_CHECK(types[8] == typeid(std::string));
-  
-}
-
-//-----------------------------------------------------------------------------
-// Test the autoDetectColumnTypes without types in stream
-//-----------------------------------------------------------------------------
-
-BOOST_FIXTURE_TEST_CASE(autoDetectColumnTypesNoTypes, AsciiReaderHelper_Fixture) {
-  
-  // Given
-  std::stringstream stream {five_names};
-  
-  // When
-  auto types = Euclid::Table::autoDetectColumnTypes(stream, "#", 5);
-  
-  // Then
-  BOOST_CHECK_EQUAL(types.size(), 5u);
-  BOOST_CHECK(types[0] == typeid(std::string));
-  BOOST_CHECK(types[1] == typeid(std::string));
-  BOOST_CHECK(types[2] == typeid(std::string));
-  BOOST_CHECK(types[3] == typeid(std::string));
-  BOOST_CHECK(types[4] == typeid(std::string));
-  
-}
-
-//-----------------------------------------------------------------------------
-// Test the autoDetectColumnTypes throws exception for wrong type keywords
-//-----------------------------------------------------------------------------
-
-BOOST_FIXTURE_TEST_CASE(autoDetectColumnTypeWrongKeywords, AsciiReaderHelper_Fixture) {
-  
-  // Given
-  std::stringstream stream {invalid_type};
-  
-  // Then
-  BOOST_CHECK_THROW(Euclid::Table::autoDetectColumnTypes(stream, "#", 5), Elements::Exception);
   
 }
 

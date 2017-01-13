@@ -17,14 +17,15 @@ struct AsciiWriterHelper_Fixture {
       Euclid::Table::ColumnInfo::info_type("ThisIsAVeryLongColumnName", typeid(std::string)),
       Euclid::Table::ColumnInfo::info_type("Integer", typeid(int32_t)),
       Euclid::Table::ColumnInfo::info_type("D", typeid(double)),
-      Euclid::Table::ColumnInfo::info_type("F", typeid(float))
+      Euclid::Table::ColumnInfo::info_type("F", typeid(float)),
+      Euclid::Table::ColumnInfo::info_type("DoubleVector", typeid(std::vector<double>))
   };
   std::shared_ptr<Euclid::Table::ColumnInfo> column_info {new Euclid::Table::ColumnInfo {info_list}};
-  std::vector<Euclid::Table::Row::cell_type> values0 {true, std::string{"Two-1"}, 1, 4.1, 0.f};
+  std::vector<Euclid::Table::Row::cell_type> values0 {true, std::string{"Two-1"}, 1, 4.1, 0.f, std::vector<double>{1.1, 1.2}};
   Euclid::Table::Row row0 {values0, column_info};
-  std::vector<Euclid::Table::Row::cell_type> values1 {false, std::string{"Two-2"}, 1234567890, 42e-16, 0.f};
+  std::vector<Euclid::Table::Row::cell_type> values1 {false, std::string{"Two-2"}, 1234567890, 42e-16, 0.f, std::vector<double>{2.1, 2.2}};
   Euclid::Table::Row row1 {values1, column_info};
-  std::vector<Euclid::Table::Row::cell_type> values2 {true, std::string{"Two-3"}, 234, 4.3, 0.f};
+  std::vector<Euclid::Table::Row::cell_type> values2 {true, std::string{"Two-3"}, 234, 4.3, 0.f, std::vector<double>{3.1, 3.2, 3.3, 3.4}};
   Euclid::Table::Row row2 {values2, column_info};
   std::vector<Euclid::Table::Row> row_list {row0, row1, row2};
   Euclid::Table::Table table {row_list};
@@ -47,6 +48,11 @@ BOOST_FIXTURE_TEST_CASE(typeToKeyword, AsciiWriterHelper_Fixture) {
   std::string float_key = Euclid::Table::typeToKeyword(typeid(float));
   std::string double_key = Euclid::Table::typeToKeyword(typeid(double));
   std::string string_key = Euclid::Table::typeToKeyword(typeid(std::string));
+  std::string vector_bool_key = Euclid::Table::typeToKeyword(typeid(std::vector<bool>));
+  std::string vector_int32_key = Euclid::Table::typeToKeyword(typeid(std::vector<int32_t>));
+  std::string vector_int64_key = Euclid::Table::typeToKeyword(typeid(std::vector<int64_t>));
+  std::string vector_float_key = Euclid::Table::typeToKeyword(typeid(std::vector<float>));
+  std::string vector_double_key = Euclid::Table::typeToKeyword(typeid(std::vector<double>));
   
   // Then
   BOOST_CHECK_EQUAL(bool_key, "bool");
@@ -55,6 +61,11 @@ BOOST_FIXTURE_TEST_CASE(typeToKeyword, AsciiWriterHelper_Fixture) {
   BOOST_CHECK_EQUAL(float_key, "float");
   BOOST_CHECK_EQUAL(double_key, "double");
   BOOST_CHECK_EQUAL(string_key, "string");
+  BOOST_CHECK_EQUAL(vector_bool_key, "[bool]");
+  BOOST_CHECK_EQUAL(vector_int32_key, "[int]");
+  BOOST_CHECK_EQUAL(vector_int64_key, "[long]");
+  BOOST_CHECK_EQUAL(vector_float_key, "[float]");
+  BOOST_CHECK_EQUAL(vector_double_key, "[double]");
   
 }
 
@@ -72,7 +83,8 @@ BOOST_FIXTURE_TEST_CASE(calculateColumnLengths, AsciiWriterHelper_Fixture) {
   BOOST_CHECK_EQUAL(sizes[1], 26);
   BOOST_CHECK_EQUAL(sizes[2], 11);
   BOOST_CHECK_EQUAL(sizes[3], 8);
-  BOOST_CHECK_EQUAL(sizes[4], 6);
+  BOOST_CHECK_EQUAL(sizes[4], 2);
+  BOOST_CHECK_EQUAL(sizes[5], 16);
   
 }
 

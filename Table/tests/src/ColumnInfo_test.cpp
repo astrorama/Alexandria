@@ -39,50 +39,10 @@ BOOST_AUTO_TEST_CASE(ConstructorDuplicateNames) {
   info_list.push_back(Euclid::Table::ColumnInfo::info_type("Third", typeid(double)));
   info_list.push_back(Euclid::Table::ColumnInfo::info_type("Second", typeid(double)));
   info_list.push_back(Euclid::Table::ColumnInfo::info_type("Fifth", typeid(int)));
+  info_list.push_back(Euclid::Table::ColumnInfo::info_type("Sixth", typeid(std::vector<double>)));
   
   // Then
   BOOST_CHECK_THROW(Euclid::Table::ColumnInfo {info_list}, Elements::Exception);
-  
-}
-
-//-----------------------------------------------------------------------------
-// Test the constructor throws an exception for empty string name
-//-----------------------------------------------------------------------------
-
-BOOST_AUTO_TEST_CASE(ConstructorEmptyStringName) {
-  
-  // Given
-  std::vector<Euclid::Table::ColumnInfo::info_type> info_list {};
-  info_list.push_back(Euclid::Table::ColumnInfo::info_type("First", typeid(std::string)));
-  info_list.push_back(Euclid::Table::ColumnInfo::info_type("Second", typeid(std::string)));
-  info_list.push_back(Euclid::Table::ColumnInfo::info_type("Third", typeid(double)));
-  info_list.push_back(Euclid::Table::ColumnInfo::info_type("", typeid(double)));
-  info_list.push_back(Euclid::Table::ColumnInfo::info_type("Fifth", typeid(int)));
-  
-  // Then
-  BOOST_CHECK_THROW(Euclid::Table::ColumnInfo {info_list}, Elements::Exception);
-  
-}
-
-//-----------------------------------------------------------------------------
-// Test the constructor throws an exception for names with whitespace characters
-//-----------------------------------------------------------------------------
-
-BOOST_AUTO_TEST_CASE(ConstructorNameWithWhitespaceChars) {
-  
-  // Given
-  std::vector<Euclid::Table::ColumnInfo::info_type> space {Euclid::Table::ColumnInfo::info_type("Sp ace", typeid(std::string))};
-  std::vector<Euclid::Table::ColumnInfo::info_type> tab {Euclid::Table::ColumnInfo::info_type("Ta\tb", typeid(std::string))};
-  std::vector<Euclid::Table::ColumnInfo::info_type> carriage_return {Euclid::Table::ColumnInfo::info_type("Carriage\rReturn", typeid(double))};
-  std::vector<Euclid::Table::ColumnInfo::info_type> new_line {Euclid::Table::ColumnInfo::info_type("New\nLine", typeid(double))};
-  std::vector<Euclid::Table::ColumnInfo::info_type> new_page {Euclid::Table::ColumnInfo::info_type("New\fPage", typeid(int))};
-  
-  // Then
-  BOOST_CHECK_THROW(Euclid::Table::ColumnInfo {space}, Elements::Exception);
-  BOOST_CHECK_THROW(Euclid::Table::ColumnInfo {tab}, Elements::Exception);
-  BOOST_CHECK_THROW(Euclid::Table::ColumnInfo {carriage_return}, Elements::Exception);
-  BOOST_CHECK_THROW(Euclid::Table::ColumnInfo {new_line}, Elements::Exception);
-  BOOST_CHECK_THROW(Euclid::Table::ColumnInfo {new_page}, Elements::Exception);
   
 }
 
@@ -99,12 +59,14 @@ BOOST_AUTO_TEST_CASE(equalityOperators) {
   info_list_1.push_back(Euclid::Table::ColumnInfo::info_type("Third", typeid(double)));
   info_list_1.push_back(Euclid::Table::ColumnInfo::info_type("Fourth", typeid(double)));
   info_list_1.push_back(Euclid::Table::ColumnInfo::info_type("Fifth", typeid(int)));
+  info_list_1.push_back(Euclid::Table::ColumnInfo::info_type("Sixth", typeid(std::vector<double>)));
   std::vector<Euclid::Table::ColumnInfo::info_type> info_list_2 {};
   info_list_2.push_back(Euclid::Table::ColumnInfo::info_type("First", typeid(std::string)));
   info_list_2.push_back(Euclid::Table::ColumnInfo::info_type("Second", typeid(std::string)));
   info_list_2.push_back(Euclid::Table::ColumnInfo::info_type("Third", typeid(double)));
   info_list_2.push_back(Euclid::Table::ColumnInfo::info_type("Fourth", typeid(double)));
   info_list_2.push_back(Euclid::Table::ColumnInfo::info_type("Fifth", typeid(int)));
+  info_list_2.push_back(Euclid::Table::ColumnInfo::info_type("Sixth", typeid(std::vector<double>)));
   
   // When
   Euclid::Table::ColumnInfo columnInfo1 {info_list_1};
@@ -120,6 +82,7 @@ BOOST_AUTO_TEST_CASE(equalityOperators) {
   info_list_3.push_back(Euclid::Table::ColumnInfo::info_type("Second", typeid(std::string)));
   info_list_3.push_back(Euclid::Table::ColumnInfo::info_type("Third", typeid(double)));
   info_list_3.push_back(Euclid::Table::ColumnInfo::info_type("Fourth", typeid(double)));
+  info_list_1.push_back(Euclid::Table::ColumnInfo::info_type("Fifth", typeid(int)));
   
   // When
   Euclid::Table::ColumnInfo columnInfo3 {info_list_3};
@@ -135,6 +98,7 @@ BOOST_AUTO_TEST_CASE(equalityOperators) {
   info_list_4.push_back(Euclid::Table::ColumnInfo::info_type("WRONG", typeid(double)));
   info_list_4.push_back(Euclid::Table::ColumnInfo::info_type("Fourth", typeid(double)));
   info_list_4.push_back(Euclid::Table::ColumnInfo::info_type("Fifth", typeid(int)));
+  info_list_2.push_back(Euclid::Table::ColumnInfo::info_type("Sixth", typeid(std::vector<double>)));
   
   // When
   Euclid::Table::ColumnInfo columnInfo4 {info_list_4};
@@ -158,77 +122,73 @@ BOOST_AUTO_TEST_CASE(size) {
   info_list.push_back(Euclid::Table::ColumnInfo::info_type("Third", typeid(double)));
   info_list.push_back(Euclid::Table::ColumnInfo::info_type("Fourth", typeid(double)));
   info_list.push_back(Euclid::Table::ColumnInfo::info_type("Fifth", typeid(int)));
+  info_list.push_back(Euclid::Table::ColumnInfo::info_type("Sixth", typeid(std::vector<double>)));
   Euclid::Table::ColumnInfo columnInfo {info_list};
   
   // When
   std::size_t size = columnInfo.size();
   
   // Then
-  BOOST_CHECK_EQUAL(size, 5u);
+  BOOST_CHECK_EQUAL(size, 6u);
   
 }
 
 //-----------------------------------------------------------------------------
-// Test the getName method
+// Test the getDescription method
 //-----------------------------------------------------------------------------
 
-BOOST_AUTO_TEST_CASE(getName) {
+BOOST_AUTO_TEST_CASE(getDescription) {
   
   // Given
   std::vector<Euclid::Table::ColumnInfo::info_type> info_list {};
-  info_list.push_back(Euclid::Table::ColumnInfo::info_type("First", typeid(std::string)));
-  info_list.push_back(Euclid::Table::ColumnInfo::info_type("Second", typeid(std::string)));
-  info_list.push_back(Euclid::Table::ColumnInfo::info_type("Third", typeid(double)));
-  info_list.push_back(Euclid::Table::ColumnInfo::info_type("Fourth", typeid(double)));
-  info_list.push_back(Euclid::Table::ColumnInfo::info_type("Fifth", typeid(int)));
+  info_list.push_back(Euclid::Table::ColumnInfo::info_type("First", typeid(std::string), "deg", "Desc1"));
+  info_list.push_back(Euclid::Table::ColumnInfo::info_type("Second", typeid(std::string), "mag", "Desc2"));
+  info_list.push_back(Euclid::Table::ColumnInfo::info_type("Third", typeid(double), "", "Desc3"));
+  info_list.push_back(Euclid::Table::ColumnInfo::info_type("Fourth", typeid(double), "ph", "Desc4"));
+  info_list.push_back(Euclid::Table::ColumnInfo::info_type("Fifth", typeid(int), "s"));
+  info_list.push_back(Euclid::Table::ColumnInfo::info_type("Sixth", typeid(std::vector<double>)));
   Euclid::Table::ColumnInfo columnInfo {info_list};
   
   // When
-  const std::string& name0  = columnInfo.getName(0);
-  const std::string& name1  = columnInfo.getName(1);
-  const std::string& name2  = columnInfo.getName(2);
-  const std::string& name3  = columnInfo.getName(3);
-  const std::string& name4  = columnInfo.getName(4);
+  auto& desc0  = columnInfo.getDescription(0);
+  auto& desc1  = columnInfo.getDescription(1);
+  auto& desc2  = columnInfo.getDescription(2);
+  auto& desc3  = columnInfo.getDescription(3);
+  auto& desc4  = columnInfo.getDescription(4);
+  auto& desc5  = columnInfo.getDescription(5);
   
   // Then
-  BOOST_CHECK_EQUAL(name0, "First");
-  BOOST_CHECK_EQUAL(name1, "Second");
-  BOOST_CHECK_EQUAL(name2, "Third");
-  BOOST_CHECK_EQUAL(name3, "Fourth");
-  BOOST_CHECK_EQUAL(name4, "Fifth");
-  BOOST_CHECK_THROW(columnInfo.getName(5), Elements::Exception);
+  BOOST_CHECK_EQUAL(desc0.name, info_list[0].name);
+  BOOST_CHECK_EQUAL(desc0.type.name(), info_list[0].type.name());
+  BOOST_CHECK_EQUAL(desc0.unit, info_list[0].unit);
+  BOOST_CHECK_EQUAL(desc0.description, info_list[0].description);
   
-}
-
-//-----------------------------------------------------------------------------
-// Test the getType method
-//-----------------------------------------------------------------------------
-
-BOOST_AUTO_TEST_CASE(getType) {
+  BOOST_CHECK_EQUAL(desc1.name, info_list[1].name);
+  BOOST_CHECK_EQUAL(desc1.type.name(), info_list[1].type.name());
+  BOOST_CHECK_EQUAL(desc1.unit, info_list[1].unit);
+  BOOST_CHECK_EQUAL(desc1.description, info_list[1].description);
   
-  // Given
-  std::vector<Euclid::Table::ColumnInfo::info_type> info_list {};
-  info_list.push_back(Euclid::Table::ColumnInfo::info_type("First", typeid(std::string)));
-  info_list.push_back(Euclid::Table::ColumnInfo::info_type("Second", typeid(std::string)));
-  info_list.push_back(Euclid::Table::ColumnInfo::info_type("Third", typeid(double)));
-  info_list.push_back(Euclid::Table::ColumnInfo::info_type("Fourth", typeid(double)));
-  info_list.push_back(Euclid::Table::ColumnInfo::info_type("Fifth", typeid(int)));
-  Euclid::Table::ColumnInfo columnInfo {info_list};
+  BOOST_CHECK_EQUAL(desc2.name, info_list[2].name);
+  BOOST_CHECK_EQUAL(desc2.type.name(), info_list[2].type.name());
+  BOOST_CHECK_EQUAL(desc2.unit, info_list[2].unit);
+  BOOST_CHECK_EQUAL(desc2.description, info_list[2].description);
   
-  // When
-  const std::type_index& type0  = columnInfo.getType(0);
-  const std::type_index& type1  = columnInfo.getType(1);
-  const std::type_index& type2  = columnInfo.getType(2);
-  const std::type_index& type3  = columnInfo.getType(3);
-  const std::type_index& type4  = columnInfo.getType(4);
+  BOOST_CHECK_EQUAL(desc3.name, info_list[3].name);
+  BOOST_CHECK_EQUAL(desc3.type.name(), info_list[3].type.name());
+  BOOST_CHECK_EQUAL(desc3.unit, info_list[3].unit);
+  BOOST_CHECK_EQUAL(desc3.description, info_list[3].description);
   
-  // Then
-  BOOST_CHECK(type0 == typeid(std::string));
-  BOOST_CHECK(type1 == typeid(std::string));
-  BOOST_CHECK(type2 == typeid(double));
-  BOOST_CHECK(type3 == typeid(double));
-  BOOST_CHECK(type4 == typeid(int));
-  BOOST_CHECK_THROW(columnInfo.getType(5), Elements::Exception);
+  BOOST_CHECK_EQUAL(desc4.name, info_list[4].name);
+  BOOST_CHECK_EQUAL(desc4.type.name(), info_list[4].type.name());
+  BOOST_CHECK_EQUAL(desc4.unit, info_list[4].unit);
+  BOOST_CHECK_EQUAL(desc4.description, info_list[4].description);
+  
+  BOOST_CHECK_EQUAL(desc5.name, info_list[5].name);
+  BOOST_CHECK_EQUAL(desc5.type.name(), info_list[5].type.name());
+  BOOST_CHECK_EQUAL(desc5.unit, info_list[5].unit);
+  BOOST_CHECK_EQUAL(desc5.description, info_list[5].description);
+  
+  BOOST_CHECK_THROW(columnInfo.getDescription(6), Elements::Exception);
   
 }
 
@@ -245,6 +205,7 @@ BOOST_AUTO_TEST_CASE(find) {
   info_list.push_back(Euclid::Table::ColumnInfo::info_type("Third", typeid(double)));
   info_list.push_back(Euclid::Table::ColumnInfo::info_type("Fourth", typeid(double)));
   info_list.push_back(Euclid::Table::ColumnInfo::info_type("Fifth", typeid(int)));
+  info_list.push_back(Euclid::Table::ColumnInfo::info_type("Sixth", typeid(std::vector<double>)));
   Euclid::Table::ColumnInfo columnInfo {info_list};
   
   // When
@@ -253,7 +214,8 @@ BOOST_AUTO_TEST_CASE(find) {
   std::unique_ptr<size_t> index2  = columnInfo.find("Third");
   std::unique_ptr<size_t> index3  = columnInfo.find("Fourth");
   std::unique_ptr<size_t> index4  = columnInfo.find("Fifth");
-  std::unique_ptr<size_t> index5  = columnInfo.find("NotThere");
+  std::unique_ptr<size_t> index5  = columnInfo.find("Sixth");
+  std::unique_ptr<size_t> index6  = columnInfo.find("NotThere");
   
   // Then
   BOOST_CHECK(index0);
@@ -266,7 +228,9 @@ BOOST_AUTO_TEST_CASE(find) {
   BOOST_CHECK_EQUAL(*index3, 3u);
   BOOST_CHECK(index4);
   BOOST_CHECK_EQUAL(*index4, 4u);
-  BOOST_CHECK(!index5);
+  BOOST_CHECK(index5);
+  BOOST_CHECK_EQUAL(*index5, 5u);
+  BOOST_CHECK(!index6);
   
 }
 

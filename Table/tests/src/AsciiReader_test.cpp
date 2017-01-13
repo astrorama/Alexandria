@@ -11,15 +11,15 @@
 struct AsciiReader_Fixture {
   std::string only_hash_comments {
     "# This string contains no data\n"
-    "# only hash comments"
+    "# only hash comments\n"
   };
   std::string only_double_slash_comments {
     "// This string contains no data\n"
-    "// only double slash comments"
+    "// only double slash comments\n"
   };
   std::string different_number_of_columns {
     "1 2 3 4 5\n"
-    "1 2 3 4 5 6"
+    "1 2 3 4 5 6\n"
   };
   std::string duplicate_column_names {
     "# First Second Third Second Fifth\n"
@@ -29,50 +29,53 @@ struct AsciiReader_Fixture {
     "# This is a comment line before the column names\n"
     "\n"
     "# First Second Third Fourth Fifth\n"
-    "# This is a comment line after the column names\n"
     "\n"
     "  1     2      3     4      5"
   };
   
   std::string all_types {
-    "# Bool1 Bool2   Int1 Int2  Long1 Long2 Float Double String\n"
-    "# Dummy line\n"
-    "# bool #boolean int# int32 long  int64 float double string #\n"
-    "# Trying to confuse with comments\n"
-    "  true  t       1    2     3     4     5.    6.     7\n"
-    "  yes   y       8    9     10    11    1.2   1.3    14\n"
-    "  1     false   15   16    17    18    1.9   2.0    21\n"
-    "  f     no      22   23    24    25    2.6   2.7    28\n"
-    "  n     0       29   30    31    32    3.3   3.4    35\n"
+    "# Column: Bool1 bool\n"
+    "# Column: Bool2 boolean\n"
+    "# Column: Int1 int\n"
+    "# Column: Int2 int32\n"
+    "# Column: Long1 long\n"
+    "# Column: Long2 int64\n"
+    "# Column: Float float\n"
+    "# Column: Double double\n"
+    "# Column: String string\n"
+    "# Column: DoubleVector [double]\n"
+    "\n"
+    "# Bool1 Bool2   Int1 Int2  Long1 Long2 Float Double String DoubleVector\n"
+    "\n"
+    "  true  t       1    2     3     4     5.    6.     7      1.1,1.2\n"
+    "  yes   y       8    9     10    11    1.2   1.3    14     2.1,2.2,2.3\n"
+    "  1     false   15   16    17    18    1.9   2.0    21     3.1,3.2\n"
+    "  f     no      22   23    24    25    2.6   2.7    28     4.1,4.2,4.3\n"
+    "  n     0       29   30    31    32    3.3   3.4    35     5.1\n"
   };
   
   std::string wrong_bool {
-    "# Bool\n"
-    "# bool\n"
+    "# Column: Bool bool\n"
     "  7"
   };
   
   std::string wrong_int32 {
-    "# Int\n"
-    "# int\n"
+    "# Column: Int int\n"
     "  7.2"
   };
   
   std::string wrong_int64 {
-    "# Int\n"
-    "# long\n"
+    "# Column: Int long\n"
     "  7.2"
   };
   
   std::string wrong_float {
-    "# Float\n"
-    "# float\n"
+    "# Column: Float float\n"
     "  true"
   };
   
   std::string wrong_double {
-    "# Double\n"
-    "# double\n"
+    "# Column: Double double\n"
     "  Something"
   };
 };
@@ -175,24 +178,26 @@ BOOST_FIXTURE_TEST_CASE(ReadSuccess, AsciiReader_Fixture) {
   auto column_info = table.getColumnInfo();
   
   // Then
-  BOOST_CHECK_EQUAL(column_info->getName(0), "Bool1");
-  BOOST_CHECK_EQUAL(column_info->getName(1), "Bool2");
-  BOOST_CHECK_EQUAL(column_info->getName(2), "Int1");
-  BOOST_CHECK_EQUAL(column_info->getName(3), "Int2");
-  BOOST_CHECK_EQUAL(column_info->getName(4), "Long1");
-  BOOST_CHECK_EQUAL(column_info->getName(5), "Long2");
-  BOOST_CHECK_EQUAL(column_info->getName(6), "Float");
-  BOOST_CHECK_EQUAL(column_info->getName(7), "Double");
-  BOOST_CHECK_EQUAL(column_info->getName(8), "String");
-  BOOST_CHECK(column_info->getType(0) == typeid(bool));
-  BOOST_CHECK(column_info->getType(1) == typeid(bool));
-  BOOST_CHECK(column_info->getType(2) == typeid(int32_t));
-  BOOST_CHECK(column_info->getType(3) == typeid(int32_t));
-  BOOST_CHECK(column_info->getType(4) == typeid(int64_t));
-  BOOST_CHECK(column_info->getType(5) == typeid(int64_t));
-  BOOST_CHECK(column_info->getType(6) == typeid(float));
-  BOOST_CHECK(column_info->getType(7) == typeid(double));
-  BOOST_CHECK(column_info->getType(8) == typeid(std::string));
+  BOOST_CHECK_EQUAL(column_info->getDescription(0).name, "Bool1");
+  BOOST_CHECK_EQUAL(column_info->getDescription(1).name, "Bool2");
+  BOOST_CHECK_EQUAL(column_info->getDescription(2).name, "Int1");
+  BOOST_CHECK_EQUAL(column_info->getDescription(3).name, "Int2");
+  BOOST_CHECK_EQUAL(column_info->getDescription(4).name, "Long1");
+  BOOST_CHECK_EQUAL(column_info->getDescription(5).name, "Long2");
+  BOOST_CHECK_EQUAL(column_info->getDescription(6).name, "Float");
+  BOOST_CHECK_EQUAL(column_info->getDescription(7).name, "Double");
+  BOOST_CHECK_EQUAL(column_info->getDescription(8).name, "String");
+  BOOST_CHECK_EQUAL(column_info->getDescription(9).name, "DoubleVector");
+  BOOST_CHECK(column_info->getDescription(0).type == typeid(bool));
+  BOOST_CHECK(column_info->getDescription(1).type == typeid(bool));
+  BOOST_CHECK(column_info->getDescription(2).type == typeid(int32_t));
+  BOOST_CHECK(column_info->getDescription(3).type == typeid(int32_t));
+  BOOST_CHECK(column_info->getDescription(4).type == typeid(int64_t));
+  BOOST_CHECK(column_info->getDescription(5).type == typeid(int64_t));
+  BOOST_CHECK(column_info->getDescription(6).type == typeid(float));
+  BOOST_CHECK(column_info->getDescription(7).type == typeid(double));
+  BOOST_CHECK(column_info->getDescription(8).type == typeid(std::string));
+  BOOST_CHECK(column_info->getDescription(9).type == typeid(std::vector<double>));
   
   BOOST_CHECK_EQUAL(boost::get<bool>(table[0][0]), true);
   BOOST_CHECK_EQUAL(boost::get<bool>(table[0][1]), true);
@@ -203,6 +208,9 @@ BOOST_FIXTURE_TEST_CASE(ReadSuccess, AsciiReader_Fixture) {
   BOOST_CHECK_EQUAL(boost::get<float>(table[0][6]), 5.);
   BOOST_CHECK_EQUAL(boost::get<double>(table[0][7]), 6.);
   BOOST_CHECK_EQUAL(boost::get<std::string>(table[0][8]), "7");
+  BOOST_CHECK_EQUAL(boost::get<std::vector<double>>(table[0][9]).size(), 2);
+  BOOST_CHECK_EQUAL(boost::get<std::vector<double>>(table[0][9])[0], 1.1);
+  BOOST_CHECK_EQUAL(boost::get<std::vector<double>>(table[0][9])[1], 1.2);
   BOOST_CHECK_EQUAL(boost::get<bool>(table[1][0]), true);
   BOOST_CHECK_EQUAL(boost::get<bool>(table[1][1]), true);
   BOOST_CHECK_EQUAL(boost::get<bool>(table[2][0]), true);
@@ -211,6 +219,10 @@ BOOST_FIXTURE_TEST_CASE(ReadSuccess, AsciiReader_Fixture) {
   BOOST_CHECK_EQUAL(boost::get<bool>(table[3][1]), false);
   BOOST_CHECK_EQUAL(boost::get<bool>(table[4][0]), false);
   BOOST_CHECK_EQUAL(boost::get<bool>(table[4][1]), false);
+  BOOST_CHECK_EQUAL(boost::get<std::vector<double>>(table[3][9]).size(), 3);
+  BOOST_CHECK_EQUAL(boost::get<std::vector<double>>(table[3][9])[0], 4.1);
+  BOOST_CHECK_EQUAL(boost::get<std::vector<double>>(table[3][9])[1], 4.2);
+  BOOST_CHECK_EQUAL(boost::get<std::vector<double>>(table[3][9])[2], 4.3);
   
 }
 
@@ -229,11 +241,11 @@ BOOST_FIXTURE_TEST_CASE(ReadOverrideTypes, AsciiReader_Fixture) {
   auto column_info = table.getColumnInfo();
   
   // Then
-  BOOST_CHECK(column_info->getType(0) == typeid(bool));
-  BOOST_CHECK(column_info->getType(1) == typeid(std::string));
-  BOOST_CHECK(column_info->getType(2) == typeid(int32_t));
-  BOOST_CHECK(column_info->getType(3) == typeid(int32_t));
-  BOOST_CHECK(column_info->getType(4) == typeid(int32_t));
+  BOOST_CHECK(column_info->getDescription(0).type == typeid(bool));
+  BOOST_CHECK(column_info->getDescription(1).type == typeid(std::string));
+  BOOST_CHECK(column_info->getDescription(2).type == typeid(int32_t));
+  BOOST_CHECK(column_info->getDescription(3).type == typeid(int32_t));
+  BOOST_CHECK(column_info->getDescription(4).type == typeid(int32_t));
   
 }
 
@@ -252,11 +264,11 @@ BOOST_FIXTURE_TEST_CASE(ReadOverrideNames, AsciiReader_Fixture) {
   auto column_info = table.getColumnInfo();
   
   // Then
-  BOOST_CHECK_EQUAL(column_info->getName(0), "A");
-  BOOST_CHECK_EQUAL(column_info->getName(1), "B");
-  BOOST_CHECK_EQUAL(column_info->getName(2), "C");
-  BOOST_CHECK_EQUAL(column_info->getName(3), "D");
-  BOOST_CHECK_EQUAL(column_info->getName(4), "E");
+  BOOST_CHECK_EQUAL(column_info->getDescription(0).name, "A");
+  BOOST_CHECK_EQUAL(column_info->getDescription(1).name, "B");
+  BOOST_CHECK_EQUAL(column_info->getDescription(2).name, "C");
+  BOOST_CHECK_EQUAL(column_info->getDescription(3).name, "D");
+  BOOST_CHECK_EQUAL(column_info->getDescription(4).name, "E");
   
 }
 
@@ -286,7 +298,7 @@ BOOST_FIXTURE_TEST_CASE(ReadWrongColumnNamesNumber, AsciiReader_Fixture) {
   
   // Given
   std::vector<std::string> wrong_names_less {"1","2","3"};
-  std::vector<std::string> wrong_names_more {"1","2","3","4","5","6","7","8","9","10"};
+  std::vector<std::string> wrong_names_more {"1","2","3","4","5","6","7","8","9","10","11"};
   Euclid::Table::AsciiReader lessReader {{}, wrong_names_less};
   Euclid::Table::AsciiReader moreReader {{}, wrong_names_more};
   std::stringstream inless {all_types};

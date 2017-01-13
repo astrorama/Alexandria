@@ -74,12 +74,25 @@ public:
    * - float : E
    * - double : D
    * - std::string : wA, where w is the length required for the data of the column
+   * - vector<int32_t> : wJ, where w is the length of the vector
+   * - vector<int64_t> : wK, where w is the length of the vector
+   * - vector<float> : wE, where w is the length of the vector
+   * - vector<double> : wD, where w is the length of the vector
+   * 
+   * Note that, at the moment, only fixed length vector columns are supported
+   * and that there is no support for vector columns for ASCII FITS tables.
+   * 
+   * The TUNITn fits keywords are populated using the unit of the of the
+   * ColumnDescriptions of the Table. The descriptions of the columns are
+   * set as the values of the (non standard) keywords TDESCn.
    *
    * @param fits The FITS object to add the table HDU
    * @param hdu_name The name of the HDU
    * @param table The table to output
+   * @param the comments to add to the table HDU
    */
-  void write(CCfits::FITS& fits, const std::string& hdu_name, const Table& table) const;
+  void write(CCfits::FITS& fits, const std::string& hdu_name, const Table& table,
+             const std::vector<std::string>& comments={}) const;
 
 private:
   Format m_format;

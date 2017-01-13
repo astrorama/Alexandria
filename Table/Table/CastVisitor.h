@@ -26,6 +26,11 @@
 #define _TABLE_CASTVISITOR_H
 
 #include <sstream>
+#include <typeinfo>
+#include <vector>
+#include <type_traits>
+#include <boost/variant/static_visitor.hpp>
+#include <boost/tokenizer.hpp>
 #include "ElementsKernel/Exception.h"
 
 namespace Euclid {
@@ -37,7 +42,12 @@ class CastVisitor : public boost::static_visitor<To> {
 public:
   
   template <typename From>
-  To operator() (const From&) const {
+  To operator() (const From& from, typename std::enable_if<std::is_same<From, To>::value>::type* = 0) const {
+    return from;
+  }
+  
+  template <typename From>
+  To operator() (const From&, typename std::enable_if<!std::is_same<From, To>::value>::type* = 0) const {
     throw Elements::Exception() << "CastVisitor cannot convert "
             << typeid(From).name() << " type to " << typeid(To).name();
   }
@@ -61,10 +71,21 @@ public:
 template <>
 class CastVisitor<double> : public boost::static_visitor<double> {
   
+  template <typename From>
+  static constexpr bool generic() {
+    return std::is_arithmetic<From>::value;
+  }
+  
 public:
   
   template <typename From>
-  double operator() (const From& from) const {
+  double operator() (const From& , typename std::enable_if<!generic<From>()>::type* = 0) const {
+    throw Elements::Exception() << "CastVisitor cannot convert "
+            << typeid(From).name() << " type to " << typeid(double).name();
+  }
+  
+  template <typename From>
+  double operator() (const From& from, typename std::enable_if<generic<From>()>::type* = 0) const {
     return from;
   }
   
@@ -77,16 +98,23 @@ public:
 template <>
 class CastVisitor<float> : public boost::static_visitor<float> {
   
+  template <typename From>
+  static constexpr bool generic() {
+    return std::is_arithmetic<From>::value &&
+           !std::is_same<From, double>::value;
+  }
+  
 public:
   
   template <typename From>
-  float operator() (const From& from) const {
-    return from;
+  double operator() (const From& , typename std::enable_if<!generic<From>()>::type* = 0) const {
+    throw Elements::Exception() << "CastVisitor cannot convert "
+            << typeid(From).name() << " type to " << typeid(float).name();
   }
   
-  float operator() (const double&) const {
-    throw Elements::Exception() << "CastVisitor cannot convert "
-            << typeid(double).name() << " type to " << typeid(float).name();
+  template <typename From>
+  float operator() (const From& from, typename std::enable_if<generic<From>()>::type* = 0) const {
+    return from;
   }
   
   float operator() (const std::string& from) const {
@@ -98,21 +126,22 @@ public:
 template <>
 class CastVisitor<int64_t> : public boost::static_visitor<int64_t> {
   
+  template <typename From>
+  static constexpr bool generic() {
+    return std::is_integral<From>::value;
+  }
+  
 public:
   
   template <typename From>
-  int64_t operator() (const From& from) const {
+  double operator() (const From& , typename std::enable_if<!generic<From>()>::type* = 0) const {
+    throw Elements::Exception() << "CastVisitor cannot convert "
+            << typeid(From).name() << " type to " << typeid(int64_t).name();
+  }
+  
+  template <typename From>
+  int64_t operator() (const From& from, typename std::enable_if<generic<From>()>::type* = 0) const {
     return from;
-  }
-  
-  int64_t operator() (const double&) const {
-    throw Elements::Exception() << "CastVisitor cannot convert "
-            << typeid(double).name() << " type to " << typeid(float).name();
-  }
-  
-  int64_t operator() (const float&) const {
-    throw Elements::Exception() << "CastVisitor cannot convert "
-            << typeid(float).name() << " type to " << typeid(float).name();
   }
   
   int64_t operator() (const std::string& from) const {
@@ -124,32 +153,67 @@ public:
 template <>
 class CastVisitor<int32_t> : public boost::static_visitor<int32_t> {
   
+  template <typename From>
+  static constexpr bool generic() {
+    return std::is_integral<From>::value &&
+            !std::is_same<From, int64_t>::value;
+  }
+  
 public:
   
   template <typename From>
-  int32_t operator() (const From& from) const {
+  double operator() (const From& , typename std::enable_if<!generic<From>()>::type* = 0) const {
+    throw Elements::Exception() << "CastVisitor cannot convert "
+            << typeid(From).name() << " type to " << typeid(int32_t).name();
+  }
+  
+  template <typename From>
+  int32_t operator() (const From& from, typename std::enable_if<generic<From>()>::type* = 0) const {
     return from;
-  }
-  
-  int32_t operator() (const double&) const {
-    throw Elements::Exception() << "CastVisitor cannot convert "
-            << typeid(double).name() << " type to " << typeid(float).name();
-  }
-  
-  int32_t operator() (const float&) const {
-    throw Elements::Exception() << "CastVisitor cannot convert "
-            << typeid(float).name() << " type to " << typeid(float).name();
-  }
-  
-  int32_t operator() (const int64_t&) const {
-    throw Elements::Exception() << "CastVisitor cannot convert "
-            << typeid(int64_t).name() << " type to " << typeid(float).name();
   }
   
   int32_t operator() (const std::string& from) const {
     return std::atoi(from.c_str());
   }
 
+};
+
+template <typename VectorType>
+class CastVisitor<std::vector<VectorType>> : public boost::static_visitor<std::vector<VectorType>> {
+  
+public:
+  
+  template <typename From>
+  std::vector<VectorType> operator() (const From& from) const {
+    std::vector<VectorType> result {};
+    result.push_back(CastVisitor<VectorType>{}(from));
+    return result;
+  }
+  
+  template <typename From>
+  std::vector<VectorType> operator() (const std::vector<From>& from) const {
+    std::vector<VectorType> result {};
+    for (auto v : from) {
+      result.push_back(CastVisitor<VectorType>{}(v));
+    }
+    return result;
+  }
+  
+  std::vector<VectorType> operator() (const std::string& from) const {
+    std::vector<VectorType> result {};
+    boost::char_separator<char> sep {","};
+    boost::tokenizer< boost::char_separator<char> > tok {from, sep};
+    for (auto& s : tok) {
+      result.push_back(CastVisitor<VectorType>{}(s));
+    }
+    return result;
+  }
+    
+  // If the types match exactly we avoid an expensive copying
+  const std::vector<VectorType>& operator() (const std::vector<VectorType>& from) const {
+    return from;
+  }
+  
 };
 
 } /* namespace Table */

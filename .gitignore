@@ -1,0 +1,13 @@
+
+# /
+/build.*
+/InstallArea
+/.settings
+/.cproject
+/.project
+/.pydevproject
+/*.log
+/.agignore
+/.sonar
+/PAQA
+/sonar-project.properties

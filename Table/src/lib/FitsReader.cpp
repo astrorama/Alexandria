@@ -56,14 +56,15 @@ const Euclid::Table::Table FitsReader::read(const CCfits::HDU& hdu) {
   } else {
     names = m_column_names;
   }
-  auto column_info = createColumnInfo(names, autoDetectColumnTypes(table_hdu));
+  auto column_info = createColumnInfo(names, autoDetectColumnTypes(table_hdu),
+          autoDetectColumnUnits(table_hdu), autoDetectColumnDescriptions(table_hdu));
 
   // CCfits reads per column, so we first read all the columns and then we
   // create all the rows
   std::vector<std::vector<Row::cell_type>> data;
   for (int i=1; i<=table_hdu.numCols(); ++i) {
     // The i-1 is because CCfits starts from 1 and ColumnInfo from 0
-    data.push_back(translateColumn(table_hdu.column(i), column_info->getType(i-1)));
+    data.push_back(translateColumn(table_hdu.column(i), column_info->getDescription(i-1).type));
   }
 
   std::vector<Row> row_list;

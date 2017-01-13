@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <sstream>
 #include <iomanip>
+#include <valarray>
 #include <boost/lexical_cast.hpp>
 #include <CCfits/CCfits>
 #include "FitsWriterHelper.h"
@@ -43,7 +44,7 @@ std::vector<std::string> getAsciiFormatList(const Table& table) {
   auto column_info = table.getColumnInfo();
   std::vector<std::string> format_list {};
   for (size_t column_index=0; column_index<column_info->size(); ++column_index) {
-    auto type = column_info->getType(column_index);
+    auto type = column_info->getDescription(column_index).type;
     if (type == typeid(bool)) {
       format_list.push_back("I1");
     } else if (type == typeid(int32_t) || type == typeid(int64_t)) {
@@ -55,16 +56,29 @@ std::vector<std::string> getAsciiFormatList(const Table& table) {
     } else if (type == typeid(std::string)) {
       size_t width = maxWidth(table, column_index);
       format_list.push_back("A" + boost::lexical_cast<std::string>(width));
+    } else {
+      throw Elements::Exception() << "Unsupported column format for FITS ASCII table export: " << type.name();
     }
   }
   return format_list;
+}
+
+template <typename T>
+size_t vectorSize(const Table& table, size_t column_index) {
+  size_t size = boost::get<std::vector<T>>(table[0][column_index]).size();
+  for (const auto& row : table) {
+    if (boost::get<std::vector<T>>(row[column_index]).size() != size) {
+      throw Elements::Exception() << "Binary FITS table variable length vector columns are not supported";
+    }
+  }
+  return size;
 }
 
 std::vector<std::string> getBinaryFormatList(const Table& table) {
   auto column_info = table.getColumnInfo();
   std::vector<std::string> format_list {};
   for (size_t column_index=0; column_index<column_info->size(); ++column_index) {
-    auto type = column_info->getType(column_index);
+    auto type = column_info->getDescription(column_index).type;
     if (type == typeid(bool)) {
       format_list.push_back("L");
     } else if (type == typeid(int32_t)) {
@@ -78,6 +92,23 @@ std::vector<std::string> getBinaryFormatList(const Table& table) {
     } else if (type == typeid(std::string)) {
       size_t width = maxWidth(table, column_index);
       format_list.push_back(boost::lexical_cast<std::string>(width) + "A");
+    } else if (type == typeid(std::vector<bool>)) {
+      size_t size = vectorSize<bool>(table, column_index);
+      format_list.push_back(boost::lexical_cast<std::string>(size) + "L");
+    } else if (type == typeid(std::vector<int32_t>)) {
+      size_t size = vectorSize<int32_t>(table, column_index);
+      format_list.push_back(boost::lexical_cast<std::string>(size) + "J");
+    } else if (type == typeid(std::vector<int64_t>)) {
+      size_t size = vectorSize<int64_t>(table, column_index);
+      format_list.push_back(boost::lexical_cast<std::string>(size) + "K");
+    } else if (type == typeid(std::vector<float>)) {
+      size_t size = vectorSize<float>(table, column_index);
+      format_list.push_back(boost::lexical_cast<std::string>(size) + "E");
+    } else if (type == typeid(std::vector<double>)) {
+      size_t size = vectorSize<double>(table, column_index);
+      format_list.push_back(boost::lexical_cast<std::string>(size) + "D");
+    } else {
+      throw Elements::Exception() << "Unsupported column format for FITS binary table export: " << type.name();
     }
   }
   return format_list;
@@ -92,8 +123,38 @@ std::vector<T> createColumnData(const Euclid::Table::Table& table, size_t column
   return data;
 }
 
+template <typename T>
+std::vector<std::valarray<T>> createVectorColumnData(const Euclid::Table::Table& table, size_t column_index) {
+  std::vector<std::valarray<T>> result {};
+  for (auto& row : table) {
+    const auto& vec = boost::get<std::vector<T>>(row[column_index]);
+    result.emplace_back(vec.data(), vec.size());
+  }
+  return result;
+}
+
+template <typename T>
+std::vector<T> createSingleValueVectorColumnData(const Euclid::Table::Table& table, size_t column_index) {
+  std::vector<T> result {};
+  for (auto& row : table) {
+    const auto& vec = boost::get<std::vector<T>>(row[column_index]);
+    result.push_back(vec.front());
+  }
+  return result;
+}
+
+template <typename T>
+void populateVectorColumn(const Table& table, size_t column_index, CCfits::Table* table_hdu) {
+  const auto& vec = boost::get<std::vector<T>>(table[0][column_index]);
+  if (vec.size() > 1) {
+    table_hdu->column(column_index+1).writeArrays(createVectorColumnData<double>(table, column_index), 1);
+  } else {
+    table_hdu->column(column_index+1).write(createSingleValueVectorColumnData<double>(table, column_index), 1);
+  }
+}
+
 void populateColumn(const Table& table, size_t column_index, CCfits::Table* table_hdu) {
-  auto type = table.getColumnInfo()->getType(column_index);
+  auto type = table.getColumnInfo()->getDescription(column_index).type;
   // CCfits indices start from 1
   if (type == typeid(bool)) {
     table_hdu->column(column_index+1).write(createColumnData<bool>(table, column_index), 1);
@@ -107,6 +168,16 @@ void populateColumn(const Table& table, size_t column_index, CCfits::Table* tabl
     table_hdu->column(column_index+1).write(createColumnData<double>(table, column_index), 1);
   } else if (type == typeid(std::string)) {
     table_hdu->column(column_index+1).write(createColumnData<std::string>(table, column_index), 1);
+  } else if (type == typeid(std::vector<int32_t>)) {
+    populateVectorColumn<int32_t>(table, column_index, table_hdu);
+  } else if (type == typeid(std::vector<int64_t>)) {
+    populateVectorColumn<int64_t>(table, column_index, table_hdu);
+  } else if (type == typeid(std::vector<float>)) {
+    populateVectorColumn<float>(table, column_index, table_hdu);
+  } else if (type == typeid(std::vector<double>)) {
+    populateVectorColumn<double>(table, column_index, table_hdu);
+  } else {
+    throw Elements::Exception() << "Cannot populate FITS column with data of type " << type.name();
   }
 }
 

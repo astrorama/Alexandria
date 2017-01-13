@@ -10,6 +10,7 @@
 #include <istream>
 #include <string>
 #include <typeindex>
+#include <map>
 
 
 #include "ElementsKernel/Export.h"
@@ -55,6 +56,25 @@ ELEMENTS_API size_t countColumns(std::istream& in, const std::string& comment);
 
 /**
  * @brief
+ * Reads the column descriptions of the given stream
+ * @details
+ * For more information about the auto-detection rules see the constructor of
+ * AsciiReader. When the method returns, the given stream is positioned at the
+ * same position like before the method was called.
+ *
+ * @param in The stream to read the column names from
+ * @param comment The comment pattern
+ * @return The column descriptions from the stream comments
+ * @throws Elements::Exception
+ *    if there are duplicate column names
+ * @throws Elements::Exception
+ *    if any of the types is not one of the valid keywords
+ */
+ELEMENTS_API std::map<std::string, ColumnDescription> autoDetectColumnDescriptions(
+                                      std::istream& in, const std::string& comment);
+
+/**
+ * @brief
  * Reads the column names of the given stream
  * @details
  * For more information about the auto-detection rules see the constructor of
@@ -71,25 +91,6 @@ ELEMENTS_API size_t countColumns(std::istream& in, const std::string& comment);
 ELEMENTS_API std::vector<std::string> autoDetectColumnNames(std::istream& in,
                                                const std::string& comment,
                                                size_t columns_number);
-
-/**
- * @brief
- * Reads the column types of the given stream
- * @details
- * For more information about the auto-detection rules see the constructor of
- * AsciiReader. When the method returns, the given stream is positioned at the
- * same position like before the method was called.
- *
- * @param in The stream to read the column types from
- * @param comment The comment pattern
- * @param columns_number The number of columns
- * @return The auto-detected types of the columns
- * @throws Elements::Exception
- *    if any of the types is not one of the valid keywords
- */
-ELEMENTS_API std::vector<std::type_index> autoDetectColumnTypes(std::istream& in,
-                                                   const std::string& comment,
-                                                   size_t columns_number);
 
 /**
  * @brief

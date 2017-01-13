@@ -56,6 +56,18 @@ std::type_index binaryFormatToType(const std::string& format) {
     return typeid(float);
   } else if (format[0] == 'D') {
     return typeid(double);
+  } else if (format.back() == 'B') {
+    return typeid(std::vector<int32_t>);
+  } else if (format.back() == 'I') {
+    return typeid(std::vector<int32_t>);
+  } else if (format.back() == 'J') {
+    return typeid(std::vector<int32_t>);
+  } else if (format.back() == 'K') {
+    return typeid(std::vector<int64_t>);
+  } else if (format.back() == 'E') {
+    return typeid(std::vector<float>);
+  } else if (format.back() == 'D') {
+    return typeid(std::vector<double>);
   }
   throw Elements::Exception() << "FITS binary table format " << format << " is not "
                             << "yet supported";
@@ -73,6 +85,27 @@ std::vector<std::type_index> autoDetectColumnTypes(const CCfits::Table& table_hd
   return types;
 }
 
+std::vector<std::string> autoDetectColumnUnits(const CCfits::Table& table_hdu) {
+  std::vector<std::string> units {};
+  for (int i=1; i<=table_hdu.numCols(); ++i) {
+    units.push_back(table_hdu.column(i).unit());
+  }
+  return units;
+}
+
+std::vector<std::string> autoDetectColumnDescriptions(const CCfits::Table& table_hdu) {
+  std::vector<std::string> descriptions {};
+  for (int i=1; i<=table_hdu.numCols(); ++i) {
+    std::string desc;
+    auto key = table_hdu.keyWord().find("TDESC" + std::to_string(i));
+    if (key != table_hdu.keyWord().end()) {
+      key->second->value(desc);
+    }
+    descriptions.push_back(desc);
+  }
+  return descriptions;
+}
+
 template<typename T>
 std::vector<Row::cell_type> convertScalarColumn(CCfits::Column& column) {
   std::vector<T> data;
@@ -80,6 +113,17 @@ std::vector<Row::cell_type> convertScalarColumn(CCfits::Column& column) {
   std::vector<Row::cell_type> result;
   for (auto value : data) {
     result.push_back(value);
+  }
+  return result;
+}
+
+template<typename T>
+std::vector<Row::cell_type> convertVectorColumn(CCfits::Column& column) {
+  std::vector<std::valarray<T>> data;
+  column.readArrays(data, 1, column.rows());
+  std::vector<Row::cell_type> result;
+  for (auto& valar : data) {
+    result.push_back(std::vector<T>(std::begin(valar),std::end(valar)));
   }
   return result;
 }
@@ -97,6 +141,14 @@ std::vector<Row::cell_type> translateColumn(CCfits::Column& column, std::type_in
     return convertScalarColumn<double>(column);
   } if (type == typeid(std::string)) {
     return convertScalarColumn<std::string>(column);
+  } if (type == typeid(std::vector<int32_t>)) {
+    return convertVectorColumn<int32_t>(column);
+  } if (type == typeid(std::vector<int64_t>)) {
+    return convertVectorColumn<int64_t>(column);
+  } if (type == typeid(std::vector<float>)) {
+    return convertVectorColumn<float>(column);
+  } if (type == typeid(std::vector<double>)) {
+    return convertVectorColumn<double>(column);
   }
   throw Elements::Exception() << "Unsupported column type " << type.name();
 }

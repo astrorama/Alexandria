@@ -48,3 +48,6 @@ elements_add_unit_test(FitsWriterHelper_test tests/src/FitsWriterHelper_test.cpp
 elements_add_unit_test(CastVisitor_test tests/src/CastVisitor_test.cpp 
                      LINK_LIBRARIES Table
                      TYPE Boost)
+elements_add_unit_test(ColumnDescription_test tests/src/ColumnDescription_test.cpp 
+                     LINK_LIBRARIES Table
+                     TYPE Boost)

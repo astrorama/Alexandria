@@ -20,24 +20,44 @@ AsciiWriter::AsciiWriter(std::string comment) : m_comment{std::move(comment)} {
   }
 }
 
-void AsciiWriter::write(std::ostream& out, const Table& table, bool types) const {
-  auto column_lengths = calculateColumnLengths(table);
+void AsciiWriter::write(std::ostream& out, const Table& table,
+        const std::vector<std::string>& comments, bool show_column_info) const {
+  
+  // Write the comments
+  if (!comments.empty()) {
+    for (auto& c : comments) {
+      out << m_comment << ' ' << c << '\n';
+    }
+    out << '\n';
+  }
+  
+  // Write the column descriptions
   auto column_info = table.getColumnInfo();
+  if (show_column_info) {
+    for (size_t i=0; i<column_info->size(); ++i) {
+      auto& info = column_info->getDescription(i);
+      out << m_comment << " Column: " << info.name << ' ' << typeToKeyword(info.type);
+      if (!info.unit.empty()) {
+        out << " (" << info.unit << ")";
+      }
+      if (!info.description.empty()) {
+        out << " - " << info.description;
+      }
+      out << '\n';
+    }
+    out << '\n';
+  }
+  
+  
+  auto column_lengths = calculateColumnLengths(table);
   // Write the column names
   out << m_comment.c_str();
   for (size_t i=0; i<column_info->size(); ++i) {
-    out << std::setw(column_lengths[i]) << column_info->getName(i);
+    out << std::setw(column_lengths[i]) << column_info->getDescription(i).name;
   }
-  out << "\n";
-  // Write the column types
-  if (types) {
-    out << m_comment.c_str();
-    for (size_t i=0; i<column_info->size(); ++i) {
-      out << std::setw(column_lengths[i]) << typeToKeyword(column_info->getType(i));
-    }
-    out << "\n";
-  }
-  out << "\n";
+  out << "\n\n";
+
+  // Write the data
   // The data lines are not prefixed with the comment string, so we need to fix
   // the length of the first column to get the alignment correctly
   column_lengths[0] = column_lengths[0] + m_comment.size();

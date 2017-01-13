@@ -14,7 +14,7 @@
 #include <type_traits>
 #include "GridContainer/GridCellManagerTraits.h"
 #include "GridContainer/GridIndexHelper.h"
-#include "_impl/GridConstructionHelper.h"
+#include "GridContainer/_impl/GridConstructionHelper.h"
 
 namespace Euclid {
 namespace GridContainer {
@@ -120,14 +120,17 @@ public:
    */
   GridContainer(std::tuple<GridAxis<AxesTypes>...> axes_tuple);
 
-  /// Default move constructor
+  /// Default move constructor and move assignment operator
   GridContainer(GridContainer<GridCellManager, AxesTypes...>&&) = default;
-
+  GridContainer& operator=(GridContainer<GridCellManager, AxesTypes...>&&) = default;
+  
+  
   // Do not allow copying of GridContainer objects. This is done because these
   // objects will most of the time be very big and copying them will be a
   // bottleneck. To avoid unvoluntary copy constructor calls, this constructor
   // is deleted.
   GridContainer(const GridContainer<GridCellManager, AxesTypes...>&) = delete;
+  GridContainer& operator=(const GridContainer<GridCellManager, AxesTypes...>&) = delete;
 
   /// Default destructor
   virtual ~GridContainer() = default;

@@ -17,6 +17,13 @@
 
 #include "Table/ColumnInfo.h"
 
+namespace std {
+
+template <typename T>
+std::ostream& operator<< (std::ostream& s, const std::vector<T>& v);
+
+}
+
 namespace Euclid {
 namespace Table {
 
@@ -39,7 +46,18 @@ class ELEMENTS_API Row {
 
 public:
 
-  typedef boost::variant<bool, int32_t, int64_t, float, double, std::string> cell_type;
+  /// The possible cell types
+  typedef boost::variant<bool,
+                         int32_t,
+                         int64_t,
+                         float,
+                         double,
+                         std::string,
+                         std::vector<bool>,
+                         std::vector<int32_t>,
+                         std::vector<int64_t>,
+                         std::vector<float>,
+                         std::vector<double>> cell_type;
 
   typedef std::vector<cell_type>::const_iterator const_iterator;
 

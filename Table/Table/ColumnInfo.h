@@ -15,6 +15,8 @@
 
 #include "ElementsKernel/Export.h"
 
+#include "Table/ColumnDescription.h"
+
 namespace Euclid {
 namespace Table {
 
@@ -25,22 +27,15 @@ namespace Table {
  *
  * @details
  * The ColumnInfo is an immutable class which provides information about the
- * columns of a Table. Each column has a name and a type. This class can be
- * used for retrieving the name and the type of a column using its index (zero
- * based) and for searching a column with a specific name.
- *
- * The names of the columns must by unique, they cannot be the empty string and
- * they cannot contain any whitespace characters.
- *
- * The ColumnInfo implements the comparisson operators "==" and "!=" in a way
- * that if they describe the same number of columns with the same names and types
- * they are equal.
+ * columns of a Table. This class can be used for retrieving the
+ * ColumnDescription of a column using its index (zero based) and for searching
+ * a column with a specific name. The names of the columns must by unique.
  */
 class ELEMENTS_API ColumnInfo {
 
 public:
 
-  typedef std::pair<std::string, std::type_index> info_type;
+  using info_type = ColumnDescription;
 
   /**
    * @brief
@@ -54,15 +49,11 @@ public:
    * for performance, meaning that the constructor will take advantage of move
    * semantics if the passed object is an rvalue.
    *
-   * @param info_list A vector containing the names and types of the columns
+   * @param info_list A vector containing the descriptions of the columns
    * @throws Elements::Exception
    *    if the info_list is empty
    * @throws Elements::Exception
    *    if the info_list contains duplicate name entries
-   * @throws Elements::Exception
-   *    if any of the given column names is the empty string
-   * @throws Elements::Exception
-   *    if any of the given column names contains whitespace characters
    */
   ColumnInfo(std::vector<info_type> info_list);
 
@@ -94,30 +85,18 @@ public:
    * @return the number of columns
    */
   std::size_t size() const;
-
+  
   /**
    * @brief
-   * Returns the name of the column with the given index or throws an exception if the
-   * index is bigger than the size of the ColumnInfo
+   * Returns the description of the column with the given index or throws an
+   * exception if the index is bigger than the size of the ColumnInfo
    *
    * @param index The index to search for
-   * @return The name of the column
+   * @return The description of the column
    * @throws Elements::Exception
    *    if the index is out of bounds
    */
-  const std::string& getName(std::size_t index) const;
-
-  /**
-   * @brief
-   * Returns the type of the column with the given index or throws an exception
-   * if the index is bigger than the size of the ColumnInfo
-   *
-   * @param index The index to search for
-   * @return The type of the column cells
-   * @throws Elements::Exception
-   *    if the index is out of bounds
-   */
-  const std::type_index& getType(std::size_t index) const;
+  const ColumnDescription& getDescription(std::size_t index) const;
 
   /**
    * @brief

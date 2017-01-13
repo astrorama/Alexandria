@@ -44,6 +44,12 @@ ELEMENTS_API std::vector<std::string> autoDetectColumnNames(const CCfits::Table&
  */
 ELEMENTS_API std::vector<std::type_index> autoDetectColumnTypes(const CCfits::Table& table_hdu);
 
+/// Reads the column units based on the TUNITn keyword
+ELEMENTS_API std::vector<std::string> autoDetectColumnUnits(const CCfits::Table& table_hdu);
+
+/// Reads the column descriptions based on the TDESCn keyword
+ELEMENTS_API std::vector<std::string> autoDetectColumnDescriptions(const CCfits::Table& table_hdu);
+
 /**
  * @brief
  * Returns a vector representing the given FITS table column data, converted to
