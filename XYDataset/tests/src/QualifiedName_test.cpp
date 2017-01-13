@@ -64,6 +64,34 @@ BOOST_AUTO_TEST_CASE(nameMethods_test) {
 }
 
 //-----------------------------------------------------------------------------
+// Check the belongsInGroup method
+//-----------------------------------------------------------------------------
+
+BOOST_AUTO_TEST_CASE(belongsInGroup_test) {
+  
+  // Given
+  Euclid::XYDataset::QualifiedName qualified_name {"group1/group2/group3/name"};
+  
+  // When
+  Euclid::XYDataset::QualifiedName group1 {"group1"};
+  Euclid::XYDataset::QualifiedName group1_group2 {"group1/group2"};
+  Euclid::XYDataset::QualifiedName group1_group2_group3 {"group1/group2/group3"};
+  Euclid::XYDataset::QualifiedName wrong_group_1 {"wrong_group"};
+  Euclid::XYDataset::QualifiedName wrong_group_2 {"group1group2"};
+  Euclid::XYDataset::QualifiedName wrong_group_3 {"group1/group4/group3"};
+  
+  // Then
+  BOOST_CHECK(qualified_name.belongsInGroup(group1));
+  BOOST_CHECK(qualified_name.belongsInGroup(group1_group2));
+  BOOST_CHECK(qualified_name.belongsInGroup(group1_group2_group3));
+  BOOST_CHECK(!qualified_name.belongsInGroup(wrong_group_1));
+  BOOST_CHECK(!qualified_name.belongsInGroup(wrong_group_2));
+  BOOST_CHECK(!qualified_name.belongsInGroup(wrong_group_3));
+  BOOST_CHECK(!qualified_name.belongsInGroup(qualified_name));
+  
+}
+
+//-----------------------------------------------------------------------------
 // Check the hash method
 //-----------------------------------------------------------------------------
 

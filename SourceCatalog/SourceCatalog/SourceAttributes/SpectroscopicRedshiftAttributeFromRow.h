@@ -16,6 +16,7 @@
 #include "SourceCatalog/AttributeFromRow.h"
 #include "SourceCatalog/Catalog.h"
 #include "Table/Table.h"
+#include "Table/CastVisitor.h"
 
 using namespace Euclid::SourceCatalog;
 using namespace std;
@@ -63,17 +64,10 @@ public:
     if (specz_value_column_index_ptr == nullptr) {
       throw Elements::Exception() << "Column info does not have the spectroscopic redshift value column!";
     }
-    else if (type_index(typeid(double)) != column_info_ptr->getType(*(specz_value_column_index_ptr))) {
-      throw Elements::Exception()<< "Column info does not have the expected spectroscopic redshift"
-                                 << " value column of type: double";
-    }
 
     unique_ptr<size_t> specz_error_column_index_ptr = column_info_ptr->find(specz_error_column_name);
     if (specz_error_column_index_ptr == nullptr) {
       throw Elements::Exception() << "Column info does not have the spectroscopic redshift error column!";
-    } else if (type_index(typeid(double)) != column_info_ptr->getType(*(specz_error_column_index_ptr))) {
-      throw Elements::Exception()<< "Column info does not have the expected spectroscopic redshift error column"
-                                   << " of type: double";
     }
 
     m_has_error_column=true;
@@ -129,12 +123,12 @@ public:
    * @return A unique pointer to a (SpectroscopicRedshift) Attribute
    */
   std::unique_ptr<Attribute> createAttribute(const Euclid::Table::Row& row) override {
+    double z = boost::apply_visitor(Table::CastVisitor<double>{}, row[m_value_column_index]);
+    double e = 0.;
     if (m_has_error_column) {
-       return std::unique_ptr<Attribute> {
-              new SpectroscopicRedshift { boost::get<double>(row[m_value_column_index]),
-                                          boost::get<double>(row[m_error_column_index]) }};
+      e = boost::apply_visitor(Table::CastVisitor<double>{}, row[m_error_column_index]);
     }
-    return std::unique_ptr<Attribute> { new SpectroscopicRedshift { boost::get<double>(row[m_value_column_index]),0.} };
+    return std::unique_ptr<Attribute> {new SpectroscopicRedshift {z, e}};
   }
 
 private:

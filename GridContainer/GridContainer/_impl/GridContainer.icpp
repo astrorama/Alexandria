@@ -45,7 +45,7 @@ auto GridContainer<GridCellManager, AxesTypes...>::getOriginalAxis() const -> co
 }
 
 template<typename GridCellManager, typename... AxesTypes>
-size_t GridContainer<GridCellManager, AxesTypes...>::axisNumber() const {
+constexpr size_t GridContainer<GridCellManager, AxesTypes...>::axisNumber() {
   return std::tuple_size<decltype(m_axes_fixed)>::value;
 }
 

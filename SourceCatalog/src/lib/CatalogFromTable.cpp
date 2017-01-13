@@ -8,6 +8,7 @@
 #include "SourceCatalog/CatalogFromTable.h"
 #include "SourceCatalog/SourceAttributes/Photometry.h"
 #include "Table/ColumnInfo.h"
+#include "Table/CastVisitor.h"
 
 using namespace std;
 namespace Euclid {
@@ -18,13 +19,9 @@ CatalogFromTable::CatalogFromTable(
     const string& source_id_column_name,
     std::vector<std::shared_ptr<AttributeFromRow>> attribute_from_row_ptr_vector) {
 
-  unique_ptr<size_t> source_id_index_ptr = column_info_ptr->find(
-      source_id_column_name);
-  if (source_id_index_ptr == nullptr
-      || type_index(typeid(int64_t))
-          != column_info_ptr->getType(*(source_id_index_ptr))) {
-    throw Elements::Exception()
-        << "Column info does not have the expected source_id column of type: double";
+  unique_ptr<size_t> source_id_index_ptr = column_info_ptr->find(source_id_column_name);
+  if (source_id_index_ptr == nullptr) {
+    throw Elements::Exception() << "Column info does not have the column " << source_id_column_name;
   }
   m_source_id_index = *(source_id_index_ptr);
 
@@ -44,7 +41,7 @@ Euclid::SourceCatalog::Catalog CatalogFromTable::createCatalog(
 
   for (auto row : input_table) {
 
-    int64_t source_id = boost::get < int64_t > (row[m_source_id_index]);
+    int64_t source_id = boost::apply_visitor(Table::CastVisitor<int64_t>{}, row[m_source_id_index]);
 
     vector<shared_ptr<Attribute>> attribute_ptr_vector;
 

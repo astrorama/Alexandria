@@ -79,10 +79,15 @@ template<typename GridCellManager, typename... AxesTypes>
 class GridContainer {
 
   // The following aliases are used to simplify the definitions inside the class
-  typedef typename GridCellManagerTraits<GridCellManager>::data_type cell_type;
   typedef typename GridCellManagerTraits<GridCellManager>::iterator cell_manager_iter_type;
 
 public:
+  
+  /// The type of the values stored in the grid cells
+  typedef typename GridCellManagerTraits<GridCellManager>::data_type cell_type;
+  
+  /// The type of the tuple keeping the axes of the grid
+  typedef std::tuple<GridAxis<AxesTypes>...> AxesTuple;
 
   // The following is a shortcut to retrieve the type of each axis
   template<int I>
@@ -128,7 +133,7 @@ public:
   virtual ~GridContainer() = default;
 
   /// Returns the number of axes of the grid (dimensionality)
-  size_t axisNumber() const;
+  static constexpr size_t axisNumber();
 
   /**
    * Returns the information of a specific axis.

@@ -121,6 +121,9 @@ public:
    */
   const std::string& qualifiedName() const;
 
+  /// Checks if the QualifiedName belongs in a given group
+  bool belongsInGroup(const QualifiedName& group) const;
+
   /**
    * @brief Returns the hash value of the QualifiedName
    * @return The hash value

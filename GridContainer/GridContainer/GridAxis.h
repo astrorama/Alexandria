@@ -32,6 +32,9 @@ class GridAxis {
 
 public:
   
+  /// The type of the axis values
+  typedef T data_type;
+  
   /// The iterator type of the GridAxis
   typedef typename std::vector<T>::const_iterator const_iterator;
   
@@ -55,6 +58,25 @@ public:
   
   /// Returns an iterator after the last knot of the axis
   const_iterator end() const;
+  
+  /**
+   * @brief
+   * Compares the axis with another axis
+   * @details
+   * Two axes are considered equal if they have the same length and equal
+   * knots. They do not have to be of the same type. The only requirement is
+   * that the operation T == U is valid.
+   * @param other
+   *    The axis to compare with
+   * @return
+   *    true if the two axes have the same size and equal knots, false otherwise 
+   */
+  template <typename U>
+  bool operator==(const GridAxis<U>& other) const;
+  
+  /// The opposite of the == operator
+  template <typename U>
+  bool operator!=(const GridAxis<U>& other) const;
 
 private:
   
