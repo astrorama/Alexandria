@@ -1,5 +1,5 @@
 /** 
- * @file ExportModelDataset.cpp
+ * @file src/program/ExportModelDataset.cpp
  * @date May 24, 2014
  * @author Nikolaos Apostolakos
  */
@@ -15,22 +15,21 @@ namespace fs = boost::filesystem;
 #include <boost/program_options.hpp>
 namespace po = boost::program_options;
 #include <CCfits/CCfits>
-#include "ElementsKernel/ElementsProgram.h"
+#include "ElementsKernel/Program.h"
 #include "ElementsKernel/Version.h"
-#include "ChTable/Table.h"
-#include "ChTable/AsciiWriter.h"
-#include "ChTable/FitsWriter.h"
+#include "Table/Table.h"
+#include "Table/AsciiWriter.h"
+#include "Table/FitsWriter.h"
 #include "PhzConfiguration/ModelingConfiguration.h"
 #include "PhzDataModel/PhzModel.h"
-#include "PhzModeling/ModelMatrix.h"
-#include "PhzModeling/ModelDataManager.h"
+#include "PhzModeling/ModelDatasetGrid.h"
 
 using namespace std;
-using namespace XYDataset;
-using namespace PhzDataModel;
-using namespace ChTable;
+using namespace Euclid::XYDataset;
+using namespace Euclid::PhzDataModel;
+using namespace Euclid::Table;
 
-class ExportModelDataset : public ElementsProgram {
+class ExportModelDataset : public Elements::Program {
   
 public:
   
@@ -64,51 +63,48 @@ public:
     return config_file_options;
   }
   
-  void mainMethod() {
-    ElementsLogging logger = ElementsLogging::getLogger("CreateModelPhotometry");
+  Elements::ExitCode mainMethod() {
+    Elements::Logging logger = Elements::Logging::getLogger("CreateModelPhotometry");
     
     const po::variables_map options = this->getVariablesMap();
     
-    PhzConfiguration::ModelingConfiguration config {std::move(options)};
+    Euclid::PhzConfiguration::ModelingConfiguration config {std::move(options)};
     
     auto axes_tuple = createAxesTuple(config.zList(), config.ebvList(),
                                   config.reddeningCurveList(), config.sedList());
-
-    std::unique_ptr<PhzModeling::ModelDataManager> model_function_manager {
-            new PhzModeling::ModelDataManager {axes_tuple,
-                config.sedDatasetProvider(), config.reddeningCurveDatasetProvider()}};
     
-    PhzModeling::ModelMatrix model_matrix {std::move(model_function_manager), axes_tuple};
+    Euclid::PhzModeling::ModelDatasetGrid model_grid {axes_tuple, config.sedDatasetProvider(), config.reddeningCurveDatasetProvider()};
     
     // We get the output directory
     if (options["output-dir"].empty()) {
       logger.error("Missing parameter output-dir");
-      throw ElementsException() << "Missing parameter output-dir";
+      throw Elements::Exception() << "Missing parameter output-dir";
     }
     string out_dir_string = options["output-dir"].as<string>();
     fs::path out_dir {out_dir_string};
     if (!fs::is_directory(out_dir)) {
       logger.error() << "Output directory " << out_dir << " does not exist";
-      throw ElementsException() << "Output directory " << out_dir << " does not exist";
+      throw Elements::Exception() << "Output directory " << out_dir << " does not exist";
     }
     
     // We get the format
     if (options["output-format"].empty()) {
       logger.error("Missing parameter output-format");
-      throw ElementsException() << "Missing parameter output-format";
+      throw Elements::Exception() << "Missing parameter output-format";
     }
     string out_format = options["output-format"].as<string>();
     if (out_format != "FITS" && out_format != "ASCII") {
       logger.error("Parameter output-format must be either 'FITS' or 'ASCII'");
-      throw ElementsException() << "Parameter output-format must be either 'FITS' or 'ASCII'";
+      throw Elements::Exception() << "Parameter output-format must be either 'FITS' or 'ASCII'";
     }
     
-    size_t size = model_matrix.size();
+    size_t size = model_grid.size();
     size_t size_length = boost::lexical_cast<std::string>(size).size();
     size_t counter {};
     logger.info() << "Exporting " << size << " datasets in "
                   << out_dir << " in " << out_format << " format...";
-    for (auto iter=model_matrix.begin(); iter!=model_matrix.end(); ++iter) {
+    
+    for (auto iter=model_grid.begin(); iter!=model_grid.end(); ++iter) {
       ++counter;
       QualifiedName sed = iter.axisValue<ModelParameter::SED>();
       QualifiedName reddening_curve = iter.axisValue<ModelParameter::REDDENING_CURVE>();
@@ -116,7 +112,7 @@ public:
       double z = iter.axisValue<ModelParameter::Z>();
       stringstream filename {};
       filename << out_dir.string() << "/" << setfill('0') << setw(size_length)
-               << counter << "-" << sed.name() << "_" << reddening_curve.name()
+               << counter << "-" << sed.datasetName() << "_" << reddening_curve.datasetName()
                << "_EBV" << ebv << "_Z" << z;
       if (out_format == "FITS") {
         filename << ".fits";
@@ -147,10 +143,11 @@ public:
       }
     }
     logger.info() << "Finished exporting model datasets. Exiting...";
+    return Elements::ExitCode::OK;
   }
   
   string getVersion() {
-    return getVersionFromSvnKeywords(SVN_URL, SVN_ID);
+    return Elements::getVersionFromSvnKeywords(SVN_URL, SVN_ID);
   }
   
 }; // end of class ExportModelDataset

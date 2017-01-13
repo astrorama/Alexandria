@@ -1,5 +1,5 @@
 /**
- * @file AsciiParser.cpp
+ * @file src/lib/AsciiParser.cpp
  *
  * @date May 13, 2014
  * @author Nicolas Morisset
@@ -9,14 +9,15 @@
 #include <fstream>
 #include <iostream>
 
-#include "ElementsKernel/ElementsException.h"
-#include "ChTable/AsciiReader.h"
+#include "ElementsKernel/Exception.h"
+#include "Table/AsciiReader.h"
 #include "XYDataset/AsciiParser.h"
 #include "StringFunctions.h"
 
 using boost::regex;
 using boost::regex_match;
 
+namespace Euclid {
 namespace XYDataset {
 
 //
@@ -27,7 +28,7 @@ std::string AsciiParser::getName(const std::string& file) {
   std::ifstream sfile(file);
   // Check file exists
   if (!sfile) {
-    throw ElementsException() << "File does not exist : " << file;
+    throw Elements::Exception() << "File does not exist : " << file;
   }
 
   std::string line{};
@@ -63,7 +64,7 @@ std::unique_ptr<XYDataset> AsciiParser::getDataset(const std::string& file) {
   // Check file exists
   if (sfile) {
     // Read file into a Table object
-    ChTable::AsciiReader ascii_reader {{typeid(double), typeid(double)}};
+    Euclid::Table::AsciiReader ascii_reader {{typeid(double), typeid(double)}};
     auto table = ascii_reader.read(sfile);
     // Put the Table data into vector pair
     std::vector<std::pair<double, double>> vector_pair;
@@ -77,3 +78,4 @@ std::unique_ptr<XYDataset> AsciiParser::getDataset(const std::string& file) {
 }
 
 } // XYDataset namespace
+} // end of namespace Euclid

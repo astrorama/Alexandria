@@ -1,5 +1,5 @@
 /**
- * @file FitsParser.h
+ * @file XYDataset/FitsParser.h
  *
  * @date Apr 14, 2014
  * @author admin
@@ -8,9 +8,12 @@
 #ifndef FITSPARSER_H_
 #define FITSPARSER_H_
 
+#include "ElementsKernel/Export.h"
+
 #include "XYDataset/XYDataset.h"
 #include "XYDataset/FileParser.h"
 
+namespace Euclid {
 namespace XYDataset {
 
 /**
@@ -27,7 +30,7 @@ namespace XYDataset {
  * not exist, the dataset name is extracted from the FITS filename itself
  * removing the path and extension (.fits).
  */
-class FitsParser : public FileParser
+class ELEMENTS_API FitsParser : public FileParser
 {
  public:
 
@@ -68,7 +71,7 @@ class FitsParser : public FileParser
    * Filename of the FITS file to be read (including the absolute path).
    * @return
    * A unique pointer to a XYDatatset object or null pointer.
-   * @throw ElementsException
+   * @throw Elements::Exception
    * A FITS exception occured
    */
   std::unique_ptr<XYDataset> getDataset(const std::string& file) override;
@@ -81,7 +84,8 @@ class FitsParser : public FileParser
 };
 
 } /* namespace XYDataset */
+} // end of namespace Euclid
 
 
 
-#endif // FITSPARSER_H_ 
+#endif // FITSPARSER_H_

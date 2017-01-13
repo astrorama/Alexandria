@@ -1,0 +1,84 @@
+/** 
+ * @file GridContainer/_impl/GridContainer.icpp
+ * @date May 13, 2014
+ * @author Nikolaos Apostolakos
+ */
+
+#include "ElementsKernel/Exception.h"
+
+namespace Euclid {
+namespace GridContainer {
+
+template<typename GridCellManager, typename... AxesTypes>
+GridContainer<GridCellManager, AxesTypes...>::GridContainer(GridAxis<AxesTypes>... axes)
+      : m_axes{std::move(axes)...} { }
+
+template<typename GridCellManager, typename... AxesTypes>
+GridContainer<GridCellManager, AxesTypes...>::GridContainer(std::tuple<GridAxis<AxesTypes>...> axes_tuple)
+      : m_axes{std::move(axes_tuple)} { }
+                     
+template<typename GridCellManager, typename... AxesTypes>
+size_t GridContainer<GridCellManager, AxesTypes...>::axisNumber() const {
+  return std::tuple_size<decltype(m_axes)>::value;
+}
+
+template<typename GridCellManager, typename... AxesTypes>
+template<int I>
+auto GridContainer<GridCellManager, AxesTypes...>::getAxis() const -> const GridAxis<axis_type<I>>& {
+    return std::get<I>(m_axes);
+}
+
+template<typename GridCellManager, typename... AxesTypes>
+const std::tuple<GridAxis<AxesTypes>...>& GridContainer<GridCellManager, AxesTypes...>::getAxesTuple() const {
+  return m_axes;
+}
+
+template<typename GridCellManager, typename... AxesTypes>
+auto GridContainer<GridCellManager, AxesTypes...>::begin() -> iterator {
+  return iterator{*this, GridCellManagerTraits<GridCellManager>::begin(*m_cell_manager)};
+}
+
+template<typename GridCellManager, typename... AxesTypes>
+auto GridContainer<GridCellManager, AxesTypes...>::begin() const -> const_iterator {
+  return const_iterator{*this, GridCellManagerTraits<GridCellManager>::begin(*m_cell_manager)};
+}
+
+template<typename GridCellManager, typename... AxesTypes>
+auto GridContainer<GridCellManager, AxesTypes...>::end() -> iterator {
+  return iterator{*this, GridCellManagerTraits<GridCellManager>::end(*m_cell_manager)};
+}
+
+template<typename GridCellManager, typename... AxesTypes>
+auto GridContainer<GridCellManager, AxesTypes...>::end() const -> const_iterator {
+  return const_iterator{*this, GridCellManagerTraits<GridCellManager>::end(*m_cell_manager)};
+}
+
+template<typename GridCellManager, typename... AxesTypes>
+size_t GridContainer<GridCellManager, AxesTypes...>::size() const {
+  return m_index_helper.m_axes_index_factors.back();
+}
+
+template<typename GridCellManager, typename... AxesTypes>
+auto GridContainer<GridCellManager, AxesTypes...>::operator()(decltype(std::declval<GridAxis<AxesTypes>>().size())... indices) const -> const cell_type& {
+  size_t total_index = m_index_helper.totalIndex(indices...);
+  return (*m_cell_manager)[total_index];
+}
+
+template<typename GridCellManager, typename... AxesTypes>
+auto GridContainer<GridCellManager, AxesTypes...>::operator()(decltype(std::declval<GridAxis<AxesTypes>>().size())... indices) -> cell_type& {
+  return const_cast<cell_type&>(static_cast<const GridContainer&>(*this)(indices...));
+}
+
+template<typename GridCellManager, typename... AxesTypes>
+auto GridContainer<GridCellManager, AxesTypes...>::at(decltype(std::declval<GridAxis<AxesTypes>>().size())... indices) const -> const cell_type& {
+  size_t total_index = m_index_helper.totalIndexChecked(indices...);
+  return (*m_cell_manager)[total_index];
+}
+
+template<typename GridCellManager, typename... AxesTypes>
+auto GridContainer<GridCellManager, AxesTypes...>::at(decltype(std::declval<GridAxis<AxesTypes>>().size())... indices) -> cell_type& {
+  return const_cast<cell_type&>(static_cast<const GridContainer&>(*this).at(indices...));
+}
+
+} // end of namespace GridContainer
+} // end of namespace Euclid

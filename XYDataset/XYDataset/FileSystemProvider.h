@@ -1,5 +1,5 @@
 /**
- * @file FileSystemProvider.h
+ * @file XYDataset/FileSystemProvider.h
  *
  * @date Apr 11, 2014
  * @author Nicolas Morisset
@@ -14,10 +14,13 @@
 #include <string>
 #include <map>
 
+#include "ElementsKernel/Export.h"
+
 #include "XYDataset/XYDataset.h"
 #include "XYDataset/XYDatasetProvider.h"
 #include "XYDataset/FileParser.h"
 
+namespace Euclid {
 namespace XYDataset {
 
 /**
@@ -34,7 +37,7 @@ namespace XYDataset {
  * operations (it gets dataset name and data).
  */
 
-class FileSystemProvider : public XYDatasetProvider
+class ELEMENTS_API FileSystemProvider : public XYDatasetProvider
 {
  public:
 
@@ -47,13 +50,13 @@ class FileSystemProvider : public XYDatasetProvider
    * Absolute path to the dataset
    * @param parser
    * FileParser object
-   * @throw ElementsException
+   * @throw Elements::Exception
    * Path to the files not found
-   * @throw ElementsException
+   * @throw Elements::Exception
    * Root path not found
-   * @throw ElementsException
+   * @throw Elements::Exception
    * Root path is not a directory
-   * @throw ElementsException
+   * @throw Elements::Exception
    * Qualified name can not be inserted
    */
   FileSystemProvider(const std::string& root_path, std::unique_ptr<FileParser> parser);
@@ -108,5 +111,6 @@ class FileSystemProvider : public XYDatasetProvider
 };
 
 } /* namespace XYDataset */
+} // end of namespace Euclid
 
-#endif // FILESYSTEMPROVIDER_H_ 
+#endif // FILESYSTEMPROVIDER_H_

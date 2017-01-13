@@ -1,5 +1,5 @@
 /** 
- * @file CreateModelPhotometry.cpp
+ * @file src/program/CreateModelPhotometry.cpp
  * @date May 22, 2014
  * @author Nikolaos Apostolakos
  */
@@ -11,18 +11,18 @@
 #include <boost/program_options.hpp>
 #include <fstream>
 namespace po = boost::program_options;
-#include "ElementsKernel/ElementsProgram.h"
+#include "ElementsKernel/Program.h"
 #include "ElementsKernel/Version.h"
-#include "ChMath/function/Function.h"
-#include "ChMath/function/function_tools.h"
+#include "MathUtils/function/Function.h"
+#include "MathUtils/function/function_tools.h"
 #include "PhzConfiguration/ModelingConfiguration.h"
 #include "PhzDataModel/PhzModel.h"
-#include "PhzDataModel/PhotometryMatrix.h"
-#include "PhzModeling/ModelMatrix.h"
+#include "PhzDataModel/PhotometryGrid.h"
+#include "PhzModeling/ModelDatasetGrid.h"
 
 using namespace std;
 
-class CreateModelPhotometry : public ElementsProgram {
+class CreateModelPhotometry : public Elements::Program {
 
 public:
   
@@ -33,8 +33,8 @@ public:
   po::options_description defineSpecificProgramOptions() {
     po::options_description config_file_options("Model Photometry options");
     config_file_options.add_options()
-    ("binary-photometry-matrix", po::value<string>(),
-        "The file to export in binary format the matrix containing the calculated photometries")
+    ("binary-photometry-grid", po::value<string>(),
+        "The file to export in binary format the grid containing the calculated photometries")
     ("sed-root-path", po::value<string>(),
         "The directory containing the SED datasets, organized in folders")
     ("sed-group", po::value<vector<string>>(),
@@ -60,31 +60,27 @@ public:
     return config_file_options;
   }
   
-  void mainMethod() {
-    ElementsLogging logger = ElementsLogging::getLogger("CreateModelPhotometry");
+  Elements::ExitCode mainMethod() {
+    Elements::Logging logger = Elements::Logging::getLogger("CreateModelPhotometry");
     
     const po::variables_map options = this->getVariablesMap();
     
-    PhzConfiguration::ModelingConfiguration config {std::move(options)};
+    Euclid::PhzConfiguration::ModelingConfiguration config {std::move(options)};
     
-    auto axes_tuple = PhzDataModel::createAxesTuple(config.zList(), config.ebvList(),
+    auto axes_tuple = Euclid::PhzDataModel::createAxesTuple(config.zList(), config.ebvList(),
                                   config.reddeningCurveList(), config.sedList());
 
-    std::unique_ptr<PhzModeling::ModelDataManager> model_function_manager {
-            new PhzModeling::ModelDataManager {axes_tuple,
-                config.sedDatasetProvider(), config.reddeningCurveDatasetProvider()}};
-    
-    PhzModeling::ModelMatrix model_matrix {std::move(model_function_manager), axes_tuple};
+    Euclid::PhzModeling::ModelDatasetGrid model_grid {axes_tuple, config.sedDatasetProvider(), config.reddeningCurveDatasetProvider()};
                 
     auto filter_provider = config.filterDatasetProvider();
     auto filter_list = config.filterList();
     auto filter_name_list_ptr = std::make_shared<std::vector<std::string>>();
-    std::vector<std::unique_ptr<ChMath::Function>> filter_functions;
+    std::vector<std::unique_ptr<Euclid::MathUtils::Function>> filter_functions;
     std::vector<double> filter_compensations;
     std::vector<std::pair<double,double>> filter_limits;
     for (auto& filter : filter_list) {
       auto filter_dataset = filter_provider->getDataset(filter);
-      filter_functions.push_back(ChMath::interpolate(*filter_dataset, ChMath::InterpolationType::LINEAR));
+      filter_functions.push_back(Euclid::MathUtils::interpolate(*filter_dataset, Euclid::MathUtils::InterpolationType::LINEAR));
       filter_name_list_ptr->push_back(filter.qualifiedName());
       std::vector<double> x;
       std::vector<double> y;
@@ -93,21 +89,22 @@ public:
         y.push_back(pair.second * 2.99792458e+18 / (pair.first*pair.first));
       }
       filter_limits.push_back(std::make_pair(x.front(), x.back()));
-      auto filter_comp_func = ChMath::interpolate(x, y, ChMath::InterpolationType::LINEAR);
-      filter_compensations.push_back(ChMath::integrate(*filter_comp_func, x.front(), x.back()));
+      auto filter_comp_func = Euclid::MathUtils::interpolate(x, y, Euclid::MathUtils::InterpolationType::LINEAR);
+      filter_compensations.push_back(Euclid::MathUtils::integrate(*filter_comp_func, x.front(), x.back()));
     }
                 
-    logger.info() << "Number of models to create photometry for: " << model_matrix.size();
+    logger.info() << "Number of models to create photometry for: " << model_grid.size();
     int counter {0};
-    std::unique_ptr<std::vector<ChCatalog::Photometry>> photometry_vector {new std::vector<ChCatalog::Photometry>{}};
-    for (auto& model : model_matrix) {
+    Euclid::PhzDataModel::PhotometryGrid photometry_grid {axes_tuple};
+    auto phot_grid_iter = photometry_grid.begin();
+    for (auto& model : model_grid) {
       ++counter;
       if (counter%1000 == 0) {
         logger.info() << "Number of models proccessed: " << counter;
       }
-      std::vector<ChCatalog::FluxErrorPair> photometry_values;
+      std::vector<Euclid::SourceCatalog::FluxErrorPair> photometry_values;
       for (size_t filter_index=0; filter_index<filter_list.size(); ++filter_index) {
-        ChMath::Function& filter_function = *(filter_functions[filter_index]);
+        Euclid::MathUtils::Function& filter_function = *(filter_functions[filter_index]);
         vector<double> x {};
         vector<double> y {};
         auto& limits = filter_limits[filter_index];
@@ -117,24 +114,24 @@ public:
             y.push_back(pair.second*filter_function(pair.first));
           }
         }
-        auto filtered_model = ChMath::interpolate(x, y, ChMath::InterpolationType::LINEAR);
-        double flux = ChMath::integrate(*filtered_model, limits.first, limits.second);
+        auto filtered_model = Euclid::MathUtils::interpolate(x, y, Euclid::MathUtils::InterpolationType::LINEAR);
+        double flux = Euclid::MathUtils::integrate(*filtered_model, limits.first, limits.second);
         flux = flux / filter_compensations[filter_index];
         photometry_values.push_back({flux, 0.});
       }
-      photometry_vector->push_back(ChCatalog::Photometry{filter_name_list_ptr, std::move(photometry_values)});
+      *phot_grid_iter = Euclid::SourceCatalog::Photometry{filter_name_list_ptr, std::move(photometry_values)};
+      ++phot_grid_iter;
     }
-    
-    PhzDataModel::PhotometryMatrix photometry_matrix {std::move(photometry_vector), axes_tuple};
     
     {
-      std::ofstream out {options["binary-photometry-matrix"].as<std::string>()};
-      ChMatrix::binaryExport(out, photometry_matrix);
+      std::ofstream out {options["binary-photometry-grid"].as<std::string>()};
+      Euclid::GridContainer::gridBinaryExport(out, photometry_grid);
     }
+    return Elements::ExitCode::OK;
   }
   
   string getVersion() {
-    return getVersionFromSvnKeywords(SVN_URL, SVN_ID);
+    return Elements::getVersionFromSvnKeywords(SVN_URL, SVN_ID);
   }
 
 }; // end of class CreateModelPhotometry

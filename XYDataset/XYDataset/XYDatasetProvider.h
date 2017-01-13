@@ -1,5 +1,5 @@
 /**
- * @file XYDatasetProvider.h
+ * @file XYDataset/XYDatasetProvider.h
  *
  * @date Apr 10, 2014
  * @author Nicolas Morisset
@@ -14,11 +14,18 @@
 #include "XYDataset/XYDataset.h"
 #include "XYDataset/QualifiedName.h"
 
+namespace Euclid {
 namespace XYDataset {
 
 /**
- * The XYDatasetProvider class provides the dataset following
- * a QualifiedName object
+ * @class XYDatasetProvider
+ * Interface class
+ * @brief
+ * This interface class provides the dataset following a qualified name object
+ * @details
+ * This class consists of two virtual functions, listContents and getDataset.
+ * The listContents function lists all files contents in the "group" path and the
+ * getDatatset function gets from a qualified name the dataset of a XYDataset type.
  */
 
 class XYDatasetProvider
@@ -49,7 +56,7 @@ class XYDatasetProvider
 
   /**
    * @brief
-   * Virtual function for getting from a QualifiedName the dataset of
+   * Virtual function for getting from a qualified name the dataset of
    * XYDataset type
    * @param qualified_name
    * Qualified name of the dataset
@@ -65,5 +72,6 @@ class XYDatasetProvider
 };
 
 } /* namespace XYDataset */
+} // end of namespace Euclid
 
 #endif // XYDATASETPROVIDER_H_ 

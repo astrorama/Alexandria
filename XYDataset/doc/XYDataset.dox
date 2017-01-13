@@ -1,0 +1,291 @@
+namespace Euclid {
+namespace XYDataset {
+
+/** \page xydataset XYDataset documentation
+
+ \tableofcontents
+
+
+\section xy_guide Developers quick start guide
+
+ XYDataset module
+
+ This module provides an interface for accessing two dimensional datasets
+ (pairs of (X,Y) values) stored in some storage (file system, database, etc).
+
+Datasets are organized in groups (nested groups are allowed, which
+create a tree) and they can be uniquely identified by their qualified name,
+which consists of the group names and the dataset name, separated by slashes
+"/", for instance : "groupA/groupB/name".  Note that datasets might not belong 
+to any group (or alternatively that they might belong to the root group), in
+which case they are accessed by just using their name (no leading slash).
+The module abstracts the nature of the storage and the only assumption is
+that the datasets can be accessed using their qualified names.
+
+The following sections describe briefly how to use this module and can be used
+as a quick-start guide. For more detailed information refers to the documentation
+of each individual class and method in the XYDataset namespace.
+
+Before going a bit further, three terms are important for this module, QualifiedName, 
+Group and dataset name. Hereafter, we describe them.
+
+\section xy_group Group
+
+We define a Group as a set of words separated by a '/' character,  
+e.g. group1/group2/name. It could refer to a set of directories,
+as group1, group2 and name could be a dataset name.
+
+\section xy_dataset Dataset Name
+
+We defined as a dataset name, a filename (without extension and path) or
+a name which is defined inside a file (specific keyword defined in a FITS file
+or a name defined after a commented line in an ASCII file)
+
+\section xy_qualifiedName Qualified Name
+
+The QualifiedName is a class itself. This class represents a name qualified with 
+a set of groups. The groups and names are separated with the '/' character (e.g.
+ group1/group2/name). Note that the qualified name is assumed to be unique and
+it is used as an identifier.
+
+\section xy_examples HowTo through examples
+
+The following examples show how to create a new XYDataset object and some operations on it.
+
+\code{.cpp}
+  #include "XYDataset/XYDataset.h"
+  using namespace XYDataset;
+\endcode
+
+Note : 
+the second line is used to make the example code more readable and
+it introduces all the symbols of the XYDataset namespace.
+
+The example below shows how to create a XYDataset object. You have two ways, either
+you provide a vector pair of double type or two vectors of double type as follows:
+
+\code{.cpp}
+  std::vector<std::pair<double,double>> vector_pair { {1,1}, {2,2}, {3,3} };
+  auto xy_ptr = XYDataset::XYDataset::factory(vector_pair);
+\endcode
+or 
+\code{.cpp}
+  std::vector<double> vector1 {1., 2., 3., 4., 5.};
+  std::vector<double> vector2 {1.1, 2.2, 3.3, 4.4, 5.5};
+  auto xy_ptr = XYDataset::XYDataset::factory(vector1, vector2);
+\endcode
+
+\section xy_access Access to the XYDataset data
+
+The easiest way to access the data of a XYDataset object is by using the iterators
+provided by the XYDataset class. The XYDataset::begin(), XYDataset::end() methods provide an
+iterator which can be used to iterate through all data. The following lines of code 
+demonstrate how to print on the screen all the contents of a XYDataset object, by using these iterators:
+
+Using the vector1 and vector2 define above, the code is as follows:
+\code{.cpp}
+  auto xy_ptr = XYDataset::factory(vector1, vector2);
+  for (auto it = xy_ptr->begin(); it < xy_ptr->end(); ++it) {
+	  std::cout << " X : " << it->first << " Y : "<< it->second << std::endl;
+  }
+\endcode
+
+ Output:
+
+\code
+ X : 1 Y : 1.1
+ X : 2 Y : 2.2
+ X : 3 Y : 3.3
+ X : 4 Y : 4.4
+ X : 5 Y : 5.5
+\endcode
+
+You can get the size of the XYdataset object above by using the follwoing code :
+\code
+ 
+ \endcode
+
+ 
+\section xy_files How to get a XYdataset object reading an ASCII or FITS file?
+
+
+\subsection xy_acsiifile Read an ASCII file
+
+The AsciiParser class is doing this work. It reads ASCII files which contain space or 
+tab separated tables of two columns. The first column contains the X data and the second
+the Y data. Comments are supported by using the "#" character.
+
+ Let's see how to get the XYdataset object reading the ASCII file in the following example:
+ 
+\code{.cpp}
+	  AsciiParser asciiParser{};
+	  std::string filename {"/tmp/euclid/filter/MER/Gext_ACSf435w.txt"};
+	  auto ascii_ptr = asciiParser.getDataset(filename);
+\endcode
+
+The *ascii_ptr* is a unique pointer to the XYDataset object. An exception will be thrown
+if the file is not found.
+
+The AsciiParser class gets also the dataset name. It is extracted from the
+first non-empty line of the file, as the first match of a regular expression. If the regular
+expression does not match, the name of the file (excluding the extension) is used as the 
+name of the dataset. 
+To get the dataset name proceed as follows:
+
+\code{.cpp}
+	  std::string dataset_name  = asciiParser.getName(filename);
+\endcode
+
+Note that the AsciiParser class inherits from the FileParser interface class. This FileParser class
+has the two virtual functions : getName and getDataset.
+
+\subsection xy_fitsfile Read a FITS file
+
+The FitsParser class is done for that. This class has the same functionalities as the AsciiParser 
+class. So to get the dataset and the dataset name proceed as follows:
+
+\code{.cpp}
+	  FitsParser fitsParser{};
+	  std::string filename {"/tmp/euclid/filter/MER/Gext_ACSf435w.fits"};
+	  auto        fits_ptr      = fitsParser.getDataset(filename);
+	  std::string dataset_name  = fitsParser.getName(filename);
+\endcode
+
+\section xy_directorytree Read files from a directory tree 
+
+The FileSystemProvider class is doing that for you. This class inherits from the XYDatasetProvider class.
+The FileSystemProvider class handles files in a directory tree of the file system. The 
+directory path of the files and the name of the dataset are used for constructing the qualified 
+name to match with the identifier. To support different file formats the work is delegated to
+the FileParser interface about file related operations (it gets dataset name and data).
+
+Let's see few examples of how it works. In these examples we consider the two ASCII following files: 
+\code
+file:
+/tmp/euclid/filter/MER/first_file.txt 
+
+Contents:
+# datasetname_first_file
+1 1
+2 2 
+3 3.
+4. 4.
+5.0 5.0
+\endcode
+
+\code
+file:
+/tmp/euclid/filter/MER/second_file.txt
+
+Contents:
+# datasetname_second_file
+100.0 100.0
+200.1 200.1
+300.2 300.2
+\endcode
+
+\subsection xy_filesystemprovider Create a FileSystemProvider Object
+
+We create a unique pointer to a FileParser object in order to build a FileSystemProvider
+object as follows :
+
+\code{.cpp}
+      std::unique_ptr<FileParser> fp { new AsciiParser{} };
+      FileSystemProvider fsp {"/tmp/euclid/", std::move(fp)};
+\endcode
+
+The "/tmp/euclid/" string is the root path to the data.
+
+\subsection xy_listcontents Use the listContents function
+
+We use the listContents function in order to get all qualified names for the "filter/MER" 
+group as follows : 
+
+\code{.cpp}
+      std::string group { "filter/MER" };
+      std::vector<QualifiedName> result_vector = fsp.listContents(group);
+\endcode
+
+The following code displays the datatset and qualified names of the result vector:
+
+\code{.cpp}
+      for (unsigned int i = 0; i< result_vector.size(); ++i) {
+          std::cout << "Dataset name   : " << result_vector[i].datasetName()   << std::endl;
+          std::cout << "Qualified Name : " << result_vector[i].qualifiedName() << std::endl;
+      }
+\endcode
+
+And the output is:
+
+\code
+Dataset name   : datasetname_second_file
+Qualified Name : filter/MER/datasetname_second_file
+Dataset name   : datasetname_first_file
+Qualified Name : filter/MER/datasetname_first_file
+\endcode
+
+\subsection xy_getdataset Use the getDataset function
+ 
+Now we have all qualified names for a specific group of files, so we can get 
+a XYDadaset object for a specific qualified name (for the first element for instance)
+as follows :
+ 
+\code{.cpp}
+  std::unique_ptr<XYDataset::XYDataset> dataset_ptr = fsp.getDataset(result_vector[0]);
+\endcode
+
+For this example, we can display the data of this "dataset_ptr" above as follows:
+
+\code{.cpp}
+  for (auto it = dataset_ptr->begin(); it < dataset_ptr->end(); ++it) {
+	  std::cout << " X : " << it->first << " Y : "<< it->second << std::endl;
+  }
+\endcode
+
+and the result is:
+\code
+ X : 100   Y : 100
+ X : 200.1 Y : 200.1
+ X : 300.2 Y : 300.2
+\endcode
+
+\section xy_fullcode The Entire Code
+
+\code{.cpp}
+#include <iostream>
+#include <vector>
+#include "XYDataset/XYDataset.h"
+#include "XYDataset/AsciiParser.h"
+#include "XYDataset/FileSystemProvider.h"
+#include "XYDataset/QualifiedName.h"
+
+using namespace XYDataset;
+
+int main() {
+
+      std::string                 group { "filter/MER" };
+      std::unique_ptr<FileParser> fp { new AsciiParser{} };
+      FileSystemProvider          fsp {"/tmp/euclid", std::move(fp)};
+      
+      // ListContents function
+      std::vector<QualifiedName> result_vector = fsp.listContents(group);
+      
+      // Display dataset name and qualified name
+      for (unsigned int i = 0; i< result_vector.size(); ++i) {
+          std::cout << "Dataset name   : " << result_vector[i].datasetName()   << std::endl;
+          std::cout << "Qualified Name : " << result_vector[i].qualifiedName() << std::endl;
+      }
+      
+      // Get the dataset
+      std::unique_ptr<XYDataset::XYDataset> dataset_ptr = fsp.getDataset(result_vector[0]);
+      
+	  for (auto it = dataset_ptr->begin(); it < dataset_ptr->end(); ++it) {
+		  std::cout << " X : " << it->first << " Y : "<< it->second << std::endl;
+	  }
+}
+\endcode
+*/
+
+
+}
+} // end of namespace Euclid

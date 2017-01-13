@@ -1,5 +1,5 @@
 /**
- * @file QualifiedName.h
+ * @file XYDataset/QualifiedName.h
  * @date May 19, 2014
  * @author Nikolaos Apostolakos
  */
@@ -11,19 +11,22 @@
 #include <vector>
 #include <functional>
 
+#include "ElementsKernel/Export.h"
+
+namespace Euclid {
 namespace XYDataset {
 
 /**
  * @class QualifiedName
- * 
+ *
  * @brief Represents a name qualified with a set of groups
- * 
- * 
+ *
+ *
  * The QualifiedName class represents a name qualified with a set of groups.
  * The groups and the names are separated with the '/' character (eg
  * group1/group2/name). Note that the qualified name is assumed to be unique and
  * it can be used as identifier.
- * 
+ *
  * The QualifiedName class provides a method for calculating its hash. The
  * "less than" and "equals" operators are implemented using this hash value as
  * much as possible. This means the QualifiedName can be used as a key in ordered
@@ -31,17 +34,17 @@ namespace XYDataset {
  * performance, the ordering of the QualifiedNames is not alphabetical, but based
  * on the hash key. If the alphabetical ordering is important, then the provided
  * QualifiedName::AlphabeticalComparator can be used:
- * 
+ *
  * \code
  * // This set will order the QualifiedNames based on their hash values
  * std::set<QualifiedName> hashOrderedSet {};
- * 
+ *
  * // This set will order the QualifiedNames in alphabetical order of their
  * // qualified names
  * std::set<QualifiedName, QualifiedName::AlphabeticalComparator> alphabeticalSet {};
  * \endcode
  */
-class QualifiedName {
+class ELEMENTS_API QualifiedName {
 
 public:
 
@@ -50,49 +53,44 @@ public:
    * Constructs a QualifiedName with the given group and name
    * @details
    * Both group and name cannot be empty and they cannot contain the '/'
-   * character. In this case an ElementsException is thrown.
-   * 
+   * character. In this case an Elements::Exception is thrown.
+   *
    * @param groups One or more groups to qualify the name with
    * @param name The name
-   * @throws ElementsException
+   * @throws Elements::Exception
    *    if any of the parameters is empty or contains the '/' character
    */
   QualifiedName(std::vector<std::string> groups, std::string name);
-  
+
   /**
    * @brief
    * Constructs a QualifiedName object representing the given string
    * @details
    * The given string must follow the rules of a qualified name (groups and name
    * separated with the '/' character and no empty names allowed).
-   * @param qualified_name The string representing the qualified name
-   * @throws ElementsException
-   *    if the given string is an ivalid qualified name
+   * @throws Elements::Exception
+   *    if the given string is an invalid qualified name
    */
-  QualifiedName(const std::string& qualified_name);
-  
+  QualifiedName(const std::string& );
+
   /**
    * @brief Copy constructor
-   * @param The QualifiedName to copy from
    */
   QualifiedName(const QualifiedName&) = default;
-  
+
   /**
    * @brief Copy assignment operator
-   * @param The QualifiedName to copy from
    * @return A reference to the QualifiedName which was copied to
    */
-  QualifiedName& operator=(const QualifiedName&) = default;
-  
+  QualifiedName& operator=(const QualifiedName& ) = default;
+
   /**
    * @brief Move constructor
-   * @param The QualifiedName to move from
    */
-  QualifiedName(QualifiedName&&) = default;
-  
+  QualifiedName(QualifiedName&& ) = default;
+
   /**
    * @brief Move assignment operator
-   * @param The QualifiedName to move from
    * @return A reference to the QualifiedName in which was moved in
    */
   QualifiedName& operator=(QualifiedName&&) = default;
@@ -104,7 +102,7 @@ public:
 
   /**
    * @brief Returns the groups qualifying the name
-   * @return The groups qualifying the name 
+   * @return The groups qualifying the name
    */
   const std::vector<std::string>& groups() const;
 
@@ -112,7 +110,7 @@ public:
    * @brief Returns the unqualified name
    * @return The unqualified name
    */
-  const std::string& name() const;
+  const std::string& datasetName() const;
 
   /**
    * @brief Returns the qualified name as a string
@@ -122,13 +120,13 @@ public:
    * @return The qualified name as a string
    */
   const std::string& qualifiedName() const;
-  
+
   /**
    * @brief Returns the hash value of the QualifiedName
    * @return The hash value
    */
   size_t hash() const;
-  
+
   /**
    * @brief Compares this QualifiedName with the parameter
    * @details
@@ -136,10 +134,10 @@ public:
    * reasons). For alphabetical comparison the QualifiedName::alphabeticalComparator
    * can be used.
    * @param other The QualifiedName to compare with
-   * @return 
+   * @return
    */
   bool operator<(const QualifiedName& other) const;
-  
+
   /**
    * @brief Checks if this QualifiedName is equal with the parameter
    * @details
@@ -148,7 +146,7 @@ public:
    * @return true if the two QualifiedName are equal, false otherwise
    */
   bool operator==(const QualifiedName& other) const;
-  
+
   /**
    * @brief Checks if this QualifiedName is not equal with the parameter
    * @details
@@ -157,7 +155,7 @@ public:
    * @return true if the two QualifiedName are not equal, false otherwise
    */
   bool operator!=(const QualifiedName& other) const;
-  
+
   /**
    * @class AlphabeticalComparator
    * @brief Provides alphabetical comparison for the QualifiedNames a and b
@@ -174,18 +172,19 @@ public:
 private:
 
   std::vector<std::string> m_groups;
-  std::string m_name;
+  std::string m_dataset_name;
   std::string m_qualified_name;
   mutable size_t m_hash {0};
 
 }; // class QualifiedName
 
 } // namespace XYDataset
+} // end of namespace Euclid
 
 namespace std {
 
 /**
- * @brief Hash operation for the XYDataset::QualifiedName
+ * @brief Hash operation for the Euclid::XYDataset::QualifiedName
  * @details
  * This method is implemented so no special hash functions need to be given as
  * template parameters to the unordered collections. It just redirects the call
@@ -194,12 +193,12 @@ namespace std {
  * @return The hash key of the QualifiedName
  */
 template <>
-struct hash<XYDataset::QualifiedName> {
-  size_t operator()(const XYDataset::QualifiedName& qualifiedName) const {
+struct hash<Euclid::XYDataset::QualifiedName> {
+  size_t operator()(const Euclid::XYDataset::QualifiedName& qualifiedName) const {
     return qualifiedName.hash();
   }
 };
 
 } // namespace std
 
-#endif // PHZDATAMODEL_QUALIFIEDNAME_H 
+#endif // PHZDATAMODEL_QUALIFIEDNAME_H

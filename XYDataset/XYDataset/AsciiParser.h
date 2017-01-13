@@ -1,5 +1,5 @@
 /**
- * @file AsciiParser.h
+ * @file XYDataset/AsciiParser.h
  *
  * @date Apr 14, 2014
  * @author Nicolas Morisset
@@ -8,10 +8,13 @@
 #ifndef ASCIIPARSER_H_
 #define ASCIIPARSER_H_
 
+#include "ElementsKernel/Export.h"
+
 #include "XYDataset/XYDataset.h"
 #include "XYDataset/FileParser.h"
 
 
+namespace Euclid {
 namespace XYDataset {
 
 /**
@@ -30,7 +33,7 @@ namespace XYDataset {
  * @throw
  * ElementException : File not found
  */
-class AsciiParser : public FileParser
+class ELEMENTS_API AsciiParser : public FileParser
 {
  public:
 
@@ -85,7 +88,8 @@ class AsciiParser : public FileParser
 };
 
 } /* namespace XYDataset */
+} // end of namespace Euclid
 
 
 
-#endif // ASCIIPARSER_H_ 
+#endif // ASCIIPARSER_H_

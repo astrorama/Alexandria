@@ -1,5 +1,5 @@
 /**
- * @file XYDataset.h
+ * @file XYDataset/XYDataset.h
  *
  * @date Apr 8, 2014
  * @author admin
@@ -14,10 +14,13 @@
 #include <iterator>
 #include <utility>
 
+#include "ElementsKernel/Export.h"
+
+namespace Euclid {
 namespace XYDataset {
 
 /**
- * @class XYDataset::XYDataset
+ * @class Euclid::XYDataset::XYDataset
  * Interface class
  * @brief
  * This module provides an interface for accessing two dimensional datasets
@@ -35,7 +38,7 @@ namespace XYDataset {
  * ElementException :  Vectors must have the same size!
  */
 
- class XYDataset
+ class ELEMENTS_API XYDataset
  {
 
  public:
@@ -43,7 +46,7 @@ namespace XYDataset {
    typedef std::vector<std::pair<double, double>>::const_iterator const_iterator;
 
    /**
-    * @brief
+    * @brief Constructor
     * XYDataset interface represents an immutable data set
     *
     * @details
@@ -55,7 +58,10 @@ namespace XYDataset {
     *
     */
    XYDataset(std::vector<std::pair<double, double>> values)
-             : m_values(values) {  };
+             : m_values(std::move(values)) {  };
+
+   /// Move constructor
+   XYDataset(XYDataset&&) = default;
 
    /**
     * @brief
@@ -65,22 +71,24 @@ namespace XYDataset {
      * @return
     * A unique pointer of XYDataset type
     */
-   static std::unique_ptr<XYDataset> factory(std::vector<std::pair<double, double>> vector_pair);
+   static XYDataset factory(std::vector<std::pair<double, double>> vector_pair);
 
    /**
     * @brief
     * Make a XYDataset object from two vectors of doubles
-    * @param vector_pair
-    * A vector of pair of doubles
+    * @param x
+    * A vector of double values
+    * @param y
+    * A vector of double values
      * @return
     * A unique pointer of XYDataset type
     */
-   static std::unique_ptr<XYDataset> factory(std::vector<double>, std::vector<double>);
+   static XYDataset factory(const std::vector<double>& x, const std::vector<double>& y);
 
    /**
     * @brief Destructor
     */
-   virtual ~XYDataset() { }
+   virtual ~XYDataset() = default;
 
    /**
     * @brief
@@ -104,7 +112,7 @@ namespace XYDataset {
     * @return
     *  The size of the container which is the number of Source objects
     */
-   size_t size() const { return m_values.size();}
+   size_t size() const { return m_values.size(); }
 
  private:
 
@@ -113,7 +121,8 @@ namespace XYDataset {
  };
 
 } /* namespace XYDataset */
+} // end of namespace Euclid
 
 
 
-#endif // XYDATASET_H_ 
+#endif // XYDATASET_H_

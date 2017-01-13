@@ -1,0 +1,741 @@
+namespace Euclid {
+namespace Table {
+
+/** \page table Table module
+
+\tableofcontents
+
+The Table module provides the means for reading and writing tables from/to
+ASCII or FITS files. It provides a set of classes describing a table in the
+memory, which constitute its data model, and methods for reading and writing
+these classes from/to ASCII and FITS formats. The following sections describe
+briefly how to use the module and can be used as a quick-start guide. For more
+detailed information refer to the documentation of each individual class and
+method in the Table namespace.
+
+\section datamodel Table Data Model
+
+The main class of the Table is the Table class, which represents a table in
+memory. It can be seen as a collection of Row%s, with the restriction that
+all share the same columns. Each of the columns is defined by its name (which
+must be unique, not be empty and not contain whitespace characters) and the
+type of its objects. The information of the columns, which can be both
+retrieved from the Table object itself or from any of its Row%s, is represented
+by the ColumnInfo class. Each cell of a Row is stored in a boost::variant
+(redefined as Row::cell_type), so the boost::get method must be used to retrieve
+their content. Note that all the Table data model classes are designed to
+be immutable (cannot be modified).
+
+\subsection dmexamples Examples
+
+The following examples demonstrate how to create new Table%s from the scratch
+and some basic operations on them. To avoid duplication, the following two
+lines are assumed for each example:
+
+\code{.cpp}
+  #include "Table/Table.h"
+  using namespace Euclid::Table;
+  using namespace std;
+\endcode
+
+Note that the second and third lines are used to make the example code more
+readable and they will introduce all the symbols of the Table and std
+namespaces, so they must be sparingly used.
+
+\subsubsection createtable Create a Table
+
+This example demonstrates all the necessary steps for creating a Table object.
+To be more comprehensible, each step is presented and explained separately.
+
+The first step is to create the ColumnInfo object which describes the columns
+of the table:
+
+\code{.cpp}
+  vector<ColumnInfo::info_type> info_list {
+    ColumnInfo::info_type {"Function", typeid(string)},
+    ColumnInfo::info_type {"X", typeid(double)},
+    ColumnInfo::info_type {"Y", typeid(double)}
+  };
+  shared_ptr<ColumnInfo> column_info {new ColumnInfo {move(info_list)}};
+\endcode
+
+Each column is described by a ColumnInfo::info_type object, which contains the
+column name and its type. As can be seen above, our table will have three
+columns defined as:
+
+- **Function**: representing the name of a function,
+- **X**: an X value and
+- **Y**: the Y value calculated using the function
+
+The ColumnInfo object will be shared between the Table and all its Row%s, so it
+is stored in a std::shared_ptr. Note that at the construction of 
+the ColumnInfo the `info_list` vector is moved because it is not needed anymore.
+This is optional (but recommended).
+
+Having the ColumnInfo object from the previous step, we can start creating the
+Row%s of the Table. In this step we store the Row%s in a vector, which will
+be used later to construct the Table. The Row constructor gets as parameters a
+list with its cell values and the shared pointer of the ColumnInfo object. Note
+that all the cells are of the type Row::cell_type, which is a boost::variant
+specialization allowing for the types  `bool`, `int32_t`, `int64_t`, `float`,
+`double` and `std::string`.
+
+The following code is an example of how to construct a Row in a verbose and
+easy way to understand, by first creating a vector with the cell values. Note
+that this vector is not going to be further used, so it is moved during the Row
+construction.
+
+\code{.cpp}
+  vector<Row::cell_type> cell_values {string{"example"}, 5., 2E-15};
+  Row row {move(cell_values), column_info};
+\endcode
+
+Because the Row::cell_type is a boost::variant, extra care must be taken so
+each cell value is of the correct type (as defined in the ColumnInfo). If
+a cell has incorrect type, a runtime exception will be thrown during the Row
+construction. This problem becomes more apparent when literals are used, as
+their types might be different than what the user expects. The following table
+gives some examples of types and literals, and can be used to avoid mistakes.
+
+| Type          | Literal           | Comment                                                              |
+|---------------|-------------------|----------------------------------------------------------------------|
+| `char*`       | `"text"`          | String literals are C-strings, **do not use!**                       |
+| `std::string` | `string{"text"}`  | Explicit string construction is necessary                            |
+| `int32_t`     | `int32_t{5}`      | Recommended `int32_t` literal syntax                                 |
+| `int64_t`     | `int64_t{5}`      | Recommended `int64_t` literal syntax                                 |
+| `int`         |                   | `int32_t` in most cases                                              |
+| `long`        |                   | `int32_t` or `int64_t`, OS dependent, **do not use!**                |
+| `long long`   |                   | `int64_t` or `int128`, OS dependent, **do not use!**                 |
+|               | `5`               | First of `int`, `long`, `long long` which can represent it           |
+|               | `5L`              | First of `long`, `long long` which can represent it, **do not use!** |
+|               | `5LL`             | `long long`, **do not use!**                                         |
+| `float`       | `5.F` or `2E-15F` | Recommended `float` literal syntax                                   |
+| `double`      | `5.` or `2E-15`   | Recommended `double` literal syntax                                  |
+| `long double` | `5.L` or `2E-15L` | **do not use!**                                                      |
+
+A more complicated and realistic Row creation example is the following, which
+creates some Row%s with the results of the `sin` and `cos` functions. Note that
+in this example the Row and the vector containing the cell values are
+constructed at the same time.
+
+\code{.cpp}
+  vector<Row> row_list {};
+  for (int i = 0; i <= 5; ++i) {
+    double x = i * M_PI / 5;
+    row_list.push_back(Row{{string{"sin"}, x, sin(x)}, column_info});
+    row_list.push_back(Row{{string{"cos"}, x, cos(x)}, column_info});
+  }
+\endcode
+
+The final step is to create the Table object itself. The constructor of the
+Table takes only one argument, which is the vector of its Row%s. At the moment
+there is no support of heterogeneous Table%s, which means that all the Row%s
+of a Table must have the same ColumnInfo (an exception is thrown otherwise).
+
+\code{.cpp}
+  Table table {row_list};
+\endcode
+
+\subsubsection examinecolumn Examine column information
+
+This example shows how the information of the columns can be retrieved by using
+the ColumnInfo class. A shared pointer to the ColumnInfo object can be
+retrieved either from a Table object or from a Row.
+
+\code{.cpp}
+  auto table_column_info = table.getColumnInfo();
+  auto row_column_info = row.getColumnInfo();
+\endcode
+
+The ColumnInfo object provides the methods ColumnInfo::getName() and
+ColumnInfo::getType(), which can be used for retrieving the information of a
+specific column by using its index. The total number of columns can be
+retrieved by the ColumnInfo::size() method. The following code uses these
+methods to print the information of all the columns:
+
+\code{.cpp}
+  size_t column_no = table_column_info->size();
+  cout << "The table has " << column_no << " columns\n";
+  for (size_t i = 0; i < column_no; ++i) {
+    cout << "Column " << i << ": "<< table_column_info->getName(i)
+         << " (type: " << table_column_info->getType(i).name() << ")\n";
+  }
+\endcode
+
+Output:
+
+\code
+The table has 3 columns
+Column 0: Function (type: Ss)
+Column 1: X (type: d)
+Column 2: Y (type: d)
+\endcode
+
+If the index of a column is not known it can be found by using the method
+ColumnInfo::find(). This method returns a `unique_ptr<size_t>` which contains
+a pointer to the index of the column if it was found, or the `nullptr` if no
+column with the given name exists. This facilitates the checking if a column
+exists or not, as demonstrated in the following example:
+
+\code{.cpp}
+  auto x_index = table_column_info->find("X");
+  if (x_index) {
+    cout << "Column X has index " << *x_index << "\n";
+  } else {
+    cout << "Column X not found\n";
+  }
+  auto z_index = table_column_info->find("Z");
+  if (z_index) {
+    cout << "Column Z has index " << *z_index << "\n";
+  } else {
+    cout << "Column Z not found\n";
+  }
+\endcode
+
+Output:
+
+\code
+Column X has index 1
+Column Z not found
+\endcode
+
+Because all the cell values are stored as boost::variants, if a Table contains
+columns of a different type than the one the program expects, the problem will
+not be detected until a cell value is retrieved during runtime. For this
+reason, to minimize the debugging effort and to allow better log messages,
+it is recommended to always check the types of the Table columns in interest,
+before trying to read the data from the Row%s cells. This can easily be done
+by using the `typeid()` method: 
+
+\code{.cpp}
+  if (table_column_info->getType(*x_index) == typeid(double)) {
+    // Here is safe to access the X column data
+  }
+\endcode
+
+\subsubsection accessdata Access the table data
+
+The easiest way to access the data of a Table is by using the iterators
+provided by the Table and Row classes. The Table::begin() method provides an
+iterator which can be used to iterate through all the Row%s of the table and
+the Row::begin() method provides an iterator which can be used to iterate
+through all the cells of the Row. Note that each cell of the Row is of the
+type `boost::variant`, so if a specific type is not required it can be used
+directly. The following lines of code demonstrate how to print on the screen
+all the contents of a table, by using these iterators:
+
+\code{.cpp}
+  for (auto& row : table) {
+    for (auto& cell : row) {
+      cout << cell << " ";
+    }
+    cout << "\n";
+  }
+\endcode
+
+Output:
+
+\code
+sin 0 0 
+cos 0 1 
+sin 0.628319 0.587785 
+cos 0.628319 0.809017 
+sin 1.25664 0.951057 
+cos 1.25664 0.309017 
+sin 1.88496 0.951057 
+cos 1.88496 -0.309017 
+sin 2.51327 0.587785 
+cos 2.51327 -0.809017 
+sin 3.14159 1.22465e-16 
+cos 3.14159 -1
+\endcode
+
+Except of the iterators, the Table and Row classes provide also indexed access
+to their contents. The syntax is similar to the STL containers, but a range
+check does take place:
+
+\code{.cpp}
+  cout << "Third rows X value is " << table[2][*x_index] << "\n";
+\endcode
+
+Output:
+
+\code
+Third rows X value is 0.628319
+\endcode
+
+The Row class, in addition to the indexed access, provides a *map-like*
+access based on the name of the column. Note though that this way of accessing
+the Row cells implies a **performance penalty** and should be used sparingly.
+
+\code{.cpp}
+  cout << "Third rows Y value is " << table[2]["Y"] << "\n";
+\endcode
+
+Output:
+
+\code
+Third rows Y value is 0.587785
+\endcode
+
+Most of the time, to use the data of the Table cells, they must be retrieved with
+the correct type. The Row::cell_type objects can be converted to the actual
+type by using the `boost::get` method. Note that trying to convert the cell
+value to a wrong type will result to a `boost::bad_get` exception. For example,
+the following lines of code calculate the sum of the Y column values 
+(column of `double` type): 
+
+\code{.cpp}
+  double sum {0};
+  for (auto& row : table) {
+    sum += boost::get<double>(row["Y"]);
+  }
+  cout << "Sum of all Y values is " << sum << "\n";
+\endcode
+
+Output:
+
+\code
+Sum of all Y values is 3.07768
+\endcode
+
+
+\section tableio Table I/O
+
+The Table module provides functionality for importing and exporting Table%s
+from/to files. The currently supported formats are ASCII space separated text
+files and FITS tables. The following examples demonstrate this functionality.
+
+\subsection readascii Reading a Table from an ASCII stream
+
+The Table module provides the class AsciiReader, which can be used for
+reading a table from an input stream. Note that a generic `std::istream` is used
+instead of a file name. This is done to provide more flexibility. To open a file
+as a stream the following code can be used:
+
+\code{.cpp}
+  fstream in_stream {"/path/to/table/file"};
+\endcode
+
+The AsciiReader class, by default will interpret the `#` as comment character
+and will try to detect automatically the names and the types of the columns
+in the file. The column names are extracted from the first non empty comment
+line, which contains the same number of words as the
+number of data columns in the file. If there is no such comment line, the
+columns are named as `col1`, `col2`, etc (starting from 1). The types of the
+columns are extracted from the second such line, by using the following
+conventions:
+
+- bool, boolean : A boolean value as the following (case is ignored):
+                  - true,  t, yes, y, 1
+                  - false, f,  no, n, 0
+- int,  int32   : A 32 bit integer
+- long, int64   : A 64 bit integer
+- float         : Single (32 bit) precision floating point
+- double        : Double (64 bit) precision floating point
+- string        : String without whitespaces
+
+If there is no line describing the types of the columns, all the types are
+assumed to be strings.
+
+Reading a file that follows the above rules is straight forward. For example,
+if a file contains the following text:
+
+\code
+# Function        X           Y
+#   string   double      double
+
+       sin        0           0
+       cos        0           1
+       sin 0.628319    0.587785
+       cos 0.628319    0.809017
+       sin  1.25664    0.951057
+       cos  1.25664    0.309017
+       sin  1.88496    0.951057
+       cos  1.88496   -0.309017
+       sin  2.51327    0.587785
+       cos  2.51327   -0.809017
+       sin  3.14159 1.22465e-16
+       cos  3.14159          -1
+\endcode
+
+it can be read directly by using the command:
+
+\code{.cpp}
+  table = AsciiReader{}.read(in_stream);
+\endcode
+
+Note that the above command will read till the end of the stream, so any further
+reading attempts will behave like reading an empty file. For the following
+examples to work, before calling the read method again, the stream must be
+reopened, or be rewind at the beginning by using the commands:
+
+\code{.cpp}
+  in_stream.clear();
+  in_stream.seekg(0, ios_base::beg);
+\endcode
+
+Except of this automatic mode, the AsciiReader class can be parameterized by
+passing arguments to its constructor, so it can read files which do not follow
+the default conventions. The first constructor parameter can override the
+types of the columns. This is very useful for the cases that a program wants
+to read the column in a different type (for example read a `float` column as
+a `double` column), but also for the cases that a file does not contain the
+column types and the program does not want to read them as strings. As an
+example, the following code will read the previous file interpreting the X
+and Y columns as `float` values:
+
+\code{.cpp}
+  vector<std::type_index> column_types {
+    typeid(string), typeid(float), typeid(float)
+  };
+  AsciiReader reader_types {column_types};
+  table = reader_types.read(in_stream);
+\endcode
+
+Note that the above code will still detect automatically the names of the
+columns. If the program wants to override the column names, it can use the
+second AsciiReader constructor parameter, which is a vector of strings with
+the new column names. The following code will read our table file by reading
+the *X* column as *Angle* and the *Y* column as *Value*:
+
+\code{.cpp}
+  vector<string> column_names {"Function", "Angle", "Value"};
+  AsciiReader reader_names {{}, column_names};
+  table = reader_names.read(in_stream);
+\endcode
+
+Note that an empty vector is given as the first parameter (the column types).
+This will enable automatic detection for the column types. This is true also
+for the column names parameter and can be used in the case automatic detection
+is desired, but a later parameter must be specified.
+
+The last way the AsciiReader can be parameterized is the comment character. In
+fact, any string can be used as a comment indicator and not only a single
+character. The comment indicator is set with the third constructor parameter.
+The following example can read files which start their comments with the `//`
+sequence (column names and types will be detected automatically):
+
+\code{.cpp}
+  AsciiReader reader_comment {{}, {}, "//"};
+  table = reader_comment.read(in_stream);
+\endcode
+
+\subsection writeascii Writing a Table in an ASCII stream
+
+To export a Table as an ASCII character sequence, the Table module provides
+the AsciiWriter class. Similarly with the AsciiReader, the AsciiWriter writes
+the table in a generic std:ostream instead of a file, to provide more
+flexibility. If the table should be exported in a file, a file stream can be
+opened using the following code:
+
+\code{.cpp}
+  ofstream file_stream {"/path/to/table/file"};
+\endcode
+
+By default, the AsciiWriter will use as a comment indicator the `#` character,
+it will add the column name and type lines and it will right-align all the
+columns. The width of the columns will be automatically calculated based on the
+contents of the table cells. For example, the following code will print on the
+screen our table:
+
+\code{.cpp}
+  AsciiWriter{}.write(cout, table);
+\endcode
+
+Output:
+
+\code
+# Function        X           Y
+#   string   double      double
+
+       sin        0           0
+       cos        0           1
+       sin 0.628319    0.587785
+       cos 0.628319    0.809017
+       sin  1.25664    0.951057
+       cos  1.25664    0.309017
+       sin  1.88496    0.951057
+       cos  1.88496   -0.309017
+       sin  2.51327    0.587785
+       cos  2.51327   -0.809017
+       sin  3.14159 1.22465e-16
+       cos  3.14159          -1
+\endcode
+
+Printing a table on the screen this way can be very handy, especially during
+development. Be careful though, because printing a table with hundreds of
+thousands of lines in the `std::cout` will actually print all of them.
+
+Similarly with the AsciiReader, the AsciiWriter can be parameterized by
+passing arguments to its constructor. Currently, the only option which can be
+parameterized is the comment character to use. For example, the following
+code will use the `//` comment indicator:
+
+\code{.cpp}
+  AsciiWriter writer_comment {"//"};
+  writer_comment.write(cout, table);
+\endcode
+
+Output:
+
+\code
+// Function        X           Y
+//   string   double      double
+
+        sin        0           0
+        cos        0           1
+        sin 0.628319    0.587785
+        cos 0.628319    0.809017
+        sin  1.25664    0.951057
+        cos  1.25664    0.309017
+        sin  1.88496    0.951057
+        cos  1.88496   -0.309017
+        sin  2.51327    0.587785
+        cos  2.51327   -0.809017
+        sin  3.14159 1.22465e-16
+        cos  3.14159          -1
+\endcode
+
+\subsection readfits Reading a Table from a FITS file
+
+The Table functionality related with reading a Table from a FITS file is
+provided by the FitsReader class. This class can read Table%s from
+`CCfits::HDU` objects which contain either ASCII or binary tables. Note that
+the input of the FitsReader is the HDU object, so the user has the flexibility
+to handle multiple extension HDUs from the same file. An extension can be
+retrieved the standard CCfits way, using the following code:
+
+\code{.cpp}
+  CCfits::FITS fits {"/path/to/FITS/file"};
+  auto& table_hdu = fits.extension(1);
+\endcode
+
+In the above code note that the `table_hdu` is a reference. This is obligatory
+because the result of the `extension()` method is a sublcass of the
+`CCfits::HDU`.
+
+Having the reference of the table HDU, using the FitsReader class to convert
+it to a Table object is straight forward. The column names and types will
+automatically be detected from the HDU keywords, so reading the Table is as
+simple as:
+
+\code{.cpp}
+  auto table = FitsReader{}.read(table_hdu);
+\endcode
+
+Similarly with the AsciiReader, the FitsReader can be parameterized via its
+constructor arguments. In particular, the names of the columns can be
+overridden:
+
+\code{.cpp}
+  vector<string> column_names {"Function", "Angle", "Value"};
+  FitsReader reader {column_names};
+  auto table = reader.read(table_hdu);
+\endcode
+
+Overriding the column types is not. The conventions of the FITS
+types conversions to the Table cell values can be found in the documentation
+of the FitsReader::read() method.
+
+\subsection writefits Writing a Table in a FITS file
+
+To export a Table in a FITS file, the Table module provides the FitsWriter
+class. This class can append to a `CCfits::FITS` object both ASCII and binary
+table HDUs. Note that the `CCfits::FITS` object must be opened in write mode:
+
+\code{.cpp}
+  CCfits::FITS fits {"/path/to/FITS/file", CCfits::RWmode::Write};
+\endcode
+
+Note that the above command, if the FITS file already exists, will open it
+in append mode (the tables will be added after the existing HDUs). To override
+an existing FITS file the path has to be prefixed with the '!' character:
+
+\code{.cpp}
+  CCfits::FITS fits {"!/path/to/FITS/file", CCfits::RWmode::Write};
+\endcode
+
+Having the `fits` object, appending table HDUs is straight forward. The format
+of the HDU is set as the FitsWriter constructor parameter (the options are
+FitsWriter::Format::BINARY and FitsWriter::Format::ASCII) and the
+FitsWriter::write() method gets as parameters the `CCfits:FITS` object to
+append the table on, the new HDUs name and the table with the data:
+
+\code{.cpp}
+  FitsWriter writer {FitsWriter::Format::BINARY};
+  writer.write(fits, "TABLE_NAME", table);
+\endcode
+
+\section fullcode Full Example Code
+
+\code{.cpp}
+#include <iostream>
+#include <sstream>
+#include <math.h>
+#include "Table/Table.h"
+#include "Table/AsciiReader.h"
+#include "Table/AsciiWriter.h"
+
+using namespace Euclid::Table;
+using namespace std;
+
+int main() {
+  
+  // //////////////////////////////////
+  // Create a Table
+  // //////////////////////////////////
+  cout << "\nCreate a Table\n";
+  
+  // Step 1: Create the ColumnInfo object
+  vector<ColumnInfo::info_type> info_list {
+    ColumnInfo::info_type {"Function", typeid(string)},
+    ColumnInfo::info_type {"X", typeid(double)},
+    ColumnInfo::info_type {"Y", typeid(double)}
+  };
+  shared_ptr<ColumnInfo> column_info {new ColumnInfo {move(info_list)}};
+  
+  // Step 2: Create the Rows of the table
+  vector<Row> row_list {};
+  for (int i = 0; i <= 5; ++i) {
+    double x = i * M_PI / 5;
+    row_list.push_back(Row{{string{"sin"}, x, sin(x)}, column_info});
+    row_list.push_back(Row{{string{"cos"}, x, cos(x)}, column_info});
+  }
+  
+  // Verbose way to create rows
+  vector<Row::cell_type> cell_values {string{"example"}, 5., 2E-15};
+  Row row {move(cell_values), column_info};
+  
+  // Step 3: Create the table instance
+  Table table {row_list};
+  
+  // //////////////////////////////////
+  // Examine column information
+  // //////////////////////////////////
+  cout << "\nExamine column information\n";
+  
+  // Retrieving the column information
+  auto table_column_info = table.getColumnInfo();
+  auto row_column_info = row.getColumnInfo();
+  
+  // Printing the column information
+  size_t column_no = table_column_info->size();
+  cout << "The table has " << column_no << " columns\n";
+  for (size_t i = 0; i < column_no; ++i) {
+    cout << "Column " << i << ": "<< table_column_info->getName(i)
+         << " (type: " << table_column_info->getType(i).name() << ")\n";
+  }
+  
+  // Searching for a column by name
+  auto x_index = table_column_info->find("X");
+  if (x_index) {
+    cout << "Column X has index " << *x_index << "\n";
+  } else {
+    cout << "Column X not found\n";
+  }
+  auto z_index = table_column_info->find("Z");
+  if (z_index) {
+    cout << "Column Z has index " << *z_index << "\n";
+  } else {
+    cout << "Column Z not found\n";
+  }
+  
+  // Checking the type of a column
+  if (table_column_info->getType(*x_index) == typeid(double)) {
+    cout << "Safe to access X column data\n";
+  }
+  
+  // //////////////////////////////////
+  // Access the table data
+  // //////////////////////////////////
+  cout << "\nAccess the table data\n";
+  
+  // Print all table data
+  for (auto& row : table) {
+    for (auto& cell : row) {
+      cout << cell << " ";
+    }
+    cout << "\n";
+  }
+  
+  // Access a single cell
+  cout << "Third rows X value is " << table[2][*x_index] << "\n";
+  
+  // Access a column by name
+  cout << "Third rows Y value is " << table[2]["Y"] << "\n";
+  
+  // Retrieve the cell value
+  double sum {0};
+  for (auto& row : table) {
+    sum += boost::get<double>(row["Y"]);
+  }
+  cout << "Sum of all Y values is " << sum << "\n";
+  
+  // //////////////////////////////////
+  // Reading a Table from an ASCII stream
+  // //////////////////////////////////
+  cout << "\nReading a Table from an ASCII stream\n";
+  
+  stringstream in_stream { "# Function        X           Y\n" 
+                           "#   string   double      double\n" 
+                           "       sin        0           0\n" 
+                           "       cos        0           1\n" 
+                           "       sin 0.628319    0.587785\n" 
+                           "       cos 0.628319    0.809017\n" 
+                           "       sin  1.25664    0.951057\n" 
+                           "       cos  1.25664    0.309017\n" 
+                           "       sin  1.88496    0.951057\n" 
+                           "       cos  1.88496   -0.309017\n" 
+                           "       sin  2.51327    0.587785\n" 
+                           "       cos  2.51327   -0.809017\n" 
+                           "       sin  3.14159 1.22465e-16\n" 
+                           "       cos  3.14159          -1\n"};
+  
+  // Reading the table (default way)
+  table = AsciiReader{}.read(in_stream);
+  
+  in_stream.clear();
+  in_stream.seekg(0, ios_base::beg);
+  
+  // Parameterizing column types
+  vector<std::type_index> column_types {
+    typeid(string), typeid(float), typeid(float)
+  };
+  AsciiReader reader_types {column_types};
+  table = reader_types.read(in_stream);
+  
+  in_stream.clear();
+  in_stream.seekg(0, ios_base::beg);
+  
+  // Parameterizing column names
+  vector<string> column_names {"Function", "Angle", "Value"};
+  AsciiReader reader_names {{}, column_names};
+  table = reader_names.read(in_stream);
+  
+  in_stream.clear();
+  in_stream.seekg(0, ios_base::beg);
+  
+  // Parameterizing the comment indicator
+  AsciiReader reader_comment {{}, {}, "#"};
+  table = reader_comment.read(in_stream);
+  
+  // //////////////////////////////////
+  // Writing a Table in an ASCII stream
+  // //////////////////////////////////
+  cout << "\nWriting a Table in an ASCII stream\n";
+  
+  // Default writing
+  AsciiWriter{}.write(cout, table);
+  
+  // Changing comment character
+  AsciiWriter writer_comment {"//"};
+  writer_comment.write(cout, table);
+  
+}
+\endcode
+
+*/
+
+}
+} // end of namespace Euclid

@@ -1,5 +1,5 @@
 /**
- * @file FitsParser.cpp
+ * @file src/lib/FitsParser.cpp
  *
  * @date May 13, 2014
  * @author Nicolas Morisset
@@ -10,14 +10,15 @@
 #include <iostream>
 #include <CCfits/CCfits>
 
-#include "ElementsKernel/ElementsException.h"
-#include "ChTable/FitsReader.h"
+#include "ElementsKernel/Exception.h"
+#include "Table/FitsReader.h"
 #include "XYDataset/FitsParser.h"
 #include "StringFunctions.h"
 
 using boost::regex;
 using boost::regex_match;
 
+namespace Euclid {
 namespace XYDataset {
 
 //
@@ -30,7 +31,7 @@ std::string FitsParser::getName(const std::string& file) {
 
   // Check file exists
   if (!sfile) {
-    throw ElementsException() << "File not found : " << file;
+    throw Elements::Exception() << "File not found : " << file;
   }
 
   // Read first HDU
@@ -68,7 +69,7 @@ std::unique_ptr<XYDataset> FitsParser::getDataset(const std::string& file) {
     try {
       const CCfits::ExtHDU& table_hdu = fits->extension(1);
       // Read first HDU
-      ChTable::FitsReader fits_reader {};
+      Euclid::Table::FitsReader fits_reader {};
       auto table = fits_reader.read(table_hdu);
 
       // Put the Table data into vector pair
@@ -79,7 +80,7 @@ std::unique_ptr<XYDataset> FitsParser::getDataset(const std::string& file) {
       dataset_ptr = std::unique_ptr<XYDataset> { new XYDataset(vector_pair) };
     }
     catch(CCfits::FitsException& fits_except){
-      throw ElementsException() << "FitsException catched! File: " << file;
+      throw Elements::Exception() << "FitsException catched! File: " << file;
     } // Eof try-catch
   } // Eof if
 
@@ -87,6 +88,7 @@ std::unique_ptr<XYDataset> FitsParser::getDataset(const std::string& file) {
 }
 
 } // XYDataset namespace
+} // end of namespace Euclid
 
 
 

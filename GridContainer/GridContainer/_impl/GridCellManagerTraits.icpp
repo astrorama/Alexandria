@@ -1,0 +1,51 @@
+/** 
+ * @file GridContainer/_impl/GridCellManagerTraits.icpp
+ * @date May 13, 2014
+ * @author Nikolaos Apostolakos
+ */
+
+namespace Euclid {
+namespace GridContainer {
+
+template<typename GridCellManager>
+std::unique_ptr<GridCellManager> GridCellManagerTraits<GridCellManager>::factory(size_t size) {
+  return std::unique_ptr<GridCellManager> {new GridCellManager(size)};
+}
+
+template<typename GridCellManager>
+size_t GridCellManagerTraits<GridCellManager>::size(const GridCellManager& cell_manager) {
+  return cell_manager.size();
+}
+
+template<typename GridCellManager>
+auto GridCellManagerTraits<GridCellManager>::begin(GridCellManager& cell_manager) -> iterator {
+  return cell_manager.begin();
+}
+
+template<typename GridCellManager>
+auto GridCellManagerTraits<GridCellManager>::end(GridCellManager& cell_manager) -> iterator {
+  return cell_manager.end();
+}
+
+template<typename T>
+std::unique_ptr<std::vector<T>> GridCellManagerTraits<std::vector<T>>::factory(size_t size) {
+  return std::unique_ptr<std::vector<T>> {new std::vector<T>(size)};
+}
+
+template<typename T>
+size_t GridCellManagerTraits<std::vector<T>>::size(const std::vector<T>& vector) {
+  return vector.size();
+}
+
+template<typename T>
+auto GridCellManagerTraits<std::vector<T>>::begin(std::vector<T>& vector) -> iterator {
+  return vector.begin();
+}
+
+template<typename T>
+auto GridCellManagerTraits<std::vector<T>>::end(std::vector<T>& vector) -> iterator {
+  return vector.end();
+}
+
+} // end of namespace GridContainer
+} // end of namespace Euclid

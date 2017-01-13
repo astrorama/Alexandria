@@ -1,5 +1,5 @@
 /**
- * @file StringFunctions_test.cpp
+ * @file tests/src/StringFunctions_test.cpp
  *
  * @date May 26, 2014
  * @author Nicolas Morisset
@@ -15,7 +15,7 @@
 
 #include "../../XYDataset/src/lib/StringFunctions.h"
 
-using namespace XYDataset;
+using namespace Euclid::XYDataset;
 
 
 
@@ -47,6 +47,7 @@ BOOST_FIXTURE_TEST_CASE(checkBeginSlashes_test, Stringfunctions_Fixture) {
   BOOST_CHECK_EQUAL("/", checkBeginSlashes("") );
   BOOST_CHECK_EQUAL("/string/test", checkBeginSlashes("string/test") );
   BOOST_CHECK_EQUAL("/string/test", checkBeginSlashes("//string/test") );
+  BOOST_CHECK_EQUAL("/string/test", checkBeginSlashes("/string/test") );
 }
 
 //-----------------------------------------------------------------------------

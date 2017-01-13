@@ -1,5 +1,5 @@
 /**
- * @file FileSystemProvider_test.cpp
+ * @file tests/src/FileSystemProvider_test.cpp
  *
  * @date Apr 16, 2014
  * @author Nicolas Morisset
@@ -12,22 +12,22 @@
 #include <boost/test/unit_test.hpp>
 #include <boost/filesystem.hpp>
 
-#include "ElementsKernel/ElementsException.h"
+#include "ElementsKernel/Exception.h"
 #include "ElementsKernel/Temporary.h"
 #include "XYDataset/FileSystemProvider.h"
 #include "XYDataset/AsciiParser.h"
 #include "XYDataset/QualifiedName.h"
 
-using namespace XYDataset;
+using namespace Euclid::XYDataset;
 
 // Create a directory on disk
-void makeDirectory(const std::string name) {
+void makeDirectory(const std::string& name) {
   boost::filesystem::path d {name};
   boost::filesystem::create_directories(d);
 }
 
 // Remove a directory on disk
-void removeDir(const std::string base_dir) {
+void removeDir(const std::string& base_dir) {
   boost::filesystem::path bd {base_dir};
   boost::filesystem::remove_all(bd);
 }
@@ -36,7 +36,7 @@ struct FileSystemProvider_Fixture {
 
   std::string group { "filter/MER" };
   // Do not forget the "/" at the end of the base directory
-  TempDir temp_dir;
+  Elements::TempDir temp_dir;
   std::string base_directory { temp_dir.path().native()+"/euclid/" };
   std::string mer_directory    = base_directory + "filter/MER";
   std::string cosmos_directory = base_directory + "filter/COSMOS";
@@ -87,12 +87,12 @@ BOOST_FIXTURE_TEST_CASE(exceptions_test, FileSystemProvider_Fixture) {
   // Path is not valid
   base_directory = temp_dir.path().native()+"/PATH_DOES_NOT_EXIST";
   BOOST_CHECK_THROW( FileSystemProvider fsp (base_directory, std::move(fp)),
-                     ElementsException);
+                     Elements::Exception);
 
   // Path as a file is not valid
   base_directory = base_directory + "filter/MER/Gext_ACSf435w.txt";
   BOOST_CHECK_THROW( FileSystemProvider fsp (base_directory, std::move(fp)),
-                     ElementsException);
+                     Elements::Exception);
 
   // Fill up a new file with dataset name already existing
   // We must have only unique qualify name
@@ -103,7 +103,7 @@ BOOST_FIXTURE_TEST_CASE(exceptions_test, FileSystemProvider_Fixture) {
   file3_mer.close();
 
   BOOST_CHECK_THROW( FileSystemProvider fsp (base_directory, std::move(fp)),
-                     ElementsException);
+                     Elements::Exception);
 
   // Remove file3 to avoid exception in the next test
   removeDir(temp_dir.path().native()+"/euclid/filter/MER/file3.txt");
@@ -147,9 +147,9 @@ BOOST_FIXTURE_TEST_CASE(getDataset_test, FileSystemProvider_Fixture) {
 
   FileSystemProvider fsp {temp_dir.path().native()+"/euclid/", std::move(fp)};
 
-  // Check a no null pointer must be return
+  // Check that a pointer must be returned (and not the nullptr)
   QualifiedName identifier {{"filter","MER"},"Dataset_name_for_file1"};
-  std::unique_ptr<XYDataset::XYDataset> dataset_ptr = fsp.getDataset(identifier);
+  std::unique_ptr<Euclid::XYDataset::XYDataset> dataset_ptr = fsp.getDataset(identifier);
 
   BOOST_CHECK(dataset_ptr);
 

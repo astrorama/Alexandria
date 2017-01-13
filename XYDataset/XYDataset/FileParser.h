@@ -1,5 +1,5 @@
 /**
- * @file FileParser.h
+ * @file XYDataset/FileParser.h
  *
  * @date Apr 11, 2014
  * @author Nicolas Morisset
@@ -10,6 +10,7 @@
 
 #include "XYDataset/XYDataset.h"
 
+namespace Euclid {
 namespace XYDataset {
 
 /**
@@ -49,6 +50,7 @@ class FileParser
 };
 
 } /* namespace XYDataset */
+} // end of namespace Euclid
 
 
 #endif // FILEPARSER_H_ 
