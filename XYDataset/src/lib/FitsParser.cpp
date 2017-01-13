@@ -11,6 +11,8 @@
 #include <CCfits/CCfits>
 
 #include "ElementsKernel/Exception.h"
+#include "ElementsKernel/Unused.h"
+
 #include "Table/FitsReader.h"
 #include "XYDataset/FitsParser.h"
 #include "StringFunctions.h"
@@ -79,12 +81,28 @@ std::unique_ptr<XYDataset> FitsParser::getDataset(const std::string& file) {
       }
       dataset_ptr = std::unique_ptr<XYDataset> { new XYDataset(vector_pair) };
     }
-    catch(CCfits::FitsException& fits_except){
+    catch (CCfits::FitsException& fits_except){
       throw Elements::Exception() << "FitsException catched! File: " << file;
     } // Eof try-catch
   } // Eof if
 
  return(dataset_ptr);
+}
+
+//
+// Check that the FITS file is a dataset file(with at least one HDU table)
+//
+bool FitsParser::isDatasetFile(const std::string& file) {
+  bool is_a_dataset_file = true;
+  try {
+      std::unique_ptr<CCfits::FITS> fits { new CCfits::FITS(file, CCfits::RWmode::Read)};
+      const CCfits::ExtHDU& table_hdu = fits->extension(1);
+      ELEMENTS_UNUSED auto& temp = dynamic_cast<const CCfits::Table&>(table_hdu);
+  }
+  catch (CCfits::FitsException& fits_except){
+    is_a_dataset_file = false;
+  }
+ return is_a_dataset_file;
 }
 
 } // XYDataset namespace

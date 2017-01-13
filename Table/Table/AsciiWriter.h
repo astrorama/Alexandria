@@ -49,8 +49,9 @@ public:
    * Writes a Table in the given stream
    * @details
    * The first row written in the file is a comment line containing the names of
-   * the columns, as described by the ColumnInfo of the table. The second row is
-   * a comment containing the types of the columns. The strings used are:
+   * the columns, as described by the ColumnInfo of the table. The second
+   * (optional) row is a comment containing the types of the columns. The
+   * strings used are:
    *   - bool for boolean
    *   - int for 32 bit integer
    *   - long for 64 bit integer
@@ -68,8 +69,9 @@ public:
    *
    * @param out The stream to output the table
    * @param table The table to output
+   * @param types A flag to write the types line or not
    */
-  void write(std::ostream& out, const Table& table) const;
+  void write(std::ostream& out, const Table& table, bool types=true) const;
 
 private:
   std::string m_comment;

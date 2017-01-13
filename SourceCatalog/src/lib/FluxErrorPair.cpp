@@ -9,11 +9,11 @@
 namespace Euclid {
 namespace SourceCatalog {
 
-FluxErrorPair::FluxErrorPair(double flux, double error) :
-      flux(flux), error(error) { }
+FluxErrorPair::FluxErrorPair(double flux, double error, bool no_data) :
+      flux(flux), error(error), missing_photometry_flag(no_data) {}
 
 bool FluxErrorPair::operator ==(const FluxErrorPair& other) const {
-  return this->flux == other.flux && this->error == other.error;
+  return (this->missing_photometry_flag && other.missing_photometry_flag) || (this->flux == other.flux && this->error == other.error);
 }
 
 bool FluxErrorPair::operator !=(const FluxErrorPair& other) const {

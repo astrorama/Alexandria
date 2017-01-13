@@ -33,8 +33,11 @@ struct AsciiParser_Fixture {
 
   // Do not forget the "/" at the end of the base directory
   std::string no_file {"nofile.txt"};
+  std::string nolines_file {"nolines_file.txt"};
+  std::string empty_file {"empty_file.txt"};
   std::string file {"Gext_ACSf435w.txt"};
   std::string file_nodataset_name {"Nodataset_name_inside_file.txt"};
+  std::string not_a_dataset_file  {"not_a_dataset_file.txt"};
   Elements::TempDir temp_dir;
   std::string base_directory = makeDir(temp_dir.path().native()+"/euclid/filter/MER/");
 
@@ -48,13 +51,30 @@ struct AsciiParser_Fixture {
     offile << "5678. 569.6\n";
     offile << "91011 569.6\n";
     offile.close();
+
     std::ofstream offile_nodataset_name(base_directory + file_nodataset_name);
     // Fill up file
     offile_nodataset_name << "\n";
     offile_nodataset_name << "2222. 2222.2\n";
     offile_nodataset_name << "1111. 1111.1\n";
     offile_nodataset_name.close();
-  }
+
+    std::ofstream ofnot_a_dataset_file(base_directory + not_a_dataset_file);
+    // Fill up file
+    ofnot_a_dataset_file << "\n";
+    offile << "# Test_name\n";
+    ofnot_a_dataset_file << "2222. 2222.2 test\n";
+    ofnot_a_dataset_file.close();
+
+    std::ofstream ofnolines_file(base_directory + nolines_file);
+    // Fill up file
+    ofnolines_file << "\n";
+    ofnolines_file << "# Test_name\n";
+    ofnolines_file.close();
+
+    std::ofstream ofempty_file(base_directory + empty_file);
+     ofempty_file.close();
+ }
   ~AsciiParser_Fixture() {
     removeDir(base_directory);
   }
@@ -119,6 +139,29 @@ BOOST_FIXTURE_TEST_CASE(getDataset_function_test, AsciiParser_Fixture) {
   BOOST_CHECK_EQUAL(xy_ptr->size(), 3);
 
 }
+
+//-----------------------------------------------------------------------------
+// Test the isDatatsetFile function
+//-----------------------------------------------------------------------------
+
+BOOST_FIXTURE_TEST_CASE(isDatatsetFile_function_test, AsciiParser_Fixture) {
+
+  BOOST_TEST_MESSAGE(" ");
+  BOOST_TEST_MESSAGE("--> Testing the isDatatsetFile function");
+  BOOST_TEST_MESSAGE(" ");
+
+  AsciiParser parser{};
+  BOOST_CHECK_EQUAL(parser.isDatasetFile(base_directory + file), true);
+  // File with lines not following the dataset rule
+  BOOST_CHECK_EQUAL(parser.isDatasetFile(base_directory + not_a_dataset_file), false);
+  // File containing no data lines
+  BOOST_CHECK_EQUAL(parser.isDatasetFile(base_directory + nolines_file), false);
+  // File with no line at all
+  BOOST_CHECK_EQUAL(parser.isDatasetFile(base_directory + empty_file), false);
+
+}
+
+
 
 //-----------------------------------------------------------------------------
 

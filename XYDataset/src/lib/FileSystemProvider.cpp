@@ -5,10 +5,14 @@
  * @author Nicolas Morisset
  */
 
-#include <exception>
+#include <fstream>
+#include <string>
+#include <unordered_set>
+#include <set>
 #include <boost/filesystem.hpp>
 #include <boost/algorithm/string.hpp>
 #include "ElementsKernel/Exception.h"
+#include "ElementsKernel/Logging.h"
 #include "XYDataset/FileSystemProvider.h"
 #include "StringFunctions.h"
 
@@ -16,6 +20,76 @@ namespace fs = boost::filesystem;
 
 namespace Euclid {
 namespace XYDataset {
+
+static Elements::Logging logger = Elements::Logging::getLogger("FileSystemProvider");
+
+/**
+ * Returns a list of the contents of the given directory. If the directory
+ * contains the file order.txt, it will respect the order in this file. If the
+ * directory contains files which are not mentioned in the order.txt, they are
+ * appended at the end.
+ * @param dir The directory to get the contents of
+ * @return The contents of the directory, ordered as described in order.txt
+ */
+static std::vector<fs::path> getOrder(const fs::path& dir) {
+  std::vector<fs::path> result {};
+  
+  // First add the files in the order.txt
+  auto order_file = dir / "order.txt";
+  std::unordered_set<std::string> ordered_names {};
+  if (fs::exists(order_file)) {
+    std::ifstream in {order_file.c_str()};
+    while (in) {
+      std::string line;
+      getline(in, line);
+      size_t comment_pos = line.find('#');
+      if (comment_pos != std::string::npos) {
+        line = line.substr(0, comment_pos);
+      }
+      boost::trim(line);
+      if (!line.empty()) {
+        auto name = dir / line;
+        if (fs::exists(name)) {
+          result.emplace_back(name);
+          ordered_names.emplace(line);
+        } else {
+          logger.warn() << "Unknown name " << line << " in order.txt of " << dir << " directory";
+        }
+      }
+    }
+  }
+  
+  // Now we add any other files in the directory, which were not in the order.txt
+  // file. We use a set in order to avoid sorting problem between platforms.
+  std::set<fs::path> remaining_files {};
+  for (fs::directory_iterator iter {dir}; iter != fs::directory_iterator{}; ++ iter) {
+    if (ordered_names.count(iter->path().filename().string()) == 0) {
+      remaining_files.emplace(*iter);
+    }
+  }
+  
+  // Put the remaining files into the result vector
+  for (auto& file : remaining_files){
+    result.emplace_back(file);
+  }
+
+  return result;
+}
+
+
+static std::vector<fs::path> getRecursiveDirectoryContents(const fs::path& dir) {
+  std::vector<fs::path> result {};
+  auto ordered_contents = getOrder(dir);
+  for (auto& name : ordered_contents) {
+    if (fs::is_directory(name)) {
+      auto sub_dir_contents = getRecursiveDirectoryContents(name);
+      result.insert(result.end(), sub_dir_contents.begin(), sub_dir_contents.end());
+    } else {
+      result.emplace_back(name);
+    }
+  }
+  return result;
+}
 
 //-----------------------------------------------------------------------------
 //                              Constructor
@@ -32,20 +106,23 @@ FileSystemProvider::FileSystemProvider(const std::string& root_path, std::unique
   // Convert path to boost filesytem object
   fs::path fspath(m_root_path);
   if (!fs::exists(fspath)) {
-    throw Elements::Exception() << "Root path not found : " << fspath;
+    throw Elements::Exception() << "From FileSystemProvider: root path not found : "
+                                << fspath;
   }
 
   // Get all files below the root directory
   if (fs::is_directory(fspath)) {
-    fs::recursive_directory_iterator it {m_root_path};
-    fs::recursive_directory_iterator endit;
-    while(it != endit)
-    {
-      if (fs::is_regular_file(*it))
+    auto dir_contents = getRecursiveDirectoryContents(fspath);
+    for (auto& file : dir_contents) {
+      if (fs::is_regular_file(file) && m_parser->isDatasetFile(file.string()))
       {
-        std::string dataset_name = m_parser->getName(it->path().string());
+        std::string dataset_name = m_parser->getName(file.string());
+        // Remove empty dataset name
+        if (dataset_name.empty()) {
+           continue;
+        }
         // Remove the root part
-        std::string str = it->path().string();
+        std::string str = file.string();
         str = str.substr(m_root_path.length(), str.length());
         // Split by the character '/'
         std::vector<std::string> groups {};
@@ -54,16 +131,16 @@ FileSystemProvider::FileSystemProvider(const std::string& root_path, std::unique
         groups.pop_back();
         QualifiedName qualified_name {groups, dataset_name};
         // Fill up a map
-        auto ret = m_map.insert(make_pair(qualified_name, it->path().string()));
+        auto ret = m_name_file_map.insert(make_pair(qualified_name, file.string()));
+        m_order_names.push_back(qualified_name);
         // Check for unique record
         if (!ret.second) {
           throw Elements::Exception() << "Qualified name can not be inserted "
                                     << "in the map. Qualify name : "
                                     << qualified_name.qualifiedName()
-                                    << " Path :" << it->path().string();
+                                    << " Path :" << file.string();
         }
       }
-      ++it;
     }
   }
   else {
@@ -97,8 +174,7 @@ std::vector<QualifiedName> FileSystemProvider::listContents(const std::string& g
  // Fill up vector with qualified name from the map
  // Insert all qualified name where path contains the group name at the
  // first position
- for (auto it : m_map ) {
-     auto qualified_name = it.first;
+ for (auto qualified_name : m_order_names ) {
       if (boost::starts_with(qualified_name.qualifiedName(), my_group)) {
          qualified_name_vector.push_back(qualified_name);
      }
@@ -113,8 +189,8 @@ std::vector<QualifiedName> FileSystemProvider::listContents(const std::string& g
 
 std::unique_ptr<XYDataset> FileSystemProvider::getDataset(const QualifiedName & qualified_name) {
 
- auto it = m_map.find(qualified_name);
- return (it != m_map.end()) ? m_parser->getDataset(it->second) : nullptr;
+ auto it = m_name_file_map.find(qualified_name);
+ return (it != m_name_file_map.end()) ? m_parser->getDataset(it->second) : nullptr;
 
 }
 

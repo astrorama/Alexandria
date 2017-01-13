@@ -5,8 +5,6 @@
  *     Author: Pierre Dubath
  */
 #include <boost/test/unit_test.hpp>
-#include <iostream>
-
 #include "SourceCatalog/SourceAttributes/Photometry.h"
 
 

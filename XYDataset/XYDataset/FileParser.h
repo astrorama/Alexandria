@@ -34,6 +34,7 @@ class FileParser
    * A dataset name
    */
    virtual std::string getName(const std::string& file) = 0;
+
    /**
     * @brief
     * Get the dataset from a file
@@ -44,8 +45,18 @@ class FileParser
     */
    virtual std::unique_ptr<XYDataset> getDataset(const std::string& file) = 0;
 
-  /// Default destructor
-  virtual ~FileParser() = default;
+   /**
+    * @brief
+    * Check that we are in presence of a dataset file
+    * @param file
+    * Filename including the absolute path
+    * @return
+    * true: it is file containing datasets
+    */
+   virtual bool isDatasetFile(const std::string& file) = 0;
+
+   /// Default destructor
+   virtual ~FileParser() = default;
 
 };
 

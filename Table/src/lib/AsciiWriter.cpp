@@ -20,7 +20,7 @@ AsciiWriter::AsciiWriter(std::string comment) : m_comment{std::move(comment)} {
   }
 }
 
-void AsciiWriter::write(std::ostream& out, const Table& table) const {
+void AsciiWriter::write(std::ostream& out, const Table& table, bool types) const {
   auto column_lengths = calculateColumnLengths(table);
   auto column_info = table.getColumnInfo();
   // Write the column names
@@ -30,11 +30,14 @@ void AsciiWriter::write(std::ostream& out, const Table& table) const {
   }
   out << "\n";
   // Write the column types
-  out << m_comment.c_str();
-  for (size_t i=0; i<column_info->size(); ++i) {
-    out << std::setw(column_lengths[i]) << typeToKeyword(column_info->getType(i));
+  if (types) {
+    out << m_comment.c_str();
+    for (size_t i=0; i<column_info->size(); ++i) {
+      out << std::setw(column_lengths[i]) << typeToKeyword(column_info->getType(i));
+    }
+    out << "\n";
   }
-  out << "\n\n";
+  out << "\n";
   // The data lines are not prefixed with the comment string, so we need to fix
   // the length of the first column to get the alignment correctly
   column_lengths[0] = column_lengths[0] + m_comment.size();

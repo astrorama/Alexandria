@@ -34,7 +34,7 @@ BOOST_FIXTURE_TEST_CASE( createAttribute_test, TableFixture ) {
 
   BOOST_TEST_MESSAGE("--> createAttribute test ");
 
-  PhotometryAttributeFromRow paft {column_info_ptr, filter_name_mapping};
+  PhotometryAttributeFromRow paft {column_info_ptr, filter_name_mapping, 1.12345e-12};
 
   unique_ptr<Euclid::SourceCatalog::Attribute> attribute_ptr = paft.createAttribute(row1);
 
@@ -44,8 +44,10 @@ BOOST_FIXTURE_TEST_CASE( createAttribute_test, TableFixture ) {
       Euclid::SourceCatalog::Photometry& photometry = dynamic_cast<Euclid::SourceCatalog::Photometry&>( *attribute_ptr );
       BOOST_CHECK_CLOSE(photometry.find(v_filter_name)->flux, flux1_row1, tolerance);
       BOOST_CHECK_CLOSE(photometry.find(v_filter_name)->error, error1_row1, tolerance);
+      BOOST_CHECK(photometry.find(v_filter_name)->missing_photometry_flag);
       BOOST_CHECK_CLOSE(photometry.find(r_filter_name)->flux, flux2_row1, tolerance);
       BOOST_CHECK_CLOSE(photometry.find(r_filter_name)->error, error2_row1, tolerance);
+      BOOST_CHECK(!photometry.find(r_filter_name)->missing_photometry_flag);
   }
 }
 
