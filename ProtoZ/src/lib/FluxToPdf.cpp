@@ -4,6 +4,8 @@
  * @author dubath
  */
 #include "ProtoZ/FluxToPdf.h"
+#include "ProtoZ/FluxModeling.h"
+#include <algorithm>
 
 FluxToPdf::FluxToPdf(std::string& filename) :
       m_flux_matrix(filename) {
@@ -30,6 +32,42 @@ FluxToPdf::FluxToPdf(ProtoZ::matrix::FluxMatrix& flux_matrix) :
 
 FluxToPdf::~FluxToPdf() {
   // TODO Auto-generated destructor stub
+}
+
+std::vector<double> FluxToPdf::marginalizePdf(ProtoZ::matrix::PdfMatrix& pdf_matrix) {
+  std::vector<double> resultVector {};
+
+  //ToDo add the Probabilty vectors
+  double P_EBMV, P_EXT_LAW, P_SED; // Prior probalities
+  P_EBMV = P_EXT_LAW = P_SED = 1.;
+
+  for (uint32_t zIndex = 0; zIndex < m_z_axis.size(); zIndex++) {
+    double pdf_z{};
+    for (uint32_t sedIndex = 0; sedIndex < m_sed_axis.size(); sedIndex++) {
+      double pdf_z_sed{};
+      for (uint32_t extLawIndex = 0; extLawIndex < m_ext_law_axis.size(); extLawIndex++) {
+        double pdf_z_sed_extlaw{};
+        for (uint32_t ebvIndex = 0; ebvIndex < m_ebv_axis.size(); ebvIndex++) {
+          pdf_z_sed_extlaw += (P_EBMV * pdf_matrix.getValue(sedIndex, ebvIndex, extLawIndex, zIndex));
+        } // Eof ebvIndex
+        pdf_z_sed += (P_EXT_LAW * pdf_z_sed_extlaw);
+      } // Eof extLawIndex
+      pdf_z += (P_SED * pdf_z_sed);
+    } //Eof sedIndex
+    resultVector.push_back(pdf_z);
+  } // Eof zIndex
+
+  return resultVector;
+}
+
+// Derive the most likely Z value from the PDF
+double FluxToPdf::analyzePdf(ProtoZ::matrix::PdfMatrix& pdf_matrix)
+{
+  auto resultVector = marginalizePdf(pdf_matrix);
+
+  double z_at_max = m_z_axis.indexToValue(std::distance(resultVector.begin(), max_element(resultVector.begin(), resultVector.end())));
+
+  return (z_at_max);
 }
 
 std::tuple<SedNames, double, std::string, double, double> FluxToPdf::getMax(

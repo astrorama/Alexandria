@@ -6,13 +6,15 @@ elements_depends_on_subdirs(ChDataModel)
 elements_depends_on_subdirs(ChTools)
 
 find_package(Boost REQUIRED COMPONENTS program_options serialization)
+find_package(CCfits)
+find_package(Cfitsio)
 
 
 #===== Libraries ===============================================================
 
 elements_add_library(ProtoZ src/lib/*.cpp src/lib/parameter/*.cpp src/lib/matrix/*.cpp
-                  LINK_LIBRARIES ${CMAKE_DL_LIBS} Boost ChTools ChDataModel ChDataHandling ElementsKernel
-                  INCLUDE_DIRS Boost ChTools ChDataModel ChDataHandling ElementsKernel
+                  LINK_LIBRARIES ${CMAKE_DL_LIBS} Boost ChTools ChDataModel ChDataHandling ElementsKernel CCfits Cfitsio
+                  INCLUDE_DIRS Boost ChTools ChDataModel ChDataHandling ElementsKernel CCfits Cfitsio
                   PUBLIC_HEADERS ProtoZ)
 
                   
@@ -43,7 +45,16 @@ elements_add_executable(ProtoZpdf src/program/ProtoZpdf.cpp
                   INCLUDE_DIRS ProtoZ
                   PUBLIC_HEADERS ProtoZ)
 
+elements_add_executable(ProtoZmarg src/program/ProtoZmarg.cpp
+                  LINK_LIBRARIES ${CMAKE_DL_LIBS} ProtoZ
+                  INCLUDE_DIRS ProtoZ
+                  PUBLIC_HEADERS ProtoZ)
+
+#---Python modules, Scripts, conf and aux files --------------------------------
+
+elements_install_conf_files()
 elements_install_python_modules()
+elements_install_scripts()
 
 #-------------------------------------------------------------------------------
 # CMAKE_SOURCE_DIR         = directory of the project (workspace, e.g. /.../Alexandria)

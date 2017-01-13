@@ -60,8 +60,9 @@ class FluxModeling
    * @details
    *  it applies an extinction model and take account of the reddening
    *
-   * @param wavelength : vector of wavelengths
+   * @param wavelength : vector of SED wavelengths
    * @param intensity  : vector of intensity values
+   * @param kWavelength: vector of extinction law wavelengths
    * @param kExtension : vector of the extension law values
    * @param ebmv       : reddening value to be applied
    *
@@ -71,6 +72,7 @@ class FluxModeling
   std::vector<double> applyExtinctionLaw(
                                     const std::vector<double>& wavelength,
                                     const std::vector<double>& intensity,
+                                    const std::vector<double>& kWavelength,
                                     const std::vector<double>& kExtension,
                                     const double ebmv
                                     );

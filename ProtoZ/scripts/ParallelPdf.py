@@ -2,53 +2,72 @@
 
 import os
 import subprocess
+from astropy.io import fits
 
-def executeThread(startLine, sourceNumber, outFile):
+def executeThread(startLine, sourceNumber, outCatalogFile, outPdfFile):
     print 'Starting new ProtoZpdf process with configuration:'
     print 'Lines: ['+str(startLine)+','+str(startLine+sourceNumber-1)+']'
-    print 'Output file:', outFile
-    logFile = outFile + '.log'
+    print 'Output catalog file:', outCatalogFile
+    print 'Output pdf file:', outPdfFile
+    logFile = outCatalogFile + '.log'
     print 'Log file:', logFile,'\n'
     command = []
     command.append('ProtoZpdf')
     command.append('--log-file='+logFile)
     command.append('--catalog-start-line='+str(startLine))
     command.append('--source-number='+str(sourceNumber))
-    command.append('--catalog-output-file='+outFile)
+    command.append('--catalog-output-file='+outCatalogFile)
+    command.append('--pdf-data-output-file='+outPdfFile)
     DEVNULL = open(os.devnull, 'wb')
     return subprocess.Popen(command, stdout=DEVNULL, stderr=DEVNULL)
 
-def runInParallel(startLine, sourceNumber, threadNo, outFile):
+
+def runInParallel(startLine, sourceNumber, threadNo, outCatalogFile, outPdfFile):
     stepNumber = int(sourceNumber / threadNo)
     startLineList = []
     sourceNumberList = []
-    outFileList = []
+    outCatalogFileList = []
+    outPdfFileList = []
     for i in range(threadNo):
         startLineList.append(startLine)
         startLine += stepNumber
         sourceNumberList.append(stepNumber)
-        outFileList.append(outFile + '.' + str(i))
+        outCatalogFileList.append(outCatalogFile + '.' + str(i))
+        outPdfFileList.append(outPdfFile + '.' + str(i))
     for i in range(sourceNumber % threadNo):
         sourceNumberList[i] = sourceNumberList[i] + 1
         for j in range(i+1, threadNo):
             startLineList[j] = startLineList[j] + 1
     threadList = []
     for i in range(threadNo):
-        threadList.append(executeThread(startLineList[i], sourceNumberList[i], outFileList[i]))
+        threadList.append(executeThread(startLineList[i], sourceNumberList[i], outCatalogFileList[i], outPdfFileList[i]))
     for i in range(threadNo):
         threadList[i].wait()
     print 'Merging catalogs...'
-    with open(outFile,'w') as fullCatalog:
-        for partCatalog in outFileList:
+    with open(outCatalogFile,'w') as fullCatalog:
+        for partCatalog in outCatalogFileList:
             print partCatalog
             with open(partCatalog) as partFile:
                 for line in partFile.readlines():
                     fullCatalog.write(line)
+    print '\nMerging pdf FITS files...'
+    hduList = []
+    hduList.append(fits.PrimaryHDU())
+    for partPdf in outPdfFileList:
+        print partPdf
+        for hdu in fits.open(partPdf):
+            if type(hdu) is fits.hdu.BinTableHDU:
+                hduList.append(hdu)
+    if os.path.isfile(outPdfFile):
+        os.remove(outPdfFile)
+    fits.HDUList(hduList).writeto(outPdfFile)
+
 
 def parseConfFile(confFile):
     startLine = -1
     sourceNumber = -1
-    outFile = ''
+    outCatalogFile = ''
+    outPdfFile = ''
     with open(confFile) as f:
         for line in f.readlines():
             line = line.strip()
@@ -60,17 +79,23 @@ def parseConfFile(confFile):
             if (key.strip() == 'source-number'):
                 sourceNumber = int(value.strip())
             if (key.strip() == 'catalog-output-file'):
-                outFile = value.strip()
+                outCatalogFile = value.strip()
+            if (key.strip() == 'pdf-data-output-file'):
+                outPdfFile = value.strip()
     if startLine == -1:
         print 'Configuration file does not define the catalog-start-line'
         exit()
     if sourceNumber == -1:
         print 'Configuration file does not define the source-number'
         exit()
-    if not outFile:
+    if not outCatalogFile:
         print 'Configuration file does not define the catalog-output-file'
         exit()
-    return (startLine,sourceNumber, outFile)
+    if not outPdfFile:
+        print 'Configuration file does not define the pdf-data-output-file'
+        exit()
+    return (startLine,sourceNumber, outCatalogFile, outPdfFile)
+
 
 if __name__ == '__main__':
 
@@ -90,7 +115,7 @@ if __name__ == '__main__':
         print 'Cannot find config file. Try specifying it with the -c option.'
         exit()
     
-    startLine, sourceNumber, outFile = parseConfFile(confFile)
+    startLine, sourceNumber, outCatalogFile, outPdfFile = parseConfFile(confFile)
 
     threadNo = args.threadno
     if not threadNo:
@@ -102,4 +127,4 @@ if __name__ == '__main__':
     if threadNo > sourceNumber:
         threadNo = sourceNumber
     
-    runInParallel(startLine, sourceNumber, threadNo, outFile)
+    runInParallel(startLine, sourceNumber, threadNo, outCatalogFile, outPdfFile)

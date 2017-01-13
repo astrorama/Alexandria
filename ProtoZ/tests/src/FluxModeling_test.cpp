@@ -160,6 +160,7 @@ BOOST_FIXTURE_TEST_CASE( applyExtinctionLaw_test, FluxModelingFix ) {
 
   vector<double> result = fModeling_ptr->applyExtinctionLaw( wavelength,
                                                              intensity,
+                                                             wavelength,
                                                              kExtension,
                                                              ebmv);
 

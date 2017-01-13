@@ -57,12 +57,20 @@ ProtoZ::matrix::FluxMatrix FluxModeling::computeFluxMatrix() {
      for (uint32_t extLawIndex=0; extLawIndex<m_params->getExtLaws().size(); ++extLawIndex) {
 
        vector<double> sedIntensitiesVector = sed.getIntensities();
-       vector<double> extLawVector         = (m_params->getExtLaws().indexToData(extLawIndex)).getAxisY();
+       VectorPair extLawVectorPair         = m_params->getExtLaws().indexToData(extLawIndex);
+       vector<double> extLawWavelengths    = extLawVectorPair.getAxisX();
+       vector<double> extLawVector         = extLawVectorPair.getAxisY();
 
        vector<double> extLawAppliedOnSed   = applyExtinctionLaw(sed.getWaveLengths(),
                                                                 sedIntensitiesVector,
+                                                                extLawWavelengths,
                                                                 extLawVector,
                                                                 m_params->getEbvs().indexToValue(ebvIndex));
+    
+// std::cout << "REDENEDSEDPHZ = [";
+//    for (double v : extLawAppliedOnSed)
+//        std::cout << v << ",";
+//    std:: cout << "\n\n";
 
        for (uint32_t zIndex = 0; zIndex < m_params->getZs().size(); ++zIndex) {
 
@@ -128,6 +136,7 @@ vector<double> FluxModeling::computeFilterIntegral(const vector< unique_ptr<Vect
 vector<double> FluxModeling::applyExtinctionLaw(
                                          const vector<double>& wavelength,
                                          const vector<double>& intensity,
+                                         const std::vector<double>& kWavelength,
                                          const vector<double>& kExtension,
                                          const double          ebmv) {
 
@@ -140,7 +149,7 @@ vector<double> FluxModeling::applyExtinctionLaw(
  {
    // Get interpolation method
    InterpolationFactory factory;
-   unique_ptr<BaseInterpolation> method_ptr = factory.getInterpolationFunction(getInterpolationMethod(), wavelength, kExtension);
+   unique_ptr<BaseInterpolation> method_ptr = factory.getInterpolationFunction(getInterpolationMethod(), kWavelength, kExtension);
 
    exponent = -0.4 * method_ptr->interpolate(wavelength[i]) * ebmv;
    newIntensity.push_back(intensity[i]*pow(10., exponent));

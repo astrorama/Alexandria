@@ -146,17 +146,17 @@ private:
   /**
    * Source spectroscopic redshift
    */
-   double m_spec_z;
+   double m_spec_z {0.0};
 
    /**
     * Source AGN flag (MER data)
     */
-  double m_agn_flag;
+  double m_agn_flag {0.0};
 
   /**
    * Source super ID (MER data)
    */
-   double m_super_id;
+   double m_super_id {0.0};
 
   /// The photometry map
   std::map<FilterNames, Photometry> m_photometry_map;

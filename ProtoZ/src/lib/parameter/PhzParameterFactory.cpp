@@ -22,7 +22,7 @@ namespace dm = ChDataModel;
 namespace ProtoZ {
 namespace parameter {
 
-ElementsLogging& logger = ElementsLogging::getLogger();
+ElementsLogging logger = ElementsLogging::getLogger("ProtoZ.parameter");
 
 std::unique_ptr<PhzDataParameter<dm::SedNames, dm::Sed> > PhzParameterFactory::createSedsParameter(po::variables_map options) {
   if (!options["sed-dir-path"].empty()) {

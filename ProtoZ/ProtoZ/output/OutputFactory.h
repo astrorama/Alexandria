@@ -18,7 +18,7 @@ namespace po = boost::program_options;
 namespace ProtoZ {
 namespace output {
 
-ElementsLogging& logger = ElementsLogging::getLogger();
+ElementsLogging logger = ElementsLogging::getLogger("ProtoZ.output");
 
 class OutputFactory {
   

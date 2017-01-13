@@ -8,6 +8,7 @@
 #include "ProtoZ/parameter/PhzParameter.h"
 #include "ProtoZ/matrix/serialize.h"
 #include "ProtoZ/matrix/MatrixAsciiExporter.h"
+#include "ProtoZ/matrix/MatrixFitsExporter.h"
 #include "ProtoZ/matrix/FluxMatrix.h"
 
 namespace ProtoZ {
@@ -70,6 +71,10 @@ void FluxMatrix::writeInFile(const std::string& filename) const {
 
 void FluxMatrix::exportAsAscii(const std::string& filename) const {
   MatrixAsciiExporter::exportMatrixAsAsciiFile(filename, m_matrix, "Flux");
+}
+
+void FluxMatrix::exportAsFits(const std::string& filename) const {
+  MatrixFitsExporter::exportMatrixAsFitsFile(filename, m_matrix);
 }
 
 } /* namespace matrix */
