@@ -100,12 +100,28 @@ namespace XYDataset {
 
    /**
     * @brief
-    * Returns a const iterator to the last pair dataset
+    * Returns a const iterator to the one after last pair dataset
     * @return
     * An iterator to the last pair dataset
     */
    const_iterator end() const;
-
+   
+   /**
+    * @brief
+    * Returns a reference to the first pair of the dataset
+    * @return 
+    * A reference to the first pair of the dataset
+    */
+   const std::pair<double, double>& front() const;
+   
+   /**
+    * @brief
+    * Returns a reference to the last pair of the dataset
+    * @return 
+    * A reference to the last pair of the dataset
+    */
+   const std::pair<double, double>& back() const;
+   
    /**
     * @brief
     *  Get the size of the vector container

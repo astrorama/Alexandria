@@ -5,7 +5,7 @@
  */
 
 #ifndef TABLE_ASCIIWRITERHELPER_H
-#define	TABLE_ASCIIWRITERHELPER_H
+#define TABLE_ASCIIWRITERHELPER_H
 
 #include <vector>
 #include <typeindex>
@@ -44,5 +44,4 @@ ELEMENTS_API std::vector<size_t> calculateColumnLengths(const Table& table);
 }
 } // end of namespace Euclid
 
-#endif	/* TABLE_ASCIIWRITERHELPER_H */
-
+#endif /* TABLE_ASCIIWRITERHELPER_H */

@@ -161,11 +161,15 @@ public:
    * @brief Provides alphabetical comparison for the QualifiedNames a and b
    * @param a The first QualifiedName to compare
    * @param b The second QualifiedName to compare
-   * @return true if the a < b alphabetically, false otherwise
+   * @return true if the a < b lexicographical, false otherwise
    */
   struct AlphabeticalComparator {
     bool operator()(const QualifiedName& a, const QualifiedName& b) const {
-        return a.qualifiedName() < b.qualifiedName();
+      if (a.qualifiedName().compare(b.qualifiedName()) < 0) {
+        return true;
+      } else {
+        return false;
+      }
     }
   };
 

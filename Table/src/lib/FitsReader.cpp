@@ -1,4 +1,4 @@
-/** 
+/**
  * @file src/lib/FitsReader.cpp
  * @date April 17, 2014
  * @author Nikolaos Apostolakos
@@ -10,6 +10,7 @@
 using boost::regex;
 using boost::regex_match;
 #include "ElementsKernel/Exception.h"
+#include "ElementsKernel/Unused.h"
 #include "Table/Row.h"
 #include "Table/FitsReader.h"
 #include "ReaderHelper.h"
@@ -39,12 +40,12 @@ FitsReader::FitsReader(std::vector<std::string> column_names)
 const Euclid::Table::Table FitsReader::read(const CCfits::HDU& hdu) {
   // First we check that we have a table HDU
   try {
-    dynamic_cast<const CCfits::Table&>(hdu);
+    ELEMENTS_UNUSED auto& temp = dynamic_cast<const CCfits::Table&>(hdu);
   } catch (std::bad_cast&) {
     throw Elements::Exception() << "Given HDU is not a table";
   }
   const CCfits::Table& table_hdu = dynamic_cast<const CCfits::Table&>(hdu);
-  
+
   std::vector<std::string> names {};
   if (m_column_names.empty()) {
     names = autoDetectColumnNames(table_hdu);
@@ -56,7 +57,7 @@ const Euclid::Table::Table FitsReader::read(const CCfits::HDU& hdu) {
     names = m_column_names;
   }
   auto column_info = createColumnInfo(names, autoDetectColumnTypes(table_hdu));
-  
+
   // CCfits reads per column, so we first read all the columns and then we
   // create all the rows
   std::vector<std::vector<Row::cell_type>> data;
@@ -64,7 +65,7 @@ const Euclid::Table::Table FitsReader::read(const CCfits::HDU& hdu) {
     // The i-1 is because CCfits starts from 1 and ColumnInfo from 0
     data.push_back(translateColumn(table_hdu.column(i), column_info->getType(i-1)));
   }
-  
+
   std::vector<Row> row_list;
   for (int i=0; i<table_hdu.rows(); ++i) {
     std::vector<Row::cell_type> cells {};
@@ -73,7 +74,7 @@ const Euclid::Table::Table FitsReader::read(const CCfits::HDU& hdu) {
     }
     row_list.push_back(Row{cells,column_info});
   }
-  
+
   return Euclid::Table::Table{row_list};
 }
 

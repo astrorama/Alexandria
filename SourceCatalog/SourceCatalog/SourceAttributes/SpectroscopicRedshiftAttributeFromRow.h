@@ -46,7 +46,8 @@ public:
    *    give the name of the spectroscopic redshift value table column
    *
    * @param specz_error_column_name
-   *    give the name of the spectroscopic redshift error table column
+   *    give the name of the spectroscopic redshift error table column,
+   *    if this name is missing or the column not found, the error is defaulted to 0
    *
    * @exception
    *  An exception is thrown if the names provided in the mapping are not present in the columnInfo.
@@ -66,14 +67,19 @@ public:
     }
     unique_ptr<size_t> specz_error_column_index_ptr = column_info_ptr->find(
         specz_error_column_name);
-    if (specz_error_column_index_ptr == nullptr
-        || type_index(typeid(double))
-            != column_info_ptr->getType(*(specz_error_column_index_ptr))) {
-      throw Elements::Exception()
-          << "Column info does not have the expected spectroscopic redshift error column of type: double";
+    if (specz_error_column_index_ptr == nullptr) {
+      m_has_error_column=false;
+    }
+    else{
+      if ( type_index(typeid(double)) != column_info_ptr->getType(*(specz_error_column_index_ptr))){
+        throw Elements::Exception()
+                  << "Column info does not have the expected spectroscopic redshift error column of type: double";
+      }
+      m_has_error_column=true;
+      m_error_column_index = *(specz_error_column_index_ptr);
     }
     m_value_column_index = *(specz_value_column_index_ptr);
-    m_error_column_index = *(specz_error_column_index_ptr);
+
   }
 
   virtual ~SpectroscopicRedshiftAttributeFromRow() {
@@ -87,9 +93,13 @@ public:
    * @return A unique pointer to a (SpectroscopicRedshift) Attribute
    */
   std::unique_ptr<Attribute> createAttribute(const Euclid::Table::Row& row) override {
+    if (m_has_error_column){
     return std::unique_ptr<Attribute> { new SpectroscopicRedshift {
       boost::get<double>(row[m_value_column_index]),
       boost::get<double>(row[m_error_column_index]) } };
+    }
+    return std::unique_ptr<Attribute> { new SpectroscopicRedshift {
+          boost::get<double>(row[m_value_column_index]),0.} };
   }
 
 private:
@@ -97,6 +107,7 @@ private:
    * Indices of the spectroscopic redshift value and error columns in the table
    */
   size_t m_value_column_index;
+  bool m_has_error_column;
   size_t m_error_column_index;
 
 };

@@ -54,4 +54,3 @@ ELEMENTS_API std::unique_ptr<Function> interpolate(const Euclid::XYDataset::XYDa
 } // end of namespace Euclid
 
 #endif	/* INTERPOLATION_H */
-

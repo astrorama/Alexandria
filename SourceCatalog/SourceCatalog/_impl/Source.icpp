@@ -10,7 +10,7 @@
 #ifdef SOURCE_IMPL
 
 template<typename T>
-std::shared_ptr<T> Source::getAttribute() {
+std::shared_ptr<T> Source::getAttribute() const {
   std::shared_ptr<T> result {};
   // loop over all source attribute
   for (auto attribute_ptr : m_attribute_vector) {

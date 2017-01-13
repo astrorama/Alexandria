@@ -116,7 +116,7 @@ BOOST_FIXTURE_TEST_CASE(countColumns, AsciiReaderHelper_Fixture) {
   size_t size = Euclid::Table::countColumns(stream, "#");
   
   // Then
-  BOOST_CHECK_EQUAL(size, 2);
+  BOOST_CHECK_EQUAL(size, 2u);
   
 }
 
@@ -152,7 +152,7 @@ BOOST_FIXTURE_TEST_CASE(autoDetectColumnNamesNoNames, AsciiReaderHelper_Fixture)
   auto names = Euclid::Table::autoDetectColumnNames(stream, "#", 5);
   
   // Then
-  BOOST_CHECK_EQUAL(names.size(), 5);
+  BOOST_CHECK_EQUAL(names.size(), 5u);
   BOOST_CHECK_EQUAL(names[0], "col1");
   BOOST_CHECK_EQUAL(names[1], "col2");
   BOOST_CHECK_EQUAL(names[2], "col3");
@@ -174,7 +174,7 @@ BOOST_FIXTURE_TEST_CASE(autoDetectColumnNamesSuccess, AsciiReaderHelper_Fixture)
   auto names = Euclid::Table::autoDetectColumnNames(stream, "#", 5);
   
   // Then
-  BOOST_CHECK_EQUAL(names.size(), 5);
+  BOOST_CHECK_EQUAL(names.size(), 5u);
   BOOST_CHECK_EQUAL(names[0], "First");
   BOOST_CHECK_EQUAL(names[1], "Second");
   BOOST_CHECK_EQUAL(names[2], "Third");
@@ -210,7 +210,7 @@ BOOST_FIXTURE_TEST_CASE(autoDetectColumnTypesSuccess, AsciiReaderHelper_Fixture)
   auto types = Euclid::Table::autoDetectColumnTypes(stream, "#", 9);
   
   // Then
-  BOOST_CHECK_EQUAL(types.size(), 9);
+  BOOST_CHECK_EQUAL(types.size(), 9u);
   BOOST_CHECK(types[0] == typeid(bool));
   BOOST_CHECK(types[1] == typeid(bool));
   BOOST_CHECK(types[2] == typeid(int32_t));
@@ -236,7 +236,7 @@ BOOST_FIXTURE_TEST_CASE(autoDetectColumnTypesNoTypes, AsciiReaderHelper_Fixture)
   auto types = Euclid::Table::autoDetectColumnTypes(stream, "#", 5);
   
   // Then
-  BOOST_CHECK_EQUAL(types.size(), 5);
+  BOOST_CHECK_EQUAL(types.size(), 5u);
   BOOST_CHECK(types[0] == typeid(std::string));
   BOOST_CHECK(types[1] == typeid(std::string));
   BOOST_CHECK(types[2] == typeid(std::string));

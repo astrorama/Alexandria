@@ -9,6 +9,8 @@
 
 #include <vector>
 #include <tuple>
+#include <map>
+#include <type_traits>
 #include "GridContainer/GridAxis.h"
 #include "TemplateLoopCounter.h"
 
@@ -57,6 +59,32 @@ public:
   static std::vector<size_t> createAxesSizesVector(const std::tuple<GridAxis<Axes>...>&,
                                                      const TemplateLoopCounter<0>&) {
     return std::vector<size_t>{};
+  }
+  
+  /**
+   * @brief
+   * Creates a vector which contains the names of the given axes
+   * @details
+   * Note that this method is using variadic template iteration by using the
+   * second parameter (TemplateLoopCounter). To initiate the iteration the
+   * counter must be equal with the number of axes in the tuple.
+   * 
+   * @tparam I the index of the axis until which the results are calculated 
+   * @param axes A tuple containing the GridAxis objects describing the axes
+   * @return A vector containing the names of the axes
+   */
+  template<int I>
+  static std::vector<std::string> createAxesNamesVector(const std::tuple<GridAxis<Axes>...>& axes,
+                                                      const TemplateLoopCounter<I>&) {
+    std::vector<std::string> result {createAxesNamesVector(axes, TemplateLoopCounter<I-1>{})};
+    result.push_back(std::get<I-1>(axes).name());
+    return result;
+  }
+
+  /// Method which terminates the iteration when creating the axes names vector
+  static std::vector<std::string> createAxesNamesVector(const std::tuple<GridAxis<Axes>...>&,
+                                                     const TemplateLoopCounter<0>&) {
+    return std::vector<std::string>{};
   }
   
   /**
@@ -114,6 +142,40 @@ public:
             const std::tuple<GridAxis<Axes>...>&,const TemplateLoopCounter<0>&) {
     return std::vector<size_t> {1};
   }
+  
+  template<int I>
+  static void findAndFixAxis(std::tuple<GridAxis<Axes>...>& axes_tuple, size_t axis,
+                             size_t index, const TemplateLoopCounter<I>&) {
+    if (axis == I) {
+      auto& old_axis = std::get<I>(axes_tuple);
+      typename std::remove_reference<decltype(old_axis)>::type new_axis {old_axis.name(), {old_axis[index]}};
+      std::get<I>(axes_tuple) = std::move(new_axis);
+      return;
+    }
+    findAndFixAxis(axes_tuple, axis, index, TemplateLoopCounter<I+1>{});
+  }
+  
+  static void findAndFixAxis(std::tuple<GridAxis<Axes>...>&, size_t,
+                             size_t, const TemplateLoopCounter<sizeof...(Axes)>&) {
+    // does nothing
+  }
+  
+  template<typename IterType, int I>
+  static void fixIteratorAxes(IterType& iter, std::map<size_t, size_t> fix_indices,
+                              const TemplateLoopCounter<I>&) {
+    auto fix_pair = fix_indices.find(I);
+    if (fix_pair != fix_indices.end()) {
+      iter.template fixAxisByIndex<I>(fix_pair->second);
+    }
+    fixIteratorAxes(iter, fix_indices, TemplateLoopCounter<I+1>{});
+  }
+  
+  template<typename IterType>
+  static void fixIteratorAxes(IterType&, std::map<size_t, size_t>,
+                              const TemplateLoopCounter<sizeof...(Axes)>&) {
+    // does nothing
+  }
+  
 };
 
 } // end of namespace GridContainer

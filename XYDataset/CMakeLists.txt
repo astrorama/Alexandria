@@ -1,4 +1,4 @@
-elements_subdir(XYDataset 1.0)
+elements_subdir(XYDataset)
 elements_depends_on_subdirs(Table)
 
 find_package(Boost REQUIRED COMPONENTS filesystem thread system)
@@ -17,6 +17,14 @@ elements_add_library(XYDataset src/lib/*.cpp
 
 elements_add_unit_test(XYDataset_test tests/src/XYDataset_test.cpp
                        LINK_LIBRARIES XYDataset TYPE Boost)
+
+if(ELEMENTS_HIDE_WARNINGS)
+  if(UNIX)
+    set_property(SOURCE tests/src/XYDataset_test.cpp
+                 PROPERTY COMPILE_FLAGS -Wno-float-equal)
+  endif()
+endif()
+
 
 elements_add_unit_test(FileSystemProvider_test tests/src/FileSystemProvider_test.cpp
                        LINK_LIBRARIES XYDataset TYPE Boost)

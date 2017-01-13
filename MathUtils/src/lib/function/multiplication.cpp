@@ -1,4 +1,4 @@
-/** 
+/**
  * @file src/lib/function/multiplication.cpp
  * @date February 19, 2014
  * @author Nikolaos Apostolakos
@@ -74,13 +74,13 @@ std::vector<double> overlappingKnots(const std::vector<double>& knots1, const st
 std::unique_ptr<Function> multiplyPiecewises(const Function& f1, const Function& f2) {
   const Piecewise& p1 = dynamic_cast<const Piecewise&>(f1);
   const Piecewise& p2 = dynamic_cast<const Piecewise&>(f2);
-  
+
   auto knots = overlappingKnots(p1.getKnots(), p2.getKnots());
-  
+
   if (knots.empty()) {
     return std::unique_ptr<Function> {new Polynomial{{0.}}};
   }
-  
+
   std::vector<std::shared_ptr<Function>> functions {};
   auto p1func = p1.getFunctions();
   auto p2func = p2.getFunctions();
@@ -98,7 +98,7 @@ std::unique_ptr<Function> multiplyPiecewises(const Function& f1, const Function&
     }
     functions.push_back(std::shared_ptr<Function>{Euclid::MathUtils::multiply(*p1func[i1], *p2func[i2]).release()});
   }
-  
+
   return std::unique_ptr<Function>{new Piecewise{knots, functions}};
 }
 

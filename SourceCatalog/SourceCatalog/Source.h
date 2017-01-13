@@ -62,7 +62,7 @@ public:
    *  not found
    */
   template<typename T>
-  std::shared_ptr<T> getAttribute();
+  std::shared_ptr<T> getAttribute() const;
 
 
  private:

@@ -37,7 +37,7 @@ BOOST_AUTO_TEST_CASE(defaultOperations) {
   BOOST_CHECK(typeid(traits::data_type) == typeid(DefaultCellManager::data_type));
   BOOST_CHECK(typeid(traits::iterator) == typeid(DefaultCellManager::iterator));
   BOOST_CHECK(typeid(*result) == typeid(DefaultCellManager));
-  BOOST_CHECK_EQUAL(traits::size(*result), 5);
+  BOOST_CHECK_EQUAL(traits::size(*result), 5u);
   BOOST_CHECK_EQUAL(traits::begin(*result).m_i, 1);
   BOOST_CHECK_EQUAL(traits::end(*result).m_i, 2);
   BOOST_CHECK(!traits::enable_boost_serialize);
@@ -61,7 +61,7 @@ BOOST_AUTO_TEST_CASE(vectorOperations) {
   BOOST_CHECK(typeid(traits::data_type) == typeid(double));
   BOOST_CHECK(typeid(traits::iterator) == typeid(VectorCellManager::iterator));
   BOOST_CHECK(typeid(*result) == typeid(VectorCellManager));
-  BOOST_CHECK_EQUAL(traits::size(*result), 5);
+  BOOST_CHECK_EQUAL(traits::size(*result), 5u);
   BOOST_CHECK(traits::begin(*result) == result->begin());
   BOOST_CHECK(traits::end(*result) == result->end());
   BOOST_CHECK(traits::enable_boost_serialize);

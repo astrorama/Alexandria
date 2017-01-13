@@ -1,11 +1,11 @@
-/** 
+/**
  * @file src/lib/interpolation/implementations.h
  * @date February 21, 2014
  * @author Nikolaos Apostolakos
  */
 
 #ifndef MATHUTILS_IMPLEMENTATIONS_H
-#define	MATHUTILS_IMPLEMENTATIONS_H
+#define MATHUTILS_IMPLEMENTATIONS_H
 
 namespace Euclid {
 namespace MathUtils {
@@ -19,5 +19,5 @@ std::unique_ptr<Function> splineInterpolation(const std::vector<double>& x, cons
 } // End of MathUtils
 } // end of namespace Euclid
 
-#endif	/* MATHUTILS_IMPLEMENTATIONS_H */
+#endif /* MATHUTILS_IMPLEMENTATIONS_H */
 

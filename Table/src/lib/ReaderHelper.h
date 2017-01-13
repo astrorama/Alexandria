@@ -1,11 +1,11 @@
-/** 
+/**
  * @file src/lib/ReaderHelper.h
  * @date April 21, 2014
  * @author Nikolaos Apostolakos
  */
 
 #ifndef TABLE_READERHELPER_H
-#define	TABLE_READERHELPER_H
+#define TABLE_READERHELPER_H
 
 #include <memory>
 #include <string>
@@ -23,5 +23,4 @@ std::shared_ptr<ColumnInfo> createColumnInfo(const std::vector<std::string>& nam
 }
 } // end of namespace Euclid
 
-#endif	/* TABLE_READERHELPER_H */
-
+#endif /* TABLE_READERHELPER_H */

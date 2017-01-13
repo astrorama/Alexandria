@@ -25,7 +25,7 @@ class ELEMENTS_API CatalogFromTable {
 public:
   CatalogFromTable(std::shared_ptr<Euclid::Table::ColumnInfo> column_info_ptr,
                    const std::string& source_id_column_name,
-                   std::vector<std::unique_ptr<AttributeFromRow>> attribute_from_row_ptr_vector);
+                   std::vector<std::shared_ptr<AttributeFromRow>> attribute_from_row_ptr_vector);
 
   virtual ~CatalogFromTable();
 
@@ -34,7 +34,7 @@ public:
 private:
   size_t m_source_id_index;
 
-  std::vector<std::unique_ptr<AttributeFromRow>> m_attribute_from_row_ptr_vector;
+  std::vector<std::shared_ptr<AttributeFromRow>> m_attribute_from_row_ptr_vector;
 
 };
 

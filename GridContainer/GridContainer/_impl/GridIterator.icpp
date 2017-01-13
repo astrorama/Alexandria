@@ -6,6 +6,7 @@
 
 #include <algorithm>
 #include "ElementsKernel/Exception.h"
+#include "TemplateLoopCounter.h"
 
 namespace Euclid {
 namespace GridContainer {
@@ -53,6 +54,24 @@ auto GridContainer<GridCellManager, AxesTypes...>::iter<CellType>::operator*() -
 
 template<typename GridCellManager, typename... AxesTypes>
 template<typename CellType>
+auto GridContainer<GridCellManager, AxesTypes...>::iter<CellType>::operator*() const -> typename std::add_const<CellType>::type& {
+  return *m_data_iter;
+}
+
+template<typename GridCellManager, typename... AxesTypes>
+template<typename CellType>
+auto GridContainer<GridCellManager, AxesTypes...>::iter<CellType>::operator->() -> CellType* {
+  return &(*m_data_iter);
+}
+
+template<typename GridCellManager, typename... AxesTypes>
+template<typename CellType>
+auto GridContainer<GridCellManager, AxesTypes...>::iter<CellType>::operator->() const -> typename std::add_const<CellType>::type* {
+  return &(*m_data_iter);
+}
+
+template<typename GridCellManager, typename... AxesTypes>
+template<typename CellType>
 bool GridContainer<GridCellManager, AxesTypes...>::iter<CellType>::operator==(const iter& other) const {
   return m_data_iter == other.m_data_iter;
 }
@@ -83,10 +102,15 @@ template<typename GridCellManager, typename... AxesTypes>
 template<typename CellType>
 template<int I>
 auto GridContainer<GridCellManager, AxesTypes...>::iter<CellType>::fixAxisByIndex(size_t index) -> iter& {
-  if (index >= m_owner.getAxis<I>().size()) {
+  auto fixed_index = m_fixed_indices.find(I);
+  if (fixed_index != m_fixed_indices.end() && fixed_index->second != index) {
+    throw Elements::Exception() << "Axis " <<m_owner.getOriginalAxis<I>().name()
+                                << " is already fixed";
+  }
+  if (index >= m_owner.getOriginalAxis<I>().size()) {
     throw Elements::Exception() << "Index (" << index << ") out of axis " 
-                              << m_owner.getAxis<I>().name() << " size ("
-                              << m_owner.getAxis<I>().size() << ")";
+                              << m_owner.getOriginalAxis<I>().name() << " size ("
+                              << m_owner.getOriginalAxis<I>().size() << ")";
   }
   m_fixed_indices[I] = index;
   forwardToIndex(I, index);
@@ -97,13 +121,14 @@ template<typename GridCellManager, typename... AxesTypes>
 template<typename CellType>
 template<int I>
 auto GridContainer<GridCellManager, AxesTypes...>::iter<CellType>::fixAxisByValue(const axis_type<I>& value) -> iter& {
-  auto axis = m_owner.getAxis<I>();
+  auto axis = m_owner.getOriginalAxis<I>();
   auto iter = std::find(axis.begin(), axis.end(), value);
   if (iter == axis.end()) {
-    throw Elements::Exception() << "Failed to fix axis " << m_owner.getAxis<I>().name()
+    throw Elements::Exception() << "Failed to fix axis " << m_owner.getOriginalAxis<I>().name()
                               << " (given value not found)";
   }
-  return fixAxisByIndex<I>(iter - axis.begin());
+  size_t index = iter - axis.begin();
+  return fixAxisByIndex<I>(index);
 }
 
 template<typename GridCellManager, typename... AxesTypes>
@@ -118,6 +143,24 @@ void GridContainer<GridCellManager, AxesTypes...>::iter<CellType>::forwardToInde
           : m_owner.m_index_helper.m_axes_sizes[axis] + fixed_index - current_index;
     m_data_iter += distance * axis_factor;
   }
+}
+
+template<typename IterFrom, typename IterTo, int I>
+static void fixSameAxes(IterFrom& from, IterTo& to, const TemplateLoopCounter<I>&) {
+  to.template fixAxisByValue<I>(from.template axisValue<I>());
+  fixSameAxes(from, to, TemplateLoopCounter<I-1>{});
+}
+
+template<typename IterFrom, typename IterTo>
+static void fixSameAxes(IterFrom&, IterTo&, const TemplateLoopCounter<-1>&) {
+}
+
+template<typename GridCellManager, typename... AxesTypes>
+template<typename CellType>
+template<typename OtherIter>
+auto GridContainer<GridCellManager, AxesTypes...>::iter<CellType>::fixAllAxes(const OtherIter& other) -> iter& {
+  fixSameAxes(other, *this, TemplateLoopCounter<sizeof...(AxesTypes)-1>{});
+  return *this;
 }
 
 } // end of GridContainer namespace

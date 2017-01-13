@@ -1,4 +1,4 @@
-/** 
+/**
  * @file src/lib/function/Piecewise.cpp
  * @date February 20, 2014
  * @author Nikolaos Apostolakos
@@ -25,7 +25,7 @@ Piecewise::Piecewise(std::vector<double> knots, std::vector<std::shared_ptr<Func
     }
   }
 }
-                    
+
 const std::vector<double>& Piecewise::getKnots() const {
   return m_knots;
 }

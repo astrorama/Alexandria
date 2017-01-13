@@ -102,7 +102,7 @@ BOOST_FIXTURE_TEST_CASE(rank, GridContainer_Fixture) {
   GridContainerType grid {axes_tuple};
   
   // Then
-  BOOST_CHECK_EQUAL(grid.axisNumber(), 4);
+  BOOST_CHECK_EQUAL(grid.axisNumber(), 4u);
   
 }
 
@@ -526,6 +526,34 @@ BOOST_FIXTURE_TEST_CASE(fixIteratorByIndexOutOfBound, GridContainer_Fixture) {
 }
 
 //-----------------------------------------------------------------------------
+// Test fixing iterator by index twice for same axis throws exception
+//-----------------------------------------------------------------------------
+    
+BOOST_FIXTURE_TEST_CASE(fixIteratorByIndexTwiceForSameAxis, GridContainer_Fixture) {
+  
+  // Given
+  GridContainerType grid {axes_tuple};
+  const GridContainerType& const_grid = grid;
+  
+  // When
+  auto iterator = grid.begin().fixAxisByIndex<0>(0).fixAxisByIndex<1>(0)
+                              .fixAxisByIndex<2>(0).fixAxisByIndex<3>(0);
+  auto const_iterator = const_grid.begin().fixAxisByIndex<0>(0).fixAxisByIndex<1>(0)
+                                          .fixAxisByIndex<2>(0).fixAxisByIndex<3>(0);
+  
+  // Then
+  iterator.fixAxisByIndex<0>(0);
+  iterator.fixAxisByIndex<1>(0);
+  BOOST_CHECK_THROW(iterator.fixAxisByIndex<2>(1), Elements::Exception);
+  BOOST_CHECK_THROW(iterator.fixAxisByIndex<3>(1), Elements::Exception);
+  const_iterator.fixAxisByIndex<0>(0);
+  const_iterator.fixAxisByIndex<1>(0);
+  BOOST_CHECK_THROW(const_iterator.fixAxisByIndex<2>(1), Elements::Exception);
+  BOOST_CHECK_THROW(const_iterator.fixAxisByIndex<3>(1), Elements::Exception);
+  
+}
+
+//-----------------------------------------------------------------------------
 // Test fixing iterator by value
 //-----------------------------------------------------------------------------
     
@@ -696,6 +724,337 @@ BOOST_FIXTURE_TEST_CASE(fixIteratorByValueNotFound, GridContainer_Fixture) {
   BOOST_CHECK_THROW(const_iterator.fixAxisByValue<1>(axis2.size()+1), Elements::Exception);
   BOOST_CHECK_THROW(const_iterator.fixAxisByValue<2>(axis3.size()+1), Elements::Exception);
   BOOST_CHECK_THROW(const_iterator.fixAxisByValue<3>(axis4.size()+1), Elements::Exception);
+  
+}
+
+//-----------------------------------------------------------------------------
+// Test fixing iterator by value twice for same axis throws exception
+//-----------------------------------------------------------------------------
+    
+BOOST_FIXTURE_TEST_CASE(fixIteratorByValueTwiceForSameAxis, GridContainer_Fixture) {
+  
+  // Given
+  GridContainerType grid {axes_tuple};
+  const GridContainerType& const_grid = grid;
+  
+  // When
+  auto iterator = grid.begin().fixAxisByValue<0>(1).fixAxisByValue<1>(1)
+                              .fixAxisByValue<2>(1).fixAxisByValue<3>(1);
+  auto const_iterator = const_grid.begin().fixAxisByValue<0>(1).fixAxisByValue<1>(1)
+                                          .fixAxisByValue<2>(1).fixAxisByValue<3>(1);
+  
+  // Then
+  iterator.fixAxisByValue<0>(1);
+  iterator.fixAxisByValue<1>(1);
+  BOOST_CHECK_THROW(iterator.fixAxisByValue<2>(2), Elements::Exception);
+  BOOST_CHECK_THROW(iterator.fixAxisByValue<3>(2), Elements::Exception);
+  const_iterator.fixAxisByValue<0>(1);
+  const_iterator.fixAxisByValue<1>(1);
+  BOOST_CHECK_THROW(const_iterator.fixAxisByValue<2>(2), Elements::Exception);
+  BOOST_CHECK_THROW(const_iterator.fixAxisByValue<3>(2), Elements::Exception);
+  
+}
+
+//-----------------------------------------------------------------------------
+// Test fixing all exes of iterator by other iterator
+//-----------------------------------------------------------------------------
+    
+BOOST_FIXTURE_TEST_CASE(fixIteratorAllAxes, GridContainer_Fixture) {
+  
+  // Given
+  GridContainerType grid1 {axes_tuple};
+  auto iter1 = grid1.begin();
+  GridContainerType grid2 {axes_tuple};
+  auto iter2 = grid2.begin();
+  
+  // When
+  iter1.fixAxisByIndex<0>(3).fixAxisByIndex<1>(2).fixAxisByIndex<2>(1).fixAxisByIndex<3>(0);
+  iter2.fixAllAxes(iter1);
+  
+  // Then
+  BOOST_CHECK_EQUAL(iter2.axisIndex<0>(), 3u);
+  BOOST_CHECK_EQUAL(iter2.axisIndex<1>(), 2u);
+  BOOST_CHECK_EQUAL(iter2.axisIndex<2>(), 1u);
+  BOOST_CHECK_EQUAL(iter2.axisIndex<3>(), 0u);
+  
+}
+
+//-----------------------------------------------------------------------------
+// Test slicing using index out of bound exception
+//-----------------------------------------------------------------------------
+    
+BOOST_FIXTURE_TEST_CASE(sliceByIndexOutOfBound, GridContainer_Fixture) {
+  
+  // Given
+  GridContainerType grid {axes_tuple};
+  const GridContainerType& const_grid = grid;
+  
+  // Then
+  BOOST_CHECK_THROW(grid.fixAxisByIndex<0>(axis1.size()), Elements::Exception);
+  BOOST_CHECK_THROW(grid.fixAxisByIndex<1>(axis2.size()), Elements::Exception);
+  BOOST_CHECK_THROW(grid.fixAxisByIndex<2>(axis3.size()), Elements::Exception);
+  BOOST_CHECK_THROW(grid.fixAxisByIndex<3>(axis4.size()), Elements::Exception);
+  BOOST_CHECK_THROW(const_grid.fixAxisByIndex<0>(axis1.size()), Elements::Exception);
+  BOOST_CHECK_THROW(const_grid.fixAxisByIndex<1>(axis2.size()), Elements::Exception);
+  BOOST_CHECK_THROW(const_grid.fixAxisByIndex<2>(axis3.size()), Elements::Exception);
+  BOOST_CHECK_THROW(const_grid.fixAxisByIndex<3>(axis4.size()), Elements::Exception);
+  
+}
+
+//-----------------------------------------------------------------------------
+// Test slicing using index twice at the same axis throws exception
+//-----------------------------------------------------------------------------
+    
+BOOST_FIXTURE_TEST_CASE(sliceByIndexTwiceSameAxis, GridContainer_Fixture) {
+  
+  // Given
+  GridContainerType grid {axes_tuple};
+  const GridContainerType& const_grid = grid;
+  
+  // When
+  auto slice0 = grid.fixAxisByIndex<0>(0);
+  auto slice1 = grid.fixAxisByIndex<1>(0);
+  auto slice2 = grid.fixAxisByIndex<2>(0);
+  auto slice3 = grid.fixAxisByIndex<3>(0);
+  auto& const_slice0 = const_grid.fixAxisByIndex<0>(0);
+  auto& const_slice1 = const_grid.fixAxisByIndex<1>(0);
+  auto& const_slice2 = const_grid.fixAxisByIndex<2>(0);
+  auto& const_slice3 = const_grid.fixAxisByIndex<3>(0);
+  
+  // Then
+  BOOST_CHECK_THROW(slice0.fixAxisByIndex<0>(0), Elements::Exception);
+  BOOST_CHECK_THROW(slice1.fixAxisByIndex<1>(0), Elements::Exception);
+  BOOST_CHECK_THROW(slice2.fixAxisByIndex<2>(1), Elements::Exception);
+  BOOST_CHECK_THROW(slice3.fixAxisByIndex<3>(1), Elements::Exception);
+  BOOST_CHECK_THROW(const_slice0.fixAxisByIndex<0>(0), Elements::Exception);
+  BOOST_CHECK_THROW(const_slice1.fixAxisByIndex<1>(0), Elements::Exception);
+  BOOST_CHECK_THROW(const_slice2.fixAxisByIndex<2>(1), Elements::Exception);
+  BOOST_CHECK_THROW(const_slice3.fixAxisByIndex<3>(1), Elements::Exception);
+  
+}
+
+//-----------------------------------------------------------------------------
+// Test slicing using value not found exception
+//-----------------------------------------------------------------------------
+    
+BOOST_FIXTURE_TEST_CASE(sliceByValueNotFound, GridContainer_Fixture) {
+  
+  // Given
+  GridContainerType grid {axes_tuple};
+  const GridContainerType& const_grid = grid;
+  
+  // Then
+  BOOST_CHECK_THROW(grid.fixAxisByValue<0>(axis1.size()+1), Elements::Exception);
+  BOOST_CHECK_THROW(grid.fixAxisByValue<1>(axis2.size()+1), Elements::Exception);
+  BOOST_CHECK_THROW(grid.fixAxisByValue<2>(axis3.size()+1), Elements::Exception);
+  BOOST_CHECK_THROW(grid.fixAxisByValue<3>(axis4.size()+1), Elements::Exception);
+  BOOST_CHECK_THROW(const_grid.fixAxisByValue<0>(axis1.size()+1), Elements::Exception);
+  BOOST_CHECK_THROW(const_grid.fixAxisByValue<1>(axis2.size()+1), Elements::Exception);
+  BOOST_CHECK_THROW(const_grid.fixAxisByValue<2>(axis3.size()+1), Elements::Exception);
+  BOOST_CHECK_THROW(const_grid.fixAxisByValue<3>(axis4.size()+1), Elements::Exception);
+  
+}
+
+//-----------------------------------------------------------------------------
+// Test slicing using value twice at the same axis throws exception
+//-----------------------------------------------------------------------------
+    
+BOOST_FIXTURE_TEST_CASE(sliceByValueTwiceSameAxis, GridContainer_Fixture) {
+  
+  // Given
+  GridContainerType grid {axes_tuple};
+  const GridContainerType& const_grid = grid;
+  
+  // When
+  auto slice0 = grid.fixAxisByValue<0>(1);
+  auto slice1 = grid.fixAxisByValue<1>(1);
+  auto slice2 = grid.fixAxisByValue<2>(1);
+  auto slice3 = grid.fixAxisByValue<3>(1);
+  auto& const_slice0 = const_grid.fixAxisByValue<0>(1);
+  auto& const_slice1 = const_grid.fixAxisByValue<1>(1);
+  auto& const_slice2 = const_grid.fixAxisByValue<2>(1);
+  auto& const_slice3 = const_grid.fixAxisByValue<3>(1);
+  
+  // Then
+  BOOST_CHECK_THROW(slice0.fixAxisByValue<0>(1), Elements::Exception);
+  BOOST_CHECK_THROW(slice1.fixAxisByValue<1>(1), Elements::Exception);
+  BOOST_CHECK_THROW(slice2.fixAxisByValue<2>(2), Elements::Exception);
+  BOOST_CHECK_THROW(slice3.fixAxisByValue<3>(2), Elements::Exception);
+  BOOST_CHECK_THROW(const_slice0.fixAxisByValue<0>(1), Elements::Exception);
+  BOOST_CHECK_THROW(const_slice1.fixAxisByValue<1>(1), Elements::Exception);
+  BOOST_CHECK_THROW(const_slice2.fixAxisByValue<2>(2), Elements::Exception);
+  BOOST_CHECK_THROW(const_slice3.fixAxisByValue<3>(2), Elements::Exception);
+  
+}
+
+//-----------------------------------------------------------------------------
+// Test that modifications to the slices are reflected to the original
+//-----------------------------------------------------------------------------
+    
+BOOST_FIXTURE_TEST_CASE(sliceChancesReflected, GridContainer_Fixture) {
+  
+  // Given
+  GridContainerType grid {axes_tuple};
+  auto slice_index = grid.fixAxisByIndex<0>(2).fixAxisByIndex<1>(2).fixAxisByIndex<2>(2).fixAxisByIndex<3>(1);
+  auto slice_value = grid.fixAxisByValue<0>(2).fixAxisByValue<1>(2).fixAxisByValue<2>(2).fixAxisByValue<3>(1);
+  
+  // When
+  *slice_index.begin() = -10;
+  *slice_value.begin() = -20;
+  
+  
+  // Then
+  BOOST_CHECK_EQUAL(grid(2, 2, 2, 1), -10);
+  BOOST_CHECK_EQUAL(grid(1, 1, 1, 0), -20);
+  
+}
+
+//-----------------------------------------------------------------------------
+// Test that slices have correct axes and size
+//-----------------------------------------------------------------------------
+    
+BOOST_FIXTURE_TEST_CASE(sliceAxes, GridContainer_Fixture) {
+  
+  // Given
+  GridContainerType grid {axes_tuple};
+  const GridContainerType& const_grid = grid;
+  std::vector<int> expected_fixed_axis = {2};
+  
+  // When
+  auto slice = grid.fixAxisByIndex<1>(1);
+  auto& const_slice = const_grid.fixAxisByIndex<1>(1);
+  
+  // Then
+  BOOST_CHECK_EQUAL(slice.size(), grid.size() / axis2.size());
+  BOOST_CHECK_EQUAL(slice.getAxis<0>().name(), axis1.name());
+  BOOST_CHECK_EQUAL_COLLECTIONS(slice.getAxis<0>().begin(), slice.getAxis<0>().end(), axis1.begin(), axis1.end());
+  BOOST_CHECK_EQUAL(slice.getAxis<1>().name(), axis2.name());
+  BOOST_CHECK_EQUAL_COLLECTIONS(slice.getAxis<1>().begin(), slice.getAxis<1>().end(),
+                                expected_fixed_axis.begin(), expected_fixed_axis.end());
+  BOOST_CHECK_EQUAL(slice.getAxis<2>().name(), axis3.name());
+  BOOST_CHECK_EQUAL_COLLECTIONS(slice.getAxis<2>().begin(), slice.getAxis<2>().end(), axis3.begin(), axis3.end());
+  BOOST_CHECK_EQUAL(slice.getAxis<3>().name(), axis4.name());
+  BOOST_CHECK_EQUAL_COLLECTIONS(slice.getAxis<3>().begin(), slice.getAxis<3>().end(), axis4.begin(), axis4.end());
+  BOOST_CHECK_EQUAL(const_slice.size(), grid.size() / axis2.size());
+  BOOST_CHECK_EQUAL(const_slice.getAxis<0>().name(), axis1.name());
+  BOOST_CHECK_EQUAL_COLLECTIONS(const_slice.getAxis<0>().begin(), const_slice.getAxis<0>().end(), axis1.begin(), axis1.end());
+  BOOST_CHECK_EQUAL(const_slice.getAxis<1>().name(), axis2.name());
+  BOOST_CHECK_EQUAL_COLLECTIONS(const_slice.getAxis<1>().begin(), const_slice.getAxis<1>().end(),
+                                expected_fixed_axis.begin(), expected_fixed_axis.end());
+  BOOST_CHECK_EQUAL(const_slice.getAxis<2>().name(), axis3.name());
+  BOOST_CHECK_EQUAL_COLLECTIONS(const_slice.getAxis<2>().begin(), const_slice.getAxis<2>().end(), axis3.begin(), axis3.end());
+  BOOST_CHECK_EQUAL(const_slice.getAxis<3>().name(), axis4.name());
+  BOOST_CHECK_EQUAL_COLLECTIONS(const_slice.getAxis<3>().begin(), const_slice.getAxis<3>().end(), axis4.begin(), axis4.end());
+  
+}
+
+//-----------------------------------------------------------------------------
+// Test that slices iterator works fine
+//-----------------------------------------------------------------------------
+    
+BOOST_FIXTURE_TEST_CASE(sliceIterator, GridContainer_Fixture) {
+  
+  // Given
+  GridContainerType grid {axes_tuple};
+  const GridContainerType& const_grid = grid;
+  
+  // When
+  auto slice = grid.fixAxisByIndex<1>(1).fixAxisByIndex<3>(0);
+  auto slice_iter = slice.begin();
+  auto grid_iter = grid.begin().fixAxisByIndex<1>(1).fixAxisByIndex<3>(0);
+  auto& const_slice = const_grid.fixAxisByIndex<1>(1).fixAxisByIndex<3>(0);
+  auto const_slice_iter = const_slice.begin();
+  auto const_grid_iter = const_grid.begin().fixAxisByIndex<1>(1).fixAxisByIndex<3>(0);
+  
+  // Then
+  for (; slice_iter!=slice.end(); ++slice_iter, ++grid_iter) {
+    BOOST_CHECK_EQUAL(*slice_iter, *grid_iter);
+    BOOST_CHECK_EQUAL(slice_iter.axisValue<0>(), grid_iter.axisValue<0>());
+    BOOST_CHECK_EQUAL(slice_iter.axisValue<1>(), grid_iter.axisValue<1>());
+    BOOST_CHECK_EQUAL(slice_iter.axisValue<2>(), grid_iter.axisValue<2>());
+    BOOST_CHECK_EQUAL(slice_iter.axisValue<3>(), grid_iter.axisValue<3>());
+  }
+  BOOST_CHECK(grid_iter == grid.end());
+  for (; const_slice_iter!=const_slice.end(); ++const_slice_iter, ++const_grid_iter) {
+    BOOST_CHECK_EQUAL(*const_slice_iter, *const_grid_iter);
+    BOOST_CHECK_EQUAL(const_slice_iter.axisValue<0>(), const_grid_iter.axisValue<0>());
+    BOOST_CHECK_EQUAL(const_slice_iter.axisValue<1>(), const_grid_iter.axisValue<1>());
+    BOOST_CHECK_EQUAL(const_slice_iter.axisValue<2>(), const_grid_iter.axisValue<2>());
+    BOOST_CHECK_EQUAL(const_slice_iter.axisValue<3>(), const_grid_iter.axisValue<3>());
+  }
+  BOOST_CHECK(const_grid_iter == const_grid.end());
+  
+}
+
+//-----------------------------------------------------------------------------
+// Test that slices parenthesis operator works fine
+//-----------------------------------------------------------------------------
+    
+BOOST_FIXTURE_TEST_CASE(sliceParenthesisOperator, GridContainer_Fixture) {
+  
+  // Given
+  GridContainerType grid {axes_tuple};
+  double custom_value = 0;
+  for (auto& cell : grid) {
+    custom_value += 0.1;
+    cell = custom_value;
+  }
+  
+  // When
+  auto slice = grid.fixAxisByIndex<1>(2).fixAxisByIndex<3>(1);
+  
+  // Then
+  for (size_t coord1=0; coord1<axis1.size(); ++coord1) {
+    for (size_t coord3=0; coord3<axis3.size(); ++coord3) {
+      BOOST_CHECK_EQUAL(slice(coord1, 0, coord3, 0), grid(coord1, 2, coord3, 1));
+    }
+  }
+}
+
+//-----------------------------------------------------------------------------
+// Test that slices at works fine
+//-----------------------------------------------------------------------------
+    
+BOOST_FIXTURE_TEST_CASE(sliceAtOperator, GridContainer_Fixture) {
+  
+  // Given
+  GridContainerType grid {axes_tuple};
+  double custom_value = 0;
+  for (auto& cell : grid) {
+    custom_value += 0.1;
+    cell = custom_value;
+  }
+  
+  // When
+  auto slice = grid.fixAxisByIndex<1>(2).fixAxisByIndex<3>(1);
+  
+  // Then
+  for (size_t coord1=0; coord1<axis1.size(); ++coord1) {
+    for (size_t coord3=0; coord3<axis3.size(); ++coord3) {
+      BOOST_CHECK_EQUAL(slice.at(coord1, 0, coord3, 0), grid(coord1, 2, coord3, 1));
+    }
+  }
+  
+}
+
+//-----------------------------------------------------------------------------
+// Test that slices fixed axes throw exception for non zero indices when at is used
+//-----------------------------------------------------------------------------
+    
+BOOST_FIXTURE_TEST_CASE(sliceFixAxisNonZeroIndexAccess, GridContainer_Fixture) {
+  
+  // Given
+  GridContainerType grid {axes_tuple};
+  
+  // When
+  auto slice = grid.fixAxisByIndex<0>(0).fixAxisByIndex<1>(2).fixAxisByIndex<2>(2).fixAxisByIndex<3>(1);
+  
+  // Then
+  BOOST_CHECK_EQUAL(slice.at(0, 0, 0, 0), 0.);
+  BOOST_CHECK_THROW(slice.at(1, 0, 0, 0), Elements::Exception);
+  BOOST_CHECK_THROW(slice.at(0, 1, 0, 0), Elements::Exception);
+  BOOST_CHECK_THROW(slice.at(0, 0, 1, 0), Elements::Exception);
+  BOOST_CHECK_THROW(slice.at(0, 0, 0, 1), Elements::Exception);
   
 }
 
