@@ -235,7 +235,7 @@ CatalogConfig::TableToCatalogConverter CatalogConfig::getTableToCatalogConverter
 }
 
 
-Table::Table CatalogConfig::getAsTable() const {
+Table::Table CatalogConfig::readAsTable() const {
   if (getCurrentState() < State::FINAL) {
     throw Elements::Exception() << "getAsTable() call to not finalized CatalogConfig";
   }
@@ -247,7 +247,7 @@ SourceCatalog::Catalog CatalogConfig::getCatalog() const {
   if (getCurrentState() < State::FINAL) {
     throw Elements::Exception() << "getCatalog() call to not finalized CatalogConfig";
   }
-  auto table = getAsTable();
+  auto table = readAsTable();
   auto converter = getTableToCatalogConverter();
   return converter(table);
 }
