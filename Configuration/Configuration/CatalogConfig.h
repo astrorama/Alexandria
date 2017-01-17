@@ -24,8 +24,10 @@
 
 #include <memory>
 #include <vector>
+#include <functional>
 #include <boost/filesystem.hpp>
 #include "Table/Table.h"
+#include "Table/TableReader.h"
 #include "SourceCatalog/Catalog.h"
 #include "SourceCatalog/AttributeFromRow.h"
 #include "Configuration/Configuration.h"
@@ -42,26 +44,32 @@ namespace Configuration {
  * @details
  * The CatalogConfiguration class provides the basis for reading input catalogs.
  * It provides all the functionality for reading an input catalog as an object
- * of type Table::Table and for converting it to an object of type
- * SourceCatalog::Catalog.
+ * of type Table::Table (using the method getAsTable() ) or of type
+ * SourceCatalog::Catalog (using the method getCatalog() ). For performing partial
+ * reading of the catalog the methods getTableReader() and getTableToCatalogConverter()
+ * can be used instead.
+ * 
+ * Any other configurations (like catalog specific configurations) can use the
+ * getColumnInfo() method to retrieve the table column information, after the
+ * CatalogConfig has been initialized.
  *
  * Because this is a generic class, it has no knowledge of the specific catalog
  * attributes. By default it does not use any attribute handlers and it only
  * parses the ID of the catalog entries. The more specific catalog configurations
  * (for example coordinates catalog), should declare the CatalogConfig
  * as a dependency and they should add an attribute handler during the initialize
- * phase. The CatalogConfig class reads the catalog from the file as a Table::Table
- * during the initialize phase, so the more specific catalog configuration classes
- * can use the getAsTable() method to get the catalog columns information (if
+ * phase. The more specific catalog configuration classes
+ * can use the getColumnInfo() method to get the catalog columns information (if
  * needed).
  * 
- * Note that the SourceCatalog::Catalog object is initialized during the
- * post-initialize phase, so all the catalog specific configurations have already
- * register their handlers.
  */
 class CatalogConfig : public Configuration {
 
 public:
+  
+  /// A function that converts objects of type Table::Table to objects of type
+  /// SourceCatalog::Catalog
+  using TableToCatalogConverter = std::function<SourceCatalog::Catalog(const Table::Table&)>;
 
   /// Constructs a new CatalogConfig object
   CatalogConfig(long manager_id);
@@ -106,10 +114,6 @@ public:
    * @brief
    * Initializes the CatalogConfig instance
    * 
-   * @details
-   * During the initialization the file defined by the input-catalog-file option
-   * is parsed into a Table::Table object.
-   * 
    * @param args
    *    The user parameters
    * @throws Elements::Exception
@@ -117,28 +121,12 @@ public:
    * @throws Elements::Exception
    *    If the file has wrong format type
    * @throws Elements::Exception
-   *    If the defined ID column does not exist
-   */
-  void initialize(const UserValues& args) override;
-
-  /**
-   * @brief
-   * Post-initializes the CatalogConfig instance
-   * 
-   * @details
-   * During the post-initialization, the already parsed Table::Table object is
-   * converted to a SourceCatalog::Catalog object, using the attribute handlers
-   * set by the addAttributeHandler() method.
-   * 
-   * @param args
-   *    The user parameters
-   * @throws Elements::Exception
    *    If the given file has no ID column, as described by the source-id-column-name
    *    and source-id-column-index parameters
    * @throws Elements::Exception
-   *    If any of the registered attribute handlers fails
+   *    If there is any I/O error with reading the input-catalog-file
    */
-  void postInitialize(const UserValues& args) override;
+  void initialize(const UserValues& args) override;
 
   /**
    * @brief
@@ -170,36 +158,58 @@ public:
    *    If the CatalogConfig instance has already been finalized
    */
   void addAttributeHandler(std::shared_ptr<SourceCatalog::AttributeFromRow> handler);
+  
+  std::unique_ptr<Table::TableReader> getTableReader() const;
+  
+  std::shared_ptr<Table::ColumnInfo> getColumnInfo() const;
+  
+  TableToCatalogConverter getTableToCatalogConverter() const;
 
   /**
    * @brief
    * Returns the catalog as a Table::Table object
    * 
    * @details
-   * This method can be called after the CatalogConfig has been initialized, and
-   * it can be used by other configurations which need the catalog column info.
+   * This method can be called to read and retrieve the catalog as a Table::Table
+   * object. When this method is called the information from the attribute
+   * handlers is ignored and each row contains all the columns from the file.
+   * Note that this method is going to read the full catalog each time it is called.
    * 
    * @return 
    *    The catalog as a Table::Table
    * @throws Elements::Exception
-   *    If the instance is not yet initialized
+   *    If the instance is not yet final
+   * @throws Elements::Exception
+   *    If there is any I/O error with reading the input-catalog-file
+   * @throws Elements::Exception
+   *    If the file has wrong format type
+   * @throws Elements::Exception
+   *    If any of the registered attribute handlers fails
    */
-  const Table::Table& getAsTable() const;
+  Table::Table getAsTable() const;
   
   /**
    * @brief
    * Returns the Catalog object
    * 
    * @details
-   * This method can be called only on instances of CatalogConfig which are
-   * finalized.
+   * This method can be called to read and retrieve the catalog as a Catalog
+   * object. It is a convenience method alternative from using the getTableReader() 
+   * and getTableToCatalogConverter() methods Note that this method is going to 
+   * read the full catalog each time it is called.
    * 
    * @return
    *    The source catalog
    * @throws Elements::Exception
    *    If the instance is not yet final
+   * @throws Elements::Exception
+   *    If there is any I/O error with reading the input-catalog-file
+   * @throws Elements::Exception
+   *    If the file has wrong format type
+   * @throws Elements::Exception
+   *    If any of the registered attribute handlers fails
    */
-  const SourceCatalog::Catalog& getCatalog() const;
+  SourceCatalog::Catalog getCatalog() const;
   
   /**
    * @brief
@@ -220,9 +230,10 @@ private:
 
   boost::filesystem::path m_base_dir {};
   boost::filesystem::path m_filename {};
-  std::unique_ptr<Table::Table> m_table_ptr {};
+  bool m_fits_format {true};
+  std::string m_id_column_name {};
   std::vector<std::shared_ptr<SourceCatalog::AttributeFromRow>> m_attribute_handlers {};
-  std::unique_ptr<SourceCatalog::Catalog> m_catalog_ptr {};
+  std::shared_ptr<Table::ColumnInfo> m_column_info {};
   
 }; /* End of CatalogConfig class */
 

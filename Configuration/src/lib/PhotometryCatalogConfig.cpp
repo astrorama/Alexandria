@@ -51,7 +51,7 @@ void PhotometryCatalogConfig::initialize(const UserValues& args) {
   double missing_photo_flag = args.at(MISSING_PHOTOMETRY_FLAG).as<double>();
 
   auto filter_name_mapping = getDependency<PhotometricBandMappingConfig>().getPhotometricBandMapping();
-  auto column_info = getDependency<CatalogConfig>().getAsTable().getColumnInfo();
+  auto column_info = getDependency<CatalogConfig>().getColumnInfo();
   
   // Add the row handler to parse the photometries
   std::shared_ptr<SourceCatalog::AttributeFromRow> handler_ptr {

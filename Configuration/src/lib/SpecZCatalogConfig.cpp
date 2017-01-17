@@ -121,7 +121,7 @@ static std::string getErrColumnFromOptions(const Configuration::UserValues& args
 }
 
 void SpecZCatalogConfig::initialize(const UserValues& args) {
-  auto column_info = getDependency<CatalogConfig>().getAsTable().getColumnInfo();
+  auto column_info = getDependency<CatalogConfig>().getColumnInfo();
   
   std::string flux_column = getFluxColumnFromOptions(args, *column_info);
   
