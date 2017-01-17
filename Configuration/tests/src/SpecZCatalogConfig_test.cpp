@@ -216,7 +216,7 @@ BOOST_FIXTURE_TEST_CASE(nominal_test, SpecZCatalogConfig_fixture) {
   
   // When
   config_manager.initialize(options_map);
-  auto result = config_manager.getConfiguration<CatalogConfig>().getCatalog();
+  auto result = config_manager.getConfiguration<CatalogConfig>().readAsCatalog();
   
   //Then
   BOOST_CHECK_EQUAL(result.size(), 3);
@@ -241,7 +241,7 @@ BOOST_FIXTURE_TEST_CASE(noError_test, SpecZCatalogConfig_fixture) {
   
   // When
   config_manager.initialize(options_map);
-  auto result = config_manager.getConfiguration<CatalogConfig>().getCatalog();
+  auto result = config_manager.getConfiguration<CatalogConfig>().readAsCatalog();
   
   //Then
   BOOST_CHECK_EQUAL(result.size(), 3);

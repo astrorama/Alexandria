@@ -141,7 +141,7 @@ BOOST_FIXTURE_TEST_CASE(nominal_test, PhotometryCatalogConfig_fixture) {
   
   // When
   config_manager.initialize(options_map);
-  auto result = config_manager.getConfiguration<CatalogConfig>().getCatalog();
+  auto result = config_manager.getConfiguration<CatalogConfig>().readAsCatalog();
   
   // Then
   BOOST_CHECK_EQUAL(result.size(), 3);
@@ -177,7 +177,7 @@ BOOST_FIXTURE_TEST_CASE(missingPhotometryFlag_test, PhotometryCatalogConfig_fixt
   // When
   options_map[MISSING_PHOTOMETRY_FLAG].value() = boost::any(1.2);
   config_manager.initialize(options_map);
-  auto result = config_manager.getConfiguration<CatalogConfig>().getCatalog();
+  auto result = config_manager.getConfiguration<CatalogConfig>().readAsCatalog();
   
   // Then
   BOOST_CHECK_EQUAL(result.size(), 3);

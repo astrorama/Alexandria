@@ -243,7 +243,7 @@ Table::Table CatalogConfig::readAsTable() const {
   return getTableReader()->read();
 }
 
-SourceCatalog::Catalog CatalogConfig::getCatalog() const {
+SourceCatalog::Catalog CatalogConfig::readAsCatalog() const {
   if (getCurrentState() < State::FINAL) {
     throw Elements::Exception() << "getCatalog() call to not finalized CatalogConfig";
   }

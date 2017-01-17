@@ -262,7 +262,7 @@ BOOST_FIXTURE_TEST_CASE(ascii_test, CatalogConfig_fixture) {
   
   // When
   config_manager.initialize(options_map);
-  auto catalog = config_manager.getConfiguration<CatalogConfig>().getCatalog();
+  auto catalog = config_manager.getConfiguration<CatalogConfig>().readAsCatalog();
   
   //Then
   BOOST_CHECK_EQUAL(catalog.size(), 3);
@@ -293,7 +293,7 @@ BOOST_FIXTURE_TEST_CASE(fits_test, CatalogConfig_fixture) {
   
   // When
   config_manager.initialize(options_map);
-  auto catalog = config_manager.getConfiguration<CatalogConfig>().getCatalog();
+  auto catalog = config_manager.getConfiguration<CatalogConfig>().readAsCatalog();
   
   //Then
   BOOST_CHECK_EQUAL(catalog.size(), 3);
@@ -323,7 +323,7 @@ BOOST_FIXTURE_TEST_CASE(relativePath_test, CatalogConfig_fixture) {
   
   // When
   config_manager.initialize(options_map);
-  auto catalog = config_manager.getConfiguration<CatalogConfig>().getCatalog();
+  auto catalog = config_manager.getConfiguration<CatalogConfig>().readAsCatalog();
   
   //Then
   BOOST_CHECK_EQUAL(catalog.size(), 3);
@@ -353,7 +353,7 @@ BOOST_FIXTURE_TEST_CASE(absolutePath_test, CatalogConfig_fixture) {
   
   // When
   config_manager.initialize(options_map);
-  auto catalog = config_manager.getConfiguration<CatalogConfig>().getCatalog();
+  auto catalog = config_manager.getConfiguration<CatalogConfig>().readAsCatalog();
   
   //Then
   BOOST_CHECK_EQUAL(catalog.size(), 3);
@@ -383,7 +383,7 @@ BOOST_FIXTURE_TEST_CASE(idName_test, CatalogConfig_fixture) {
   
   // When
   config_manager.initialize(options_map);
-  auto catalog = config_manager.getConfiguration<CatalogConfig>().getCatalog();
+  auto catalog = config_manager.getConfiguration<CatalogConfig>().readAsCatalog();
   
   //Then
   BOOST_CHECK_EQUAL(catalog.size(), 3);
@@ -413,7 +413,7 @@ BOOST_FIXTURE_TEST_CASE(idIndex_test, CatalogConfig_fixture) {
   
   // When
   config_manager.initialize(options_map);
-  auto catalog = config_manager.getConfiguration<CatalogConfig>().getCatalog();
+  auto catalog = config_manager.getConfiguration<CatalogConfig>().readAsCatalog();
   
   //Then
   BOOST_CHECK_EQUAL(catalog.size(), 3);
@@ -443,7 +443,7 @@ BOOST_FIXTURE_TEST_CASE(attributeHandler_test, CatalogConfig_fixture) {
   
   // When
   config_manager.initialize(options_map);
-  auto catalog = config_manager.getConfiguration<CatalogConfig>().getCatalog();
+  auto catalog = config_manager.getConfiguration<CatalogConfig>().readAsCatalog();
   
   //Then
   BOOST_CHECK_EQUAL(catalog.size(), 3);

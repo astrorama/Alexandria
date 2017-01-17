@@ -45,7 +45,7 @@ namespace Configuration {
  * The CatalogConfiguration class provides the basis for reading input catalogs.
  * It provides all the functionality for reading an input catalog as an object
  * of type Table::Table (using the method readAsTable() ) or of type
- * SourceCatalog::Catalog (using the method getCatalog() ). For performing partial
+ * SourceCatalog::Catalog (using the method readAsCatalog() ). For performing partial
  * reading of the catalog the methods getTableReader() and getTableToCatalogConverter()
  * can be used instead.
  * 
@@ -209,7 +209,7 @@ public:
    * @throws Elements::Exception
    *    If any of the registered attribute handlers fails
    */
-  SourceCatalog::Catalog getCatalog() const;
+  SourceCatalog::Catalog readAsCatalog() const;
   
   /**
    * @brief
