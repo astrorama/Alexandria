@@ -132,11 +132,6 @@ FormatType getFormatTypeFromOptions(const Configuration::UserValues& args,
   return format;
 }
 
-Table::Table readAsciiTable(fs::path file) {
-  std::ifstream in {file.string()};
-  return Table::AsciiReader(in).read();
-}
-
 std::unique_ptr<Table::TableReader> getTableReaderImpl(bool fits_format, const boost::filesystem::path& filename) {
   if (fits_format) {
     return make_unique<Table::FitsReader>(filename.native(), 1);
