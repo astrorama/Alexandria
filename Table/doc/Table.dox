@@ -50,7 +50,8 @@ This example demonstrates all the necessary steps for creating a Table object.
 To be more comprehensible, each step is presented and explained separately.
 
 The first step is to create the ColumnInfo object which describes the columns
-of the table:
+of the table. For example, the following code creates the ColumnInfo object for
+a lookup table (which will be used to store values of functions):
 
 \code{.cpp}
   vector<ColumnInfo::info_type> info_list {
@@ -161,8 +162,8 @@ the ColumnInfo class. A shared pointer to the ColumnInfo object can be
 retrieved either from a Table object or from a Row.
 
 \code{.cpp}
-  auto table_column_info = table.getColumnInfo();
-  auto row_column_info = row.getColumnInfo();
+  auto column_info = table.getColumnInfo(); // Retrieve from table
+  auto column_info = row.getColumnInfo(); // Retrieve from tow
 \endcode
 
 The ColumnInfo object provides the method ColumnInfo::getDescription(), which
@@ -172,11 +173,11 @@ method. The following code uses these methods to print the information of all
 the columns:
 
 \code{.cpp}
-    size_t column_no = table_column_info->size();
+    size_t column_no = column_info->size();
     cout << "The table has " << column_no << " columns\n";
 
     for (size_t i = 0; i < column_no; ++i) {
-      auto& desc = table_column_info->getDescription(i);
+      auto& desc = column_info->getDescription(i);
 
       cout << "Column " << i << ": "<< desc.name
            << " (type: " << desc.type.name() << ")"
@@ -202,13 +203,13 @@ column with the given name exists. This facilitates the checking if a column
 exists or not, as demonstrated in the following example:
 
 \code{.cpp}
-  auto x_index = table_column_info->find("X");
+  auto x_index = column_info->find("X");
   if (x_index) {
     cout << "Column X has index " << *x_index << "\n";
   } else {
     cout << "Column X not found\n";
   }
-  auto z_index = table_column_info->find("Z");
+  auto z_index = column_info->find("Z");
   if (z_index) {
     cout << "Column Z has index " << *z_index << "\n";
   } else {
@@ -232,7 +233,7 @@ before trying to read the data from the Row%s cells. This can easily be done
 by using the `typeid()` method: 
 
 \code{.cpp}
-  if (table_column_info->getDescription(*x_index).type == typeid(double)) {
+  if (column_info->getDescription(*x_index).type == typeid(double)) {
     // Here is safe to access the X column data
   }
 \endcode
