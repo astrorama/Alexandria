@@ -35,7 +35,7 @@ public:
   
   Worker(std::mutex& queue_mutex, std::deque<ThreadPool::Task>& queue,
                   std::atomic<bool>& run_flag, std::atomic<bool>& done_flag,
-                  uint empty_queue_wait_time)
+                  unsigned int empty_queue_wait_time)
         : m_queue_mutex(queue_mutex), m_queue(queue), m_run_flag(run_flag),
           m_done_flag(done_flag), m_empty_queue_wait_time(empty_queue_wait_time) {
   }
@@ -68,16 +68,16 @@ private:
   std::reference_wrapper<std::deque<ThreadPool::Task>> m_queue;
   std::reference_wrapper<std::atomic<bool>> m_run_flag;
   std::reference_wrapper<std::atomic<bool>> m_done_flag;
-  uint m_empty_queue_wait_time;
+  unsigned int m_empty_queue_wait_time;
   
 };
   
 } // end of anonymous namespace
 
-ThreadPool::ThreadPool(uint thread_count, uint empty_queue_wait_time)
+ThreadPool::ThreadPool(unsigned int thread_count, unsigned int empty_queue_wait_time)
         : m_worker_run_flags(thread_count), m_worker_done_flags(thread_count),
           m_empty_queue_wait_time(empty_queue_wait_time) {
-  for (uint i = 0; i < thread_count; ++i) {
+  for (unsigned int i = 0; i < thread_count; ++i) {
     m_worker_run_flags.at(i) = true;
     m_worker_done_flags.at(i) = false;
     std::thread(Worker{m_queue_mutex, m_queue, m_worker_run_flags.at(i),

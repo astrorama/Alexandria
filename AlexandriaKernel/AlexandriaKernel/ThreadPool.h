@@ -45,7 +45,7 @@ public:
   
   using Task = std::function<void(void)>;
 
-  ThreadPool(uint thread_count=std::thread::hardware_concurrency(), uint empty_queue_wait_time=50);
+  ThreadPool(unsigned int thread_count=std::thread::hardware_concurrency(), unsigned int empty_queue_wait_time=50);
   
   /**
    * @brief Destructor
@@ -62,7 +62,7 @@ private:
   std::vector<std::atomic<bool>> m_worker_run_flags;
   std::vector<std::atomic<bool>> m_worker_done_flags;
   std::deque<Task> m_queue {};
-  uint m_empty_queue_wait_time;
+  unsigned int m_empty_queue_wait_time;
 
 }; /* End of ThreadPool class */
 
