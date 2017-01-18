@@ -220,39 +220,6 @@ BOOST_FIXTURE_TEST_CASE(missingFile_test, CatalogConfig_fixture) {
 
 //-----------------------------------------------------------------------------
 
-BOOST_FIXTURE_TEST_CASE(wrongFormatFits_test, CatalogConfig_fixture) {
-  
-  // Given
-  config_manager.registerConfiguration<CatalogConfig>();
-  config_manager.closeRegistration();
-  
-  // When
-  options_map[INPUT_CATALOG_FORMAT].value() = boost::any(std::string{"FITS"});
-  
-  //Then
-  BOOST_CHECK_THROW(config_manager.initialize(options_map), Elements::Exception);
-  
-}
-
-//-----------------------------------------------------------------------------
-
-BOOST_FIXTURE_TEST_CASE(wrongFormatAscii_test, CatalogConfig_fixture) {
-  
-  // Given
-  config_manager.registerConfiguration<CatalogConfig>();
-  config_manager.closeRegistration();
-  
-  // When
-  options_map[INPUT_CATALOG_FILE].value() = boost::any(fits_filename);
-  options_map[INPUT_CATALOG_FORMAT].value() = boost::any(std::string{"ASCII"});
-  
-  //Then
-  BOOST_CHECK_THROW(config_manager.initialize(options_map), Elements::Exception);
-  
-}
-
-//-----------------------------------------------------------------------------
-
 BOOST_FIXTURE_TEST_CASE(wrongIdName_test, CatalogConfig_fixture) {
   
   // Given
@@ -295,7 +262,7 @@ BOOST_FIXTURE_TEST_CASE(ascii_test, CatalogConfig_fixture) {
   
   // When
   config_manager.initialize(options_map);
-  auto& catalog = config_manager.getConfiguration<CatalogConfig>().getCatalog();
+  auto catalog = config_manager.getConfiguration<CatalogConfig>().readAsCatalog();
   
   //Then
   BOOST_CHECK_EQUAL(catalog.size(), 3);
@@ -326,7 +293,7 @@ BOOST_FIXTURE_TEST_CASE(fits_test, CatalogConfig_fixture) {
   
   // When
   config_manager.initialize(options_map);
-  auto& catalog = config_manager.getConfiguration<CatalogConfig>().getCatalog();
+  auto catalog = config_manager.getConfiguration<CatalogConfig>().readAsCatalog();
   
   //Then
   BOOST_CHECK_EQUAL(catalog.size(), 3);
@@ -356,7 +323,7 @@ BOOST_FIXTURE_TEST_CASE(relativePath_test, CatalogConfig_fixture) {
   
   // When
   config_manager.initialize(options_map);
-  auto& catalog = config_manager.getConfiguration<CatalogConfig>().getCatalog();
+  auto catalog = config_manager.getConfiguration<CatalogConfig>().readAsCatalog();
   
   //Then
   BOOST_CHECK_EQUAL(catalog.size(), 3);
@@ -386,7 +353,7 @@ BOOST_FIXTURE_TEST_CASE(absolutePath_test, CatalogConfig_fixture) {
   
   // When
   config_manager.initialize(options_map);
-  auto& catalog = config_manager.getConfiguration<CatalogConfig>().getCatalog();
+  auto catalog = config_manager.getConfiguration<CatalogConfig>().readAsCatalog();
   
   //Then
   BOOST_CHECK_EQUAL(catalog.size(), 3);
@@ -416,7 +383,7 @@ BOOST_FIXTURE_TEST_CASE(idName_test, CatalogConfig_fixture) {
   
   // When
   config_manager.initialize(options_map);
-  auto& catalog = config_manager.getConfiguration<CatalogConfig>().getCatalog();
+  auto catalog = config_manager.getConfiguration<CatalogConfig>().readAsCatalog();
   
   //Then
   BOOST_CHECK_EQUAL(catalog.size(), 3);
@@ -446,7 +413,7 @@ BOOST_FIXTURE_TEST_CASE(idIndex_test, CatalogConfig_fixture) {
   
   // When
   config_manager.initialize(options_map);
-  auto& catalog = config_manager.getConfiguration<CatalogConfig>().getCatalog();
+  auto catalog = config_manager.getConfiguration<CatalogConfig>().readAsCatalog();
   
   //Then
   BOOST_CHECK_EQUAL(catalog.size(), 3);
@@ -476,7 +443,92 @@ BOOST_FIXTURE_TEST_CASE(attributeHandler_test, CatalogConfig_fixture) {
   
   // When
   config_manager.initialize(options_map);
-  auto& catalog = config_manager.getConfiguration<CatalogConfig>().getCatalog();
+  auto catalog = config_manager.getConfiguration<CatalogConfig>().readAsCatalog();
+  
+  //Then
+  BOOST_CHECK_EQUAL(catalog.size(), 3);
+  BOOST_CHECK_EQUAL(catalog.find(20)->getAttribute<TestAttribute>()->value, 10);
+  BOOST_CHECK_EQUAL(catalog.find(21)->getAttribute<TestAttribute>()->value, 11);
+  BOOST_CHECK_EQUAL(catalog.find(22)->getAttribute<TestAttribute>()->value, 12);
+  
+}
+
+//-----------------------------------------------------------------------------
+
+BOOST_FIXTURE_TEST_CASE(getColumnInfo_test, CatalogConfig_fixture) {
+  
+  // Given
+  config_manager.registerConfiguration<CatalogConfig>();
+  config_manager.registerConfiguration<TestAttributeHandlerConfig>();
+  config_manager.closeRegistration();
+  
+  // When
+  config_manager.initialize(options_map);
+  auto& column_info = *config_manager.getConfiguration<CatalogConfig>().getColumnInfo();
+  
+  
+  //Then
+  BOOST_CHECK_EQUAL(column_info.size(), 4);
+  BOOST_CHECK_EQUAL(column_info.getDescription(0).name, "Col1");
+  BOOST_CHECK_EQUAL(column_info.getDescription(1).name, "ID");
+  BOOST_CHECK_EQUAL(column_info.getDescription(2).name, "ID1");
+  BOOST_CHECK_EQUAL(column_info.getDescription(3).name, "ID2");
+  
+}
+
+//-----------------------------------------------------------------------------
+
+BOOST_FIXTURE_TEST_CASE(getTableReader_test, CatalogConfig_fixture) {
+  
+  // Given
+  config_manager.registerConfiguration<CatalogConfig>();
+  config_manager.registerConfiguration<TestAttributeHandlerConfig>();
+  config_manager.closeRegistration();
+  
+  // When
+  config_manager.initialize(options_map);
+  auto reader = config_manager.getConfiguration<CatalogConfig>().getTableReader();
+  auto table = reader->read();
+  auto& column_info = *table.getColumnInfo();
+  
+  
+  //Then
+  BOOST_CHECK_EQUAL(column_info.size(), 4);
+  BOOST_CHECK_EQUAL(column_info.getDescription(0).name, "Col1");
+  BOOST_CHECK_EQUAL(column_info.getDescription(1).name, "ID");
+  BOOST_CHECK_EQUAL(column_info.getDescription(2).name, "ID1");
+  BOOST_CHECK_EQUAL(column_info.getDescription(3).name, "ID2");
+  
+  BOOST_CHECK_EQUAL(boost::get<std::int64_t>(table[0][0]), 10);
+  BOOST_CHECK_EQUAL(boost::get<std::int64_t>(table[0][1]), 20);
+  BOOST_CHECK_EQUAL(boost::get<std::int64_t>(table[0][2]), 30);
+  BOOST_CHECK_EQUAL(boost::get<std::int64_t>(table[0][3]), 40);
+  BOOST_CHECK_EQUAL(boost::get<std::int64_t>(table[1][0]), 11);
+  BOOST_CHECK_EQUAL(boost::get<std::int64_t>(table[1][1]), 21);
+  BOOST_CHECK_EQUAL(boost::get<std::int64_t>(table[1][2]), 31);
+  BOOST_CHECK_EQUAL(boost::get<std::int64_t>(table[1][3]), 41);
+  BOOST_CHECK_EQUAL(boost::get<std::int64_t>(table[2][0]), 12);
+  BOOST_CHECK_EQUAL(boost::get<std::int64_t>(table[2][1]), 22);
+  BOOST_CHECK_EQUAL(boost::get<std::int64_t>(table[2][2]), 32);
+  BOOST_CHECK_EQUAL(boost::get<std::int64_t>(table[2][3]), 42);
+  
+}
+
+//-----------------------------------------------------------------------------
+
+BOOST_FIXTURE_TEST_CASE(getTableToCatalogConverter_test, CatalogConfig_fixture) {
+  
+  // Given
+  config_manager.registerConfiguration<CatalogConfig>();
+  config_manager.registerConfiguration<TestAttributeHandlerConfig>();
+  config_manager.closeRegistration();
+  
+  // When
+  config_manager.initialize(options_map);
+  auto reader = config_manager.getConfiguration<CatalogConfig>().getTableReader();
+  auto table = reader->read();
+  auto converter = config_manager.getConfiguration<CatalogConfig>().getTableToCatalogConverter();
+  auto catalog = converter(table);
   
   //Then
   BOOST_CHECK_EQUAL(catalog.size(), 3);
