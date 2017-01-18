@@ -18,6 +18,7 @@ elements_add_library(Table src/lib/*.cpp
 if(GMOCK_FOUND)
 elements_add_unit_test(TableWriter_test tests/src/TableWriter_test.cpp 
                      LINK_LIBRARIES Table GMock
+                     INCLUDE_DIRS GMock
                      TYPE Boost)
 endif(GMOCK_FOUND)
 elements_add_unit_test(ColumnInfo_test tests/src/ColumnInfo_test.cpp 
