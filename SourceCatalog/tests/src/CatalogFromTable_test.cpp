@@ -32,7 +32,7 @@ BOOST_AUTO_TEST_SUITE (CatalogFromTable_test)
 BOOST_FIXTURE_TEST_CASE(createCatalog_test, TableFixture) {
 
 
-  unique_ptr<AttributeFromRow> photmetryAft_ptr {new PhotometryAttributeFromRow {column_info_ptr, filter_name_mapping, -99.} };
+  unique_ptr<AttributeFromRow> photmetryAft_ptr {new PhotometryAttributeFromRow {column_info_ptr, filter_name_mapping, true, -99., true} };
 
   vector<shared_ptr<AttributeFromRow>> attribute_from_table_vector;
 

@@ -49,15 +49,24 @@ public:
    *    supplies the mapping between the filter name (std::string) and the Table column names,
    *    both for the flux and for the error columns
    *
+   * @param has_missing_photometry
+   *    If true the attribute accept values indicating that the photometry is missing
+   *
    * @param missing_photometry_flag
    *    provides the value of the flag when no data is available
+   *
+   *
+   * @param has_upper_limit
+   *    if true the attribute accept values indicating that the flux is an upper limit and not an actual value
    *
    * @exception
    *  An exception is thrown if the names provided in the mapping are not present in the columnInfo.
    */
   PhotometryAttributeFromRow(std::shared_ptr<Euclid::Table::ColumnInfo> column_info_ptr,
       const std::vector<std::pair<std::string, std::pair<std::string, std::string>>>& filter_name_mapping,
-      const double missing_photometry_flag);
+      const bool has_missing_photometry,
+      const double missing_photometry_flag,
+      const bool has_upper_limit);
 
   virtual ~PhotometryAttributeFromRow();
 
@@ -80,10 +89,16 @@ private:
    */
   std::shared_ptr<std::vector<std::string>> m_filter_name_vector_ptr;
 
+
+  bool m_has_missing_photometry;
+
+
   /*
    * Flag value for missing photometry data
    */
   double m_missing_photometry_flag;
+
+  bool m_has_upper_limit;
 
 };
 
