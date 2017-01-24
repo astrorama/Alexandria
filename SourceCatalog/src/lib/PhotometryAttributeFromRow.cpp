@@ -88,24 +88,23 @@ unique_ptr<Attribute> PhotometryAttributeFromRow::createAttribute(
       } else {
         if (m_has_upper_limit) {
           /** Upper limit enabled **/
-          if (Elements::isEqual(error,0.)){
-                     throw SourceCatalog::LuminosityParsingException(
+          if (error==0.){
+            throw SourceCatalog::LuminosityParsingException(
                                "Zero error encountered when parsing the luminosity with 'missing data' and 'upper limit' enabled",
                                flux,
                                error);
-                         }
-                 if (error<0){
-                   /** Actual upper limit **/
-                   upper_limit=true;
-                   if (flux<=0){
-                             throw SourceCatalog::LuminosityParsingException(
+          }
+          if (error<0){
+             /** Actual upper limit **/
+             upper_limit=true;
+             if (flux<=0){
+                 throw SourceCatalog::LuminosityParsingException(
                                  "Negative or Zero flux encountered when parsing the luminosity in the context of an 'upper limit'",
                                  flux,
                                  error);
-                           }
-                   error=std::abs(error);
-                   }
-
+             }
+             error=std::abs(error);
+          }
         } else {
           /** Upper limit disabled **/
           if (error<=0){
@@ -115,7 +114,6 @@ unique_ptr<Attribute> PhotometryAttributeFromRow::createAttribute(
                                   error);
                             }
           }
-
         }
     } else {
 
@@ -129,7 +127,7 @@ unique_ptr<Attribute> PhotometryAttributeFromRow::createAttribute(
 
       if (m_has_upper_limit) {
         /** Upper limit enabled **/
-        if (Elements::isEqual(error,0.)){
+        if (error==0.){
             throw SourceCatalog::LuminosityParsingException(
                       "Zero error encountered when parsing the luminosity with 'missing data' disabled and 'upper limit' enabled",
                       flux,

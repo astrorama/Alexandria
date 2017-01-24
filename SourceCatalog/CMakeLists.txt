@@ -45,6 +45,9 @@ elements_add_unit_test(Source_test tests/src/Source_test.cpp
 elements_add_unit_test(Catalog_test tests/src/Catalog_test.cpp
                        LINK_LIBRARIES SourceCatalog TYPE Boost)
 
+elements_add_unit_test(CatalogFromTable_test tests/src/CatalogFromTable_test.cpp
+                       LINK_LIBRARIES SourceCatalog TYPE Boost)
+
 #-------------------------------------------------------------------------------
 
 elements_add_unit_test(SourceCatalog_all_attribute_tests tests/src/SourceAttributes/*_test.cpp

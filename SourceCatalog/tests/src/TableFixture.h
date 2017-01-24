@@ -66,7 +66,7 @@ struct TableFixture {
   double spec_z_err_row1 = 0.003647;
 
   const vector<Euclid::Table::Row::cell_type> values0 { source_id_1, true, 1,
-      int64_t { 123 }, 0.F, 0., 0., 0., 0., string { "first" }, spec_z_val_row0,
+      int64_t { 123 }, 0.F, 0.1, 0.2, 0.3, 0.4, string { "first" }, spec_z_val_row0,
       spec_z_err_row0 };
   const Euclid::Table::Row row0 { values0, column_info_ptr };
 
