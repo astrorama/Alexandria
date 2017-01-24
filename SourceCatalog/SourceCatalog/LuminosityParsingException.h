@@ -18,18 +18,20 @@ class LuminosityParsingException: public Elements::Exception {
 public:
 
   explicit  LuminosityParsingException(const char* message, double flux, double error):
-  Elements::Exception(message),m_flux(flux),m_error(error){}
-
+  Elements::Exception(CompleteMessage(message,flux,error)),m_flux(flux),m_error(error){}
 
   virtual ~LuminosityParsingException() noexcept { }
 
-  const char * what() const noexcept override {
-      std::string parent_message=std::string(Elements::Exception::what());
-      std::string message = parent_message + "( Flux="+std::to_string(m_flux)+", Error="+std::to_string(m_error)+")";
-      return message.c_str();
-    }
+  const double & GetFlux() const {return m_flux;}
+  const double & GetError() const {return m_error;}
 
 private:
+
+  const char* CompleteMessage(const char* message, double flux, double error){
+    std::string str_message(message);
+    str_message += " ( Flux="+std::to_string(flux)+", Error="+std::to_string(error)+")";
+    return str_message.c_str();
+  }
 
   double m_flux;
   double m_error;
