@@ -34,10 +34,11 @@ class Worker {
 public:
   
   Worker(std::mutex& queue_mutex, std::deque<ThreadPool::Task>& queue,
-                  std::atomic<bool>& run_flag, std::atomic<bool>& done_flag,
-                  unsigned int empty_queue_wait_time)
+                  std::atomic<bool>& run_flag, std::atomic<bool>& sleeping_flag,
+                  std::atomic<bool>& done_flag, unsigned int empty_queue_wait_time)
         : m_queue_mutex(queue_mutex), m_queue(queue), m_run_flag(run_flag),
-          m_done_flag(done_flag), m_empty_queue_wait_time(empty_queue_wait_time) {
+          m_sleeping_flag(sleeping_flag), m_done_flag(done_flag), 
+          m_empty_queue_wait_time(empty_queue_wait_time) {
   }
         
   void operator()() {
@@ -55,7 +56,9 @@ public:
       if (task_ptr) {
         (*task_ptr)();
       } else {
+        m_sleeping_flag.get() = true;
         std::this_thread::sleep_for(std::chrono::milliseconds(m_empty_queue_wait_time));
+        m_sleeping_flag.get() = false;
       }
     }
     // Indicate that the worker is done
@@ -67,6 +70,7 @@ private:
   std::reference_wrapper<std::mutex> m_queue_mutex;
   std::reference_wrapper<std::deque<ThreadPool::Task>> m_queue;
   std::reference_wrapper<std::atomic<bool>> m_run_flag;
+  std::reference_wrapper<std::atomic<bool>> m_sleeping_flag;
   std::reference_wrapper<std::atomic<bool>> m_done_flag;
   unsigned int m_empty_queue_wait_time;
   
@@ -75,23 +79,31 @@ private:
 } // end of anonymous namespace
 
 ThreadPool::ThreadPool(unsigned int thread_count, unsigned int empty_queue_wait_time)
-        : m_worker_run_flags(thread_count), m_worker_done_flags(thread_count),
-          m_empty_queue_wait_time(empty_queue_wait_time) {
+        : m_worker_run_flags(thread_count), m_worker_sleeping_flags(thread_count),
+          m_worker_done_flags(thread_count), m_empty_queue_wait_time(empty_queue_wait_time) {
   for (unsigned int i = 0; i < thread_count; ++i) {
     m_worker_run_flags.at(i) = true;
+    m_worker_sleeping_flags.at(i) = false;
     m_worker_done_flags.at(i) = false;
-    std::thread(Worker{m_queue_mutex, m_queue, m_worker_run_flags.at(i),
+    std::thread(Worker{m_queue_mutex, m_queue, m_worker_run_flags.at(i), m_worker_sleeping_flags.at(i),
                        m_worker_done_flags.at(i), m_empty_queue_wait_time}).detach();
   }
 }
 
 void ThreadPool::block() {
+  // Wait for the queue to be empty
   bool queue_is_empty = false;
   while (!queue_is_empty) {
     std::unique_lock<std::mutex> lock {m_queue_mutex};
     queue_is_empty = m_queue.empty();
     lock.unlock();
     if (!queue_is_empty) {
+      std::this_thread::sleep_for(std::chrono::milliseconds(m_empty_queue_wait_time));
+    }
+  }
+  // Wait for the workers to finish the currently executing tasks
+  for (auto& flag : m_worker_sleeping_flags) {
+    while (!flag) {
       std::this_thread::sleep_for(std::chrono::milliseconds(m_empty_queue_wait_time));
     }
   }
