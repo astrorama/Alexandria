@@ -101,7 +101,7 @@ struct CatalogFixture {
 //    catPtr = new Catalog(source_vector);
 
   }
-  ~CatalogFixture() {
+   virtual ~CatalogFixture() noexcept{
     // teardown
     //delete catPtr;
   }

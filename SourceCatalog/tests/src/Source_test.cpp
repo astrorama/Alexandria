@@ -76,7 +76,6 @@ BOOST_FIXTURE_TEST_CASE( missing_attribute_test, CatalogFixture ) {
    BOOST_TEST_MESSAGE("--> missing_attribute test ");
    shared_ptr<Photometry> ptrPhoto(source_2.getAttribute<Photometry>());
    BOOST_CHECK(nullptr == ptrPhoto);
-
 }
 
 //-----------------------------------------------------------------------------
