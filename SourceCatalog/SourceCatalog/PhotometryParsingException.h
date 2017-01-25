@@ -18,7 +18,9 @@ class PhotometryParsingException: public Elements::Exception {
 public:
 
   explicit  PhotometryParsingException(const char* message, double flux, double error):
-  Elements::Exception(CompleteMessage(message,flux,error)),m_flux(flux),m_error(error){}
+  Elements::Exception(message),m_flux(flux),m_error(error){
+    *this << " ( Flux=" << flux << ", Error=" << error << ")";
+  }
 
   virtual ~PhotometryParsingException() noexcept { }
 
@@ -26,12 +28,6 @@ public:
   const double & GetError() const {return m_error;}
 
 private:
-
-  const char* CompleteMessage(const char* message, double flux, double error){
-    std::string str_message(message);
-    str_message += " ( Flux="+std::to_string(flux)+", Error="+std::to_string(error)+")";
-    return str_message.c_str();
-  }
 
   double m_flux;
   double m_error;
