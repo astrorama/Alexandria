@@ -52,11 +52,11 @@ auto PhotometryCatalogConfig::getProgramOptions() -> std::map<std::string, Optio
 
 void PhotometryCatalogConfig::initialize(const UserValues& args) {
 
-  m_has_upper_limit =  (args.find(ENABLE_UPPER_LIMIT) != args.end()) && args.at(ENABLE_UPPER_LIMIT).as<std::string>() =="YES";
+  m_upper_limit_enabled =  (args.find(ENABLE_UPPER_LIMIT) != args.end()) && args.at(ENABLE_UPPER_LIMIT).as<std::string>() =="YES";
 
   double missing_photo_flag =-99.;
   if ( args.find(MISSING_PHOTOMETRY_FLAG) != args.end() ) {
-    m_has_missing_photometry=true;
+    m_missing_photometry_enabled=true;
     missing_photo_flag = args.at(MISSING_PHOTOMETRY_FLAG).as<double>();
 
   }
@@ -68,31 +68,31 @@ void PhotometryCatalogConfig::initialize(const UserValues& args) {
   std::shared_ptr<SourceCatalog::AttributeFromRow> handler_ptr {
     new SourceCatalog::PhotometryAttributeFromRow {column_info,
                                                    std::move(filter_name_mapping),
-                                                   m_has_missing_photometry,
+                                                   m_missing_photometry_enabled,
                                                    missing_photo_flag,
-                                                   m_has_upper_limit}
+                                                   m_upper_limit_enabled}
   };
   getDependency<CatalogConfig>().addAttributeHandler(std::move(handler_ptr));
 }
 
 
-bool PhotometryCatalogConfig::hasMissingPhotometry(){
+bool PhotometryCatalogConfig::isMissingPhotometryEnabled(){
 
   if (getCurrentState() < State::INITIALIZED) {
-     throw Elements::Exception() << "hasMissingPhotometry() call to uninitialized PhotometryCatalogConfig";
+     throw Elements::Exception() << "isMissingPhotometryEnabled() call to uninitialized PhotometryCatalogConfig";
    }
 
-  return m_has_missing_photometry;
+  return m_missing_photometry_enabled;
 
 }
 
-bool PhotometryCatalogConfig::hasUpperLimit(){
+bool PhotometryCatalogConfig::isUpperLimitEnabled(){
 
   if (getCurrentState() < State::INITIALIZED) {
-     throw Elements::Exception() << "hasUpperLimit() call to uninitialized PhotometryCatalogConfig";
+     throw Elements::Exception() << "isUpperLimitEnabled() call to uninitialized PhotometryCatalogConfig";
   }
 
-  return m_has_upper_limit;
+  return m_upper_limit_enabled;
 }
 
 } // Configuration namespace

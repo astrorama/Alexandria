@@ -1,11 +1,11 @@
 /**
- * @file SourceCatalog/LuminosityParsingException.h
+ * @file SourceCatalog/PhotometryParsingException.h
  *
  * Created on: Jan 20, 2017
  *     Author: Florian Dubath
  */
-#ifndef LUMINOSITYPARSINGEXCEPTION_H_
-#define LUMINOSITYPARSINGEXCEPTION_H_
+#ifndef PHOTOMETRYPARSINGEXCEPTION_H_
+#define PHOTOMETRYPARSINGEXCEPTION_H_
 
 #include <string>
 #include "ElementsKernel/Exception.h"
@@ -14,13 +14,13 @@ namespace Euclid {
 namespace SourceCatalog {
 
 
-class LuminosityParsingException: public Elements::Exception {
+class PhotometryParsingException: public Elements::Exception {
 public:
 
-  explicit  LuminosityParsingException(const char* message, double flux, double error):
+  explicit  PhotometryParsingException(const char* message, double flux, double error):
   Elements::Exception(CompleteMessage(message,flux,error)),m_flux(flux),m_error(error){}
 
-  virtual ~LuminosityParsingException() noexcept { }
+  virtual ~PhotometryParsingException() noexcept { }
 
   const double & GetFlux() const {return m_flux;}
   const double & GetError() const {return m_error;}
@@ -39,7 +39,7 @@ private:
 
 };
 
-} // namespace ChDataModel 
+} // namespace ChDataModel
 } // end of namespace Euclid
 
-#endif // LUMINOSITYPARSINGEXCEPTION_H_
+#endif // PHOTOMETRYPARSINGEXCEPTION_H_

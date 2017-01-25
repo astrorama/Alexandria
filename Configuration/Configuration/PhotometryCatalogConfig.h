@@ -76,13 +76,13 @@ public:
    */
   void initialize(const UserValues& args) override;
 
-  bool hasMissingPhotometry();
+  bool isMissingPhotometryEnabled();
 
-  bool hasUpperLimit();
+  bool isUpperLimitEnabled();
 
 private:
-  bool m_has_missing_photometry {false};
-  bool m_has_upper_limit {false};
+  bool m_missing_photometry_enabled {false};
+  bool m_upper_limit_enabled {false};
 
 }; /* End of PhotometryCatalogConfig class */
 

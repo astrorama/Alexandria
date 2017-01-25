@@ -144,8 +144,8 @@ BOOST_FIXTURE_TEST_CASE(getFlagsfalse_test, PhotometryCatalogConfig_fixture) {
 
   // Then
   config_manager.initialize(options_map);
-  BOOST_CHECK(!config_manager.getConfiguration<PhotometryCatalogConfig>().hasMissingPhotometry());
-  BOOST_CHECK(!config_manager.getConfiguration<PhotometryCatalogConfig>().hasUpperLimit());
+  BOOST_CHECK(!config_manager.getConfiguration<PhotometryCatalogConfig>().isMissingPhotometryEnabled());
+  BOOST_CHECK(!config_manager.getConfiguration<PhotometryCatalogConfig>().isUpperLimitEnabled());
 
 }
 
@@ -162,8 +162,8 @@ BOOST_FIXTURE_TEST_CASE(getFlagstrue_test, PhotometryCatalogConfig_fixture) {
 
   // Then
   config_manager.initialize(options_map);
-  BOOST_CHECK(config_manager.getConfiguration<PhotometryCatalogConfig>().hasMissingPhotometry());
-  BOOST_CHECK(config_manager.getConfiguration<PhotometryCatalogConfig>().hasUpperLimit());
+  BOOST_CHECK(config_manager.getConfiguration<PhotometryCatalogConfig>().isMissingPhotometryEnabled());
+  BOOST_CHECK(config_manager.getConfiguration<PhotometryCatalogConfig>().isUpperLimitEnabled());
 
 }
 

@@ -64,9 +64,9 @@ public:
    */
   PhotometryAttributeFromRow(std::shared_ptr<Euclid::Table::ColumnInfo> column_info_ptr,
       const std::vector<std::pair<std::string, std::pair<std::string, std::string>>>& filter_name_mapping,
-      const bool has_missing_photometry,
+      const bool missing_photometry_enabled,
       const double missing_photometry_flag,
-      const bool has_upper_limit);
+      const bool upper_limit_enabled);
 
   virtual ~PhotometryAttributeFromRow();
 
@@ -89,16 +89,14 @@ private:
    */
   std::shared_ptr<std::vector<std::string>> m_filter_name_vector_ptr;
 
-
-  bool m_has_missing_photometry;
-
+  bool m_missing_photometry_enabled;
 
   /*
    * Flag value for missing photometry data
    */
   double m_missing_photometry_flag;
 
-  bool m_has_upper_limit;
+  bool m_upper_limit_enabled;
 
 };
 

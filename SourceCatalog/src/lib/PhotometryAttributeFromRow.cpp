@@ -9,10 +9,11 @@
 #include <cmath>
 #include "ElementsKernel/Real.h"
 #include "SourceCatalog/SourceAttributes/PhotometryAttributeFromRow.h"
+
+#include "../../SourceCatalog/PhotometryParsingException.h"
 #include "ElementsKernel/Exception.h"
 #include "ElementsKernel/Real.h"
 #include "Table/CastVisitor.h"
-#include "SourceCatalog/LuminosityParsingException.h"
 
 
 using namespace std;
@@ -23,12 +24,12 @@ namespace SourceCatalog {
 PhotometryAttributeFromRow::PhotometryAttributeFromRow(
     std::shared_ptr<Euclid::Table::ColumnInfo> column_info_ptr,
     const vector<pair<string, std::pair<string, string>>>& filter_name_mapping,
-    const bool has_missing_photometry,
+    const bool missing_photometry_enabled,
     const double missing_photometry_flag,
-    const bool has_upper_limit) :
-    m_has_missing_photometry(has_missing_photometry),
+    const bool upper_limit_enabled) :
+    m_missing_photometry_enabled(missing_photometry_enabled),
     m_missing_photometry_flag(missing_photometry_flag),
-    m_has_upper_limit(has_upper_limit){
+    m_upper_limit_enabled(upper_limit_enabled){
 
   unique_ptr<size_t> flux_column_index_ptr;
   unique_ptr<size_t> error_column_index_ptr;
@@ -75,22 +76,22 @@ unique_ptr<Attribute> PhotometryAttributeFromRow::createAttribute(
     bool missing_data = false;
     bool upper_limit = false;
     if (std::isinf(flux)){
-            throw SourceCatalog::LuminosityParsingException(
-                               "Infinite  flux encountered when parsing the luminosity",
+            throw SourceCatalog::PhotometryParsingException(
+                               "Infinite flux encountered when parsing the Photometry",
                                flux,
                                error);
     }
-    if (m_has_missing_photometry) {
+    if (m_missing_photometry_enabled) {
       /** Missing photometry enabled **/
       missing_data = Elements::isEqual(flux, m_missing_photometry_flag) || std::isnan(flux);
       if (missing_data){
         error=0;
       } else {
-        if (m_has_upper_limit) {
+        if (m_upper_limit_enabled) {
           /** Upper limit enabled **/
           if (error==0.){
-            throw SourceCatalog::LuminosityParsingException(
-                               "Zero error encountered when parsing the luminosity with 'missing data' and 'upper limit' enabled",
+            throw SourceCatalog::PhotometryParsingException(
+                               "Zero error encountered when parsing the Photometry with 'missing data' and 'upper limit' enabled",
                                flux,
                                error);
           }
@@ -98,8 +99,8 @@ unique_ptr<Attribute> PhotometryAttributeFromRow::createAttribute(
              /** Actual upper limit **/
              upper_limit=true;
              if (flux<=0){
-                 throw SourceCatalog::LuminosityParsingException(
-                                 "Negative or Zero flux encountered when parsing the luminosity in the context of an 'upper limit'",
+                 throw SourceCatalog::PhotometryParsingException(
+                                 "Negative or Zero flux encountered when parsing the Photometry in the context of an 'upper limit'",
                                  flux,
                                  error);
              }
@@ -108,8 +109,8 @@ unique_ptr<Attribute> PhotometryAttributeFromRow::createAttribute(
         } else {
           /** Upper limit disabled **/
           if (error<=0){
-            throw SourceCatalog::LuminosityParsingException(
-                                  "Negative or Zero error encountered when parsing the luminosity with 'missing data' enabled and 'upper limit' disabled",
+            throw SourceCatalog::PhotometryParsingException(
+                                  "Negative or Zero error encountered when parsing the Photometry with 'missing data' enabled and 'upper limit' disabled",
                                   flux,
                                   error);
                             }
@@ -119,17 +120,17 @@ unique_ptr<Attribute> PhotometryAttributeFromRow::createAttribute(
 
       /** Missing photometry disabled **/
       if (std::isnan(flux)){
-                throw SourceCatalog::LuminosityParsingException(
-                    "NAN flux encountered when parsing the luminosity with 'missing data' disabled",
+                throw SourceCatalog::PhotometryParsingException(
+                    "NAN flux encountered when parsing the Photometry with 'missing data' disabled",
                     flux,
                     error);
       }
 
-      if (m_has_upper_limit) {
+      if (m_upper_limit_enabled) {
         /** Upper limit enabled **/
         if (error==0.){
-            throw SourceCatalog::LuminosityParsingException(
-                      "Zero error encountered when parsing the luminosity with 'missing data' disabled and 'upper limit' enabled",
+            throw SourceCatalog::PhotometryParsingException(
+                      "Zero error encountered when parsing the Photometry with 'missing data' disabled and 'upper limit' enabled",
                       flux,
                       error);
                 }
@@ -137,8 +138,8 @@ unique_ptr<Attribute> PhotometryAttributeFromRow::createAttribute(
           /** Actual upper limit **/
           upper_limit=true;
           if (flux<=0){
-                    throw SourceCatalog::LuminosityParsingException(
-                        "Negative or Zero flux encountered when parsing the luminosity in the context of an 'upper limit'",
+                    throw SourceCatalog::PhotometryParsingException(
+                        "Negative or Zero flux encountered when parsing the Photometry in the context of an 'upper limit'",
                         flux,
                         error);
                   }
@@ -149,8 +150,8 @@ unique_ptr<Attribute> PhotometryAttributeFromRow::createAttribute(
       } else {
         /** Upper limit disabled **/
         if (error<=0){
-          throw SourceCatalog::LuminosityParsingException(
-              "Negative or Zero error encountered when parsing the luminosity with 'missing data' and 'upper limit' disabled",
+          throw SourceCatalog::PhotometryParsingException(
+              "Negative or Zero error encountered when parsing the Photometry with 'missing data' and 'upper limit' disabled",
               flux,
               error);
         }

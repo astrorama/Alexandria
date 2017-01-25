@@ -84,67 +84,54 @@ struct TableFixture {
 
 
 
-  const vector<Euclid::Table::Row::cell_type> values_emm1 { int64_t(999), true, 1,int64_t { 123 }, 0.F,
+  const vector<Euclid::Table::Row::cell_type> values2 { int64_t(999), true, 1,int64_t { 123 }, 0.F,
          -1., 3., 0.5, 0.3,
          string { "first" }, spec_z_val_row0, spec_z_err_row0 };
-  const Euclid::Table::Row row_fm { values_emm1, column_info_ptr };
+  const Euclid::Table::Row row_neg_flux { values2, column_info_ptr };
 
-
-
-  const vector<Euclid::Table::Row::cell_type> values_em0 { int64_t(1000), true, 1,int64_t { 123 }, 0.F,
+  const vector<Euclid::Table::Row::cell_type> values3 { int64_t(1000), true, 1,int64_t { 123 }, 0.F,
        0., 3., 0.5, 0.3,
        string { "first" }, spec_z_val_row0, spec_z_err_row0 };
-  const Euclid::Table::Row row_f0 { values_em0, column_info_ptr };
+  const Euclid::Table::Row row_zero_flux { values3, column_info_ptr };
 
-  const vector<Euclid::Table::Row::cell_type> values_em1 { int64_t(1001), true, 1,int64_t { 123 }, 0.F,
+  const vector<Euclid::Table::Row::cell_type> values4 { int64_t(1001), true, 1,int64_t { 123 }, 0.F,
          1.,3., 0.5, 0.3,
          string { "first" }, spec_z_val_row0, spec_z_err_row0 };
-  const Euclid::Table::Row row_nom { values_em1, column_info_ptr };
+  const Euclid::Table::Row row_nominal_case { values4, column_info_ptr };
 
-  const vector<Euclid::Table::Row::cell_type> values_em2 { int64_t(1002), true, 1,int64_t { 123 }, 0.F,
+  const vector<Euclid::Table::Row::cell_type> values5 { int64_t(1002), true, 1,int64_t { 123 }, 0.F,
        -99., 3., 0.5, 0.3,
          string { "first" }, spec_z_val_row0, spec_z_err_row0 };
-  const Euclid::Table::Row row_fF { values_em2, column_info_ptr };
+  const Euclid::Table::Row row_flag_flux { values5, column_info_ptr };
 
-/*  const vector<Euclid::Table::Row::cell_type> values_em3 { int64_t(1003), true, 1,int64_t { 123 }, 0.F,
-        INFINITY, 3., 0.5, 0.3,
-          string { "first" }, spec_z_val_row0, spec_z_err_row0 };
-  const Euclid::Table::Row row_fInf { values_em3, column_info_ptr };
-
-  const vector<Euclid::Table::Row::cell_type> values_em4 { int64_t(1004), true, 1,int64_t { 123 }, 0.F,
-        NAN,3., 0.5, 0.3,
-          string { "first" }, spec_z_val_row0, spec_z_err_row0 };
-  const Euclid::Table::Row row_fNan { values_em4, column_info_ptr };*/
-
-
-  const vector<Euclid::Table::Row::cell_type> values_em5 { int64_t(1005), true, 1,int64_t { 123 }, 0.F,
+  const vector<Euclid::Table::Row::cell_type> values6{ int64_t(1005), true, 1,int64_t { 123 }, 0.F,
           1.,3., -0.5, 0.3,
             string { "first" }, spec_z_val_row0, spec_z_err_row0 };
-  const Euclid::Table::Row row_em { values_em5, column_info_ptr };
+  const Euclid::Table::Row row_neg_error { values6, column_info_ptr };
 
-  const vector<Euclid::Table::Row::cell_type> values_em6 { int64_t(1006), true, 1,int64_t { 123 }, 0.F,
+  const vector<Euclid::Table::Row::cell_type> values7 { int64_t(1006), true, 1,int64_t { 123 }, 0.F,
            1.,3., 0., 0.3,
              string { "first" }, spec_z_val_row0, spec_z_err_row0 };
-  const Euclid::Table::Row row_e0 { values_em6, column_info_ptr };
+  const Euclid::Table::Row row_zero_error { values7, column_info_ptr };
 
-  const vector<Euclid::Table::Row::cell_type> values_em7 { int64_t(1007), true, 1,int64_t { 123 }, 0.F,
+  const vector<Euclid::Table::Row::cell_type> values8 { int64_t(1007), true, 1,int64_t { 123 }, 0.F,
             -99.,3., -0.5, 0.3,
               string { "first" }, spec_z_val_row0, spec_z_err_row0 };
-  const Euclid::Table::Row row_fFem { values_em7, column_info_ptr };
+  const Euclid::Table::Row row_flag_flux_neg_error { values8, column_info_ptr };
 
-  const vector<Euclid::Table::Row::cell_type> values_em8 { int64_t(1008), true, 1,int64_t { 123 }, 0.F,
+  const vector<Euclid::Table::Row::cell_type> values9 { int64_t(1008), true, 1,int64_t { 123 }, 0.F,
               -99., 3., 0., 0.3,
                 string { "first" }, spec_z_val_row0, spec_z_err_row0 };
-  const Euclid::Table::Row row_fFe0 { values_em8, column_info_ptr };
+  const Euclid::Table::Row row_flag_flux_zero_error { values9, column_info_ptr };
 
-  const vector<Euclid::Table::Row::cell_type> values_em9 { int64_t(1009), true, 1,int64_t { 123 }, 0.F,
+  const vector<Euclid::Table::Row::cell_type> values10 { int64_t(1009), true, 1,int64_t { 123 }, 0.F,
                0., 3., -0.5, 0.3,
                string { "first" }, spec_z_val_row0, spec_z_err_row0 };
-  const Euclid::Table::Row row_f0em { values_em9, column_info_ptr };
-  const vector<Euclid::Table::Row::cell_type> values_em10 { int64_t(1010), true, 1,int64_t { 123 }, 0.F,
+  const Euclid::Table::Row row_zero_flux_neg_error { values10, column_info_ptr };
+  const vector<Euclid::Table::Row::cell_type> values11 { int64_t(1010), true, 1,int64_t { 123 }, 0.F,
                 -1., 3., -0.5, 0.3,
                 string { "first" }, spec_z_val_row0, spec_z_err_row0 };
-   const Euclid::Table::Row row_fmem { values_em10, column_info_ptr };
+   const Euclid::Table::Row row_neg_flux_neg_error { values11, column_info_ptr };
 
 
   // Two filter names
