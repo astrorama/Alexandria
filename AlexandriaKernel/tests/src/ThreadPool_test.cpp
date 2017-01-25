@@ -69,26 +69,26 @@ BOOST_AUTO_TEST_CASE( block_test ) {
   // Given
   std::mutex mutex;
   std::vector<int> output {};
-  ThreadPool pool {4};
+  ThreadPool pool {4, 10};
   
   // When
-  pool.submit(SleepTask(300, mutex, output));
-  pool.submit(SleepTask(100, mutex, output));
-  pool.submit(SleepTask(200, mutex, output));
-  pool.submit(SleepTask(50, mutex, output));
-  pool.submit(SleepTask(155, mutex, output));
-  pool.submit(SleepTask(75, mutex, output));
+    pool.submit(SleepTask(1000, mutex, output));
+    pool.submit(SleepTask(700, mutex, output));
+    pool.submit(SleepTask(900, mutex, output));
+    pool.submit(SleepTask(500, mutex, output));
+    pool.submit(SleepTask(300, mutex, output));
+    pool.submit(SleepTask(100, mutex, output));
   pool.block();
   
   // Then
   std::lock_guard<std::mutex> lock {mutex};
   BOOST_CHECK_EQUAL(output.size(), 6);
-  BOOST_CHECK_EQUAL(output[0], 50);
-  BOOST_CHECK_EQUAL(output[1], 100);
-  BOOST_CHECK_EQUAL(output[2], 75);
-  BOOST_CHECK_EQUAL(output[3], 200);
-  BOOST_CHECK_EQUAL(output[4], 155);
-  BOOST_CHECK_EQUAL(output[5], 300);
+  BOOST_CHECK_EQUAL(output[0], 500);
+  BOOST_CHECK_EQUAL(output[1], 700);
+  BOOST_CHECK_EQUAL(output[2], 100);
+  BOOST_CHECK_EQUAL(output[3], 300);
+  BOOST_CHECK_EQUAL(output[4], 900);
+  BOOST_CHECK_EQUAL(output[5], 1000);
 
 }
 
@@ -102,25 +102,25 @@ BOOST_AUTO_TEST_CASE( destructor_test ) {
   
   // When
   {
-    ThreadPool pool {4};
+    ThreadPool pool {4, 10};
+    pool.submit(SleepTask(1000, mutex, output));
+    pool.submit(SleepTask(700, mutex, output));
+    pool.submit(SleepTask(900, mutex, output));
+    pool.submit(SleepTask(500, mutex, output));
     pool.submit(SleepTask(300, mutex, output));
     pool.submit(SleepTask(100, mutex, output));
-    pool.submit(SleepTask(200, mutex, output));
-    pool.submit(SleepTask(50, mutex, output));
-    pool.submit(SleepTask(155, mutex, output));
-    pool.submit(SleepTask(75, mutex, output));
-    std::this_thread::sleep_for(std::chrono::milliseconds(60));
+    std::this_thread::sleep_for(std::chrono::milliseconds(600));
   }
   
   
   // Then
   std::lock_guard<std::mutex> lock {mutex};
   BOOST_CHECK_EQUAL(output.size(), 5);
-  BOOST_CHECK_EQUAL(output[0], 50);
-  BOOST_CHECK_EQUAL(output[1], 100);
-  BOOST_CHECK_EQUAL(output[2], 75);
-  BOOST_CHECK_EQUAL(output[3], 200);
-  BOOST_CHECK_EQUAL(output[4], 300);
+  BOOST_CHECK_EQUAL(output[0], 500);
+  BOOST_CHECK_EQUAL(output[1], 700);
+  BOOST_CHECK_EQUAL(output[2], 300);
+  BOOST_CHECK_EQUAL(output[3], 900);
+  BOOST_CHECK_EQUAL(output[4], 1000);
 
 }
 
