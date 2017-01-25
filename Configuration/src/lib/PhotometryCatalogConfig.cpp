@@ -21,6 +21,8 @@
  * @date 11/06/15
  * @author nikoapos
  */
+
+#include "ElementsKernel/Logging.h"
 #include "SourceCatalog/SourceAttributes/PhotometryAttributeFromRow.h"
 #include "Configuration/CatalogConfig.h"
 #include "Configuration/PhotometricBandMappingConfig.h"
@@ -32,6 +34,8 @@ namespace fs = boost::filesystem;
 
 namespace Euclid {
 namespace Configuration {
+
+static Elements::Logging logger = Elements::Logging::getLogger("PhotometryCatalogConfig");
 
 static const std::string MISSING_PHOTOMETRY_FLAG {"missing-photometry-flag"};
 static const std::string ENABLE_UPPER_LIMIT {"enable-upper-limit"};
@@ -53,13 +57,14 @@ auto PhotometryCatalogConfig::getProgramOptions() -> std::map<std::string, Optio
 void PhotometryCatalogConfig::initialize(const UserValues& args) {
 
   m_upper_limit_enabled =  (args.find(ENABLE_UPPER_LIMIT) != args.end()) && args.at(ENABLE_UPPER_LIMIT).as<std::string>() =="YES";
-
+  logger.info() << "Upper limit functionality is " << (m_upper_limit_enabled ? "ENABLED" : "DISABLED");
+  
   double missing_photo_flag =-99.;
   if ( args.find(MISSING_PHOTOMETRY_FLAG) != args.end() ) {
     m_missing_photometry_enabled=true;
     missing_photo_flag = args.at(MISSING_PHOTOMETRY_FLAG).as<double>();
-
   }
+  logger.info() << "Missing photometry functionality is " << (m_missing_photometry_enabled ? "ENABLED" : "DISABLED");
 
   auto filter_name_mapping = getDependency<PhotometricBandMappingConfig>().getPhotometricBandMapping();
   auto column_info = getDependency<CatalogConfig>().getColumnInfo();
