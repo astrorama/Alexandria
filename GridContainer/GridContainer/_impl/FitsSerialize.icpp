@@ -106,9 +106,10 @@ struct GridAxesToFitsHelper {
     }
     Table::Table table {row_list};
 
-    CCfits::FITS fits {filename.string(), CCfits::RWmode::Write};
-    Table::FitsWriter writer {Table::FitsWriter::Format::BINARY};
-    writer.write(fits, axis.name()+"_"+array_hdu_name, table);
+    Table::FitsWriter{filename.string(), false}
+            .setFormat(Table::FitsWriter::Format::BINARY)
+            .setHduName(axis.name()+"_"+array_hdu_name)
+            .addData(table);
   }
   
   static void addGridAxesToFitsFile(const boost::filesystem::path&,

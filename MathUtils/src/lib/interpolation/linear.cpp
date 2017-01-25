@@ -13,14 +13,6 @@ namespace Euclid {
 namespace MathUtils {
 
 std::unique_ptr<Function> linearInterpolation(const std::vector<double>& x, const std::vector<double>& y) {
-  if (x.size() != y.size()) {
-    throw Elements::Exception("Input X and Y vectors must have the same size");
-  }
-  for (auto iter=(x.begin()+1); iter!=x.end(); ++iter) {
-    if (*iter <= *(iter-1)) {
-      throw Elements::Exception("Only strictly increasing X values allowed");
-    }
-  }
   std::vector<std::shared_ptr<Function>> functions {};
   for (size_t i=0; i<x.size()-1; i++) {
     double coef1 = (y[i+1]-y[i]) / (x[i+1]-x[i]);

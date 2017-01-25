@@ -4,18 +4,57 @@
  * @author Nikolaos Apostolakos
  */
 
+#include "ElementsKernel/Logging.h"
 #include "MathUtils/interpolation/interpolation.h"
 #include "implementations.h"
 
 namespace Euclid {
 namespace MathUtils {
 
+namespace {
+
+Elements::Logging logger = Elements::Logging::getLogger("Interpolation");
+
+} // Anonymous namespace
+
 std::unique_ptr<Function> interpolate(const std::vector<double>& x, const std::vector<double>& y, InterpolationType type) {
+  
+  if (x.size() != y.size()) {
+    throw InterpolationException() << "Interpolation using vectors of incompatible "
+            << "size: X=" << x.size() << ", Y=" << y.size();
+  }
+  
+  // We remove any duplicate lines and we check that we have only increasing
+  // X values and no step functions
+  std::vector<double> final_x {};
+  std::vector<double> final_y {};
+  final_x.push_back(x[0]);
+  final_y.push_back(y[0]);
+  for (std::size_t i = 1; i < x.size(); ++i) {
+    if (x[i] == x[i-1]) {
+      if (y[i] == y[i-1]) {
+        logger.warn() << "Ignoring duplicate pair (" << x[i] << ", " << y[i]
+                << ") during interpolation";
+        continue;
+      } else {
+        throw InterpolationException() << "Interpolation of step functions is not "
+                << "supported. Entries: (" << x[i] << ", " << y[i] << ") and ("
+                << x[i-1] << ", " << y[i-1] << ")";
+      }
+    }
+    if (x[i] < x[i-1]) {
+      throw InterpolationException() << "Only increasing X values are supported "
+              << "but found " << x[i] << " after " << x[i-1];
+    }
+  final_x.push_back(x[i]);
+  final_y.push_back(y[i]);
+  }
+  
   switch (type) {
   case InterpolationType::LINEAR:
-    return linearInterpolation(x, y);
+    return linearInterpolation(final_x, final_y);
   case InterpolationType::CUBIC_SPLINE:
-    return splineInterpolation(x, y);
+    return splineInterpolation(final_x, final_y);
   }
   return nullptr;
 }

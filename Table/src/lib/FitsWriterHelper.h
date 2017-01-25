@@ -45,7 +45,7 @@ ELEMENTS_API std::vector<std::string> getAsciiFormatList(const Table& table);
  */
 ELEMENTS_API std::vector<std::string> getBinaryFormatList(const Table& table);
 
-void populateColumn(const Table& table, size_t column_index, CCfits::Table* table_hdu);
+void populateColumn(const Table& table, size_t column_index, CCfits::ExtHDU& table_hdu, long first_row=1);
 
 }
 } // end of namespace Euclid

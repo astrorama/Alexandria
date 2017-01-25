@@ -1,0 +1,71 @@
+/*
+ * Copyright (C) 2012-2020 Euclid Science Ground Segment    
+ *  
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free 
+ * Software Foundation; either version 3.0 of the License, or (at your option)  
+ * any later version.  
+ *  
+ * This library is distributed in the hope that it will be useful, but WITHOUT 
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more  
+ * details.  
+ *  
+ * You should have received a copy of the GNU Lesser General Public License 
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA  
+ */
+
+/* 
+ * @file InstOrRefHolder.icpp
+ * @author nikoapos
+ */
+
+#include <type_traits>
+#include "AlexandriaKernel/memory_tools.h"
+
+namespace Euclid {
+
+namespace InstOrRefHolder_Impl {
+
+template <typename InterfaceType, typename InstanceType>
+struct InstHolder_Impl : public InstOrRefHolder<InterfaceType> {
+  template <typename... Args>
+  InstHolder_Impl(Args... args) : m_instance(std::forward<Args>(args)...) { }
+  virtual ~InstHolder_Impl() = default;
+  InterfaceType& ref() override {
+    return m_instance;
+  }
+private:
+  InstanceType m_instance;
+};
+
+template <typename InterfaceType>
+struct RefHolder_Impl : public InstOrRefHolder<InterfaceType> {
+  RefHolder_Impl(InterfaceType& ref) : m_reference(ref) { }
+  virtual ~RefHolder_Impl() = default;
+  InterfaceType& ref() override {
+    return m_reference.get();
+  }
+private:
+  std::reference_wrapper<InterfaceType> m_reference;
+};
+
+} // end of namespace InstOrRefHolder_Impl
+
+
+template <typename InterfaceType>
+template <typename InstanceType, typename... Args>
+std::unique_ptr<InstOrRefHolder<InterfaceType>> InstOrRefHolder<InterfaceType>::create(Args... args) {
+  static_assert(std::is_same<InterfaceType, InstanceType>::value || std::is_base_of<InterfaceType, InstanceType>::value,
+                "InstanceType must be a subtype of InterfaceType");
+  return make_unique<InstOrRefHolder_Impl::InstHolder_Impl<InterfaceType, InstanceType>>(std::forward<Args>(args)...);
+}
+
+template <typename InterfaceType>
+std::unique_ptr<InstOrRefHolder<InterfaceType>> InstOrRefHolder<InterfaceType>::create(InterfaceType& ref) {
+  return make_unique<InstOrRefHolder_Impl::RefHolder_Impl<InterfaceType>>(ref);
+}
+
+} // end of namespace Euclid
+

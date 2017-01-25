@@ -106,7 +106,7 @@ std::map<std::string, ColumnDescription> autoDetectColumnDescriptions(
           ++token;
           std::type_index type = typeid(std::string);
           if (token != end) {
-            std::string token_str {*token};
+            std::string token_str =*token;
             if (!boost::starts_with(token_str, "(") && token_str != "-") {
               type = keywordToType(token_str);
               ++token;
@@ -114,7 +114,7 @@ std::map<std::string, ColumnDescription> autoDetectColumnDescriptions(
           }
           std::string unit = "";
           if (token != end) {
-            std::string token_str {*token};
+            std::string token_str = *token;
             if (boost::starts_with(token_str, "(")) {
               unit = token_str;
               unit.erase(unit.begin());
@@ -122,12 +122,12 @@ std::map<std::string, ColumnDescription> autoDetectColumnDescriptions(
               ++token;
             }
           }
-          if (token != end && std::string{*token} == "-") {
+          if (token != end && *token == "-") {
             ++token;
           }
           std::stringstream desc;
           while (token != end) {
-            desc << std::string{*token} << ' ';
+            desc << *token << ' ';
             ++token;
           }
           std::string desc_str = desc.str();
@@ -270,6 +270,41 @@ Row::cell_type convertToCellType(const std::string& value, std::type_index type)
     throw Elements::Exception() << "Cannot convert " << value << " to " << type.name();
   }
   throw Elements::Exception() << "Unknown type name " << type.name();
+}
+
+bool hasNextRow(std::istream& in, const std::string& comment) {
+  StreamRewinder rewinder {in};
+  while(in) {
+    std::string line;
+    getline(in, line);
+    size_t comment_pos = line.find(comment);
+    if (comment_pos != std::string::npos) {
+      line = line.substr(0, comment_pos);
+    }
+    boost::trim(line);
+    if (!line.empty()) {
+      return true;
+    }
+  }
+  return false;
+}
+
+std::size_t countRemainingRows(std::istream& in, const std::string& comment) {
+  StreamRewinder rewinder {in};
+  std::size_t count = 0;
+  while(in) {
+    std::string line;
+    getline(in, line);
+    size_t comment_pos = line.find(comment);
+    if (comment_pos != std::string::npos) {
+      line = line.substr(0, comment_pos);
+    }
+    boost::trim(line);
+    if (!line.empty()) {
+      ++count;
+    }
+  }
+  return count;
 }
 
 }

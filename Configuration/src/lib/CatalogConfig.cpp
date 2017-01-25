@@ -24,6 +24,7 @@
 #include <CCfits/CCfits>
 #include "ElementsKernel/Exception.h"
 #include "ElementsKernel/Logging.h"
+#include "AlexandriaKernel/memory_tools.h"
 #include "Table/AsciiReader.h"
 #include "Table/FitsReader.h"
 #include "Configuration/CatalogConfig.h"
@@ -80,7 +81,9 @@ void CatalogConfig::preInitialize(const UserValues& args) {
   }
 }
 
-static fs::path getCatalogFileFromOptions(const Configuration::UserValues& args,
+namespace {
+
+fs::path getCatalogFileFromOptions(const Configuration::UserValues& args,
                                           const fs::path& base_dir) {
   fs::path catalog_file {args.at(INPUT_CATALOG_FILE).as<std::string>()};
   if (catalog_file.is_relative()) {
@@ -96,10 +99,10 @@ static fs::path getCatalogFileFromOptions(const Configuration::UserValues& args,
 }
 
 enum class FormatType {
-  AUTO, FITS, ASCII
+  FITS, ASCII
 };
 
-static FormatType autoDetectFormatType(fs::path file) {
+FormatType autoDetectFormatType(fs::path file) {
   logger.info() << "Auto-detecting format of file " << file;
   FormatType result = FormatType::ASCII;
   {
@@ -116,7 +119,7 @@ static FormatType autoDetectFormatType(fs::path file) {
   return result;
 }
 
-static FormatType getFormatTypeFromOptions(const Configuration::UserValues& args,
+FormatType getFormatTypeFromOptions(const Configuration::UserValues& args,
                                            const fs::path& file) {
   FormatType format;
   if (args.at(INPUT_CATALOG_FORMAT).as<std::string>().compare("AUTO") == 0) {
@@ -129,60 +132,43 @@ static FormatType getFormatTypeFromOptions(const Configuration::UserValues& args
   return format;
 }
 
-static Table::Table readFitsTable(fs::path file) {
-  try {
-    CCfits::FITS fits {file.string()};
-    return Table::FitsReader().read(fits.extension(1));
-  } catch (CCfits::FitsException ex) {
-    throw Elements::Exception() << "Error while reading file " << file
-                                << ": " << ex.message();
+std::unique_ptr<Table::TableReader> getTableReaderImpl(bool fits_format, const boost::filesystem::path& filename) {
+  if (fits_format) {
+    return make_unique<Table::FitsReader>(filename.native(), 1);
+  } else {
+    return make_unique<Table::AsciiReader>(filename.native()); 
   }
 }
 
-static Table::Table readAsciiTable(fs::path file) {
-  std::ifstream in {file.string()};
-  return Table::AsciiReader().read(in);
-}
-
-void CatalogConfig::initialize(const UserValues& args) {
-  m_filename = getCatalogFileFromOptions(args, m_base_dir);
-  auto format = getFormatTypeFromOptions(args, m_filename);
-  logger.info() << "Reading table from file " << m_filename;
-  Table::Table table = (format == FormatType::FITS)
-                       ? readFitsTable(m_filename)
-                       : readAsciiTable(m_filename);
-  m_table_ptr.reset(new Table::Table{std::move(table)});
-}
-
-static std::string getIdColumnFromOptions(const Configuration::UserValues& args,
-                                          const Table::Table& table) {
+std::string getIdColumnFromOptions(const Configuration::UserValues& args,
+                                          const Table::ColumnInfo& column_info) {
   std::string id_column_name = "ID";
   if (args.find(SOURCE_ID_COLUMN_NAME) != args.end()) {
     id_column_name = args.at(SOURCE_ID_COLUMN_NAME).as<std::string>();
-    if (table.getColumnInfo()->find(id_column_name) == nullptr) {
+    if (column_info.find(id_column_name) == nullptr) {
       throw Elements::Exception() << "Input catalog file does not contain the "
           << "ID column with name " << id_column_name;
     }
   }
   if (args.find(SOURCE_ID_COLUMN_INDEX) != args.end()) {
     std::size_t index = args.at(SOURCE_ID_COLUMN_INDEX).as<int>();
-    if (index > table.getColumnInfo()->size()) {
+    if (index > column_info.size()) {
       throw Elements::Exception() << SOURCE_ID_COLUMN_INDEX << " (" << index
-          << ") is out of range (" << table.getColumnInfo()->size() << ")";
+          << ") is out of range (" << column_info.size() << ")";
     }
-    id_column_name = table.getColumnInfo()->getDescription(index-1).name;
+    id_column_name = column_info.getDescription(index-1).name;
   }
   logger.info() << "Using ID column \"" << id_column_name << '"';
   return id_column_name;
 }
 
-void CatalogConfig::postInitialize(const UserValues& args) {
-  auto& table = getAsTable();
-  auto id_column_name = getIdColumnFromOptions(args, table);
-  logger.info() << "Converting the table to a catalog";
-  SourceCatalog::CatalogFromTable converter {table.getColumnInfo(), id_column_name,
-                                             m_attribute_handlers};
-  m_catalog_ptr.reset(new SourceCatalog::Catalog{converter.createCatalog(table)});
+} // Anonymous namespace
+
+void CatalogConfig::initialize(const UserValues& args) {
+  m_filename = getCatalogFileFromOptions(args, m_base_dir);
+  m_fits_format = getFormatTypeFromOptions(args, m_filename) == FormatType::FITS;
+  m_column_info = std::make_shared<Table::ColumnInfo>(getTableReaderImpl(m_fits_format, m_filename)->getInfo());
+  m_id_column_name = getIdColumnFromOptions(args, *m_column_info);
 }
 
 void CatalogConfig::setBaseDir(const fs::path& base_dir) {
@@ -199,18 +185,66 @@ void CatalogConfig::addAttributeHandler(std::shared_ptr<SourceCatalog::Attribute
   m_attribute_handlers.push_back(handler);
 }
 
-const Table::Table& CatalogConfig::getAsTable() const {
-  if (getCurrentState() < State::INITIALIZED) {
-    throw Elements::Exception() << "getAsTable() call to uninitialized CatalogConfig";
+std::unique_ptr<Table::TableReader> CatalogConfig::getTableReader() const {
+  if (getCurrentState() < State::FINAL) {
+    throw Elements::Exception() << "getTableReader() call to not finalized CatalogConfig";
   }
-  return *m_table_ptr;
+  return getTableReaderImpl(m_fits_format, m_filename);
 }
 
-const SourceCatalog::Catalog& CatalogConfig::getCatalog() const {
+std::shared_ptr<Table::ColumnInfo> CatalogConfig::getColumnInfo() const {
+  if (getCurrentState() < State::INITIALIZED) {
+    throw Elements::Exception() << "getColumnInfo() call to uninitialized CatalogConfig";
+  }
+  return m_column_info;
+}
+
+namespace {
+
+class ConverterImpl {
+  
+public:
+  
+  ConverterImpl(std::shared_ptr<Table::ColumnInfo> column_info, const std::string& id_column_name,
+                std::vector<std::shared_ptr<SourceCatalog::AttributeFromRow>> attribute_handlers)
+          : m_converter(column_info, id_column_name, std::move(attribute_handlers)) {
+  }
+          
+  SourceCatalog::Catalog operator()(const Table::Table& table) {
+    return m_converter.createCatalog(table);
+  }
+  
+private:
+  
+  SourceCatalog::CatalogFromTable m_converter;
+  
+};
+
+} // Anonymous namespace
+
+CatalogConfig::TableToCatalogConverter CatalogConfig::getTableToCatalogConverter() const {
+  if (getCurrentState() < State::FINAL) {
+    throw Elements::Exception() << "getTableToCatalogConverter() call to not finalized CatalogConfig";
+  }
+  return ConverterImpl{m_column_info, m_id_column_name, m_attribute_handlers};
+}
+
+
+Table::Table CatalogConfig::readAsTable() const {
+  if (getCurrentState() < State::FINAL) {
+    throw Elements::Exception() << "getAsTable() call to not finalized CatalogConfig";
+  }
+  logger.info() << "Reading table from file " << m_filename;
+  return getTableReader()->read();
+}
+
+SourceCatalog::Catalog CatalogConfig::readAsCatalog() const {
   if (getCurrentState() < State::FINAL) {
     throw Elements::Exception() << "getCatalog() call to not finalized CatalogConfig";
   }
-  return *m_catalog_ptr;
+  auto table = readAsTable();
+  auto converter = getTableToCatalogConverter();
+  return converter(table);
 }
 
 const boost::filesystem::path& CatalogConfig::getFilename() const {

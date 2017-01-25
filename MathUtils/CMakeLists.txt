@@ -16,6 +16,8 @@ if(ELEMENTS_HIDE_WARNINGS)
                  PROPERTY COMPILE_FLAGS -Wno-float-equal)
     set_property(SOURCE src/lib/function/Piecewise.cpp
                  PROPERTY COMPILE_FLAGS -Wno-float-equal)
+    set_property(SOURCE src/lib/interpolation/interpolation.cpp
+                 PROPERTY COMPILE_FLAGS -Wno-float-equal)
   endif()
 endif()
 

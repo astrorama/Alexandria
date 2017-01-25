@@ -31,9 +31,8 @@ BOOST_AUTO_TEST_SUITE (CatalogFromTable_test)
 
 BOOST_FIXTURE_TEST_CASE(createCatalog_test, TableFixture) {
 
-
-  unique_ptr<AttributeFromRow> photmetryAft_ptr {new PhotometryAttributeFromRow {column_info_ptr, filter_name_mapping, -99.} };
-
+  BOOST_TEST_MESSAGE("Create Catalog test");
+  unique_ptr<AttributeFromRow> photmetryAft_ptr {new PhotometryAttributeFromRow {column_info_ptr, filter_name_mapping, true, -99., true} };
   vector<shared_ptr<AttributeFromRow>> attribute_from_table_vector;
 
   attribute_from_table_vector.push_back( move(photmetryAft_ptr) );
@@ -42,7 +41,7 @@ BOOST_FIXTURE_TEST_CASE(createCatalog_test, TableFixture) {
 
   Euclid::SourceCatalog::Catalog catalog = cft.createCatalog(table);
 
-
+  BOOST_CHECK_EQUAL(catalog.size(),2);
   BOOST_CHECK_EQUAL(catalog.find(source_id_1)->getId(),  source_id_1 );
   BOOST_CHECK_CLOSE(catalog.find(source_id_2)->getAttribute<Photometry>()->find(r_filter_name)->flux,  flux2_row1, tolerance );
 

@@ -71,8 +71,7 @@ std::unique_ptr<XYDataset> FitsParser::getDataset(const std::string& file) {
     try {
       const CCfits::ExtHDU& table_hdu = fits->extension(1);
       // Read first HDU
-      Euclid::Table::FitsReader fits_reader {};
-      auto table = fits_reader.read(table_hdu);
+      auto table = Table::FitsReader{table_hdu}.read();
 
       // Put the Table data into vector pair
       std::vector<std::pair<double, double>> vector_pair;

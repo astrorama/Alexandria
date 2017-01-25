@@ -29,12 +29,15 @@ namespace Table {
  */
 class StreamRewinder {
 public:
-  StreamRewinder(std::istream& stream) : m_stream(stream), m_position(stream.tellg()) { }
+  StreamRewinder(std::istream& stream) : m_stream(stream), m_state(stream.exceptions()), m_position(stream.tellg()) { }
   ~StreamRewinder() {
+    m_stream.clear();
     m_stream.seekg(m_position);
+    m_stream.setstate(m_state);
   }
 private:
   std::istream& m_stream;
+  std::ios::iostate m_state;
   int m_position;
 };
 
@@ -106,6 +109,10 @@ ELEMENTS_API std::vector<std::string> autoDetectColumnNames(std::istream& in,
  *    if the conversion fails
  */
 ELEMENTS_API Row::cell_type convertToCellType(const std::string& value, std::type_index type);
+
+ELEMENTS_API bool hasNextRow(std::istream& in, const std::string& comment);
+
+ELEMENTS_API std::size_t countRemainingRows(std::istream& in, const std::string& comment);
 
 }
 } // end of namespace Euclid

@@ -11,6 +11,7 @@
 #include <vector>
 
 #include "ElementsKernel/Export.h"
+#include "ElementsKernel/Exception.h"
 
 #include "XYDataset/XYDataset.h"
 #include "MathUtils/function/Function.h"
@@ -23,17 +24,23 @@ enum class InterpolationType {
   LINEAR, CUBIC_SPLINE
 };
 
+struct InterpolationException : public Elements::Exception {
+  using Elements::Exception::Exception;
+};
+
 /**
  * Returns a Function which performs interpolation for the given set of data
- * points.
+ * points. Duplicate (x,y) pairs are ignored and treated as a single one.
  * @param x The x values of the data points
  * @param y The y values of the data points
  * @param type The type of the interpolation to perform
  * @return A function representing the interpolation
- * @throws Elements::Exception
+ * @throws InterpolationException
  *    if the x and y vectors do not have the same size
- * @throws Elements::Exception
- *    if the x values are not strictly increasing
+ * @throws InterpolationException
+ *    if there are decreasing x values
+ * @throws InterpolationException
+ *    if there are (X,Y) pairs with same X value but different Y value (step functions) 
  */
 ELEMENTS_API std::unique_ptr<Function> interpolate(const std::vector<double>& x, const std::vector<double>& y, InterpolationType type);
 
@@ -43,10 +50,10 @@ ELEMENTS_API std::unique_ptr<Function> interpolate(const std::vector<double>& x,
  * @param dataset The dataset containing the data points
  * @param type The type of the interpolation to perform
  * @return A function representing the interpolation
- * @throws Elements::Exception
- *    if the x and y vectors do not have the same size
- * @throws Elements::Exception
- *    if the x values are not strictly increasing
+ * @throws InterpolationException
+ *    if there are decreasing x values
+ * @throws InterpolationException
+ *    if there are (X,Y) pairs with same X value but different Y value (step functions) 
  */
 ELEMENTS_API std::unique_ptr<Function> interpolate(const Euclid::XYDataset::XYDataset& dataset, InterpolationType type);
 
