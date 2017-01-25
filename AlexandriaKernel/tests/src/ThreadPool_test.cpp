@@ -29,10 +29,8 @@
 
 #include <boost/test/unit_test.hpp>
 
+#include "ElementsKernel/Exception.h"
 #include "AlexandriaKernel/ThreadPool.h"
-
-
-#include <iostream>
 
 using namespace Euclid;
 
@@ -55,6 +53,16 @@ private:
   int m_sleep;
   std::reference_wrapper<std::mutex> m_mutex;
   std::reference_wrapper<std::vector<int>> m_output;
+  
+};
+
+class ExceptionTask {
+  
+public:
+  
+  void operator()() {
+    throw Elements::Exception();
+  }
   
 };
 
@@ -82,6 +90,7 @@ BOOST_AUTO_TEST_CASE( block_test ) {
   
   // Then
   std::lock_guard<std::mutex> lock {mutex};
+  BOOST_CHECK(!pool.checkForException());
   BOOST_CHECK_EQUAL(output.size(), 6);
   BOOST_CHECK_EQUAL(output[0], 500);
   BOOST_CHECK_EQUAL(output[1], 700);
@@ -123,6 +132,40 @@ BOOST_AUTO_TEST_CASE( destructor_test ) {
   BOOST_CHECK_EQUAL(output[4], 1000);
 
 }
+
+//-----------------------------------------------------------------------------
+
+BOOST_AUTO_TEST_CASE( block_exception_test ) {
+
+  // Given
+  ThreadPool pool {4};
+  
+  // When
+  pool.submit(ExceptionTask());
+  
+  // Then
+  BOOST_CHECK_THROW(pool.block(), Elements::Exception);
+  BOOST_CHECK(pool.checkForException());
+
+}
+
+//-----------------------------------------------------------------------------
+
+BOOST_AUTO_TEST_CASE( checkForException_test ) {
+
+  // Given
+  ThreadPool pool {4};
+  
+  // When
+  pool.submit(ExceptionTask());
+  std::this_thread::sleep_for(std::chrono::milliseconds(100));
+  
+  // Then
+  BOOST_CHECK(pool.checkForException());
+  BOOST_CHECK_THROW(pool.checkForException(true), Elements::Exception);
+
+}
+
 
 //-----------------------------------------------------------------------------
 

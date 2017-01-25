@@ -35,14 +35,16 @@ public:
   
   Worker(std::mutex& queue_mutex, std::deque<ThreadPool::Task>& queue,
                   std::atomic<bool>& run_flag, std::atomic<bool>& sleeping_flag,
-                  std::atomic<bool>& done_flag, unsigned int empty_queue_wait_time)
+                  std::atomic<bool>& done_flag, unsigned int empty_queue_wait_time,
+                  std::exception_ptr& exception_ptr)
         : m_queue_mutex(queue_mutex), m_queue(queue), m_run_flag(run_flag),
           m_sleeping_flag(sleeping_flag), m_done_flag(done_flag), 
-          m_empty_queue_wait_time(empty_queue_wait_time) {
+          m_empty_queue_wait_time(empty_queue_wait_time),
+          m_exception_ptr(exception_ptr) {
   }
         
   void operator()() {
-    while (m_run_flag.get()) {
+    while (m_run_flag.get() && m_exception_ptr == nullptr) {
       // Check if there is anything it the queue to be done and get it
       std::unique_ptr<ThreadPool::Task> task_ptr = nullptr;
       std::unique_lock<std::mutex> lock {m_queue_mutex.get()};
@@ -54,7 +56,11 @@ public:
       
       // If we have some work to do, do it. Otherwise sleep for some time.
       if (task_ptr) {
-        (*task_ptr)();
+        try {
+          (*task_ptr)();
+        } catch(...) {
+          m_exception_ptr.get() = std::current_exception();
+        }
       } else {
         m_sleeping_flag.get() = true;
         std::this_thread::sleep_for(std::chrono::milliseconds(m_empty_queue_wait_time));
@@ -62,6 +68,7 @@ public:
       }
     }
     // Indicate that the worker is done
+    m_sleeping_flag.get() = true;
     m_done_flag.get() = true;
   }
   
@@ -73,6 +80,7 @@ private:
   std::reference_wrapper<std::atomic<bool>> m_sleeping_flag;
   std::reference_wrapper<std::atomic<bool>> m_done_flag;
   unsigned int m_empty_queue_wait_time;
+  std::reference_wrapper<std::exception_ptr> m_exception_ptr;
   
 };
   
@@ -86,14 +94,38 @@ ThreadPool::ThreadPool(unsigned int thread_count, unsigned int empty_queue_wait_
     m_worker_sleeping_flags.at(i) = false;
     m_worker_done_flags.at(i) = false;
     std::thread(Worker{m_queue_mutex, m_queue, m_worker_run_flags.at(i), m_worker_sleeping_flags.at(i),
-                       m_worker_done_flags.at(i), m_empty_queue_wait_time}).detach();
+                       m_worker_done_flags.at(i), m_empty_queue_wait_time, m_exception_ptr}).detach();
   }
+}
+
+namespace {
+
+void waitWorkers(std::vector<std::atomic<bool>>& worker_flags, unsigned int wait_time) {
+  // Now wait until all the workers have finish any current tasks
+  for (auto& flag : worker_flags) {
+    while (!flag) {
+      std::this_thread::sleep_for(std::chrono::milliseconds(wait_time));
+    }
+  }
+}
+
+}
+
+bool ThreadPool::checkForException(bool rethrow) {
+  if (m_exception_ptr) {
+    if (rethrow) {
+      std::rethrow_exception(m_exception_ptr);
+    } else {
+      return true;
+    }
+  }
+  return false;
 }
 
 void ThreadPool::block() {
   // Wait for the queue to be empty
   bool queue_is_empty = false;
-  while (!queue_is_empty) {
+  while (!queue_is_empty && m_exception_ptr == nullptr) {
     std::unique_lock<std::mutex> lock {m_queue_mutex};
     queue_is_empty = m_queue.empty();
     lock.unlock();
@@ -102,11 +134,9 @@ void ThreadPool::block() {
     }
   }
   // Wait for the workers to finish the currently executing tasks
-  for (auto& flag : m_worker_sleeping_flags) {
-    while (!flag) {
-      std::this_thread::sleep_for(std::chrono::milliseconds(m_empty_queue_wait_time));
-    }
-  }
+  waitWorkers(m_worker_sleeping_flags, m_empty_queue_wait_time);
+  // Check if any worker finished with an exception
+  checkForException(true);
 }
 
 
@@ -117,11 +147,7 @@ ThreadPool::~ThreadPool() {
     flag = false;
   }
   // Now wait until all the workers have finish any current tasks
-  for (auto& flag : m_worker_done_flags) {
-    while (!flag) {
-      std::this_thread::sleep_for(std::chrono::milliseconds(m_empty_queue_wait_time));
-    }
-  }
+  waitWorkers(m_worker_done_flags, m_empty_queue_wait_time);
 }
 
 void ThreadPool::submit(Task task) {

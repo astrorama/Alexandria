@@ -31,6 +31,7 @@
 #include <atomic>
 #include <deque>
 #include <functional>
+#include <exception>
 
 namespace Euclid {
 
@@ -57,6 +58,11 @@ namespace Euclid {
  * Note that when the ThreadPool object goes out of scope and its destructor is
  * called it will not process any tasks that are not already started, but it will
  * block until all threads finish with the currently executing tasks.
+ * 
+ * If any of the tasks in the queue throws an exception, all other running tasks
+ * will finish their execution, but no new tasks will be started. In this case,
+ * the block() method will rethrow the exception. The pool can be checked if it
+ * is in an exception state by calling the checkForException() method.
  *
  */
 class ThreadPool {
@@ -86,6 +92,9 @@ public:
   /// Blocks the calling thread until all the tasks in the pool queue are finished.
   /// Note that submitting tasks until this method returns is not allowed.
   void block();
+  
+  /// Checks if any task has thrown an exception and optionally rethrows it
+  bool checkForException(bool rethrow=false);
 
 private:
   
@@ -95,6 +104,7 @@ private:
   std::vector<std::atomic<bool>> m_worker_done_flags;
   std::deque<Task> m_queue {};
   unsigned int m_empty_queue_wait_time;
+  std::exception_ptr m_exception_ptr;
 
 }; /* End of ThreadPool class */
 
