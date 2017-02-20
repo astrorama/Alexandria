@@ -13,11 +13,6 @@ briefly how to use the module and can be used as a quick-start guide. For more
 detailed information refer to the documentation of each individual class and
 method in the %Table namespace.
 
-\note The %Table module requires that the full table fits in memory. The purpose
-of the module is to simplify the generic usage of tables, abstracting the file
-format from the user. For more application specific or performance oriented
-tasks (like handling of tables bigger than the memory) the dedicated libraries
-should be used directly.
 
 \section tabledatamodel Table Data Model
 
@@ -55,7 +50,8 @@ This example demonstrates all the necessary steps for creating a Table object.
 To be more comprehensible, each step is presented and explained separately.
 
 The first step is to create the ColumnInfo object which describes the columns
-of the table:
+of the table. For example, the following code creates the ColumnInfo object for
+a lookup table (which will be used to store values of functions):
 
 \code{.cpp}
   vector<ColumnInfo::info_type> info_list {
@@ -166,8 +162,8 @@ the ColumnInfo class. A shared pointer to the ColumnInfo object can be
 retrieved either from a Table object or from a Row.
 
 \code{.cpp}
-  auto table_column_info = table.getColumnInfo();
-  auto row_column_info = row.getColumnInfo();
+  auto column_info = table.getColumnInfo(); // Retrieve from table
+  auto column_info = row.getColumnInfo(); // Retrieve from tow
 \endcode
 
 The ColumnInfo object provides the method ColumnInfo::getDescription(), which
@@ -177,11 +173,11 @@ method. The following code uses these methods to print the information of all
 the columns:
 
 \code{.cpp}
-    size_t column_no = table_column_info->size();
+    size_t column_no = column_info->size();
     cout << "The table has " << column_no << " columns\n";
 
     for (size_t i = 0; i < column_no; ++i) {
-      auto& desc = table_column_info->getDescription(i);
+      auto& desc = column_info->getDescription(i);
 
       cout << "Column " << i << ": "<< desc.name
            << " (type: " << desc.type.name() << ")"
@@ -207,13 +203,13 @@ column with the given name exists. This facilitates the checking if a column
 exists or not, as demonstrated in the following example:
 
 \code{.cpp}
-  auto x_index = table_column_info->find("X");
+  auto x_index = column_info->find("X");
   if (x_index) {
     cout << "Column X has index " << *x_index << "\n";
   } else {
     cout << "Column X not found\n";
   }
-  auto z_index = table_column_info->find("Z");
+  auto z_index = column_info->find("Z");
   if (z_index) {
     cout << "Column Z has index " << *z_index << "\n";
   } else {
@@ -237,7 +233,7 @@ before trying to read the data from the Row%s cells. This can easily be done
 by using the `typeid()` method: 
 
 \code{.cpp}
-  if (table_column_info->getDescription(*x_index).type == typeid(double)) {
+  if (column_info->getDescription(*x_index).type == typeid(double)) {
     // Here is safe to access the X column data
   }
 \endcode
@@ -366,19 +362,170 @@ copy of the full vector.
 \section tableio Table I/O
 
 The Table module provides functionality for importing and exporting Table%s
-from/to files. The currently supported formats are ASCII space separated text
-files and FITS tables. The following examples demonstrate this functionality.
+from/to files and streams. The currently supported formats are ASCII space
+separated text and FITS tables. The following sections demonstrate how to use
+this functionality.
 
-\subsection readascii Reading a Table from an ASCII stream
+\subsection iointerfaces I/O interfaces
 
-The Table module provides the class AsciiReader, which can be used for
-reading a table from an input stream. Note that a generic `std::istream` is used
-instead of a file name. This is done to provide more flexibility. To open a file
-as a stream the following code can be used:
+To allow abstraction of the I/O format, the table module provides the interfaces
+TableReader and TableWriter for importing and exporting tables. This way, the
+user can isolate the format specific code to a single place in his application
+(where he creates the instance of the specific implementation), and expose this
+instance to the rest of the code using the interface. For example, the following
+class encapsulates the format details for a table reader:
 
 \code{.cpp}
-  fstream in_stream {"/path/to/table/file"};
+class ReaderProvider {
+  
+public:
+  
+  ReaderProvider() {
+    if (...) { // format is ASCII
+      m_reader_ptr = make_unique<AsciiReader>(...);
+    } else { // format is FITS
+      m_reader_ptr = make_unique<FitsReader>(...);
+    }
+  }
+  
+  TableReader& get() {
+    return *m_reader_ptr;
+  }
+  
+private:
+  
+  unique_ptr<TableReader> m_reader_ptr;
+  
+};
 \endcode
+
+\note The specific implementations of the interfaces and how to create them is
+explained later at this document
+
+\subsubsection tablereader TableReader interface
+
+The TableReader interface is designed to operate as a stream to a given table.
+It provides the following methods:
+
+- TableReader::getInfo() : which can be used to retrieve the column
+information of the underlying table
+- TableReader::read() : which can be used to read rows from the table stream as
+a Table object
+- TableReader::skip() : which can be used to skip some rows
+- TableReader::hasMoreRows() : which can be used to check if there are any rows
+left for reading
+- TableReader::rowsLeft() : which can be used to count how many rows are left
+for reading
+
+The TableReader::read() method, when called without any arguments it will read
+all the remaining rows of the table. When it is called with a number as an
+argument it will read only this specific number of rows. This allows the user to
+handle big files, which otherwise would not fit in memory as a single Table
+object. As an example, the following function calculates the summary of a column
+values, reading in memory only 1000 rows per time:
+
+\code{.cpp}
+double sumBigTableColumn(TableReader& reader, int col_index) {
+  double sum = 0;
+  while (reader.hasMoreRows()) {
+    auto table = reader.read(1000);
+    for (auto& row : table) {
+      sum += boost::get<double>(row[col_index]);
+    }
+  }
+  return sum;
+}
+\endcode
+
+\warning When you use the TableReader::rowsLeft() method be careful for
+performance issues! The performance of this method strongly depends on the
+implementation. The FITS implementation is very fast, but the ASCII
+implementation needs to parse the rest of the file and can easily become a
+performance bottle neck.
+
+\subsubsection tablewriter TableWriter interface
+
+The TableWriter interface, similarly to the TableReader, is also designed to
+operate as a stream. It provides only two methods:
+
+- TableWriter::addComment() : which adds a comment to the underlying table
+- TableWriter::addData() : which appends rows to the underlying table
+
+\note The current implementations of the TableWriter require that all comments
+are added before any data
+
+As with the TableReader, applications which produce tables too big to fit in
+memory as a single Table object, can break down their computation to smaller
+chunks and use the addData() call multiple times. As an extra advantage, when
+the addData() method returns, the rows are guaranteed to be flushed to the
+underlying table file. This means that the progress of the application can be
+monitored by checking the output file, and that in case of an application crash
+the already produced table stays intact. As an example, the following class can
+be used to create an output table, which is flushed every time 100 results are
+computed:
+
+\code{.cpp}
+class OutputResults {
+  
+public:
+  
+  virtual ~OutputResults() {
+    // Flush any remaining rows
+    flush();
+  }
+  
+  void addResult(const Result& result) {
+    m_rows.push_back(convertToRow(result));
+    if (m_rows.size() >= 100) {
+      flush();
+    }
+  }
+  
+private:
+  
+  void flush() {
+    Table table {m_rows};
+    m_writer->addData(table);
+    m_rows.clear();
+  }
+  
+  unique_ptr<TableWriter> m_writer;
+  vector<Row> m_rows;
+  
+};
+\endcode
+
+\subsection readascii Reading an ASCII table
+
+Reading ASCII tables is supported by the AsciiReader class, which can be used to
+read tables from any kind of `std::istream`. The stream reference is given as
+parameter to the constructor. For example, the following code reads a table from
+a string stream:
+
+\code{.cpp}
+  stringstream stream {};
+  // Create an AsciiReader reading from the stream
+  AsciiReader reader {stream};
+\endcode
+
+This constructor only gets a reference to the stream, so the user is responsible
+to manage the stream instance itself and to guarantee that the reference stays
+valid for all the lifetime of the AsciiReader.
+
+As the most common use is to read a file, there is provided a second constructor
+which gets as parameter a string with the file name. When using this constructor
+the AsciiReader will handle any file stream opening internally, so the user does
+not need to worry about any broken references. This is the recommended way of 
+using the AsciiReader:
+
+\code{.cpp}
+  // Create an AsciiReader reading from a file
+  // The file streams are handled internally
+  AsciiReader reader {"/path/to/table/file"};
+\endcode
+
+\note If none of the above cases can meet your requirements, see the
+AsiiReader::create() factory
 
 The AsciiReader class, by default will interpret the `#` as comment character
 and will try to detect automatically the names and the types of the columns in
@@ -444,11 +591,12 @@ if a file contains the following text:
 it can be read directly by using the command:
 
 \code{.cpp}
-table = AsciiReader{}.read(in_stream);
+table = AsciiReader{"/path/to/table/file"}.read();
 \endcode
 
-Note that the above command will read till the end of the stream, so any further
-reading attempts will behave like reading an empty file. For the following
+Note that if you use the constructor constructor which uses a stream referehce,
+the above command will read till the end of the stream, so any further reading
+attempts will behave like reading an empty file. In this case, for the following
 examples to work, before calling the read method again, the stream must be
 reopened, or be rewind at the beginning by using the commands:
 
@@ -457,72 +605,87 @@ reopened, or be rewind at the beginning by using the commands:
   in_stream.seekg(0, ios_base::beg);
 \endcode
 
-Except of this automatic mode, the AsciiReader class can be parameterized by
-passing arguments to its constructor, so it can read files which do not follow
-the default conventions. The first constructor parameter can override the
-types of the columns. This is very useful for the cases that a program wants
-to read the column in a different type (for example read a `float` column as
-a `double` column), but also for the cases that a file does not contain the
-column types and the program does not want to read them as strings. As an
-example, the following code will read the previous file interpreting the X
-and Y columns as `float` values:
+Fore more information of how to partially read the file, how to skip rows, etc
+see the \ref tablereader section.
+
+Except of this automatic column name/type detection mode described above, the
+AsciiReader class can be parameterized so it can read files which do not follow
+the default conventions. The first parameterization is overriding the types
+of the columns, by calling the method AsciiReader::fixColumnTypes(). This is
+very useful for the cases that a program wants to read the column in a different
+type (for example read a `float` column as a `double` column), but also for the
+cases that a file does not contain the column types and the program does not
+want to read them as strings. As an example, the following code will read the
+previous file interpreting the X and Y columns as `float` values:
 
 \code{.cpp}
-  vector<std::type_index> column_types {
+  vector<type_index> column_types {
     typeid(string), typeid(float), typeid(float)
   };
-  AsciiReader reader_types {column_types};
-  table = reader_types.read(in_stream);
+  AsciiReader reader_types {"/path/to/table/file"};
+  reader_types.fixColumnTypes(column_types);
+  table = reader_types.read();
 \endcode
 
 Note that the above code will still detect automatically the names of the
 columns. If the program wants to override the column names, it can use the
-second AsciiReader constructor parameter, which is a vector of strings with
-the new column names. The following code will read our table file by reading
-the *X* column as *Angle* and the *Y* column as *Value*:
+second AsciiReader parameterization by calling the AsciiReader::fixColumnNames()
+method, which allows to fix the column names. The following code will read our
+table file by reading the *X* column as *Angle* and the *Y* column as *Value*:
 
 \code{.cpp}
   vector<string> column_names {"Function", "Angle", "Value"};
-  AsciiReader reader_names {{}, column_names};
-  table = reader_names.read(in_stream);
+  AsciiReader reader_names {"/path/to/table/file"};
+  reader_names.fixColumnNames(column_names);
+  table = reader_names.read();
 \endcode
-
-Note that an empty vector is given as the first parameter (the column types).
-This will enable automatic detection for the column types. This is true also
-for the column names parameter and can be used in the case automatic detection
-is desired, but a later parameter must be specified.
 
 The last way the AsciiReader can be parameterized is the comment character. In
 fact, any string can be used as a comment indicator and not only a single
-character. The comment indicator is set with the third constructor parameter.
-The following example can read files which start their comments with the `//`
-sequence (column names and types will be detected automatically):
+character. The comment indicator is set by calling the
+AsciiReader::setCommentIndicator() method. The following example can read files
+which start their comments with the `//` sequence (column names and types will
+be detected automatically):
 
 \code{.cpp}
-  AsciiReader reader_comment {{}, {}, "//"};
-  table = reader_comment.read(in_stream);
+  AsciiReader reader_comment {"/path/to/table/file"};
+  reader_comment.setCommentIndicator("//");
+  table = reader_comment.read();
 \endcode
+
+All the above methods are returning a reference to the reader itself, so they
+can be chained together to read tables in a single line:
+
+\code{.cpp}
+table = AsciiReader{in_stream}.fixColumnTypes(column_types).fixColumnNames(column_names).setCommentIndicator("//").read();
+\endcode
+
+\warning After you have already start reading from an AsciiReader
+parameterization is not any more allowed and all the above methods will throw an
+Elements::Exception
 
 \subsection writeascii Writing a Table in an ASCII stream
 
 To export a Table as an ASCII character sequence, the Table module provides
-the AsciiWriter class. Similarly with the AsciiReader, the AsciiWriter writes
-the table in a generic std:ostream instead of a file, to provide more
-flexibility. If the table should be exported in a file, a file stream can be
-opened using the following code:
+the AsciiWriter class. Similarly with the AsciiReader, the AsciiWriter provides
+two constructors, one that gets as parameter a `std::ostream` reference and one
+that gets as parameter a string with the filename to write the table to. Again,
+the recommended constructor is the one that gets the filename and handles the
+file stream internally.
 
-\code{.cpp}
-  ofstream file_stream {"/path/to/table/file"};
-\endcode
+\warning AsciiWriter is going to override any pre-existing file
 
 By default, the AsciiWriter will use as a comment indicator the `#` character,
 it will add the column description comments, the names of the columns as the
 last comment line and it will right-align all the columns. The width of the
 columns will be automatically calculated based on the contents of the table
-cells. For example, the following code will print on the screen our table:
+cells at the first addData() call. If sequential addData() call require more
+space for a specific column its width is expanded, but any already written rows
+are not modified. For example, the following code will print on the screen our
+table:
 
 \code{.cpp}
-  AsciiWriter{}.write(cout, table);
+  AsciiWriter{cout}.addData(table);
 \endcode
 
 Output:
@@ -550,16 +713,15 @@ Output:
 
 Printing a table on the screen this way can be very handy, especially during
 development. Be careful though, because printing a table with hundreds of
-thousands of lines in the `std::cout` will actually print all of them.
+thousands of rows in the `std::cout` will actually print all of them.
 
-Similarly with the AsciiReader, the AsciiWriter can be parameterized by
-passing arguments to its constructor. Currently, the only option which can be
-parameterized is the comment character to use. For example, the following
-code will use the `//` comment indicator:
+Similarly with the AsciiReader, the AsciiWriter can be parameterized by method
+calls. The first option which can be parameterized is the comment character to
+use, by calling the method AsciiWriter::setCommentIndicator(). For example, the
+following code will use the `//` comment indicator:
 
 \code{.cpp}
-  AsciiWriter writer_comment {"//"};
-  writer_comment.write(cout, table);
+  AsciiWriter{cout}.setCommentIndicator("//").addData(table);
 \endcode
 
 Output:
@@ -586,256 +748,144 @@ Output:
 
 \endcode
 
-\subsection readfits Reading a Table from a FITS file
-
-The Table functionality related with reading a Table from a FITS file is
-provided by the FitsReader class. This class can read Table%s from
-`CCfits::HDU` objects which contain either ASCII or binary tables. Note that
-the input of the FitsReader is the HDU object, so the user has the flexibility
-to handle multiple extension HDUs from the same file. An extension can be
-retrieved the standard CCfits way, using the following code:
+The second way to parameterize the AsciiWriter is to hide or not the comments
+with the column info, by calling the method AsciiWriter::showColumnInfo(). In
+this case only the comment with the column names is generated. Again, like with
+AsciiReader, these calls can be chained in a single line:
 
 \code{.cpp}
+  AsciiWriter{cout}.showColumnInfo(false).setCommentIndicator("//").addData(table);
+\endcode
+
+Output:
+
+\code
+// Function    Angle       Value
+
+        sin        0           0
+        cos        0           1
+        sin 0.628319    0.587785
+        cos 0.628319    0.809017
+        sin  1.25664    0.951057
+        cos  1.25664    0.309017
+        sin  1.88496    0.951057
+        cos  1.88496   -0.309017
+        sin  2.51327    0.587785
+        cos  2.51327   -0.809017
+        sin  3.14159 1.22465e-16
+        cos  3.14159          -1
+
+\endcode
+
+Fore more information of how to progressively write a table in a file see the
+\ref tablewriter section.
+
+
+\subsection readfits Reading a Table from a FITS file
+
+The functionality related with reading a Table from a FITS file is provided by
+the FitsReader class. Both ASCII and binary tables are supported. Similarly with
+the AsciiReader, this class provides multiple constructors to either read from
+an existing `CCfits::HDU` reference or to give the filename and extension index
+or name:
+
+\code{.cpp}
+  // FitsReader from CCfits::HDU reference
   CCfits::FITS fits {"/path/to/FITS/file"};
   auto& table_hdu = fits.extension(1);
+  FitsReader{table_hdu};
+
+  // FitsReader from filename and extension index (defaults to 1)
+  FitsReader{"/path/to/FITS/file", 1};
+
+  // FitsReader from filename and extension name
+  FitsReader{"/path/to/FITS/file", "HDUNAME"};
 \endcode
 
 \warning In the above code note that the `table_hdu` is a reference. This is
 obligatory because the result of the `extension()` method is a sublcass of the
 `CCfits::HDU`.
 
-Having the reference of the table HDU, using the FitsReader class to convert it
-to a Table object is straight forward. The column names, types and units will
-automatically be detected from the standard HDU keywords (TTYPEn, TFORMn and
-TUNITn keywords accordingly). The column descriptions are read from the (non
-standard) keyword TDESCn. Reading the Table is as simple as:
+As the FITS format is a standard, the conventions the FitsReader uses to convert
+a table HDU to a Table object is straigh forward. The column names, types and
+units will automatically be detected from the standard HDU keywords (TTYPEn,
+TFORMn and TUNITn keywords accordingly). The column descriptions are read from
+the (non standard) keyword TDESCn.
+
+Reading the Table is as simple as:
 
 \code{.cpp}
-  auto table = FitsReader{}.read(table_hdu);
+  auto table = FitsReader{"/path/to/FITS/file"}.read();
 \endcode
 
 Similarly with the AsciiReader, the FitsReader can be parameterized via its
-constructor arguments. In particular, the names of the columns can be
-overridden:
+method calls. In particular, the names of the columns can be overridden:
 
 \code{.cpp}
   vector<string> column_names {"Function", "Angle", "Value"};
-  FitsReader reader {column_names};
-  auto table = reader.read(table_hdu);
+  auto table = FitsReader{"/path/to/FITS/file"}.fixColumnNames(column_names).read();
 \endcode
 
 Overriding the column types on the other hand is not allowed. The conventions of
 the FITS types conversions to the Table cell values (both for ASCII and binary
-FITS tables) can be found in the documentation of the FitsReader::read() method.
+FITS tables) can be found in the documentation of the FitsReader class.
 
 \subsection writefits Writing a Table in a FITS file
 
 To export a Table in a FITS file, the Table module provides the FitsWriter
-class. This class can append to a `CCfits::FITS` object both ASCII and binary
-table HDUs. Note that the `CCfits::FITS` object must be opened in write mode:
+class. The same as all the rest of the Readers/Writers, this class provides
+multiple constructors, to either manage the lifetime of the CCfits::FITS object
+internally or to delegate it to the user:
 
 \code{.cpp}
-  CCfits::FITS fits {"/path/to/FITS/file", CCfits::RWmode::Write};
+  // Create a FitsWriter from an existing CCfits::FITS instance
+  auto fits_ptr = make_shared<CCfits::FITS>("/path/to/FITS/file", CCfits::RWmode::Write);
+  FitsWriter{fits_ptr};
+
+  // Create a FitsWriter that manages internally the CCfits::FITS instance
+  FitsWriter{"/path/to/FITS/file"};
+  // or
+  FitsWriter{"/path/to/FITS/file", false};
+
+  // Same as previous, but if the file already exists it is overridden
+  FitsWriter{"/path/to/FITS/file", true};
 \endcode
 
-Note that the above command, if the FITS file already exists, will open it
-in append mode (the tables will be added after the existing HDUs). To override
-an existing FITS file the path has to be prefixed with the '!' character:
+Similarly with the rest readers/writers, the FitsWriter can be parameterized by
+method calls. Two parameterizations are possible, to set the table HDU format by
+calling the method FitsWriter::setFormat() (if not called, binary format is
+used), and to set the HDU name by calling the method FitsWriter::setHduName()
+(if not called, the name is set to the empty string). These calls myst be done
+before any data are written to the FitsWriter. Note that due to file size and
+performance benefits, it is recommended to use binary format except if you have
+specific reasons why not to do so. The following code shows how to write a table
+in a file, overriding it if it already exists, as an ASCII table HDU called
+`HDUNAME`:
 
 \code{.cpp}
-  CCfits::FITS fits {"!/path/to/FITS/file", CCfits::RWmode::Write};
+  FitsWriter{"/path/to/FITS/file". true}.setFormat(FitsWriter::Format::ASCII).setHduName("HDUNAME").addData(table);
 \endcode
 
-Having the `fits` object, appending table HDUs is straight forward. The format
-of the HDU is set as the FitsWriter constructor parameter (the options are
-FitsWriter::Format::BINARY and FitsWriter::Format::ASCII) and the
-FitsWriter::write() method gets as parameters the `CCfits:FITS` object to
-append the table on, the new HDUs name and the table with the data:
+Note that in contrast with the AsciiWriter, which always overrides any existing
+file, the FitsWriter can handle already existing files or CCfits::FITS
+references with existing HDUs. This allows for both adding new table HDUs and
+for appending rows to existing ones. The rules for doing so are very simple. If
+there already exists an extension HDU with the name set by calling the method
+FitsWriter::setHduName() (or the empty string if this method is not called),
+the writer will start appending rows to this existing table. If there is no such
+HDU, the writer will create a new extension HDU at the end of the FITS and write
+the table there. Note that if the writer appends to an existing HDU, it will
+ignore any calls to the FitsWriter::setFormat() method (it will use the format
+of the existing table), as well as any comments added by calling the method
+FitsWriter::addComment().
 
-\code{.cpp}
-  FitsWriter writer {FitsWriter::Format::BINARY};
-  writer.write(fits, "TABLE_NAME", table);
-\endcode
+\warning When you use the FitsWriter constructor that accepts the filename, it
+will open and close the FITS file both on its construction and at each call of
+the FitsWriter::addData() method. If you handle files with many thousands of
+HDUs (for example appending a table HDU for each object in a catalog), this can
+easily become a performance bottleneck. In this case you should manually create
+the CCfits::FITS instance and use the relevant constructor.
 
-\section fullcode Full Example Code
-
-\code{.cpp}
-#include <iostream>
-#include <sstream>
-#include <math.h>
-#include "Table/Table.h"
-#include "Table/AsciiReader.h"
-#include "Table/AsciiWriter.h"
-#include "Table/CastVisitor.h"
-using namespace Euclid::Table;
-using namespace std;
-int main() {
-  
-  // //////////////////////////////////
-  // Create a Table
-  // //////////////////////////////////
-  cout << "\nCreate a Table\n";
-  
-  // Step 1: Create the ColumnInfo object
-  vector<ColumnInfo::info_type> info_list {
-    {"Function", typeid(string), "", "The name of the function"},
-    {"X", typeid(double), "x_unit", "The input value X of the function"},
-    {"Y", typeid(double), "y_unit", "The output value F(X) of the function"}
-  };
-  shared_ptr<ColumnInfo> column_info {new ColumnInfo {move(info_list)}};
-  
-  // Step 2: Create the Rows of the table
-  vector<Row> row_list {};
-  for (int i = 0; i <= 5; ++i) {
-    double x = i * M_PI / 5;
-    row_list.push_back(Row{{string{"sin"}, x, sin(x)}, column_info});
-    row_list.push_back(Row{{string{"cos"}, x, cos(x)}, column_info});
-  }
-  
-  // Verbose way to create rows
-  vector<Row::cell_type> cell_values {string{"example"}, 5., 2E-15};
-  Row row {std::move(cell_values), column_info};
-  
-  // Step 3: Create the table instance
-  Table table {row_list};
-  
-  // //////////////////////////////////
-  // Examine column information
-  // //////////////////////////////////
-  cout << "\nExamine column information\n";
-  
-  // Retrieving the column information
-  auto table_column_info = table.getColumnInfo();
-  auto row_column_info = row.getColumnInfo();
-  
-  // Printing the column information
-  size_t column_no = table_column_info->size();
-  cout << "The table has " << column_no << " columns\n";
-  
-  for (size_t i = 0; i < column_no; ++i) {
-    auto& desc = table_column_info->getDescription(i);
-    
-    cout << "Column " << i << ": "<< desc.name
-         << " (type: " << desc.type.name() << ")"
-         << " (unit: " << desc.unit << ")"
-         << " (description: " << desc.description << ")\n";
-  }
-  
-  // Searching for a column by name
-  auto x_index = table_column_info->find("X");
-  if (x_index) {
-    cout << "Column X has index " << *x_index << "\n";
-  } else {
-    cout << "Column X not found\n";
-  }
-  auto z_index = table_column_info->find("Z");
-  if (z_index) {
-    cout << "Column Z has index " << *z_index << "\n";
-  } else {
-    cout << "Column Z not found\n";
-  }
-  
-  // Checking the type of a column
-  if (table_column_info->getDescription(*x_index).type == typeid(double)) {
-    cout << "Safe to access X column data\n";
-  }
-  
-  // //////////////////////////////////
-  // Access the table data
-  // //////////////////////////////////
-  cout << "\nAccess the table data\n";
-  
-  // Print all table data
-  for (auto& row : table) {
-    for (auto& cell : row) {
-      cout << cell << " ";
-    }
-    cout << "\n";
-  }
-  
-  // Access a single cell
-  cout << "Third rows X value is " << table[2][*x_index] << "\n";
-  
-  // Access a column by name
-  cout << "Third rows Y value is " << table[2]["Y"] << "\n";
-  
-  // Retrieve the cell value
-  double sum {0};
-  for (auto& row : table) {
-    sum += boost::get<double>(row["Y"]);
-  }
-  cout << "Sum of all Y values is " << sum << "\n";
-  
-  // Use the CastVisitor
-  cout << "Using the CastVisitor to access Y as string:\n";
-  for (auto& row :table) {
-    string y_str = boost::apply_visitor(CastVisitor<string>{}, row["Y"]);
-    cout << "  Y as string " << y_str << "\n";
-  }
-  
-  // //////////////////////////////////
-  // Reading a Table from an ASCII stream
-  // //////////////////////////////////
-  cout << "\nReading a Table from an ASCII stream\n";
-  
-  stringstream in_stream { "# Column: X double\n"
-                           "# Column: Y double\n"
-                           "# Function        X           Y\n" 
-                           "       sin        0           0\n" 
-                           "       cos        0           1\n" 
-                           "       sin 0.628319    0.587785\n" 
-                           "       cos 0.628319    0.809017\n" 
-                           "       sin  1.25664    0.951057\n" 
-                           "       cos  1.25664    0.309017\n" 
-                           "       sin  1.88496    0.951057\n" 
-                           "       cos  1.88496   -0.309017\n" 
-                           "       sin  2.51327    0.587785\n" 
-                           "       cos  2.51327   -0.809017\n" 
-                           "       sin  3.14159 1.22465e-16\n" 
-                           "       cos  3.14159          -1\n"};
-  
-  // Reading the table (default way)
-  table = AsciiReader{}.read(in_stream);
-  
-  in_stream.clear();
-  in_stream.seekg(0, ios_base::beg);
-  
-  // Parameterizing column types
-  vector<std::type_index> column_types {
-    typeid(string), typeid(float), typeid(float)
-  };
-  AsciiReader reader_types {column_types};
-  table = reader_types.read(in_stream);
-  
-  in_stream.clear();
-  in_stream.seekg(0, ios_base::beg);
-  
-  // Parameterizing column names
-  vector<string> column_names {"Function", "Angle", "Value"};
-  AsciiReader reader_names {{}, column_names};
-  table = reader_names.read(in_stream);
-  
-  in_stream.clear();
-  in_stream.seekg(0, ios_base::beg);
-  
-  // Parameterizing the comment indicator
-  AsciiReader reader_comment {{}, {}, "#"};
-  table = reader_comment.read(in_stream);
-  
-  // //////////////////////////////////
-  // Writing a Table in an ASCII stream
-  // //////////////////////////////////
-  cout << "\nWriting a Table in an ASCII stream\n";
-  
-  // Default writing
-  AsciiWriter{}.write(cout, table);
-  
-  // Changing comment character
-  AsciiWriter writer_comment {"//"};
-  writer_comment.write(cout, table);
-  
-}
-\endcode
 
 */
 

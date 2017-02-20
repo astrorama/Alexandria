@@ -1,36 +1,52 @@
-/** 
+/*
+ * Copyright (C) 2012-2020 Euclid Science Ground Segment
+ *
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 3.0 of the License, or (at your option)
+ * any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+ */
+
+/**
  * @file tests/src/FitsWriter_test.cpp
- * @date April 23, 2014
- * @author Nikolaos Apostolakos
+ * @date 12/01/16
+ * @author nikoapos
  */
 
 #include <boost/test/unit_test.hpp>
-#include "ElementsKernel/Exception.h"
+#include <CCfits/CCfits>
 #include "ElementsKernel/Temporary.h"
-#include "Table/Table.h"
-#include "Table/ColumnInfo.h"
-#include "Table/Row.h"
 #include "Table/FitsWriter.h"
 
+using namespace Euclid::Table;
+
 struct FitsWriter_Fixture {
-  std::vector<Euclid::Table::ColumnInfo::info_type> info_list {
-      Euclid::Table::ColumnInfo::info_type("Boolean", typeid(bool), "deg", "Desc1"),
-      Euclid::Table::ColumnInfo::info_type("Integer", typeid(int32_t), "mag", "Desc2"),
-      Euclid::Table::ColumnInfo::info_type("Long", typeid(int64_t), "", "Desc3"),
-      Euclid::Table::ColumnInfo::info_type("Float", typeid(float), "ph", "Desc4"),
-      Euclid::Table::ColumnInfo::info_type("Double", typeid(double), "s", "Desc5"),
-      Euclid::Table::ColumnInfo::info_type("String", typeid(std::string), "m", "Desc6")
+  std::vector<ColumnInfo::info_type> info_list {
+      ColumnInfo::info_type("Boolean", typeid(bool), "deg", "Desc1"),
+      ColumnInfo::info_type("Integer", typeid(int32_t), "mag", "Desc2"),
+      ColumnInfo::info_type("Long", typeid(int64_t), "", "Desc3"),
+      ColumnInfo::info_type("Float", typeid(float), "ph", "Desc4"),
+      ColumnInfo::info_type("Double", typeid(double), "s", "Desc5"),
+      ColumnInfo::info_type("String", typeid(std::string), "m", "Desc6")
   };
-  std::shared_ptr<Euclid::Table::ColumnInfo> column_info {new Euclid::Table::ColumnInfo {info_list}};
-  std::vector<Euclid::Table::Row::cell_type> values0 {true, 1, int64_t{123}, 0.F, 0., std::string{"first"}};
-  Euclid::Table::Row row0 {values0, column_info};
-  std::vector<Euclid::Table::Row::cell_type> values1 {false, 12345, int64_t{123456789}, 2.3e-2F, 1.12345e-18, std::string{"second"}};
-  Euclid::Table::Row row1 {values1, column_info};
-  std::vector<Euclid::Table::Row> row_list {row0, row1};
-  Euclid::Table::Table table {row_list};
+  std::shared_ptr<ColumnInfo> column_info {new ColumnInfo {info_list}};
+  std::vector<Row::cell_type> values0 {true, 1, int64_t{123}, 0.F, 0., std::string{"first"}};
+  Row row0 {values0, column_info};
+  std::vector<Row::cell_type> values1 {false, 12345, int64_t{123456789}, 2.3e-2F, 1.12345e-18, std::string{"second"}};
+  Row row1 {values1, column_info};
+  std::vector<Row> row_list {row0, row1};
+  Table table {row_list};
   Elements::TempDir temp_dir;
-  std::unique_ptr<CCfits::FITS> fits {new CCfits::FITS(
-         (temp_dir.path()/"FitsWriter_test.fits").native(), CCfits::RWmode::Write)};
+  std::string fits_file_path = (temp_dir.path()/"FitsWriter_test.fits").native();
 };
 
 //-----------------------------------------------------------------------------
@@ -44,11 +60,15 @@ BOOST_AUTO_TEST_SUITE (FitsWriter_test)
 BOOST_FIXTURE_TEST_CASE(writeBinary, FitsWriter_Fixture) {
 
   // Given
-  Euclid::Table::FitsWriter writer (Euclid::Table::FitsWriter::Format::BINARY);
+  FitsWriter writer {fits_file_path};
+  writer.setFormat(FitsWriter::Format::BINARY);
+  writer.setHduName("BinaryTable");
 
   // When
-  writer.write(*fits, "BinaryTable", table);
-  auto& result = fits->extension("BinaryTable");
+  writer.addData(table);
+  CCfits::FITS fits {fits_file_path, CCfits::RWmode::Read};
+  auto& result = fits.extension("BinaryTable");
+  result.readAllKeys();
 
   // Then
   BOOST_CHECK_EQUAL(result.rows(), 2);
@@ -140,11 +160,15 @@ BOOST_FIXTURE_TEST_CASE(writeBinary, FitsWriter_Fixture) {
 BOOST_FIXTURE_TEST_CASE(writeAscii, FitsWriter_Fixture) {
 
   // Given
-  Euclid::Table::FitsWriter writer (Euclid::Table::FitsWriter::Format::ASCII);
+  FitsWriter writer {fits_file_path};
+  writer.setFormat(FitsWriter::Format::ASCII);
+  writer.setHduName("AsciiTable");
 
   // When
-  writer.write(*fits, "AsciiTable", table);
-  auto& result = fits->extension("AsciiTable");
+  writer.addData(table);
+  CCfits::FITS fits {fits_file_path, CCfits::RWmode::Read};
+  auto& result = fits.extension("AsciiTable");
+  result.readAllKeys();
 
   // Then
   BOOST_CHECK_EQUAL(result.rows(), 2);
@@ -233,3 +257,5 @@ BOOST_FIXTURE_TEST_CASE(writeAscii, FitsWriter_Fixture) {
 //-----------------------------------------------------------------------------
 
 BOOST_AUTO_TEST_SUITE_END ()
+
+

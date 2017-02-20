@@ -67,8 +67,7 @@ std::unique_ptr<XYDataset> AsciiParser::getDataset(const std::string& file) {
   // Check file exists
   if (sfile) {
     // Read file into a Table object
-    Euclid::Table::AsciiReader ascii_reader {{typeid(double), typeid(double)}};
-    auto table = ascii_reader.read(sfile);
+    auto table = Table::AsciiReader{sfile}.fixColumnTypes({typeid(double), typeid(double)}).read();
     // Put the Table data into vector pair
     std::vector<std::pair<double, double>> vector_pair;
     for (auto row : table) {

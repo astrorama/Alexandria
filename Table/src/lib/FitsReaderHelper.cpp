@@ -107,9 +107,9 @@ std::vector<std::string> autoDetectColumnDescriptions(const CCfits::Table& table
 }
 
 template<typename T>
-std::vector<Row::cell_type> convertScalarColumn(CCfits::Column& column) {
+std::vector<Row::cell_type> convertScalarColumn(CCfits::Column& column, long first, long last) {
   std::vector<T> data;
-  column.read(data, 1, column.rows());
+  column.read(data, first, last);
   std::vector<Row::cell_type> result;
   for (auto value : data) {
     result.push_back(value);
@@ -118,9 +118,9 @@ std::vector<Row::cell_type> convertScalarColumn(CCfits::Column& column) {
 }
 
 template<typename T>
-std::vector<Row::cell_type> convertVectorColumn(CCfits::Column& column) {
+std::vector<Row::cell_type> convertVectorColumn(CCfits::Column& column, long first, long last) {
   std::vector<std::valarray<T>> data;
-  column.readArrays(data, 1, column.rows());
+  column.readArrays(data, first, last);
   std::vector<Row::cell_type> result;
   for (auto& valar : data) {
     result.push_back(std::vector<T>(std::begin(valar),std::end(valar)));
@@ -129,26 +129,30 @@ std::vector<Row::cell_type> convertVectorColumn(CCfits::Column& column) {
 }
 
 std::vector<Row::cell_type> translateColumn(CCfits::Column& column, std::type_index type) {
+  return translateColumn(column, type, 1, column.rows());
+}
+
+std::vector<Row::cell_type> translateColumn(CCfits::Column& column, std::type_index type, long first, long last) {
   if (type == typeid(bool)) {
-    return convertScalarColumn<bool>(column);
+    return convertScalarColumn<bool>(column, first, last);
   } if (type == typeid(int32_t)) {
-    return convertScalarColumn<int32_t>(column);
+    return convertScalarColumn<int32_t>(column, first, last);
   } if (type == typeid(int64_t)) {
-    return convertScalarColumn<int64_t>(column);
+    return convertScalarColumn<int64_t>(column, first, last);
   } if (type == typeid(float)) {
-    return convertScalarColumn<float>(column);
+    return convertScalarColumn<float>(column, first, last);
   } if (type == typeid(double)) {
-    return convertScalarColumn<double>(column);
+    return convertScalarColumn<double>(column, first, last);
   } if (type == typeid(std::string)) {
-    return convertScalarColumn<std::string>(column);
+    return convertScalarColumn<std::string>(column, first, last);
   } if (type == typeid(std::vector<int32_t>)) {
-    return convertVectorColumn<int32_t>(column);
+    return convertVectorColumn<int32_t>(column, first, last);
   } if (type == typeid(std::vector<int64_t>)) {
-    return convertVectorColumn<int64_t>(column);
+    return convertVectorColumn<int64_t>(column, first, last);
   } if (type == typeid(std::vector<float>)) {
-    return convertVectorColumn<float>(column);
+    return convertVectorColumn<float>(column, first, last);
   } if (type == typeid(std::vector<double>)) {
-    return convertVectorColumn<double>(column);
+    return convertVectorColumn<double>(column, first, last);
   }
   throw Elements::Exception() << "Unsupported column type " << type.name();
 }

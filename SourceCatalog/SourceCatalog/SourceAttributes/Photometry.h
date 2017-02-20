@@ -85,10 +85,13 @@ public:
       std::vector<FluxErrorPair> value_vector) :
       m_filter_name_vector_ptr(filter_name_vector_ptr), m_value_vector(
           std::move(value_vector)) {
+    if (m_filter_name_vector_ptr == nullptr) {
+      throw Elements::Exception() << "Photometry filter names vector pointer is null";
+    }
     // Only check the size, but not the consistency
     if (m_filter_name_vector_ptr->size() != m_value_vector.size()) {
       throw Elements::Exception()
-          << "The std::string and the flux vectors have different size";
+          << "Photometry filter names vector has different size than the values vector";
     }
   }
 

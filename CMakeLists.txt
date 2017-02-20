@@ -11,4 +11,4 @@ set(CXX_SUGGEST_OVERRIDE ON
     FORCE)
 
 # Declare project name and version
-elements_project(Alexandria 2.7 USE Elements 4.0)
+elements_project(Alexandria 2.7 USE Elements 4.1)

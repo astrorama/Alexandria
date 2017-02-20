@@ -64,6 +64,8 @@ ELEMENTS_API std::vector<std::string> autoDetectColumnDescriptions(const CCfits:
  */
 ELEMENTS_API std::vector<Row::cell_type> translateColumn(CCfits::Column& column, std::type_index type);
 
+ELEMENTS_API std::vector<Row::cell_type> translateColumn(CCfits::Column& column, std::type_index type, long first, long last);
+
 }
 } // end of namespace Euclid
 

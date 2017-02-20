@@ -13,14 +13,6 @@ namespace Euclid {
 namespace MathUtils {
 
 std::unique_ptr<Function> splineInterpolation(const std::vector<double>& x, const std::vector<double>& y) {
-  if (x.size() != y.size()) {
-    throw Elements::Exception("Input X and Y vectors must have the same size");
-  }
-  for (auto iter=(x.begin()+1); iter!=x.end(); ++iter) {
-    if (*iter <= *(iter-1)) {
-      throw Elements::Exception("Only strictly increasing X values allowed");
-    }
-  }
   
   // Number of intervals
   int n = x.size() - 1;
