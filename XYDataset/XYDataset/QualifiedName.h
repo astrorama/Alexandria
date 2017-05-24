@@ -10,6 +10,7 @@
 #include <string>
 #include <vector>
 #include <functional>
+#include <iostream>
 
 #include "ElementsKernel/Export.h"
 
@@ -158,6 +159,11 @@ public:
    * @return true if the two QualifiedName are not equal, false otherwise
    */
   bool operator!=(const QualifiedName& other) const;
+
+  /**
+   * @brief Make the QualifiedName streamable
+   */
+  friend std::ostream& operator<<(std::ostream& stream, const QualifiedName& qualified_name);
 
   /**
    * @class AlphabeticalComparator

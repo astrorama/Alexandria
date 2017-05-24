@@ -98,5 +98,11 @@ bool QualifiedName::operator!=(const QualifiedName& other) const {
   return !(*this == other);
 }
 
+std::ostream& operator<<(std::ostream& stream, const QualifiedName& qualified_name)
+{
+  stream << qualified_name.qualifiedName();
+  return stream;
+}
+
 } // namespace XYDataset
 } // end of namespace Euclid
