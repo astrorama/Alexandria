@@ -161,11 +161,6 @@ public:
   bool operator!=(const QualifiedName& other) const;
 
   /**
-   * @brief Make the QualifiedName streamable
-   */
-  friend std::ostream& operator<<(std::ostream& stream, const QualifiedName& qualified_name);
-
-  /**
    * @class AlphabeticalComparator
    * @brief Provides alphabetical comparison for the QualifiedNames a and b
    * @param a The first QualifiedName to compare
@@ -190,6 +185,11 @@ private:
   mutable size_t m_hash {0};
 
 }; // class QualifiedName
+
+
+/// Make the QualifiedName streamable
+std::ostream& operator<<(std::ostream& stream, const QualifiedName& qualified_name);
+
 
 } // namespace XYDataset
 } // end of namespace Euclid
