@@ -13,14 +13,7 @@
 #include "serialization/NonDefaultConstructibleClass.h"
 #include "XYDataset/XYDataset.h"
 
-namespace std {
 
-std::ostream& operator<<(std::ostream& stream, const Euclid::XYDataset::QualifiedName& name) {
-  stream << name.qualifiedName();
-  return stream;
-}
-
-}
 
 //-----------------------------------------------------------------------------
 

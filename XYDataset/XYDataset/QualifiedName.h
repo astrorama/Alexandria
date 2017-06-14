@@ -10,6 +10,7 @@
 #include <string>
 #include <vector>
 #include <functional>
+#include <iostream>
 
 #include "ElementsKernel/Export.h"
 
@@ -184,6 +185,11 @@ private:
   mutable size_t m_hash {0};
 
 }; // class QualifiedName
+
+
+/// Make the QualifiedName streamable
+std::ostream& operator<<(std::ostream& stream, const QualifiedName& qualified_name);
+
 
 } // namespace XYDataset
 } // end of namespace Euclid
