@@ -40,7 +40,7 @@ GridContainer::GridAxis<int> indexAxis(const std::string& name, std::size_t size
 }
 
 SOM::SOM(std::size_t nd, std::size_t x, std::size_t y, InitFunc::Signature init_func)
-        : m_cells{indexAxis("X", x), indexAxis("Y", y)} {
+        : m_cells{indexAxis("X", x), indexAxis("Y", y)}, m_size{x, y} {
 
   // Initialize all the grid cells using the given function
   for (auto& v : m_cells) {
@@ -49,6 +49,18 @@ SOM::SOM(std::size_t nd, std::size_t x, std::size_t y, InitFunc::Signature init_
     }
   }
 
+}
+
+const std::pair<std::size_t, std::size_t>& SOM::getSize() const {
+  return m_size;
+}
+
+std::vector<double>& SOM::operator()(std::size_t x, std::size_t y) {
+  return m_cells(x, y);
+}
+
+const std::vector<double>& SOM::operator()(std::size_t x, std::size_t y) const {
+  return m_cells(x, y);
 }
 
 } // SOM namespace

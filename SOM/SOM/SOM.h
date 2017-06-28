@@ -48,15 +48,16 @@ public:
    */
   virtual ~SOM() = default;
   
+  std::vector<double>& operator()(std::size_t x, std::size_t y);
   
-  GridContainer::GridContainer<std::vector<std::vector<double>>, int, int>& getCells() {
-    return m_cells;
-  }
-
+  const std::vector<double>& operator()(std::size_t x, std::size_t y) const;
+  
+  const std::pair<std::size_t, std::size_t>& getSize() const;
 
 private:
   
   GridContainer::GridContainer<std::vector<std::vector<double>>, int, int> m_cells;
+  std::pair<std::size_t, std::size_t> m_size;
 
 }; /* End of SOM class */
 
