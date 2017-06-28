@@ -63,6 +63,30 @@ const std::vector<double>& SOM::operator()(std::size_t x, std::size_t y) const {
   return m_cells(x, y);
 }
 
+SOM::iterator SOM::begin() {
+  return m_cells.begin();
+}
+
+SOM::iterator SOM::end() {
+  return m_cells.end();
+}
+
+SOM::const_iterator SOM::begin() const {
+  return m_cells.begin();
+}
+
+SOM::const_iterator SOM::end() const {
+  return m_cells.end();
+}
+
+SOM::const_iterator SOM::cbegin() {
+  return m_cells.cbegin();
+}
+
+SOM::const_iterator SOM::cend() {
+  return m_cells.cend();
+}
+
 } // SOM namespace
 } // Euclid namespace
 

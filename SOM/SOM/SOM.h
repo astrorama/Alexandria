@@ -41,6 +41,10 @@ class SOM {
 
 public:
   
+  using CellGridType = GridContainer::GridContainer<std::vector<std::vector<double>>, int, int>;
+  using iterator = CellGridType::iterator;
+  using const_iterator = CellGridType::const_iterator;
+  
   SOM(std::size_t nd, std::size_t x, std::size_t y, InitFunc::Signature init_func=InitFunc::zero);
 
   /**
@@ -53,10 +57,22 @@ public:
   const std::vector<double>& operator()(std::size_t x, std::size_t y) const;
   
   const std::pair<std::size_t, std::size_t>& getSize() const;
+  
+  iterator begin();
+  
+  iterator end();
+  
+  const_iterator begin() const;
+  
+  const_iterator end() const;
+  
+  const_iterator cbegin();
+  
+  const_iterator cend();
 
 private:
   
-  GridContainer::GridContainer<std::vector<std::vector<double>>, int, int> m_cells;
+  CellGridType m_cells;
   std::pair<std::size_t, std::size_t> m_size;
 
 }; /* End of SOM class */
