@@ -26,6 +26,7 @@
 #define _SOM_SOM_H
 
 #include <vector>
+#include <array>
 #include "GridContainer/GridContainer.h"
 #include "SOM/InitFunc.h"
 
@@ -37,24 +38,25 @@ namespace SOM {
  * @brief
  *
  */
+template <std::size_t ND>
 class SOM {
 
 public:
   
-  using CellGridType = GridContainer::GridContainer<std::vector<std::vector<double>>, int, int>;
-  using iterator = CellGridType::iterator;
-  using const_iterator = CellGridType::const_iterator;
+  using CellGridType = GridContainer::GridContainer<std::vector<std::array<double, ND>>, int, int>;
+  using iterator = typename CellGridType::iterator;
+  using const_iterator = typename CellGridType::const_iterator;
   
-  SOM(std::size_t nd, std::size_t x, std::size_t y, InitFunc::Signature init_func=InitFunc::zero);
+  SOM(std::size_t x, std::size_t y, InitFunc::Signature init_func=InitFunc::zero);
 
   /**
    * @brief Destructor
    */
   virtual ~SOM() = default;
   
-  std::vector<double>& operator()(std::size_t x, std::size_t y);
+  std::array<double, ND>& operator()(std::size_t x, std::size_t y);
   
-  const std::vector<double>& operator()(std::size_t x, std::size_t y) const;
+  const std::array<double, ND>& operator()(std::size_t x, std::size_t y) const;
   
   const std::pair<std::size_t, std::size_t>& getSize() const;
   
@@ -80,5 +82,6 @@ private:
 } /* namespace SOM */
 } /* namespace Euclid */
 
+#include "SOM/_impl/SOM.icpp"
 
 #endif
