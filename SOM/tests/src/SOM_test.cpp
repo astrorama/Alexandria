@@ -37,6 +37,9 @@ BOOST_AUTO_TEST_SUITE (SOM_test)
 BOOST_AUTO_TEST_CASE( example_test ) {
 
   BOOST_FAIL("!!!! Please implement your tests !!!!");
+  
+  SOM<2> som {2, 3};
+  som.findBMU({1,2});
 
 }
 

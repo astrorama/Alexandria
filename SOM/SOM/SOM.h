@@ -27,8 +27,10 @@
 
 #include <vector>
 #include <array>
+#include <limits>
 #include "GridContainer/GridContainer.h"
 #include "SOM/InitFunc.h"
+#include "SOM/Distance.h"
 
 namespace Euclid {
 namespace SOM {
@@ -38,12 +40,12 @@ namespace SOM {
  * @brief
  *
  */
-template <std::size_t ND>
+template <std::size_t ND, typename DistFunc=Distance::L2<ND>>
 class SOM {
 
 public:
   
-  using CellGridType = GridContainer::GridContainer<std::vector<std::array<double, ND>>, int, int>;
+  using CellGridType = GridContainer::GridContainer<std::vector<std::array<double, ND>>, std::size_t, std::size_t>;
   using iterator = typename CellGridType::iterator;
   using const_iterator = typename CellGridType::const_iterator;
   
@@ -71,6 +73,20 @@ public:
   const_iterator cbegin();
   
   const_iterator cend();
+  
+  std::pair<std::size_t, std::size_t> findBMU(const std::array<double, ND>& input) {
+    auto result_iter = m_cells.begin();
+    double closest_distance = std::numeric_limits<double>::max();
+    DistFunc dist_func {};
+    for (auto iter = m_cells.begin(); iter != m_cells.end(); ++iter) {
+      double dist = dist_func.distance(*iter, input);
+      if (dist < closest_distance) {
+        result_iter = iter;
+        closest_distance = dist;
+      }
+    }
+    return std::make_pair(result_iter.template axisValue<0>(), result_iter.template axisValue<1>());
+  }
 
 private:
   
