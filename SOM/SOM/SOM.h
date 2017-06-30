@@ -28,6 +28,7 @@
 #include <vector>
 #include <array>
 #include <limits>
+#include <type_traits>
 #include "GridContainer/GridContainer.h"
 #include "SOM/InitFunc.h"
 #include "SOM/Distance.h"
@@ -42,6 +43,9 @@ namespace SOM {
  */
 template <std::size_t ND, typename DistFunc=Distance::L2<ND>>
 class SOM {
+  
+  static_assert(std::is_base_of<Distance::Interface<ND>, DistFunc>::value,
+          "DistFunc must be a subclass of the Distance::Interface<ND>");
 
 public:
   

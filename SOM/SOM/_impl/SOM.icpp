@@ -134,6 +134,10 @@ template <std::size_t ND, typename DistFunc>
 template <typename InputType, typename WeightFunc>
 std::pair<std::size_t, std::size_t> SOM<ND, DistFunc>::findBMU(const InputType& input,
                                                                WeightFunc weight_func) const {
+  
+  static_assert(std::is_same<decltype(std::declval<WeightFunc>()(input)), std::array<double, ND>>::value,
+          "WeightFunc must be callable with input as parameter, returning an std::array<double, ND>");
+  
   return findBMU(weight_func(input));
 }
 
@@ -142,6 +146,12 @@ template <typename InputType, typename WeightFunc, typename UncertaintyFunc>
 std::pair<std::size_t, std::size_t> SOM<ND, DistFunc>::findBMU(const InputType& input,
                                                                WeightFunc weight_func,
                                                                UncertaintyFunc uncertainty_func) const {
+  
+  static_assert(std::is_same<decltype(std::declval<WeightFunc>()(input)), std::array<double, ND>>::value,
+          "WeightFunc must be callable with input as parameter, returning an std::array<double, ND>");
+  static_assert(std::is_same<decltype(std::declval<UncertaintyFunc>()(input)), std::array<double, ND>>::value,
+          "UncertaintyFunc must be callable with input as parameter, returning an std::array<double, ND>");
+  
   return findBMU(weight_func(input), uncertainty_func(input));
 }
 
