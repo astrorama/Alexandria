@@ -29,6 +29,7 @@
 #include <array>
 #include <limits>
 #include <type_traits>
+#include <tuple>
 #include "GridContainer/GridContainer.h"
 #include "SOM/InitFunc.h"
 #include "SOM/Distance.h"
@@ -78,17 +79,17 @@ public:
   
   const_iterator cend();
   
-  std::pair<std::size_t, std::size_t> findBMU(const std::array<double, ND>& input) const;
+  std::tuple<std::size_t, std::size_t, double> findBMU(const std::array<double, ND>& input) const;
   
-  std::pair<std::size_t, std::size_t> findBMU(const std::array<double, ND>& input,
+  std::tuple<std::size_t, std::size_t, double> findBMU(const std::array<double, ND>& input,
                                               const std::array<double, ND>& uncertainties) const;
   
   template <typename InputType, typename WeightFunc>
-  std::pair<std::size_t, std::size_t> findBMU(const InputType& input,
+  std::tuple<std::size_t, std::size_t, double> findBMU(const InputType& input,
                                               WeightFunc weight_func) const;
   
   template <typename InputType, typename WeightFunc, typename UncertaintyFunc>
-  std::pair<std::size_t, std::size_t> findBMU(const InputType& input,
+  std::tuple<std::size_t, std::size_t, double> findBMU(const InputType& input,
                                               WeightFunc weight_func,
                                               UncertaintyFunc uncertainty_func) const;
 
