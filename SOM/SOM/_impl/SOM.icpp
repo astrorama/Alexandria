@@ -114,7 +114,7 @@ std::pair<std::size_t, std::size_t> findBMU_impl(const SOM<ND, DistFunc>& som,
 } // end of namespace SOM_impl
 
 template <std::size_t ND, typename DistFunc>
-std::pair<std::size_t, std::size_t> SOM<ND, DistFunc>::findBMU(const std::array<double, ND>& input) {
+std::pair<std::size_t, std::size_t> SOM<ND, DistFunc>::findBMU(const std::array<double, ND>& input) const {
   DistFunc dist_func {};
   return SOM_impl::findBMU_impl<ND, DistFunc>(*this, [&dist_func, &input](const std::array<double, ND>& cell) -> double {
     return dist_func.distance(cell, input);
@@ -123,11 +123,26 @@ std::pair<std::size_t, std::size_t> SOM<ND, DistFunc>::findBMU(const std::array<
 
 template <std::size_t ND, typename DistFunc>
 std::pair<std::size_t, std::size_t> SOM<ND, DistFunc>::findBMU(const std::array<double, ND>& input,
-                                                               const std::array<double, ND>& uncertainties) {
+                                                               const std::array<double, ND>& uncertainties) const {
   DistFunc dist_func {};
   return SOM_impl::findBMU_impl<ND, DistFunc>(*this, [&dist_func, &input, &uncertainties](const std::array<double, ND>& cell) -> double {
     return dist_func.distance(cell, input, uncertainties);
   });
+}
+
+template <std::size_t ND, typename DistFunc>
+template <typename InputType, typename WeightFunc>
+std::pair<std::size_t, std::size_t> SOM<ND, DistFunc>::findBMU(const InputType& input,
+                                                               WeightFunc weight_func) const {
+  return findBMU(weight_func(input));
+}
+
+template <std::size_t ND, typename DistFunc>
+template <typename InputType, typename WeightFunc, typename UncertaintyFunc>
+std::pair<std::size_t, std::size_t> SOM<ND, DistFunc>::findBMU(const InputType& input,
+                                                               WeightFunc weight_func,
+                                                               UncertaintyFunc uncertainty_func) const {
+  return findBMU(weight_func(input), uncertainty_func(input));
 }
 
 }

@@ -74,10 +74,19 @@ public:
   
   const_iterator cend();
   
-  std::pair<std::size_t, std::size_t> findBMU(const std::array<double, ND>& input);
+  std::pair<std::size_t, std::size_t> findBMU(const std::array<double, ND>& input) const;
   
   std::pair<std::size_t, std::size_t> findBMU(const std::array<double, ND>& input,
-                                              const std::array<double, ND>& uncertainties);
+                                              const std::array<double, ND>& uncertainties) const;
+  
+  template <typename InputType, typename WeightFunc>
+  std::pair<std::size_t, std::size_t> findBMU(const InputType& input,
+                                              WeightFunc weight_func) const;
+  
+  template <typename InputType, typename WeightFunc, typename UncertaintyFunc>
+  std::pair<std::size_t, std::size_t> findBMU(const InputType& input,
+                                              WeightFunc weight_func,
+                                              UncertaintyFunc uncertainty_func) const;
 
 private:
   
