@@ -41,7 +41,7 @@ public:
   virtual double distance(const std::array<double, ND>& left,
                           const std::array<double, ND>& right) const = 0;
   
-  virtual double distanceWithUncertainty(const std::array<double, ND>&,
+  virtual double distance(const std::array<double, ND>&,
                                          const std::array<double, ND>&,
                                          const std::array<double, ND>&) const {
     throw Elements::Exception() << "Distance with uncertainties is not supported "
@@ -65,7 +65,7 @@ public:
     return std::sqrt(result);
   }
   
-  double distanceWithUncertainty(const std::array<double, ND>& left,
+  double distance(const std::array<double, ND>& left,
                                  const std::array<double, ND>& right,
                                  const std::array<double, ND>& uncertainties) const override {
     double result = 0;

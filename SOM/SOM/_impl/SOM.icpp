@@ -47,7 +47,7 @@ SOM<ND, DistFunc>::SOM(std::size_t x, std::size_t y, InitFunc::Signature init_fu
     }
   }
 
-}
+} // end of namespace SOM_impl
 
 template <std::size_t ND, typename DistFunc>
 const std::pair<std::size_t, std::size_t>& SOM<ND, DistFunc>::getSize() const {
@@ -92,6 +92,42 @@ typename SOM<ND, DistFunc>::const_iterator SOM<ND, DistFunc>::cbegin() {
 template <std::size_t ND, typename DistFunc>
 typename SOM<ND, DistFunc>::const_iterator SOM<ND, DistFunc>::cend() {
   return m_cells.cend();
+}
+
+namespace SOM_impl {
+
+template <std::size_t ND, typename DistFunc>
+std::pair<std::size_t, std::size_t> findBMU_impl(const SOM<ND, DistFunc>& som,
+        std::function<double(const std::array<double, ND>&)> dist_func) {
+  auto result_iter = som.begin();
+  double closest_distance = std::numeric_limits<double>::max();
+  for (auto iter = som.begin(); iter != som.end(); ++iter) {
+    double dist = dist_func(*iter);
+    if (dist < closest_distance) {
+      result_iter = iter;
+      closest_distance = dist;
+    }
+  }
+  return std::make_pair(result_iter.template axisValue<0>(), result_iter.template axisValue<1>());
+}
+
+} // end of namespace SOM_impl
+
+template <std::size_t ND, typename DistFunc>
+std::pair<std::size_t, std::size_t> SOM<ND, DistFunc>::findBMU(const std::array<double, ND>& input) {
+  DistFunc dist_func {};
+  return SOM_impl::findBMU_impl<ND, DistFunc>(*this, [&dist_func, &input](const std::array<double, ND>& cell) -> double {
+    return dist_func.distance(cell, input);
+  });
+}
+
+template <std::size_t ND, typename DistFunc>
+std::pair<std::size_t, std::size_t> SOM<ND, DistFunc>::findBMU(const std::array<double, ND>& input,
+                                                               const std::array<double, ND>& uncertainties) {
+  DistFunc dist_func {};
+  return SOM_impl::findBMU_impl<ND, DistFunc>(*this, [&dist_func, &input, &uncertainties](const std::array<double, ND>& cell) -> double {
+    return dist_func.distance(cell, input, uncertainties);
+  });
 }
 
 }

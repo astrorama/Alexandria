@@ -40,6 +40,7 @@ BOOST_AUTO_TEST_CASE( example_test ) {
   
   SOM<2> som {2, 3};
   som.findBMU({1,2});
+  som.findBMU({1,2}, {0.1, 0.4});
 
 }
 

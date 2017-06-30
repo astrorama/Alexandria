@@ -74,19 +74,10 @@ public:
   
   const_iterator cend();
   
-  std::pair<std::size_t, std::size_t> findBMU(const std::array<double, ND>& input) {
-    auto result_iter = m_cells.begin();
-    double closest_distance = std::numeric_limits<double>::max();
-    DistFunc dist_func {};
-    for (auto iter = m_cells.begin(); iter != m_cells.end(); ++iter) {
-      double dist = dist_func.distance(*iter, input);
-      if (dist < closest_distance) {
-        result_iter = iter;
-        closest_distance = dist;
-      }
-    }
-    return std::make_pair(result_iter.template axisValue<0>(), result_iter.template axisValue<1>());
-  }
+  std::pair<std::size_t, std::size_t> findBMU(const std::array<double, ND>& input);
+  
+  std::pair<std::size_t, std::size_t> findBMU(const std::array<double, ND>& input,
+                                              const std::array<double, ND>& uncertainties);
 
 private:
   
