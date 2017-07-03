@@ -25,6 +25,10 @@
 #include <boost/test/unit_test.hpp>
 
 #include "SOM/SOM.h"
+#include "SOM/SOMTrainer.h"
+#include "SOM/InitFunc.h"
+
+#include <iostream>
 
 using namespace Euclid::SOM;
 
@@ -36,12 +40,23 @@ BOOST_AUTO_TEST_SUITE (SOM_test)
 
 BOOST_AUTO_TEST_CASE( example_test ) {
 
-  BOOST_FAIL("!!!! Please implement your tests !!!!");
-  
-  SOM<2> som {2, 3};
+  SOM<2> som {5, 5, InitFunc::uniformRandom(0, 1)};
   som.findBMU({1,2});
   som.findBMU({1,2}, {0.1, 0.4});
-
+  
+  std::vector<std::pair<double,double>> trainset {
+    {1,1}, {0,0}, {0,1}, {1,0}
+  };
+  
+  SOMTrainer trainer {NeighborhoodFunc::unitDisk(3)};
+  auto weight_func = [](const std::pair<double,double>& p) {
+    std::array<double, 2> res;
+    res[0] = p.first;
+    res[1] = p.second;
+    return res;
+  };
+  trainer.train(som, 5, trainset.begin(), trainset.end(), weight_func);
+  
 }
 
 //-----------------------------------------------------------------------------

@@ -17,49 +17,30 @@
  */
 
 /* 
- * @file InitFunc.h
+ * @file LearningRestraintFunc.h
  * @author nikoapos
  */
 
-#ifndef SOM_INITFUNC_H
-#define SOM_INITFUNC_H
+#ifndef SOM_LEARNINGRESTRAINTFUNC_H
+#define SOM_LEARNINGRESTRAINTFUNC_H
 
-#include <vector>
 #include <functional>
-#include <random>
 
 namespace Euclid {
 namespace SOM {
+namespace LearningRestraintFunc {
 
-namespace InitFunc {
-  
-using Signature = std::function<double()>;
+using Signature = std::function<double(std::size_t iteration, std::size_t total_iterations)>;
 
-Signature zero = [](){
-  return 0;
-};
-
-Signature normalDistribution(double sigma, double mu) {
-  std::random_device rd;
-  std::mt19937 gen(rd());
-  std::normal_distribution<> d(mu,sigma);
-  return [gen, d]() mutable {
-    return d(gen);
-  };
-}
-
-Signature uniformRandom(double min, double max) {
-  std::uniform_real_distribution<double> unif(min, max);
-  std::default_random_engine re;
-  return [unif, re]() mutable {
-    return unif(re);
+Signature linear() {
+  return [](std::size_t iteration, std::size_t total_iterations) -> double {
+    return 1.0 * (total_iterations - iteration) / total_iterations;
   };
 }
 
 }
-
 }
 }
 
-#endif /* SOM_INITFUNC_H */
+#endif /* SOM_LEARNINGRESTRAINTFUNC_H */
 
