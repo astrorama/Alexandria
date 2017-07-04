@@ -53,14 +53,16 @@ Signature linearUnitDisk(double initial_radius) {
   };
 }
 
-Signature kohonen(std::size_t x_size, std::size_t y_size) {
+Signature kohonen(std::size_t x_size, std::size_t y_size, double sigma_cutoff_mult) {
   
   double init_sigma = std::max(x_size, y_size) / 2.;
   std::tuple<std::size_t, std::size_t, double> sigma_buffer {0, 0, 0.};
+  double cutoff_mult_square = sigma_cutoff_mult * sigma_cutoff_mult;
   
-  return [init_sigma, sigma_buffer](std::pair<std::size_t, std::size_t> bmu,
-                                    std::pair<std::size_t, std::size_t> cell,
-                                    std::size_t iteration, std::size_t total_iterations) mutable -> double {
+  return [init_sigma, sigma_buffer, cutoff_mult_square](
+                  std::pair<std::size_t, std::size_t> bmu,
+                  std::pair<std::size_t, std::size_t> cell,
+                  std::size_t iteration, std::size_t total_iterations) mutable -> double {
     
     // If we have new iteration we recompute the sigma, otherwise we use the already
     // calculated one
@@ -76,7 +78,7 @@ Signature kohonen(std::size_t x_size, std::size_t y_size) {
     double y = (double)bmu.second - cell.second;
     double dist_square = x * x + y * y;
     
-    if (dist_square < sigma_square) {
+    if (dist_square < cutoff_mult_square * sigma_square) {
       return std::exp(-1. * dist_square / (2. * sigma_square));
     } else {
       return 0.;
