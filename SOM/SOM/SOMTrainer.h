@@ -27,6 +27,7 @@
 #include "SOM/SOM.h"
 #include "SOM/NeighborhoodFunc.h"
 #include "SOM/LearningRestraintFunc.h"
+#include "SOM/SamplingPolicy.h"
 
 namespace Euclid {
 namespace SOM {
@@ -42,7 +43,8 @@ public:
   }
 
   template <std::size_t ND, typename DistFunc, typename InputIter, typename InputToWeightFunc>
-  void train(SOM<ND, DistFunc>& som, std::size_t iter_no, InputIter begin, InputIter end, InputToWeightFunc weight_func) {
+  void train(SOM<ND, DistFunc>& som, std::size_t iter_no, InputIter begin, InputIter end, InputToWeightFunc weight_func,
+             const SamplingPolicy::Interface<InputIter>& sampling_policy=SamplingPolicy::FullSet<InputIter>{}) {
     
     // We repeat the training for iter_no iterations
     for (std::size_t i = 0; i < iter_no; ++ i) {
@@ -54,7 +56,7 @@ public:
       }
           
       // Go through the training sample of the iteration
-      for (auto it = begin; it != end; ++it) {
+      for (auto it = sampling_policy.start(begin, end); it != end; it = sampling_policy.next(it)) {
         
         // Get the weights of the input object
         auto input_weights = weight_func(*it);
