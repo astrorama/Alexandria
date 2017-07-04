@@ -25,6 +25,7 @@
 #define SOM_NEIGHBORHOODFUNC_H
 
 #include <functional>
+#include <cmath>
 
 namespace Euclid {
 namespace SOM {
@@ -34,7 +35,7 @@ using Signature = std::function<double(std::pair<std::size_t, std::size_t> bmu,
                                        std::pair<std::size_t, std::size_t> cell,
                                        std::size_t iteration, std::size_t total_iterations)>;
 
-Signature unitDisk(double initial_radius) {
+Signature linearUnitDisk(double initial_radius) {
   double r_square = initial_radius * initial_radius;
   return [r_square](std::pair<std::size_t, std::size_t> bmu,
                     std::pair<std::size_t, std::size_t> cell,
@@ -49,6 +50,39 @@ Signature unitDisk(double initial_radius) {
     } else {
       return 0.;
     }
+  };
+}
+
+Signature kohonen(std::size_t x_size, std::size_t y_size) {
+  
+  double init_sigma = std::max(x_size, y_size) / 2.;
+  std::tuple<std::size_t, std::size_t, double> sigma_buffer {0, 0, 0.};
+  
+  return [init_sigma, sigma_buffer](std::pair<std::size_t, std::size_t> bmu,
+                                    std::pair<std::size_t, std::size_t> cell,
+                                    std::size_t iteration, std::size_t total_iterations) mutable -> double {
+    
+    // If we have new iteration we recompute the sigma, otherwise we use the already
+    // calculated one
+    if (std::get<0>(sigma_buffer) != iteration || std::get<1>(sigma_buffer) != total_iterations) {
+      std::get<0>(sigma_buffer) = iteration;
+      std::get<1>(sigma_buffer) = total_iterations;
+      double time_constant = total_iterations / std::log(init_sigma);
+      std::get<2>(sigma_buffer) = init_sigma * std::exp(-1. * iteration / time_constant);
+    }
+    double sigma_square = std::get<2>(sigma_buffer) * std::get<2>(sigma_buffer);
+    
+    double x = (double)bmu.first - cell.first;
+    double y = (double)bmu.second - cell.second;
+    double dist_square = x * x + y * y;
+    
+    if (dist_square < sigma_square) {
+      return std::exp(-1. * dist_square / (2. * sigma_square));
+    } else {
+      return 0.;
+    }
+    
+    
   };
 }
 

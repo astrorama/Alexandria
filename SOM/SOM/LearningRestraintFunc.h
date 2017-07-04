@@ -24,6 +24,7 @@
 #ifndef SOM_LEARNINGRESTRAINTFUNC_H
 #define SOM_LEARNINGRESTRAINTFUNC_H
 
+#include <cmath>
 #include <functional>
 
 namespace Euclid {
@@ -35,6 +36,12 @@ using Signature = std::function<double(std::size_t iteration, std::size_t total_
 Signature linear() {
   return [](std::size_t iteration, std::size_t total_iterations) -> double {
     return 1.0 * (total_iterations - iteration) / total_iterations;
+  };
+}
+
+Signature exponentialDecay(double initial_rate) {
+  return [initial_rate](std::size_t iteration, std::size_t total_iterations) -> double {
+    return initial_rate * std::exp(-1. * iteration / total_iterations);
   };
 }
 

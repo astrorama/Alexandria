@@ -48,7 +48,7 @@ BOOST_AUTO_TEST_CASE( example_test ) {
     {1,1}, {0,0}, {0,1}, {1,0}
   };
   
-  SOMTrainer trainer {NeighborhoodFunc::unitDisk(3)};
+  SOMTrainer trainer {NeighborhoodFunc::linearUnitDisk(3), LearningRestraintFunc::linear()};
   auto weight_func = [](const std::pair<double,double>& p) {
     std::array<double, 2> res;
     res[0] = p.first;
