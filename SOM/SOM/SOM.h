@@ -55,6 +55,9 @@ public:
   using const_iterator = typename CellGridType::const_iterator;
   
   SOM(std::size_t x, std::size_t y, InitFunc::Signature init_func=InitFunc::zero);
+  
+  SOM(SOM<ND, DistFunc>&&) = default;
+  SOM& operator=(SOM<ND, DistFunc>&&) = default;
 
   /**
    * @brief Destructor
