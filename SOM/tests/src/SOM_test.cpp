@@ -27,6 +27,7 @@
 #include "SOM/SOM.h"
 #include "SOM/SOMTrainer.h"
 #include "SOM/InitFunc.h"
+#include "SOM/SOMProjector.h"
 
 #include <iostream>
 
@@ -56,6 +57,16 @@ BOOST_AUTO_TEST_CASE( example_test ) {
     return res;
   };
   trainer.train(som, 5, trainset.begin(), trainset.end(), weight_func);
+  
+  
+  auto adder = [](int& cell, const std::pair<double, double>&) {
+    cell += 1;
+  };
+  auto projection = SOMProjector::project<int>(som, trainset.begin(), trainset.end(), weight_func, adder);
+  for (auto it=projection.begin(); it!= projection.end(); ++it) {
+    std::cout << '(' << it.axisValue<0>() << ',' << it.axisValue<1>() << ") : " << *it << '\n';
+  }
+  
   
 }
 

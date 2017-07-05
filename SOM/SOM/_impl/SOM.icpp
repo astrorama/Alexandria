@@ -21,24 +21,14 @@
  * @author nikoapos
  */
 
+#include "SOM/_impl/ImplTools.h"
+
 namespace Euclid {
 namespace SOM {
 
-namespace SOM_impl {
-
-GridContainer::GridAxis<std::size_t> indexAxis(const std::string& name, std::size_t size) {
-  std::vector<std::size_t> indices{};
-  for (std::size_t i = 0; i != size; ++i) {
-    indices.push_back(i);
-  }
-  return GridContainer::GridAxis<std::size_t>{name, std::move(indices)};
-}
-
-}
-
 template <std::size_t ND, typename DistFunc>
 SOM<ND, DistFunc>::SOM(std::size_t x, std::size_t y, InitFunc::Signature init_func)
-        : m_cells(SOM_impl::indexAxis("X", x), SOM_impl::indexAxis("Y", y)), m_size(x, y) {
+        : m_cells(ImplTools::indexAxis("X", x), ImplTools::indexAxis("Y", y)), m_size(x, y) {
 
   // Initialize all the grid cells using the given function
   for (auto& array : m_cells) {
