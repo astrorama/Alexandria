@@ -28,6 +28,8 @@
 #include "SOM/SOMTrainer.h"
 #include "SOM/InitFunc.h"
 #include "SOM/SOMProjector.h"
+#include "SOM/SOMProjector.h"
+#include "SOM/serialize.h"
 
 #include <iostream>
 
