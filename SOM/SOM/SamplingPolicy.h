@@ -24,6 +24,7 @@
 #ifndef SOM_SAMPLINGPOLICY_H
 #define SOM_SAMPLINGPOLICY_H
 
+#include <list>
 #include <utility>
 #include <random>
 #include <iterator>
@@ -91,6 +92,72 @@ private:
 template <typename IterType>
 Bootstrap<IterType> bootstrapFactory(IterType) {
   return Bootstrap<IterType>{};
+}
+
+template <typename IterType>
+class Jackknife :public Interface<IterType> {
+  
+public:
+  
+  Jackknife(std::size_t sample_size) : m_sample_size(sample_size), m_current(sample_size) {
+    m_iter_list.reserve(sample_size);
+  }
+  
+  IterType start(IterType begin, IterType end) const override {
+    
+    m_end = end;
+    
+    // Clear the iterators list, for the case it has already something inside
+    m_iter_list.clear();
+    m_iter_list.reserve(m_sample_size);
+    
+    // Put all the possible iterators in a temporary linked list
+    std::list<IterType> all_iter_list {};
+    for (auto it = begin; it != end; ++it) {
+      all_iter_list.push_back(it);
+    }
+    
+    // Create the random device to use
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    
+    // Pick up m_sample_size random iterators from the temporary list
+    int all_max_index = all_iter_list.size() - 1;
+    for (std::size_t i = 0; i < m_sample_size && all_max_index >= 0; ++i, --all_max_index) {
+      std::uniform_int_distribution<> dis(0, all_max_index);
+      auto it = all_iter_list.begin();
+      std::advance(it, dis(gen));
+      m_iter_list.push_back(*it);
+      all_iter_list.erase(it);
+    }
+    
+    // Set the current iterator at the beginning of the vector and return it
+    m_current = 0;
+    m_iter_list_size = m_iter_list.size();
+    return m_iter_list[m_current];
+  }
+  
+  IterType next(IterType) const override {
+    ++m_current;
+    if (m_current >= m_iter_list_size) {
+      return m_end;
+    }
+    return m_iter_list[m_current];
+  }
+  
+private:
+
+  std::size_t m_sample_size;
+  mutable std::vector<IterType> m_iter_list;
+  mutable std::size_t m_iter_list_size;
+  mutable IterType m_end;
+  mutable std::size_t m_current;
+  
+};
+
+template <typename IterType>
+Jackknife<IterType> jackknifeFactory(IterType, std::size_t sample_size) {
+  return Jackknife<IterType>{sample_size};
 }
 
 }

@@ -53,7 +53,7 @@ Signature linearUnitDisk(double initial_radius) {
   };
 }
 
-Signature kohonen(std::size_t x_size, std::size_t y_size, double sigma_cutoff_mult) {
+Signature kohonen(std::size_t x_size, std::size_t y_size, double sigma_cutoff_mult=1.) {
   
   double init_sigma = std::max(x_size, y_size) / 2.;
   std::tuple<std::size_t, std::size_t, double> sigma_buffer {0, 0, 0.};
