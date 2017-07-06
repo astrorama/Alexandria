@@ -42,6 +42,10 @@ public:
   static ProjectGrid<T> project(const SOM<ND, DistFunc>& som, InputIter begin, InputIter end, WeightFunc weight_func,
                             std::function<void(T& cell, const typename std::iterator_traits<InputIter>::value_type &)> adder_func);
   
+  template <typename T, std::size_t ND, typename DistFunc, typename InputIter, typename WeightFunc, typename UncertaintyFunc>
+  static ProjectGrid<T> project(const SOM<ND, DistFunc>& som, InputIter begin, InputIter end, WeightFunc weight_func, UncertaintyFunc uncertainty_func,
+                            std::function<void(T& cell, const typename std::iterator_traits<InputIter>::value_type &)> adder_func);
+  
 };
 
 }
