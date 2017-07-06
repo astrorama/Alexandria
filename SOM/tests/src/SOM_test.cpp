@@ -30,6 +30,7 @@
 #include "SOM/SOMProjector.h"
 #include "SOM/SOMProjector.h"
 #include "SOM/serialize.h"
+#include "SOM/UMatrix.h"
 
 #include <iostream>
 
@@ -69,6 +70,7 @@ BOOST_AUTO_TEST_CASE( example_test ) {
     std::cout << '(' << it.axisValue<0>() << ',' << it.axisValue<1>() << ") : " << *it << '\n';
   }
   
+  auto u_matrix = computeUMatrix(som);
   
 }
 
