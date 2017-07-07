@@ -1,0 +1,97 @@
+/*
+ * Copyright (C) 2012-2020 Euclid Science Ground Segment    
+ *  
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free 
+ * Software Foundation; either version 3.0 of the License, or (at your option)  
+ * any later version.  
+ *  
+ * This library is distributed in the hope that it will be useful, but WITHOUT 
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more  
+ * details.  
+ *  
+ * You should have received a copy of the GNU Lesser General Public License 
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA  
+ */
+
+/* 
+ * @file UMatrix.icpp
+ * @author nikoapos
+ */
+
+#include <numeric>
+#include <algorithm>
+#include <map>
+#include "SOM/_impl/ImplTools.h"
+
+namespace Euclid {
+namespace SOM {
+
+namespace UMatrix_impl {
+
+std::map<UMatrixType, std::function<double(const std::vector<double>&)>> type_func_map {
+  {UMatrixType::MIN,
+          [](const std::vector<double>& dist_list) {
+            return *std::min_element(dist_list.begin(), dist_list.end());
+          }
+  },
+  {UMatrixType::MAX,
+          [](const std::vector<double>& dist_list) {
+            return *std::max_element(dist_list.begin(), dist_list.end());
+          }
+  },
+  {UMatrixType::MEAN,
+          [](const std::vector<double>& dist_list) {
+            return std::accumulate(dist_list.begin(), dist_list.end(), 0.) / dist_list.size();
+          }
+  }
+};
+
+}
+
+template <std::size_t ND, typename DistFunc=Distance::L2<ND>>
+UMatrix computeUMatrix(const SOM<ND, DistFunc>& som, UMatrixType type) {
+  
+  DistFunc dist_func {};
+  
+  auto size = som.getSize();
+  UMatrix result = UMatrix(ImplTools::indexAxis("X", size.first), ImplTools::indexAxis("Y", size.second));
+  
+  // Chose the method used for computing the u-matrix values
+  auto type_func = UMatrix_impl::type_func_map.at(type);
+  
+  // Go through the SOM cells and compute the u-matrix cells
+  for (std::size_t x = 0; x < size.first; ++x) {
+    for (std::size_t y = 0; y < size.second; ++y) {
+      
+      // Go through the neighbor cells and create the vector with the distances
+      std::vector<double> dist_list {};
+      for (int i = int(x) - 1; i <= (int)x + 1; ++i) {
+        for (int j = int(y) - 1; j <= (int)y + 1; ++ j) {
+          
+          // Check that we are not at the cell itself
+          if (i == (int)x && j == (int)y) {
+            continue;
+          }
+          // Double check that we are not outside of the SOM borders
+          if (i < 0 || i == (int)size.first || j < 0 || j == (int)size.second) {
+            continue;
+          }
+          
+          dist_list.push_back(dist_func.distance(som(x, y), som(i, j)));
+        }
+      }
+      
+      // Populate the u-matrix cell
+      result(x, y) = type_func(dist_list);
+    }
+  }
+  
+  return result;
+}
+
+}
+}
+
