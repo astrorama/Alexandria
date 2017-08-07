@@ -38,15 +38,13 @@ public:
   template <typename T>
   using ProjectGrid = GridContainer::GridContainer<std::vector<T>, std::size_t, std::size_t>;
   
-  template <typename T, std::size_t ND, typename DistFunc, typename InputIter, typename WeightFunc>
+  template <typename T, std::size_t ND, typename DistFunc, typename InputIter, typename WeightFunc, typename AdderFunc>
   static ProjectGrid<T> project(const SOM<ND, DistFunc>& som, InputIter begin, InputIter end, WeightFunc weight_func,
-                            std::function<void(T& cell, const typename std::iterator_traits<InputIter>::value_type &)> adder_func,
-                            const T& init_cell=T{});
+                                AdderFunc adder_func, const T& init_cell=T{});
   
-  template <typename T, std::size_t ND, typename DistFunc, typename InputIter, typename WeightFunc, typename UncertaintyFunc>
+  template <typename T, std::size_t ND, typename DistFunc, typename InputIter, typename WeightFunc, typename UncertaintyFunc, typename AdderFunc>
   static ProjectGrid<T> project(const SOM<ND, DistFunc>& som, InputIter begin, InputIter end, WeightFunc weight_func, UncertaintyFunc uncertainty_func,
-                            std::function<void(T& cell, const typename std::iterator_traits<InputIter>::value_type &)> adder_func,
-                            const T& init_cell=T{});
+                                AdderFunc adder_func, const T& init_cell=T{});
   
 };
 
