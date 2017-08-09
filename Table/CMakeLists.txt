@@ -16,6 +16,11 @@ elements_add_library(Table src/lib/*.cpp
 #===== Boost tests =============================================================
 
 if(GMOCK_FOUND)
+# inhibits the -Wsuggest-override that is not supported by gmock (yet)
+if(CXX_HAS_SUGGEST_OVERRIDE)
+  set_property(SOURCE tests/src/TableWriter_test.cpp 
+               PROPERTY COMPILE_FLAGS -Wno-suggest-override)
+endif() 
 elements_add_unit_test(TableWriter_test tests/src/TableWriter_test.cpp 
                      LINK_LIBRARIES Table GMock
                      INCLUDE_DIRS GMock
