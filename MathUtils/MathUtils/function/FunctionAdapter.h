@@ -7,6 +7,7 @@
 #ifndef MATHUTILS_FUNCTIONADAPTER_H_
 #define MATHUTILS_FUNCTIONADAPTER_H_
 
+#include <functional>
 #include "MathUtils/function/Function.h"
 
 namespace Euclid {
