@@ -25,10 +25,10 @@
 #define SOM_SERIALIZATION_SOM_H
 
 #include <typeinfo>
-#include <boost/serialization/array.hpp>
 #include <boost/serialization/string.hpp>
 #include <boost/serialization/split_free.hpp>
 #include "ElementsKernel/Exception.h"
+#include "AlexandriaKernel/serialization/array.h"
 #include "SOM/SOM.h"
 
 namespace boost {
