@@ -16,7 +16,7 @@ namespace boost {
 namespace serialization {
 
 template <class Archive, std::size_t ND, typename CellType>
-void serialize(Archive& archive, std::array<CellType, ND> array, const unsigned int) {
+void serialize(Archive& archive, std::array<CellType, ND>& array, const unsigned int) {
   for (int i = 0; i < ND; ++i) {
     archive & array[i];
   }
