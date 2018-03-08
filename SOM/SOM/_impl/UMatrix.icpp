@@ -51,7 +51,7 @@ std::map<UMatrixType, std::function<double(const std::vector<double>&)>> type_fu
 
 }
 
-template <std::size_t ND, typename DistFunc=Distance::L2<ND>>
+template <std::size_t ND, typename DistFunc>
 UMatrix computeUMatrix(const SOM<ND, DistFunc>& som, UMatrixType type) {
   
   DistFunc dist_func {};
