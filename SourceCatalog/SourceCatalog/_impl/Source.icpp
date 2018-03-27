@@ -41,5 +41,4 @@ std::shared_ptr<T> Source::getAttribute() const {
   return result;
 }
 
-
 #endif /* SOURCE_IMPL */

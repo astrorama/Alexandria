@@ -162,6 +162,8 @@ public:
   std::unique_ptr<Table::TableReader> getTableReader() const;
   
   std::shared_ptr<Table::ColumnInfo> getColumnInfo() const;
+
+  std::string getIdColumn() const;
   
   TableToCatalogConverter getTableToCatalogConverter() const;
 
