@@ -51,11 +51,11 @@ public:
    * @brief Constructor
    * @param source_id
    *  Source identifier
-   * @param  attibuteVector
+   * @param  attributeVector
    * Vector of shared pointers on Attribute objects
    */
-  Source(int64_t source_id, std::vector<std::shared_ptr<Attribute>> attibuteVector)
-        : m_source_id(source_id), m_attribute_vector( std::move(attibuteVector) ) {
+  Source(int64_t source_id, std::vector<std::shared_ptr<Attribute>> attributeVector)
+        : m_source_id(source_id), m_attribute_vector( std::move(attributeVector) ) {
   }
 
   /// Virtual default destructor
