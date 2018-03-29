@@ -39,15 +39,9 @@ class CastSourceIdVisitor: public boost::static_visitor<Source::id_type> {
     }
 
 public:
-    const Table::CastVisitor<int64_t> int64_cast{};
-    bool cast_strings;
-
-    CastSourceIdVisitor(): cast_strings(false) {}
+    CastSourceIdVisitor() {}
 
     Source::id_type operator() (const std::string &from) const {
-      if (cast_strings) {
-        return int64_cast(from);
-      }
       return from;
     }
 
@@ -90,14 +84,6 @@ Euclid::SourceCatalog::Catalog CatalogFromTable::createCatalog(
   // Figure out the type of the first row, and then assume all following
   // must be of the same
   CastSourceIdVisitor castVisitor;
-  if (input_table.size() > 0) {
-    auto first = input_table[0];
-    try {
-      boost::apply_visitor(castVisitor.int64_cast, first[m_source_id_index]);
-      castVisitor.cast_strings = true;
-    }
-    catch (...) {}
-  }
 
   for (auto row : input_table) {
 
