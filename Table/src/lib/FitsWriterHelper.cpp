@@ -147,9 +147,9 @@ template <typename T>
 void populateVectorColumn(const Table& table, size_t column_index, CCfits::ExtHDU& table_hdu, long first_row) {
   const auto& vec = boost::get<std::vector<T>>(table[0][column_index]);
   if (vec.size() > 1) {
-    table_hdu.column(column_index+1).writeArrays(createVectorColumnData<double>(table, column_index), first_row);
+    table_hdu.column(column_index+1).writeArrays(createVectorColumnData<T>(table, column_index), first_row);
   } else {
-    table_hdu.column(column_index+1).write(createSingleValueVectorColumnData<double>(table, column_index), first_row);
+    table_hdu.column(column_index+1).write(createSingleValueVectorColumnData<T>(table, column_index), first_row);
   }
 }
 
