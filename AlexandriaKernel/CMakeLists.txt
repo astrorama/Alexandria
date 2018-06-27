@@ -31,7 +31,7 @@ elements_depends_on_subdirs(ElementsKernel)
 #                     PUBLIC_HEADERS ElementsExamples)
 #===============================================================================
 elements_add_library(AlexandriaKernel src/lib/*.cpp
-                     LINK_LIBRARIES ElementsKernel
+                     LINK_LIBRARIES ElementsKernel pthread
                      PUBLIC_HEADERS AlexandriaKernel)
 
 #===============================================================================
