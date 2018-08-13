@@ -60,6 +60,9 @@ namespace XYDataset {
    XYDataset(std::vector<std::pair<double, double>> values)
              : m_values(std::move(values)) {  };
 
+   /// Copy constructor
+   XYDataset(const XYDataset&) = default;
+
    /// Move constructor
    XYDataset(XYDataset&&) = default;
 
