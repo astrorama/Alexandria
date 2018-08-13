@@ -56,6 +56,7 @@ CCfits::Table* addTable(CCfits::FITS& fits) {
   for (int i=1; i<=8; i=i+2) {
     table_hdu->addKey("TDESC" + std::to_string(i), "Desc" + std::to_string(i), "");
   }
+  table_hdu->writeComment("TEST COMMENT\nWITH LINES");
   return table_hdu;
 }
 
@@ -235,6 +236,7 @@ BOOST_FIXTURE_TEST_CASE(ReadSuccess, FitsReader_Fixture) {
   BOOST_CHECK_EQUAL(boost::get<std::vector<double>>(table[1][7])[0], 2.1);
   BOOST_CHECK_EQUAL(boost::get<std::vector<double>>(table[1][7])[1], 2.2);
 
+  BOOST_CHECK_EQUAL(reader.getComment(), "TEST COMMENT\nWITH LINES");
 }
 
 //-----------------------------------------------------------------------------

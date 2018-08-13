@@ -443,6 +443,23 @@ BOOST_FIXTURE_TEST_CASE(ReadWrongCellValues, AsciiReader_Fixture) {
 
 //-----------------------------------------------------------------------------
 
+BOOST_FIXTURE_TEST_CASE(ReadComment, AsciiReader_Fixture) {
+  std::stringstream hash_in{only_hash_comments};
+  std::stringstream slash_in{only_double_slash_comments};
+
+  auto hash_reader = AsciiReader{hash_in};
+  hash_reader.setCommentIndicator("#");
+
+  BOOST_CHECK_EQUAL(hash_reader.getComment(), "This string contains no data\nonly hash comments");
+
+  auto slash_reader = AsciiReader{slash_in};
+  slash_reader.setCommentIndicator("//");
+
+  BOOST_CHECK_EQUAL(slash_reader.getComment(), "This string contains no data\nonly double slash comments");
+}
+
+//-----------------------------------------------------------------------------
+
 BOOST_AUTO_TEST_SUITE_END ()
 
 

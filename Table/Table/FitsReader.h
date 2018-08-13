@@ -137,6 +137,11 @@ public:
    *    contains a different number of columns
    */
   const ColumnInfo& getInfo() override;
+
+  /**
+   * @return Returns the comment associated to the table
+   */
+  virtual std::string getComment() override;
   
   /// Implements the TableReader::skip() contract
   void skip(long rows) override;
