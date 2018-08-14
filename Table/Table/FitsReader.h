@@ -141,7 +141,7 @@ public:
   /**
    * @return Returns the comment associated to the table
    */
-  virtual std::string getComment() override;
+  std::string getComment() override;
   
   /// Implements the TableReader::skip() contract
   void skip(long rows) override;
