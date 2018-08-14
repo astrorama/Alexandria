@@ -28,14 +28,27 @@
 
 using namespace Euclid::XYDataset;
 
+boost::test_tools::predicate_result checkAllClose(const XYDataset& a, const XYDataset &b) {
+  boost::test_tools::predicate_result res(true);
+  boost::test_tools::close_at_tolerance<double> is_close(boost::test_tools::percent_tolerance(1e-5));
 
-namespace boost::test_tools::tt_detail {
-template<typename T, typename U>
-struct print_log_value<std::pair<T,U>> {
-  void operator()(std::ostream &os, const std::pair<T, U> &pair) {
-    os << "<" << pair.first << "," << pair.second << ">";
+  if (a.size() != b.size()) {
+    res = false;
+    res.message() << "Different sizes";
   }
-};
+  else {
+    for (auto i = a.begin(), j = b.begin(); i != a.end(); ++i, ++j) {
+      if (!is_close(i->first, j->first) || !is_close(i->second, j->second)) {
+        res = false;
+        res.message()
+          << '<' << i->first << ',' << i->second << '>'
+          << " != "
+          << '<' << j->first << ',' << j->second << ">\n";
+      }
+    }
+  }
+
+  return res;
 }
 
 
@@ -151,30 +164,18 @@ BOOST_FIXTURE_TEST_CASE(getDataSet_test, CachedProvider_fixture) {
   CachedProvider cache{mock_provider};
 
   auto dataset_ptr = cache.getDataset(QualifiedName{"1"});
-  BOOST_CHECK_EQUAL_COLLECTIONS(
-    dataset_ptr->begin(), dataset_ptr->end(),
-    mock_provider->m_dataset.at({"1"}).begin(), mock_provider->m_dataset.at({"1"}).end()
-  );
+  BOOST_CHECK(checkAllClose(*dataset_ptr, mock_provider->m_dataset.at({"1"})));
 
   dataset_ptr = cache.getDataset(QualifiedName{"2"});
-  BOOST_CHECK_EQUAL_COLLECTIONS(
-    dataset_ptr->begin(), dataset_ptr->end(),
-    mock_provider->m_dataset.at({"2"}).begin(), mock_provider->m_dataset.at({"2"}).end()
-  );
+  BOOST_CHECK(checkAllClose(*dataset_ptr, mock_provider->m_dataset.at({"2"})));
 
   BOOST_CHECK_EQUAL(mock_provider->m_data_calls, 2);
 
   dataset_ptr = cache.getDataset(QualifiedName{"1"});
-  BOOST_CHECK_EQUAL_COLLECTIONS(
-    dataset_ptr->begin(), dataset_ptr->end(),
-    mock_provider->m_dataset.at({"1"}).begin(), mock_provider->m_dataset.at({"1"}).end()
-  );
+  BOOST_CHECK(checkAllClose(*dataset_ptr, mock_provider->m_dataset.at({"1"})));
 
   dataset_ptr = cache.getDataset(QualifiedName{"2"});
-  BOOST_CHECK_EQUAL_COLLECTIONS(
-    dataset_ptr->begin(), dataset_ptr->end(),
-    mock_provider->m_dataset.at({"2"}).begin(), mock_provider->m_dataset.at({"2"}).end()
-  );
+  BOOST_CHECK(checkAllClose(*dataset_ptr, mock_provider->m_dataset.at({"2"})));
 
   BOOST_CHECK_EQUAL(mock_provider->m_data_calls, 2);
 }
