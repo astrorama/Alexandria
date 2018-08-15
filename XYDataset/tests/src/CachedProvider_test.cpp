@@ -23,6 +23,7 @@
 
 #include <boost/test/unit_test.hpp>
 #include <ElementsKernel/Exception.h>
+#include <ElementsKernel/Real.h>
 
 #include "XYDataset/CachedProvider.h"
 
@@ -30,7 +31,6 @@ using namespace Euclid::XYDataset;
 
 boost::test_tools::predicate_result checkAllClose(const XYDataset& a, const XYDataset &b) {
   boost::test_tools::predicate_result res(true);
-  boost::test_tools::close_at_tolerance<double> is_close(boost::test_tools::percent_tolerance(1e-5));
 
   if (a.size() != b.size()) {
     res = false;
@@ -38,7 +38,7 @@ boost::test_tools::predicate_result checkAllClose(const XYDataset& a, const XYDa
   }
   else {
     for (auto i = a.begin(), j = b.begin(); i != a.end(); ++i, ++j) {
-      if (!is_close(i->first, j->first) || !is_close(i->second, j->second)) {
+      if (!Elements::isEqual(i->first, j->first) || !Elements::isEqual(i->second, j->second)) {
         res = false;
         res.message()
           << '<' << i->first << ',' << i->second << '>'
