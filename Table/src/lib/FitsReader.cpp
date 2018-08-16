@@ -42,15 +42,20 @@ using boost::regex_match;
 namespace Euclid {
 namespace Table {
 
+static CCfits::HDU& _readKeys(CCfits::HDU &hdu) {
+  hdu.readAllKeys();
+  return hdu;
+}
+
 FitsReader::FitsReader(const CCfits::HDU& hdu) : m_hdu(hdu) {
 }
 
 FitsReader::FitsReader(const std::string& filename, int hduIndex)
-        : m_fits(make_unique<CCfits::FITS>(filename)), m_hdu(m_fits->extension(hduIndex)) {
+        : m_fits(make_unique<CCfits::FITS>(filename)), m_hdu(_readKeys(m_fits->extension(hduIndex))) {
 }
 
 FitsReader::FitsReader(const std::string& filename, const std::string& hduName)
-        : m_fits(make_unique<CCfits::FITS>(filename)), m_hdu(m_fits->extension(hduName)) {
+        : m_fits(make_unique<CCfits::FITS>(filename)), m_hdu(_readKeys(m_fits->extension(hduName))) {
 }
 
 FitsReader& FitsReader::fixColumnNames(std::vector<std::string> column_names) {
@@ -111,6 +116,11 @@ void FitsReader::readColumnInfo() {
 const ColumnInfo& FitsReader::getInfo() {
   readColumnInfo();
   return *m_column_info;
+}
+
+std::string FitsReader::getComment() {
+  const CCfits::Table& table_hdu = dynamic_cast<const CCfits::Table&>(m_hdu.get());
+  return table_hdu.comment();
 }
 
 Table FitsReader::readImpl(long rows) {
