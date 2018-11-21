@@ -34,6 +34,7 @@
 #include "ElementsKernel/Export.h"
 
 #include "Table/ColumnInfo.h"
+#include "NdArray/NdArray.h"
 
 namespace std {
 
@@ -75,7 +76,12 @@ public:
                          std::vector<int32_t>,
                          std::vector<int64_t>,
                          std::vector<float>,
-                         std::vector<double>> cell_type;
+                         std::vector<double>,
+                         NdArray::NdArray<bool>,
+                         NdArray::NdArray<int32_t>,
+                         NdArray::NdArray<int64_t>,
+                         NdArray::NdArray<float>,
+                         NdArray::NdArray<double>> cell_type;
 
   typedef std::vector<cell_type>::const_iterator const_iterator;
 

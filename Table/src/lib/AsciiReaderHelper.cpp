@@ -33,6 +33,7 @@ using boost::regex_match;
 #include "ElementsKernel/Exception.h"
 #include "ElementsKernel/Logging.h"
 #include "AsciiReaderHelper.h"
+#include "NdArray/NdArray.h"
 
 namespace Euclid {
 namespace Table {
@@ -91,6 +92,16 @@ std::type_index keywordToType(const std::string& keyword) {
     return typeid(std::vector<float>);
   } else if (keyword == "[double]") {
     return typeid(std::vector<double>);
+  } else if (keyword == "[bool+]") {
+    return typeid(NdArray::NdArray<bool>);
+  } else if (keyword == "[int+]") {
+    return typeid(NdArray::NdArray<int32_t>);
+  } else if (keyword == "[long+]") {
+    return typeid(NdArray::NdArray<int64_t>);
+  } else if (keyword == "[float+]") {
+    return typeid(NdArray::NdArray<float>);
+  } else if (keyword == "[double+]") {
+    return typeid(NdArray::NdArray<double>);
   }
   throw Elements::Exception() << "Unknown column type keyword " << keyword;
 }
@@ -252,6 +263,26 @@ std::vector<T> convertStringToVector(const std::string& str) {
   return result;
 }
 
+template <typename T>
+NdArray::NdArray<T> convertStringToNdArray(const std::string& str) {
+  if (str.empty() || str[0] != '<') {
+    throw Elements::Exception() << "Unexpected initial character for an NdArray: " << str[0];
+  }
+
+  auto closing_char = str.find('>');
+  if (closing_char == std::string::npos) {
+    throw Elements::Exception() << "Could not find '>'";
+  }
+
+  auto shape_str = str.substr(1, closing_char - 1);
+  auto shape_i = convertStringToVector<int32_t>(shape_str);
+  auto data = convertStringToVector<T>(str.substr(closing_char + 1));
+
+  std::vector<size_t> shape_u;
+  std::copy(shape_i.begin(), shape_i.end(), std::back_inserter(shape_u));
+  return NdArray::NdArray<T>(shape_u, data);
+}
+
 }
 
 Row::cell_type convertToCellType(const std::string& value, std::type_index type) {
@@ -283,6 +314,16 @@ Row::cell_type convertToCellType(const std::string& value, std::type_index type)
       return Row::cell_type {convertStringToVector<float>(value)};
     } else if (type == typeid(std::vector<double>)) {
       return Row::cell_type {convertStringToVector<double>(value)};
+    } else if (type == typeid(NdArray::NdArray<bool>)) {
+      return Row::cell_type {convertStringToNdArray<bool>(value)};
+    } else if (type == typeid(NdArray::NdArray<int32_t>)) {
+      return Row::cell_type {convertStringToNdArray<int32_t>(value)};
+    } else if (type == typeid(NdArray::NdArray<int64_t>)) {
+      return Row::cell_type {convertStringToNdArray<int64_t>(value)};
+    } else if (type == typeid(NdArray::NdArray<float>)) {
+      return Row::cell_type {convertStringToNdArray<float>(value)};
+    } else if (type == typeid(NdArray::NdArray<double>)) {
+      return Row::cell_type {convertStringToNdArray<double>(value)};
     }
   } catch( boost::bad_lexical_cast const& ) {
     throw Elements::Exception() << "Cannot convert " << value << " to " << type.name();

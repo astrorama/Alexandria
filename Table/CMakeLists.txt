@@ -2,6 +2,7 @@ elements_subdir(Table)
 
 elements_depends_on_subdirs(ElementsKernel)
 elements_depends_on_subdirs(AlexandriaKernel)
+elements_depends_on_subdirs(NdArray)
 
 find_package(Boost REQUIRED COMPONENTS regex)
 find_package(CCfits)

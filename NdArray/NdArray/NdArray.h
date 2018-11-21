@@ -25,6 +25,7 @@
 #ifndef ALEXANDRIA_MATRIX_H
 #define ALEXANDRIA_MATRIX_H
 
+#include <iostream>
 #include <numeric>
 #include <stdexcept>
 #include <vector>
@@ -45,6 +46,7 @@ class NdArray {
 public:
   typedef typename Container<T>::iterator iterator;
   typedef typename Container<T>::const_iterator const_iterator;
+  typedef NdArray<T, Container> self_type;
 
   /**
    * Destructor.
@@ -102,11 +104,21 @@ public:
   NdArray(const std::initializer_list<size_t> &shape) : NdArray(std::vector<size_t>{shape}) {}
 
   /**
+   * Copy constructor
+   */
+  NdArray(const self_type&) = default;
+
+  /**
+   * Move constructor
+   */
+  NdArray(self_type&&) = default;
+
+  /**
    * Gets the shape of the matrix.
    * @return
    *    A vector with as many elements as number of dimensions, containing the size of each one.
    */
-  const std::vector<size_t> getShape() const {
+  const std::vector<size_t> shape() const {
     return m_shape;
   }
 
@@ -198,6 +210,27 @@ public:
     return m_container.end();
   }
 
+  /**
+   * @return A const reference to the underlying container
+   */
+  const Container<T>& data() const {
+    return m_container;
+  }
+
+  /**
+   * Two NdArrays are equal if their shapes and their content are equal
+   */
+  bool operator == (const self_type& b) const {
+    return shape() == b.shape() && data() == b.data();
+  }
+
+  /**
+   * Two NdArrays are not equal if their shapes or their content are not equal
+   */
+  bool operator != (const self_type& b) const {
+    return shape() != b.shape() || data() != b.data();
+  }
+
 private:
   std::vector<size_t> m_shape, m_stride_size;
   Container<T> m_container;
@@ -260,6 +293,22 @@ private:
     return at(acc);
   }
 };
+
+/**
+ * Serialize a NdArray
+ */
+template<typename T, template<class...> class Container>
+std::ostream& operator << (std::ostream &out, const NdArray<T, Container> &ndarray) {
+  int i;
+  auto shape = ndarray.shape();
+
+  out << "<";
+  for (i = 0; i < shape.size() - 1; ++i) {
+    out << shape[i] << ",";
+  }
+  out << shape[i] << ">" << ndarray.data();
+  return out;
+}
 
 } // end NdArray
 } // end Euclid

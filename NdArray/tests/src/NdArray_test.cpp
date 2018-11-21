@@ -33,8 +33,8 @@ BOOST_AUTO_TEST_CASE(OneDimension_test) {
   NdArray<int> m{5};
   m.at(0) = 10;
 
-  BOOST_CHECK_EQUAL(m.getShape().size(), 1);
-  BOOST_CHECK_EQUAL(m.getShape()[0], 5);
+  BOOST_CHECK_EQUAL(m.shape().size(), 1);
+  BOOST_CHECK_EQUAL(m.shape()[0], 5);
   BOOST_CHECK_EQUAL(m.at(0), 10);
 }
 
@@ -45,9 +45,9 @@ BOOST_AUTO_TEST_CASE(TwoDimension_test) {
   m.at(0, 1) = 50;
   m.at(1, 1) = 20;
 
-  BOOST_CHECK_EQUAL(m.getShape().size(), 2);
-  BOOST_CHECK_EQUAL(m.getShape()[0], 2);
-  BOOST_CHECK_EQUAL(m.getShape()[1], 3);
+  BOOST_CHECK_EQUAL(m.shape().size(), 2);
+  BOOST_CHECK_EQUAL(m.shape()[0], 2);
+  BOOST_CHECK_EQUAL(m.shape()[1], 3);
   BOOST_CHECK_EQUAL((m.at(0, 0)), 10);
   BOOST_CHECK_EQUAL((m.at(std::vector<size_t>{0, 0})), 10);
   BOOST_CHECK_EQUAL((m.at(1, 1)), 20);
@@ -65,8 +65,8 @@ BOOST_AUTO_TEST_CASE(TwoDimension_test) {
 BOOST_AUTO_TEST_CASE(InitFromVector_test) {
   NdArray<int> m{std::vector<size_t>{2, 3}, {10, 50, 0, 15, 20, 0}};
 
-  BOOST_CHECK_EQUAL(m.getShape()[0], 2);
-  BOOST_CHECK_EQUAL(m.getShape()[1], 3);
+  BOOST_CHECK_EQUAL(m.shape()[0], 2);
+  BOOST_CHECK_EQUAL(m.shape()[1], 3);
   BOOST_CHECK_EQUAL((m.at(0, 0)), 10);
   BOOST_CHECK_EQUAL((m.at(1, 1)), 20);
 }
