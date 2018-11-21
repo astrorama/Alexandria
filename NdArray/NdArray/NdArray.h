@@ -96,6 +96,33 @@ public:
   }
 
   /**
+   * Constructs a matrix and initialize it with the given data.
+   * @param shape
+   *    The shape of the matrix. The number of elements in shape corresponds to the number
+   *    of dimensions, the values to each dimension size.
+   * @param data
+   *    The initial data. It *must* match exactly the matrix size (shape[0]*shape[1]...*shape[n]).
+   *    The NdArray will move the data into its internal storage! This avoids a copy, but remember to
+   *    not use data after this call.
+   * @throws std::invalid_argument
+   *    If the data size does not corresponds to the matrix size.
+   */
+  NdArray(const std::vector<size_t> &shape, Container<T> &&data) : m_shape{shape}, m_container{std::move(data)} {
+    size_t expected_size = std::accumulate(m_shape.begin(), m_shape.end(), 1, std::multiplies<size_t>());
+    if (expected_size != m_container.size()) {
+      throw std::invalid_argument("Data size does not match the shape");
+    }
+
+    m_stride_size.resize(m_shape.size());
+
+    size_t acc = 1;
+    for (int i = m_stride_size.size() - 1; i >= 0; --i) {
+      m_stride_size[i] = acc;
+      acc *= m_shape[i];
+    }
+  }
+
+  /**
    * Constructs a default-initialized matrix with the given shape (as an initializer list).
    * @param shape
    *    The shape of the matrix. The number of elements in shape corresponds to the number
