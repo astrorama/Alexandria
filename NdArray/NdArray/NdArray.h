@@ -218,6 +218,13 @@ public:
   }
 
   /**
+   * Size of the underlying container
+   */
+  size_t size() const {
+    return m_container.size();
+  }
+
+  /**
    * Two NdArrays are equal if their shapes and their content are equal
    */
   bool operator == (const self_type& b) const {
