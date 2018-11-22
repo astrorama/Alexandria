@@ -265,8 +265,10 @@ std::vector<T> convertStringToVector(const std::string& str) {
 
 template <typename T>
 NdArray::NdArray<T> convertStringToNdArray(const std::string& str) {
-  if (str.empty() || str[0] != '<') {
-    throw Elements::Exception() << "Unexpected initial character for an NdArray: " << str[0];
+  if (str.empty()) {
+    throw Elements::Exception() << "Cannot convert an empty string to a NdArray";
+  } else if (str[0] != '<') {
+    throw Elements::Exception() << "Unexpected initial character for a NdArray: " << str[0];
   }
 
   auto closing_char = str.find('>');
