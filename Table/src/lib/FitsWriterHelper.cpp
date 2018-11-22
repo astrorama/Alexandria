@@ -217,6 +217,39 @@ void populateNdArrayColumn(const Table& table, size_t column_index, CCfits::ExtH
   table_hdu.column(column_index+1).writeArrays(createNdArrayColumnData<T>(table, column_index), first_row);
 }
 
+std::string getTDIM(const Table& table, size_t column_index) {
+  auto& first_row = table[0];
+  auto& cell = first_row[column_index];
+  auto type = table.getColumnInfo()->getDescription(column_index).type;
+  std::vector<size_t> shape;
+
+  if (type == typeid(NdArray<bool>)) {
+    shape = boost::get<NdArray<bool>>(cell).shape();
+  } else if (type == typeid(NdArray<int32_t>)) {
+    shape = boost::get<NdArray<int32_t>>(cell).shape();
+  } else if (type == typeid(NdArray<int64_t>)) {
+    shape = boost::get<NdArray<int64_t>>(cell).shape();
+  } else if (type == typeid(NdArray<float>)) {
+    shape = boost::get<NdArray<float>>(cell).shape();
+  } else if (type == typeid(NdArray<double>)) {
+    shape = boost::get<NdArray<double>>(cell).shape();
+  } else {
+    return "";
+  }
+
+
+  std::stringstream stream;
+  stream << '(';
+
+  int j;
+  for (j = shape.size() - 1; j > 0; --j) {
+    stream << shape[j] << ",";
+  }
+
+  stream << shape[j] << ')';
+  return stream.str();
+}
+
 void populateColumn(const Table& table, size_t column_index, CCfits::ExtHDU& table_hdu, long first_row) {
   auto type = table.getColumnInfo()->getDescription(column_index).type;
   // CCfits indices start from 1
