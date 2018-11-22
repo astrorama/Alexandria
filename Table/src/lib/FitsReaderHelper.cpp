@@ -31,6 +31,8 @@
 namespace Euclid {
 namespace Table {
 
+using NdArray::NdArray;
+
 std::vector<std::string> autoDetectColumnNames(const CCfits::Table& table_hdu) {
   std::vector<std::string> names {};
   for (int i=1; i<=table_hdu.numCols(); ++i) {
@@ -92,17 +94,17 @@ std::type_index binaryFormatToType(const std::string& format, const std::vector<
     }
   } else {
     if (format.back() == 'B') {
-      return typeid(NdArray::NdArray<int32_t>);
+      return typeid(NdArray<int32_t>);
     } else if (format.back() == 'I') {
-      return typeid(NdArray::NdArray<int32_t>);
+      return typeid(NdArray<int32_t>);
     } else if (format.back() == 'J') {
-      return typeid(NdArray::NdArray<int32_t>);
+      return typeid(NdArray<int32_t>);
     } else if (format.back() == 'K') {
-      return typeid(NdArray::NdArray<int64_t>);
+      return typeid(NdArray<int64_t>);
     } else if (format.back() == 'E') {
-      return typeid(NdArray::NdArray<float>);
+      return typeid(NdArray<float>);
     } else if (format.back() == 'D') {
-      return typeid(NdArray::NdArray<double>);
+      return typeid(NdArray<double>);
     }
   }
   throw Elements::Exception() << "FITS binary table format " << format << " is not "
@@ -111,7 +113,7 @@ std::type_index binaryFormatToType(const std::string& format, const std::vector<
 
 std::vector<size_t> parseTDIM(const std::string &tdim) {
   std::vector<size_t> result {};
-  if (!tdim.empty() && tdim[0] == '(' && tdim.back() == ')') {
+  if (!tdim.empty() && tdim.front() == '(' && tdim.back() == ')') {
     boost::char_separator<char> sep{","};
     boost::tokenizer<boost::char_separator<char>> tok{tdim.substr(1, tdim.size() - 2), sep};
     for (auto& s : tok) {
@@ -189,7 +191,7 @@ std::vector<Row::cell_type> convertNdArrayColumn(CCfits::Column& column, long fi
 
   std::vector<Row::cell_type> result;
   for (auto& valar : data) {
-    result.push_back(NdArray::NdArray<T>(shape, std::move(std::vector<T>(std::begin(valar), std::end(valar)))));
+    result.push_back(NdArray<T>(shape, std::move(std::vector<T>(std::begin(valar), std::end(valar)))));
   }
   return result;
 }
@@ -219,13 +221,13 @@ std::vector<Row::cell_type> translateColumn(CCfits::Column& column, std::type_in
     return convertVectorColumn<float>(column, first, last);
   } if (type == typeid(std::vector<double>)) {
     return convertVectorColumn<double>(column, first, last);
-  } if (type == typeid(NdArray::NdArray<int32_t>)) {
+  } if (type == typeid(NdArray<int32_t>)) {
     return convertNdArrayColumn<int32_t>(column, first, last);
-  } if (type == typeid(NdArray::NdArray<int64_t>)) {
+  } if (type == typeid(NdArray<int64_t>)) {
     return convertNdArrayColumn<int64_t>(column, first, last);
-  } if (type == typeid(NdArray::NdArray<float>)) {
+  } if (type == typeid(NdArray<float>)) {
     return convertNdArrayColumn<float>(column, first, last);
-  } if (type == typeid(NdArray::NdArray<double>)) {
+  } if (type == typeid(NdArray<double>)) {
     return convertNdArrayColumn<double>(column, first, last);
   }
   throw Elements::Exception() << "Unsupported column type " << type.name();

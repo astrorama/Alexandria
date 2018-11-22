@@ -35,6 +35,8 @@
 namespace Euclid {
 namespace Table {
 
+using NdArray::NdArray;
+
 template<typename T>
 std::string scientificFormat(T value) {
   std::ostringstream stream;
@@ -94,11 +96,11 @@ size_t vectorSize(const Table& table, size_t column_index) {
 
 template <typename T>
 size_t ndArraySize(const Table& table, size_t column_index) {
-  const auto &ndarray = boost::get<NdArray::NdArray<T>>(table[0][column_index]);
+  const auto &ndarray = boost::get<NdArray<T>>(table[0][column_index]);
   size_t size = ndarray.size();
   auto shape = ndarray.shape();
   for (const auto& row : table) {
-    if (boost::get<NdArray::NdArray<T>>(row[column_index]).shape() != shape) {
+    if (boost::get<NdArray<T>>(row[column_index]).shape() != shape) {
       throw Elements::Exception() << "Binary FITS table variable shape array columns are not supported";
     }
   }
@@ -138,19 +140,19 @@ std::vector<std::string> getBinaryFormatList(const Table& table) {
     } else if (type == typeid(std::vector<double>)) {
       size_t size = vectorSize<double>(table, column_index);
       format_list.push_back(boost::lexical_cast<std::string>(size) + "D");
-    } else if (type == typeid(NdArray::NdArray<bool>)) {
+    } else if (type == typeid(NdArray<bool>)) {
       size_t size = ndArraySize<bool>(table, column_index);
       format_list.push_back(boost::lexical_cast<std::string>(size) + "D");
-    } else if (type == typeid(NdArray::NdArray<int32_t>)) {
+    } else if (type == typeid(NdArray<int32_t>)) {
       size_t size = ndArraySize<int32_t>(table, column_index);
       format_list.push_back(boost::lexical_cast<std::string>(size) + "D");
-    } else if (type == typeid(NdArray::NdArray<int64_t>)) {
+    } else if (type == typeid(NdArray<int64_t>)) {
       size_t size = ndArraySize<int64_t>(table, column_index);
       format_list.push_back(boost::lexical_cast<std::string>(size) + "D");
-    } else if (type == typeid(NdArray::NdArray<float>)) {
+    } else if (type == typeid(NdArray<float>)) {
       size_t size = ndArraySize<float>(table, column_index);
       format_list.push_back(boost::lexical_cast<std::string>(size) + "D");
-    } else if (type == typeid(NdArray::NdArray<double>)) {
+    } else if (type == typeid(NdArray<double>)) {
       size_t size = ndArraySize<double>(table, column_index);
       format_list.push_back(boost::lexical_cast<std::string>(size) + "D");
     } else {
@@ -193,7 +195,7 @@ template <typename T>
 std::vector<std::valarray<T>> createNdArrayColumnData(const Euclid::Table::Table& table, size_t column_index) {
   std::vector<std::valarray<T>> result{};
   for (auto& row : table) {
-    const auto& ndarray = boost::get<NdArray::NdArray<T>>(row[column_index]);
+    const auto& ndarray = boost::get<NdArray<T>>(row[column_index]);
     result.emplace_back(ndarray.data().data(), ndarray.size());
   }
   return result;
@@ -211,7 +213,7 @@ void populateVectorColumn(const Table& table, size_t column_index, CCfits::ExtHD
 
 template <typename T>
 void populateNdArrayColumn(const Table& table, size_t column_index, CCfits::ExtHDU& table_hdu, long first_row) {
-  const auto& ndarray = boost::get<NdArray::NdArray<T>>(table[0][column_index]);
+  const auto& ndarray = boost::get<NdArray<T>>(table[0][column_index]);
   table_hdu.column(column_index+1).writeArrays(createNdArrayColumnData<T>(table, column_index), first_row);
 }
 
@@ -238,13 +240,13 @@ void populateColumn(const Table& table, size_t column_index, CCfits::ExtHDU& tab
     populateVectorColumn<float>(table, column_index, table_hdu, first_row);
   } else if (type == typeid(std::vector<double>)) {
     populateVectorColumn<double>(table, column_index, table_hdu, first_row);
-  } else if (type == typeid(NdArray::NdArray<int32_t>)) {
+  } else if (type == typeid(NdArray<int32_t>)) {
     populateNdArrayColumn<int32_t>(table, column_index, table_hdu, first_row);
-  } else if (type == typeid(NdArray::NdArray<int64_t>)) {
+  } else if (type == typeid(NdArray<int64_t>)) {
     populateNdArrayColumn<int64_t>(table, column_index, table_hdu, first_row);
-  } else if (type == typeid(NdArray::NdArray<float>)) {
+  } else if (type == typeid(NdArray<float>)) {
     populateNdArrayColumn<float>(table, column_index, table_hdu, first_row);
-  } else if (type == typeid(NdArray::NdArray<double>)) {
+  } else if (type == typeid(NdArray<double>)) {
     populateNdArrayColumn<double>(table, column_index, table_hdu, first_row);
   } else {
     throw Elements::Exception() << "Cannot populate FITS column with data of type " << type.name();

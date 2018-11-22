@@ -38,6 +38,8 @@ using boost::regex_match;
 namespace Euclid {
 namespace Table {
 
+using NdArray::NdArray;
+
 static Elements::Logging logger = Elements::Logging::getLogger("AsciiReader");
 
 size_t countColumns(std::istream& in, const std::string& comment) {
@@ -93,15 +95,15 @@ std::type_index keywordToType(const std::string& keyword) {
   } else if (keyword == "[double]") {
     return typeid(std::vector<double>);
   } else if (keyword == "[bool+]") {
-    return typeid(NdArray::NdArray<bool>);
+    return typeid(NdArray<bool>);
   } else if (keyword == "[int+]") {
-    return typeid(NdArray::NdArray<int32_t>);
+    return typeid(NdArray<int32_t>);
   } else if (keyword == "[long+]") {
-    return typeid(NdArray::NdArray<int64_t>);
+    return typeid(NdArray<int64_t>);
   } else if (keyword == "[float+]") {
-    return typeid(NdArray::NdArray<float>);
+    return typeid(NdArray<float>);
   } else if (keyword == "[double+]") {
-    return typeid(NdArray::NdArray<double>);
+    return typeid(NdArray<double>);
   }
   throw Elements::Exception() << "Unknown column type keyword " << keyword;
 }
@@ -264,7 +266,7 @@ std::vector<T> convertStringToVector(const std::string& str) {
 }
 
 template <typename T>
-NdArray::NdArray<T> convertStringToNdArray(const std::string& str) {
+NdArray<T> convertStringToNdArray(const std::string& str) {
   if (str.empty()) {
     throw Elements::Exception() << "Cannot convert an empty string to a NdArray";
   } else if (str[0] != '<') {
@@ -282,7 +284,7 @@ NdArray::NdArray<T> convertStringToNdArray(const std::string& str) {
 
   std::vector<size_t> shape_u;
   std::copy(shape_i.begin(), shape_i.end(), std::back_inserter(shape_u));
-  return NdArray::NdArray<T>(shape_u, data);
+  return NdArray<T>(shape_u, data);
 }
 
 }
@@ -316,15 +318,15 @@ Row::cell_type convertToCellType(const std::string& value, std::type_index type)
       return Row::cell_type {convertStringToVector<float>(value)};
     } else if (type == typeid(std::vector<double>)) {
       return Row::cell_type {convertStringToVector<double>(value)};
-    } else if (type == typeid(NdArray::NdArray<bool>)) {
+    } else if (type == typeid(NdArray<bool>)) {
       return Row::cell_type {convertStringToNdArray<bool>(value)};
-    } else if (type == typeid(NdArray::NdArray<int32_t>)) {
+    } else if (type == typeid(NdArray<int32_t>)) {
       return Row::cell_type {convertStringToNdArray<int32_t>(value)};
-    } else if (type == typeid(NdArray::NdArray<int64_t>)) {
+    } else if (type == typeid(NdArray<int64_t>)) {
       return Row::cell_type {convertStringToNdArray<int64_t>(value)};
-    } else if (type == typeid(NdArray::NdArray<float>)) {
+    } else if (type == typeid(NdArray<float>)) {
       return Row::cell_type {convertStringToNdArray<float>(value)};
-    } else if (type == typeid(NdArray::NdArray<double>)) {
+    } else if (type == typeid(NdArray<double>)) {
       return Row::cell_type {convertStringToNdArray<double>(value)};
     }
   } catch( boost::bad_lexical_cast const& ) {

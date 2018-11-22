@@ -30,6 +30,8 @@
 namespace Euclid {
 namespace Table {
 
+using NdArray::NdArray;
+
 FitsWriter::FitsWriter(const std::string& filename, bool override_flag)
         : m_filename(filename), m_override_file(override_flag) {
 }
@@ -104,8 +106,8 @@ void FitsWriter::init(const Table& table) {
       auto& desc = info.getDescription(column_index).description;
       table_hdu->addKey("TDESC" + std::to_string(column_index+1), desc, "");
 
-      if (type == typeid(NdArray::NdArray<double>)) {
-        auto a = boost::get<NdArray::NdArray<double>>(table[0][column_index]);
+      if (type == typeid(NdArray<double>)) {
+        auto a = boost::get<NdArray<double>>(table[0][column_index]);
         std::stringstream str;
         str << '(';
 
