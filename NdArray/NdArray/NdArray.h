@@ -184,7 +184,7 @@ public:
    *    number of dimensions is known in advance (i.e. `at(x, y, z)` instead of `at(std::vector<size_t>{x, y, z})`).
    */
   template <typename ...D>
-  T &at(unsigned i, D... rest) {
+  T &at(size_t i, D... rest) {
     std::vector<size_t> acc{i};
     return at_helper(acc, rest...);
   }
