@@ -94,11 +94,11 @@ std::type_index keywordToType(const std::string& keyword) {
     return typeid(std::vector<float>);
   } else if (keyword == "[double]") {
     return typeid(std::vector<double>);
-  } else if (keyword == "[bool+]") {
+  } else if (keyword == "[bool+]" || keyword == "[boolean+]") {
     return typeid(NdArray<bool>);
-  } else if (keyword == "[int+]") {
+  } else if (keyword == "[int+]" || keyword == "[int32+]") {
     return typeid(NdArray<int32_t>);
-  } else if (keyword == "[long+]") {
+  } else if (keyword == "[long+]" || keyword == "[int64+]") {
     return typeid(NdArray<int64_t>);
   } else if (keyword == "[float+]") {
     return typeid(NdArray<float>);
