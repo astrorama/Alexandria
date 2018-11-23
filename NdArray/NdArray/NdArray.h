@@ -29,7 +29,7 @@
 #include <numeric>
 #include <stdexcept>
 #include <vector>
-
+#include <cassert>
 
 namespace Euclid {
 namespace NdArray {
