@@ -88,4 +88,31 @@ BOOST_AUTO_TEST_CASE(BadCoordinates_test) {
   BOOST_CHECK_THROW(m.at(4, 2), std::out_of_range);
 }
 
+BOOST_AUTO_TEST_CASE(Fill_test) {
+  NdArray<int> m{2, 3};
+  std::fill(m.begin(), m.end(), 42);
+
+  std::vector<int> expected{42, 42, 42, 42, 42, 42};
+  BOOST_CHECK_EQUAL_COLLECTIONS(m.begin(), m.end(), expected.begin(), expected.end());
+  BOOST_CHECK_EQUAL(m.at(1, 1), 42);
+}
+
+BOOST_AUTO_TEST_CASE(Copy_test) {
+  std::vector<int> original{1, 1, 2, 3, 5, 8};
+  std::vector<int> expected(original.begin(), original.end());
+  NdArray<int> m(std::vector<size_t>{2, 3}, original);
+
+  BOOST_CHECK_EQUAL(original.size(), 6);
+  BOOST_CHECK_EQUAL_COLLECTIONS(m.begin(), m.end(), expected.begin(), expected.end());
+}
+
+BOOST_AUTO_TEST_CASE(Move_test) {
+  std::vector<int> original{1, 1, 2, 3, 5, 8};
+  std::vector<int> expected(original.begin(), original.end());
+  NdArray<int> m(std::vector<size_t>{2, 3}, std::move(original));
+
+  BOOST_CHECK_EQUAL(original.size(), 0);
+  BOOST_CHECK_EQUAL_COLLECTIONS(m.begin(), m.end(), expected.begin(), expected.end());
+}
+
 BOOST_AUTO_TEST_SUITE_END()
