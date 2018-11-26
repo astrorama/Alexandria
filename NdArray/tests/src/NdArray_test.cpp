@@ -115,4 +115,14 @@ BOOST_AUTO_TEST_CASE(Move_test) {
   BOOST_CHECK_EQUAL_COLLECTIONS(m.begin(), m.end(), expected.begin(), expected.end());
 }
 
+BOOST_AUTO_TEST_CASE(Ostream_test) {
+  std::vector<int> original{1, 1, 2, 3, 5, 8};
+  NdArray<int> m(std::vector<size_t>{2, 3}, std::move(original));
+
+  std::stringstream stream;
+  stream << m;
+
+  BOOST_CHECK_EQUAL(stream.str(), std::string("<2,3>1,1,2,3,5,8"));
+}
+
 BOOST_AUTO_TEST_SUITE_END()

@@ -336,11 +336,17 @@ std::ostream& operator << (std::ostream &out, const NdArray<T, Container> &ndarr
   int i;
   auto shape = ndarray.shape();
 
-  out << "<";
-  for (i = 0; i < shape.size() - 1; ++i) {
-    out << shape[i] << ",";
+  if (ndarray.size()) {
+    out << "<";
+    for (i = 0; i < shape.size() - 1; ++i) {
+      out << shape[i] << ",";
+    }
+    out << shape[i] << ">";
+    for (i = 0; i < ndarray.size() - 1; ++i) {
+      out << ndarray.data()[i] << ",";
+    }
+    out << ndarray.data()[i];
   }
-  out << shape[i] << ">" << ndarray.data();
   return out;
 }
 
