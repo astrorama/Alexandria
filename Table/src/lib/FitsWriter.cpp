@@ -30,7 +30,6 @@
 namespace Euclid {
 namespace Table {
 
-using NdArray::NdArray;
 
 FitsWriter::FitsWriter(const std::string& filename, bool override_flag)
         : m_filename(filename), m_override_file(override_flag) {

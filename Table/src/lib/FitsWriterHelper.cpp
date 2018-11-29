@@ -142,16 +142,16 @@ std::vector<std::string> getBinaryFormatList(const Table& table) {
       format_list.push_back(boost::lexical_cast<std::string>(size) + "D");
     } else if (type == typeid(NdArray<bool>)) {
       size_t size = ndArraySize<bool>(table, column_index);
-      format_list.push_back(boost::lexical_cast<std::string>(size) + "D");
+      format_list.push_back(boost::lexical_cast<std::string>(size) + "L");
     } else if (type == typeid(NdArray<int32_t>)) {
       size_t size = ndArraySize<int32_t>(table, column_index);
-      format_list.push_back(boost::lexical_cast<std::string>(size) + "D");
+      format_list.push_back(boost::lexical_cast<std::string>(size) + "J");
     } else if (type == typeid(NdArray<int64_t>)) {
       size_t size = ndArraySize<int64_t>(table, column_index);
-      format_list.push_back(boost::lexical_cast<std::string>(size) + "D");
+      format_list.push_back(boost::lexical_cast<std::string>(size) + "K");
     } else if (type == typeid(NdArray<float>)) {
       size_t size = ndArraySize<float>(table, column_index);
-      format_list.push_back(boost::lexical_cast<std::string>(size) + "D");
+      format_list.push_back(boost::lexical_cast<std::string>(size) + "E");
     } else if (type == typeid(NdArray<double>)) {
       size_t size = ndArraySize<double>(table, column_index);
       format_list.push_back(boost::lexical_cast<std::string>(size) + "D");
