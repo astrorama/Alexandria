@@ -29,6 +29,7 @@
 #include "Table/TableWriter.h"
 
 using namespace Euclid::Table;
+using namespace Euclid::NdArray;
 
 struct AsciiReader_Fixture {
   std::string only_hash_comments {
@@ -66,15 +67,18 @@ struct AsciiReader_Fixture {
     "# Column: Double double\n"
     "# Column: String string\n"
     "# Column: DoubleVector [double]\n"
+    "# Column: NdArray [double+]\n"
     "\n"
-    "# Bool1 Bool2   Int1 Int2  Long1 Long2 Float Double String DoubleVector\n"
+    "# Bool1 Bool2   Int1 Int2  Long1 Long2 Float Double String DoubleVector NdArray\n"
     "\n"
-    "  true  t       1    2     3     4     5.    6.     7      1.1,1.2\n"
-    "  yes   y       8    9     10    11    1.2   1.3    14     2.1,2.2,2.3\n"
-    "  1     false   15   16    17    18    1.9   2.0    21     3.1,3.2\n"
-    "  f     no      22   23    24    25    2.6   2.7    28     4.1,4.2,4.3\n"
-    "  n     0       29   30    31    32    3.3   3.4    35     5.1\n"
+    "  true  t       1    2     3     4     5.    6.     7      1.1,1.2      <2,3>1,2,3,4,5,6\n"
+    "  yes   y       8    9     10    11    1.2   1.3    14     2.1,2.2,2.3  <2,3>6,5,4,3,2,1\n"
+    "  1     false   15   16    17    18    1.9   2.0    21     3.1,3.2      <2,3>1,3,5,7,9,0\n"
+    "  f     no      22   23    24    25    2.6   2.7    28     4.1,4.2,4.3  <2,3>0,2,4,6,8,0\n"
+    "  n     0       29   30    31    32    3.3   3.4    35     5.1          <2,3>3,3,3,3,3,3\n"
   };
+
+  std::vector<size_t> nd_expected_shape{2, 3};
   
   std::string wrong_bool {
     "# Column: Bool bool\n"
@@ -225,6 +229,7 @@ BOOST_FIXTURE_TEST_CASE(ReadSuccess, AsciiReader_Fixture) {
   BOOST_CHECK_EQUAL(column_info->getDescription(7).name, "Double");
   BOOST_CHECK_EQUAL(column_info->getDescription(8).name, "String");
   BOOST_CHECK_EQUAL(column_info->getDescription(9).name, "DoubleVector");
+  BOOST_CHECK_EQUAL(column_info->getDescription(10).name, "NdArray");
   BOOST_CHECK(column_info->getDescription(0).type == typeid(bool));
   BOOST_CHECK(column_info->getDescription(1).type == typeid(bool));
   BOOST_CHECK(column_info->getDescription(2).type == typeid(int32_t));
@@ -235,6 +240,7 @@ BOOST_FIXTURE_TEST_CASE(ReadSuccess, AsciiReader_Fixture) {
   BOOST_CHECK(column_info->getDescription(7).type == typeid(double));
   BOOST_CHECK(column_info->getDescription(8).type == typeid(std::string));
   BOOST_CHECK(column_info->getDescription(9).type == typeid(std::vector<double>));
+  BOOST_CHECK(column_info->getDescription(10).type == typeid(NdArray<double>));
   
   BOOST_CHECK_EQUAL(boost::get<bool>(table[0][0]), true);
   BOOST_CHECK_EQUAL(boost::get<bool>(table[0][1]), true);
@@ -260,6 +266,9 @@ BOOST_FIXTURE_TEST_CASE(ReadSuccess, AsciiReader_Fixture) {
   BOOST_CHECK_EQUAL(boost::get<std::vector<double>>(table[3][9])[0], 4.1);
   BOOST_CHECK_EQUAL(boost::get<std::vector<double>>(table[3][9])[1], 4.2);
   BOOST_CHECK_EQUAL(boost::get<std::vector<double>>(table[3][9])[2], 4.3);
+  auto ndarray = boost::get<NdArray<double>>(table[3][10]);
+  auto ndarray_shape = ndarray.shape();
+  BOOST_CHECK_EQUAL_COLLECTIONS(ndarray_shape.begin(), ndarray_shape.end(), nd_expected_shape.begin(), nd_expected_shape.end());
   
 }
 
@@ -343,7 +352,7 @@ BOOST_FIXTURE_TEST_CASE(ReadWrongColumnNamesNumber, AsciiReader_Fixture) {
   
   // Given
   std::vector<std::string> wrong_names_less {"1","2","3"};
-  std::vector<std::string> wrong_names_more {"1","2","3","4","5","6","7","8","9","10","11"};
+  std::vector<std::string> wrong_names_more {"1","2","3","4","5","6","7","8","9","10","11","12"};
   std::stringstream inless {all_types};
   std::stringstream inmore {all_types};
   

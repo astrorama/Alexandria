@@ -1,0 +1,93 @@
+namespace Euclid {
+namespace NdArray {
+
+/** \page ndarray NdArray module
+
+\tableofcontents
+
+\section Introduction
+
+The %NdArray module provides a multidimensional container storing its elements
+contiguously in memory in row-major order. For instance, a 3D array with the shape
+(3,2,4) contains 24 elements.
+
+\f[
+\prod_{i=0}^{n}shape[i]
+\f]
+
+The order in memory is for that array would be:
+
+\code
+v[0,0,0], v[0,0,1], v[0,0,2], v[0,0,3], v[0,1,0], v[0,1,1], v[0,1,2], v[0,1,3] ... v[2,1,3]
+\endcode
+
+\note The NdArray class has two template parameters: the contained and the container types. By default, the container
+is a vector, so the former explanation is true. However, nothing prevents the usage of this class with a container
+that does not allocate elements contiguously in memory. On the other hand, this parametrization allows also
+to use this class with containers as, say, thrust::device_vector.
+
+\section Usage
+
+The usage of this class is fairly straight forward. You need to define it specifying at least the contained type,
+and pass to the constructor either a shape, or a shape and initial data.
+
+For convenience, you can pass the shape as a vector of `size_t`, or as a initializer list.
+
+\code{.cpp}
+// Define a multidimensional array with three dimensions of size 3, 2 and 4
+NdArray::NdArray<float> nd_array1{3,2,4};
+
+// Same, but using a vector
+NdArray::NdArray<float> nd_array2(std::vector<size_t>{3,2,4});
+
+// Pre-initialize the content with the value 42.
+std::vector<float> content(3 * 2 * 4, 32.);
+NdArray::NdArray<float> nd_array3(std::vector<size_t>{3,2,4}, content);
+
+// Avoid a copy
+std::vector<float> content(3 * 2 * 4, 32.);
+NdArray::NdArray<float> nd_array4(std::vector<size_t>{3,2,4}, std::move(content));
+
+
+// Different way of initializing the content
+NdArray::NdArray<float> nd_array5(std::vector<size_t>{3,2,4});
+std::fill(nd_array5.begin(), nd_array5.end(), 42.);
+\endcode
+
+The individual elements can be accessed with the method `at`. Similarly to the constructor,
+it accepts either the axes as a list of parameters, or as a vector of size_t.
+
+\code{.cpp}
+nd_array.at(1, 2, 3);
+nd_array.at(std::vector<size_t>{1, 2, 3});
+\endcode
+
+The version that accepts a list of parameters ultimately generates a call to the second via metaprogramming, so
+they are fully equivalent.
+
+To get the array shape, just use the `shape` method.
+
+\code{.cpp}
+nd_array.shape(); // std::vector<size_t>{3,2,4};
+\endcode
+
+You can also get the total size (number of elements), and a reference to the underlying container.
+
+\code{.cpp}
+nd_array.size(); // 3*2*4 = 24
+nd_array.data();
+\endcode
+
+Last, there is an overload of the operator `<<` for `std::ostream`. This can be useful for debugging, but
+it is also necessary for the implementation of Euclid::Table::AsciiWriter, as it relies on the existence of
+this operator (technically, `boost::lexical_cast` does). The output has the form `<shape>values`.
+
+\code{.cpp}
+std::cout << nd_array << std::endl;
+//<3,2,4>42,42,42,42,42,42
+\endcode
+
+*/
+
+}
+} // end of namespace Euclid
