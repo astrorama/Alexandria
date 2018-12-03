@@ -41,13 +41,11 @@ NdArray::NdArray<float> nd_array1{3,2,4};
 NdArray::NdArray<float> nd_array2(std::vector<size_t>{3,2,4});
 
 // Pre-initialize the content with the value 42.
-std::vector<float> content;
-std::fill(content.begin(), content.end(), 42.);
+std::vector<float> content(3 * 2 * 4, 32.);
 NdArray::NdArray<float> nd_array3(std::vector<size_t>{3,2,4}, content);
 
 // Avoid a copy
-std::vector<float> content;
-std::fill(content.begin(), content.end(), 42.);
+std::vector<float> content(3 * 2 * 4, 32.);
 NdArray::NdArray<float> nd_array4(std::vector<size_t>{3,2,4}, std::move(content));
 
 
