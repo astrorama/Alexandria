@@ -282,7 +282,7 @@ private:
     }
 
     size_t offset = 0;
-    for (int i = 0; i < coords.size(); ++i) {
+    for (size_t i = 0; i < coords.size(); ++i) {
       if (coords[i] >= m_shape[i]) {
         throw std::out_of_range(
           std::to_string(coords[i]) + " >= " + std::to_string(m_shape[i]) + " for axis " + std::to_string(i)
@@ -333,7 +333,7 @@ private:
  */
 template<typename T, template<class...> class Container>
 std::ostream& operator << (std::ostream &out, const NdArray<T, Container> &ndarray) {
-  int i;
+  size_t i;
   auto shape = ndarray.shape();
 
   if (ndarray.size()) {

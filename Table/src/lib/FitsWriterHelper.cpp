@@ -213,7 +213,6 @@ void populateVectorColumn(const Table& table, size_t column_index, CCfits::ExtHD
 
 template <typename T>
 void populateNdArrayColumn(const Table& table, size_t column_index, CCfits::ExtHDU& table_hdu, long first_row) {
-  const auto& ndarray = boost::get<NdArray<T>>(table[0][column_index]);
   table_hdu.column(column_index+1).writeArrays(createNdArrayColumnData<T>(table, column_index), first_row);
 }
 
