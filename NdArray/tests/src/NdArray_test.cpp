@@ -74,7 +74,7 @@ BOOST_AUTO_TEST_CASE(InitFromVector_test) {
 BOOST_AUTO_TEST_CASE(BadInitFromVector_test) {
   try {
     NdArray<int> m{std::vector<size_t>{2, 3}, {10, 50, 0, 15}};
-    BOOST_TEST_FAIL("The construction should have failed");
+    BOOST_ERROR("The construction should have failed");
   }
   catch (...) {
   }
