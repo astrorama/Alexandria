@@ -114,8 +114,9 @@ std::type_index binaryFormatToType(const std::string& format, const std::vector<
 std::vector<size_t> parseTDIM(const std::string &tdim) {
   std::vector<size_t> result {};
   if (!tdim.empty() && tdim.front() == '(' && tdim.back() == ')') {
+    auto subtdim = tdim.substr(1, tdim.size() - 2);
     boost::char_separator<char> sep{","};
-    boost::tokenizer<boost::char_separator<char>> tok{tdim.substr(1, tdim.size() - 2), sep};
+    boost::tokenizer<boost::char_separator<char>> tok{subtdim, sep};
     for (auto& s : tok) {
       result.push_back(boost::lexical_cast<size_t>(s));
     }
