@@ -237,5 +237,24 @@ BOOST_FIXTURE_TEST_CASE(Iterator, Row_Fixture) {
 }
 
 //-----------------------------------------------------------------------------
+// Test the copying of a row
+//-----------------------------------------------------------------------------
+
+BOOST_FIXTURE_TEST_CASE(Copy, Row_Fixture) {
+
+  // Given
+  Euclid::Table::Row::cell_type source{std::string{"One"}};
+  Euclid::Table::Row::cell_type target;
+
+  // When
+  Euclid::Table::Row::cell_type target_constructor{source};
+  target = source; // this will fail to compile if any of the cell_type variants can not be copy-assigned
+
+  // Then
+  BOOST_CHECK(target == source);
+  BOOST_CHECK(target_constructor == source);
+}
+
+//-----------------------------------------------------------------------------
 
 BOOST_AUTO_TEST_SUITE_END ()
