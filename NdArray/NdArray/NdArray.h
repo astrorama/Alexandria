@@ -141,6 +141,11 @@ public:
   NdArray(self_type&&) = default;
 
   /**
+   * Assignment
+   */
+  NdArray& operator = (const NdArray&) = default;
+
+  /**
    * Gets the shape of the matrix.
    * @return
    *    A vector with as many elements as number of dimensions, containing the size of each one.
