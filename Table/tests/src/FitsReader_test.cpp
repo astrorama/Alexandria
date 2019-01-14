@@ -30,12 +30,13 @@
 #include "Table/FitsReader.h"
 
 using namespace Euclid::Table;
+using namespace Euclid::NdArray;
 
 CCfits::Table* addTable(CCfits::FITS& fits) {
 
-  std::vector<std::string> names {"Bool","Int","Long","String","Float","Double","IntVector","DoubleVector"};
-  std::vector<std::string> types {"L","J","K","10A","E","D","2J","2D"};
-  std::vector<std::string> units {"deg","mag","erg","ph","s","m","pc","count"};
+  std::vector<std::string> names {"Bool","Int","Long","String","Float","Double","IntVector","DoubleVector","NdArray"};
+  std::vector<std::string> types {"L","J","K","10A","E","D","2J","2D", "6D"};
+  std::vector<std::string> units {"deg","mag","erg","ph","s","m","pc","count", "x"};
   CCfits::Table* table_hdu = fits.addTable("Success", 2, names, types, units);
   std::vector<bool> bool_values {true, false};
   table_hdu->column(1).write(bool_values, 1);
@@ -53,9 +54,14 @@ CCfits::Table* addTable(CCfits::FITS& fits) {
   table_hdu->column(7).writeArrays(int_vectors, 1);
   std::vector<std::valarray<double>> double_vectors {{1.1,1.2}, {2.1,2.2}};
   table_hdu->column(8).writeArrays(double_vectors, 1);
-  for (int i=1; i<=8; i=i+2) {
+  std::vector<std::valarray<double>> double_ndarrays {{1,2,3,4,5,6}, {6,5,4,3,2,1}};
+  table_hdu->column(9).writeArrays(double_ndarrays, 1);
+
+  for (int i=1; i<=9; i=i+2) {
     table_hdu->addKey("TDESC" + std::to_string(i), "Desc" + std::to_string(i), "");
   }
+  table_hdu->addKey("TDIM9", "(3,2)", "");
+  table_hdu->writeComment("TEST COMMENT\nWITH LINES");
   return table_hdu;
 }
 
@@ -181,7 +187,7 @@ BOOST_FIXTURE_TEST_CASE(ReadSuccess, FitsReader_Fixture) {
   auto& column_info = reader.getInfo();
 
   // Then
-  BOOST_CHECK_EQUAL(column_info.size(), 8);
+  BOOST_CHECK_EQUAL(column_info.size(), 9);
   BOOST_CHECK_EQUAL(column_info.getDescription(0).name, "Bool");
   BOOST_CHECK_EQUAL(column_info.getDescription(1).name, "Int");
   BOOST_CHECK_EQUAL(column_info.getDescription(2).name, "Long");
@@ -190,6 +196,7 @@ BOOST_FIXTURE_TEST_CASE(ReadSuccess, FitsReader_Fixture) {
   BOOST_CHECK_EQUAL(column_info.getDescription(5).name, "Double");
   BOOST_CHECK_EQUAL(column_info.getDescription(6).name, "IntVector");
   BOOST_CHECK_EQUAL(column_info.getDescription(7).name, "DoubleVector");
+  BOOST_CHECK_EQUAL(column_info.getDescription(8).name, "NdArray");
 
   BOOST_CHECK(column_info.getDescription(0).type == typeid(bool));
   BOOST_CHECK(column_info.getDescription(1).type == typeid(int32_t));
@@ -199,13 +206,14 @@ BOOST_FIXTURE_TEST_CASE(ReadSuccess, FitsReader_Fixture) {
   BOOST_CHECK(column_info.getDescription(5).type == typeid(double));
   BOOST_CHECK(column_info.getDescription(6).type == typeid(std::vector<int32_t>));
   BOOST_CHECK(column_info.getDescription(7).type == typeid(std::vector<double>));
+  BOOST_CHECK(column_info.getDescription(8).type == typeid(NdArray<double>));
   
-  std::vector<std::string> units {"deg","mag","erg","ph","s","m","pc","count"};
+  std::vector<std::string> units {"deg","mag","erg","ph","s","m","pc","count", "x"};
   for (size_t i=0; i < column_info.size(); ++i) {
     BOOST_CHECK_EQUAL(column_info.getDescription(i).unit,  units[i]);
   }
   
-  std::vector<std::string> descriptions {"Desc1","","Desc3","","Desc5","","Desc7",""};
+  std::vector<std::string> descriptions {"Desc1","","Desc3","","Desc5","","Desc7","","Desc9"};
   for (size_t i=0; i < column_info.size(); ++i) {
     BOOST_CHECK_EQUAL(column_info.getDescription(i).description,  descriptions[i]);
   }
@@ -235,6 +243,13 @@ BOOST_FIXTURE_TEST_CASE(ReadSuccess, FitsReader_Fixture) {
   BOOST_CHECK_EQUAL(boost::get<std::vector<double>>(table[1][7])[0], 2.1);
   BOOST_CHECK_EQUAL(boost::get<std::vector<double>>(table[1][7])[1], 2.2);
 
+  auto ndarray = boost::get<NdArray<double>>(table[1][8]);
+  BOOST_CHECK_EQUAL(ndarray.shape()[0], 2);
+  BOOST_CHECK_EQUAL(ndarray.shape()[1], 3);
+  BOOST_CHECK_EQUAL(ndarray.at(0,0), 6);
+  BOOST_CHECK_EQUAL(ndarray.at(1,2), 1);
+
+  BOOST_CHECK_EQUAL(reader.getComment(), "TEST COMMENT\nWITH LINES");
 }
 
 //-----------------------------------------------------------------------------

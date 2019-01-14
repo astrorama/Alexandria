@@ -186,6 +186,11 @@ public:
    *    if column name auto-detection is enabled and there are duplicate names
    */
   const ColumnInfo& getInfo() override;
+
+  /**
+   * @return Returns the comment associated to the table
+   */
+  std::string getComment() override;
   
   /// Implements the TableReader::skip() contract
   void skip(long rows) override;

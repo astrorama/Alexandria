@@ -84,7 +84,7 @@ BOOST_AUTO_TEST_CASE( block_test ) {
     pool.submit(SleepTask(700, mutex, output));
     pool.submit(SleepTask(900, mutex, output));
     pool.submit(SleepTask(500, mutex, output));
-    pool.submit(SleepTask(300, mutex, output));
+    pool.submit(SleepTask(350, mutex, output));
     pool.submit(SleepTask(100, mutex, output));
   pool.block();
   
@@ -95,7 +95,7 @@ BOOST_AUTO_TEST_CASE( block_test ) {
   BOOST_CHECK_EQUAL(output[0], 500);
   BOOST_CHECK_EQUAL(output[1], 700);
   BOOST_CHECK_EQUAL(output[2], 100);
-  BOOST_CHECK_EQUAL(output[3], 300);
+  BOOST_CHECK_EQUAL(output[3], 350);
   BOOST_CHECK_EQUAL(output[4], 900);
   BOOST_CHECK_EQUAL(output[5], 1000);
 

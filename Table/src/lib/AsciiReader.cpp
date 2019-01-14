@@ -172,6 +172,32 @@ const ColumnInfo& AsciiReader::getInfo() {
   return *m_column_info;
 }
 
+static std::string _peekLine(std::istream &in) {
+  std::string line;
+  auto pos = in.tellg();
+  getline(in, line);
+  in.seekg(pos);
+  return line;
+}
+
+std::string AsciiReader::getComment() {
+  std::ostringstream comment;
+
+  m_reading_started = true;
+  auto &in = m_stream_holder->ref();
+  while (in && _peekLine(in).compare(0, m_comment.size(), m_comment) == 0) {
+    std::string line;
+    getline(in, line);
+    line = line.substr(m_comment.size());
+    boost::trim(line);
+    comment << line << '\n';
+  }
+
+  auto full_comment = comment.str();
+  boost::trim(full_comment);
+  return full_comment;
+}
+
 Table AsciiReader::readImpl(long rows) {
   readColumnInfo();
   auto& in = m_stream_holder->ref();

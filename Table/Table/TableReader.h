@@ -36,7 +36,7 @@ namespace Table {
  * 
  * @details
  * Each TableReader implementation should behave like a stream to a table. It
- * must implement the methods getInfo(), readImpl(), skip() and hasMoreRows().
+ * must implement the methods getComment(), getInfo(), readImpl(), skip() and hasMoreRows().
  * See the documentation of these methods for more information of how to
  * implement them.
  * 
@@ -58,6 +58,11 @@ public:
   TableReader& operator=(const TableReader&) = delete;
 
   virtual ~TableReader() = default;
+
+  /**
+   * @return Returns the comment associated to the table
+   */
+  virtual std::string getComment() = 0;
   
   /**
    * @brief Returns the column information of the table

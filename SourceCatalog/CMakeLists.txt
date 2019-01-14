@@ -1,6 +1,7 @@
 elements_subdir(SourceCatalog)
 
 elements_depends_on_subdirs(Table)
+elements_depends_on_subdirs(GridContainer)
 
 elements_depends_on_subdirs(ElementsKernel)
 
@@ -10,7 +11,7 @@ find_package(Boost REQUIRED COMPONENTS filesystem thread system)
 #===== Libraries ===============================================================
 
 elements_add_library(SourceCatalog src/lib/*.cpp
-                  LINK_LIBRARIES ${CMAKE_DL_LIBS} Boost Table
+                  LINK_LIBRARIES ${CMAKE_DL_LIBS} Boost Table GridContainer
                   INCLUDE_DIRS Boost Table
                   PUBLIC_HEADERS SourceCatalog)
 

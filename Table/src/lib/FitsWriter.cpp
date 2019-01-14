@@ -30,6 +30,7 @@
 namespace Euclid {
 namespace Table {
 
+
 FitsWriter::FitsWriter(const std::string& filename, bool override_flag)
         : m_filename(filename), m_override_file(override_flag) {
 }
@@ -98,10 +99,15 @@ void FitsWriter::init(const Table& table) {
   m_current_line = table_hdu->rows() + 1;
   
   if (new_hdu) {
-    // Write the customized description header keywords
+    // Write the customized description header keywords, and also dimensions for multidimensional arrays
     for (size_t column_index=0; column_index<info.size(); ++column_index) {
       auto& desc = info.getDescription(column_index).description;
       table_hdu->addKey("TDESC" + std::to_string(column_index+1), desc, "");
+
+      auto shape_str = getTDIM(table, column_index);
+      if (!shape_str.empty()) {
+        table_hdu->addKey(CCfits::Column::TDIM() + std::to_string(column_index+1), shape_str, "");
+      }
     }
     
     for (auto& c : m_comments) {
