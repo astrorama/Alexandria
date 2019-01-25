@@ -5,9 +5,10 @@ target a more reliable and easier programming experience. The contained
 modules are the following:
 
 - \subpage sourcecatalog "SourceCatalog module" : Module for handling catalog data
-- \subpage table "Table module"             : Module for ASCII and FITS table handling
+- \subpage table "Table module"                 : Module for ASCII and FITS table handling
 - \subpage xydataset "XYDataset module"         : Module providing an interface for accessing two dimensional datasets
 - \subpage gridcontainer "GridContainer module" : Module providing multi-dimensional grids
-- \subpage mathutils "MathUtils module"               : API for mathematical function definition and manipulation
+- \subpage mathutils "MathUtils module"         : API for mathematical function definition and manipulation
+- \subpage ndarray "NdArray module"             : Module providing a multidimensional array
 
 */

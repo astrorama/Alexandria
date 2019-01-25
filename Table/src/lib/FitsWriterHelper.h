@@ -63,6 +63,15 @@ ELEMENTS_API std::vector<std::string> getAsciiFormatList(const Table& table);
  */
 ELEMENTS_API std::vector<std::string> getBinaryFormatList(const Table& table);
 
+/**
+ * Serializes the shape of the column, if it is a multidimensional array. Otherwise,
+ * returns an empty string
+ * @param table
+ * @param column_index
+ * @return A string directly usable with TDIM (i.e. (3,2))
+ */
+ELEMENTS_API std::string getTDIM(const Table& table, size_t column_index);
+
 void populateColumn(const Table& table, size_t column_index, CCfits::ExtHDU& table_hdu, long first_row=1);
 
 }

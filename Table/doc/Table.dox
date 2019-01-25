@@ -94,6 +94,12 @@ specialization allowing for the following types:
 - `std::vector<int64_t>`
 - `std::vector<float>`
 - `std::vector<double>`
+- `NdArray::NdArray<bool>`
+- `NdArray::NdArray<int32_t>`
+- `NdArray::NdArray<int64_t>`
+- `NdArray::NdArray<float>`
+- `NdArray::NdArray<double>`
+
 
 The following code is an example of how to construct a Row in a verbose and
 easy way to understand, by first creating a vector with the cell values. Note
@@ -537,23 +543,41 @@ by comment lines following the format:
 The NAME is the only required field and it must not contain whitespaces. The
 TYPE field is interpreted using the following conventions:
 
-| TYPE string       | Interpretation|
-|-------------------|---------------|
-| bool, boolean     | A boolean value as the following (case is ignored):<br/>- true,  t, yes, y, 1<br/>- false, f,  no, n, 0|
-| int,  int32       | A 32 bit integer|
-| long, int64       | A 64 bit integer|
-| float             | Single (32 bit) precision floating point|
-| double            | Double (64 bit) precision floating point|
-| string            | String without whitespaces|
-| [bool], [boolean] | A vector of booleans|
-| [int],  [int32]   | A vector of 32 bit integer|
-| [long], [int64]   | A vector of 64 bit integer|
-| [float]           | A vector of single (32 bit) precision floating point|
-| [double]          | A vector of double (64 bit) precision floating point|
+| TYPE string         | Interpretation|
+|---------------------|---------------|
+| bool, boolean       | A boolean value as the following (case is ignored):<br/>- true,  t, yes, y, 1<br/>- false, f,  no, n, 0|
+| int,  int32         | A 32 bit integer|
+| long, int64         | A 64 bit integer|
+| float               | Single (32 bit) precision floating point|
+| double              | Double (64 bit) precision floating point|
+| string              | String without whitespaces|
+| [bool], [boolean]   | A vector of booleans|
+| [int],  [int32]     | A vector of 32 bit integer|
+| [long], [int64]     | A vector of 64 bit integer|
+| [float]             | A vector of single (32 bit) precision floating point|
+| [double]            | A vector of double (64 bit) precision floating point|
+| [bool+], [boolean+] | A multidimensional array of booleans|
+| [int+],  [int32+]   | A multidimensional array of 32 bit integer|
+| [long+], [int64+]   | A multidimensional array of 64 bit integer|
+| [float+]            | A multidimensional array of single (32 bit) precision floating point|
+| [double+]           | A multidimensional array of double (64 bit) precision floating point|
 
 The vector columns should contain the values of the vector separated by the ","
 (comma) character, without any white spaces. If the type of a column is missing,
 it is interpreted as a string column.
+
+The multidimensional arrays start with the shape between `<>`, followed by a one
+dimensional representation of the values (a vector). ASCII tables do support different
+shapes for different entries. For instance:
+
+\code
+# Column: NA [double+]
+
+# NA
+<2,2>1,2,3,4
+<2,2>6,7,8,9
+<3,3>1,2,3,4,5,6,7,8,9
+\endcode
 
 Note that the column description comments are optional. If there are less column
 descriptions than the actual columns in the file (or if they are missing
@@ -885,6 +909,9 @@ the FitsWriter::addData() method. If you handle files with many thousands of
 HDUs (for example appending a table HDU for each object in a catalog), this can
 easily become a performance bottleneck. In this case you should manually create
 the CCfits::FITS instance and use the relevant constructor.
+
+\note When using FitsWriter, all vectors and multidimensional arrays within
+ a column *must* have the same size/shape. This is a limitation of the FITS format.
 
 
 */
