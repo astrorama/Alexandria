@@ -8,6 +8,8 @@ CMAKE_MINIMUM_REQUIRED(VERSION 2.8.5)
 #===============================================================================
 elements_subdir(AlexandriaKernel)
 
+find_package(Threads)
+
 #===============================================================================
 # Load elements_depends_on_subdirs macro here
 #   For creating a dependency onto an other accessible module
@@ -31,7 +33,7 @@ elements_depends_on_subdirs(ElementsKernel)
 #                     PUBLIC_HEADERS ElementsExamples)
 #===============================================================================
 elements_add_library(AlexandriaKernel src/lib/*.cpp
-                     LINK_LIBRARIES ElementsKernel pthread
+                     LINK_LIBRARIES ElementsKernel Threads
                      PUBLIC_HEADERS AlexandriaKernel)
 
 #===============================================================================
