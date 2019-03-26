@@ -25,6 +25,7 @@
 #include "MathUtils/PDF/Cumulative.h"
 #include <cstdlib> // for size_t
 #include "ElementsKernel/Exception.h"
+#include "XYDataset/XYDataset.h"
 
 namespace Euclid {
 namespace MathUtils {
@@ -52,22 +53,48 @@ namespace MathUtils {
     }
   }
 
-  Cumulative Cumulative::fromPdf(std::vector<double>& x_sampling, std::vector<double>& pdf_sampling){
+
+  Cumulative::Cumulative(const XYDataset::XYDataset & sampling): m_x_sampling{}, m_y_sampling{} {
+
+    auto iter = sampling.begin();
+    while (iter != sampling.end()) {
+      m_x_sampling.push_back((*iter).first);
+      m_y_sampling.push_back((*iter).second);
+        ++iter;
+    }
+  }
+
+
+
+Cumulative Cumulative::fromPdf(const XYDataset::XYDataset &  sampling) {
+    std::vector<double> xs{};
+    std::vector<double> ys{};
+    auto iter = sampling.begin();
+    while (iter != sampling.end()) {
+      xs.push_back((*iter).first);
+      ys.push_back((*iter).second);
+        ++iter;
+    }
+    return Cumulative::fromPdf(xs, ys);
+  }
+
+
+  Cumulative Cumulative::fromPdf(std::vector<double>& x_sampling, std::vector<double>& pdf_sampling) {
     double total = 0.;
     std::vector<double> cumul{};
-    auto iter_pdf=pdf_sampling.cbegin();
+    auto iter_pdf = pdf_sampling.cbegin();
 
-    while (iter_pdf!=pdf_sampling.cend()){
+    while (iter_pdf != pdf_sampling.cend()) {
       total += *(iter_pdf);
       cumul.push_back(total);
       ++iter_pdf;
     }
 
-    return Cumulative(x_sampling,cumul);
+    return Cumulative(x_sampling, cumul);
   }
 
 
-  void Cumulative::normalize(){
+  void Cumulative::normalize() {
     double total = m_y_sampling.back();
     std::vector<double> cumul{};
     auto iter=m_y_sampling.begin();

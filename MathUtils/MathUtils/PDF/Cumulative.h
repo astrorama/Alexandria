@@ -27,6 +27,7 @@
 
 #include <vector>
 #include <utility>
+#include "XYDataset/XYDataset.h"
 
 namespace Euclid {
 namespace MathUtils {
@@ -62,7 +63,7 @@ public:
   /**
   * @brief copy constructor
   */
-  Cumulative ( const Cumulative & other);
+  Cumulative(const Cumulative & other);
   
   /**
   * @brief copy assignation operator
@@ -79,6 +80,13 @@ public:
   Cumulative(std::vector<double>& x_sampling, std::vector<double>& y_sampling);
   
   /**
+  * @brief Constructor from the sampling of a cumulative
+  *
+  * @param sampling cumulative sampling.
+  */
+  explicit Cumulative(const XYDataset::XYDataset & sampling);
+
+  /**
   * @brief Factory from the sampling of a PDF. The Cumulative vertical samples
   * are build as the sum of the the pdf vertical sample with horizontal value 
   * smaller or equal to the cumulative horizontal value
@@ -88,6 +96,15 @@ public:
   * @throw Exception if the 2 axis have not the same length
   */
   static Cumulative fromPdf(std::vector<double>& x_sampling, std::vector<double>& pdf_sampling);
+
+  /**
+  * @brief Factory from the sampling of a PDF. The Cumulative vertical samples
+  * are build as the sum of the the pdf vertical sample with horizontal value
+  * smaller or equal to the cumulative horizontal value
+  *
+  * @param sampling pdf sampling.
+  */
+  static Cumulative fromPdf(const XYDataset::XYDataset &  sampling);
 
   /**
   * @brief Normalize the Cumulative. After calling this function the last vertical value is 1.0.

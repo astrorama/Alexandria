@@ -28,6 +28,7 @@
 #include <vector>
 #include <utility>
 #include "ElementsKernel/Exception.h"
+#include "XYDataset/XYDataset.h"
 
 //-----------------------------------------------------------------------------
 
@@ -61,6 +62,22 @@ BOOST_AUTO_TEST_CASE( normalize_test ) {
   BOOST_CHECK_NO_THROW(cumul.normalize());
   
   for (size_t i=0; i<x.size();++i){   
+    BOOST_CHECK_CLOSE(cumul.findValue(ynorm[i]), x[i], 0.0001);
+  }
+
+}
+
+BOOST_AUTO_TEST_CASE( normalize_XY_test ) {
+  std::vector<double> x={0.,1.,2.,3.,4.,5.,6.};
+  std::vector<double> y={0.,0.1,0.2,0.3,0.4,0.5,0.6};
+  Euclid::XYDataset::XYDataset  xy = Euclid::XYDataset::XYDataset::factory(x,y);
+
+  std::vector<double> ynorm={0.,1./6.,1./3.,1./2.,2./3.,5./6.,1.};
+
+  Euclid::MathUtils::Cumulative cumul{xy};
+  BOOST_CHECK_NO_THROW(cumul.normalize());
+
+  for (size_t i=0; i<x.size();++i){
     BOOST_CHECK_CLOSE(cumul.findValue(ynorm[i]), x[i], 0.0001);
   }
 
@@ -132,6 +149,19 @@ BOOST_AUTO_TEST_CASE(fromPDF_test){
   auto cumul = Euclid::MathUtils::Cumulative::fromPdf(x, y);
   
   for (size_t i=0; i<x.size();++i){   
+    BOOST_CHECK_CLOSE(cumul.findValue(expected[i]), x[i], 0.0001);
+  }
+}
+
+BOOST_AUTO_TEST_CASE(fromPDF_XY_test){
+  std::vector<double>        x={0., 1., 2., 3.,  4.,  5.,  6.};
+  std::vector<double>        y={0.,0.5,0.2,0.07,0.08, 0.1,0.05};
+  Euclid::XYDataset::XYDataset  xy = Euclid::XYDataset::XYDataset::factory(x,y);
+  std::vector<double> expected={0.,0.5,0.7,0.77,0.85,0.95, 1.0};
+
+  auto cumul = Euclid::MathUtils::Cumulative::fromPdf(xy);
+
+  for (size_t i=0; i<x.size();++i){
     BOOST_CHECK_CLOSE(cumul.findValue(expected[i]), x[i], 0.0001);
   }
 }

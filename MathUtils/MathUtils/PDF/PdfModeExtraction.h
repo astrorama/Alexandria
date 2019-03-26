@@ -87,7 +87,25 @@ namespace MathUtils {
      * @param n The (maximum) number of modes to be returned.
      * @return A vector of ModeInfo containing the position and the area of the modes.
      */
-    std::vector<ModeInfo> ExtractNHighestModes(const XYDataset::XYDataset& pdf, double merge_ratio, size_t n);
+    std::vector<ModeInfo> extractNHighestModes(const XYDataset::XYDataset& pdf, double merge_ratio, size_t n);
+
+    /**
+     * Extract the n highest modes in the provided pdf and compute for each of them
+     * the location of the mode and its area.
+     * A mode is discovered as the highest
+     * point of the pdf, then, on both sides, samples are added until the pdf
+     * starts to rise again. In order to avoid truncating the mode due to a noisy
+     * pdf it is possible to specify a merge_ratio. In this case the samples are
+     * added until their values is below the hight of the peak times the merge ratio,
+     * then additional point are added until the pdf rise again.
+     *
+     * @param x_sampling The horizontal sampling of the pdf to be analysed.
+     * @param pdf_sampling The sampling of the pdf to be analysed.
+     * @param merge_ratio The parameter for mode cutting.
+     * @param n The (maximum) number of modes to be returned.
+     * @return A vector of ModeInfo containing the position and the area of the modes.
+     */
+    std::vector<ModeInfo> extractNHighestModes(std::vector<double>& x_sampling, std::vector<double>& pdf_sampling, double merge_ratio, size_t n);
   
     /**
      * Extract the n modes with biggest area in the provided pdf and compute for 
@@ -104,7 +122,28 @@ namespace MathUtils {
      * @param n The (maximum) number of modes to be returned.
      * @return A vector of ModeInfo containing the position and the area of the modes.
      */
-    std::vector<ModeInfo> ExtractNBigestModes(const XYDataset::XYDataset& pdf, double merge_ratio, size_t n);
+    std::vector<ModeInfo> extractNBigestModes(const XYDataset::XYDataset& pdf, double merge_ratio, size_t n);
+
+    /**
+     * Extract the n modes with biggest area in the provided pdf and compute for
+     * each of them the location of the mode and its area.
+     * A mode is discovered as the highest
+     * point of the pdf, then, on both sides, samples are added until the pdf
+     * starts to rise again. In order to avoid truncating the mode due to a noisy
+     * pdf it is possible to specify a merge_ratio. In this case the samples are
+     * added until their values is below the hight of the peak times the merge ratio,
+     * then additional point are added until the pdf rise again.
+     *
+     * @param x_sampling The horizontal sampling of the pdf to be analysed.
+     * @param pdf_sampling The sampling of the pdf to be analysed.
+     * @param merge_ratio The parameter for mode cutting.
+     * @param n The (maximum) number of modes to be returned.
+     * @return A vector of ModeInfo containing the position and the area of the modes.
+     */
+    std::vector<ModeInfo> extractNBigestModes(std::vector<double>& x_sampling,
+                                              std::vector<double>& pdf_sampling,
+                                              double merge_ratio,
+                                              size_t n);
 
 
 } /* namespace MathUtils */
