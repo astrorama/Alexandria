@@ -6,7 +6,7 @@ find_package(GMock)
 
 #===== Libraries ===============================================================
 
-elements_add_library(MathUtils src/lib/function/*.cpp src/lib/interpolation/*.cpp src/lib/numericalIntegration/*.cpp
+elements_add_library(MathUtils src/lib/function/*.cpp src/lib/interpolation/*.cpp src/lib/numericalIntegration/*.cpp src/lib/PDF/*.cpp
                      LINK_LIBRARIES XYDataset
                      PUBLIC_HEADERS MathUtils)
 
@@ -32,6 +32,12 @@ elements_add_unit_test(interpolation_all_tests tests/src/interpolation/*_test.cp
 
 elements_add_unit_test(SimpsonsRule_test tests/src/numericalIntegration/SimpsonsRule_test.cpp
                        LINK_LIBRARIES MathUtils TYPE Boost)
+                       
+elements_add_unit_test(Cumulative_test tests/src/PDF/Cumulative_test.cpp 
+                     LINK_LIBRARIES MathUtils XYDataset TYPE Boost)
+
+elements_add_unit_test(PdfModeExtraction_test tests/src/PDF/PdfModeExtraction_test.cpp 
+                     LINK_LIBRARIES MathUtils XYDataset TYPE Boost)
 
 #===== Tests using GMock =======================================================
 if(GMOCK_FOUND)
