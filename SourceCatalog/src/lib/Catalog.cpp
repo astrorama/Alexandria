@@ -44,9 +44,8 @@ Catalog::Catalog(vector<Source> source_vector): m_source_vector(source_vector)
      // Make sure the element does not already exist
      if (!it.second)
      {
-       throw Elements::Exception("Euclid::SourceCatalog::Catalog: Source object already exist "
-             "in the map for source ID : %d, index: %d\n",
-             m_source_vector[index].getId(), index);
+       throw Elements::Exception() << "Euclid::SourceCatalog::Catalog: Source object already exist "
+             << "in the map for source ID : " << m_source_vector[index].getId() << ", index: " << index;
      }
   }
 } // Eof Euclid::SourceCatalog::Catalog
@@ -55,7 +54,7 @@ Catalog::Catalog(vector<Source> source_vector): m_source_vector(source_vector)
 //-----------------------------------------------------------------------------
 // find source in the map
 // return source otherwise null pointer
-shared_ptr<Source> Catalog::find(const int64_t source_id) const
+shared_ptr<Source> Catalog::find(const Source::id_type &source_id) const
 {
   shared_ptr<Source> ptr(nullptr);
   auto it = m_source_index_map.find(source_id);

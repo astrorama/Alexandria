@@ -32,6 +32,31 @@ using namespace std;
 namespace Euclid {
 namespace SourceCatalog {
 
+class CastSourceIdVisitor: public boost::static_visitor<Source::id_type> {
+    template <typename From>
+    static constexpr bool is_integer() {
+      return std::is_integral<From>::value && !std::is_same<From, bool>::value;
+    }
+
+public:
+    CastSourceIdVisitor() {}
+
+    Source::id_type operator() (const std::string &from) const {
+      return from;
+    }
+
+    template <typename From>
+    Source::id_type operator() (const From &from, typename std::enable_if<is_integer<From>()>::type* = 0) const {
+      return Source::id_type(static_cast<int64_t>(from));
+    }
+
+    template <typename From>
+    Source::id_type operator() (const From &, typename std::enable_if<!is_integer<From>()>::type* = 0) const {
+      throw Elements::Exception() << "Only std::string and int64_t are supported types for a source ID, got "
+        << typeid(From).name() << " instead";
+    }
+};
+
 CatalogFromTable::CatalogFromTable(
     std::shared_ptr<Euclid::Table::ColumnInfo> column_info_ptr,
     const string& source_id_column_name,
@@ -56,10 +81,13 @@ Euclid::SourceCatalog::Catalog CatalogFromTable::createCatalog(
 
   vector<Source> source_vector;
 
+  // Figure out the type of the first row, and then assume all following
+  // must be of the same
+  CastSourceIdVisitor castVisitor;
 
   for (auto row : input_table) {
 
-    int64_t source_id = boost::apply_visitor(Table::CastVisitor<int64_t>{}, row[m_source_id_index]);
+    auto source_id = boost::apply_visitor(castVisitor, row[m_source_id_index]);
 
     vector<shared_ptr<Attribute>> attribute_ptr_vector;
 
