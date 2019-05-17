@@ -107,4 +107,19 @@ public:
 } /* namespace SourceCatalog */
 } // end of namespace Euclid
 
+#if BOOST_VERSION < 105800
+namespace boost {
+
+/**
+ * @brief
+ *  boost::variant specifies an equality operator (==), but, in older boost versions, *not* an inequality one
+ *  CCfits expects != to be defined, so we do it here
+ */
+inline bool operator!=(const Euclid::SourceCatalog::Source::id_type& a, const Euclid::SourceCatalog::Source::id_type& b) {
+  return !(a == b);
+}
+
+}
+#endif
+
 #endif /* SOURCE_H_ */
