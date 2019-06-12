@@ -1,4 +1,22 @@
-/**
+/*
+ * Copyright (C) 2012-2020 Euclid Science Ground Segment    
+ *  
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free 
+ * Software Foundation; either version 3.0 of the License, or (at your option)  
+ * any later version.  
+ *  
+ * This library is distributed in the hope that it will be useful, but WITHOUT 
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more  
+ * details.  
+ *  
+ * You should have received a copy of the GNU Lesser General Public License 
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA  
+ */
+ 
+ /**
  * @file src/lib/FitsWriterHelper.h
  * @date April 23, 2014
  * @author Nikolaos Apostolakos
@@ -44,6 +62,15 @@ ELEMENTS_API std::vector<std::string> getAsciiFormatList(const Table& table);
  * @return The list of FITS binary table formats
  */
 ELEMENTS_API std::vector<std::string> getBinaryFormatList(const Table& table);
+
+/**
+ * Serializes the shape of the column, if it is a multidimensional array. Otherwise,
+ * returns an empty string
+ * @param table
+ * @param column_index
+ * @return A string directly usable with TDIM (i.e. (3,2))
+ */
+ELEMENTS_API std::string getTDIM(const Table& table, size_t column_index);
 
 void populateColumn(const Table& table, size_t column_index, CCfits::ExtHDU& table_hdu, long first_row=1);
 

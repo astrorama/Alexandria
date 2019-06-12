@@ -106,6 +106,9 @@ BOOST_AUTO_TEST_CASE(castToDouble) {
   Row::cell_type vector_long_cell = std::vector<std::int64_t>{123, 456, 789};
   Row::cell_type vector_int_cell = std::vector<std::int32_t>{12, 34, 56, 78};
   Row::cell_type vector_bool_cell = std::vector<bool>{true, false, true};
+  Row::cell_type bad_string_cell = std::string{"str12.345"};
+  Row::cell_type overflow_string_cell = std::string{"1.79e+400"};
+  Row::cell_type big_string_cell = std::string{"3.40282e+40"};
   
   // When
   CastVisitor<double> cast {};
@@ -120,8 +123,10 @@ BOOST_AUTO_TEST_CASE(castToDouble) {
   BOOST_CHECK_THROW(boost::apply_visitor(cast, vector_long_cell), Elements::Exception);
   BOOST_CHECK_THROW(boost::apply_visitor(cast, vector_int_cell), Elements::Exception);
   BOOST_CHECK_THROW(boost::apply_visitor(cast, vector_bool_cell), Elements::Exception);
-  
-  
+  BOOST_CHECK_THROW(boost::apply_visitor(cast, bad_string_cell), Elements::Exception);
+  BOOST_CHECK_THROW(boost::apply_visitor(cast, overflow_string_cell), Elements::Exception);
+  auto big_string_res = boost::apply_visitor(cast, big_string_cell);
+
   // Then
   BOOST_CHECK_EQUAL(typeid(string_res).name(), typeid(double).name());
   BOOST_CHECK_EQUAL(string_res, 12.345);
@@ -135,6 +140,8 @@ BOOST_AUTO_TEST_CASE(castToDouble) {
   BOOST_CHECK_EQUAL(int_res, 1234);
   BOOST_CHECK_EQUAL(typeid(bool_res).name(), typeid(double).name());
   BOOST_CHECK_EQUAL(bool_res, 1);
+  BOOST_CHECK_EQUAL(typeid(big_string_res).name(), typeid(double).name());
+  BOOST_CHECK_EQUAL(big_string_res, 3.40282e+40);
 
 }
 
@@ -154,7 +161,9 @@ BOOST_AUTO_TEST_CASE(castToFloat) {
   Row::cell_type vector_long_cell = std::vector<std::int64_t>{123, 456, 789};
   Row::cell_type vector_int_cell = std::vector<std::int32_t>{12, 34, 56, 78};
   Row::cell_type vector_bool_cell = std::vector<bool>{true, false, true};
-  
+  Row::cell_type bad_string_cell = std::string{"str12.345"};
+  Row::cell_type overflow_string_cell = std::string{"3.40282e+40"};
+
   // When
   CastVisitor<float> cast {};
   auto string_res = boost::apply_visitor(cast, string_cell);
@@ -168,6 +177,8 @@ BOOST_AUTO_TEST_CASE(castToFloat) {
   BOOST_CHECK_THROW(boost::apply_visitor(cast, vector_long_cell), Elements::Exception);
   BOOST_CHECK_THROW(boost::apply_visitor(cast, vector_int_cell), Elements::Exception);
   BOOST_CHECK_THROW(boost::apply_visitor(cast, vector_bool_cell), Elements::Exception);
+  BOOST_CHECK_THROW(boost::apply_visitor(cast, bad_string_cell), Elements::Exception);
+  BOOST_CHECK_THROW(boost::apply_visitor(cast, overflow_string_cell), Elements::Exception);
 
   // Then
   BOOST_CHECK_EQUAL(typeid(string_res).name(), typeid(float).name());
@@ -199,7 +210,10 @@ BOOST_AUTO_TEST_CASE(castToInt64) {
   Row::cell_type vector_long_cell = std::vector<std::int64_t>{123, 456, 789};
   Row::cell_type vector_int_cell = std::vector<std::int32_t>{12, 34, 56, 78};
   Row::cell_type vector_bool_cell = std::vector<bool>{true, false, true};
-  
+  Row::cell_type bad_string_cell = std::string{"str12345"};
+  Row::cell_type long_string_cell = std::string{"8589934592"};
+  Row::cell_type long2_string_cell = std::string{"-2147483650"};
+
   // When
   CastVisitor<int64_t> cast {};
   auto string_res = boost::apply_visitor(cast, string_cell);
@@ -213,6 +227,9 @@ BOOST_AUTO_TEST_CASE(castToInt64) {
   BOOST_CHECK_THROW(boost::apply_visitor(cast, vector_long_cell), Elements::Exception);
   BOOST_CHECK_THROW(boost::apply_visitor(cast, vector_int_cell), Elements::Exception);
   BOOST_CHECK_THROW(boost::apply_visitor(cast, vector_bool_cell), Elements::Exception);
+  BOOST_CHECK_THROW(boost::apply_visitor(cast, bad_string_cell), Elements::Exception);
+  auto long_string_res = boost::apply_visitor(cast, long_string_cell);
+  auto long2_string_res = boost::apply_visitor(cast, long2_string_cell);
 
   // Then
   BOOST_CHECK_EQUAL(typeid(string_res).name(), typeid(int64_t).name());
@@ -223,7 +240,10 @@ BOOST_AUTO_TEST_CASE(castToInt64) {
   BOOST_CHECK_EQUAL(int_res, 1234);
   BOOST_CHECK_EQUAL(typeid(bool_res).name(), typeid(int64_t).name());
   BOOST_CHECK_EQUAL(bool_res, 1);
-
+  BOOST_CHECK_EQUAL(typeid(long_string_res).name(), typeid(int64_t).name());
+  BOOST_CHECK_EQUAL(long_string_res, 8589934592);
+  BOOST_CHECK_EQUAL(typeid(long2_string_res).name(), typeid(int64_t).name());
+  BOOST_CHECK_EQUAL(long2_string_res, -2147483650);
 }
 
 //-----------------------------------------------------------------------------
@@ -242,6 +262,9 @@ BOOST_AUTO_TEST_CASE(castToInt32) {
   Row::cell_type vector_long_cell = std::vector<std::int64_t>{123, 456, 789};
   Row::cell_type vector_int_cell = std::vector<std::int32_t>{12, 34, 56, 78};
   Row::cell_type vector_bool_cell = std::vector<bool>{true, false, true};
+  Row::cell_type bad_string_cell = std::string{"str12345"};
+  Row::cell_type overflow_string_cell = std::string{"8589934592"};
+  Row::cell_type overflow2_string_cell = std::string{"-2147483650"};
   
   // When
   CastVisitor<int32_t> cast {};
@@ -256,6 +279,8 @@ BOOST_AUTO_TEST_CASE(castToInt32) {
   BOOST_CHECK_THROW(boost::apply_visitor(cast, vector_long_cell), Elements::Exception);
   BOOST_CHECK_THROW(boost::apply_visitor(cast, vector_int_cell), Elements::Exception);
   BOOST_CHECK_THROW(boost::apply_visitor(cast, vector_bool_cell), Elements::Exception);
+  BOOST_CHECK_THROW(boost::apply_visitor(cast, overflow_string_cell), Elements::Exception);
+  BOOST_CHECK_THROW(boost::apply_visitor(cast, overflow2_string_cell), Elements::Exception);
 
   // Then
   BOOST_CHECK_EQUAL(typeid(string_res).name(), typeid(int32_t).name());
@@ -439,7 +464,7 @@ BOOST_AUTO_TEST_CASE(castToLongVector) {
   Row::cell_type vector_long_cell = std::vector<std::int64_t>{123, 456, 789};
   Row::cell_type vector_int_cell = std::vector<std::int32_t>{12, 34, 56, 78};
   Row::cell_type vector_bool_cell = std::vector<bool>{true, false, true};
-  
+
   // When
   CastVisitor<std::vector<std::int64_t>> cast {};
   auto string_res = boost::apply_visitor(cast, string_cell);
@@ -453,7 +478,7 @@ BOOST_AUTO_TEST_CASE(castToLongVector) {
   auto vector_long_res = boost::apply_visitor(cast, vector_long_cell);
   auto vector_int_res = boost::apply_visitor(cast, vector_int_cell);
   auto vector_bool_res = boost::apply_visitor(cast, vector_bool_cell);
-  
+
   // Then
   BOOST_CHECK_EQUAL(typeid(string_res).name(), typeid(std::vector<std::int64_t>).name());
   BOOST_CHECK_EQUAL(string_res.size(), 3);

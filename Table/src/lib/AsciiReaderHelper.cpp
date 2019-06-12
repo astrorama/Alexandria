@@ -1,4 +1,22 @@
-/** 
+/*
+ * Copyright (C) 2012-2020 Euclid Science Ground Segment    
+ *  
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free 
+ * Software Foundation; either version 3.0 of the License, or (at your option)  
+ * any later version.  
+ *  
+ * This library is distributed in the hope that it will be useful, but WITHOUT 
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more  
+ * details.  
+ *  
+ * You should have received a copy of the GNU Lesser General Public License 
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA  
+ */
+ 
+ /** 
  * @file src/lib/AsciiReaderHelper.cpp
  * @date April 15, 2014
  * @author Nikolaos Apostolakos
@@ -15,9 +33,12 @@ using boost::regex_match;
 #include "ElementsKernel/Exception.h"
 #include "ElementsKernel/Logging.h"
 #include "AsciiReaderHelper.h"
+#include "NdArray/NdArray.h"
 
 namespace Euclid {
 namespace Table {
+
+using NdArray::NdArray;
 
 static Elements::Logging logger = Elements::Logging::getLogger("AsciiReader");
 
@@ -73,6 +94,16 @@ std::type_index keywordToType(const std::string& keyword) {
     return typeid(std::vector<float>);
   } else if (keyword == "[double]") {
     return typeid(std::vector<double>);
+  } else if (keyword == "[bool+]" || keyword == "[boolean+]") {
+    return typeid(NdArray<bool>);
+  } else if (keyword == "[int+]" || keyword == "[int32+]") {
+    return typeid(NdArray<int32_t>);
+  } else if (keyword == "[long+]" || keyword == "[int64+]") {
+    return typeid(NdArray<int64_t>);
+  } else if (keyword == "[float+]") {
+    return typeid(NdArray<float>);
+  } else if (keyword == "[double+]") {
+    return typeid(NdArray<double>);
   }
   throw Elements::Exception() << "Unknown column type keyword " << keyword;
 }
@@ -234,6 +265,28 @@ std::vector<T> convertStringToVector(const std::string& str) {
   return result;
 }
 
+template <typename T>
+NdArray<T> convertStringToNdArray(const std::string& str) {
+  if (str.empty()) {
+    throw Elements::Exception() << "Cannot convert an empty string to a NdArray";
+  } else if (str[0] != '<') {
+    throw Elements::Exception() << "Unexpected initial character for a NdArray: " << str[0];
+  }
+
+  auto closing_char = str.find('>');
+  if (closing_char == std::string::npos) {
+    throw Elements::Exception() << "Could not find '>'";
+  }
+
+  auto shape_str = str.substr(1, closing_char - 1);
+  auto shape_i = convertStringToVector<int32_t>(shape_str);
+  auto data = convertStringToVector<T>(str.substr(closing_char + 1));
+
+  std::vector<size_t> shape_u;
+  std::copy(shape_i.begin(), shape_i.end(), std::back_inserter(shape_u));
+  return NdArray<T>(shape_u, data);
+}
+
 }
 
 Row::cell_type convertToCellType(const std::string& value, std::type_index type) {
@@ -265,6 +318,16 @@ Row::cell_type convertToCellType(const std::string& value, std::type_index type)
       return Row::cell_type {convertStringToVector<float>(value)};
     } else if (type == typeid(std::vector<double>)) {
       return Row::cell_type {convertStringToVector<double>(value)};
+    } else if (type == typeid(NdArray<bool>)) {
+      return Row::cell_type {convertStringToNdArray<bool>(value)};
+    } else if (type == typeid(NdArray<int32_t>)) {
+      return Row::cell_type {convertStringToNdArray<int32_t>(value)};
+    } else if (type == typeid(NdArray<int64_t>)) {
+      return Row::cell_type {convertStringToNdArray<int64_t>(value)};
+    } else if (type == typeid(NdArray<float>)) {
+      return Row::cell_type {convertStringToNdArray<float>(value)};
+    } else if (type == typeid(NdArray<double>)) {
+      return Row::cell_type {convertStringToNdArray<double>(value)};
     }
   } catch( boost::bad_lexical_cast const& ) {
     throw Elements::Exception() << "Cannot convert " << value << " to " << type.name();

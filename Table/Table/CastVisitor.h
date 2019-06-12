@@ -31,6 +31,7 @@
 #include <type_traits>
 #include <boost/variant/static_visitor.hpp>
 #include <boost/tokenizer.hpp>
+#include <cmath>
 #include "ElementsKernel/Exception.h"
 
 namespace Euclid {
@@ -90,7 +91,17 @@ public:
   }
   
   double operator() (const std::string& from) const {
-    return std::atof(from.c_str());
+    char *endptr = nullptr;
+    double value = std::strtod(from.c_str(), &endptr);
+    if (endptr == from.c_str()) {
+      throw Elements::Exception() << "CastVisitor cannot convert the string '"
+                                  << from << "' to " << typeid(double).name();
+    }
+    if (value == HUGE_VAL || value == -HUGE_VAL) {
+      throw Elements::Exception() << "CastVisitor overflows converting the string '"
+                                  << from << "' to " << typeid(double).name();
+    }
+    return value;
   }
 
 };
@@ -118,7 +129,17 @@ public:
   }
   
   float operator() (const std::string& from) const {
-    return std::atof(from.c_str());
+    char *endptr = nullptr;
+    float value = std::strtof(from.c_str(), &endptr);
+    if (endptr == from.c_str()) {
+      throw Elements::Exception() << "CastVisitor cannot convert the string '"
+                                  << from << "' to " << typeid(float).name();
+    }
+    if (value == HUGE_VALF || value == -HUGE_VALF) {
+      throw Elements::Exception() << "CastVisitor overflows converting the string '"
+                                  << from << "' to " << typeid(float).name();
+    }
+    return value;
   }
 
 };
@@ -145,7 +166,13 @@ public:
   }
   
   int64_t operator() (const std::string& from) const {
-    return std::atol(from.c_str());
+    char *endptr = nullptr;
+    int64_t value = std::strtol(from.c_str(), &endptr, 10);
+    if (endptr == from.c_str()) {
+      throw Elements::Exception() << "CastVisitor cannot convert the string '"
+            << from << "' to " << typeid(int64_t).name();
+    }
+    return value;
   }
 
 };
@@ -173,7 +200,17 @@ public:
   }
   
   int32_t operator() (const std::string& from) const {
-    return std::atoi(from.c_str());
+    char *endptr = nullptr;
+    int64_t value = std::strtol(from.c_str(), &endptr, 10);
+    if (endptr == from.c_str()) {
+      throw Elements::Exception() << "CastVisitor cannot convert the string '"
+                                  << from << "' to " << typeid(int32_t).name();
+    }
+    if (value > INT32_MAX || value < INT32_MIN) {
+      throw Elements::Exception() << "CastVisitor overflows converting the string '"
+                                  << from << "' to " << typeid(int32_t).name();
+    }
+    return static_cast<int32_t>(value);
   }
 
 };

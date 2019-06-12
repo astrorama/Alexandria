@@ -1,4 +1,22 @@
-/** 
+/*
+ * Copyright (C) 2012-2020 Euclid Science Ground Segment    
+ *  
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free 
+ * Software Foundation; either version 3.0 of the License, or (at your option)  
+ * any later version.  
+ *  
+ * This library is distributed in the hope that it will be useful, but WITHOUT 
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more  
+ * details.  
+ *  
+ * You should have received a copy of the GNU Lesser General Public License 
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA  
+ */
+ 
+ /** 
  * @file tests/src/Row_test.cpp
  * @date April 8, 2014
  * @author Nikolaos Apostolakos
@@ -216,6 +234,25 @@ BOOST_FIXTURE_TEST_CASE(Iterator, Row_Fixture) {
   }
   BOOST_CHECK(valuesIter == values.cend());
   
+}
+
+//-----------------------------------------------------------------------------
+// Test the copying of a row
+//-----------------------------------------------------------------------------
+
+BOOST_FIXTURE_TEST_CASE(Copy, Row_Fixture) {
+
+  // Given
+  Euclid::Table::Row::cell_type source{std::string{"One"}};
+  Euclid::Table::Row::cell_type target;
+
+  // When
+  Euclid::Table::Row::cell_type target_constructor{source};
+  target = source; // this will fail to compile if any of the cell_type variants can not be copy-assigned
+
+  // Then
+  BOOST_CHECK(target == source);
+  BOOST_CHECK(target_constructor == source);
 }
 
 //-----------------------------------------------------------------------------

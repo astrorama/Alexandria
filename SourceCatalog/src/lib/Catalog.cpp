@@ -1,4 +1,22 @@
-/**
+/*
+ * Copyright (C) 2012-2020 Euclid Science Ground Segment    
+ *  
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free 
+ * Software Foundation; either version 3.0 of the License, or (at your option)  
+ * any later version.  
+ *  
+ * This library is distributed in the hope that it will be useful, but WITHOUT 
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more  
+ * details.  
+ *  
+ * You should have received a copy of the GNU Lesser General Public License 
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA  
+ */
+ 
+ /**
  * Catalog.cpp
  *
  *  Created on : Feb 4, 2014
@@ -26,9 +44,8 @@ Catalog::Catalog(vector<Source> source_vector): m_source_vector(source_vector)
      // Make sure the element does not already exist
      if (!it.second)
      {
-       throw Elements::Exception("Euclid::SourceCatalog::Catalog: Source object already exist "
-             "in the map for source ID : %d, index: %d\n",
-             m_source_vector[index].getId(), index);
+       throw Elements::Exception() << "Euclid::SourceCatalog::Catalog: Source object already exist "
+             << "in the map for source ID : " << m_source_vector[index].getId() << ", index: " << index;
      }
   }
 } // Eof Euclid::SourceCatalog::Catalog
@@ -37,7 +54,7 @@ Catalog::Catalog(vector<Source> source_vector): m_source_vector(source_vector)
 //-----------------------------------------------------------------------------
 // find source in the map
 // return source otherwise null pointer
-shared_ptr<Source> Catalog::find(const int64_t source_id) const
+shared_ptr<Source> Catalog::find(const Source::id_type &source_id) const
 {
   shared_ptr<Source> ptr(nullptr);
   auto it = m_source_index_map.find(source_id);

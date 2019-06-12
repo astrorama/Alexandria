@@ -1,15 +1,37 @@
-/** 
+/*
+ * Copyright (C) 2012-2020 Euclid Science Ground Segment    
+ *  
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free 
+ * Software Foundation; either version 3.0 of the License, or (at your option)  
+ * any later version.  
+ *  
+ * This library is distributed in the hope that it will be useful, but WITHOUT 
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more  
+ * details.  
+ *  
+ * You should have received a copy of the GNU Lesser General Public License 
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA  
+ */
+ 
+ /** 
  * @file src/lib/FitsReaderHelper.cpp
  * @date April 17, 2014
  * @author Nikolaos Apostolakos
  */
 
 #include <CCfits/CCfits>
+#include <boost/lexical_cast.hpp>
+#include <boost/tokenizer.hpp>
 #include "ElementsKernel/Exception.h"
 #include "FitsReaderHelper.h"
 
 namespace Euclid {
 namespace Table {
+
+using NdArray::NdArray;
 
 std::vector<std::string> autoDetectColumnNames(const CCfits::Table& table_hdu) {
   std::vector<std::string> names {};
@@ -39,7 +61,7 @@ std::type_index asciiFormatToType(const std::string& format) {
                             << "yet supported";
 }
 
-std::type_index binaryFormatToType(const std::string& format) {
+std::type_index binaryFormatToType(const std::string& format, const std::vector<size_t>& shape) {
   if (format[0] == 'L') {
     return typeid(bool);
   } else if (format[0] == 'B') {
@@ -56,30 +78,64 @@ std::type_index binaryFormatToType(const std::string& format) {
     return typeid(float);
   } else if (format[0] == 'D') {
     return typeid(double);
-  } else if (format.back() == 'B') {
-    return typeid(std::vector<int32_t>);
-  } else if (format.back() == 'I') {
-    return typeid(std::vector<int32_t>);
-  } else if (format.back() == 'J') {
-    return typeid(std::vector<int32_t>);
-  } else if (format.back() == 'K') {
-    return typeid(std::vector<int64_t>);
-  } else if (format.back() == 'E') {
-    return typeid(std::vector<float>);
-  } else if (format.back() == 'D') {
-    return typeid(std::vector<double>);
+  } else if (shape.empty()) {
+    if (format.back() == 'B') {
+      return typeid(std::vector<int32_t>);
+    } else if (format.back() == 'I') {
+      return typeid(std::vector<int32_t>);
+    } else if (format.back() == 'J') {
+      return typeid(std::vector<int32_t>);
+    } else if (format.back() == 'K') {
+      return typeid(std::vector<int64_t>);
+    } else if (format.back() == 'E') {
+      return typeid(std::vector<float>);
+    } else if (format.back() == 'D') {
+      return typeid(std::vector<double>);
+    }
+  } else {
+    if (format.back() == 'B') {
+      return typeid(NdArray<int32_t>);
+    } else if (format.back() == 'I') {
+      return typeid(NdArray<int32_t>);
+    } else if (format.back() == 'J') {
+      return typeid(NdArray<int32_t>);
+    } else if (format.back() == 'K') {
+      return typeid(NdArray<int64_t>);
+    } else if (format.back() == 'E') {
+      return typeid(NdArray<float>);
+    } else if (format.back() == 'D') {
+      return typeid(NdArray<double>);
+    }
   }
   throw Elements::Exception() << "FITS binary table format " << format << " is not "
                             << "yet supported";
 }
 
+std::vector<size_t> parseTDIM(const std::string &tdim) {
+  std::vector<size_t> result {};
+  if (!tdim.empty() && tdim.front() == '(' && tdim.back() == ')') {
+    auto subtdim = tdim.substr(1, tdim.size() - 2);
+    boost::char_separator<char> sep{","};
+    boost::tokenizer<boost::char_separator<char>> tok{subtdim, sep};
+    for (auto& s : tok) {
+      result.push_back(boost::lexical_cast<size_t>(s));
+    }
+    // Note: the shape is in fortran order, so we need to reverse
+    std::reverse(result.begin(), result.end());
+  }
+  return result;
+}
+
 std::vector<std::type_index> autoDetectColumnTypes(const CCfits::Table& table_hdu) {
   std::vector<std::type_index> types {};
   for (int i=1; i<=table_hdu.numCols(); i++) {
+    auto& column = table_hdu.column(i);
+
     if (typeid(table_hdu) == typeid(CCfits::BinTable)) {
-      types.push_back(binaryFormatToType(table_hdu.column(i).format()));
+      column.setDimen();
+      types.push_back(binaryFormatToType(column.format(), parseTDIM(column.dimen())));
     } else {
-      types.push_back(asciiFormatToType(table_hdu.column(i).format()));
+      types.push_back(asciiFormatToType(column.format()));
     }
   }
   return types;
@@ -128,6 +184,19 @@ std::vector<Row::cell_type> convertVectorColumn(CCfits::Column& column, long fir
   return result;
 }
 
+template<typename T>
+std::vector<Row::cell_type> convertNdArrayColumn(CCfits::Column& column, long first, long last) {
+  std::vector<std::valarray<T>> data;
+  column.readArrays(data, first, last);
+  std::vector<size_t> shape = parseTDIM(column.dimen());
+
+  std::vector<Row::cell_type> result;
+  for (auto& valar : data) {
+    result.push_back(NdArray<T>(shape, std::move(std::vector<T>(std::begin(valar), std::end(valar)))));
+  }
+  return result;
+}
+
 std::vector<Row::cell_type> translateColumn(CCfits::Column& column, std::type_index type) {
   return translateColumn(column, type, 1, column.rows());
 }
@@ -153,6 +222,14 @@ std::vector<Row::cell_type> translateColumn(CCfits::Column& column, std::type_in
     return convertVectorColumn<float>(column, first, last);
   } if (type == typeid(std::vector<double>)) {
     return convertVectorColumn<double>(column, first, last);
+  } if (type == typeid(NdArray<int32_t>)) {
+    return convertNdArrayColumn<int32_t>(column, first, last);
+  } if (type == typeid(NdArray<int64_t>)) {
+    return convertNdArrayColumn<int64_t>(column, first, last);
+  } if (type == typeid(NdArray<float>)) {
+    return convertNdArrayColumn<float>(column, first, last);
+  } if (type == typeid(NdArray<double>)) {
+    return convertNdArrayColumn<double>(column, first, last);
   }
   throw Elements::Exception() << "Unsupported column type " << type.name();
 }

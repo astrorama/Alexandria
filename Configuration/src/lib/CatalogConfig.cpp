@@ -59,19 +59,19 @@ auto CatalogConfig::getProgramOptions() -> std::map<std::string, OptionDescripti
 }
 
 void CatalogConfig::preInitialize(const UserValues& args) {
-  
+
   if (args.find(SOURCE_ID_COLUMN_NAME) != args.end()
       && args.find(SOURCE_ID_COLUMN_INDEX) != args.end()) {
-    throw Elements::Exception() << "Options " << SOURCE_ID_COLUMN_NAME 
+    throw Elements::Exception() << "Options " << SOURCE_ID_COLUMN_NAME
         << " and " << SOURCE_ID_COLUMN_INDEX << " are mutually exclusive";
   }
-  
+
   if (args.find(SOURCE_ID_COLUMN_INDEX) != args.end()
       && args.at(SOURCE_ID_COLUMN_INDEX).as<int>() < 1) {
     throw Elements::Exception() << SOURCE_ID_COLUMN_INDEX<< " must be a one-based "
         << "index but was " << args.at(SOURCE_ID_COLUMN_INDEX).as<int>();
   }
-  
+
   if (args.find(INPUT_CATALOG_FORMAT) != args.end()
       && args.at(INPUT_CATALOG_FORMAT).as<std::string>() != "AUTO"
       && args.at(INPUT_CATALOG_FORMAT).as<std::string>() != "FITS"
@@ -136,7 +136,7 @@ std::unique_ptr<Table::TableReader> getTableReaderImpl(bool fits_format, const b
   if (fits_format) {
     return make_unique<Table::FitsReader>(filename.native(), 1);
   } else {
-    return make_unique<Table::AsciiReader>(filename.native()); 
+    return make_unique<Table::AsciiReader>(filename.native());
   }
 }
 
@@ -197,6 +197,10 @@ std::shared_ptr<Table::ColumnInfo> CatalogConfig::getColumnInfo() const {
     throw Elements::Exception() << "getColumnInfo() call to uninitialized CatalogConfig";
   }
   return m_column_info;
+}
+
+std::string CatalogConfig::getIdColumn() const {
+  return m_id_column_name;
 }
 
 namespace {

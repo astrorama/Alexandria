@@ -1,4 +1,22 @@
-/**
+/*
+ * Copyright (C) 2012-2020 Euclid Science Ground Segment    
+ *  
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free 
+ * Software Foundation; either version 3.0 of the License, or (at your option)  
+ * any later version.  
+ *  
+ * This library is distributed in the hope that it will be useful, but WITHOUT 
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more  
+ * details.  
+ *  
+ * You should have received a copy of the GNU Lesser General Public License 
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA  
+ */
+ 
+ /**
  * @file SourceCatalog/Catalog.h
  *
  * @author Nicolas Morisset
@@ -82,7 +100,7 @@ public:
    * A shared pointer to the Source object or a null pointer in case of
    * no object was found for this source_id
    */
-  std::shared_ptr<Source> find(const int64_t source_id) const;
+  std::shared_ptr<Source> find(const Source::id_type &source_id) const;
 
   /**
    * @brief
@@ -97,7 +115,7 @@ private:
   std::vector<Source>        m_source_vector { };
   // Map of the Source identification and their location
   // in the Source vector
-  std::map<int64_t, size_t> m_source_index_map { };
+  std::map<Source::id_type, size_t> m_source_index_map { };
 
 };
 
