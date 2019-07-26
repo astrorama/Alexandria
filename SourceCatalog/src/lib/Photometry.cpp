@@ -77,7 +77,7 @@ unique_ptr<FluxErrorPair> Photometry::find(string filter_name) const
     flux_found_ptr = unique_ptr<FluxErrorPair>{new FluxErrorPair{*photometry_iter} };
   }
 
-  return move(flux_found_ptr);
+  return flux_found_ptr;
 } // Eof Photometry::find
 
 
