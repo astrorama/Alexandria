@@ -184,7 +184,7 @@ unique_ptr<Attribute> PhotometryAttributeFromRow::createAttribute(
 
   unique_ptr<Attribute> photometry_ptr { new Photometry{m_filter_name_vector_ptr, photometry_vector } };
 
-  return move(photometry_ptr);
+  return photometry_ptr;
 }
 
 } // namespace SourceCatalog
