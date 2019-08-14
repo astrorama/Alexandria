@@ -38,14 +38,18 @@ struct BinaryFitsWriter_Fixture {
       ColumnInfo::info_type("Float", typeid(float), "ph", "Desc4"),
       ColumnInfo::info_type("Double", typeid(double), "s", "Desc5"),
       ColumnInfo::info_type("String", typeid(std::string), "m", "Desc6"),
-      ColumnInfo::info_type("NdArray", typeid(NdArray<double>), "x", "Desc7")
+      ColumnInfo::info_type("NdArray", typeid(NdArray<double>), "x", "Desc7"),
+      ColumnInfo::info_type("ScalarNdArray", typeid(NdArray<double>), "x", "Desc8")
   };
   std::shared_ptr<ColumnInfo> column_info {new ColumnInfo {info_list}};
   std::vector<Row::cell_type> values0{true, 1, int64_t{123}, 0.F, 0., std::string{"first"},
-                                      NdArray<double>({2, 3}, {1, 2, 3, 4, 5, 6})};
+                                      NdArray<double>({2, 3}, {1, 2, 3, 4, 5, 6}),
+                                      NdArray<double>({1}, {41})};
   Row row0 {values0, column_info};
   std::vector<Row::cell_type> values1{false, 12345, int64_t{123456789}, 2.3e-2F, 1.12345e-18,
-                                      std::string{"second"}, NdArray<double>({ 2, 3 }, { 6, 5, 4, 3, 2, 1 })};
+                                      std::string{"second"},
+                                      NdArray<double>({ 2, 3 }, { 6, 5, 4, 3, 2, 1 }),
+                                      NdArray<double>({1}, {42})};
   Row row1 {values1, column_info};
   std::vector<Row> row_list {row0, row1};
   Table table {row_list};
@@ -96,7 +100,7 @@ BOOST_FIXTURE_TEST_CASE(writeBinary, BinaryFitsWriter_Fixture) {
 
   // Then
   BOOST_CHECK_EQUAL(result.rows(), 2);
-  BOOST_CHECK_EQUAL(result.numCols(), 7);
+  BOOST_CHECK_EQUAL(result.numCols(), 8);
 
   BOOST_CHECK_EQUAL(result.column(1).name(), "Boolean");
   BOOST_CHECK_EQUAL(result.column(2).name(), "Integer");
@@ -105,6 +109,7 @@ BOOST_FIXTURE_TEST_CASE(writeBinary, BinaryFitsWriter_Fixture) {
   BOOST_CHECK_EQUAL(result.column(5).name(), "Double");
   BOOST_CHECK_EQUAL(result.column(6).name(), "String");
   BOOST_CHECK_EQUAL(result.column(7).name(), "NdArray");
+  BOOST_CHECK_EQUAL(result.column(8).name(), "ScalarNdArray");
 
   BOOST_CHECK_EQUAL(result.column(1).format(), "L");
   BOOST_CHECK_EQUAL(result.column(2).format(), "J");
@@ -113,6 +118,7 @@ BOOST_FIXTURE_TEST_CASE(writeBinary, BinaryFitsWriter_Fixture) {
   BOOST_CHECK_EQUAL(result.column(5).format(), "D");
   BOOST_CHECK_EQUAL(result.column(6).format(), "6A");
   BOOST_CHECK_EQUAL(result.column(7).format(), "6D");
+  BOOST_CHECK_EQUAL(result.column(8).format(), "1D");
 
   BOOST_CHECK_EQUAL(result.column(1).unit(), "deg");
   BOOST_CHECK_EQUAL(result.column(2).unit(), "mag");
@@ -192,6 +198,13 @@ BOOST_FIXTURE_TEST_CASE(writeBinary, BinaryFitsWriter_Fixture) {
   BOOST_CHECK_EQUAL(result.column(7).dimen(), "(3,2)");
   BOOST_CHECK_EQUAL_COLLECTIONS(std::begin(na1), std::end(na1), std::begin(expected1), std::end(expected1));
   BOOST_CHECK_EQUAL_COLLECTIONS(std::begin(na2), std::end(na2), std::begin(expected2), std::end(expected2));
+
+  // When
+  std::vector<double> sna;
+  result.column(8).read(sna, 1, 2);
+
+  BOOST_CHECK_EQUAL(sna[0], 41);
+  BOOST_CHECK_EQUAL(sna[1], 42);
 }
 
 //-----------------------------------------------------------------------------
