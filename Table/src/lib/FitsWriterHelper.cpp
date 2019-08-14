@@ -206,7 +206,7 @@ std::vector<T> createSingleNdArrayVectorColumnData(const Euclid::Table::Table& t
   std::vector<T> result {};
   for (auto& row : table) {
     const auto& nd = boost::get<NdArray<T>>(row[column_index]);
-    if (nd.size())
+    if (nd.size() > 0)
       result.push_back(*nd.begin());
     else
       result.push_back(0);
