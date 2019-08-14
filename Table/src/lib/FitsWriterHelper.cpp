@@ -255,7 +255,11 @@ std::string getTDIM(const Table& table, size_t column_index) {
     return "";
   }
 
-  if (shape.size() == 1 && shape[0] == 1) {
+  int64_t ncells = 1;
+  for (auto &axis : shape) {
+    ncells *= axis;
+  }
+  if (ncells == 1) {
     return "";
   }
 
