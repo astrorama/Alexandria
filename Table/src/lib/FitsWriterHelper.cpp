@@ -202,6 +202,19 @@ std::vector<std::valarray<T>> createNdArrayColumnData(const Euclid::Table::Table
 }
 
 template <typename T>
+std::vector<T> createSingleNdArrayVectorColumnData(const Euclid::Table::Table& table, size_t column_index) {
+  std::vector<T> result {};
+  for (auto& row : table) {
+    const auto& nd = boost::get<NdArray<T>>(row[column_index]);
+    if (nd.size())
+      result.push_back(*nd.begin());
+    else
+      result.push_back(0);
+  }
+  return result;
+}
+
+template <typename T>
 void populateVectorColumn(const Table& table, size_t column_index, CCfits::ExtHDU& table_hdu, long first_row) {
   const auto& vec = boost::get<std::vector<T>>(table[0][column_index]);
   if (vec.size() > 1) {
@@ -213,7 +226,13 @@ void populateVectorColumn(const Table& table, size_t column_index, CCfits::ExtHD
 
 template <typename T>
 void populateNdArrayColumn(const Table& table, size_t column_index, CCfits::ExtHDU& table_hdu, long first_row) {
-  table_hdu.column(column_index+1).writeArrays(createNdArrayColumnData<T>(table, column_index), first_row);
+  const auto& nd = boost::get<NdArray<T>>(table[0][column_index]);
+  if (nd.size() > 1) {
+    table_hdu.column(column_index + 1).writeArrays(createNdArrayColumnData<T>(table, column_index), first_row);
+  }
+  else {
+    table_hdu.column(column_index+1).write(createSingleNdArrayVectorColumnData<T>(table, column_index), first_row);
+  }
 }
 
 std::string getTDIM(const Table& table, size_t column_index) {
@@ -236,6 +255,9 @@ std::string getTDIM(const Table& table, size_t column_index) {
     return "";
   }
 
+  if (shape.size() == 1 && shape[0] == 1) {
+    return "";
+  }
 
   std::stringstream stream;
   stream << '(';
