@@ -1,0 +1,31 @@
+language: minimal
+
+env:
+  global:
+    - OS_ARCH=x86_64
+  matrix:
+    - OS_TYPE=fedora OS_VERSION=29
+    - OS_TYPE=fedora OS_VERSION=30
+    - OS_TYPE=fedora OS_VERSION=31
+    - OS_TYPE=fedora OS_VERSION=32
+
+services:
+  - docker
+
+install: true
+
+script:
+  - docker run --name builder --volume "$(pwd):/src" "${OS_TYPE}:${OS_VERSION}" bash "/src/.travis/build-rpm.sh"
+  - docker cp "builder:/build/Packages/RPM/RPMS/x86_64" "./packages"
+
+after_success: |
+  cd packages
+  if [ -z "${TRAVIS_PULL_REQUEST_BRANCH}" ] && [ ! -z "${BINTRAY_REPO}" ]; then
+    case "${TRAVIS_BRANCH}" in
+      deuclidized/*)
+        for p in *.rpm; do
+          curl -T "${p}" "-u${BINTRAY_USER}:${BINTRAY_TOKEN}" "${BINTRAY_REPO}/master/${OS_TYPE}/${OS_VERSION}/${OS_ARCH}/rpms/${p};bt_package=Alexandria?override=1&publish=1"
+        done;;
+    esac
+  fi
+
