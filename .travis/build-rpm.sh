@@ -21,14 +21,14 @@ fi
 cat > /etc/yum.repos.d/astrorama.repo << EOF
 [bintray--astrorama-fedora]
 name=bintray--astrorama-fedora
-baseurl=https://dl.bintray.com/astrorama/fedora/master/\$releasever/\$basearch
+baseurl=https://dl.bintray.com/astrorama/travis/master/fedora/\$releasever/\$basearch
 gpgcheck=0
 repo_gpgcheck=0
 enabled=1
 
 [bintray--astrorama-fedora-develop]
 name=bintray--astrorama-fedora-develop
-baseurl=https://dl.bintray.com/astrorama/fedora/develop/\$releasever/\$basearch
+baseurl=https://dl.bintray.com/astrorama/travis/develop/fedora/\$releasever/\$basearch
 gpgcheck=0
 repo_gpgcheck=0
 enabled=1
