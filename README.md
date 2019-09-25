@@ -1,5 +1,5 @@
 # Alexandria
-[![Build Status](https://travis-ci.org/astrorama/Alexandria.svg?branch=deuclidized%2F2.10)](https://travis-ci.org/astrorama/Alexandria)
+[![Build Status](https://travis-ci.org/astrorama/Alexandria.svg?branch=deuclidized%2F2.14)](https://travis-ci.org/astrorama/Alexandria)
 
 SDC-CH common library for the Euclid project
 
