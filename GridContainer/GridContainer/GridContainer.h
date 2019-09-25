@@ -402,6 +402,12 @@ public:
   iter(const GridContainer<GridCellManager, AxesTypes...>& owner,
            const cell_manager_iter_type& data_iter);
 
+  /// Copy constructor
+  iter(const iter<CellType>&) = default;
+
+  /// Move constructor
+  iter(iter<CellType>&&) = default;
+
   /// Copy operator of the iterator
   iter& operator=(const iter& other);
 
