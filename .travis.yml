@@ -23,7 +23,7 @@ after_success: |
   cd packages
   if [ -z "${TRAVIS_PULL_REQUEST_BRANCH}" ] && [ ! -z "${BINTRAY_REPO}" ]; then
     case "${TRAVIS_BRANCH}" in
-      develop|master)
+      deuclidized/*)
         for p in *.rpm; do
           curl -T "${p}" "-u${BINTRAY_USER}:${BINTRAY_TOKEN}" "${BINTRAY_REPO}/${TRAVIS_BRANCH}/${OS_TYPE}/${OS_VERSION}/${OS_ARCH}/rpms/${p};bt_package=Alexandria;bt_version=${version}?override=1&publish=1"
         done;;
