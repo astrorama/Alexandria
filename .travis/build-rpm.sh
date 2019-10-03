@@ -10,32 +10,30 @@ source /etc/os-release
 
 CMAKEFLAGS="-DINSTALL_DOC=ON"
 
-if [ "$NAME" == "Fedora" ]; then
+if [ "$ID" == "fedora" ]; then
   if [ "$VERSION_ID" -ge 30 ]; then
     PYTHON="python3"
     CMAKEFLAGS="$CMAKEFLAGS -DPYTHON_EXPLICIT_VERSION=3"
   else
     PYTHON="python"
   fi
-  OS=fedora
-elif [ "$NAME" == "CentOS Linux" ]; then
+elif [ "$ID" == "centos" ]; then
   yum install -y epel-release
   PYTHON="python"
-  OS=centos
 fi
 
 # Astrorama repository
 cat > /etc/yum.repos.d/astrorama.repo << EOF
 [bintray--astrorama-fedora]
 name=bintray--astrorama-fedora
-baseurl=https://dl.bintray.com/astrorama/travis/master/${OS}/\$releasever/\$basearch
+baseurl=https://dl.bintray.com/astrorama/travis/master/${ID}/\$releasever/\$basearch
 gpgcheck=0
 repo_gpgcheck=0
 enabled=1
 
 [bintray--astrorama-fedora-develop]
 name=bintray--astrorama-fedora-develop
-baseurl=https://dl.bintray.com/astrorama/travis/develop/${OS}/\$releasever/\$basearch
+baseurl=https://dl.bintray.com/astrorama/travis/develop/${ID}/\$releasever/\$basearch
 gpgcheck=0
 repo_gpgcheck=0
 enabled=1
