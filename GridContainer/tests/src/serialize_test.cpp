@@ -1,22 +1,22 @@
 /*
- * Copyright (C) 2012-2020 Euclid Science Ground Segment    
- *  
+ * Copyright (C) 2012-2020 Euclid Science Ground Segment
+ *
  * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free 
- * Software Foundation; either version 3.0 of the License, or (at your option)  
- * any later version.  
- *  
- * This library is distributed in the hope that it will be useful, but WITHOUT 
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 3.0 of the License, or (at your option)
+ * any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more  
- * details.  
- *  
- * You should have received a copy of the GNU Lesser General Public License 
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
  * along with this library; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA  
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
- 
- /** 
+
+ /**
  * @file serialize_test.cpp
  * @date July 7, 2014
  * @author Nikolaos Apostolakos
@@ -25,28 +25,39 @@
 #include <sstream>
 #include <boost/test/unit_test.hpp>
 #include <boost/test/test_tools.hpp>
+#include <boost/archive/text_iarchive.hpp>
+#include <boost/archive/text_oarchive.hpp>
 #include "ElementsKernel/Temporary.h"
 #include "GridContainer/serialize.h"
 #include "serialization/DefaultConstructibleClass.h"
 #include "serialization/NonDefaultConstructibleClass.h"
-#include "XYDataset/XYDataset.h"
-
 
 
 //-----------------------------------------------------------------------------
 
 BOOST_AUTO_TEST_SUITE (serialize_test)
 
+template <typename I, typename O>
+struct archive {
+  typedef I iarchive;
+  typedef O oarchive;
+};
+
+typedef archive<boost::archive::binary_iarchive, boost::archive::binary_oarchive> binary_archive;
+typedef archive<boost::archive::text_iarchive, boost::archive::text_oarchive> text_archive;
+
+typedef boost::mpl::list<binary_archive, text_archive> archive_types;
+
 //-----------------------------------------------------------------------------
 // Test serialization of default constructible cell values
 //-----------------------------------------------------------------------------
-    
-BOOST_AUTO_TEST_CASE(GridContainerSerializationDefaultConstructibleCells) {
-  
+
+BOOST_AUTO_TEST_CASE_TEMPLATE(GridContainerSerializationDefaultConstructibleCells, T, archive_types) {
+
   typedef DefaultConstructibleClass DCC;
   typedef NonDefaultConstructibleClass NDCC;
   typedef Euclid::GridContainer::GridContainer<std::vector<DCC>, double, DCC, NDCC> GridContainerType;
-  
+
   // Given
   std::string name0 = "FundamentalAxis";
   std::vector<double> knots0 {0., 3.4, 12E-15};
@@ -69,12 +80,13 @@ BOOST_AUTO_TEST_CASE(GridContainerSerializationDefaultConstructibleCells) {
     cell.value = value;
     value += 0.1;
   }
-  
+
   // When
   std::stringstream stream {};
-  Euclid::GridContainer::gridBinaryExport(stream, grid);
-  GridContainerType result = Euclid::GridContainer::gridBinaryImport<GridContainerType>(stream);
-  
+  Euclid::GridContainer::gridExport<typename T::oarchive>(stream, grid);
+
+  GridContainerType result = Euclid::GridContainer::gridImport<GridContainerType, typename T::iarchive>(stream);
+
   // Then
   BOOST_CHECK_EQUAL(result.axisNumber(), 3u);
   BOOST_CHECK_EQUAL(result.getAxis<0>().name(), name0);
@@ -107,19 +119,19 @@ BOOST_AUTO_TEST_CASE(GridContainerSerializationDefaultConstructibleCells) {
     ++result_iter;
     ++grid_iter;
   }
-  
+
 }
 
 //-----------------------------------------------------------------------------
 // Test serialization of non default constructible cell values
 //-----------------------------------------------------------------------------
-    
+
 BOOST_AUTO_TEST_CASE(GridContainerSerializationNonDefaultConstructibleCells) {
-  
+
   typedef DefaultConstructibleClass DCC;
   typedef NonDefaultConstructibleClass NDCC;
   typedef Euclid::GridContainer::GridContainer<std::vector<NDCC>, double, DCC, NDCC> GridContainerType;
-  
+
   // Given
   std::string name0 = "FundamentalAxis";
   std::vector<double> knots0 {0., 3.4, 12E-15};
@@ -142,12 +154,12 @@ BOOST_AUTO_TEST_CASE(GridContainerSerializationNonDefaultConstructibleCells) {
     cell = NDCC{value};
     value += 0.1;
   }
-  
+
   // When
   std::stringstream stream {};
   Euclid::GridContainer::gridBinaryExport(stream, grid);
   GridContainerType result = Euclid::GridContainer::gridBinaryImport<GridContainerType>(stream);
-  
+
   // Then
   BOOST_CHECK_EQUAL(result.axisNumber(), 3u);
   BOOST_CHECK_EQUAL(result.getAxis<0>().name(), name0);
@@ -180,20 +192,20 @@ BOOST_AUTO_TEST_CASE(GridContainerSerializationNonDefaultConstructibleCells) {
     ++result_iter;
     ++grid_iter;
   }
-  
+
 }
 
 //-----------------------------------------------------------------------------
 // Test FITS serialization
 //-----------------------------------------------------------------------------
-    
+
 BOOST_AUTO_TEST_CASE(GridContainerSerializationFits) {
-  
+
   using namespace Euclid::GridContainer;
   using namespace Euclid::XYDataset;
   typedef GridContainer<std::vector<int>, std::string> SmallGridContainerType;
   typedef GridContainer<std::vector<double>, int, double, QualifiedName> BigGridContainerType;
-  
+
   // Given
   std::string name11 = "StringAxis";
   std::vector<std::string> knots11 {"one", "two", "three"};
@@ -219,7 +231,7 @@ BOOST_AUTO_TEST_CASE(GridContainerSerializationFits) {
     cell = d;
     d += 0.1;
   }
-  
+
   // When
   Elements::TempDir dir {};
   auto fits_file = dir.path() / "test.fits";
@@ -227,7 +239,7 @@ BOOST_AUTO_TEST_CASE(GridContainerSerializationFits) {
   gridFitsExport(fits_file, "second", grid2);
   auto result1 = gridFitsImport<SmallGridContainerType>(fits_file, 1);
   auto result2 = gridFitsImport<BigGridContainerType>(fits_file, 3);
-  
+
   // Then
   BOOST_CHECK_EQUAL(result1.axisNumber(), grid1.axisNumber());
   BOOST_CHECK_EQUAL(result1.getAxis<0>().name(), name11);
@@ -253,7 +265,7 @@ BOOST_AUTO_TEST_CASE(GridContainerSerializationFits) {
   BOOST_CHECK_EQUAL_COLLECTIONS(
       result2.begin(), result2.end(),
       grid2.begin(), grid2.end());
-  
+
 }
 
 //-----------------------------------------------------------------------------
