@@ -69,8 +69,13 @@ Row::Row(std::vector<cell_type> values, std::shared_ptr<ColumnInfo> column_info)
                               << " instead of " << m_column_info->size();
   }
   for (std::size_t i=0; i<m_values.size(); ++i) {
-    if (std::type_index{m_values[i].type()} != column_info->getDescription(i).type) {
-      throw Elements::Exception() << "Incompatible cell type";
+    auto& value_type = m_values[i].type();
+    auto& column_type = column_info->getDescription(i).type;
+    auto& column_name = column_info->getDescription(i).name;
+    if (std::type_index{value_type} != column_type) {
+      throw Elements::Exception() << "Incompatible cell type for " << column_name << ": expected "
+                                  << boost::core::demangle(column_type.name())
+                                  << ", got " << boost::core::demangle(value_type.name());
     }
   }
   regex whitespace {".*\\s.*"}; // Checks if input contains any whitespace characters
