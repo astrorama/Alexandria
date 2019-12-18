@@ -37,12 +37,19 @@
 
 using namespace Euclid::SOM;
 
-typedef std::array<double, 2> double_array_t;
-BOOST_TEST_DONT_PRINT_LOG_VALUE(double_array_t);
+// This should not be done, but it is the only way I found to get this test to compile in CentOS7
+// BOOST_TEST_DONT_PRINT_LOG_VALUE didn't work there
+namespace std {
+std::ostream& operator<<(std::ostream& out, const std::array<double, 2>& array) {
+  out << '[' << array[0] << ", " << array[1] << ']';
+  return out;
+}
 
-typedef std::pair<size_t, size_t> size_pair_t;
-BOOST_TEST_DONT_PRINT_LOG_VALUE(size_pair_t);
-
+std::ostream& operator<<(std::ostream& out, const std::pair<size_t, size_t>& pair) {
+  out << '[' << pair.first << ", " << pair.second << ']';
+  return out;
+}
+}
 
 struct SerializationFixture {
   SOM<2> m_som {5, 5, InitFunc::uniformRandom(0, 1)};
