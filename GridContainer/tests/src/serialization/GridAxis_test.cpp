@@ -1,22 +1,22 @@
 /*
- * Copyright (C) 2012-2020 Euclid Science Ground Segment    
- *  
+ * Copyright (C) 2012-2020 Euclid Science Ground Segment
+ *
  * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free 
- * Software Foundation; either version 3.0 of the License, or (at your option)  
- * any later version.  
- *  
- * This library is distributed in the hope that it will be useful, but WITHOUT 
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 3.0 of the License, or (at your option)
+ * any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more  
- * details.  
- *  
- * You should have received a copy of the GNU Lesser General Public License 
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
  * along with this library; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA  
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
- 
- /** 
+
+ /**
  * @file tests/src/serialization/GridAxis_test.cpp
  * @date June 27, 2014
  * @author Nikolaos Apostolakos
@@ -27,6 +27,9 @@
 #include <boost/test/test_tools.hpp>
 #include <boost/archive/binary_iarchive.hpp>
 #include <boost/archive/binary_oarchive.hpp>
+#include <boost/archive/text_iarchive.hpp>
+#include <boost/archive/text_oarchive.hpp>
+#include <boost/mpl/list.hpp>
 #include "GridContainer/GridAxis.h"
 #include "GridContainer/serialization/GridAxis.h"
 #include "DefaultConstructibleClass.h"
@@ -36,42 +39,59 @@
 
 BOOST_AUTO_TEST_SUITE (GridAxis_serialization_test)
 
+template <typename I, typename O>
+struct archive {
+  typedef I iarchive;
+  typedef O oarchive;
+};
+
+typedef archive<boost::archive::binary_iarchive, boost::archive::binary_oarchive> binary_archive;
+typedef archive<boost::archive::text_iarchive, boost::archive::text_oarchive> text_archive;
+
+typedef boost::mpl::list<binary_archive, text_archive> archive_types;
+
 //-----------------------------------------------------------------------------
 // Test serialization of GridAxis with fundamental knot values
 //-----------------------------------------------------------------------------
-    
-BOOST_AUTO_TEST_CASE(fundamentalKnotValues) {
-  
+
+BOOST_AUTO_TEST_CASE_TEMPLATE(fundamentalKnotValues, T, archive_types) {
+
   // Given
   std::string name = "AxisName";
   std::vector<double> knots {0., 3.4, 12E-15};
   Euclid::GridContainer::GridAxis<double> axis {name, knots};
-  
+
   // When
   std::stringstream stream {};
-  boost::archive::binary_oarchive boa {stream};
+
   // We write to the stream a pointer to enable the non-default constructor
   // functionality of boost serialization
   Euclid::GridContainer::GridAxis<double>* axis_ptr = &axis;
-  boa << axis_ptr;
+  {
+    // XML serializer requires to be destroyed to flush the closing tag
+    typename T::oarchive boa{stream};
+    boa << axis_ptr;
+  }
   Euclid::GridContainer::GridAxis<double>* result;
-  boost::archive::binary_iarchive bia {stream};
-  bia >> result;
+  {
+    typename T::iarchive bia{stream};
+    bia >> result;
+  }
   // We use a unique_ptr for the memory management
   std::unique_ptr<Euclid::GridContainer::GridAxis<double>> result_ptr {result};
-  
+
   // Then
   BOOST_CHECK_EQUAL(result_ptr->name(), name);
   BOOST_CHECK_EQUAL_COLLECTIONS(result_ptr->begin(), result_ptr->end(), knots.begin(), knots.end());
-  
+
 }
 
 //-----------------------------------------------------------------------------
 // Test serialization of GridAxis with default constructible knot values
 //-----------------------------------------------------------------------------
-    
-BOOST_AUTO_TEST_CASE(defaultConstructibleKnotValues) {
-  
+
+BOOST_AUTO_TEST_CASE_TEMPLATE(defaultConstructibleKnotValues, T, archive_types) {
+
   // Given
   std::string name = "AxisName";
   std::vector<DefaultConstructibleClass> knots {};
@@ -82,20 +102,24 @@ BOOST_AUTO_TEST_CASE(defaultConstructibleKnotValues) {
   knots.push_back(DefaultConstructibleClass{});
   knots.back().value = 12E-15;
   Euclid::GridContainer::GridAxis<DefaultConstructibleClass> axis {name, knots};
-  
+
   // When
   std::stringstream stream {};
-  boost::archive::binary_oarchive boa {stream};
-  // We write to the stream a pointer to enable the non-default constructor
-  // functionality of boost serialization
-  Euclid::GridContainer::GridAxis<DefaultConstructibleClass>* axis_ptr = &axis;
-  boa << axis_ptr;
+  {
+    typename T::oarchive boa{stream};
+    // We write to the stream a pointer to enable the non-default constructor
+    // functionality of boost serialization
+    Euclid::GridContainer::GridAxis<DefaultConstructibleClass> *axis_ptr = &axis;
+    boa << axis_ptr;
+  }
   Euclid::GridContainer::GridAxis<DefaultConstructibleClass>* result;
-  boost::archive::binary_iarchive bia {stream};
-  bia >> result;
+  {
+    typename T::iarchive bia{stream};
+    bia >> result;
+  }
   // We use a unique_ptr for the memory management
   std::unique_ptr<Euclid::GridContainer::GridAxis<DefaultConstructibleClass>> result_ptr {result};
-  
+
   // Then
   BOOST_CHECK_EQUAL(result_ptr->name(), name);
   BOOST_CHECK_EQUAL(result_ptr->size(), knots.size());
@@ -106,15 +130,15 @@ BOOST_AUTO_TEST_CASE(defaultConstructibleKnotValues) {
     ++result_iter;
     ++ knots_iter;
   }
-  
+
 }
 
 //-----------------------------------------------------------------------------
 // Test serialization of GridAxis with non default constructible knot values
 //-----------------------------------------------------------------------------
-    
-BOOST_AUTO_TEST_CASE(nonDefaultConstructibleKnotValues) {
-  
+
+BOOST_AUTO_TEST_CASE_TEMPLATE(nonDefaultConstructibleKnotValues, T, archive_types) {
+
   // Given
   std::string name = "AxisName";
   std::vector<NonDefaultConstructibleClass> knots {};
@@ -122,20 +146,24 @@ BOOST_AUTO_TEST_CASE(nonDefaultConstructibleKnotValues) {
   knots.push_back(NonDefaultConstructibleClass{3.4});
   knots.push_back(NonDefaultConstructibleClass{12E-15});
   Euclid::GridContainer::GridAxis<NonDefaultConstructibleClass> axis {name, knots};
-  
+
   // When
   std::stringstream stream {};
-  boost::archive::binary_oarchive boa {stream};
-  // We write to the stream a pointer to enable the non-default constructor
-  // functionality of boost serialization
-  Euclid::GridContainer::GridAxis<NonDefaultConstructibleClass>* axis_ptr = &axis;
-  boa << axis_ptr;
+  {
+    typename T::oarchive boa{stream};
+    // We write to the stream a pointer to enable the non-default constructor
+    // functionality of boost serialization
+    Euclid::GridContainer::GridAxis<NonDefaultConstructibleClass> *axis_ptr = &axis;
+    boa << axis_ptr;
+  }
   Euclid::GridContainer::GridAxis<NonDefaultConstructibleClass>* result;
-  boost::archive::binary_iarchive bia {stream};
-  bia >> result;
+  {
+    typename T::iarchive bia{stream};
+    bia >> result;
+  }
   // We use a unique_ptr for the memory management
   std::unique_ptr<Euclid::GridContainer::GridAxis<NonDefaultConstructibleClass>> result_ptr {result};
-  
+
   // Then
   BOOST_CHECK_EQUAL(result_ptr->name(), name);
   BOOST_CHECK_EQUAL(result_ptr->size(), knots.size());
@@ -146,7 +174,7 @@ BOOST_AUTO_TEST_CASE(nonDefaultConstructibleKnotValues) {
     ++result_iter;
     ++ knots_iter;
   }
-  
+
 }
 
 //-----------------------------------------------------------------------------

@@ -16,7 +16,7 @@ elements_add_library(GridContainer src/lib/*.cpp
 elements_add_unit_test(GridAxis_test tests/src/GridAxis_test.cpp
                        LINK_LIBRARIES GridContainer TYPE Boost)
 
-elements_add_unit_test(GirdAxis_serialization_test tests/src/serialization/GridAxis_test.cpp
+elements_add_unit_test(GridAxis_serialization_test tests/src/serialization/GridAxis_test.cpp
                        LINK_LIBRARIES GridContainer TYPE Boost)
 
 elements_add_unit_test(tuple_serialization_test tests/src/serialization/tuple_test.cpp
