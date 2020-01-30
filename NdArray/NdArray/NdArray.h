@@ -17,13 +17,13 @@
  */
 
 /**
-* @file Matrix/Matrix.h
+* @file NdArray/NdArray.h
 * @date November 21, 2018
 * @author Alejandro Alvarez Ayllon
 */
 
-#ifndef ALEXANDRIA_MATRIX_H
-#define ALEXANDRIA_MATRIX_H
+#ifndef ALEXANDRIA_NDARRAY_H
+#define ALEXANDRIA_NDARRAY_H
 
 #include <iostream>
 #include <numeric>
@@ -358,4 +358,4 @@ std::ostream& operator << (std::ostream &out, const NdArray<T, Container> &ndarr
 } // end NdArray
 } // end Euclid
 
-#endif // ALEXANDRIA_MATRIX_H
+#endif // ALEXANDRIA_NDARRAY_H
