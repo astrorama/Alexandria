@@ -144,10 +144,31 @@ integrate() method:
 \endcode
 
 The integrate() method will take advantage of the functions which are
-implementing the Integrable interface during its calculation. Note that the
-current version of the MathUtils module does not provide a default numerical
-integration method, so if a function is not implementing the Integrable
-interface, an exception will be thrown.
+implementing the Integrable interface during its calculation.
+
+For functions that do not implement the Integrable interface, an optional third
+argument can be used to specify the numerical integration method to use, which can be
+any class implementing the NumericalIntegrationScheme interface. Note that the
+current version of the MathUtils module does not provide a default.
+
+\code{.cpp}
+  std::unique_ptr<NumericalIntegrationScheme> numerical_scheme(new AdaptativeIntegration<SimpsonsRule>(0.1, 3));
+  cout << "Integral of f() in [3,6] = " << integrate(piece, 3, 6, numerical_scheme) << '\n';
+\endcode
+
+\subsubsection numericaldifferences Numerical differentiation
+
+For Function%s that do not provide the Differentiable API, the MathUtils module provides
+an implementation of numerical differentiation via finite differences.
+
+\code{.cpp}
+    auto ex_f = FunctionAdapter([](double x){return std::pow(M_E, x); });
+
+    auto dy = derivative(ex_f, x);
+    auto ddy = derivative2nd(ex_f, x);
+    BOOST_CHECK_CLOSE(dy, ex_f(x), close_tolerance);
+    BOOST_CHECK_CLOSE(ddy, ex_f(x), close_tolerance);
+\endcode
 
 \subsubsection multiplication Multiplication
 
@@ -186,7 +207,7 @@ The currently supported types of interpolation are linear and cubic spline:
   auto linear = interpolate(x, y, InterpolationType::LINEAR);
   // Cubic spline interpolation
   auto spline = interpolate(x, y, InterpolationType::CUBIC_SPLINE);
-  
+
   cout << "linear\tspline\n";
   for (double i=0; i<=4; i+=0.1) {
     cout << (*linear)(i) << '\t' << (*spline)(i) << '\n';
@@ -291,7 +312,7 @@ example:
   multiplySpecificSpecificMap.insert(
       {pair<type_index,type_index>(typeid(Constant),typeid(Polynomial)), multConstPol}
   );
-  
+
   // The result of multiplying a Constant with a Polynomial is now a Polynomial
   auto m = multiply(Constant{5}, Polynomial{{0,1}});
   cout << typeid(*m).name() << '\n';
@@ -316,7 +337,7 @@ unique_ptr<Function> multConst(const Function& f1, const Function& f2) {
   multiplySpecificSpecificMap.insert(
       {pair<type_index,type_index>(typeid(Constant),typeid(Constant)), multConst}
   );
-  
+
   // The result of multiplying Constants is now a Constant
   m = multiply(Constant{5}, Constant{10});
   cout << typeid(*m).name() << '\n';
