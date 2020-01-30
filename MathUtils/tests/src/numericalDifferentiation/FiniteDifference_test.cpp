@@ -117,5 +117,20 @@ BOOST_FIXTURE_TEST_CASE(Sin, FiniteDifference_Fixture) {
 }
 
 //-----------------------------------------------------------------------------
+// e^x function: first and second derivative are e^x
+//-----------------------------------------------------------------------------
+
+BOOST_FIXTURE_TEST_CASE(ex, FiniteDifference_Fixture) {
+  auto ex_f = FunctionAdapter([](double x){return std::pow(M_E, x); });
+
+  for (auto x : xs) {
+    auto dy = derivative(ex_f, x);
+    auto ddy = derivative2nd(ex_f, x);
+    BOOST_CHECK_CLOSE(dy, ex_f(x), close_tolerance);
+    BOOST_CHECK_CLOSE(ddy, ex_f(x), close_tolerance);
+  }
+}
+
+//-----------------------------------------------------------------------------
 
 BOOST_AUTO_TEST_SUITE_END ()
