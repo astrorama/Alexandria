@@ -1,5 +1,6 @@
 # Alexandria
 [![Build Status](https://travis-ci.org/astrorama/Alexandria.svg?branch=develop)](https://travis-ci.org/astrorama/Alexandria)
+[![CodeFactor](https://www.codefactor.io/repository/github/astrorama/alexandria/badge)](https://www.codefactor.io/repository/github/astrorama/alexandria)
 
 SDC-CH common library for the Euclid project
 
