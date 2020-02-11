@@ -1,0 +1,91 @@
+namespace Euclid {
+namespace Histogram {
+
+template<typename VarType, typename WeightType>
+template<typename BinType>
+void Histogram<VarType, WeightType>::ComputationImpl<BinType>::clip(VarType min, VarType max) {
+
+  if (min > max)
+    throw Elements::Exception("Clipping with min > max can not be done");
+
+  auto min_bin = m_binning.getBinIndex(min);
+  if (min_bin > m_clip_left && min_bin <= m_clip_right)
+    m_clip_left = min_bin;
+
+  auto max_bin = m_binning.getBinIndex(max);
+  if (max_bin >= m_clip_left && max_bin < m_clip_right)
+    m_clip_right = max_bin;
+
+}
+
+template<typename VarType, typename WeightType>
+template<typename BinType>
+std::tuple<VarType, VarType, VarType> Histogram<VarType, WeightType>::ComputationImpl<BinType>::getStats() const {
+  VarType total = 0, total_count = 0;
+  VarType sigma = 0;
+
+  // Find the mean and standard deviation in one go
+  for (auto i = m_clip_left; i <= m_clip_right; ++i) {
+    auto center = m_binning.getBin(i);
+    total += m_counts[i] * center;
+    total_count += m_counts[i];
+    sigma += m_counts[i] * center * center;
+  }
+
+  VarType mean = total / total_count;
+  sigma = sigma / total_count - mean * mean;
+  if (sigma > 0)
+    sigma = std::sqrt(sigma);
+  else
+    sigma = 0;
+
+  // Find the median
+  WeightType low_sum = 0., high_sum = 0.;
+  auto low_i = m_clip_left, high_i = m_clip_right;
+  while (low_i <= high_i) {
+    if (low_sum < high_sum) {
+      low_sum += m_counts[low_i++];
+    }
+    else {
+      high_sum += m_counts[high_i--];
+    }
+  }
+
+  assert(low_sum + high_sum == total_count);
+
+  VarType median;
+  if (high_i >= 0) {
+    auto edges = m_binning.getBinEdges(high_i + 1);
+    auto bin_width = (edges.second - edges.first);
+    auto max_counts = std::max(m_counts[low_i], m_counts[high_i]);
+    median = edges.first + bin_width * (high_sum - low_sum) / (2.0 * max_counts);
+  }
+  else {
+    median = m_binning.getBin(0);
+  }
+
+  return std::make_tuple(mean, median, sigma);
+}
+
+template<typename VarType, typename WeightType>
+template<typename BinType>
+template<typename IterType, typename WeightIterType>
+void Histogram<VarType, WeightType>::ComputationImpl<BinType>::computeBins(IterType begin, IterType end, WeightIterType wbegin) {
+  // This trick should allow the compiler to know the actual binning type, so if they
+  // override methods with *final*, we can skip indirections via vtable
+  m_binning.computeBins(begin, end);
+  m_clip_left = 0;
+  m_clip_right = m_binning.getBinCount() - 1;
+  m_counts.resize(m_binning.getBinCount());
+
+  ssize_t nbins = m_counts.size();
+  for (auto i = begin, wi = wbegin; i != end; ++i, ++wi) {
+    auto bin = m_binning.getBinIndex(*i);
+    if (bin >= 0 && bin < nbins) {
+      m_counts[bin] += *wi;
+    }
+  }
+}
+
+} // end of namespace Histogram
+} // end of namespace Euclid

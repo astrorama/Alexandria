@@ -1,0 +1,9 @@
+namespace Euclid {
+namespace Histogram {
+
+/** \page histogram Histogram module
+
+\tableofcontents
+
+} // end of namespace Histogram
+} // end of namespace Euclid
