@@ -25,6 +25,8 @@
 #include <boost/lexical_cast.hpp>
 #include <vector>
 
+#include <ElementsKernel/Exception.h>
+
 namespace Euclid {
 
 /**
