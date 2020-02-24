@@ -22,8 +22,10 @@
  * @author Nikolaos Apostolakos
  */
 
+#include <AlexandriaKernel/memory_tools.h>
 #include "ElementsKernel/Logging.h"
 #include "MathUtils/interpolation/interpolation.h"
+#include "MathUtils/function/FunctionAdapter.h"
 #include "implementations.h"
 
 namespace Euclid {
@@ -41,6 +43,11 @@ std::unique_ptr<Function> interpolate(const std::vector<double>& x, const std::v
   if (x.size() != y.size()) {
     throw InterpolationException() << "Interpolation using vectors of incompatible "
             << "size: X=" << x.size() << ", Y=" << y.size();
+  }
+
+  if (x.size() == 1 && extrapolate) {
+    auto c = y.front();
+    return make_unique<FunctionAdapter>([c](double){return c;});
   }
 
   // We remove any duplicate lines and we check that we have only increasing
