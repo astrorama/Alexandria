@@ -158,5 +158,18 @@ BOOST_FIXTURE_TEST_CASE(Spline_ddfx_endpoint, Spline_Fixture) {
 }
 
 //-----------------------------------------------------------------------------
+// Same, but with extrapolation
+//-----------------------------------------------------------------------------
+BOOST_FIXTURE_TEST_CASE(Spline_extrapolation, Spline_Fixture) {
+  auto cubic_f = interpolate(x, y, InterpolationType::CUBIC_SPLINE, true);
+
+  auto left_ddy = derivative2nd(*cubic_f, x.front());
+  auto right_ddy = derivative2nd(*cubic_f, x.back());
+
+  BOOST_CHECK_SMALL(left_ddy, 1e-5);
+  BOOST_CHECK_SMALL(right_ddy, 1e-5);
+}
+
+//-----------------------------------------------------------------------------
 
 BOOST_AUTO_TEST_SUITE_END ()
