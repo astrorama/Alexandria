@@ -52,10 +52,14 @@ std::unique_ptr<Function> interpolate(const std::vector<double>& x, const std::v
 
   // We remove any duplicate lines and we check that we have only increasing
   // X values and no step functions
-  std::vector<double> final_x {};
-  std::vector<double> final_y {};
-  final_x.push_back(x[0]);
-  final_y.push_back(y[0]);
+  std::vector<double> final_x;
+  std::vector<double> final_y;
+
+  final_x.reserve(x.size());
+  final_y.reserve(x.size());
+
+  final_x.emplace_back(x[0]);
+  final_y.emplace_back(y[0]);
   for (std::size_t i = 1; i < x.size(); ++i) {
     if (x[i] == x[i-1]) {
       if (y[i] == y[i-1]) {
@@ -72,8 +76,8 @@ std::unique_ptr<Function> interpolate(const std::vector<double>& x, const std::v
       throw InterpolationException() << "Only increasing X values are supported "
               << "but found " << x[i] << " after " << x[i-1];
     }
-  final_x.push_back(x[i]);
-  final_y.push_back(y[i]);
+    final_x.emplace_back(x[i]);
+    final_y.emplace_back(y[i]);
   }
 
   switch (type) {
@@ -87,11 +91,13 @@ std::unique_ptr<Function> interpolate(const std::vector<double>& x, const std::v
 
 std::unique_ptr<Function> interpolate(const Euclid::XYDataset::XYDataset& dataset, InterpolationType type,
                                       bool extrapolate) {
-  std::vector<double> x {};
-  std::vector<double> y {};
+  std::vector<double> x;
+  std::vector<double> y;
+  x.reserve(dataset.size());
+  y.reserve(dataset.size());
   for (auto& pair : dataset) {
-    x.push_back(pair.first);
-    y.push_back(pair.second);
+    x.emplace_back(pair.first);
+    y.emplace_back(pair.second);
   }
   return interpolate(x, y, type, extrapolate);
 }
