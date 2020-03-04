@@ -19,6 +19,7 @@
 #ifndef GRIDCONTAINER_GRIDCONTAINERTOTABLE_H
 #define GRIDCONTAINER_GRIDCONTAINERTOTABLE_H
 
+#include <vector>
 #include "GridContainer/GridContainer.h"
 #include "Table/Table.h"
 

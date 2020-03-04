@@ -16,6 +16,9 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+#include <string>
+#include <tuple>
+#include <vector>
 #include <boost/test/unit_test.hpp>
 #include <cmath>
 #include "GridContainer/GridContainerToTable.h"
@@ -57,10 +60,8 @@ struct CellWithAttributes {
   std::string description;
 };
 
-namespace Euclid {
-namespace GridContainer {
 template<>
-struct Cell2FitsTrait<CellWithAttributes> {
+struct Euclid::GridContainer::Cell2FitsTrait<CellWithAttributes> {
   static void addColumnDescriptions(const CellWithAttributes&, std::vector<Euclid::Table::ColumnDescription>& columns) {
     columns.emplace_back("MyFlux", typeid(double));
     columns.emplace_back("MyError", typeid(double));
@@ -73,8 +74,6 @@ struct Cell2FitsTrait<CellWithAttributes> {
     row.emplace_back(c.description);
   }
 };
-}
-}
 
 struct ComposedGridContainer_Fixture {
   typedef GridContainer<std::vector<CellWithAttributes>, int, int, std::string, float> GridContainerType;
