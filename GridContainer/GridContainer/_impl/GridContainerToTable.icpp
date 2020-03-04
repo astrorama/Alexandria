@@ -64,7 +64,7 @@ struct GridToFitsHelper {
    * Generate recursively the column description for each *knot* on the grid. The order on the tuples
    * is reversed, so the 0th tuple element is inserted on the last position.
    * @param grid
-   *    The photometry grid
+   *    An instance of a grid
    * @param description
    *    A vector where to emplace the description
    */
@@ -84,7 +84,7 @@ struct GridToFitsHelper {
    * @tparam Args
    *    Used to keep track of the types of the knots of the previous axes
    * @param grid
-   *    Photometry grid
+   *    An instance of a grid
    * @param column_info
    *    As populated by getColumnDescriptions
    * @param rows
