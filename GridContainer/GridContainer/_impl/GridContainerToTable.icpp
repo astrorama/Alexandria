@@ -99,7 +99,7 @@ struct GridToFitsHelper<0, GridCellManager, Axes...> {
                                     std::vector<Table::ColumnDescription>&) {}
 
   /**
-   * Insert into the row vector the cell value (photometry) plus the axes values that brought us here
+   * Insert into the row vector the cell value plus the axes values that brought us here
    */
   template<typename ...Args>
   static void
