@@ -22,6 +22,7 @@
 #include <vector>
 #include "GridContainer/GridContainer.h"
 #include "Table/Table.h"
+#include "XYDataset/QualifiedName.h"
 
 namespace Euclid {
 namespace GridContainer {
@@ -38,6 +39,18 @@ struct Knot2FitsTrait {
 
   static T serialize(T v) {
     return v;
+  }
+};
+
+/**
+ * Specialization for mapping a qualified name into a string
+ */
+template<>
+struct Knot2FitsTrait<Euclid::XYDataset::QualifiedName> {
+  typedef std::string fits_t;
+
+  static fits_t serialize(const Euclid::XYDataset::QualifiedName& qn) {
+    return qn.qualifiedName();
   }
 };
 
@@ -68,6 +81,21 @@ struct Cell2FitsTrait {
    *    Destination row. New cells must be *appended* on the same order as the column descriptions.
    */
   static void addCells(const T& c, std::vector<Table::Row::cell_type>& row);
+};
+
+/**
+ * Specialization for scalar types
+ */
+template<typename T>
+struct Cell2FitsTrait<T, typename std::enable_if<std::is_arithmetic<T>::value>::type> {
+
+  static void addColumnDescriptions(const T&, std::vector<Table::ColumnDescription>& columns) {
+    columns.emplace_back("value", typeid(T));
+  }
+
+  static void addCells(const T& c, std::vector<Table::Row::cell_type>& row) {
+    row.emplace_back(c);
+  }
 };
 
 /**
