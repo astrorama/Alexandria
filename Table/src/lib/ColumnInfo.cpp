@@ -1,22 +1,22 @@
 /*
- * Copyright (C) 2012-2020 Euclid Science Ground Segment    
- *  
+ * Copyright (C) 2012-2020 Euclid Science Ground Segment
+ *
  * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free 
- * Software Foundation; either version 3.0 of the License, or (at your option)  
- * any later version.  
- *  
- * This library is distributed in the hope that it will be useful, but WITHOUT 
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 3.0 of the License, or (at your option)
+ * any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more  
- * details.  
- *  
- * You should have received a copy of the GNU Lesser General Public License 
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
  * along with this library; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA  
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
- 
- /** 
+
+ /**
  * @file src/lib/ColumnInfo.cpp
  * @date April 7, 2014
  * @author Nikolaos Apostolakos
@@ -66,6 +66,14 @@ const ColumnDescription& ColumnInfo::getDescription(std::size_t index) const {
   return m_info_list[index];
 }
 
+const ColumnDescription& ColumnInfo::getDescription(const std::string& name) const {
+  auto iter = std::find_if(m_info_list.begin(), m_info_list.end(),
+                           [&name](const info_type& info) { return info.name == name; });
+  if (iter == m_info_list.end()) {
+    throw Elements::Exception() << "Column " << name << " does not exist";
+  }
+  return *iter;
+}
 
 std::unique_ptr<size_t> ColumnInfo::find(const std::string& name) const {
   auto begin = m_info_list.begin();
@@ -73,7 +81,7 @@ std::unique_ptr<size_t> ColumnInfo::find(const std::string& name) const {
   auto iter = std::find_if(begin, end, [&name](const info_type& info){return info.name == name;});
   if (iter != end) {
     size_t index {static_cast<size_t>(std::distance(begin, iter))};
-    return std::unique_ptr<size_t> {new size_t {index}}; 
+    return std::unique_ptr<size_t> {new size_t {index}};
   }
   return std::unique_ptr<size_t> {};
 }
