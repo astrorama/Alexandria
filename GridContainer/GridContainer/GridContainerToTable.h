@@ -34,8 +34,8 @@ namespace GridContainer {
  *  Type to be mapped
  */
 template<typename T>
-struct Knot2FitsTrait {
-  typedef T fits_t;
+struct GridAxisToTable {
+  typedef T table_cell_t;
 
   static T serialize(T v) {
     return v;
@@ -46,10 +46,10 @@ struct Knot2FitsTrait {
  * Specialization for mapping a qualified name into a string
  */
 template<>
-struct Knot2FitsTrait<Euclid::XYDataset::QualifiedName> {
-  typedef std::string fits_t;
+struct GridAxisToTable<Euclid::XYDataset::QualifiedName> {
+  typedef std::string table_cell_t;
 
-  static fits_t serialize(const Euclid::XYDataset::QualifiedName& qn) {
+  static table_cell_t serialize(const Euclid::XYDataset::QualifiedName& qn) {
     return qn.qualifiedName();
   }
 };
@@ -60,8 +60,8 @@ struct Knot2FitsTrait<Euclid::XYDataset::QualifiedName> {
  *  Type to be mapped
  */
 template<typename T, typename Enable=void>
-struct Cell2FitsTrait {
-  static_assert(!std::is_same<T, T>::value, "Specialization of Cell2FitsTrait required");
+struct GridCellToTable {
+  static_assert(!std::is_same<T, T>::value, "Specialization of GridCellToTable required");
 
   /**
    * Get the column descriptions of the values of the cell. The element passed will be one
@@ -87,7 +87,7 @@ struct Cell2FitsTrait {
  * Specialization for scalar types
  */
 template<typename T>
-struct Cell2FitsTrait<T, typename std::enable_if<std::is_arithmetic<T>::value>::type> {
+struct GridCellToTable<T, typename std::enable_if<std::is_arithmetic<T>::value>::type> {
 
   static void addColumnDescriptions(const T&, std::vector<Table::ColumnDescription>& columns) {
     columns.emplace_back("value", typeid(T));

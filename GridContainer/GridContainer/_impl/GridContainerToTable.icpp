@@ -45,7 +45,7 @@ struct GridToFitsHelper {
     using knot_t = typename std::remove_reference<decltype(axis)>::type::data_type;
     auto name = axis.name();
     boost::replace_all(name, " ", "_");
-    description.emplace_back(name, typeid(typename Knot2FitsTrait<knot_t>::fits_t));
+    description.emplace_back(name, typeid(typename GridAxisToTable<knot_t>::table_cell_t));
 
     GridToFitsHelper<I - 1, GridCellManager, Axes...>::addColumnDescriptions(grid, description);
   }
@@ -107,10 +107,10 @@ struct GridToFitsHelper<0, GridCellManager, Axes...> {
          std::vector<Table::Row>& rows, std::pair<size_t, Args> ...axes) {
     using GridType = GridContainer<GridCellManager, Axes...>;
 
-    std::vector<Table::Row::cell_type> row_content{Knot2FitsTrait<Args>::serialize(axes.second)...};
+    std::vector<Table::Row::cell_type> row_content{GridAxisToTable<Args>::serialize(axes.second)...};
     std::reverse(row_content.begin(), row_content.end());
 
-    Cell2FitsTrait<typename GridType::cell_type> cell_traits;
+    GridCellToTable<typename GridType::cell_type> cell_traits;
     cell_traits.addCells(grid.at(axes.first...), row_content);
 
     rows.emplace_back(row_content, column_info);
@@ -129,7 +129,7 @@ Table::Table gridContainerToTable(const GridContainer<GridCellManager, AxesTypes
   std::vector<Table::ColumnDescription> columns;
   Helper::addColumnDescriptions(grid.getAxesTuple(), columns);
 
-  Cell2FitsTrait<typename GridType::cell_type> cell_trais;
+  GridCellToTable<typename GridType::cell_type> cell_trais;
   cell_trais.addColumnDescriptions(*grid.begin(), columns);
 
   auto column_info = std::make_shared<Table::ColumnInfo>(std::move(columns));

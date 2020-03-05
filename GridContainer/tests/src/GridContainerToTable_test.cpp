@@ -62,7 +62,7 @@ struct CellWithAttributes {
 
 namespace Euclid { namespace GridContainer {
 template<>
-struct Cell2FitsTrait<CellWithAttributes> {
+struct GridCellToTable<CellWithAttributes> {
   static void addColumnDescriptions(const CellWithAttributes&, std::vector<Euclid::Table::ColumnDescription>& columns) {
     columns.emplace_back("MyFlux", typeid(double));
     columns.emplace_back("MyError", typeid(double));
