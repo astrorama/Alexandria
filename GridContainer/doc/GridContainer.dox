@@ -66,7 +66,7 @@ the following code:
 In the code above one can make the following observations:
 
 - To support axes with knots of different types, the GridAxis class gets this
-  type as a template parameter. In the example above the type chosen is `int` 
+  type as a template parameter. In the example above the type chosen is `int`
   (`GridAxis<int>`). To use knots of `string` type, the definitions should be
   `GridAxis<string>`. Note that user defined types are also supported.
 
@@ -88,13 +88,13 @@ brackets (`[]`) operator, as demonstrated in the following example:
 \code{.cpp}
   // Getting the axis name
   cout << "Axis name : " << wavelength_axis.name() << "\n";
-  
+
   // Getting the number of knots
   cout << "Number of knots : " << wavelength_axis.size() << "\n";
-  
+
   // Accessing a knot value directly using its (zero based) index
   cout << "Second knot value : " << wavelength_axis[1] << "\n";
-  
+
   // Accessing the knots using the iterator
   cout << "All knot values : ( ";
   for (auto& knot_value : wavelength_axis) {
@@ -119,7 +119,7 @@ the array of grid cell values. Instead, it delegates this task to a
 **GridCellManager**, the type of which is provided as a template parameter to
 the GridContainer class (with signatures such as `GridContainer<GridCellManager,
 ...>`, where the additional template parameters are related to the grid axes,
-see \ref grid below). 
+see \ref grid below).
 
 Existing container classes can be used as the **GridCellManager** of a
 GridContainer, with the simplest example being the std::vector. For example, a
@@ -583,6 +583,65 @@ GridCellManagerTraits must have the enable_boost_serializable flag set to true.
 By default the GridContainer module enables serialization only for vectors of
 types which are boost serializable.
 
+\subsection grid2table Generating a Table
+
+A GridContainer can be unfolded into an Alexandria Table, which can, in turn, be serialized
+either into plain text or FITS files. However, keep in mind that this is operation has a single
+direction: there is no functionality provided to load a GridContainer from a Table. However, it can be
+useful for debugging purposes to serialize a GridContainer into a format easy to read from other tools
+or languages (i.e. astropy's Table)
+
+To be able to export a Table, you need to include first GridContainer/GridContainerToTable.h
+
+\code{cpp}
+#include "GridContainer/GridContainerToTable.h"
+\endcode
+
+When you want to transform a Grid, you need to make sure the axes and cell types can be translated to
+the types supported by Row::cell_type, and given a name.
+This is done via the specialization of two set of traits: GridAxisToTable and GridCellToTable.
+
+By default, Alexandria provides two specializations of GridAxisToTable:
+
+- From Euclid::XYDataset::QualifiedName to std::string
+- A default identity mapping for every other type, which will generally work for most POD types, strings,
+  and vectors of POD.
+
+Note that only one column can be generated for each axis, using the name assigned to the axis.
+
+For GridCellToTable, a default specialization for any kind of scalar - integer and floating point - is provided.
+By default, the associated column name will be `value`.
+
+For composed cell values, as it would be SourceCatalog::Photometry, you will need to provide a custom specialization.
+For instance:
+
+\code{cpp}
+/**
+ * Specialization for mapping a Photometry object into a set of cells.
+ * Two columns will be generated: one with the flux, and another with the error
+ */
+template<>
+struct Euclid::GridContainer::GridCellToTable<Euclid::SourceCatalog::Photometry> {
+  static void addColumnDescriptions(const Photometry& p, std::vector<ColumnDescription>& columns) {
+    auto& photo_ref = p;
+    for (auto piter = photo_ref.begin(); piter != photo_ref.end(); ++piter) {
+      columns.emplace_back(piter.filterName(), typeid(double));
+      columns.emplace_back(piter.filterName() + "_error", typeid(double));
+    }
+  }
+
+  static void addCells(const Photometry& photometry, std::vector<Row::cell_type>& row) {
+    for (auto& p : photometry) {
+      row.emplace_back(p.flux);
+      row.emplace_back(p.error);
+    }
+  }
+};
+\endcode
+
+Note that addColumnDescriptions uses the first value on the grid as a model for every other cell.
+This code assumes that all instances look alike.
+
 \section apispecialization Specializing the GridContainer API
 
 From the examples above can be seen that the API of the GridContainer module is
@@ -641,32 +700,32 @@ make easier the comparison.
   GridAxis<int> int_axis {"Integers", {1, 2, 3, 4, 5}};
   GridAxis<double> double_axis {"Doubles", {0.1, 0.2}};
   GridAxis<string> string_axis {"Strings", {"one", "two", "three"}};
-  
+
   // Create a grid with integer data
   MyGridContainer<int> grid {int_axis, double_axis, string_axis};
-  
+
   // Print all the nodes of the string axis
   cout << "String axis knots:";
   for (auto& knot : grid.getAxis<STRING_AXIS>()) {
     cout << " " << knot;
   }
   cout << "\n";
-  
+
   // Get an iterator and fix two axes
   auto iter = grid.begin();
   iter.fixAxisByValue<STRING_AXIS>("two").fixAxisByIndex<INT_AXIS>(3);
-  
+
   // Print some info about each cell
   do {
     cout << "Double axis coord: " << iter.axisIndex<DOUBLE_AXIS>() << "\n";
     cout << "Double axis knot value: " << iter.axisValue<DOUBLE_AXIS>() << "\n";
   } while (++iter != grid.end());
-  
+
   // Write the grid in a string stream and then read it back
   stringstream stream {};
   gridBinaryExport(stream, grid);
   auto stream_grid = myBinaryImport<int>(stream);
-  
+
   // Create a grid to keep strings
   MyGridContainer<string> string_grid = {grid.getAxesTuple()};
 \endcode
@@ -697,9 +756,9 @@ The GridCellManagerTraits must implement the following interfaces:
 
 - function GridCellManagerTraits::begin()<br/> Returns an iterator pointing to
   the first cell managed by the GridCellManager.
- 
+
 - function GridCellManagerTraits::end()<br/> Returns an iterator pointing right
-  after the last cell managed by the GridCellManager. 
+  after the last cell managed by the GridCellManager.
 
 - constant GridCellManagerTraits::enable_boost_serialize<br/> Indicates if the
   GridCellManager is boost serializable (as explained in the \ref serialization
@@ -891,20 +950,20 @@ MyGridContainer<T> myBinaryImport(istream& in) {
 // ///////////////////////////////////////////////////
 
 int main() {
-  
+
   // /////////////////////////////////////////
   // Creating GridAxis objects
   // /////////////////////////////////////////
   cout << "\nCreating GridAxis objects\n";
-  
+
   vector<int> knot_values {3000, 3500, 4000, 4500, 5000};
   GridAxis<int> wavelength_axis {"Wavelength", move(knot_values)};
-  
+
   // /////////////////////////////////////////
   // Using GridAxis objects
   // /////////////////////////////////////////
   cout << "\nUsing GridAxis objects\n";
-  
+
   // Getting the axis name
   cout << "Axis name : " << wavelength_axis.name() << "\n";
   // Getting the number of knots
@@ -917,61 +976,61 @@ int main() {
     cout << knot_value << " ";
   }
   cout << ")\n";
-  
+
   // /////////////////////////////////////////
   // Using custom GridCellManager
   // /////////////////////////////////////////
   cout << "\nUsing custom GridCellManager\n";
-  
+
   GridContainer<MemoryManager<double>, int> custom_dm_grid { wavelength_axis };
-  
+
   // /////////////////////////////////////////
   // Creating GridContainer objects
   // /////////////////////////////////////////
   cout << "\nCreating GridContainer objects\n";
-  
+
   // Create the axes descriptions
   GridAxis<int> int_axis {"Integers", {1, 2, 3, 4, 5}};
   GridAxis<double> double_axis {"Doubles", {0.1, 0.2}};
   GridAxis<string> string_axis {"Strings", {"one", "two", "three"}};
-  
+
   // Create a grid with integer data
   GridContainer<vector<int>, int, double, string> grid {int_axis, double_axis, string_axis};
 
   // Create grid with same parameter space
   GridContainer<vector<bool>, int, double, string> bool_grid {grid.getAxesTuple()};
-  
+
   // /////////////////////////////////////////
   // Retrieving GridContainer information
   // /////////////////////////////////////////
   cout << "\nRetrieving GridContainer information\n";
-  
+
   // Get the grid dimensionality
   cout << "Dimensionality: " << grid.axisNumber() << "\n";
-  
+
   // Get the total number of cells of the grid
   cout << "Total number of cells: " << grid.size() << "\n";
-  
+
   // Retrieve information about the third axis
   auto& third_axis = grid.getAxis<2>();
-  
+
   // Print the axis information
   cout << "Third axis name: " << third_axis.name() << "\n";
   cout << "Third axis knots: ";
   for (auto& knot : third_axis) {
     cout << knot << " ";
   }
-  
+
   // /////////////////////////////////////////
   // Direct cell access
   // /////////////////////////////////////////
   cout << "\nDirect cell access\n";
-  
+
   // Set the value of a specific cell
   grid(2, 0, 1) = 50;
   // Read the value of a specific cell
   cout << "GridContainer cell (2, 0, 1):" << grid(2, 0, 1) << "\n";
-  
+
   // Calling at() with in bounds coordinates
   size_t coord = 1;
   try {
@@ -982,7 +1041,7 @@ int main() {
   } catch (Elements::Exception e) {
     cout << e.what() << "\n";
   }
-  
+
   // Calling at() with out of bounds coordinates
   coord = 20;
   try {
@@ -998,7 +1057,7 @@ int main() {
   // GridContainer iterator
   // /////////////////////////////////////////
   cout << "\nGridContainer iterator\n";
-  
+
   // Set all the grid values
   int counter {0};
   for (auto& cell : grid) {
@@ -1010,7 +1069,7 @@ int main() {
     cout << cell << " ";
   }
   cout << '\n';
-  
+
   // Print detailed information for each cell
   for (auto iter=grid.begin(); iter!=grid.end(); ++iter) {
     cout << "Cell (" << iter.axisValue<0>() << ", " << iter.axisValue<1>()
@@ -1021,22 +1080,22 @@ int main() {
   // GridContainer slicing
   // /////////////////////////////////////////
   cout << "\nGridContainer slicing\n";
-  
+
   // Get an iterator and fix the third axis
   cout << "One axis fixed\n";
   auto iter = grid.begin();
   iter.fixAxisByValue<2>("two");
-  
+
   // Print detailed information for each cell
   do {
     cout << "Cell (" << iter.axisValue<0>() << ", " << iter.axisValue<1>()
          << ", " << iter.axisValue<2>() << "): " << *iter << "\n";
   } while (++iter != grid.end());
-  
+
   cout << "Three axes fixed\n";
   iter = grid.begin();
   iter.fixAxisByValue<2>("two").fixAxisByIndex<0>(2).fixAxisByValue<1>(.1);
-  
+
   // Print detailed information for each cell
   do {
     cout << "Cell (" << iter.axisValue<0>() << ", " << iter.axisValue<1>()
@@ -1047,7 +1106,7 @@ int main() {
   // Default GridContainer Serialization
   // /////////////////////////////////////////
   cout << "\nDefault GridContainer Serialization\n";
-  
+
   stringstream stream {};
   gridBinaryExport(stream, grid);
   auto stream_grid = gridBinaryImport<vector<int>, int, double, string>(stream);
@@ -1056,7 +1115,7 @@ int main() {
   // Using specialized GridContainer types
   // /////////////////////////////////////////
   cout << "\nUsing specialized GridContainer types\n";
-  
+
   // Create a grid with integer data
   MyGridContainer<int> spec_grid {int_axis, double_axis, string_axis};
   // Print all the nodes of the string axis
@@ -1078,7 +1137,7 @@ int main() {
   auto stream_spec_grid = myBinaryImport<int>(stream);
   // Create a grid to keep strings
   MyGridContainer<string> string_grid = {stream_spec_grid.getAxesTuple()};
-  
+
 }
 \endcode
 
