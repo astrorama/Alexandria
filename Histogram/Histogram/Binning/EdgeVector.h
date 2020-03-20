@@ -26,6 +26,8 @@
 #define ALEXANDRIA_HISTOGRAM_BINNING_EDGEVECTOR_H
 
 #include "Histogram/Histogram.h"
+#include <utility>
+#include <vector>
 
 namespace Euclid {
 namespace Histogram {
@@ -49,7 +51,7 @@ public:
   EdgeVector(EdgeVector&&) = default;
 
   template<typename... Args>
-  EdgeVector(Args&& ... args): m_edges(std::forward<Args>(args)...) {
+  explicit EdgeVector(Args&& ... args): m_edges(std::forward<Args>(args)...) {
     m_nbins = m_edges.size() - 1;
   }
 
@@ -80,6 +82,6 @@ private:
 
 } // end of namespace Binning
 } // end of namespace Histogram
-} // end of namespace SourceXtractor
+} // end of namespace Euclid
 
 #endif // ALEXANDRIA_HISTOGRAM_BINNING_EDGEVECTOR_H

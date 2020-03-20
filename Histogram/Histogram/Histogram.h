@@ -29,6 +29,7 @@
 #include <cmath>
 #include <algorithm>
 #include <memory>
+#include <utility>
 #include <tuple>
 #include <type_traits>
 #include <vector>
@@ -341,7 +342,7 @@ private:
     using ComputationInterface::m_clip_right;
     BinType m_binning;
 
-    ComputationImpl(BinType&& bin_type): m_binning(std::move(bin_type)) {
+    explicit ComputationImpl(BinType&& bin_type): m_binning(std::move(bin_type)) {
     }
 
     std::vector<VarType> getEdges() const final {
