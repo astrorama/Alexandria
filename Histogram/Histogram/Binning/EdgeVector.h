@@ -55,6 +55,8 @@ public:
     m_nbins = m_edges.size() - 1;
   }
 
+  EdgeVector(const EdgeVector&) = default;
+
   template<typename Iterator>
   void computeBins(Iterator, Iterator) {}
 

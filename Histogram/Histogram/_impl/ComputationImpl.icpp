@@ -27,9 +27,9 @@ std::tuple<VarType, VarType, VarType> Histogram<VarType, WeightType>::Computatio
   // Find the mean and standard deviation in one go
   for (auto i = m_clip_left; i <= m_clip_right; ++i) {
     auto center = m_binning.getBin(i);
-    total += m_counts[i] * center;
-    total_count += m_counts[i];
-    sigma += m_counts[i] * center * center;
+    total += (*m_counts)[i] * center;
+    total_count += (*m_counts)[i];
+    sigma += (*m_counts)[i] * center * center;
   }
 
   VarType mean = total / total_count;
@@ -44,10 +44,10 @@ std::tuple<VarType, VarType, VarType> Histogram<VarType, WeightType>::Computatio
   auto low_i = m_clip_left, high_i = m_clip_right;
   while (low_i <= high_i) {
     if (low_sum < high_sum) {
-      low_sum += m_counts[low_i++];
+      low_sum += (*m_counts)[low_i++];
     }
     else {
-      high_sum += m_counts[high_i--];
+      high_sum += (*m_counts)[high_i--];
     }
   }
 
@@ -57,7 +57,7 @@ std::tuple<VarType, VarType, VarType> Histogram<VarType, WeightType>::Computatio
   if (high_i >= 0) {
     auto edges = m_binning.getBinEdges(high_i + 1);
     auto bin_width = (edges.second - edges.first);
-    auto max_counts = std::max(m_counts[low_i], m_counts[high_i]);
+    auto max_counts = std::max((*m_counts)[low_i], (*m_counts)[high_i]);
     median = edges.first + bin_width * (high_sum - low_sum) / (2.0 * max_counts);
   }
   else {
@@ -76,13 +76,13 @@ void Histogram<VarType, WeightType>::ComputationImpl<BinType>::computeBins(IterT
   m_binning.computeBins(begin, end);
   m_clip_left = 0;
   m_clip_right = m_binning.getBinCount() - 1;
-  m_counts.resize(m_binning.getBinCount());
+  m_counts->resize(m_binning.getBinCount());
 
-  ssize_t nbins = m_counts.size();
+  ssize_t nbins = m_counts->size();
   for (auto i = begin, wi = wbegin; i != end; ++i, ++wi) {
     auto bin = m_binning.getBinIndex(*i);
     if (bin >= 0 && bin < nbins) {
-      m_counts[bin] += *wi;
+      (*m_counts)[bin] += *wi;
     }
   }
 }

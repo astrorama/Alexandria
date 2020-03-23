@@ -220,6 +220,34 @@ BOOST_AUTO_TEST_CASE(histogramZeroSigma) {
 
 //-----------------------------------------------------------------------------
 
+BOOST_AUTO_TEST_CASE(histogramCopy) {
+  std::vector<float> data{-2, -1, -1, 0, 0, 0, 0, 1, 1, 2};
+  std::vector<float> edges{-2.5, -1.5, -0.5, 0.5, 1.5, 2.5};
+  std::vector<float> expected{1, 2, 4, 2, 1};
+  std::vector<float> centers{-2, -1, 0, 1, 2};
+
+  Histogram<float> histo(data.begin(), data.end(), Binning::EdgeVector<float>{edges});
+  Histogram<float> histo2(histo);
+
+  histo.clip(-1.1, 1.1);
+
+  float mean, median, sigma;
+  std::tie(mean, median, sigma) = histo2.getStats();
+  BOOST_CHECK_SMALL(mean, std::numeric_limits<float>::epsilon());
+  BOOST_CHECK_SMALL(median, std::numeric_limits<float>::epsilon());
+  BOOST_CHECK_CLOSE(sigma, 1.0954451, 1e-5);
+
+  BOOST_CHECK_EQUAL(histo.size(), 3);
+  std::tie(mean, median, sigma) = histo.getStats();
+  BOOST_CHECK_SMALL(mean, std::numeric_limits<float>::epsilon());
+  BOOST_CHECK_SMALL(median, std::numeric_limits<float>::epsilon());
+  BOOST_CHECK_CLOSE(sigma, 0.70710678, 1e-5);
+
+
+}
+
+//-----------------------------------------------------------------------------
+
 BOOST_AUTO_TEST_SUITE_END()
 
 //-----------------------------------------------------------------------------

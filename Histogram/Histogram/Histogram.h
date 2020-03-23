@@ -156,9 +156,9 @@ public:
    */
   template<typename IterType, typename BinType, typename=typename std::enable_if<std::is_move_constructible<BinType>::value>::type>
   Histogram(IterType begin, IterType end, BinType&& bin_type) {
-    auto binning_impl = std::make_shared<ComputationImpl<BinType>>(std::move(bin_type));
+    auto binning_impl = make_unique<ComputationImpl<BinType>>(std::move(bin_type));
     binning_impl->computeBins(begin, end, ConstantWeight{});
-    m_binning_concept = binning_impl;
+    m_binning_concept = std::move(binning_impl);
   }
 
   /**
@@ -185,15 +185,17 @@ public:
   template<typename IterType, typename WeightIterType, typename BinType, typename=typename std::enable_if<std::is_move_constructible<BinType>::value>::type>
   Histogram(IterType begin, IterType end, WeightIterType wbegin, WeightIterType wend, BinType&& bin_type) {
     assert(wend - wbegin == end - begin);
-    auto binning_impl = std::make_shared<ComputationImpl<BinType>>(std::move(bin_type));
+    auto binning_impl = make_unique<ComputationImpl<BinType>>(std::move(bin_type));
     binning_impl->computeBins(begin, end, wbegin);
-    m_binning_concept = binning_impl;
+    m_binning_concept = std::move(binning_impl);
   }
 
   /**
    * Copy constructor
    */
-  Histogram(const Histogram&) = default;
+  Histogram(const Histogram& other) {
+    m_binning_concept = other.m_binning_concept->clone();
+  }
 
   /**
    * Move constructor
@@ -223,8 +225,8 @@ public:
    *    The counts of the histogram
    */
   std::vector<WeightType> getCounts() const {
-    return std::vector<WeightType>(m_binning_concept->m_counts.begin() + m_binning_concept->m_clip_left,
-                                   m_binning_concept->m_counts.begin() + m_binning_concept->m_clip_right + 1);
+    return std::vector<WeightType>(m_binning_concept->m_counts->begin() + m_binning_concept->m_clip_left,
+                                   m_binning_concept->m_counts->begin() + m_binning_concept->m_clip_right + 1);
   }
 
   /**
@@ -234,7 +236,7 @@ public:
    *    The number of edges is equal to the number of bins + 1
    */
   std::vector<VarType> getEdges() const {
-    return m_binning_concept->getEdges();
+    return m_binning_concept->getBinStrategy().getEdges();
   }
 
   /**
@@ -242,9 +244,9 @@ public:
    *    The center of the bins
    */
   std::vector<VarType> getBins() const {
-    std::vector<VarType> bins(m_binning_concept->m_counts.size());
+    std::vector<VarType> bins(m_binning_concept->m_counts->size());
     size_t i = 0;
-    std::generate(bins.begin(), bins.end(), [this, &i]() { return m_binning_concept->getBin(i++); });
+    std::generate(bins.begin(), bins.end(), [this, &i]() { return m_binning_concept->getBinStrategy().getBin(i++); });
     return bins;
   }
 
@@ -255,7 +257,7 @@ public:
    *    The edges for the given bin
    */
   std::pair<VarType, VarType> getBinEdges(size_t i) const {
-    return m_binning_concept->getBinEdges(i);
+    return m_binning_concept->getBinStrategy().getBinEdges(i);
   }
 
   /**
@@ -312,18 +314,18 @@ private:
    * @see BinStrategy
    */
   struct ComputationInterface {
-    std::vector<WeightType> m_counts;
+    std::shared_ptr<std::vector<WeightType>> m_counts;
     ssize_t m_clip_left, m_clip_right;
+
+    ComputationInterface(): m_counts(new std::vector<WeightType>()) {}
 
     size_t size() const {
       return m_clip_right - m_clip_left + 1;
     }
 
-    virtual std::vector<VarType> getEdges() const = 0;
+    virtual const BinStrategy<VarType>& getBinStrategy() const = 0;
 
-    virtual std::pair<VarType, VarType> getBinEdges(size_t i) const = 0;
-
-    virtual VarType getBin(size_t i) const = 0;
+    virtual std::unique_ptr<ComputationInterface> clone() const = 0;
 
     virtual void clip(VarType min, VarType max) = 0;
 
@@ -345,16 +347,14 @@ private:
     explicit ComputationImpl(BinType&& bin_type): m_binning(std::move(bin_type)) {
     }
 
-    std::vector<VarType> getEdges() const final {
-      return m_binning.getEdges();
+    ComputationImpl(const ComputationImpl& other) = default;
+
+    const BinStrategy<VarType>& getBinStrategy() const final {
+      return m_binning;
     }
 
-    std::pair<VarType, VarType> getBinEdges(size_t i) const final {
-      return m_binning.getBinEdges(i);
-    }
-
-    VarType getBin(size_t i) const final {
-      return m_binning.getBin(i);
+    std::unique_ptr<ComputationInterface> clone() const final {
+      return make_unique<ComputationImpl<BinType>>(*this);
     }
 
     /**
@@ -378,7 +378,7 @@ private:
     std::tuple<VarType, VarType, VarType> getStats() const final;
   };
 
-  std::shared_ptr<ComputationInterface> m_binning_concept;
+  std::unique_ptr<ComputationInterface> m_binning_concept;
 };
 
 } // end of namespace Histogram
