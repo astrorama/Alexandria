@@ -12,7 +12,7 @@ elements_subdir(Histogram)
 #         elements_depends_on_subdirs(ElementsKernel)
 #===============================================================================
 elements_depends_on_subdirs(ElementsKernel)
-elements_depends_on_subdirs(NdArray)
+elements_depends_on_subdirs(AlexandriaKernel)
 
 #===============================================================================
 # Declare the library dependencies here
