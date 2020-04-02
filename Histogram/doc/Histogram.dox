@@ -5,5 +5,56 @@ namespace Histogram {
 
 \tableofcontents
 
+\section histo_introduction Introduction
+
+The %Histogram module contains a class that permits building histograms
+with arbitrary binning strategies. Three are provided by default:
+A list of edge vectors (EdgeVector), Scott's normal reference rule (Scott)
+and theh simple square root of the number of points (Sqrt).
+However, the users can freely implement their own strategy.
+
+\section histo_usage Usage
+
+The Histogram class has two template arguments: one for the variable type, which
+must be an arithmetic type and explicitly specified, and one for the weight type, which
+defaults to float.
+
+The binning is done at construction time, and it can not be modified. However,
+the histogram can be clipped at the extremes to leave out bins that are not of interest.
+
+An Histogram can be constructed using just a pair of iterators for the values,
+or two pairs of iterators for the values and the weights.
+
+In all cases, a BinStrategy implementation must be _moved_ into as a last parameter.
+The reason for it to be moved, and not copied, is because it may need the data itself,
+thus becoming bound to the Histogram.
+
+\code{.cpp}
+// Creation of an histogram with equal weights
+Histogram<int> histo(data.begin(), data.end(), Binning::Sqrt<int>{});
+// Creation of an histogram with weights
+Histogram<int> histo(data.begin(), data.end(), weight.begin(), weight.end(), Binning::Sqrt<int>{});
+\endcode
+
+It is important to note that all the parameters received by the constructors are templated, so
+any type of iterator can be passed (vector, list, whatever). Also the BinType parameter is a template,
+even though it must implement the BinStrategy interface. This is done for performance reasons:
+the Histogram class uses type erasure on the BinType, so it remains externally unbound to the concrete
+implementation of BinStrategy, while the compiler still knows the actual type when instantiating the template,
+allowing for optimizations: de-virtualization, inlining, etc.
+
+Even though the compiler may be able to perform them anyway, it is recommended to mark all BinStrategy overridden methods
+as `final`.
+
+\section histo_custom_binning Custom binning strategies
+
+For providing a custom strategy for the binning, the concrete implementation must inherit from
+BinStrategy<T> (note the template argument!) and implement all abstract methods.
+
+The users are free to choose how the binning is done, but if the binning depends on the data itself,
+the templated method computeBins can be used: it will be called by the Histogram constructor forwarding the iterators
+for the data. That method *must* be provided in any case, even if it does not do anything.
+
+*/
 } // end of namespace Histogram
 } // end of namespace Euclid
