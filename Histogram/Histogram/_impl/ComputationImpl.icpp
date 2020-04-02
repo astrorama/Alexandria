@@ -67,13 +67,44 @@ std::tuple<VarType, VarType, VarType> Histogram<VarType, WeightType>::Computatio
   return std::make_tuple(mean, median, sigma);
 }
 
+/**
+ * This class as a constexpr static member "value" which will be 'true' iff BinType has a method
+ * computeBins that can receive two instances of IterType as parameters
+ * @tparam BinType
+ * @tparam IterType
+ */
+template<typename BinType, typename IterType>
+struct HasComputeBins
+{
+  template <typename U, typename = decltype(std::declval<U>().computeBins(std::declval<IterType>(), std::declval<IterType>()))> struct SFINAE;
+  template<typename U> static char Test(SFINAE<U>*);
+  template<typename U> static int Test(...);
+  static constexpr bool value = sizeof(Test<BinType>(0)) == sizeof(char);
+};
+
+/**
+ * This method is called if BinType has computeBins
+ */
+template<typename BinType, typename IterType>
+inline void computeBinsForwarder(BinType& binning, IterType begin, IterType end, std::true_type) {
+  binning.computeBins(begin, end);
+}
+
+/**
+ * This method is called if BinType does not have computeBins
+ */
+template<typename BinType, typename IterType>
+inline void computeBinsForwarder(BinType&, IterType, IterType, std::false_type) {
+}
+
 template<typename VarType, typename WeightType>
 template<typename BinType>
 template<typename IterType, typename WeightIterType>
 void Histogram<VarType, WeightType>::ComputationImpl<BinType>::computeBins(IterType begin, IterType end, WeightIterType wbegin) {
   // This trick should allow the compiler to know the actual binning type, so if they
   // override methods with *final*, we can skip indirections via vtable
-  m_binning.computeBins(begin, end);
+  computeBinsForwarder(m_binning, begin, end, std::integral_constant<bool, HasComputeBins<BinType, IterType>::value>());
+
   m_clip_left = 0;
   m_clip_right = m_binning.getBinCount() - 1;
   m_counts->resize(m_binning.getBinCount());

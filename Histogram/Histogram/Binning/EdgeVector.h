@@ -57,9 +57,6 @@ public:
 
   EdgeVector(const EdgeVector&) = default;
 
-  template<typename Iterator>
-  void computeBins(Iterator, Iterator) {}
-
   ssize_t getBinIndex(VarType value) const final {
     if (value < m_edges.front() || value > m_edges.back())
       return -1;

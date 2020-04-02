@@ -53,7 +53,8 @@ BinStrategy<T> (note the template argument!) and implement all abstract methods.
 
 The users are free to choose how the binning is done, but if the binning depends on the data itself,
 the templated method computeBins can be used: it will be called by the Histogram constructor forwarding the iterators
-for the data. That method *must* be provided in any case, even if it does not do anything.
+for the data. That method does not have to be provided if the concrete BinStrategy has no need for the original
+data.
 
 */
 } // end of namespace Histogram
