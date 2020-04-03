@@ -79,12 +79,12 @@ BOOST_FIXTURE_TEST_CASE(fx, Spline_Fixture) {
 BOOST_FIXTURE_TEST_CASE(Spline_fx, Spline_Fixture) {
   auto cubic_f = interpolate(x, y, InterpolationType::CUBIC_SPLINE);
   auto cubic_pieces = dynamic_cast<Piecewise *>(cubic_f.get());
-  auto splines = cubic_pieces->getFunctions();
+  auto& splines = cubic_pieces->getFunctions();
 
   for (size_t i = 0; i < splines.size() - 1; ++i) {
     auto x0 = x[i + 1];
-    auto left = splines[i];
-    auto right = splines[i + 1];
+    auto& left = splines[i];
+    auto& right = splines[i + 1];
     BOOST_CHECK_CLOSE((*left)(x0), (*right)(x0), close_tolerance);
     BOOST_CHECK_CLOSE((*left)(x0), y[i + 1], close_tolerance);
   }
@@ -96,12 +96,12 @@ BOOST_FIXTURE_TEST_CASE(Spline_fx, Spline_Fixture) {
 BOOST_FIXTURE_TEST_CASE(Spline_dfx, Spline_Fixture) {
   auto cubic_f = interpolate(x, y, InterpolationType::CUBIC_SPLINE);
   auto cubic_pieces = dynamic_cast<Piecewise *>(cubic_f.get());
-  auto splines = cubic_pieces->getFunctions();
+  auto& splines = cubic_pieces->getFunctions();
 
   for (size_t i = 0; i < splines.size() - 1; ++i) {
     auto x0 = x[i + 1];
-    auto left = splines[i];
-    auto right = splines[i + 1];
+    auto& left = splines[i];
+    auto& right = splines[i + 1];
 
     auto left_dy = derivative(*left, x0);
     auto right_dy = derivative(*right, x0);
@@ -119,12 +119,12 @@ BOOST_FIXTURE_TEST_CASE(Spline_ddfx, Spline_Fixture) {
 
   auto cubic_f = interpolate(x, y, InterpolationType::CUBIC_SPLINE);
   auto cubic_pieces = dynamic_cast<Piecewise *>(cubic_f.get());
-  auto splines = cubic_pieces->getFunctions();
+  auto& splines = cubic_pieces->getFunctions();
 
   for (size_t i = 0; i < splines.size() - 1; ++i) {
     auto x0 = x[i + 1];
-    auto left = splines[i];
-    auto right = splines[i + 1];
+    auto& left = splines[i];
+    auto& right = splines[i + 1];
 
     auto left_ddy = derivative2nd(*left, x0);
     auto right_ddy = derivative2nd(*right, x0);
@@ -145,10 +145,10 @@ BOOST_FIXTURE_TEST_CASE(Spline_ddfx, Spline_Fixture) {
 BOOST_FIXTURE_TEST_CASE(Spline_ddfx_endpoint, Spline_Fixture) {
   auto cubic_f = interpolate(x, y, InterpolationType::CUBIC_SPLINE);
   auto cubic_pieces = dynamic_cast<Piecewise *>(cubic_f.get());
-  auto splines = cubic_pieces->getFunctions();
+  auto& splines = cubic_pieces->getFunctions();
 
-  auto left = splines.front();
-  auto right = splines.back();
+  auto& left = splines.front();
+  auto& right = splines.back();
 
   auto left_ddy = derivative2nd(*left, x.front());
   auto right_ddy = derivative2nd(*right, x.back());
