@@ -50,7 +50,10 @@ elements_add_library(AlexandriaKernel src/lib/*.cpp
 #                       INCLUDE_DIRS ElementsExamples
 #                       LINK_LIBRARIES ElementsExamples TYPE Boost)
 #===============================================================================
-elements_add_unit_test(AlexandriaKernel_ThreadPool_test tests/src/ThreadPool_test.cpp 
+elements_add_unit_test(StringUtils_test tests/src/StringUtils_test.cpp
+                     LINK_LIBRARIES AlexandriaKernel
+                     TYPE Boost)
+elements_add_unit_test(AlexandriaKernel_ThreadPool_test tests/src/ThreadPool_test.cpp
                      LINK_LIBRARIES AlexandriaKernel
                      TYPE Boost)
 

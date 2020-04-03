@@ -17,13 +17,13 @@
  */
 
 /**
-* @file Matrix/Matrix.h
+* @file NdArray/NdArray.h
 * @date November 21, 2018
 * @author Alejandro Alvarez Ayllon
 */
 
-#ifndef ALEXANDRIA_MATRIX_H
-#define ALEXANDRIA_MATRIX_H
+#ifndef ALEXANDRIA_NDARRAY_H
+#define ALEXANDRIA_NDARRAY_H
 
 #include <iostream>
 #include <numeric>
@@ -64,9 +64,9 @@ public:
     m_stride_size.resize(m_shape.size());
 
     size_t acc = 1;
-    for (int i = m_stride_size.size() - 1; i >= 0; --i) {
-      m_stride_size[i] = acc;
-      acc *= m_shape[i];
+    for (size_t i = m_stride_size.size(); i > 0; --i) {
+      m_stride_size[i - 1] = acc;
+      acc *= m_shape[i - 1];
     }
   }
 
@@ -89,9 +89,9 @@ public:
     m_stride_size.resize(m_shape.size());
 
     size_t acc = 1;
-    for (int i = m_stride_size.size() - 1; i >= 0; --i) {
-      m_stride_size[i] = acc;
-      acc *= m_shape[i];
+    for (size_t i = m_stride_size.size(); i > 0; --i) {
+      m_stride_size[i - 1] = acc;
+      acc *= m_shape[i - 1];
     }
   }
 
@@ -116,9 +116,9 @@ public:
     m_stride_size.resize(m_shape.size());
 
     size_t acc = 1;
-    for (int i = m_stride_size.size() - 1; i >= 0; --i) {
-      m_stride_size[i] = acc;
-      acc *= m_shape[i];
+    for (size_t i = m_stride_size.size(); i > 0; --i) {
+      m_stride_size[i - 1] = acc;
+      acc *= m_shape[i - 1];
     }
   }
 
@@ -358,4 +358,4 @@ std::ostream& operator << (std::ostream &out, const NdArray<T, Container> &ndarr
 } // end NdArray
 } // end Euclid
 
-#endif // ALEXANDRIA_MATRIX_H
+#endif // ALEXANDRIA_NDARRAY_H

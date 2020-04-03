@@ -34,32 +34,30 @@ namespace Table {
 
 /**
  * @class TableWriter
- * 
+ *
  * @brief Interface for classes writing tables
  *
  * @details
  * Each TableWriter implementation should behave like a stream writing a table.
  * It must implement the methods addComment(), init() and append(). See the
  * documentation of these methods for more information of how to implement them.
- * 
+ *
  * Note that all TableWriter implementations, as they are representing streams
  * to a single table, should not be able to be copied, something that is forced
  * by the TableWriter interface. There is no such restriction for move operations.
  */
 class TableWriter {
-
 public:
-  
   TableWriter() = default;
-  
+
   TableWriter(TableWriter&&) = default;
   TableWriter& operator=(TableWriter&&) = default;
-  
+
   TableWriter(const TableWriter&) = delete;
   TableWriter& operator=(const TableWriter&) = delete;
 
   virtual ~TableWriter() = default;
-  
+
   /**
    * @brief Adds a comment to the output table
    * @details
@@ -90,10 +88,9 @@ public:
    *    If the given table has different columns than one used at a previous
    *    call of the addData() method.
    */
-  virtual void addData(const Table& table) final;
+  void addData(const Table& table);
 
 protected:
-  
   /**
    * @brief Initializes the output header based on the given table columns
    * @details
@@ -104,7 +101,7 @@ protected:
    *    The table to get the column information from
    */
   virtual void init(const Table& table) = 0;
-  
+
   /**
    * @brief Appends to the output the contents of the given table
    * @details
@@ -120,9 +117,7 @@ protected:
   virtual void append(const Table& table) = 0;
 
 private:
-  
   std::unique_ptr<ColumnInfo> m_column_info {nullptr};
-
 }; // End of TableWriter class
 
 } // namespace Table

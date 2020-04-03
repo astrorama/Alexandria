@@ -1,21 +1,21 @@
 /*
- * Copyright (C) 2012-2020 Euclid Science Ground Segment    
- *  
+ * Copyright (C) 2012-2020 Euclid Science Ground Segment
+ *
  * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free 
- * Software Foundation; either version 3.0 of the License, or (at your option)  
- * any later version.  
- *  
- * This library is distributed in the hope that it will be useful, but WITHOUT 
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 3.0 of the License, or (at your option)
+ * any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more  
- * details.  
- *  
- * You should have received a copy of the GNU Lesser General Public License 
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
  * along with this library; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA  
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
- 
+
  /**
  * @file tests/src/TableFixture.h
  *
@@ -31,10 +31,6 @@
 #include <utility>
 #include <cmath>
 #include <cfloat>
-//#include "SourceCatalog/Source.h"
-//#include "SourceCatalog/SourceAttributes/Photometry.h"
-//#include "SourceCatalog/SourceAttributes/Coordinates.h"
-//#include "SourceCatalog/SourceAttributes/SpectroscopicRedshift.h"
 #include "Table/Row.h"
 #include "Table/Table.h"
 #include "Table/ColumnInfo.h"
@@ -43,7 +39,6 @@ using namespace Euclid::SourceCatalog;
 using namespace std;
 
 struct TableFixture {
-
   double tolerance = 1e-12;
 
   string source_id_name = "Test_source_id";
@@ -67,7 +62,6 @@ struct TableFixture {
     Euclid::Table::ColumnInfo::info_type("String", typeid(string)),
     Euclid::Table::ColumnInfo::info_type(spec_z_val_col_name, typeid(double)),
     Euclid::Table::ColumnInfo::info_type(spec_z_err_col_name, typeid(double))
-
   };
   const shared_ptr<Euclid::Table::ColumnInfo> column_info_ptr {
       new Euclid::Table::ColumnInfo { info_list } };
@@ -166,13 +160,13 @@ struct TableFixture {
 
   TableFixture() {
     // This is how the mapping must be defined
-    filter_name_mapping.push_back(make_pair(v_filter_name,make_pair<string, string>("Double_flux1","Double_error1")));
-    filter_name_mapping.push_back(make_pair(r_filter_name,make_pair<string, string>("Double_flux2","Double_error2")));
+    filter_name_mapping.push_back(make_pair(v_filter_name,make_pair("Double_flux1","Double_error1")));
+    filter_name_mapping.push_back(make_pair(r_filter_name,make_pair("Double_flux2","Double_error2")));
   }
+
   ~TableFixture() {
     // teardown
   }
-
 };
 
 #endif // TABLEFIXTURE_H_

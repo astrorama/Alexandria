@@ -1,21 +1,21 @@
 /*
- * Copyright (C) 2012-2020 Euclid Science Ground Segment    
- *  
+ * Copyright (C) 2012-2020 Euclid Science Ground Segment
+ *
  * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free 
- * Software Foundation; either version 3.0 of the License, or (at your option)  
- * any later version.  
- *  
- * This library is distributed in the hope that it will be useful, but WITHOUT 
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 3.0 of the License, or (at your option)
+ * any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more  
- * details.  
- *  
- * You should have received a copy of the GNU Lesser General Public License 
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
  * along with this library; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA  
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
- 
+
  /**
  * @file MathUtils/interpolation/interpolation.h
  * @date February 20, 2014
@@ -58,9 +58,10 @@ struct InterpolationException : public Elements::Exception {
  * @throws InterpolationException
  *    if there are decreasing x values
  * @throws InterpolationException
- *    if there are (X,Y) pairs with same X value but different Y value (step functions) 
+ *    if there are (X,Y) pairs with same X value but different Y value (step functions)
  */
-ELEMENTS_API std::unique_ptr<Function> interpolate(const std::vector<double>& x, const std::vector<double>& y, InterpolationType type);
+ELEMENTS_API std::unique_ptr<Function> interpolate(const std::vector<double>& x, const std::vector<double>& y,
+                                                   InterpolationType type, bool extrapolate=false);
 
 /**
  * Returns a Function which performs interpolation for the data points of the
@@ -71,9 +72,10 @@ ELEMENTS_API std::unique_ptr<Function> interpolate(const std::vector<double>& x,
  * @throws InterpolationException
  *    if there are decreasing x values
  * @throws InterpolationException
- *    if there are (X,Y) pairs with same X value but different Y value (step functions) 
+ *    if there are (X,Y) pairs with same X value but different Y value (step functions)
  */
-ELEMENTS_API std::unique_ptr<Function> interpolate(const Euclid::XYDataset::XYDataset& dataset, InterpolationType type);
+ELEMENTS_API std::unique_ptr<Function> interpolate(const Euclid::XYDataset::XYDataset& dataset, InterpolationType type,
+                                                   bool extrapolate=false);
 
 } // End of MathUtils
 } // end of namespace Euclid

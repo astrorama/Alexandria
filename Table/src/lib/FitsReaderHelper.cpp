@@ -1,22 +1,22 @@
 /*
- * Copyright (C) 2012-2020 Euclid Science Ground Segment    
- *  
+ * Copyright (C) 2012-2020 Euclid Science Ground Segment
+ *
  * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free 
- * Software Foundation; either version 3.0 of the License, or (at your option)  
- * any later version.  
- *  
- * This library is distributed in the hope that it will be useful, but WITHOUT 
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 3.0 of the License, or (at your option)
+ * any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more  
- * details.  
- *  
- * You should have received a copy of the GNU Lesser General Public License 
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
  * along with this library; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA  
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
- 
- /** 
+
+ /**
  * @file src/lib/FitsReaderHelper.cpp
  * @date April 17, 2014
  * @author Nikolaos Apostolakos
@@ -62,49 +62,70 @@ std::type_index asciiFormatToType(const std::string& format) {
 }
 
 std::type_index binaryFormatToType(const std::string& format, const std::vector<size_t>& shape) {
-  if (format[0] == 'L') {
-    return typeid(bool);
-  } else if (format[0] == 'B') {
-    return typeid(int32_t);
-  } else if (format[0] == 'I') {
-    return typeid(int32_t);
-  } else if (format[0] == 'J') {
-    return typeid(int32_t);
-  } else if (format[0] == 'K') {
-    return typeid(int64_t);
-  } else if (format.back() == 'A') {
-    return typeid(std::string);
-  } else if (format[0] == 'E') {
-    return typeid(float);
-  } else if (format[0] == 'D') {
-    return typeid(double);
-  } else if (shape.empty()) {
-    if (format.back() == 'B') {
-      return typeid(std::vector<int32_t>);
-    } else if (format.back() == 'I') {
-      return typeid(std::vector<int32_t>);
-    } else if (format.back() == 'J') {
-      return typeid(std::vector<int32_t>);
-    } else if (format.back() == 'K') {
-      return typeid(std::vector<int64_t>);
-    } else if (format.back() == 'E') {
-      return typeid(std::vector<float>);
-    } else if (format.back() == 'D') {
-      return typeid(std::vector<double>);
-    }
-  } else {
-    if (format.back() == 'B') {
+  // Get the size out of the format string
+  char ft = format.front();
+  int size = 1;
+  if (std::isdigit(format.front())) {
+    size = std::stoi(format.substr(0, format.size() - 1));
+    ft = format.back();
+  }
+
+  // If shape is set, it is an NdArray
+  if (!shape.empty()) {
+    if (ft == 'B') {
       return typeid(NdArray<int32_t>);
-    } else if (format.back() == 'I') {
+    } else if (ft == 'I') {
       return typeid(NdArray<int32_t>);
-    } else if (format.back() == 'J') {
+    } else if (ft == 'J') {
       return typeid(NdArray<int32_t>);
-    } else if (format.back() == 'K') {
+    } else if (ft == 'K') {
       return typeid(NdArray<int64_t>);
-    } else if (format.back() == 'E') {
+    } else if (ft == 'E') {
       return typeid(NdArray<float>);
-    } else if (format.back() == 'D') {
+    } else if (ft == 'D') {
       return typeid(NdArray<double>);
+    }
+  }
+  // If the dimensionality is 1, it is a scalar
+  else if (size == 1) {
+    if (ft == 'L') {
+      return typeid(bool);
+    }
+    else if (ft == 'B') {
+      return typeid(int32_t);
+    }
+    else if (ft == 'I') {
+      return typeid(int32_t);
+    }
+    else if (ft == 'J') {
+      return typeid(int32_t);
+    }
+    else if (ft == 'K') {
+      return typeid(int64_t);
+    }
+    else if (ft == 'E') {
+      return typeid(float);
+    }
+    else if (ft == 'D') {
+      return typeid(double);
+    }
+  }
+  // Last, vectors
+  else {
+    if (ft == 'B') {
+      return typeid(std::vector<int32_t>);
+    } else if (ft == 'I') {
+      return typeid(std::vector<int32_t>);
+    } else if (ft == 'J') {
+      return typeid(std::vector<int32_t>);
+    } else if (ft == 'K') {
+      return typeid(std::vector<int64_t>);
+    } else if (ft == 'E') {
+      return typeid(std::vector<float>);
+    } else if (ft == 'D') {
+      return typeid(std::vector<double>);
+    } else if (ft == 'A') {
+      return typeid(std::string);
     }
   }
   throw Elements::Exception() << "FITS binary table format " << format << " is not "
