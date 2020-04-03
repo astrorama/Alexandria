@@ -31,6 +31,6 @@ script:
 
 after_success: |
   if [ -z "${TRAVIS_PULL_REQUEST_BRANCH}" ] && [ ! -z "${BINTRAY_REPO}" ]; then
-    ./jfrog bt u --publish --override "packages/*.rpm" "${BINTRAY_REPO}/${PACKAGE}/${BINTRAY_VERSION}" "/${TRAVIS_BRANCH}/${OS_TYPE}/${OS_VERSION}/${OS_ARCH}/rpms/"
+    ./jfrog bt u --publish --override "packages/*.rpm" "${BINTRAY_REPO}/${PACKAGE}/${VERSION}" "/${TRAVIS_BRANCH}/${OS_TYPE}/${OS_VERSION}/${OS_ARCH}/rpms/"
   fi
 
