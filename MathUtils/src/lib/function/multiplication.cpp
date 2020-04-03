@@ -1,21 +1,21 @@
 /*
- * Copyright (C) 2012-2020 Euclid Science Ground Segment    
- *  
+ * Copyright (C) 2012-2020 Euclid Science Ground Segment
+ *
  * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free 
- * Software Foundation; either version 3.0 of the License, or (at your option)  
- * any later version.  
- *  
- * This library is distributed in the hope that it will be useful, but WITHOUT 
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 3.0 of the License, or (at your option)
+ * any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more  
- * details.  
- *  
- * You should have received a copy of the GNU Lesser General Public License 
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
  * along with this library; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA  
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
- 
+
  /**
  * @file src/lib/function/multiplication.cpp
  * @date February 19, 2014
@@ -52,7 +52,7 @@ std::unique_ptr<Function> multiplyPolynomials(const Function& f1, const Function
 std::unique_ptr<Function> multiplyPiecewiseWithGeneric(const Function& f1, const Function& f2) {
   const Piecewise& piecewise = dynamic_cast<const Piecewise&>(f1);
   std::vector<std::shared_ptr<Function>> functions {};
-  for (auto original : piecewise.getFunctions()) {
+  for (auto& original : piecewise.getFunctions()) {
     functions.push_back(std::shared_ptr<Function>{Euclid::MathUtils::multiply(*original, f2).release()});
   }
   return std::unique_ptr<Function>(new Piecewise {piecewise.getKnots(), functions});
@@ -100,8 +100,8 @@ std::unique_ptr<Function> multiplyPiecewises(const Function& f1, const Function&
   }
 
   std::vector<std::shared_ptr<Function>> functions {};
-  auto p1func = p1.getFunctions();
-  auto p2func = p2.getFunctions();
+  auto& p1func = p1.getFunctions();
+  auto& p2func = p2.getFunctions();
   int i1 {};
   int i2 {};
   for (double knot : knots) {

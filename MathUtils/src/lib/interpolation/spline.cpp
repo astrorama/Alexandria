@@ -79,9 +79,10 @@ std::unique_ptr<Function> splineInterpolation(const std::vector<double>& x, cons
     // d[i] keeps the same value
   }
 
-  std::vector<std::shared_ptr<Function>> functions {};
+  std::vector<std::unique_ptr<Function>> functions;
+  functions.reserve(n);
   for (int i=0; i<n; i++) {
-    functions.push_back(std::shared_ptr<Function>(new Polynomial{{a[i],b[i],c[i],d[i]}}));
+    functions.emplace_back(std::unique_ptr<Function>(new Polynomial{{a[i],b[i],c[i],d[i]}}));
   }
 
   if (extrapolate) {

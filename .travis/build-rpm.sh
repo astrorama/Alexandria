@@ -53,6 +53,6 @@ yum install -y graphviz $PYTHON-sphinx $PYTHON-sphinxcontrib-apidoc
 # Build
 mkdir -p /build
 cd /build
-cmake -DCMAKE_INSTALL_PREFIX=/usr $CMAKEFLAGS /src
+cmake -DCMAKE_INSTALL_PREFIX=/usr -DINSTALL_TESTS=OFF -DRPM_NO_CHECK=OFF $CMAKEFLAGS /src
 make $MAKEFLAGS rpm
 
