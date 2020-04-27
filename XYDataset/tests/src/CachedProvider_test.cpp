@@ -89,6 +89,10 @@ struct MockProvider: public XYDatasetProvider {
     }
     return std::unique_ptr<XYDataset>{new XYDataset{i->second}};
   }
+
+  std::string getParameter(const QualifiedName& qualified_name, const std::string& key_word){
+     return key_word;
+  }
 };
 
 struct CachedProvider_fixture {

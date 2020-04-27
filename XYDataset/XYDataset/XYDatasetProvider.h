@@ -72,6 +72,9 @@ class XYDatasetProvider
    */
    virtual std::vector<QualifiedName> listContents(const std::string& group) = 0;
 
+
+   virtual std::string getParameter(const QualifiedName& qualified_name, const std::string& key_word) =0;
+
   /**
    * @brief
    * Virtual function for getting from a qualified name the dataset of
