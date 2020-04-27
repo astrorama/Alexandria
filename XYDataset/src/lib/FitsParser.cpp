@@ -46,31 +46,38 @@ namespace XYDataset {
 //
 std::string FitsParser::getName(const std::string& file) {
 
-  std::string dataset_name{};
-  std::ifstream sfile(file);
-
-  // Check file exists
-  if (!sfile) {
-    throw Elements::Exception() << "File not found : " << file;
-  }
-
-  // Read first HDU
-  std::unique_ptr<CCfits::FITS> fits { new CCfits::FITS(file, CCfits::RWmode::Read)};
-  CCfits::ExtHDU& table_hdu = fits->extension(1);
-
-  table_hdu.readAllKeys();
-  auto keyword_map = table_hdu.keyWord();
-  auto iter=keyword_map.find(m_name_keyword);
-  if (iter != keyword_map.end()) {
-    iter->second->value(dataset_name);
-  }
-  else {
+  std::string dataset_name = getParameter(file, m_name_keyword);
+  if (dataset_name.empty()){
     // Dataset name is the filename without extension and path
     std::string str {};
     str          = removeAllBeforeLastSlash(file);
     dataset_name = removeExtension(str);
   }
   return (dataset_name);
+}
+
+
+std::string FitsParser::getParameter(const std::string& file, const std::string& key_word) {
+   std::string value{};
+   std::ifstream sfile(file);
+
+    // Check file exists
+    if (!sfile) {
+      throw Elements::Exception() << "File not found : " << file;
+    }
+
+   // Read first HDU
+   std::unique_ptr<CCfits::FITS> fits { new CCfits::FITS(file, CCfits::RWmode::Read)};
+   CCfits::ExtHDU& table_hdu = fits->extension(1);
+
+   table_hdu.readAllKeys();
+   auto keyword_map = table_hdu.keyWord();
+   auto iter=keyword_map.find(key_word);
+   if (iter != keyword_map.end()) {
+     iter->second->value(value);
+   }
+
+   return value;
 }
 
 //

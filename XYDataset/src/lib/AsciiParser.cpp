@@ -24,6 +24,7 @@
  */
 
 #include <boost/regex.hpp>
+#include <boost/algorithm/string.hpp>
 #include <fstream>
 #include <iostream>
 #include <sstream>
@@ -73,6 +74,33 @@ std::string AsciiParser::getName(const std::string& file) {
  }
 
   return dataset_name;
+}
+
+
+std::string AsciiParser::getParameter(const std::string& file, const std::string& key_word) {
+  std::ifstream sfile(file);
+  if (!sfile) {
+     throw Elements::Exception() << "File does not exist : " << file;
+   }
+
+  std::string value{};
+  std::string line{};
+  std::string dataset_name{};
+  std::string  reg_ex_str = "^\\s*#\\s*" + key_word + "\\s+(\\w+)\\s*$";
+  boost::regex expression(reg_ex_str);
+
+  while (sfile.good()) {
+   std::getline(sfile, line);
+   boost::smatch s_match;
+   if (!line.empty() && boost::regex_match(line, s_match, expression)) {
+      // extract the parameter value
+      size_t start_position = line.find(key_word)+key_word.length();
+      value =  line.substr (start_position);
+      boost::trim(value);
+      break;
+   }
+  }
+  return value;
 }
 
 //

@@ -84,6 +84,23 @@ class ELEMENTS_API AsciiParser : public FileParser
   std::string getName(const std::string& file) override;
 
   /**
+  * @brief
+  * Get the parameter identified by a given key_word value from a file
+  * @details
+  * This function gets the the parameter if present in the fits HDU keyword.
+  * Return an empty string if the key word is not present.
+  * @param file
+  * Filename of the file to be read including absolute path
+  * @param key_word
+  * key word identifying the parameter
+  * @return
+  * The name of the datatset
+  * @throw
+  * ElementException : File not found
+  */
+ std::string getParameter(const std::string& file, const std::string& key_word) override;
+
+  /**
    * @brief
    * Get a XYDataset object reading data from an ASCII file
    * @details
