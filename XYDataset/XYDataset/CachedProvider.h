@@ -86,6 +86,9 @@ public:
    */
   std::unique_ptr<XYDataset> getDataset(const QualifiedName& qualified_name) override;
 
+
+  std::string getParameter(const QualifiedName& qualified_name, const std::string& key_word) override;
+
 private:
   std::shared_ptr<XYDatasetProvider> m_provider;
   std::map<std::string, std::vector<QualifiedName>> m_list_cache;

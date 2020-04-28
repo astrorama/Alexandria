@@ -55,5 +55,9 @@ std::unique_ptr<XYDataset> CachedProvider::getDataset(const Euclid::XYDataset::Q
     return nullptr;
 }
 
+std::string CachedProvider::getParameter(const QualifiedName& qualified_name, const std::string& key_word){
+   return m_provider->getParameter(qualified_name, key_word);
+}
+
 }  // namespace XYDataset
 }  // namespace Euclid

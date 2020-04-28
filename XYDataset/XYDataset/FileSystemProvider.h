@@ -117,6 +117,10 @@ class ELEMENTS_API FileSystemProvider : public XYDatasetProvider
    */
   std::vector<QualifiedName> listContents(const std::string& group) override;
 
+
+
+  std::string getParameter(const QualifiedName& qualified_name, const std::string& key_word) override;
+
   // Default destructor
   ~FileSystemProvider() = default;
 
