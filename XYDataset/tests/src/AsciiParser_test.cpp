@@ -65,6 +65,7 @@ struct AsciiParser_Fixture {
     // Fill up file
     offile << "\n";
     offile << "# Test_name\n";
+    offile << "# TEST TEST_VALUE\n";
     offile << "1234. 569.6\n";
     offile << "5678. 569.6\n";
     offile << "91011 569.6\n";
@@ -103,6 +104,45 @@ struct AsciiParser_Fixture {
 //-----------------------------------------------------------------------------
 
 BOOST_AUTO_TEST_SUITE (AsciiParser_test)
+
+//-----------------------------------------------------------------------------
+// Test the exception of the getParameter function
+//-----------------------------------------------------------------------------
+
+BOOST_FIXTURE_TEST_CASE(exception_getParameter_function_test, AsciiParser_Fixture) {
+
+  BOOST_TEST_MESSAGE(" ");
+  BOOST_TEST_MESSAGE("--> Testing the exception of getParameter function");
+  BOOST_TEST_MESSAGE(" ");
+
+  AsciiParser parser{};
+
+  BOOST_CHECK_THROW(parser.getParameter(base_directory + no_file,"TEST"), Elements::Exception);
+}
+
+//-----------------------------------------------------------------------------
+// Test of the getParameter function
+//-----------------------------------------------------------------------------
+
+BOOST_FIXTURE_TEST_CASE(getParameter_function_test, AsciiParser_Fixture) {
+
+  BOOST_TEST_MESSAGE(" ");
+  BOOST_TEST_MESSAGE("--> Testing the  getParameter function");
+  BOOST_TEST_MESSAGE(" ");
+
+  // The dataset is the correct name, result: Keyword value
+  AsciiParser parser {};
+
+  BOOST_CHECK_EQUAL("TEST_VALUE", parser.getParameter(base_directory + file,"TEST"));
+
+  BOOST_CHECK_EQUAL("", parser.getParameter(base_directory + file_nodataset_name,"TEST2"));
+
+  BOOST_CHECK_EQUAL("", parser.getParameter(base_directory + file_nodataset_name,"TEST"));
+}
+
+
+
+
 
 //-----------------------------------------------------------------------------
 // Test the exception of the getName function
