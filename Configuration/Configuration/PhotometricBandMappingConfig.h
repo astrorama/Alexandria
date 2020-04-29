@@ -47,6 +47,7 @@ class PhotometricBandMappingConfig : public Configuration {
 public:
   
   using MappingMap = std::vector<std::pair<std::string, std::pair<std::string, std::string>>>;
+  using UpperLimitThresholdMap = std::vector<std::pair<std::string, float>>;
 
   /// Constructs a new PhotometricBandMappingConfig object
   PhotometricBandMappingConfig(long manager_id);
@@ -116,10 +117,22 @@ public:
    */
   const MappingMap& getPhotometricBandMapping();
 
+  /**
+   * @brief
+   * Returns the mapping of threshold used in the upper limit computation which will be red from the catalog
+   *
+   * @return
+   *    The mapping of upper limit threshold
+   * @throws Elements::Exception
+   *    If the instance is not yet initialized
+   */
+  const UpperLimitThresholdMap& getUpperLimitThresholdMapping();
+
 private:
   
   boost::filesystem::path m_base_dir {};
   MappingMap m_mapping_map {};
+  UpperLimitThresholdMap m_threshold_map{};
 
 }; /* End of PhotometricBandMappingConfig class */
 

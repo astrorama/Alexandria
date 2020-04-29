@@ -61,8 +61,9 @@ struct PhotometricBandMappingConfig_fixture : public ConfigManager_fixture {
     
     std::string mapping {
       "#Comment\n"
-      "Filter1 F1 F1_ERR\n"
+      "Filter1 F1 F1_ERR 3\n"
       "Filter2 F2 F2_ERR\n"
+      "Filter3 F3 F3_ERR 5\n"
     };
     {
       std::ofstream out {(temp_dir.path()/filter_mapping_filename).string()};
@@ -127,13 +128,37 @@ BOOST_FIXTURE_TEST_CASE(nominalBandList_test, PhotometricBandMappingConfig_fixtu
   auto& result = config_manager.getConfiguration<PhotometricBandMappingConfig>().getPhotometricBandMapping();
   
   // Then
-  BOOST_CHECK_EQUAL(result.size(), 2);
+  BOOST_CHECK_EQUAL(result.size(), 3);
   BOOST_CHECK_EQUAL(result[0].first, "Filter1");
   BOOST_CHECK_EQUAL(result[0].second.first, "F1");
   BOOST_CHECK_EQUAL(result[0].second.second, "F1_ERR");
   BOOST_CHECK_EQUAL(result[1].first, "Filter2");
   BOOST_CHECK_EQUAL(result[1].second.first, "F2");
   BOOST_CHECK_EQUAL(result[1].second.second, "F2_ERR");
+  BOOST_CHECK_EQUAL(result[2].first, "Filter3");
+  BOOST_CHECK_EQUAL(result[2].second.first, "F3");
+  BOOST_CHECK_EQUAL(result[2].second.second, "F3_ERR");
+
+}
+
+BOOST_FIXTURE_TEST_CASE(nominalThresholdList_test, PhotometricBandMappingConfig_fixture) {
+
+  // Given
+  config_manager.registerConfiguration<PhotometricBandMappingConfig>();
+  config_manager.closeRegistration();
+
+  // When
+  config_manager.initialize(options_map);
+  auto& result = config_manager.getConfiguration<PhotometricBandMappingConfig>().getUpperLimitThresholdMapping();
+
+  // Then
+  BOOST_CHECK_EQUAL(result.size(), 3);
+  BOOST_CHECK_EQUAL(result[0].first, "Filter1");
+  BOOST_CHECK_EQUAL(result[0].second, 3);
+  BOOST_CHECK_EQUAL(result[1].first, "Filter2");
+  BOOST_CHECK_EQUAL(result[1].second, 1);
+  BOOST_CHECK_EQUAL(result[2].first, "Filter3");
+  BOOST_CHECK_EQUAL(result[2].second, 5);
 
 }
 
@@ -151,13 +176,16 @@ BOOST_FIXTURE_TEST_CASE(relativePath_test, PhotometricBandMappingConfig_fixture)
   auto& result = config_manager.getConfiguration<PhotometricBandMappingConfig>().getPhotometricBandMapping();
   
   // Then
-  BOOST_CHECK_EQUAL(result.size(), 2);
+  BOOST_CHECK_EQUAL(result.size(), 3);
   BOOST_CHECK_EQUAL(result[0].first, "Filter1");
   BOOST_CHECK_EQUAL(result[0].second.first, "F1");
   BOOST_CHECK_EQUAL(result[0].second.second, "F1_ERR");
   BOOST_CHECK_EQUAL(result[1].first, "Filter2");
   BOOST_CHECK_EQUAL(result[1].second.first, "F2");
   BOOST_CHECK_EQUAL(result[1].second.second, "F2_ERR");
+  BOOST_CHECK_EQUAL(result[2].first, "Filter3");
+  BOOST_CHECK_EQUAL(result[2].second.first, "F3");
+  BOOST_CHECK_EQUAL(result[2].second.second, "F3_ERR");
 
 }
 
@@ -175,13 +203,16 @@ BOOST_FIXTURE_TEST_CASE(absolutePath_test, PhotometricBandMappingConfig_fixture)
   auto& result = config_manager.getConfiguration<PhotometricBandMappingConfig>().getPhotometricBandMapping();
   
   // Then
-  BOOST_CHECK_EQUAL(result.size(), 2);
+  BOOST_CHECK_EQUAL(result.size(), 3);
   BOOST_CHECK_EQUAL(result[0].first, "Filter1");
   BOOST_CHECK_EQUAL(result[0].second.first, "F1");
   BOOST_CHECK_EQUAL(result[0].second.second, "F1_ERR");
   BOOST_CHECK_EQUAL(result[1].first, "Filter2");
   BOOST_CHECK_EQUAL(result[1].second.first, "F2");
   BOOST_CHECK_EQUAL(result[1].second.second, "F2_ERR");
+  BOOST_CHECK_EQUAL(result[2].first, "Filter3");
+  BOOST_CHECK_EQUAL(result[2].second.first, "F3");
+  BOOST_CHECK_EQUAL(result[2].second.second, "F3_ERR");
 
 }
 
@@ -231,12 +262,37 @@ BOOST_FIXTURE_TEST_CASE(excludeFilter_test, PhotometricBandMappingConfig_fixture
   auto& result = config_manager.getConfiguration<PhotometricBandMappingConfig>().getPhotometricBandMapping();
   
   // Then
-  BOOST_CHECK_EQUAL(result.size(), 1);
+  BOOST_CHECK_EQUAL(result.size(), 2);
   BOOST_CHECK_EQUAL(result[0].first, "Filter2");
   BOOST_CHECK_EQUAL(result[0].second.first, "F2");
   BOOST_CHECK_EQUAL(result[0].second.second, "F2_ERR");
+  BOOST_CHECK_EQUAL(result[1].first, "Filter3");
+  BOOST_CHECK_EQUAL(result[1].second.first, "F3");
+  BOOST_CHECK_EQUAL(result[1].second.second, "F3_ERR");
+
+}
+
+BOOST_FIXTURE_TEST_CASE(excludeFilterThreshold_test, PhotometricBandMappingConfig_fixture) {
+
+  // Given
+  config_manager.registerConfiguration<PhotometricBandMappingConfig>();
+  config_manager.closeRegistration();
+  options_map[EXCLUDE_FILTER].as<std::vector<std::string>>().push_back("Filter1");
+
+  // When
+  config_manager.initialize(options_map);
+  auto& result = config_manager.getConfiguration<PhotometricBandMappingConfig>().getUpperLimitThresholdMapping();
+
+  // Then
+  BOOST_CHECK_EQUAL(result.size(), 2);
+  BOOST_CHECK_EQUAL(result[0].first, "Filter2");
+  BOOST_CHECK_EQUAL(result[0].second, 1);
+  BOOST_CHECK_EQUAL(result[1].first, "Filter3");
+  BOOST_CHECK_EQUAL(result[1].second, 5);
   
 }
+
+
 
 //-----------------------------------------------------------------------------
 
