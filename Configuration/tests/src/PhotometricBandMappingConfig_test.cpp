@@ -51,6 +51,7 @@ struct PhotometricBandMappingConfig_fixture : public ConfigManager_fixture {
   
   Elements::TempDir temp_dir;
   std::string filter_mapping_filename {"mapping.txt"};
+  std::string faulty_filter_mapping_filename {"faulty_mapping.txt"};
   fs::path relative_filename {fs::path{"relative"} / filter_mapping_filename};
   fs::path absolute_filename {temp_dir.path() / "absolute" / filter_mapping_filename};
   std::string wrong_format_filename {"wrong.txt"};
@@ -65,10 +66,23 @@ struct PhotometricBandMappingConfig_fixture : public ConfigManager_fixture {
       "Filter2 F2 F2_ERR\n"
       "Filter3 F3 F3_ERR 5\n"
     };
+
+    std::string faulty_mapping {
+      "#Comment\n"
+      "Filter3 F3 F3_ERR a5a.1.2\n"
+    };
+
     {
       std::ofstream out {(temp_dir.path()/filter_mapping_filename).string()};
       out << mapping;
     }
+
+
+    {
+      std::ofstream out {(temp_dir.path()/faulty_filter_mapping_filename).string()};
+      out << faulty_mapping;
+    }
+
     {
       fs::create_directories((temp_dir.path()/relative_filename).parent_path());
       std::ofstream out {(temp_dir.path()/relative_filename).string()};
@@ -160,6 +174,17 @@ BOOST_FIXTURE_TEST_CASE(nominalThresholdList_test, PhotometricBandMappingConfig_
   BOOST_CHECK_EQUAL(result[2].first, "Filter3");
   BOOST_CHECK_EQUAL(result[2].second, 5);
 
+}
+
+BOOST_FIXTURE_TEST_CASE(FaultyList_test, PhotometricBandMappingConfig_fixture) {
+
+  // Given
+  config_manager.registerConfiguration<PhotometricBandMappingConfig>();
+  config_manager.closeRegistration();
+  options_map[FILTER_MAPPING_FILE].value() = boost::any(faulty_filter_mapping_filename);
+
+  // When
+  BOOST_CHECK_THROW(config_manager.initialize(options_map), std::invalid_argument);
 }
 
 //-----------------------------------------------------------------------------
