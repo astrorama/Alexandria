@@ -73,11 +73,12 @@ static fs::path getMappingFileFromOptions(const Configuration::UserValues& args,
   return mapping_file;
 }
 
-static PhotometricBandMappingConfig::MappingMap parseFile(fs::path filename) {
+static std::pair<PhotometricBandMappingConfig::MappingMap, PhotometricBandMappingConfig::UpperLimitThresholdMap> parseFile(fs::path filename) {
   PhotometricBandMappingConfig::MappingMap filter_name_mapping {};
+  PhotometricBandMappingConfig::UpperLimitThresholdMap threshold_mapping{};
   std::ifstream in {filename.string()};
   std::string line;
-  regex expr {"\\s*([^\\s#]+)\\s+([^\\s#]+)\\s+([^\\s#]+)\\s*(#.*)?"};
+  regex expr {"\\s*([^\\s#]+)\\s+([^\\s#]+)\\s+([^\\s#]+)(\\s+[^\\s#]+\\s*$)?"};
   while (std::getline(in, line)) {
     boost::trim(line);
     if (line[0] == '#') {
@@ -89,19 +90,35 @@ static PhotometricBandMappingConfig::MappingMap parseFile(fs::path filename) {
       throw Elements::Exception() << "Syntax error in " << filename << ": " << line;
     }
     filter_name_mapping.emplace_back(match_res.str(1), std::make_pair(match_res.str(2), match_res.str(3)));
+
+    if (match_res.str(4)==""){
+        threshold_mapping.emplace_back(match_res.str(1), 1.0);
+    } else {
+        float n=std::stof(match_res.str(4));
+        threshold_mapping.emplace_back(match_res.str(1), n);
+    }
   }
-  return filter_name_mapping;
+  return std::make_pair(filter_name_mapping,threshold_mapping);
 }
 
 void PhotometricBandMappingConfig::initialize(const UserValues& args) {
   
   // Parse the file with the mapping
   auto filename = getMappingFileFromOptions(args, m_base_dir);
-  auto all_filter_name_mapping = parseFile(filename);
+  auto parsed = parseFile(filename);
+  auto all_filter_name_mapping = parsed.first;
+  auto all_threshold_mapping = parsed.second;
   
   // Remove the filters which are marked to exclude
   auto exclude_vector = args.at(EXCLUDE_FILTER).as<std::vector<std::string>>();
   std::set<std::string> exclude_filters {exclude_vector.begin(), exclude_vector.end()};
+
+  for (auto& pair : all_threshold_mapping) {
+    if (exclude_filters.count(pair.first) <= 0) {
+      m_threshold_map.push_back(pair);
+    }
+  }
+
   for (auto& pair : all_filter_name_mapping) {
     if (exclude_filters.count(pair.first) > 0) {
       exclude_filters.erase(pair.first);
@@ -109,6 +126,7 @@ void PhotometricBandMappingConfig::initialize(const UserValues& args) {
       m_mapping_map.push_back(pair);
     }
   }
+
 
   if (!exclude_filters.empty()) {
     std::stringstream wrong_filters {};
@@ -134,6 +152,15 @@ const PhotometricBandMappingConfig::MappingMap& PhotometricBandMappingConfig::ge
                                 << "PhotometricBandMappingConfig";
   }
   return m_mapping_map;
+}
+
+
+const PhotometricBandMappingConfig::UpperLimitThresholdMap& PhotometricBandMappingConfig::getUpperLimitThresholdMapping() {
+  if (getCurrentState() < State::INITIALIZED) {
+     throw Elements::Exception() << "getUpperLimitThresholdMapping() call to uninitialized "
+                                 << "PhotometricBandMappingConfig";
+   }
+   return m_threshold_map;
 }
 
 } // Configuration namespace

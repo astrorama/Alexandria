@@ -40,6 +40,7 @@
 namespace Euclid {
 namespace SourceCatalog {
 
+
 /**
  * @class PhotometryAttributeFromRow
  * @brief Implementation of the AttributeFromRow for a photometry attribute.
@@ -84,7 +85,9 @@ public:
       const std::vector<std::pair<std::string, std::pair<std::string, std::string>>>& filter_name_mapping,
       const bool missing_photometry_enabled,
       const double missing_photometry_flag,
-      const bool upper_limit_enabled);
+      const bool upper_limit_enabled,
+      const std::vector<std::pair<std::string, float>> n_map,
+      const double n_upper_limit_flag);
 
   virtual ~PhotometryAttributeFromRow();
 
@@ -115,6 +118,10 @@ private:
   double m_missing_photometry_flag;
 
   bool m_upper_limit_enabled;
+
+  std::vector<std::pair<std::string, float>> m_n_map;
+
+  double m_n_upper_limit_flag;
 
 };
 
