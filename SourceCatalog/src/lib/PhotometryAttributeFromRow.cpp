@@ -121,7 +121,7 @@ unique_ptr<Attribute> PhotometryAttributeFromRow::createAttribute(
           if (error<0){
              /** Actual upper limit **/
             if (error==m_n_upper_limit_flag){
-              flux/=n_threshod_iter->second;
+              error  = flux / n_threshod_iter->second;
             }
              upper_limit=true;
              if (flux<=0){
@@ -130,7 +130,6 @@ unique_ptr<Attribute> PhotometryAttributeFromRow::createAttribute(
                                  flux,
                                  error);
              }
-
 
              error=std::abs(error);
           }
@@ -166,7 +165,7 @@ unique_ptr<Attribute> PhotometryAttributeFromRow::createAttribute(
           /** Actual upper limit **/
           upper_limit=true;
           if (error==m_n_upper_limit_flag){
-            flux/=n_threshod_iter->second;
+            error = flux / n_threshod_iter->second;
           }
           if (flux<=0){
                     throw SourceCatalog::PhotometryParsingException(
