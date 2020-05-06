@@ -234,12 +234,12 @@ BOOST_FIXTURE_TEST_CASE( exceptionalCaseNoMissingUpper_test, TableFixture ) {
       if(typeid(*attribute_ny_em_fl_ptr) == typeid(Euclid::SourceCatalog::Photometry)) {
             Euclid::SourceCatalog::Photometry& photometry = dynamic_cast<Euclid::SourceCatalog::Photometry&>( *attribute_ny_em_fl_ptr );
             BOOST_CHECK_CLOSE(photometry.find(v_filter_name)->flux, 1., tolerance);
-            BOOST_CHECK_CLOSE(photometry.find(v_filter_name)->error, 99, tolerance);
+            BOOST_CHECK_CLOSE(photometry.find(v_filter_name)->error, 1./3., tolerance);
             BOOST_CHECK(!photometry.find(v_filter_name)->missing_photometry_flag);
             BOOST_CHECK(photometry.find(v_filter_name)->upper_limit_flag);
 
-            BOOST_CHECK_CLOSE(photometry.find(r_filter_name)->flux, 1., tolerance);
-            BOOST_CHECK_CLOSE(photometry.find(r_filter_name)->error, 99, tolerance);
+            BOOST_CHECK_CLOSE(photometry.find(r_filter_name)->flux, 3., tolerance);
+            BOOST_CHECK_CLOSE(photometry.find(r_filter_name)->error, 3./5., tolerance);
             BOOST_CHECK(!photometry.find(r_filter_name)->missing_photometry_flag);
             BOOST_CHECK(photometry.find(r_filter_name)->upper_limit_flag);
       }
