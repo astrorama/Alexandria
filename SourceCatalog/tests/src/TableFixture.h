@@ -169,8 +169,8 @@ struct TableFixture {
     filter_name_mapping.push_back(make_pair(v_filter_name,make_pair("Double_flux1","Double_error1")));
     filter_name_mapping.push_back(make_pair(r_filter_name,make_pair("Double_flux2","Double_error2")));
 
-    threshold_mapping.push_back(make_pair(v_filter_name,1.0));
-    threshold_mapping.push_back(make_pair(r_filter_name,3.0));
+    threshold_mapping.push_back(make_pair(v_filter_name,3.0));
+    threshold_mapping.push_back(make_pair(r_filter_name,5.0));
   }
 
   ~TableFixture() {

@@ -170,7 +170,7 @@ BOOST_FIXTURE_TEST_CASE(nominalThresholdList_test, PhotometricBandMappingConfig_
   BOOST_CHECK_EQUAL(result[0].first, "Filter1");
   BOOST_CHECK_EQUAL(result[0].second, 3);
   BOOST_CHECK_EQUAL(result[1].first, "Filter2");
-  BOOST_CHECK_EQUAL(result[1].second, 1);
+  BOOST_CHECK_EQUAL(result[1].second, 3);
   BOOST_CHECK_EQUAL(result[2].first, "Filter3");
   BOOST_CHECK_EQUAL(result[2].second, 5);
 
@@ -311,7 +311,7 @@ BOOST_FIXTURE_TEST_CASE(excludeFilterThreshold_test, PhotometricBandMappingConfi
   // Then
   BOOST_CHECK_EQUAL(result.size(), 2);
   BOOST_CHECK_EQUAL(result[0].first, "Filter2");
-  BOOST_CHECK_EQUAL(result[0].second, 1);
+  BOOST_CHECK_EQUAL(result[0].second, 3);
   BOOST_CHECK_EQUAL(result[1].first, "Filter3");
   BOOST_CHECK_EQUAL(result[1].second, 5);
   

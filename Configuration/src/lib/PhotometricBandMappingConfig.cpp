@@ -92,7 +92,7 @@ static std::pair<PhotometricBandMappingConfig::MappingMap, PhotometricBandMappin
     filter_name_mapping.emplace_back(match_res.str(1), std::make_pair(match_res.str(2), match_res.str(3)));
 
     if (match_res.str(4)==""){
-        threshold_mapping.emplace_back(match_res.str(1), 1.0);
+        threshold_mapping.emplace_back(match_res.str(1), 3.0);
     } else {
         float n=std::stof(match_res.str(4));
         threshold_mapping.emplace_back(match_res.str(1), n);
