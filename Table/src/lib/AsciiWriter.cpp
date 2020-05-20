@@ -25,12 +25,16 @@
 #include <fstream>
 #include <sstream>
 #include <boost/lexical_cast.hpp>
+#include <boost/regex.hpp>
 #include "ElementsKernel/Exception.h"
 #include "Table/AsciiWriter.h"
 #include "AsciiWriterHelper.h"
 
 namespace Euclid {
 namespace Table {
+
+using boost::regex;
+using boost::regex_match;
 
 AsciiWriter::AsciiWriter(std::ostream& stream) : AsciiWriter(InstOrRefHolder<std::ostream>::create(stream)) {
 }
@@ -69,7 +73,7 @@ void AsciiWriter::addComment(const std::string& message) {
             << "format is not allowed";
   }
   m_writing_started = true;
-  
+
   std::stringstream message_stream {message};
   while (!message_stream.eof()) {
     std::string line;
@@ -79,20 +83,27 @@ void AsciiWriter::addComment(const std::string& message) {
 }
 
 void AsciiWriter::init(const Table& table) {
+  static regex whitespace{".*\\s.*"};
+
   m_initialized = true;
   // If we have already written anything we leave an empty line
   if (m_writing_started) {
     m_stream_holder->ref() << '\n';
   }
   m_writing_started = true;
-  
+
   auto& out = m_stream_holder->ref();
-  
+
   // Write the column descriptions
   auto& info = *table.getColumnInfo();
   if (m_show_column_info) {
     for (size_t i=0; i<info.size(); ++i) {
       auto& desc = info.getDescription(i);
+
+      if (regex_match(desc.name, whitespace)) {
+        throw Elements::Exception() << "Column name '" << desc.name << "' contains whitespace characters";
+      }
+
       out << m_comment << " Column: " << desc.name << ' ' << typeToKeyword(desc.type);
       if (!desc.unit.empty()) {
         out << " (" << desc.unit << ")";
@@ -104,7 +115,7 @@ void AsciiWriter::init(const Table& table) {
     }
     out << '\n';
   }
-  
+
   // Write the column names
   auto column_lengths = calculateColumnLengths(table);
   out << m_comment.c_str();
@@ -115,6 +126,8 @@ void AsciiWriter::init(const Table& table) {
 }
 
 void AsciiWriter::append(const Table& table) {
+  static regex whitespace{".*\\s.*"};
+
   auto& out = m_stream_holder->ref();
   auto column_lengths = calculateColumnLengths(table);
   // The data lines are not prefixed with the comment string, so we need to fix
@@ -122,7 +135,11 @@ void AsciiWriter::append(const Table& table) {
   column_lengths[0] = column_lengths[0] + m_comment.size();
   for (auto row : table) {
     for (size_t i=0; i<row.size(); ++i) {
-      out << std::setw(column_lengths[i]) << boost::lexical_cast<std::string>(row[i]);
+      auto str_repr = boost::lexical_cast<std::string>(row[i]);
+      if (regex_match(str_repr, whitespace)) {
+        throw Elements::Exception() << "Cell value '" << str_repr << "' contains whitespace characters";
+      }
+      out << std::setw(column_lengths[i]) << str_repr;
     }
     out << "\n";
   }

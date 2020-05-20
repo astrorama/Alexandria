@@ -65,17 +65,55 @@ BOOST_AUTO_TEST_SUITE (AsciiWriter_test)
 //-----------------------------------------------------------------------------
 
 BOOST_AUTO_TEST_CASE(EmptyCommentIndicator) {
-  
+
   // Given
   std::stringstream stream {};
   std::string comment = "";
-  
+
   // When
   AsciiWriter writer {stream};
-  
+
   // Then
   BOOST_CHECK_THROW(writer.setCommentIndicator(comment), Elements::Exception);
-  
+
+}
+
+//-----------------------------------------------------------------------------
+// ASCII format does not support spaces on the column names
+//-----------------------------------------------------------------------------
+
+BOOST_AUTO_TEST_CASE(SpaceColumName) {
+  auto column_info = std::make_shared<ColumnInfo>(std::vector<ColumnInfo::info_type>{
+    {"Name With Spaces", typeid(int)}
+  });
+
+  std::vector<Row::cell_type> values0{55};
+  Row row0{values0, column_info};
+  std::vector<Row> row_list{row0};
+  Table table{row_list};
+
+  std::stringstream stream;
+  AsciiWriter writer{stream};
+  BOOST_CHECK_THROW(writer.addData(table), Elements::Exception);
+}
+
+//-----------------------------------------------------------------------------
+// ASCII format does not support values with spaces
+//-----------------------------------------------------------------------------
+
+BOOST_AUTO_TEST_CASE(SpaceCellValue) {
+  auto column_info = std::make_shared<ColumnInfo>(std::vector<ColumnInfo::info_type>{
+    {"OkName", typeid(std::string)}
+  });
+
+  std::vector<Row::cell_type> values0{std::string("Value With Spaces")};
+  Row row0{values0, column_info};
+  std::vector<Row> row_list{row0};
+  Table table{row_list};
+
+  std::stringstream stream;
+  AsciiWriter writer{stream};
+  BOOST_CHECK_THROW(writer.addData(table), Elements::Exception);
 }
 
 //-----------------------------------------------------------------------------
@@ -83,18 +121,18 @@ BOOST_AUTO_TEST_CASE(EmptyCommentIndicator) {
 //-----------------------------------------------------------------------------
 
 BOOST_FIXTURE_TEST_CASE(addData, AsciiWriter_Fixture) {
-  
+
   // Given
   std::stringstream stream_hash {};
   std::stringstream stream_double_slash {};
   AsciiWriter writer_hash {stream_hash};
   AsciiWriter writer_double_slash {stream_double_slash};
   writer_double_slash.setCommentIndicator("//");
-  
+
   // When
   writer_hash.addData(table);
   writer_double_slash.addData(table);
-  
+
   // Then
   BOOST_CHECK_EQUAL(stream_hash.str(),
     "# Column: Boolean bool (unit1) - Desc1\n"
@@ -126,7 +164,7 @@ BOOST_FIXTURE_TEST_CASE(addData, AsciiWriter_Fixture) {
     "         0                     Two-2 1234567890 4.2e-15 0         2.1,2.2 <2,2>9,8,7,6\n"
     "         1                     Two-3        234     4.3 0 3.1,3.2,3.3,3.4 <2,2>1,3,5,7\n"
   );
-  
+
 }
 
 //-----------------------------------------------------------------------------
@@ -134,20 +172,20 @@ BOOST_FIXTURE_TEST_CASE(addData, AsciiWriter_Fixture) {
 //-----------------------------------------------------------------------------
 
 BOOST_FIXTURE_TEST_CASE(addDataNoColumnInfo, AsciiWriter_Fixture) {
-  
+
   // Given
   std::stringstream stream_hash {};
   std::stringstream stream_double_slash {};
   AsciiWriter writer_hash {stream_hash};
   AsciiWriter writer_double_slash {stream_double_slash};
   writer_double_slash.setCommentIndicator("//");
-  
+
   // When
   writer_hash.showColumnInfo(false);
   writer_hash.addData(table);
   writer_double_slash.showColumnInfo(false);
   writer_double_slash.addData(table);
-  
+
   // Then
   BOOST_CHECK_EQUAL(stream_hash.str(),
     "# Boolean ThisIsAVeryLongColumnName    Integer       D F    DoubleVector      NdArray\n"
@@ -163,7 +201,7 @@ BOOST_FIXTURE_TEST_CASE(addDataNoColumnInfo, AsciiWriter_Fixture) {
     "         0                     Two-2 1234567890 4.2e-15 0         2.1,2.2 <2,2>9,8,7,6\n"
     "         1                     Two-3        234     4.3 0 3.1,3.2,3.3,3.4 <2,2>1,3,5,7\n"
   );
-  
+
 }
 
 //-----------------------------------------------------------------------------
@@ -171,7 +209,7 @@ BOOST_FIXTURE_TEST_CASE(addDataNoColumnInfo, AsciiWriter_Fixture) {
 //-----------------------------------------------------------------------------
 
 BOOST_FIXTURE_TEST_CASE(addDataComments, AsciiWriter_Fixture) {
-  
+
   // Given
   std::stringstream stream_hash {};
   std::stringstream stream_double_slash {};
@@ -182,7 +220,7 @@ BOOST_FIXTURE_TEST_CASE(addDataComments, AsciiWriter_Fixture) {
     "First comment",
     "Second comment"
   };
-  
+
   // When
   for (auto& c : comments) {
     writer_hash.addComment(c);
@@ -190,7 +228,7 @@ BOOST_FIXTURE_TEST_CASE(addDataComments, AsciiWriter_Fixture) {
   }
   writer_hash.addData(table);
   writer_double_slash.addData(table);
-  
+
   // Then
   BOOST_CHECK_EQUAL(stream_hash.str(),
     "# First comment\n"
@@ -228,7 +266,7 @@ BOOST_FIXTURE_TEST_CASE(addDataComments, AsciiWriter_Fixture) {
     "         0                     Two-2 1234567890 4.2e-15 0         2.1,2.2 <2,2>9,8,7,6\n"
     "         1                     Two-3        234     4.3 0 3.1,3.2,3.3,3.4 <2,2>1,3,5,7\n"
   );
-  
+
 }
 
 //-----------------------------------------------------------------------------

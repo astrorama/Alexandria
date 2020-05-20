@@ -42,10 +42,10 @@ BOOST_AUTO_TEST_CASE(NominalCase) {
   std::type_index type = typeid(double);
   std::string unit = "u";
   std::string description = "Desc";
-  
-  // When 
+
+  // When
   ColumnDescription result {name, type, unit, description};
-  
+
   // Then
   BOOST_CHECK_EQUAL(result.name, name);
   BOOST_CHECK_EQUAL(result.type.name(), type.name());
@@ -60,10 +60,10 @@ BOOST_AUTO_TEST_CASE(DefaultValues) {
 
   // Given
   std::string name = "Name";
-  
-  // When 
+
+  // When
   ColumnDescription result {name};
-  
+
   // Then
   BOOST_CHECK_EQUAL(result.name, name);
   BOOST_CHECK_EQUAL(result.type.name(), typeid(std::string).name());
@@ -75,33 +75,33 @@ BOOST_AUTO_TEST_CASE(DefaultValues) {
 //-----------------------------------------------------------------------------
 
 BOOST_AUTO_TEST_CASE(EmptyStringName) {
-  
+
   // Given
   std::string name = "";
-  
+
   // Then
   BOOST_CHECK_THROW(ColumnDescription{name}, Elements::Exception);
-  
+
 }
 
 //-----------------------------------------------------------------------------
 
 BOOST_AUTO_TEST_CASE(NameWithWhitespaces) {
-  
+
   // Given
   std::string space = "Sp ace";
   std::string tab = "Ta\tb";
   std::string carriage_return = "Carrage\rReturn";
   std::string new_line = "New\nLine";
   std::string new_page = "New\fPage";
-  
+
   // Then
-  BOOST_CHECK_THROW(ColumnDescription{space}, Elements::Exception);
-  BOOST_CHECK_THROW(ColumnDescription{tab}, Elements::Exception);
+  ColumnDescription{space};
+  ColumnDescription{tab};
   BOOST_CHECK_THROW(ColumnDescription{carriage_return}, Elements::Exception);
   BOOST_CHECK_THROW(ColumnDescription{new_line}, Elements::Exception);
   BOOST_CHECK_THROW(ColumnDescription{new_page}, Elements::Exception);
-  
+
 }
 
 //-----------------------------------------------------------------------------
