@@ -150,6 +150,11 @@ struct TableFixture {
                 string { "first" }, spec_z_val_row0, spec_z_err_row0 };
    const Euclid::Table::Row row_neg_flux_neg_error { values11, column_info_ptr };
 
+   const vector<Euclid::Table::Row::cell_type> values12{ int64_t(1011), string { "ID12" }, true, 1,int64_t { 123 }, 0.F,
+           1.,3., -99., -99.,
+             string { "first" }, spec_z_val_row0, spec_z_err_row0 };
+   const Euclid::Table::Row row_neg_error_flag { values12, column_info_ptr };
+
 
   // Two filter names
   const string v_filter_name { "TestGroup/VtestName" };
@@ -157,11 +162,15 @@ struct TableFixture {
 
   // the mapping variable
   vector<pair<string, pair<string, string>>> filter_name_mapping;
+  vector<pair<std::string, float>> threshold_mapping;
 
   TableFixture() {
     // This is how the mapping must be defined
     filter_name_mapping.push_back(make_pair(v_filter_name,make_pair("Double_flux1","Double_error1")));
     filter_name_mapping.push_back(make_pair(r_filter_name,make_pair("Double_flux2","Double_error2")));
+
+    threshold_mapping.push_back(make_pair(v_filter_name,3.0));
+    threshold_mapping.push_back(make_pair(r_filter_name,5.0));
   }
 
   ~TableFixture() {
