@@ -42,9 +42,9 @@ ColumnDescription::ColumnDescription(std::string name, std::type_index type,
     if (name.empty()) {
       throw Elements::Exception() << "Empty string name is not allowed";
     }
-    if (regex_match(name, regex{".*\\s.*"})) {
+    if (regex_match(name, regex{".*\\v.*"})) {
       throw Elements::Exception() << "Column name '" << name << "' contains "
-                                << "whitespace characters";
+                                << "vertical whitespace characters";
     }
 }
 
