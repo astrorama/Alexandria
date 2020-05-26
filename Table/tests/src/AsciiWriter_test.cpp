@@ -96,37 +96,35 @@ BOOST_FIXTURE_TEST_CASE(addData, AsciiWriter_Fixture) {
   writer_double_slash.addData(table);
 
   // Then
-  BOOST_CHECK_EQUAL(stream_hash.str(),
-R"(# Column: Boolean bool (unit1) - Desc1
-# Column: "A Long Column Name" string
-# Column: Integer int (unit3)
-# Column: D double - Desc4
-# Column: F float
-# Column: DoubleVector [double]
-# Column: NdArray [double+]
+  BOOST_CHECK_EQUAL(stream_hash.str(), std::string(
+"# Column: Boolean bool (unit1) - Desc1\n"
+"# Column: \"A Long Column Name\" string\n"
+"# Column: Integer int (unit3)\n"
+"# Column: D double - Desc4\n"
+"# Column: F float\n"
+"# Column: DoubleVector [double]\n"
+"# Column: NdArray [double+]\n"
+"\n"
+"# Boolean \"A Long Column Name\"    Integer       D F    DoubleVector      NdArray\n"
+"\n"
+"        1              \"Two 1\"          1     4.1 0         1.1,1.2 <2,2>1,2,3,4\n"
+"        0              \"Two 2\" 1234567890 4.2e-15 0         2.1,2.2 <2,2>9,8,7,6\n"
+"        1              \"Two 3\"        234     4.3 0 3.1,3.2,3.3,3.4 <2,2>1,3,5,7\n"));
 
-# Boolean "A Long Column Name"    Integer       D F    DoubleVector      NdArray
-
-        1              "Two 1"          1     4.1 0         1.1,1.2 <2,2>1,2,3,4
-        0              "Two 2" 1234567890 4.2e-15 0         2.1,2.2 <2,2>9,8,7,6
-        1              "Two 3"        234     4.3 0 3.1,3.2,3.3,3.4 <2,2>1,3,5,7
-)");
-
-  BOOST_CHECK_EQUAL(stream_double_slash.str(),
-R"(// Column: Boolean bool (unit1) - Desc1
-// Column: "A Long Column Name" string
-// Column: Integer int (unit3)
-// Column: D double - Desc4
-// Column: F float
-// Column: DoubleVector [double]
-// Column: NdArray [double+]
-
-// Boolean "A Long Column Name"    Integer       D F    DoubleVector      NdArray
-
-         1              "Two 1"          1     4.1 0         1.1,1.2 <2,2>1,2,3,4
-         0              "Two 2" 1234567890 4.2e-15 0         2.1,2.2 <2,2>9,8,7,6
-         1              "Two 3"        234     4.3 0 3.1,3.2,3.3,3.4 <2,2>1,3,5,7
-)");
+  BOOST_CHECK_EQUAL(stream_double_slash.str(), std::string(
+"// Column: Boolean bool (unit1) - Desc1\n"
+"// Column: \"A Long Column Name\" string\n"
+"// Column: Integer int (unit3)\n"
+"// Column: D double - Desc4\n"
+"// Column: F float\n"
+"// Column: DoubleVector [double]\n"
+"// Column: NdArray [double+]\n"
+"\n"
+"// Boolean \"A Long Column Name\"    Integer       D F    DoubleVector      NdArray\n"
+"\n"
+"         1              \"Two 1\"          1     4.1 0         1.1,1.2 <2,2>1,2,3,4\n"
+"         0              \"Two 2\" 1234567890 4.2e-15 0         2.1,2.2 <2,2>9,8,7,6\n"
+"         1              \"Two 3\"        234     4.3 0 3.1,3.2,3.3,3.4 <2,2>1,3,5,7\n"));
 }
 
 //-----------------------------------------------------------------------------
@@ -149,20 +147,18 @@ BOOST_FIXTURE_TEST_CASE(addDataNoColumnInfo, AsciiWriter_Fixture) {
   writer_double_slash.addData(table);
 
   // Then
-  BOOST_CHECK_EQUAL(stream_hash.str(),
-R"(# Boolean "A Long Column Name"    Integer       D F    DoubleVector      NdArray
-
-        1              "Two 1"          1     4.1 0         1.1,1.2 <2,2>1,2,3,4
-        0              "Two 2" 1234567890 4.2e-15 0         2.1,2.2 <2,2>9,8,7,6
-        1              "Two 3"        234     4.3 0 3.1,3.2,3.3,3.4 <2,2>1,3,5,7
-)");
-  BOOST_CHECK_EQUAL(stream_double_slash.str(),
-R"(// Boolean "A Long Column Name"    Integer       D F    DoubleVector      NdArray
-
-         1              "Two 1"          1     4.1 0         1.1,1.2 <2,2>1,2,3,4
-         0              "Two 2" 1234567890 4.2e-15 0         2.1,2.2 <2,2>9,8,7,6
-         1              "Two 3"        234     4.3 0 3.1,3.2,3.3,3.4 <2,2>1,3,5,7
-)");
+  BOOST_CHECK_EQUAL(stream_hash.str(), std::string(
+"# Boolean \"A Long Column Name\"    Integer       D F    DoubleVector      NdArray\n"
+"\n"
+"        1              \"Two 1\"          1     4.1 0         1.1,1.2 <2,2>1,2,3,4\n"
+"        0              \"Two 2\" 1234567890 4.2e-15 0         2.1,2.2 <2,2>9,8,7,6\n"
+"        1              \"Two 3\"        234     4.3 0 3.1,3.2,3.3,3.4 <2,2>1,3,5,7\n"));
+  BOOST_CHECK_EQUAL(stream_double_slash.str(), std::string(
+"// Boolean \"A Long Column Name\"    Integer       D F    DoubleVector      NdArray\n"
+"\n"
+"         1              \"Two 1\"          1     4.1 0         1.1,1.2 <2,2>1,2,3,4\n"
+"         0              \"Two 2\" 1234567890 4.2e-15 0         2.1,2.2 <2,2>9,8,7,6\n"
+"         1              \"Two 3\"        234     4.3 0 3.1,3.2,3.3,3.4 <2,2>1,3,5,7\n"));
 }
 
 //-----------------------------------------------------------------------------
@@ -191,42 +187,40 @@ BOOST_FIXTURE_TEST_CASE(addDataComments, AsciiWriter_Fixture) {
   writer_double_slash.addData(table);
 
   // Then
-  BOOST_CHECK_EQUAL(stream_hash.str(),
-R"(# First comment
-# Second comment
-
-# Column: Boolean bool (unit1) - Desc1
-# Column: "A Long Column Name" string
-# Column: Integer int (unit3)
-# Column: D double - Desc4
-# Column: F float
-# Column: DoubleVector [double]
-# Column: NdArray [double+]
-
-# Boolean "A Long Column Name"    Integer       D F    DoubleVector      NdArray
-
-        1              "Two 1"          1     4.1 0         1.1,1.2 <2,2>1,2,3,4
-        0              "Two 2" 1234567890 4.2e-15 0         2.1,2.2 <2,2>9,8,7,6
-        1              "Two 3"        234     4.3 0 3.1,3.2,3.3,3.4 <2,2>1,3,5,7
-)");
-  BOOST_CHECK_EQUAL(stream_double_slash.str(),
-R"(// First comment
-// Second comment
-
-// Column: Boolean bool (unit1) - Desc1
-// Column: "A Long Column Name" string
-// Column: Integer int (unit3)
-// Column: D double - Desc4
-// Column: F float
-// Column: DoubleVector [double]
-// Column: NdArray [double+]
-
-// Boolean "A Long Column Name"    Integer       D F    DoubleVector      NdArray
-
-         1              "Two 1"          1     4.1 0         1.1,1.2 <2,2>1,2,3,4
-         0              "Two 2" 1234567890 4.2e-15 0         2.1,2.2 <2,2>9,8,7,6
-         1              "Two 3"        234     4.3 0 3.1,3.2,3.3,3.4 <2,2>1,3,5,7
-)");
+  BOOST_CHECK_EQUAL(stream_hash.str(), std::string(
+"# First comment\n"
+"# Second comment\n"
+"\n"
+"# Column: Boolean bool (unit1) - Desc1\n"
+"# Column: \"A Long Column Name\" string\n"
+"# Column: Integer int (unit3)\n"
+"# Column: D double - Desc4\n"
+"# Column: F float\n"
+"# Column: DoubleVector [double]\n"
+"# Column: NdArray [double+]\n"
+"\n"
+"# Boolean \"A Long Column Name\"    Integer       D F    DoubleVector      NdArray\n"
+"\n"
+"        1              \"Two 1\"          1     4.1 0         1.1,1.2 <2,2>1,2,3,4\n"
+"        0              \"Two 2\" 1234567890 4.2e-15 0         2.1,2.2 <2,2>9,8,7,6\n"
+"        1              \"Two 3\"        234     4.3 0 3.1,3.2,3.3,3.4 <2,2>1,3,5,7\n"));
+  BOOST_CHECK_EQUAL(stream_double_slash.str(), std::string(
+"// First comment\n"
+"// Second comment\n"
+"\n"
+"// Column: Boolean bool (unit1) - Desc1\n"
+"// Column: \"A Long Column Name\" string\n"
+"// Column: Integer int (unit3)\n"
+"// Column: D double - Desc4\n"
+"// Column: F float\n"
+"// Column: DoubleVector [double]\n"
+"// Column: NdArray [double+]\n"
+"\n"
+"// Boolean \"A Long Column Name\"    Integer       D F    DoubleVector      NdArray\n"
+"\n"
+"         1              \"Two 1\"          1     4.1 0         1.1,1.2 <2,2>1,2,3,4\n"
+"         0              \"Two 2\" 1234567890 4.2e-15 0         2.1,2.2 <2,2>9,8,7,6\n"
+"         1              \"Two 3\"        234     4.3 0 3.1,3.2,3.3,3.4 <2,2>1,3,5,7\n"));
 }
 
 //-----------------------------------------------------------------------------
