@@ -1,22 +1,22 @@
 /*
- * Copyright (C) 2012-2020 Euclid Science Ground Segment    
- *  
+ * Copyright (C) 2012-2020 Euclid Science Ground Segment
+ *
  * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free 
- * Software Foundation; either version 3.0 of the License, or (at your option)  
- * any later version.  
- *  
- * This library is distributed in the hope that it will be useful, but WITHOUT 
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 3.0 of the License, or (at your option)
+ * any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more  
- * details.  
- *  
- * You should have received a copy of the GNU Lesser General Public License 
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
  * along with this library; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA  
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
- 
- /** 
+
+ /**
  * @file tests/src/function/mocks.h
  * @date February 20, 2014
  * @author Nikolaos Apostolakos
@@ -31,7 +31,7 @@
 
 class FunctionMock : public Euclid::MathUtils::Function {
 public:
-  FunctionMock(const double value) : m_value{value} { }
+  explicit FunctionMock(const double value) : m_value{value} { }
   double operator()(const double) const override {
     return m_value;
   }
@@ -44,7 +44,7 @@ private:
 
 class IntegrableMock : public Euclid::MathUtils::Integrable {
 public:
-  IntegrableMock(const double value) : m_value{value} { }
+  explicit IntegrableMock(const double value) : m_value{value} { }
   double operator()(const double) const override {
     return m_value;
   }
