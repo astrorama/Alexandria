@@ -50,7 +50,7 @@ public:
    */
   virtual ~CachedProvider() = default;
 
-  CachedProvider(std::shared_ptr<XYDatasetProvider> provider);
+  explicit CachedProvider(std::shared_ptr<XYDatasetProvider> provider);
 
   /**
    * @brief

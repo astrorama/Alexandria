@@ -59,7 +59,7 @@ public:
    *    The shape of the matrix. The number of elements in shape corresponds to the number
    *    of dimensions, the values to each dimension size.
    */
-  NdArray(const std::vector<size_t> &shape) : m_shape{shape}, m_container(
+  explicit NdArray(const std::vector<size_t> &shape) : m_shape{shape}, m_container(
     std::accumulate(m_shape.begin(), m_shape.end(), 1, std::multiplies<size_t>())) {
     m_stride_size.resize(m_shape.size());
 

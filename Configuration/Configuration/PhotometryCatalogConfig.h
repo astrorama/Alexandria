@@ -44,7 +44,7 @@ class PhotometryCatalogConfig : public Configuration {
 public:
 
   /// Constructs a new PhotometryCatalogConfig object
-  PhotometryCatalogConfig(long manager_id);
+  explicit PhotometryCatalogConfig(long manager_id);
 
   /// Destructor
   virtual ~PhotometryCatalogConfig() = default;

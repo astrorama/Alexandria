@@ -225,31 +225,31 @@ std::vector<Row::cell_type> translateColumn(CCfits::Column& column, std::type_in
 std::vector<Row::cell_type> translateColumn(CCfits::Column& column, std::type_index type, long first, long last) {
   if (type == typeid(bool)) {
     return convertScalarColumn<bool>(column, first, last);
-  } if (type == typeid(int32_t)) {
+  } else if (type == typeid(int32_t)) {
     return convertScalarColumn<int32_t>(column, first, last);
-  } if (type == typeid(int64_t)) {
+  } else if (type == typeid(int64_t)) {
     return convertScalarColumn<int64_t>(column, first, last);
-  } if (type == typeid(float)) {
+  } else if (type == typeid(float)) {
     return convertScalarColumn<float>(column, first, last);
-  } if (type == typeid(double)) {
+  } else if (type == typeid(double)) {
     return convertScalarColumn<double>(column, first, last);
-  } if (type == typeid(std::string)) {
+  } else if (type == typeid(std::string)) {
     return convertScalarColumn<std::string>(column, first, last);
-  } if (type == typeid(std::vector<int32_t>)) {
+  } else if (type == typeid(std::vector<int32_t>)) {
     return convertVectorColumn<int32_t>(column, first, last);
-  } if (type == typeid(std::vector<int64_t>)) {
+  } else if (type == typeid(std::vector<int64_t>)) {
     return convertVectorColumn<int64_t>(column, first, last);
-  } if (type == typeid(std::vector<float>)) {
+  } else if (type == typeid(std::vector<float>)) {
     return convertVectorColumn<float>(column, first, last);
-  } if (type == typeid(std::vector<double>)) {
+  } else if (type == typeid(std::vector<double>)) {
     return convertVectorColumn<double>(column, first, last);
-  } if (type == typeid(NdArray<int32_t>)) {
+  } else if (type == typeid(NdArray<int32_t>)) {
     return convertNdArrayColumn<int32_t>(column, first, last);
-  } if (type == typeid(NdArray<int64_t>)) {
+  } else if (type == typeid(NdArray<int64_t>)) {
     return convertNdArrayColumn<int64_t>(column, first, last);
-  } if (type == typeid(NdArray<float>)) {
+  } else if (type == typeid(NdArray<float>)) {
     return convertNdArrayColumn<float>(column, first, last);
-  } if (type == typeid(NdArray<double>)) {
+  } else if (type == typeid(NdArray<double>)) {
     return convertNdArrayColumn<double>(column, first, last);
   }
   throw Elements::Exception() << "Unsupported column type " << type.name();

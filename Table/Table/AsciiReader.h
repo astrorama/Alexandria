@@ -33,21 +33,21 @@ namespace Table {
 
 /**
  * @class AsciiReader
- * 
+ *
  * @brief TableReader implementation for reading ASCII tables from streams
  *
  * @details
  * The format of the ASCII tables this class can read is the following:
- * 
+ *
  * Comment are supported and by default the comment character is the #. This can
  * be modified using the setCommentIndicator() method.
- * 
+ *
  * The table can contain in its comments (before the data starts) the
  * descriptions of the columns. This is done by comment lines following the
  * format: "Column: NAME TYPE (UNIT) - DESCRIPTION", where the type, unit and
  * description parts are optional. Note that if the type is missing, the
  * column is read as a string column.
- * 
+ *
  * The strings which can be used as the column types are:
  *   - bool, boolean : A boolean value as the following (case is ignored):
  *     - true, t, yes, y, 1
@@ -62,35 +62,35 @@ namespace Table {
  *   - [long], [int64] : A vector of 64 bit integers
  *   - [float] : Vector of single (32 bit) precision floating point
  *   - [double] : Vector of double (64 bit) precision floating point
- * 
+ *
  * The last non empty comment line (before the data) can repeat the column
  * names and, if the column description comments are missing, is used for
  * detecting the column names. If both the column descriptions and the line
  * with the column names are missing, the columns are named with an increasing
  * counter as "col1", "col2", etc (starting from 1).
- * 
+ *
  * If the column names comment is present, the column descriptions can be missing
  * and be given in any order.
- * 
+ *
  * The above automatic detection of the names and types of the columns can be
  * overridden by used defined values, by calling the fixColumnNames() and
  * fixColumnTypes() methods.
- * 
+ *
  * Note that the vector entries are values separated by "," (no spaces).
- * 
+ *
  * The stream is red line by line and one row is created for each line which,
  * after comments are removed, does not contain only whitespace characters.
  * The columns are separated by one or more whitespace characters and all rows
  * must have the same number of columns.
- * 
+ *
  */
 class AsciiReader : public TableReader {
 
 public:
-  
+
   /**
    * @brief Constructs an AsciiReader which contains an object of type StreamType
-   * 
+   *
    * @details
    * This is the most generic construction of AsciiReader, which can be used
    * with any type which inherits from std::istream. It is public to provide
@@ -100,31 +100,31 @@ public:
    * when the AsciiReader goes out of scope. If you want to not bound the lifetime
    * of the stream with the AsciiReader you should use the AsciiReader(std::istream&)
    * constructor instead.
-   * 
+   *
    * Note that when this method is called, only the StreamType template parameter
    * has to be specified. The argument types will be inferred.
-   * 
+   *
    * @tparam StreamType
    *    The type of the stream to use for reading
    * @tparam Args
    *    The types of arguments to pass to the StreamType constructor
    * @param args
    *    The arguments to use for constructing the StreamType instance
-   * @return 
+   * @return
    *    The newly constructed AsciiReader
    */
   template <typename StreamType, typename... Args>
   static AsciiReader create(Args&&... args);
-  
+
   /// Constructs an AsciiReader which reads from the given stream
-  AsciiReader(std::istream& stream);
-  
+  explicit AsciiReader(std::istream& stream);
+
   /// Constructs an AsciiReader which reads from the given file
-  AsciiReader(const std::string& filename);
-  
+  explicit AsciiReader(const std::string& filename);
+
   AsciiReader(AsciiReader&&) = default;
   AsciiReader& operator=(AsciiReader&&) = default;
-  
+
   AsciiReader(const AsciiReader&) = delete;
   AsciiReader& operator=(const AsciiReader&) = delete;
 
@@ -132,7 +132,7 @@ public:
    * @brief Destructor
    */
   virtual ~AsciiReader() = default;
-  
+
   /**
    * @brief Set the comment indicator
    * @details
@@ -143,12 +143,12 @@ public:
    *    If the given indicator is the empty string
    */
   AsciiReader& setCommentIndicator(const std::string& indicator);
-  
+
   /**
    * @brief Overrides the automatically detected column names
    * @param column_names
    *    The names of the columns or empty for auto-detection
-   * @return 
+   * @return
    *    A reference to the AsciiReader instance
    * @throws Elements::Exception
    *    if there are duplicate column names
@@ -159,12 +159,12 @@ public:
    *    vectors does not match
    */
   AsciiReader& fixColumnNames(std::vector<std::string> column_names);
-  
+
   /**
    * @brief Overrides the automatically detected column types
    * @param column_types
    *    The types of the columns or empty for auto-detection
-   * @return 
+   * @return
    *    A reference to the AsciiReader instance
    * @throws Elements::Exception
    *    if automatic column name detection is overridden and the length of the
@@ -177,7 +177,7 @@ public:
    * @details
    * For more details of the column info definition in the stream, see the
    * documentation of the class.
-   * @return 
+   * @return
    *    The description of the table columns
    * @throws Elements::Exception
    *    If automatic column type or name detection is overridden and the stream
@@ -191,16 +191,16 @@ public:
    * @return Returns the comment associated to the table
    */
   std::string getComment() override;
-  
+
   /// Implements the TableReader::skip() contract
   void skip(long rows) override;
-  
+
   /// Implements the TableReader::hasMoreRows() contract
   bool hasMoreRows() override;
-  
+
   /// Implements the TableReader::rowsLeft() contract
   std::size_t rowsLeft() override;
-  
+
 protected:
 
   /**
@@ -209,7 +209,7 @@ protected:
    * For more info see the TableReader::read() documentation
    * @param rows
    *    The number of rows to read
-   * @return 
+   * @return
    *    The table containing the row data
    * @throws Elements::Exception
    *    If automatic column type or name detection is overridden and the stream
@@ -223,10 +223,10 @@ protected:
 
 private:
 
-  AsciiReader(std::unique_ptr<InstOrRefHolder<std::istream>> stream_holder);
-  
+  explicit AsciiReader(std::unique_ptr<InstOrRefHolder<std::istream>> stream_holder);
+
   void readColumnInfo();
-  
+
   std::unique_ptr<InstOrRefHolder<std::istream>> m_stream_holder;
   bool m_reading_started = false;
   std::string m_comment = "#";

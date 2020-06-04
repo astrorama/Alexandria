@@ -73,7 +73,7 @@ public:
    * @throws Elements::Exception
    *    if the info_list contains duplicate name entries
    */
-  ColumnInfo(std::vector<info_type> info_list);
+  explicit ColumnInfo(std::vector<info_type> info_list);
 
   /// Default destructor
   virtual ~ColumnInfo() = default;

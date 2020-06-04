@@ -37,15 +37,15 @@ namespace Euclid {
 
 /**
  * @class ThreadPool
- * 
+ *
  * @brief Basic thread pool implementation
- * 
+ *
  * @details
  * This class provides a basic thread pool implementation, to be used when the
  * boost thread pool is not available (boost versions earlier than 1.56). If
  * your boost version contains the thread pool (boost/thread/thread_pool.hpp) use
  * this one instead.
- * 
+ *
  * Using the pool is quite simple. The constructor of the ThreadPool gets as
  * parameter the number of threads that will be spawned (defaults to the number
  * of threads available). The ThreadPool::submit() method can be used to submit
@@ -54,11 +54,11 @@ namespace Euclid {
  * The thread pool will assign all tasks to the threads to be executed at the
  * same order as they are submitted. To block until all the tasks in the pool
  * have been executed, one can all the ThreadPool::block() method.
- * 
+ *
  * Note that when the ThreadPool object goes out of scope and its destructor is
  * called it will not process any tasks that are not already started, but it will
  * block until all threads finish with the currently executing tasks.
- * 
+ *
  * If any of the tasks in the queue throws an exception, all other running tasks
  * will finish their execution, but no new tasks will be started. In this case,
  * the block() method will rethrow the exception. The pool can be checked if it
@@ -68,7 +68,7 @@ namespace Euclid {
 class ThreadPool {
 
 public:
-  
+
   /// The type of tasks the pool can execute
   using Task = std::function<void(void)>;
 
@@ -80,24 +80,24 @@ public:
    *    The time (in milliseconds) the pool threads sleep after they try to get
    *    a task from an empty queue before they retry
    */
-  ThreadPool(unsigned int thread_count=std::thread::hardware_concurrency(), unsigned int empty_queue_wait_time=50);
-  
+  explicit ThreadPool(unsigned int thread_count=std::thread::hardware_concurrency(), unsigned int empty_queue_wait_time=50);
+
   /// All tasks not yet started are discarded and it blocks until all already
   /// executing tasks are finished
   virtual ~ThreadPool();
-  
+
   /// Submit a task to be executed
   void submit(Task task);
-  
+
   /// Blocks the calling thread until all the tasks in the pool queue are finished.
   /// Note that submitting tasks until this method returns is not allowed.
   void block();
-  
+
   /// Checks if any task has thrown an exception and optionally rethrows it
   bool checkForException(bool rethrow=false);
 
 private:
-  
+
   std::mutex m_queue_mutex {};
   std::vector<std::atomic<bool>> m_worker_run_flags;
   std::vector<std::atomic<bool>> m_worker_sleeping_flags;
