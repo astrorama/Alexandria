@@ -1,0 +1,120 @@
+@startuml XYDatasetInterface.png
+
+skinparam defaultfontsize 15
+'left to right direction
+hide empty attributes
+hide empty methods
+
+interface XYDataset {
+  .. Dataset Iterator ..
+  + cbegin() : ConstIterator<pair<double,double>>
+  + cend() : ConstIterator<pair<double,double>>
+  .. Axes Iterators ..
+  + cXbegin() : ConstIterator<double>
+  + cXend() : ConstIterator<double>
+  + cYbegin() : ConstIterator<double>
+  + cYend() : ConstIterator<double>
+  .. Operations ..
+  + size() : size_t
+}
+
+interface ConstIterator <T> {
+  Constant forward iterator
+}
+
+interface XYDatasetProvider<T> {
+  + listContents(group : string) : vector<unique_ptr<XYDataset>>
+  + getDataset(identifier : T) : unique_ptr<XYDataset>
+}
+
+class XYDatasetIdentifierTraits <T> {
+  + getQualifiedName(const T&) : string
+}
+
+class "XYDatasetIdentifierTraits<string>" as TraitString
+
+XYDatasetProvider - XYDatasetIdentifierTraits
+XYDatasetIdentifierTraits <|-- TraitString
+XYDatasetProvider --- XYDataset
+XYDataset - ConstIterator
+
+@enduml
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+@startuml XYDatasetImplementations.png
+
+skinparam defaultfontsize 15
+'left to right direction
+hide empty attributes
+hide empty methods
+
+interface XYDataset
+
+class AxisVectorDataset {
+  - m_x_values : vector<double>
+  - m_y_values : vector<double>
+  .. Constructors ..
+  + AxisVectorDataset(x : vector<double>,
+                    \ty : vector<double>)
+  + AxisVectorDataset(const XYDataset&)
+}
+
+class PairVectorDataset {
+  - m_values : vector<pair<double,double>>
+  .. Constructors ..
+  + PairVectorDataset(
+       \tvalues : vector<pair<double,double>>)
+  + PairVectorDataset(const XYDataset&)
+}
+
+XYDataset <|.. AxisVectorDataset
+XYDataset <|.. PairVectorDataset
+
+@enduml
+
+
+'''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+@startuml XYDatasetProviderImplementations.png
+
+skinparam defaultfontsize 15
+'left to right direction
+hide empty attributes
+hide empty methods
+
+interface XYDatasetProvider<T>
+
+class FileSystemProvider<T> {
+  - m_parser : FileParser
+  .. Constructors ..
+  + FileSystemProvider(root_path : string, parser : FileParser)
+}
+
+interface FileParser {
+  + getName(file : string) : string
+  + getDataset(file : string) : XYDataset
+}
+
+class AsciiParser {
+  - m_name_regex : string
+  .. Constructors ..
+  + AsciiParser(name_regex : string)
+}
+
+class FitsParser {
+  - m_name_keyword : string
+  .. Constructors ..
+  + FitsParser(name_keyword : string)
+}
+
+XYDatasetProvider <|.. FileSystemProvider
+FileSystemProvider *-- FileParser
+FileParser <|.. AsciiParser
+FileParser <|.. FitsParser
+
+@enduml
+
+
+'''''''''''''''''''''''''''''''''''''''''''''''''''
+

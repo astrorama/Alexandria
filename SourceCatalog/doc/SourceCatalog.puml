@@ -1,0 +1,65 @@
+
+
+@startuml TableClassDiagram.png
+
+skinparam defaultfontsize 15
+'left to right direction
+
+class Catalog {
+    - source_list : vector<Source>
+    + size() : int
+    + begin() : iterator
+    + end() : iterator
+    + find(id) : Source
+}
+
+class Source {
+    - attribute_list : vector<Attribute>
+    + getId()
+    + getAttribute(type) : Attribute
+}
+
+interface Attribute {
+}
+
+Catalog "1" *-- "*" Source
+Source "1" *-- "*" Attribute
+Attribute <|.l. Coordinates
+Attribute <|.. Photometry
+Attribute <|.. Pdf
+Attribute <|.. SpecZ
+
+class CatalogFromTable {
+    - builder_list : AttributeFromRow
+    + createCatalog(Table) : Catalog
+}
+
+interface AttributeFromRow {
+    + {abstract} createAttribute(Row) : Attribute
+}
+
+Catalog - CatalogFromTable
+CatalogFromTable "1" *-- "*" AttributeFromRow
+AttributeFromRow <|.. CoordinatesFromRow
+AttributeFromRow <|... PhotometryFromRow
+AttributeFromRow <|... PdfFromRow
+AttributeFromRow <|.. SpecZFromFrow
+
+namespace AlexandriaTable {
+
+    class Table
+    class Row
+    Table -[hidden]- Row
+
+}
+
+CatalogFromTable -l- AlexandriaTable.Table
+AttributeFromRow -l- AlexandriaTable.Row
+
+'CatalogFromTable - AlexandriaTable
+'AttributeFromRow - AlexandriaTable
+
+hide empty fields
+hide empty methods
+
+@enduml
