@@ -147,6 +147,10 @@ public:
    */
   std::unique_ptr<FluxErrorPair> find(std::string filter_name) const;
 
+  const std::shared_ptr<std::vector<std::string>>& getFilterNames() const;
+
+  void updateFluxValues(const std::vector<FluxErrorPair>& value_vector);
+
 private:
 
   /// Shared pointer to the common list of filter names

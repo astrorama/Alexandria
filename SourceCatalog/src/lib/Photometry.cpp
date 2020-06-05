@@ -84,6 +84,13 @@ unique_ptr<FluxErrorPair> Photometry::find(string filter_name) const
   return flux_found_ptr;
 } // Eof Photometry::find
 
+const std::shared_ptr<std::vector<std::string>>& Photometry::getFilterNames() const {
+  return m_filter_name_vector_ptr;
+}
+
+void Photometry::updateFluxValues(const vector<FluxErrorPair>& value_vector) {
+  m_value_vector = value_vector;
+}
 
 } // namespace SourceCatalog
 } // end of namespace Euclid
