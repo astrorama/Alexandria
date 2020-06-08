@@ -81,7 +81,12 @@ public:
     reference operator*();
     bool operator==(const PhotometryConstIterator& other) const;
     bool operator!=(const PhotometryConstIterator& other) const;
+
+    /**
+     * @return The number of elements between this iterator and other
+     */
     ssize_t operator - (const PhotometryConstIterator& other) const;
+
     const std::string& filterName() const;
   private:
     std::vector<std::string>::const_iterator m_filters_iter;
