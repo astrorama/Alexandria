@@ -1,21 +1,21 @@
 /*
- * Copyright (C) 2012-2020 Euclid Science Ground Segment    
- *  
+ * Copyright (C) 2012-2020 Euclid Science Ground Segment
+ *
  * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free 
- * Software Foundation; either version 3.0 of the License, or (at your option)  
- * any later version.  
- *  
- * This library is distributed in the hope that it will be useful, but WITHOUT 
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 3.0 of the License, or (at your option)
+ * any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more  
- * details.  
- *  
- * You should have received a copy of the GNU Lesser General Public License 
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
  * along with this library; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA  
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
- 
+
  /**
  * @file tests/src/SourceAttributes/Photometry_test.cpp
  *
@@ -68,6 +68,8 @@ BOOST_FIXTURE_TEST_CASE( iterator_test, CatalogFixture ) {
   auto expected_filter_name_iter = filter_name_vector_ptr->begin();
   // This is to get the expected fluxes and errors from the fixture for comparison
   auto expected_photo_iter = photometry_vector.begin();
+
+  BOOST_CHECK_EQUAL(photometry.end() - photometry.begin(), photometry_vector.size());
 
   // loop over the photometry object to check the different filter names, values and errors
   for (auto photo_iter = photometry.begin(); photo_iter != photometry.end(); ++photo_iter) {
