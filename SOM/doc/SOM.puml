@@ -1,0 +1,163 @@
+
+
+@startuml SOM.png
+
+skinparam defaultfontsize 15
+'left to right direction
+
+interface Distance {
+    + {abstract} distance(left, right)
+    + {abstract} distance(left, right, error)
+}
+
+Distance <|.. L1
+Distance <|.. L2
+Distance <|.. ChiSquare
+
+interface InitFunc {
+    + {abstract} getValue()
+}
+
+InitFunc <|.. Zeroes
+InitFunc <|.. NormalDistrib
+InitFunc <|.. UniformRandom
+
+class SOM {
+    - dimensionality : int
+    - cells : GridContainer<array<double>>
+    - dist_func : Distance
+    + SOM(size_x, size_y, InitFunc)
+    + getSize() : pair<double, double>
+    + at(x, y) : array<double>
+    + begin() : iterator
+    + end() : iterator
+    + findBMU(input, WeightFunc)
+    + findBMU(input, WeightFunc, UncertaintyFunc)
+}
+
+interface WeightFunc {
+    + {abstract} getWeight(input) : array<double>
+}
+
+interface UncertaintyFunc {
+    + {abstract} getError(input)  array<double>
+}
+
+SOM *- Distance
+SOM -l- InitFunc
+SOM -u- WeightFunc
+SOM -u- UncertaintyFunc
+
+hide empty fields
+hide empty methods
+
+@enduml
+
+'''''''''''''''''''''''''''''''''''''''''''''''''''
+
+@startuml SOMTrainer.png
+
+skinparam defaultfontsize 15
+'left to right direction
+
+interface NeighborhoodFunc {
+    + {abstract} getValue(bmu, cell, iter_no, total_iter)
+}
+
+NeighborhoodFunc <|.. Kohonen
+NeighborhoodFunc <|.. LinearUnitDisk
+
+interface LearningRestraintFunc {
+    + {abstract} getValue(iter_no, total_iter)
+}
+
+LearningRestraintFunc <|.. LinearDecay
+LearningRestraintFunc <|.. ExponentialDecay
+
+interface SamplingPolicy {
+    + start(begin, end) : iterator
+    + next() : iterator
+}
+
+SamplingPolicy <|.. FullSet
+SamplingPolicy <|.. Bootstrap
+SamplingPolicy <|.. Jackknife
+
+class SOMTrainer {
+    - NeighborhoodFunc
+    - LearningRestraintFunc
+    + train(Som, iter_no, train_sample, SamplingPolicy)
+}
+
+SOM -- SOMTrainer
+SOMTrainer *-l- NeighborhoodFunc
+SOMTrainer *-r- LearningRestraintFunc
+SOMTrainer -- SamplingPolicy
+
+hide empty fields
+hide empty methods
+
+@enduml
+
+'''''''''''''''''''''''''''''''''''''''''''''''''''
+
+@startuml SOMProjector.png
+
+skinparam defaultfontsize 15
+'left to right direction
+
+class SOMProjector<T> {
+    + project(som, input_set, WeightFunc, AdderFunc, init_cell)
+    + project(som, input_set, WeightFunc, Uncertainty, AdderFunc, init_cell)
+}
+
+interface WeightFunc {
+    + {abstract} getWeight(input) : array<double>
+}
+
+interface UncertaintyFunc {
+    + {abstract} getError(input)  array<double>
+}
+
+interface AdderFunc {
+}
+
+SOMProjector -- WeightFunc
+SOMProjector -- UncertaintyFunc
+SOMProjector -- AdderFunc
+
+hide empty fields
+hide empty methods
+
+@enduml
+
+'''''''''''''''''''''''''''''''''''''''''''''''''''
+
+@startuml SOMUtils.png
+
+skinparam defaultfontsize 15
+'left to right direction
+
+class Serialize {
+    + somBinaryExport(SOM, stream)
+    + somBinaryImport(stream) : SOM
+    + somFitsExport(SOM, filename)
+    + somFitsImport(filename) : SOM
+}
+
+class UMatrix {
+    + computeUMatrix(SOM, UMatrixType) : GridContainer
+}
+
+enum UMatrixType {
+	+ MIN
+	+ MAX
+	+ MEAN
+}
+
+UMatrix -- UMatrixType
+
+hide empty fields
+hide empty methods
+
+@enduml
