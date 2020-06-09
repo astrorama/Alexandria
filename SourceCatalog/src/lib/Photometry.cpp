@@ -30,37 +30,6 @@ using namespace std;
 namespace Euclid {
 namespace SourceCatalog {
 
-Photometry::PhotometryConstIterator::PhotometryConstIterator(
-                        const std::vector<string>::const_iterator& filters_iter,
-                        const std::vector<FluxErrorPair>::const_iterator& values_iter)
-                : m_filters_iter{filters_iter}, m_values_iter{values_iter} { }
-
-auto Photometry::PhotometryConstIterator::operator ++() -> const_iterator& {
-  ++m_filters_iter;
-  ++m_values_iter;
-  return *this;
-}
-
-auto Photometry::PhotometryConstIterator::operator *() -> reference {
-  return *m_values_iter;
-}
-
-bool Photometry::PhotometryConstIterator::operator ==(const const_iterator& other) const {
-  return m_filters_iter == other.m_filters_iter;
-}
-
-bool Photometry::PhotometryConstIterator::operator !=(const const_iterator& other) const {
-  return m_filters_iter != other.m_filters_iter;
-}
-
-ssize_t Photometry::PhotometryConstIterator::operator-(const PhotometryConstIterator& other) const {
-  return m_values_iter - other.m_values_iter;
-}
-
-const string& Photometry::PhotometryConstIterator::filterName() const {
-  return *m_filters_iter;
-}
-
 //-----------------------------------------------------------------------------
 // find the value and error in the map for a specific filter name
 // return a ptr to a ValuePair(value, error) and null pointer otherwise
@@ -86,10 +55,6 @@ unique_ptr<FluxErrorPair> Photometry::find(string filter_name) const
 
 const std::shared_ptr<std::vector<std::string>>& Photometry::getFilterNames() const {
   return m_filter_name_vector_ptr;
-}
-
-void Photometry::updateFluxValues(const vector<FluxErrorPair>& value_vector) {
-  m_value_vector = value_vector;
 }
 
 } // namespace SourceCatalog
