@@ -73,18 +73,18 @@ Signature kohonen(std::size_t x_size, std::size_t y_size, double sigma_cutoff_mu
       std::get<2>(sigma_buffer) = init_sigma * std::exp(-1. * iteration / time_constant);
     }
     double sigma_square = std::get<2>(sigma_buffer) * std::get<2>(sigma_buffer);
-    
-    double x = (double)bmu.first - cell.first;
-    double y = (double)bmu.second - cell.second;
+
+    double x = static_cast<double>(bmu.first) - cell.first;
+    double y = static_cast<double>(bmu.second) - cell.second;
     double dist_square = x * x + y * y;
-    
+
     if (dist_square < cutoff_mult_square * sigma_square) {
       return std::exp(-1. * dist_square / (2. * sigma_square));
     } else {
       return 0.;
     }
-    
-    
+
+
   };
 }
 

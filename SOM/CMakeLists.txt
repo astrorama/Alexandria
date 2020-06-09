@@ -49,7 +49,10 @@ elements_add_library(SOM src/lib/*.cpp
 #                       INCLUDE_DIRS ElementsExamples
 #                       LINK_LIBRARIES ElementsExamples TYPE Boost)
 #===============================================================================
-elements_add_unit_test(SOM_SOM_test tests/src/SOM_test.cpp 
+elements_add_unit_test(SOM_test tests/src/SOM_test.cpp
+                     LINK_LIBRARIES SOM
+                     TYPE Boost)
+elements_add_unit_test(SOM_serialization_test tests/src/SOM_serialization_test.cpp
                      LINK_LIBRARIES SOM
                      TYPE Boost)
 

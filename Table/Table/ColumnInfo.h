@@ -1,21 +1,21 @@
 /*
- * Copyright (C) 2012-2020 Euclid Science Ground Segment    
- *  
+ * Copyright (C) 2012-2020 Euclid Science Ground Segment
+ *
  * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free 
- * Software Foundation; either version 3.0 of the License, or (at your option)  
- * any later version.  
- *  
- * This library is distributed in the hope that it will be useful, but WITHOUT 
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 3.0 of the License, or (at your option)
+ * any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more  
- * details.  
- *  
- * You should have received a copy of the GNU Lesser General Public License 
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
  * along with this library; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA  
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
- 
+
  /**
  * @file Table/ColumnInfo.h
  * @date April 7, 2014
@@ -73,7 +73,7 @@ public:
    * @throws Elements::Exception
    *    if the info_list contains duplicate name entries
    */
-  ColumnInfo(std::vector<info_type> info_list);
+  explicit ColumnInfo(std::vector<info_type> info_list);
 
   /// Default destructor
   virtual ~ColumnInfo() = default;
@@ -103,7 +103,7 @@ public:
    * @return the number of columns
    */
   std::size_t size() const;
-  
+
   /**
    * @brief
    * Returns the description of the column with the given index or throws an
@@ -115,6 +115,18 @@ public:
    *    if the index is out of bounds
    */
   const ColumnDescription& getDescription(std::size_t index) const;
+
+  /**
+   * @brief
+   * Returns the description of the column with the given name or throws an
+   * exception if column does not exist
+   *
+   * @param name The name to search for
+   * @return The description of the column
+   * @throws Elements::Exception
+   *    if the index is out of bounds
+   */
+  const ColumnDescription& getDescription(const std::string& name) const;
 
   /**
    * @brief

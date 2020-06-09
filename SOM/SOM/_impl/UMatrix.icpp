@@ -24,7 +24,7 @@
 #include <numeric>
 #include <algorithm>
 #include <map>
-#include "SOM/_impl/ImplTools.h"
+#include "SOM/ImplTools.h"
 
 namespace Euclid {
 namespace SOM {

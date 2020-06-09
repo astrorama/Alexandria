@@ -1,15 +1,11 @@
 language: minimal
 
-branches:
-  only:
-  - develop
-  - master
+if: branch == develop OR tag IS present
 
 env:
   global:
     - OS_ARCH=x86_64
   matrix:
-    - OS_TYPE=fedora OS_VERSION=29
     - OS_TYPE=fedora OS_VERSION=30
     - OS_TYPE=fedora OS_VERSION=31
     - OS_TYPE=fedora OS_VERSION=32
@@ -18,21 +14,31 @@ env:
 services:
   - docker
 
-install: true
+before_script: |
+  # Regular package and version
+  PACKAGE=$(grep elements_project CMakeLists.txt | sed 's/.*(//'| cut -d' ' -f1)
+  VERSION=$(grep elements_project CMakeLists.txt | sed 's/.*(//' | sed 's/[^ ]* //' | sed 's/ .*//')
+
+  if [ -n "${TRAVIS_TAG}" ]; then
+    TARGET_REPO="master"
+    VERSION="${TRAVIS_TAG}"
+  else
+    TARGET_REPO="${TRAVIS_BRANCH//\//-}"
+  fi
+
+  export PACKAGE VERSION TARGET_REPO
+
+install: |
+  curl -L "https://api.bintray.com/content/jfrog/jfrog-cli-go/\$latest/jfrog-cli-linux-386/jfrog?bt_package=jfrog-cli-linux-386" -o jfrog
+  chmod a+x jfrog
+  ./jfrog bt config --user "${BINTRAY_USER}" --key "${BINTRAY_TOKEN}" --licenses LGPL3
 
 script:
-  - docker run --name builder --volume "$(pwd):/src" "${OS_TYPE}:${OS_VERSION}" bash "/src/.travis/build-rpm.sh"
+  - docker run --name builder --volume "$(pwd):/src" "${OS_TYPE}:${OS_VERSION}" bash "/src/.travis/build-rpm.sh" "${TRAVIS_BRANCH}"
   - docker cp "builder:/build/Packages/RPM/RPMS/x86_64" "./packages"
 
 after_success: |
-  version=$(grep elements_project CMakeLists.txt | sed 's/.*(//' | sed 's/[^ ]* //' | sed 's/ .*//')
-  cd packages
   if [ -z "${TRAVIS_PULL_REQUEST_BRANCH}" ] && [ ! -z "${BINTRAY_REPO}" ]; then
-    case "${TRAVIS_BRANCH}" in
-      develop|master)
-        for p in *.rpm; do
-          curl -T "${p}" "-u${BINTRAY_USER}:${BINTRAY_TOKEN}" "${BINTRAY_REPO}/${TRAVIS_BRANCH}/${OS_TYPE}/${OS_VERSION}/${OS_ARCH}/rpms/${p};bt_package=Alexandria;bt_version=${version}?override=1&publish=1"
-        done;;
-    esac
+    ./jfrog bt u --publish --override "packages/*.rpm" "${BINTRAY_REPO}/${PACKAGE}/${VERSION}" "/${TARGET_REPO}/${OS_TYPE}/${OS_VERSION}/${OS_ARCH}/rpms/"
   fi
 

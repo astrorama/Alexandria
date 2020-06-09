@@ -1,0 +1,242 @@
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+@startuml SequenceDiagram-3-Finalized.png
+
+skinparam defaultfontsize 15
+
+participant ConfigManager as Mgr
+participant Configuration as Conf
+
+== Registration Phase ==
+
+... (shown in different diagram) ...
+
+== Initialization Phase ==
+
+... (shown in different diagram) ...
+
+== Finalized Phase ==
+
+[-> Mgr : getConfiguration(type)
+activate Mgr
+[<- Mgr : Configuration
+deactivate Mgr
+
+@enduml
+
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+@startuml SequenceDiagram-2-Initialization.png
+
+skinparam defaultfontsize 15
+skinparam notefontsize 12
+
+participant ConfigManager as Mgr
+participant Configuration as Conf
+
+== Registration Phase ==
+
+... (shown in different diagram) ...
+
+== Initialization Phase ==
+
+[-> Mgr : initialize(UserValues)
+activate Mgr
+|||
+
+loop for all registered Configurations
+    note over Mgr, Conf
+        **Pre-Initialization**
+        Configurations are called in random order. They should not access their dependencies.
+        Dedicated for fast sanity tests of the input like: file existence, max smaller than 
+        min, etc...), to detect wrong input as fast as possible.
+    end note
+    Mgr -> Conf : preInitialize(UserValues)
+    activate Conf
+    Conf --> Mgr
+    deactivate Conf
+    Mgr -> Conf : setState(PRE_INITIALIZED)
+end
+
+loop for all registered Configurations
+    note over Mgr, Conf
+        **Initialization**
+        Configurations are called in such order so all dependencies are guaranteed to be
+        already initialized. They should use the UserValues to setup their internal state
+        (like: reading a file, instantiating member variables, etc).
+    end note
+    Mgr -> Conf : initialize(UserValues)
+    activate Conf
+    Conf -> Conf : getDependency(type)
+    Conf --> Mgr
+    deactivate Conf
+    Mgr -> Conf : setState(INITIALIZED)
+end
+
+loop for all registered Configurations
+    note over Mgr, Conf
+        **Post-Initialization**
+        Configurations are called in random order. They should perform actions that require
+        that all other Configurations are already initialized.
+    end note
+    Mgr -> Conf : postInitialize(UserValues)
+    activate Conf
+    Conf --> Mgr
+    deactivate Conf
+    Mgr -> Conf : setState(FINAL)
+end
+
+|||
+[<-- Mgr
+deactivate Mgr
+
+== Finalized Phase ==
+
+... (shown in different diagram) ...
+
+@enduml
+
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+@startuml SequenceDiagram-1-Registration.png
+
+skinparam defaultfontsize 15
+
+participant ConfigManager as Mgr
+participant Configuration as Conf
+
+== Registration Phase ==
+
+group repeated for all required configurations
+    [-> Mgr : registerConfiguration(type)
+    activate Mgr
+    
+    create Conf
+    Mgr -> Conf : create instance
+    Mgr -> Conf : getDependencies()
+    activate Conf
+    Conf -> Mgr : vector<type>
+    deactivate Conf
+    Mgr -> Mgr : populate dependency_map
+    loop until all types are resolved
+        Mgr -> Conf
+        ... same as above ...
+        Conf -> Mgr
+    end
+    [<-- Mgr
+    deactivate Mgr
+end
+
+[-> Mgr : closeRegistration()
+activate Mgr
+Mgr -> Mgr : check for circular dependencies
+loop for all registered Configurations
+    Mgr -> Conf : getProgramOptions()
+    activate Conf
+    Conf -> Mgr : vector<OptionDescr>
+    deactivate Conf
+end
+[<- Mgr : vector <OptionDescr>
+deactivate Mgr
+
+== Initialization Phase ==
+
+... (shown in different diagram) ...
+
+== Finalized Phase ==
+
+... (shown in different diagram) ...
+
+@enduml
+
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+@startuml ClassDiagram.png
+
+skinparam defaultfontsize 15
+
+class OptionDescr {
+    + name
+    + type
+    + help
+}
+
+class UserValues {
+    + map<name, value>
+}
+
+enum ConfigurationState {
+    + CONSTRUCTED
+    + PRE_INITIALIZED
+    + INITIALIZED
+    + FINAL
+}
+
+abstract class Configuration {
+    ---- Protected members ----
+    ~ declareDependency(type)
+    ~ getDependency(type) : Configuration
+    ---- Virtual members ----
+    + getProgramOptions() : vector<OptionDescr>
+    + preInitialize(UserValues)
+    + initialize(UserValues)
+    + postInitialize(UserValues)
+    ---- Final members ----
+    + getDependencies() : vector<type>
+    + getCurrentState() : ConfigurationState
+}
+
+OptionDescr -- Configuration
+UserValues -- Configuration
+ConfigurationState -- Configuration
+
+class FirstConfig {
+    + getProgramOptions() : vector<OptionDescr>
+    + preInitialize(UserValues)
+    + initialize(UserValues)
+    + postInitialize(UserValues)
+    --- Specific methods ---
+    + getA() : A
+    + getB() : B
+}
+
+class SecondConfig {
+    + getProgramOptions() : vector<OptionDescr>
+    + preInitialize(UserValues)
+    + initialize(UserValues)
+    + postInitialize(UserValues)
+    --- Specific methods ---
+    + getC() : C
+    + getD() : D
+}
+
+Configuration <|-- FirstConfig
+Configuration <|-- SecondConfig
+
+enum ManagerState {
+    + REGISTRATION
+    + WAITING_INITIALIZATION
+    + INITIALIZED
+}
+
+class ConfigManager {
+    - config_list : vector<Configuration>
+    - dependency_map : map<type, vector<type>>
+    + registerConfiguration(type)
+    + closeRegistration() : vector<OptionDescr>
+    + initialize(UserValues)
+    + getConfiguration(type) : Configuration
+}
+
+ManagerState -- ConfigManager
+OptionDescr -- ConfigManager
+UserValues -- ConfigManager
+
+Configuration - ConfigManager
+
+hide empty fields
+hide empty methods
+
+@enduml
+
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''

@@ -24,17 +24,14 @@
 #ifndef SOM_IMPLTOOLS_H
 #define SOM_IMPLTOOLS_H
 
+
+#include "GridContainer/GridAxis.h"
+
 namespace Euclid {
 namespace SOM {
 namespace ImplTools {
 
-GridContainer::GridAxis<std::size_t> indexAxis(const std::string& name, std::size_t size) {
-  std::vector<std::size_t> indices{};
-  for (std::size_t i = 0; i != size; ++i) {
-    indices.push_back(i);
-  }
-  return GridContainer::GridAxis<std::size_t>{name, std::move(indices)};
-}
+GridContainer::GridAxis<std::size_t> indexAxis(const std::string& name, std::size_t size);
 
 }
 }

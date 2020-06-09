@@ -1,21 +1,21 @@
 /*
- * Copyright (C) 2012-2020 Euclid Science Ground Segment    
- *  
+ * Copyright (C) 2012-2020 Euclid Science Ground Segment
+ *
  * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free 
- * Software Foundation; either version 3.0 of the License, or (at your option)  
- * any later version.  
- *  
- * This library is distributed in the hope that it will be useful, but WITHOUT 
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 3.0 of the License, or (at your option)
+ * any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more  
- * details.  
- *  
- * You should have received a copy of the GNU Lesser General Public License 
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
  * along with this library; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA  
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
- 
+
  /**
  * @file XYDataset/AsciiParser.h
  *
@@ -62,7 +62,7 @@ class ELEMENTS_API AsciiParser : public FileParser
    * The regex for extracting the dataset name. The default is defined as
    * "^\\s*#\\s*(\\w+)\\s*$".
    */
-  AsciiParser(const std::string& regex_str="^\\s*#\\s*(\\w+)\\s*$") : FileParser(), m_regex_name(regex_str) {}
+  explicit AsciiParser(const std::string& regex_str="^\\s*#\\s*(\\w+)\\s*$") : FileParser(), m_regex_name(regex_str) {}
 
   /**
    * @brief
@@ -82,6 +82,23 @@ class ELEMENTS_API AsciiParser : public FileParser
    * ElementException : File not found
    */
   std::string getName(const std::string& file) override;
+
+  /**
+  * @brief
+  * Get the parameter identified by a given key_word value from a file
+  * @details
+  * This function gets the the parameter if present in the fits HDU keyword.
+  * Return an empty string if the key word is not present.
+  * @param file
+  * Filename of the file to be read including absolute path
+  * @param key_word
+  * key word identifying the parameter
+  * @return
+  * The name of the datatset
+  * @throw
+  * ElementException : File not found
+  */
+ std::string getParameter(const std::string& file, const std::string& key_word) override;
 
   /**
    * @brief

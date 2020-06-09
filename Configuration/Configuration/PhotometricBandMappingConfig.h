@@ -1,20 +1,20 @@
-/*  
- * Copyright (C) 2012-2020 Euclid Science Ground Segment    
- *  
+/*
+ * Copyright (C) 2012-2020 Euclid Science Ground Segment
+ *
  * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free 
- * Software Foundation; either version 3.0 of the License, or (at your option)  
- * any later version.  
- *  
- * This library is distributed in the hope that it will be useful, but WITHOUT 
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 3.0 of the License, or (at your option)
+ * any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more  
- * details.  
- *  
- * You should have received a copy of the GNU Lesser General Public License 
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
  * along with this library; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA  
- */  
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+ */
 
 /**
  * @file Configuration/PhotometricBandMappingConfig.h
@@ -37,7 +37,7 @@ namespace Configuration {
 
 /**
  * @class PhotometricBandMappingConfig
- * 
+ *
  * @brief
  * Configuration class which provides the information of the mapping between
  * photometric bands and column names
@@ -45,11 +45,12 @@ namespace Configuration {
 class PhotometricBandMappingConfig : public Configuration {
 
 public:
-  
+
   using MappingMap = std::vector<std::pair<std::string, std::pair<std::string, std::string>>>;
+  using UpperLimitThresholdMap = std::vector<std::pair<std::string, float>>;
 
   /// Constructs a new PhotometricBandMappingConfig object
-  PhotometricBandMappingConfig(long manager_id);
+  explicit PhotometricBandMappingConfig(long manager_id);
 
   /**
    * @brief Destructor
@@ -69,7 +70,7 @@ public:
    * optional. The filter-mapping-file to the file filter_mapping.txt. If it is
    * is a relative path, it is relative to the directory set via the setBaseDir()
    * method, during the pre-initialize phase.
-   * 
+   *
    * @return The map with the option descriptions
    */
   std::map<std::string, OptionDescriptionList> getProgramOptions() override;
@@ -77,7 +78,7 @@ public:
   /**
    * @brief
    * It initializes the photometric bands list
-   * 
+   *
    * @param args
    *    The user parameters
    * @throws Elements::Exception
@@ -93,11 +94,11 @@ public:
   /**
    * @brief
    * Sets the directory used when resolving relative paths
-   * 
+   *
    * @details
    * This method can be called by other Configuration classes during the pre-
    * initialization phase. By default the current working directory is used.
-   * 
+   *
    * @param base_dir
    *    The directory to use for resolving relative paths
    * @throws Elements::Exception
@@ -108,7 +109,7 @@ public:
   /**
    * @brief
    * Returns the list of the photometric band mapping which will be red from the catalog
-   * 
+   *
    * @return
    *    The list of the photometric band mapping
    * @throws Elements::Exception
@@ -116,10 +117,22 @@ public:
    */
   const MappingMap& getPhotometricBandMapping();
 
+  /**
+   * @brief
+   * Returns the mapping of threshold used in the upper limit computation which will be red from the catalog
+   *
+   * @return
+   *    The mapping of upper limit threshold
+   * @throws Elements::Exception
+   *    If the instance is not yet initialized
+   */
+  const UpperLimitThresholdMap& getUpperLimitThresholdMapping();
+
 private:
-  
+
   boost::filesystem::path m_base_dir {};
   MappingMap m_mapping_map {};
+  UpperLimitThresholdMap m_threshold_map{};
 
 }; /* End of PhotometricBandMappingConfig class */
 

@@ -1,0 +1,44 @@
+@startuml
+
+abstract class Function {
+  + {abstract} operator() (x : double) : double
+  + {abstract} clone() : Function
+}
+
+abstract class Integrable extends Function {
+  + {abstract} integrate(a : double, b : double) : double
+}
+
+abstract class Differentiable extends Integrable {
+  + {abstract} derivative() : Function
+  + {abstract} indefiniteIntegral() : Function
+  + integrate(a : double, b : double) : double
+}
+
+class FunctionAdapter implements Function {
+  + FunctionAdapter(function: std::function<double(double)>)
+  + operator () (x : double) : double
+  + clone() : Function
+}
+
+class Piecewise implements Integrable {
+  + Piecewise(knots : vector<double>, functions : vector<Function>)
+  + getKnots() : vector<double>
+  + getFunctions() : vector<Function>
+  + operator () (x : double) : double
+  + clone() : Function
+  + integrate(a : double, b : double) : double
+}
+
+Piecewise o-- Function
+
+class Polynomial implements Differentiable {
+  + Polynomial(coefficients : vector<double>)
+  + getCoefficients() : vector<double>
+  + operator () (x : double) : double
+  + clone() : Function
+  + derivative() : Function
+  + indefiniteIntegral() : Function
+}
+
+@enduml

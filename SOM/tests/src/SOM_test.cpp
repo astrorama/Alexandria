@@ -28,8 +28,6 @@
 #include "SOM/SOMTrainer.h"
 #include "SOM/InitFunc.h"
 #include "SOM/SOMProjector.h"
-#include "SOM/SOMProjector.h"
-#include "SOM/serialize.h"
 #include "SOM/UMatrix.h"
 
 #include <iostream>
@@ -47,11 +45,11 @@ BOOST_AUTO_TEST_CASE( example_test ) {
   SOM<2> som {5, 5, InitFunc::uniformRandom(0, 1)};
   som.findBMU({1,2});
   som.findBMU({1,2}, {0.1, 0.4});
-  
+
   std::vector<std::pair<double,double>> trainset {
     {1,1}, {0,0}, {0,1}, {1,0}
   };
-  
+
   SOMTrainer trainer {NeighborhoodFunc::linearUnitDisk(3), LearningRestraintFunc::linear()};
   auto weight_func = [](const std::pair<double,double>& p) {
     std::array<double, 2> res;
@@ -60,8 +58,8 @@ BOOST_AUTO_TEST_CASE( example_test ) {
     return res;
   };
   trainer.train(som, 5, trainset.begin(), trainset.end(), weight_func);
-  
-  
+
+
   auto adder = [](int& cell, const std::pair<double, double>&) {
     cell += 1;
   };
@@ -69,9 +67,9 @@ BOOST_AUTO_TEST_CASE( example_test ) {
   for (auto it=projection.begin(); it!= projection.end(); ++it) {
     std::cout << '(' << it.axisValue<0>() << ',' << it.axisValue<1>() << ") : " << *it << '\n';
   }
-  
+
   auto u_matrix = computeUMatrix(som);
-  
+
 }
 
 //-----------------------------------------------------------------------------

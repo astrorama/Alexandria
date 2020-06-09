@@ -69,7 +69,7 @@ void AsciiWriter::addComment(const std::string& message) {
             << "format is not allowed";
   }
   m_writing_started = true;
-  
+
   std::stringstream message_stream {message};
   while (!message_stream.eof()) {
     std::string line;
@@ -85,15 +85,16 @@ void AsciiWriter::init(const Table& table) {
     m_stream_holder->ref() << '\n';
   }
   m_writing_started = true;
-  
+
   auto& out = m_stream_holder->ref();
-  
+
   // Write the column descriptions
   auto& info = *table.getColumnInfo();
   if (m_show_column_info) {
     for (size_t i=0; i<info.size(); ++i) {
       auto& desc = info.getDescription(i);
-      out << m_comment << " Column: " << desc.name << ' ' << typeToKeyword(desc.type);
+
+      out << m_comment << " Column: " << quoted(desc.name) << ' ' << typeToKeyword(desc.type);
       if (!desc.unit.empty()) {
         out << " (" << desc.unit << ")";
       }
@@ -104,12 +105,12 @@ void AsciiWriter::init(const Table& table) {
     }
     out << '\n';
   }
-  
+
   // Write the column names
   auto column_lengths = calculateColumnLengths(table);
   out << m_comment.c_str();
   for (size_t i=0; i<info.size(); ++i) {
-    out << std::setw(column_lengths[i]) << info.getDescription(i).name;
+    out << std::setw(column_lengths[i]) << quoted(info.getDescription(i).name);
   }
   out << "\n\n";
 }
@@ -122,7 +123,7 @@ void AsciiWriter::append(const Table& table) {
   column_lengths[0] = column_lengths[0] + m_comment.size();
   for (auto row : table) {
     for (size_t i=0; i<row.size(); ++i) {
-      out << std::setw(column_lengths[i]) << boost::lexical_cast<std::string>(row[i]);
+      out << std::setw(column_lengths[i]) << boost::apply_visitor(ToStringVisitor{}, row[i]);
     }
     out << "\n";
   }

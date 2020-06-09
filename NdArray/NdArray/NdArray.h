@@ -17,13 +17,13 @@
  */
 
 /**
-* @file Matrix/Matrix.h
+* @file NdArray/NdArray.h
 * @date November 21, 2018
 * @author Alejandro Alvarez Ayllon
 */
 
-#ifndef ALEXANDRIA_MATRIX_H
-#define ALEXANDRIA_MATRIX_H
+#ifndef ALEXANDRIA_NDARRAY_H
+#define ALEXANDRIA_NDARRAY_H
 
 #include <iostream>
 #include <numeric>
@@ -59,7 +59,7 @@ public:
    *    The shape of the matrix. The number of elements in shape corresponds to the number
    *    of dimensions, the values to each dimension size.
    */
-  NdArray(const std::vector<size_t> &shape) : m_shape{shape}, m_container(
+  explicit NdArray(const std::vector<size_t> &shape) : m_shape{shape}, m_container(
     std::accumulate(m_shape.begin(), m_shape.end(), 1, std::multiplies<size_t>())) {
     m_stride_size.resize(m_shape.size());
 
@@ -358,4 +358,4 @@ std::ostream& operator << (std::ostream &out, const NdArray<T, Container> &ndarr
 } // end NdArray
 } // end Euclid
 
-#endif // ALEXANDRIA_MATRIX_H
+#endif // ALEXANDRIA_NDARRAY_H

@@ -1,0 +1,49 @@
+@startuml
+
+abstract class BinStrategy<VarType> {
+  + getBinCounts() : size_t
+  + {abstract} getBinIndex(value : VarType) : ssize_t
+  + getEdges() : vector<VarType>
+  + getBinEdges(i : size_t) : pair<VarType>
+  + getEdge(i : size_t) : VarType
+  + getBin(i : size_t) : VarType
+}
+
+class Histogram<VarType, WeightType> {
+  + Histogram(begin : iterator, end : iterator, bin_type : BinStrategy<VarType>)
+  + Histogram(begin : iterator, end : iterator, wbegin: iterator, wend: iterator, bin_type : BinStrategy<VarType>)
+  + size() : size_t
+  + getCounts() : vector<WeightType>
+  + getEdges() : vector<VarType>
+  + getBins() : vector<VarType>
+  + getBinEdges(i : size_t) : pair<VarType>
+  + clip(min : VarType, max : VarType)
+  + getStats() : tuple<VarType>(mean, median, sigma)
+}
+
+Histogram *-- BinStrategy
+
+class EdgeVector<VarType> implements BinStrategy {
+  + EdgeVector(edges : vector<VarType>)
+  + getBinIndex(value : VarType) : ssize_t
+  + getBinEdges(i : size_t) : pair<VarType>
+  + getEdge(i : size_t) : VarType
+}
+
+class Scott<VarType> implements BinStrategy {
+  + getBinIndex(value : VarType) : ssize_t
+  + getBinEdges(i : size_t) : pair<VarType>
+  + getEdge(i : size_t) : VarType
+  ..
+  + computeBins(begin : iterator, end : iterator)
+}
+
+class Sqrt<VarType> implements BinStrategy {
+  + getBinIndex(value : VarType) : ssize_t
+  + getBinEdges(i : size_t) : pair<VarType>
+  + getEdge(i : size_t) : VarType
+  ..
+  + computeBins(begin : iterator, end : iterator)
+}
+
+@enduml

@@ -1,22 +1,22 @@
 /*
- * Copyright (C) 2012-2020 Euclid Science Ground Segment    
- *  
+ * Copyright (C) 2012-2020 Euclid Science Ground Segment
+ *
  * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free 
- * Software Foundation; either version 3.0 of the License, or (at your option)  
- * any later version.  
- *  
- * This library is distributed in the hope that it will be useful, but WITHOUT 
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 3.0 of the License, or (at your option)
+ * any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more  
- * details.  
- *  
- * You should have received a copy of the GNU Lesser General Public License 
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
  * along with this library; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA  
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
- 
- /** 
+
+ /**
  * @file src/lib/Row.cpp
  * @date April 8, 2014
  * @author Nikolaos Apostolakos
@@ -33,6 +33,13 @@ using boost::regex_match;
 #include <boost/algorithm/string/join.hpp>
 #include "ElementsKernel/Exception.h"
 #include "Table/Row.h"
+
+#if BOOST_VERSION < 105600
+#include <boost/units/detail/utility.hpp>
+using boost::units::detail::demangle;
+#else
+using boost::core::demangle;
+#endif
 
 namespace std {
 
@@ -69,20 +76,25 @@ Row::Row(std::vector<cell_type> values, std::shared_ptr<ColumnInfo> column_info)
                               << " instead of " << m_column_info->size();
   }
   for (std::size_t i=0; i<m_values.size(); ++i) {
-    if (std::type_index{m_values[i].type()} != column_info->getDescription(i).type) {
-      throw Elements::Exception() << "Incompatible cell type";
+    auto& value_type = m_values[i].type();
+    auto& column_type = column_info->getDescription(i).type;
+    auto& column_name = column_info->getDescription(i).name;
+    if (std::type_index{value_type} != column_type) {
+      throw Elements::Exception() << "Incompatible cell type for " << column_name << ": expected "
+                                  << demangle(column_type.name())
+                                  << ", got " << demangle(value_type.name());
     }
   }
-  regex whitespace {".*\\s.*"}; // Checks if input contains any whitespace characters
+  regex vertical_whitespace {".*\\v.*"}; // Checks if input contains any vertical whitespace characters
   for (auto cell : m_values) {
     if (cell.type() == typeid(std::string)) {
       std::string value = boost::get<std::string>(cell);
       if (value.empty()) {
         throw Elements::Exception() << "Empty string cell values are not allowed";
       }
-      if (regex_match(value, whitespace)) {
+      if (regex_match(value, vertical_whitespace)) {
         throw Elements::Exception() << "Cell value '" << value << "' contains "
-                                  << "whitespace characters";
+                                  << "vertical whitespace characters";
       }
     }
   }

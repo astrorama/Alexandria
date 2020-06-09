@@ -55,7 +55,7 @@ struct AsciiReader_Fixture {
     "\n"
     "  1     2      3     4      5"
   };
-  
+
   std::string all_types {
     "# Column: Bool1 bool\n"
     "# Column: Bool2 boolean\n"
@@ -79,30 +79,39 @@ struct AsciiReader_Fixture {
   };
 
   std::vector<size_t> nd_expected_shape{2, 3};
-  
+
   std::string wrong_bool {
     "# Column: Bool bool\n"
     "  7"
   };
-  
+
   std::string wrong_int32 {
     "# Column: Int int\n"
     "  7.2"
   };
-  
+
   std::string wrong_int64 {
     "# Column: Int long\n"
     "  7.2"
   };
-  
+
   std::string wrong_float {
     "# Column: Float float\n"
     "  true"
   };
-  
+
   std::string wrong_double {
     "# Column: Double double\n"
     "  Something"
+  };
+
+  std::string with_quotes {
+    "# Column: Flag bool\n"
+    "# Column: \"With Spaces\"\n"
+    "\n"
+    "# Flag \"With Spaces\"\n"
+    "     0       regular\n"
+    "     1  \"spaces here too\"\n"
   };
 };
 
@@ -115,17 +124,17 @@ BOOST_AUTO_TEST_SUITE (AsciiReader_test)
 //-----------------------------------------------------------------------------
 
 BOOST_FIXTURE_TEST_CASE(EmptyCommentIndicator, AsciiReader_Fixture) {
-  
+
   // Given
   std::string comment = "";
   std::stringstream in {all_types};
-  
+
   // When
   AsciiReader reader {in};
-  
+
   // Then
   BOOST_CHECK_THROW(reader.setCommentIndicator(comment), Elements::Exception);
-  
+
 }
 
 //-----------------------------------------------------------------------------
@@ -133,17 +142,17 @@ BOOST_FIXTURE_TEST_CASE(EmptyCommentIndicator, AsciiReader_Fixture) {
 //-----------------------------------------------------------------------------
 
 BOOST_FIXTURE_TEST_CASE(DuplicateColumnNames, AsciiReader_Fixture) {
-  
+
   // Given
   std::vector<std::string> names {"First", "Second", "Third", "Second"};
   std::stringstream in {all_types};
-  
+
   // When
   AsciiReader reader {in};
-  
+
   // Then
   BOOST_CHECK_THROW(reader.fixColumnNames(names), Elements::Exception);
-  
+
 }
 
 //-----------------------------------------------------------------------------
@@ -151,17 +160,17 @@ BOOST_FIXTURE_TEST_CASE(DuplicateColumnNames, AsciiReader_Fixture) {
 //-----------------------------------------------------------------------------
 
 BOOST_FIXTURE_TEST_CASE(EmptyColumnNames, AsciiReader_Fixture) {
-  
+
   // Given
   std::vector<std::string> names {"First", "Second", "", "Forth"};
   std::stringstream in {all_types};
-  
+
   // When
   AsciiReader reader {in};
-  
+
   // Then
   BOOST_CHECK_THROW(reader.fixColumnNames(names), Elements::Exception);
-  
+
 }
 
 //-----------------------------------------------------------------------------
@@ -169,7 +178,7 @@ BOOST_FIXTURE_TEST_CASE(EmptyColumnNames, AsciiReader_Fixture) {
 //-----------------------------------------------------------------------------
 
 BOOST_FIXTURE_TEST_CASE(ColumnNamesWithWhitespaces, AsciiReader_Fixture) {
-  
+
   // Given
   std::vector<std::string> space {"Sp ace"};
   std::vector<std::string> tab {"T\tab"};
@@ -177,14 +186,14 @@ BOOST_FIXTURE_TEST_CASE(ColumnNamesWithWhitespaces, AsciiReader_Fixture) {
   std::vector<std::string> new_line {"New\nLine"};
   std::vector<std::string> new_page {"New\fPage"};
   std::stringstream in {all_types};
-  
+
   // Then
-  BOOST_CHECK_THROW(AsciiReader{in}.fixColumnNames(space), Elements::Exception);
-  BOOST_CHECK_THROW(AsciiReader{in}.fixColumnNames(tab), Elements::Exception);
+  AsciiReader{in}.fixColumnNames(space);
+  AsciiReader{in}.fixColumnNames(tab);
   BOOST_CHECK_THROW(AsciiReader{in}.fixColumnNames(carriage_return), Elements::Exception);
   BOOST_CHECK_THROW(AsciiReader{in}.fixColumnNames(new_line), Elements::Exception);
   BOOST_CHECK_THROW(AsciiReader{in}.fixColumnNames(new_page), Elements::Exception);
-  
+
 }
 
 //-----------------------------------------------------------------------------
@@ -192,16 +201,16 @@ BOOST_FIXTURE_TEST_CASE(ColumnNamesWithWhitespaces, AsciiReader_Fixture) {
 //-----------------------------------------------------------------------------
 
 BOOST_FIXTURE_TEST_CASE(ColumnNameTypeDifferentSize, AsciiReader_Fixture) {
-  
+
   // Given
   std::vector<std::string> names {"First", "Second"};
   std::vector<std::type_index> types {typeid(int)};
   std::stringstream in {all_types};
-  
+
   // Then
   BOOST_CHECK_THROW(AsciiReader{in}.fixColumnNames(names).fixColumnTypes(types), Elements::Exception);
   BOOST_CHECK_THROW(AsciiReader{in}.fixColumnTypes(types).fixColumnNames(names), Elements::Exception);
-  
+
 }
 
 //-----------------------------------------------------------------------------
@@ -209,15 +218,15 @@ BOOST_FIXTURE_TEST_CASE(ColumnNameTypeDifferentSize, AsciiReader_Fixture) {
 //-----------------------------------------------------------------------------
 
 BOOST_FIXTURE_TEST_CASE(ReadSuccess, AsciiReader_Fixture) {
-  
+
   // Given
   std::stringstream in {all_types};
-  
+
   // When
   AsciiReader reader {in};
   Euclid::Table::Table table = reader.read();
   auto column_info = table.getColumnInfo();
-  
+
   // Then
   BOOST_CHECK_EQUAL(column_info->getDescription(0).name, "Bool1");
   BOOST_CHECK_EQUAL(column_info->getDescription(1).name, "Bool2");
@@ -241,7 +250,7 @@ BOOST_FIXTURE_TEST_CASE(ReadSuccess, AsciiReader_Fixture) {
   BOOST_CHECK(column_info->getDescription(8).type == typeid(std::string));
   BOOST_CHECK(column_info->getDescription(9).type == typeid(std::vector<double>));
   BOOST_CHECK(column_info->getDescription(10).type == typeid(NdArray<double>));
-  
+
   BOOST_CHECK_EQUAL(boost::get<bool>(table[0][0]), true);
   BOOST_CHECK_EQUAL(boost::get<bool>(table[0][1]), true);
   BOOST_CHECK_EQUAL(boost::get<int32_t>(table[0][2]), 1);
@@ -269,7 +278,7 @@ BOOST_FIXTURE_TEST_CASE(ReadSuccess, AsciiReader_Fixture) {
   auto ndarray = boost::get<NdArray<double>>(table[3][10]);
   auto ndarray_shape = ndarray.shape();
   BOOST_CHECK_EQUAL_COLLECTIONS(ndarray_shape.begin(), ndarray_shape.end(), nd_expected_shape.begin(), nd_expected_shape.end());
-  
+
 }
 
 //-----------------------------------------------------------------------------
@@ -277,24 +286,24 @@ BOOST_FIXTURE_TEST_CASE(ReadSuccess, AsciiReader_Fixture) {
 //-----------------------------------------------------------------------------
 
 BOOST_FIXTURE_TEST_CASE(ReadOverrideTypes, AsciiReader_Fixture) {
-  
+
   // Given
   std::vector<std::type_index> types {typeid(bool), typeid(std::string), typeid(int32_t), typeid(int32_t), typeid(int32_t)};
   std::stringstream in {multiple_comments};
-  
+
   // When
   AsciiReader reader {in};
   reader.fixColumnTypes(types);
   Table table = reader.read();
   auto column_info = table.getColumnInfo();
-  
+
   // Then
   BOOST_CHECK(column_info->getDescription(0).type == typeid(bool));
   BOOST_CHECK(column_info->getDescription(1).type == typeid(std::string));
   BOOST_CHECK(column_info->getDescription(2).type == typeid(int32_t));
   BOOST_CHECK(column_info->getDescription(3).type == typeid(int32_t));
   BOOST_CHECK(column_info->getDescription(4).type == typeid(int32_t));
-  
+
 }
 
 //-----------------------------------------------------------------------------
@@ -302,24 +311,24 @@ BOOST_FIXTURE_TEST_CASE(ReadOverrideTypes, AsciiReader_Fixture) {
 //-----------------------------------------------------------------------------
 
 BOOST_FIXTURE_TEST_CASE(ReadOverrideNames, AsciiReader_Fixture) {
-  
+
   // Given
   std::vector<std::string> names {"A","B","C","D","E"};
   std::stringstream in {multiple_comments};
-  
+
   // When
   AsciiReader reader {in};
   reader.fixColumnNames(names);
   Table table = reader.read();
   auto column_info = table.getColumnInfo();
-  
+
   // Then
   BOOST_CHECK_EQUAL(column_info->getDescription(0).name, "A");
   BOOST_CHECK_EQUAL(column_info->getDescription(1).name, "B");
   BOOST_CHECK_EQUAL(column_info->getDescription(2).name, "C");
   BOOST_CHECK_EQUAL(column_info->getDescription(3).name, "D");
   BOOST_CHECK_EQUAL(column_info->getDescription(4).name, "E");
-  
+
 }
 
 //-----------------------------------------------------------------------------
@@ -327,21 +336,21 @@ BOOST_FIXTURE_TEST_CASE(ReadOverrideNames, AsciiReader_Fixture) {
 //-----------------------------------------------------------------------------
 
 BOOST_FIXTURE_TEST_CASE(ReadNoData, AsciiReader_Fixture) {
-  
+
   // Given
   std::stringstream in1 {only_hash_comments};
   std::stringstream in2 {only_double_slash_comments};
-  
+
   // When
   AsciiReader hashReader {in1};
   hashReader.setCommentIndicator("#");
   AsciiReader doubleSlashReader {in2};
   doubleSlashReader.setCommentIndicator("//");
-  
+
   // Then
   BOOST_CHECK_THROW(hashReader.read(), Elements::Exception);
   BOOST_CHECK_THROW(doubleSlashReader.read(), Elements::Exception);
-  
+
 }
 
 //-----------------------------------------------------------------------------
@@ -349,23 +358,23 @@ BOOST_FIXTURE_TEST_CASE(ReadNoData, AsciiReader_Fixture) {
 //-----------------------------------------------------------------------------
 
 BOOST_FIXTURE_TEST_CASE(ReadWrongColumnNamesNumber, AsciiReader_Fixture) {
-  
+
   // Given
   std::vector<std::string> wrong_names_less {"1","2","3"};
   std::vector<std::string> wrong_names_more {"1","2","3","4","5","6","7","8","9","10","11","12"};
   std::stringstream inless {all_types};
   std::stringstream inmore {all_types};
-  
+
   // When
   AsciiReader lessReader {inless};
   lessReader.fixColumnNames(wrong_names_less);
   AsciiReader moreReader {inmore};
   moreReader.fixColumnNames(wrong_names_more);
-  
+
   // Then
   BOOST_CHECK_THROW(lessReader.read(), Elements::Exception);
   BOOST_CHECK_THROW(moreReader.read(), Elements::Exception);
-  
+
 }
 
 //-----------------------------------------------------------------------------
@@ -373,7 +382,7 @@ BOOST_FIXTURE_TEST_CASE(ReadWrongColumnNamesNumber, AsciiReader_Fixture) {
 //-----------------------------------------------------------------------------
 
 BOOST_FIXTURE_TEST_CASE(ReadWrongColumnTypesNumber, AsciiReader_Fixture) {
-  
+
   // Given
   std::vector<std::type_index> wrong_types_less {typeid(bool),typeid(bool),typeid(bool)};
   std::vector<std::type_index> wrong_types_more {typeid(bool),typeid(bool),typeid(bool),typeid(bool),
@@ -381,17 +390,17 @@ BOOST_FIXTURE_TEST_CASE(ReadWrongColumnTypesNumber, AsciiReader_Fixture) {
                                                  typeid(bool),typeid(bool),typeid(bool),typeid(bool)};
   std::stringstream inless {all_types};
   std::stringstream inmore {all_types};
-  
+
   // When
   AsciiReader lessReader {inless};
   lessReader.fixColumnTypes(wrong_types_less);
   AsciiReader moreReader {inmore};
   moreReader.fixColumnTypes(wrong_types_more);
-  
+
   // Then
   BOOST_CHECK_THROW(lessReader.read(), Elements::Exception);
   BOOST_CHECK_THROW(moreReader.read(), Elements::Exception);
-  
+
 }
 
 //-----------------------------------------------------------------------------
@@ -399,16 +408,16 @@ BOOST_FIXTURE_TEST_CASE(ReadWrongColumnTypesNumber, AsciiReader_Fixture) {
 //-----------------------------------------------------------------------------
 
 BOOST_FIXTURE_TEST_CASE(ReadDifferentNumberOfColumns, AsciiReader_Fixture) {
-  
+
   // Given
   std::stringstream in {different_number_of_columns};
-  
+
   //When
   AsciiReader reader {in};
-  
+
   // Then
   BOOST_CHECK_THROW(reader.read(), Elements::Exception);
-  
+
 }
 
 //-----------------------------------------------------------------------------
@@ -416,16 +425,16 @@ BOOST_FIXTURE_TEST_CASE(ReadDifferentNumberOfColumns, AsciiReader_Fixture) {
 //-----------------------------------------------------------------------------
 
 BOOST_FIXTURE_TEST_CASE(ReadDuplicateColumnNames, AsciiReader_Fixture) {
-  
+
   // Given
   std::stringstream in {duplicate_column_names};
-  
+
   //When
   AsciiReader reader {in};
-  
+
   // Then
   BOOST_CHECK_THROW(reader.read(), Elements::Exception);
-  
+
 }
 
 //-----------------------------------------------------------------------------
@@ -433,21 +442,21 @@ BOOST_FIXTURE_TEST_CASE(ReadDuplicateColumnNames, AsciiReader_Fixture) {
 //-----------------------------------------------------------------------------
 
 BOOST_FIXTURE_TEST_CASE(ReadWrongCellValues, AsciiReader_Fixture) {
-  
+
   // Given
   std::stringstream bool_in {wrong_bool};
   std::stringstream int32_in {wrong_int32};
   std::stringstream int64_in {wrong_int64};
   std::stringstream float_in {wrong_float};
   std::stringstream double_in {wrong_double};
-  
+
   // Then
   BOOST_CHECK_THROW(AsciiReader{bool_in}.read(), Elements::Exception);
   BOOST_CHECK_THROW(AsciiReader{int32_in}.read(), Elements::Exception);
   BOOST_CHECK_THROW(AsciiReader{int64_in}.read(), Elements::Exception);
   BOOST_CHECK_THROW(AsciiReader{float_in}.read(), Elements::Exception);
   BOOST_CHECK_THROW(AsciiReader{double_in}.read(), Elements::Exception);
-  
+
 }
 
 //-----------------------------------------------------------------------------
@@ -469,6 +478,30 @@ BOOST_FIXTURE_TEST_CASE(ReadComment, AsciiReader_Fixture) {
 
 //-----------------------------------------------------------------------------
 
+BOOST_FIXTURE_TEST_CASE(WithQuotes, AsciiReader_Fixture) {
+  // Given
+  std::vector<std::type_index> types {typeid(bool), typeid(std::string)};
+  std::stringstream input{with_quotes};
+
+  // When
+  auto reader = AsciiReader{input};
+  reader.setCommentIndicator("#");
+
+  Table table = reader.read();
+  auto column_info = table.getColumnInfo();
+
+  // Then
+  BOOST_CHECK(column_info->getDescription(0).type == typeid(bool));
+  BOOST_CHECK(column_info->getDescription(1).type == typeid(std::string));
+  BOOST_CHECK_EQUAL(column_info->getDescription(0).name, "Flag");
+  BOOST_CHECK_EQUAL(column_info->getDescription(1).name, "With Spaces");
+
+  BOOST_CHECK_EQUAL(boost::get<bool>(table[0][0]), false);
+  BOOST_CHECK_EQUAL(boost::get<bool>(table[1][0]), true);
+  BOOST_CHECK_EQUAL(boost::get<std::string>(table[0][1]), "regular");
+  BOOST_CHECK_EQUAL(boost::get<std::string>(table[1][1]), "spaces here too");
+}
+
+//-----------------------------------------------------------------------------
+
 BOOST_AUTO_TEST_SUITE_END ()
-
-

@@ -1,0 +1,22 @@
+@startuml
+
+class NdArray<T, Container> {
+  - m_shape : vector<size_t>
+  - m_stride_size : vector<size_t>
+  - m_container : Container<T>
+  --
+  + NdArray(shape)
+  + NdArray(shape, data)
+  + shape() const : vector<size_t>
+  + at(coords) : T
+  + begin() : iterator
+  + end() : iterator
+  + data() : Container<T>
+  + size() : size_t
+  -- operators --
+  + operator = ()
+  + operator == () : bool
+  + operator != () : bool
+}
+
+@enduml

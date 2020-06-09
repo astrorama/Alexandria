@@ -1,21 +1,21 @@
 /*
- * Copyright (C) 2012-2020 Euclid Science Ground Segment    
- *  
+ * Copyright (C) 2012-2020 Euclid Science Ground Segment
+ *
  * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free 
- * Software Foundation; either version 3.0 of the License, or (at your option)  
- * any later version.  
- *  
- * This library is distributed in the hope that it will be useful, but WITHOUT 
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 3.0 of the License, or (at your option)
+ * any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more  
- * details.  
- *  
- * You should have received a copy of the GNU Lesser General Public License 
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
  * along with this library; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA  
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
- 
+
  /**
  * @file src/lib/function/Piecewise.cpp
  * @date February 20, 2014
@@ -31,10 +31,29 @@ namespace Euclid {
 namespace MathUtils {
 
 Piecewise::Piecewise(std::vector<double> knots, std::vector<std::shared_ptr<Function> > functions)
+                    : m_knots{std::move(knots)} {
+  if (m_knots.size() - functions.size() != 1) {
+    throw Elements::Exception() << "Invalid number of knots(" << m_knots.size()
+                              << ")-functions(" << m_functions.size() << ")";
+  }
+
+  m_functions.reserve(functions.size());
+  std::transform(functions.begin(), functions.end(), std::back_inserter(m_functions),
+                 [](std::shared_ptr<Function>& f) { return f->clone(); });
+
+  auto knotsIter = m_knots.begin();
+  while (++knotsIter != m_knots.end()) {
+    if (*knotsIter <= *(knotsIter-1)) {
+      throw Elements::Exception("knots must be strictly increasing");
+    }
+  }
+}
+
+Piecewise::Piecewise(std::vector<double> knots, std::vector<std::unique_ptr<Function>>&& functions)
                     : m_knots{std::move(knots)}, m_functions{std::move(functions)} {
   if (m_knots.size() - m_functions.size() != 1) {
     throw Elements::Exception() << "Invalid number of knots(" << m_knots.size()
-                              << ")-functions(" << m_functions.size() << ")";
+                                << ")-functions(" << m_functions.size() << ")";
   }
   auto knotsIter = m_knots.begin();
   while (++knotsIter != m_knots.end()) {
@@ -48,7 +67,7 @@ const std::vector<double>& Piecewise::getKnots() const {
   return m_knots;
 }
 
-const std::vector<std::shared_ptr<Function>>& Piecewise::getFunctions() const {
+const std::vector<std::unique_ptr<Function>>& Piecewise::getFunctions() const {
   return m_functions;
 }
 
@@ -69,7 +88,12 @@ double Piecewise::operator()(const double x) const {
 }
 
 std::unique_ptr<Function> Piecewise::clone() const {
-  return std::unique_ptr<Function> {new Piecewise(m_knots, m_functions)};
+  std::vector<std::unique_ptr<Function>> cloned_functions;
+  cloned_functions.reserve(m_functions.size());
+  for (auto& f: m_functions) {
+    cloned_functions.emplace_back(f->clone());
+  }
+  return std::unique_ptr<Function> {new Piecewise(m_knots, std::move(cloned_functions))};
 }
 
 double Piecewise::integrate(const double x1, const double x2) const {
