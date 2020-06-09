@@ -121,11 +121,16 @@ BOOST_FIXTURE_TEST_CASE ( iterator_modify_test, CatalogFixture ) {
 }
 
 // Cast a non-const iterator to a const iterator
-BOOST_FIXTURE_TEST_CASE ( iterator_cast, CatalogFixture ) {
+BOOST_FIXTURE_TEST_CASE ( iterator_cast_test, CatalogFixture ) {
   BOOST_TEST_MESSAGE("--> iterator const cast ");
 
-  auto f = [](Photometry::const_iterator begin, Photometry::const_iterator end){
+  auto f = [this](Photometry::const_iterator begin, Photometry::const_iterator end){
     BOOST_CHECK_EQUAL(end - begin, 2);
+    auto expected_photo_iter = photometry_vector.begin();
+    for (auto i = begin; i != end; ++i) {
+      BOOST_CHECK_CLOSE(i->flux, expected_photo_iter->flux, tolerance);
+      ++expected_photo_iter;
+    }
   };
 
   BOOST_CHECK_EQUAL(photometry.end() - photometry.begin(), 2);
