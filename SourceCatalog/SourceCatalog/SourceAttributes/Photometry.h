@@ -87,60 +87,42 @@ public:
     /**
      * Constructor from non-const iterator
      */
-    PhotometryIterator(const PhotometryIterator<false>& other) : m_filters_iter{other.m_filters_iter},
-                                                                 m_values_iter{other.m_values_iter} {
-    }
+    PhotometryIterator(const PhotometryIterator<false>& other);
 
     /**
      * Increment the iterator
      */
-    PhotometryIterator& operator++() {
-      ++m_filters_iter;
-      ++m_values_iter;
-      return *this;
-    }
+    PhotometryIterator& operator++();
 
     /**
      * @return true if this iterator and other point to the same position
      */
-    bool operator == (const PhotometryIterator& other) const {
-      return m_filters_iter == other.m_filters_iter;
-    }
+    bool operator == (const PhotometryIterator& other) const;
 
     /**
      * @return true if this iterator and other do *not* point to the same position
      */
-    bool operator != (const PhotometryIterator& other) const {
-      return m_filters_iter != other.m_filters_iter;
-    }
+    bool operator != (const PhotometryIterator& other) const;
 
     /**
      * @return A reference to the FluxErrorPair pointed by this iterator
      */
-    reference operator*() {
-      return *m_values_iter;
-    }
+    reference operator*();
 
     /**
      * @return A pointer to the FluxErrorPair pointed by this iterator
      */
-    pointer operator ->() {
-      return m_values_iter.operator->();
-    }
+    pointer operator ->();
 
     /**
      * @return The number of elements between this iterator and other
      */
-    ssize_t operator - (const PhotometryIterator& other) const {
-      return m_values_iter - other.m_values_iter;
-    }
+    ssize_t operator - (const PhotometryIterator& other) const;
 
     /**
      * @return The filter name corresponding to this FluxErrorPair
      */
-    const std::string& filterName() const {
-      return *m_filters_iter;
-    }
+    const std::string& filterName() const;
 
   protected:
     /**
@@ -150,8 +132,7 @@ public:
      * @param values_iter
      *  FluxErrorPair iterator
      */
-    PhotometryIterator(const filters_iter_t& filters_iter, const values_iter_t& values_iter)
-      : m_filters_iter{filters_iter}, m_values_iter{values_iter} {}
+    PhotometryIterator(const filters_iter_t& filters_iter, const values_iter_t& values_iter);
 
     friend class Photometry;
 
@@ -189,8 +170,7 @@ public:
   }
 
   /// default destructor
-  virtual ~Photometry() {
-  }
+  virtual ~Photometry() = default;
 
   const_iterator cbegin() const {
     return const_iterator{m_filter_name_vector_ptr->cbegin(), m_value_vector.cbegin()};
@@ -247,6 +227,10 @@ private:
 
 };
 // Eof class Photometry
+
+#define PHOTOMETRY_IMPL
+#include "SourceCatalog/_impl/Photometry.icpp"
+#undef PHOTOMETRY_IMPL
 
 } /* namespace SourceCatalog */
 } // end of namespace Euclid
