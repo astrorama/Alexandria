@@ -69,30 +69,99 @@ class ELEMENTS_API Photometry: public Attribute {
 public:
 
   /**
-   * Iterator for the photometry flux and error values. See the Photometry_test to see
-   * how this can be used to iterate through the flux and error the different filters.
+   * Iterator class, implemented as a template to avoid repetition for const and non const iterators
+   * @tparam Const
+   *    A boolean. If true, this will be a const iterator
    */
-  class PhotometryConstIterator : public std::iterator<std::forward_iterator_tag,
-      const FluxErrorPair> {
+  template <bool Const>
+  class PhotometryIterator
+    : public std::iterator<std::forward_iterator_tag, typename std::conditional<Const, const FluxErrorPair, FluxErrorPair>::type> {
   public:
-    PhotometryConstIterator(const std::vector<std::string>::const_iterator& filters_iter,
-                            const std::vector<FluxErrorPair>::const_iterator& values_iter);
-    PhotometryConstIterator& operator++();
-    reference operator*();
-    bool operator==(const PhotometryConstIterator& other) const;
-    bool operator!=(const PhotometryConstIterator& other) const;
+    using value_t = typename std::conditional<Const, const FluxErrorPair, FluxErrorPair>::type;
+    using typename std::iterator<std::forward_iterator_tag, value_t>::reference;
+    using typename std::iterator<std::forward_iterator_tag, value_t>::pointer;
+
+    using filters_iter_t = typename std::conditional<Const, std::vector<std::string>::const_iterator, std::vector<std::string>::iterator>::type;
+    using values_iter_t = typename std::conditional<Const, std::vector<FluxErrorPair>::const_iterator, std::vector<FluxErrorPair>::iterator>::type;
+
+    /**
+     * Constructor from non-const iterator
+     */
+    PhotometryIterator(const PhotometryIterator<false>& other) : m_filters_iter{other.m_filters_iter},
+                                                                 m_values_iter{other.m_values_iter} {
+    }
+
+    /**
+     * Increment the iterator
+     */
+    PhotometryIterator& operator++() {
+      ++m_filters_iter;
+      ++m_values_iter;
+      return *this;
+    }
+
+    /**
+     * @return true if this iterator and other point to the same position
+     */
+    bool operator == (const PhotometryIterator& other) const {
+      return m_filters_iter == other.m_filters_iter;
+    }
+
+    /**
+     * @return true if this iterator and other do *not* point to the same position
+     */
+    bool operator != (const PhotometryIterator& other) const {
+      return m_filters_iter != other.m_filters_iter;
+    }
+
+    /**
+     * @return A reference to the FluxErrorPair pointed by this iterator
+     */
+    reference operator*() {
+      return *m_values_iter;
+    }
+
+    /**
+     * @return A pointer to the FluxErrorPair pointed by this iterator
+     */
+    pointer operator ->() {
+      return m_values_iter.operator->();
+    }
 
     /**
      * @return The number of elements between this iterator and other
      */
-    ssize_t operator - (const PhotometryConstIterator& other) const;
+    ssize_t operator - (const PhotometryIterator& other) const {
+      return m_values_iter - other.m_values_iter;
+    }
 
-    const std::string& filterName() const;
+    /**
+     * @return The filter name corresponding to this FluxErrorPair
+     */
+    const std::string& filterName() const {
+      return *m_filters_iter;
+    }
+
+  protected:
+    /**
+     * Constructor
+     * @param filters_iter
+     *  Filter name iterator
+     * @param values_iter
+     *  FluxErrorPair iterator
+     */
+    PhotometryIterator(const filters_iter_t& filters_iter, const values_iter_t& values_iter)
+      : m_filters_iter{filters_iter}, m_values_iter{values_iter} {}
+
+    friend class Photometry;
+
   private:
-    std::vector<std::string>::const_iterator m_filters_iter;
-    std::vector<FluxErrorPair>::const_iterator m_values_iter;
+    filters_iter_t m_filters_iter;
+    values_iter_t m_values_iter;
   };
-  typedef PhotometryConstIterator const_iterator;
+
+  typedef PhotometryIterator<true> const_iterator;
+  typedef PhotometryIterator<false> iterator;
 
 
   /**
@@ -123,14 +192,28 @@ public:
   virtual ~Photometry() {
   }
 
+  const_iterator cbegin() const {
+    return const_iterator{m_filter_name_vector_ptr->cbegin(), m_value_vector.cbegin()};
+  }
+
+  const_iterator cend() const {
+    return const_iterator{m_filter_name_vector_ptr->cend(), m_value_vector.cend()};
+  }
+
   const_iterator begin() const {
-    return const_iterator { m_filter_name_vector_ptr->cbegin(),
-        m_value_vector.cbegin() };
+    return const_iterator{m_filter_name_vector_ptr->cbegin(), m_value_vector.cbegin()};
   }
 
   const_iterator end() const {
-    return const_iterator { m_filter_name_vector_ptr->cend(),
-        m_value_vector.cend() };
+    return const_iterator{m_filter_name_vector_ptr->cend(), m_value_vector.cend()};
+  }
+
+  iterator begin() {
+    return iterator{m_filter_name_vector_ptr->begin(), m_value_vector.begin()};
+  }
+
+  iterator end() {
+    return iterator{m_filter_name_vector_ptr->end(), m_value_vector.end()};
   }
 
   /**
@@ -153,8 +236,6 @@ public:
   std::unique_ptr<FluxErrorPair> find(std::string filter_name) const;
 
   const std::shared_ptr<std::vector<std::string>>& getFilterNames() const;
-
-  void updateFluxValues(const std::vector<FluxErrorPair>& value_vector);
 
 private:
 
