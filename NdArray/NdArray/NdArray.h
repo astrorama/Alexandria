@@ -61,13 +61,7 @@ public:
    */
   explicit NdArray(const std::vector<size_t> &shape) : m_shape{shape}, m_container(
     std::accumulate(m_shape.begin(), m_shape.end(), 1, std::multiplies<size_t>())) {
-    m_stride_size.resize(m_shape.size());
-
-    size_t acc = 1;
-    for (size_t i = m_stride_size.size(); i > 0; --i) {
-      m_stride_size[i - 1] = acc;
-      acc *= m_shape[i - 1];
-    }
+    update_strides();
   }
 
   /**
@@ -85,14 +79,7 @@ public:
     if (expected_size != m_container.size()) {
       throw std::invalid_argument("Data size does not match the shape");
     }
-
-    m_stride_size.resize(m_shape.size());
-
-    size_t acc = 1;
-    for (size_t i = m_stride_size.size(); i > 0; --i) {
-      m_stride_size[i - 1] = acc;
-      acc *= m_shape[i - 1];
-    }
+    update_strides();
   }
 
   /**
@@ -112,14 +99,7 @@ public:
     if (expected_size != m_container.size()) {
       throw std::invalid_argument("Data size does not match the shape");
     }
-
-    m_stride_size.resize(m_shape.size());
-
-    size_t acc = 1;
-    for (size_t i = m_stride_size.size(); i > 0; --i) {
-      m_stride_size[i - 1] = acc;
-      acc *= m_shape[i - 1];
-    }
+    update_strides();
   }
 
   /**
@@ -140,14 +120,7 @@ public:
     if (expected_size != m_container.size()) {
       throw std::invalid_argument("Data size does not match the shape");
     }
-
-    m_stride_size.resize(m_shape.size());
-
-    size_t acc = 1;
-    for (size_t i = m_stride_size.size(); i > 0; --i) {
-      m_stride_size[i - 1] = acc;
-      acc *= m_shape[i - 1];
-    }
+    update_strides();
   }
 
   /**
@@ -180,6 +153,42 @@ public:
    */
   const std::vector<size_t> shape() const {
     return m_shape;
+  }
+
+  /**
+   * Reshape the NdArray.
+   * @note This modifies the object
+   * @param new_shape
+   *    A vector with as many elements as number of dimensions, containing the size of each one.
+   * @throws std::range_error
+   *    If the new shape does not match the number of elements already contained within the NdArray.
+   * @return
+   *    *this
+   */
+  self_type& reshape(const std::vector<size_t> new_shape) {
+    size_t new_size = std::accumulate(new_shape.begin(), new_shape.end(), 1, std::multiplies<size_t>());
+    if (new_size != m_container.size()) {
+      throw std::range_error("New shape does not match the number of contained elements");
+    }
+    m_shape = new_shape;
+    update_strides();
+    return *this;
+  }
+
+  /**
+   * Reshape the NdArray.
+   * @note This modifies the object
+   * @param new_shape
+   *    A vector with as many elements as number of dimensions, containing the size of each one.
+   * @throws std::range_error
+   *    If the new shape does not match the number of elements already contained within the NdArray.
+   * @return
+   *    *this
+   */
+  template <typename ...D>
+  self_type& reshape(size_t i, D... rest) {
+    std::vector<size_t> acc{i};
+    return reshape_helper(acc, rest...);
   }
 
   /**
@@ -329,6 +338,19 @@ private:
   };
 
   /**
+   * Compute the stride size for each dimension
+   */
+  void update_strides() {
+    m_stride_size.resize(m_shape.size());
+
+    size_t acc = 1;
+    for (size_t i = m_stride_size.size(); i > 0; --i) {
+      m_stride_size[i - 1] = acc;
+      acc *= m_shape[i - 1];
+    }
+  }
+
+  /**
    * Helper to expand at with a variable number of arguments
    */
   template <typename ...D>
@@ -358,6 +380,16 @@ private:
    */
   const T &at_helper(std::vector<size_t> &acc) const {
     return at(acc);
+  }
+
+  template <typename ...D>
+  self_type& reshape_helper(std::vector<size_t>& acc, size_t i, D... rest) {
+    acc.push_back(i);
+    return reshape_helper(acc, rest...);
+  }
+
+  self_type& reshape_helper(std::vector<size_t>& acc) {
+    return reshape(acc);
   }
 };
 

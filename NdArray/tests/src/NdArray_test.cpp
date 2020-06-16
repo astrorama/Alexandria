@@ -132,4 +132,27 @@ BOOST_AUTO_TEST_CASE(FromIterator_test) {
   BOOST_CHECK_EQUAL_COLLECTIONS(m.begin(), m.end(), original.begin(), original.end());
 }
 
+BOOST_AUTO_TEST_CASE(Reshape_test) {
+  std::vector<int> values{10, 50, 0, 15, 20, 0};
+  NdArray<int> m{std::vector<size_t>{2, 3}, values};
+
+  m.reshape(6);
+
+  BOOST_CHECK_EQUAL(m.size(), 6);
+  BOOST_CHECK_EQUAL(m.shape().size(), 1);
+  BOOST_CHECK_EQUAL(m.shape()[0], 6);
+
+  for (size_t i = 0; i < values.size(); ++i) {
+    BOOST_CHECK_EQUAL(m.at(i), values[i]);
+  }
+}
+
+BOOST_AUTO_TEST_CASE(BadReshape_test) {
+  std::vector<int> values{10, 50, 0, 15, 20, 0};
+  NdArray<int> m{std::vector<size_t>{2, 3}, values};
+
+  BOOST_CHECK_THROW(m.reshape(3), std::range_error);
+  BOOST_CHECK_THROW(m.reshape(10), std::range_error);
+}
+
 BOOST_AUTO_TEST_SUITE_END()
