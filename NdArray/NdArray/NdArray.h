@@ -61,13 +61,7 @@ public:
    */
   explicit NdArray(const std::vector<size_t> &shape) : m_shape{shape}, m_container(
     std::accumulate(m_shape.begin(), m_shape.end(), 1, std::multiplies<size_t>())) {
-    m_stride_size.resize(m_shape.size());
-
-    size_t acc = 1;
-    for (size_t i = m_stride_size.size(); i > 0; --i) {
-      m_stride_size[i - 1] = acc;
-      acc *= m_shape[i - 1];
-    }
+    update_strides();
   }
 
   /**
@@ -85,14 +79,7 @@ public:
     if (expected_size != m_container.size()) {
       throw std::invalid_argument("Data size does not match the shape");
     }
-
-    m_stride_size.resize(m_shape.size());
-
-    size_t acc = 1;
-    for (size_t i = m_stride_size.size(); i > 0; --i) {
-      m_stride_size[i - 1] = acc;
-      acc *= m_shape[i - 1];
-    }
+    update_strides();
   }
 
   /**
@@ -112,14 +99,28 @@ public:
     if (expected_size != m_container.size()) {
       throw std::invalid_argument("Data size does not match the shape");
     }
+    update_strides();
+  }
 
-    m_stride_size.resize(m_shape.size());
-
-    size_t acc = 1;
-    for (size_t i = m_stride_size.size(); i > 0; --i) {
-      m_stride_size[i - 1] = acc;
-      acc *= m_shape[i - 1];
+  /**
+   * Constructs a matrix and initialize it with from the given iterators
+   * @param shape
+   *    The shape of the matrix. The number of elements in shape corresponds to the number
+   *    of dimensions, the values to each dimension size.
+   * @param begin
+   *    The beginning of the data
+   * @param end
+   *    The end of the data
+   * @throws std::invalid_argument
+   *    If the data size does not corresponds to the matrix size.
+   */
+  template <typename Iterator>
+  NdArray(const std::vector<size_t> &shape, Iterator begin, Iterator end) : m_shape{shape}, m_container{begin, end} {
+    size_t expected_size = std::accumulate(m_shape.begin(), m_shape.end(), 1, std::multiplies<size_t>());
+    if (expected_size != m_container.size()) {
+      throw std::invalid_argument("Data size does not match the shape");
     }
+    update_strides();
   }
 
   /**
@@ -155,6 +156,42 @@ public:
   }
 
   /**
+   * Reshape the NdArray.
+   * @note This modifies the object
+   * @param new_shape
+   *    A vector with as many elements as number of dimensions, containing the size of each one.
+   * @throws std::range_error
+   *    If the new shape does not match the number of elements already contained within the NdArray.
+   * @return
+   *    *this
+   */
+  self_type& reshape(const std::vector<size_t> new_shape) {
+    size_t new_size = std::accumulate(new_shape.begin(), new_shape.end(), 1, std::multiplies<size_t>());
+    if (new_size != m_container.size()) {
+      throw std::range_error("New shape does not match the number of contained elements");
+    }
+    m_shape = new_shape;
+    update_strides();
+    return *this;
+  }
+
+  /**
+   * Reshape the NdArray.
+   * @note This modifies the object
+   * @param new_shape
+   *    A vector with as many elements as number of dimensions, containing the size of each one.
+   * @throws std::range_error
+   *    If the new shape does not match the number of elements already contained within the NdArray.
+   * @return
+   *    *this
+   */
+  template <typename ...D>
+  self_type& reshape(size_t i, D... rest) {
+    std::vector<size_t> acc{i};
+    return reshape_helper(acc, rest...);
+  }
+
+  /**
    * Gets a reference to the value stored at the given coordinates.
    * @param coords
    *    Elements coordinates.
@@ -162,7 +199,7 @@ public:
    *    If the number of coordinates is invalid, or any of them is out of bounds.
    */
   T &at(const std::vector<size_t> &coords) {
-    auto offset = getOffset(coords);
+    auto offset = get_offset(coords);
     return m_container[offset];
   };
 
@@ -174,7 +211,7 @@ public:
    *    If the number of coordinates is invalid, or any of them is out of bounds.
    */
   const T &at(const std::vector<size_t> &coords) const {
-    auto offset = getOffset(coords);
+    auto offset = get_offset(coords);
     return m_container[offset];
   };
 
@@ -279,7 +316,7 @@ private:
    * @throws std::out_of_range
    *    If the number of coordinates is invalid, or any of them is out of bounds.
    */
-  size_t getOffset(const std::vector<size_t> &coords) const {
+  size_t get_offset(const std::vector<size_t> &coords) const {
     if (coords.size() != m_shape.size()) {
       throw std::out_of_range(
         "Invalid number of coordinates, got " + std::to_string(coords.size()) + ", expected " + std::to_string(m_shape.size())
@@ -299,6 +336,19 @@ private:
     assert(offset < m_container.size());
     return offset;
   };
+
+  /**
+   * Compute the stride size for each dimension
+   */
+  void update_strides() {
+    m_stride_size.resize(m_shape.size());
+
+    size_t acc = 1;
+    for (size_t i = m_stride_size.size(); i > 0; --i) {
+      m_stride_size[i - 1] = acc;
+      acc *= m_shape[i - 1];
+    }
+  }
 
   /**
    * Helper to expand at with a variable number of arguments
@@ -330,6 +380,16 @@ private:
    */
   const T &at_helper(std::vector<size_t> &acc) const {
     return at(acc);
+  }
+
+  template <typename ...D>
+  self_type& reshape_helper(std::vector<size_t>& acc, size_t i, D... rest) {
+    acc.push_back(i);
+    return reshape_helper(acc, rest...);
+  }
+
+  self_type& reshape_helper(std::vector<size_t>& acc) {
+    return reshape(acc);
   }
 };
 
