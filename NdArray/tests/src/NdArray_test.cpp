@@ -125,4 +125,11 @@ BOOST_AUTO_TEST_CASE(Ostream_test) {
   BOOST_CHECK_EQUAL(stream.str(), std::string("<2,3>1,1,2,3,5,8"));
 }
 
+BOOST_AUTO_TEST_CASE(FromIterator_test) {
+  std::list<int> original{1, 7, 6, 9, 5, 3};
+  NdArray<int> m(std::vector<size_t>{2, 3}, std::begin(original), std::end(original));
+  BOOST_CHECK_EQUAL(original.size(), 6);
+  BOOST_CHECK_EQUAL_COLLECTIONS(m.begin(), m.end(), original.begin(), original.end());
+}
+
 BOOST_AUTO_TEST_SUITE_END()

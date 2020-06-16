@@ -123,6 +123,34 @@ public:
   }
 
   /**
+   * Constructs a matrix and initialize it with from the given iterators
+   * @param shape
+   *    The shape of the matrix. The number of elements in shape corresponds to the number
+   *    of dimensions, the values to each dimension size.
+   * @param begin
+   *    The beginning of the data
+   * @param end
+   *    The end of the data
+   * @throws std::invalid_argument
+   *    If the data size does not corresponds to the matrix size.
+   */
+  template <typename Iterator>
+  NdArray(const std::vector<size_t> &shape, Iterator begin, Iterator end) : m_shape{shape}, m_container{begin, end} {
+    size_t expected_size = std::accumulate(m_shape.begin(), m_shape.end(), 1, std::multiplies<size_t>());
+    if (expected_size != m_container.size()) {
+      throw std::invalid_argument("Data size does not match the shape");
+    }
+
+    m_stride_size.resize(m_shape.size());
+
+    size_t acc = 1;
+    for (size_t i = m_stride_size.size(); i > 0; --i) {
+      m_stride_size[i - 1] = acc;
+      acc *= m_shape[i - 1];
+    }
+  }
+
+  /**
    * Constructs a default-initialized matrix with the given shape (as an initializer list).
    * @param shape
    *    The shape of the matrix. The number of elements in shape corresponds to the number
