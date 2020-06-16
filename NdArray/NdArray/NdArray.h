@@ -199,7 +199,7 @@ public:
    *    If the number of coordinates is invalid, or any of them is out of bounds.
    */
   T &at(const std::vector<size_t> &coords) {
-    auto offset = getOffset(coords);
+    auto offset = get_offset(coords);
     return m_container[offset];
   };
 
@@ -211,7 +211,7 @@ public:
    *    If the number of coordinates is invalid, or any of them is out of bounds.
    */
   const T &at(const std::vector<size_t> &coords) const {
-    auto offset = getOffset(coords);
+    auto offset = get_offset(coords);
     return m_container[offset];
   };
 
@@ -316,7 +316,7 @@ private:
    * @throws std::out_of_range
    *    If the number of coordinates is invalid, or any of them is out of bounds.
    */
-  size_t getOffset(const std::vector<size_t> &coords) const {
+  size_t get_offset(const std::vector<size_t> &coords) const {
     if (coords.size() != m_shape.size()) {
       throw std::out_of_range(
         "Invalid number of coordinates, got " + std::to_string(coords.size()) + ", expected " + std::to_string(m_shape.size())
