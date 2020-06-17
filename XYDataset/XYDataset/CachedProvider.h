@@ -50,7 +50,7 @@ public:
    */
   virtual ~CachedProvider() = default;
 
-  CachedProvider(std::shared_ptr<XYDatasetProvider> provider);
+  explicit CachedProvider(std::shared_ptr<XYDatasetProvider> provider);
 
   /**
    * @brief
@@ -85,6 +85,9 @@ public:
    * A unique pointer of XYDataset type to the dataset
    */
   std::unique_ptr<XYDataset> getDataset(const QualifiedName& qualified_name) override;
+
+
+  std::string getParameter(const QualifiedName& qualified_name, const std::string& key_word) override;
 
 private:
   std::shared_ptr<XYDatasetProvider> m_provider;

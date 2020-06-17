@@ -110,7 +110,9 @@ void Histogram<VarType, WeightType>::ComputationImpl<BinType>::computeBins(IterT
   m_counts->resize(m_binning.getBinCount());
 
   ssize_t nbins = m_counts->size();
-  for (auto i = begin, wi = wbegin; i != end; ++i, ++wi) {
+  auto i = begin;
+  auto wi = wbegin;
+  for (; i != end; ++i, ++wi) {
     auto bin = m_binning.getBinIndex(*i);
     if (bin >= 0 && bin < nbins) {
       (*m_counts)[bin] += *wi;

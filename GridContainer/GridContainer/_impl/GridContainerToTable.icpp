@@ -127,7 +127,7 @@ Table::Table gridContainerToTable(const GridContainer<GridCellManager, AxesTypes
   using Helper = GridToFitsHelper<std::tuple_size<typename GridType::AxesTuple>::value, GridCellManager, AxesTypes...>;
 
   std::vector<Table::ColumnDescription> columns;
-  Helper::addColumnDescriptions(grid.getAxesTuple(), columns);
+  Helper::addColumnDescriptions(GridContainer<GridCellManager, AxesTypes...>{grid.getAxesTuple()}, columns);
 
   GridCellToTable<typename GridType::cell_type> cell_trais;
   cell_trais.addColumnDescriptions(*grid.begin(), columns);

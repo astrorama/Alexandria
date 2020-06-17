@@ -212,5 +212,11 @@ std::unique_ptr<XYDataset> FileSystemProvider::getDataset(const QualifiedName & 
 
 }
 
+
+std::string FileSystemProvider::getParameter(const QualifiedName& qualified_name, const std::string& key_word){
+   auto it = m_name_file_map.find(qualified_name);
+   return (it != m_name_file_map.end()) ? m_parser->getParameter(it->second, key_word) : "";
+}
+
 } /* namespace XYDataset */
 } // end of namespace Euclid

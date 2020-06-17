@@ -47,7 +47,7 @@ struct BinaryFitsWriter_Fixture {
                                       NdArray<double>({1}, {41})};
   Row row0 {values0, column_info};
   std::vector<Row::cell_type> values1{false, 12345, int64_t{123456789}, 2.3e-2F, 1.12345e-18,
-                                      std::string{"second"},
+                                      std::string{"second with spaces on top of that"},
                                       NdArray<double>({ 2, 3 }, { 6, 5, 4, 3, 2, 1 }),
                                       NdArray<double>({1}, {42})};
   Row row1 {values1, column_info};
@@ -69,7 +69,7 @@ struct AsciiFitsWriter_Fixture {
   std::shared_ptr<ColumnInfo> column_info {new ColumnInfo {info_list}};
   std::vector<Row::cell_type> values0{true, 1, int64_t{123}, 0.F, 0., std::string{"first"}};
   Row row0 {values0, column_info};
-  std::vector<Row::cell_type> values1{false, 12345, int64_t{123456789}, 2.3e-2F, 1.12345e-18, std::string{"second"}};
+  std::vector<Row::cell_type> values1{false, 12345, int64_t{123456789}, 2.3e-2F, 1.12345e-18, std::string{"very spaced"}};
   Row row1 {values1, column_info};
   std::vector<Row> row_list {row0, row1};
   Table table {row_list};
@@ -116,7 +116,7 @@ BOOST_FIXTURE_TEST_CASE(writeBinary, BinaryFitsWriter_Fixture) {
   BOOST_CHECK_EQUAL(result.column(3).format(), "K");
   BOOST_CHECK_EQUAL(result.column(4).format(), "E");
   BOOST_CHECK_EQUAL(result.column(5).format(), "D");
-  BOOST_CHECK_EQUAL(result.column(6).format(), "6A");
+  BOOST_CHECK_EQUAL(result.column(6).format(), "33A");
   BOOST_CHECK_EQUAL(result.column(7).format(), "6D");
   BOOST_CHECK_EQUAL(result.column(8).format(), "1D");
 
@@ -183,7 +183,7 @@ BOOST_FIXTURE_TEST_CASE(writeBinary, BinaryFitsWriter_Fixture) {
 
   // Then
   BOOST_CHECK_EQUAL(string_data[0], "first");
-  BOOST_CHECK_EQUAL(string_data[1], "second");
+  BOOST_CHECK_EQUAL(string_data[1], "second with spaces on top of that");
 
   // When
   std::valarray<double> na1, na2;
@@ -240,7 +240,7 @@ BOOST_FIXTURE_TEST_CASE(writeAscii, AsciiFitsWriter_Fixture) {
   BOOST_CHECK_EQUAL(result.column(3).format(), "I9");
   BOOST_CHECK_EQUAL(result.column(4).format(), "E12");
   BOOST_CHECK_EQUAL(result.column(5).format(), "E12");
-  BOOST_CHECK_EQUAL(result.column(6).format(), "A6");
+  BOOST_CHECK_EQUAL(result.column(6).format(), "A11");
 
   BOOST_CHECK_EQUAL(result.column(1).unit(), "deg");
   BOOST_CHECK_EQUAL(result.column(2).unit(), "mag");
@@ -304,7 +304,7 @@ BOOST_FIXTURE_TEST_CASE(writeAscii, AsciiFitsWriter_Fixture) {
 
   // Then
   BOOST_CHECK_EQUAL(string_data[0], "first");
-  BOOST_CHECK_EQUAL(string_data[1], "second");
+  BOOST_CHECK_EQUAL(string_data[1], "very spaced");
 
 }
 

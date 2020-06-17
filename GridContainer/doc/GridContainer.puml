@@ -1,0 +1,71 @@
+
+
+@startuml TableClassDiagram.png
+
+skinparam defaultfontsize 15
+'left to right direction
+
+class GridContainer<GridCellManager> {
+    - axes_list : vector<GridAxis>
+    - cells : GridCellManager
+    + axesNumber()
+    + getAxis(int) : GridAxis
+    + size() : int
+    + begin() : GridIterator
+    + end() : GridIterator
+    + at(int, int, ...) : cell_type
+    + fixAxisByIndex(axis, index)
+    + fixAxisByValue(axis, value)
+}
+
+interface GridCellManagerTraits<T> {
+    + cell_type
+    + factory(size) : T
+    + size(T) : int
+    + begin(T) : iterator
+    + end(T) : iterator
+}
+
+class GridCellManagerTraitsVector {
+}
+
+class GridIterator {
+    -- iterator operators --
+    + operator ++()
+    + operator *()
+    + operator ->()
+    -- extra functions --
+    + axisIndex(axis) : int
+    + axisValue(axis) : value
+    + fixAxisByIndex(axis, index)
+    + fixAxisByValue(axis, value)
+}
+
+class GridAxis<T> {
+    - knots : vector<T>
+    + name() : string
+    + size() : int
+    + operator[]() : T
+    + begin() : iterator
+    + end() : iterator
+    + operator ==() : bool
+}
+
+GridContainer - GridCellManagerTraits
+GridCellManagerTraits <|.. GridCellManagerTraitsVector
+GridContainer -- GridIterator
+GridAxis -* GridContainer
+
+class Serialize {
+    + gridBinaryImport(stream)
+    + gridBinaryExport(stream)
+    + gridFitsImport(filename)
+    + gridFitsExport(filename)
+}
+
+Serialize -- GridContainer
+
+hide empty fields
+hide empty methods
+
+@enduml

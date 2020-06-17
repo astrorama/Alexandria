@@ -55,6 +55,18 @@ class FileParser
 
    /**
     * @brief
+    * Get the parameter identified by a given key_word value from a file
+    * @param file
+    * Filename including absolute path
+    * @param key_word
+    * key word identifying the parameter
+    * @return
+    * A dataset name
+    */
+   virtual std::string getParameter(const std::string& file, const std::string& key_word)= 0;
+
+   /**
+    * @brief
     * Get the dataset from a file
     * @param file
     * Filename including absolute path

@@ -72,6 +72,40 @@ struct FitsParser_Fixture {
 //-----------------------------------------------------------------------------
 
 BOOST_AUTO_TEST_SUITE (FitsParser_test)
+//-----------------------------------------------------------------------------
+// Test the exception of the getParameter function
+//-----------------------------------------------------------------------------
+
+BOOST_FIXTURE_TEST_CASE(exception_getParameter_function_test, FitsParser_Fixture) {
+
+  BOOST_TEST_MESSAGE(" ");
+  BOOST_TEST_MESSAGE("--> Testing the exception of getParameter function");
+  BOOST_TEST_MESSAGE(" ");
+
+  FitsParser parser{};
+
+  BOOST_CHECK_THROW(parser.getParameter("File_does_not_exist.fits","DATASET"), Elements::Exception);
+}
+
+//-----------------------------------------------------------------------------
+// Test of the getParameter function
+//-----------------------------------------------------------------------------
+
+BOOST_FIXTURE_TEST_CASE(getParameter_function_test, FitsParser_Fixture) {
+
+  BOOST_TEST_MESSAGE(" ");
+  BOOST_TEST_MESSAGE("--> Testing the  getParameter function");
+  BOOST_TEST_MESSAGE(" ");
+
+  // The dataset is the correct name, result: Keyword value
+  FitsParser fits_parser {"DATASET"};
+
+  BOOST_CHECK_EQUAL("TEST_NAME", fits_parser.getParameter(fits_file,"DATASET"));
+
+  BOOST_CHECK_EQUAL("", fits_parser.getParameter(fits_file,"NOT_EXISTING"));
+}
+
+
 
 //-----------------------------------------------------------------------------
 // Test the exception of the getName function
@@ -108,6 +142,9 @@ BOOST_FIXTURE_TEST_CASE(getName_function_test, FitsParser_Fixture) {
 
   BOOST_CHECK_EQUAL("FitsParser_test", fits_parser.getName(fits_file));
 }
+
+
+
 
 //-----------------------------------------------------------------------------
 // Test the getDataset function

@@ -50,7 +50,7 @@ BOOST_AUTO_TEST_SUITE (CatalogFromTable_test)
 BOOST_FIXTURE_TEST_CASE(createCatalog_test, TableFixture) {
 
   BOOST_TEST_MESSAGE("Create Catalog test");
-  unique_ptr<AttributeFromRow> photmetryAft_ptr {new PhotometryAttributeFromRow {column_info_ptr, filter_name_mapping, true, -99., true} };
+  unique_ptr<AttributeFromRow> photmetryAft_ptr {new PhotometryAttributeFromRow {column_info_ptr, filter_name_mapping, true, -99., true, threshold_mapping, -99} };
   vector<shared_ptr<AttributeFromRow>> attribute_from_table_vector;
 
   attribute_from_table_vector.push_back( move(photmetryAft_ptr) );
@@ -68,7 +68,7 @@ BOOST_FIXTURE_TEST_CASE(createCatalog_test, TableFixture) {
 BOOST_FIXTURE_TEST_CASE(createCatalogWithStringId_test, TableFixture) {
 
   BOOST_TEST_MESSAGE("Create Catalog with string ID test");
-  unique_ptr<AttributeFromRow> photmetryAft_ptr {new PhotometryAttributeFromRow {column_info_ptr, filter_name_mapping, true, -99., true} };
+  unique_ptr<AttributeFromRow> photmetryAft_ptr {new PhotometryAttributeFromRow {column_info_ptr, filter_name_mapping, true, -99., true, threshold_mapping, -99} };
   vector<shared_ptr<AttributeFromRow>> attribute_from_table_vector;
 
   attribute_from_table_vector.push_back( move(photmetryAft_ptr) );

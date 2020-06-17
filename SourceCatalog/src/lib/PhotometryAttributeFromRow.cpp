@@ -44,10 +44,14 @@ PhotometryAttributeFromRow::PhotometryAttributeFromRow(
     const vector<pair<string, std::pair<string, string>>>& filter_name_mapping,
     const bool missing_photometry_enabled,
     const double missing_photometry_flag,
-    const bool upper_limit_enabled) :
+    const bool upper_limit_enabled,
+    const std::vector<std::pair<std::string, float>> n_map,
+    const double n_upper_limit_flag) :
     m_missing_photometry_enabled(missing_photometry_enabled),
     m_missing_photometry_flag(missing_photometry_flag),
-    m_upper_limit_enabled(upper_limit_enabled){
+    m_upper_limit_enabled(upper_limit_enabled),
+    m_n_map(n_map),
+    m_n_upper_limit_flag(n_upper_limit_flag) {
 
   unique_ptr<size_t> flux_column_index_ptr;
   unique_ptr<size_t> error_column_index_ptr;
@@ -84,6 +88,7 @@ unique_ptr<Attribute> PhotometryAttributeFromRow::createAttribute(
 
   vector<FluxErrorPair> photometry_vector {};
 
+  auto n_threshod_iter = m_n_map.begin();
   for (auto& filter_index_pair : m_table_index_vector) {
     Euclid::Table::Row::cell_type flux_cell = row[filter_index_pair.first];
     Euclid::Table::Row::cell_type error_cell = row[filter_index_pair.second];
@@ -115,6 +120,9 @@ unique_ptr<Attribute> PhotometryAttributeFromRow::createAttribute(
           }
           if (error<0){
              /** Actual upper limit **/
+            if (error==m_n_upper_limit_flag){
+              error  = flux / n_threshod_iter->second;
+            }
              upper_limit=true;
              if (flux<=0){
                  throw SourceCatalog::PhotometryParsingException(
@@ -122,6 +130,7 @@ unique_ptr<Attribute> PhotometryAttributeFromRow::createAttribute(
                                  flux,
                                  error);
              }
+
              error=std::abs(error);
           }
         } else {
@@ -155,6 +164,9 @@ unique_ptr<Attribute> PhotometryAttributeFromRow::createAttribute(
         if (error<0){
           /** Actual upper limit **/
           upper_limit=true;
+          if (error==m_n_upper_limit_flag){
+            error = flux / n_threshod_iter->second;
+          }
           if (flux<=0){
                     throw SourceCatalog::PhotometryParsingException(
                         "Negative or Zero flux encountered when parsing the Photometry in the context of an 'upper limit'",
@@ -180,6 +192,7 @@ unique_ptr<Attribute> PhotometryAttributeFromRow::createAttribute(
 
 
     photometry_vector.push_back(FluxErrorPair{flux, error, missing_data, upper_limit});
+    ++n_threshod_iter;
   }//Eof for
 
   unique_ptr<Attribute> photometry_ptr { new Photometry{m_filter_name_vector_ptr, photometry_vector } };

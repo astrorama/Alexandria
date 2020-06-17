@@ -1,0 +1,121 @@
+
+
+@startuml TableClassDiagram.png
+
+skinparam defaultfontsize 15
+'left to right direction
+
+class Table {
+    - row_list : vecor<Row>
+    - column_info : ColumnInfo
+    + getColumnInfo() : ColumnInfo
+    + size(): int
+    + operator[](index) : Row
+    + begin() : iterator
+    + end() : iterator
+}
+
+class Row {
+    - values : vector<cell_type>
+    - column_info : ColumnInfo
+    + size(): int
+    + operator[](index) : cell_type
+    + operator[](colname) : cell_type
+    + begin() : iterator
+    + end() : iterator
+}
+
+class ColumnInfo {
+    - info_list : vector<ColumnDescription>
+    + size() : int
+    + getDescription(index) : ColumnDescription
+    + find(colname) : index
+}
+
+class ColumnDescription {
+    - name : string
+    - type : type_index
+    - unit : string
+    - description : string
+}
+
+class boost::variant {
+}
+
+class cell_type {
+    int32
+    int64
+    float
+    double
+    string
+    vector<int32>
+    vector<int64>
+    vector<float>
+    vector<double>
+    
+}
+
+class CastVisitor<From, To> {
+    + operator()(From) : To
+}
+
+boost::variant <|-- cell_type
+cell_type - CastVisitor
+ColumnDescription "1" *-- "*" ColumnInfo
+ColumnInfo --* Table
+ColumnInfo --* Row
+Table  "1" *- "*" Row
+cell_type "*" --* "1" Row
+
+interface TableReader {
+    + {abstract} getInfo() : ColumnInfo
+    + {abstract} hasMoreRows() : bool
+    + {abstract} rowsLeft() : int
+    + {abstract} skip(int)
+    + {abstract} read(int) : Table
+}
+
+class FitsReader {
+    - hdu : CCfits::HDU
+    + fixColumnNames(vector<string>)
+}
+
+class AsciiReader {
+    - stream : std::istream
+    + setCommentIndicator(string)
+    + fixColumnNames(vector<string>)
+    + fixColumnTypes(vector<type_index>)
+}
+
+Table -- TableReader
+TableReader <|.. FitsReader
+TableReader <|.. AsciiReader
+
+interface TableWriter {
+    + {abstract} addComment(string)
+    + {abstract} addData(Table)
+}
+
+class FitsWriter {
+    - hdu : CCfits::HDU
+    + setFormat(format)
+    + setHduName(string)
+}
+
+class AsciiWriter {
+    - stream : std::ostream
+    + setCommentIndicator(string)
+    + showColumnInfo(bool)
+}
+
+Table -- TableWriter
+TableWriter <|.. FitsWriter
+TableWriter <|.. AsciiWriter
+
+TableWriter -[hidden]- FitsReader
+TableWriter -[hidden]- AsciiReader
+
+hide empty fields
+hide empty methods
+
+@enduml

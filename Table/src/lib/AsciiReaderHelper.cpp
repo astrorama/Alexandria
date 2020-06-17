@@ -1,22 +1,22 @@
 /*
- * Copyright (C) 2012-2020 Euclid Science Ground Segment    
- *  
+ * Copyright (C) 2012-2020 Euclid Science Ground Segment
+ *
  * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free 
- * Software Foundation; either version 3.0 of the License, or (at your option)  
- * any later version.  
- *  
- * This library is distributed in the hope that it will be useful, but WITHOUT 
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 3.0 of the License, or (at your option)
+ * any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more  
- * details.  
- *  
- * You should have received a copy of the GNU Lesser General Public License 
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
  * along with this library; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA  
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
- 
- /** 
+
+ /**
  * @file src/lib/AsciiReaderHelper.cpp
  * @date April 15, 2014
  * @author Nikolaos Apostolakos
@@ -24,9 +24,6 @@
 
 #include <set>
 #include <sstream>
-#include <boost/regex.hpp>
-using boost::regex;
-using boost::regex_match;
 #include <boost/algorithm/string.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/tokenizer.hpp>
@@ -45,7 +42,7 @@ static Elements::Logging logger = Elements::Logging::getLogger("AsciiReader");
 size_t countColumns(std::istream& in, const std::string& comment) {
   StreamRewinder rewinder {in};
   size_t count = 0;
-  regex column_separator {"\\s+"};
+
   while (in) {
     std::string line;
     getline(in, line);
@@ -56,10 +53,11 @@ size_t countColumns(std::istream& in, const std::string& comment) {
     }
     boost::trim(line);
     if (!line.empty()) {
-      boost::sregex_token_iterator i (line.begin(), line.end(), column_separator, -1);
-      boost::sregex_token_iterator j;
-      while (i != j) {
-        ++i;
+      std::string token;
+      std::stringstream line_stream(line);
+      line_stream >> boost::io::quoted(token);
+      while (line_stream) {
+        line_stream >> boost::io::quoted(token);
         ++count;
       }
       break;
@@ -128,38 +126,37 @@ std::map<std::string, ColumnDescription> autoDetectColumnDescriptions(
         line.erase(0, 7);
         boost::trim(line);
         if (!line.empty()) {
-          boost::sregex_token_iterator token (line.begin(), line.end(), regex{"\\s+"}, -1);
-          boost::sregex_token_iterator end;
-          std::string name = *token;
+          std::string token;
+          std::stringstream line_stream(line);
+          std::string name;
+          line_stream >> boost::io::quoted(name);
           if (descriptions.count(name) != 0) {
             throw Elements::Exception() << "Duplicate column name " << name;
           }
-          ++token;
+          line_stream >> boost::io::quoted(token);
           std::type_index type = typeid(std::string);
-          if (token != end) {
-            std::string token_str =*token;
-            if (!boost::starts_with(token_str, "(") && token_str != "-") {
-              type = keywordToType(token_str);
-              ++token;
+          if (line_stream) {
+            if (!boost::starts_with(token, "(") && token != "-") {
+              type = keywordToType(token);
+              line_stream >> boost::io::quoted(token);
             }
           }
           std::string unit = "";
-          if (token != end) {
-            std::string token_str = *token;
-            if (boost::starts_with(token_str, "(")) {
-              unit = token_str;
+          if (line_stream) {
+            if (boost::starts_with(token, "(")) {
+              unit = token;
               unit.erase(unit.begin());
               unit.erase(unit.end()-1);
-              ++token;
+              line_stream >> boost::io::quoted(token);
             }
           }
-          if (token != end && *token == "-") {
-            ++token;
+          if (line_stream && token == "-") {
+            line_stream >> boost::io::quoted(token);
           }
           std::stringstream desc;
-          while (token != end) {
-            desc << *token << ' ';
-            ++token;
+          while (line_stream) {
+            desc << token << ' ';
+            line_stream >> boost::io::quoted(token);
           }
           std::string desc_str = desc.str();
           boost::trim(desc_str);
@@ -180,7 +177,7 @@ std::vector<std::string> autoDetectColumnNames(std::istream& in,
                                                size_t columns_number) {
   StreamRewinder rewinder {in};
   std::vector<std::string> names {};
-  
+
   // Find the last comment line and at the same time read the names of the
   // column info description comments
   std::string last_comment {};
@@ -214,20 +211,21 @@ std::vector<std::string> autoDetectColumnNames(std::istream& in,
       break; // here we reached the first data line
     }
   }
-  
+
   // Check if the last comment line contains the names of the columns
   if (!last_comment.empty()){
-    boost::sregex_token_iterator i (last_comment.begin(), last_comment.end(), regex{"\\s+"}, -1);
-    boost::sregex_token_iterator j;
-    while (i != j) {
-      names.push_back(*i);
-      ++i;
+    std::stringstream line_stream(last_comment);
+    std::string token;
+    line_stream >> boost::io::quoted(token);
+    while (line_stream) {
+      names.push_back(token);
+      line_stream >> boost::io::quoted(token);
     }
     if (names.size() != columns_number) {
       names.clear();
     }
   }
-  
+
   // If the names are empty we fill them with the column descriprion ones
   if (names.empty()) {
     if (desc_names.size() != 0 && desc_names.size() != columns_number) {
@@ -236,7 +234,7 @@ std::vector<std::string> autoDetectColumnNames(std::istream& in,
     }
     names = desc_names;
   }
-  
+
   if (names.size() < columns_number) {
     for (size_t i=names.size()+1; i<=columns_number; ++i) {
       names.push_back("col" + std::to_string(i));
