@@ -78,6 +78,13 @@ nd_array.size(); // 3*2*4 = 24
 nd_array.data();
 \endcode
 
+NdArray can be reshaped as long as the new shape matches exactly the number of elements already
+contained within the array.
+
+\code{.cpp}
+nd_array.reshape(24); // Now nd_array is a single row with 24 elements
+\endcode
+
 Last, there is an overload of the operator `<<` for `std::ostream`. This can be useful for debugging, but
 it is also necessary for the implementation of Euclid::Table::AsciiWriter, as it relies on the existence of
 this operator (technically, `boost::lexical_cast` does). The output has the form `<shape>values`.

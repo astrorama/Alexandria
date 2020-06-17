@@ -8,6 +8,7 @@ class NdArray<T, Container> {
   + NdArray(shape)
   + NdArray(shape, data)
   + shape() const : vector<size_t>
+  + reshape()
   + at(coords) : T
   + begin() : iterator
   + end() : iterator
