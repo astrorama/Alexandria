@@ -1,17 +1,17 @@
-/*  
- * Copyright (C) 2012-2020 Euclid Science Ground Segment    
- *  
- * This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General  
- * Public License as published by the Free Software Foundation; either version 3.0 of the License, or (at your option)  
- * any later version.  
- *  
- * This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied  
- * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more  
- * details.  
- *  
- * You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to  
- * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA  
- */  
+/*
+ * Copyright (C) 2012-2020 Euclid Science Ground Segment
+ *
+ * This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General
+ * Public License as published by the Free Software Foundation; either version 3.0 of the License, or (at your option)
+ * any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
+ * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+ */
 
 /**
  * @file src/lib/ConfigManager.cpp
@@ -93,16 +93,16 @@ static void cleanupNonRegisteredDependencies(std::map<std::type_index, std::set<
 
 po::options_description ConfigManager::closeRegistration() {
   m_state = State::WAITING_INITIALIZATION;
-  
+
   // Populate the dependencies map
   for (auto& pair : m_config_dictionary) {
     m_dependency_map[pair.first].insert(pair.second->getDependencies().begin(),
                                         pair.second->getDependencies().end());
   }
-  
+
   // Cleanup any dependencies related with non register configurations
   cleanupNonRegisteredDependencies(m_dependency_map, m_config_dictionary);
-  
+
   // Check for circular dependencies
   for (auto& pair : m_config_dictionary) {
     auto found = hasCircularDependencies(m_dependency_map, pair.first, *m_dependency_map.find(pair.first));
@@ -116,7 +116,7 @@ po::options_description ConfigManager::closeRegistration() {
       throw Elements::Exception() << "Circular dependency between configurations";
     }
   }
-  
+
   std::map<std::string, po::options_description> all_options {};
   for (auto& config : m_config_dictionary) {
     for (auto& pair : config.second->getProgramOptions()) {
@@ -129,12 +129,12 @@ po::options_description ConfigManager::closeRegistration() {
       }
     }
   }
-  
+
   po::options_description result {};
   for (auto& pair : all_options) {
     result.add(pair.second);
   }
-  
+
   return result;
 }
 
@@ -145,11 +145,11 @@ static void recursiveInitialization(const std::map<std::type_index, std::unique_
   if (dictionary.at(config)->getCurrentState() >= Configuration::State::INITIALIZED) {
     return;
   }
-  
+
   for (auto& dependency : dependency_map.at(config)) {
     recursiveInitialization(dictionary, dependency_map, user_values, dependency);
   }
-  
+
   dictionary.at(config)->initialize(user_values);
   dictionary.at(config)->getCurrentState() = Configuration::State::INITIALIZED;
 }
@@ -157,13 +157,16 @@ static void recursiveInitialization(const std::map<std::type_index, std::unique_
 void ConfigManager::initialize(const std::map<std::string, po::variable_value>& user_values) {
   m_state = State::INITIALIZED;
   for (auto& pair : m_config_dictionary) {
+    logger.debug() << "Pre-Initializing configuration :" <<  pair.first.name();
     pair.second->preInitialize(user_values);
     pair.second->getCurrentState() = Configuration::State::PRE_INITIALIZED;
   }
   for (auto& pair : m_config_dictionary) {
+    logger.debug() << "Initializing configuration :" <<  pair.first.name();
     recursiveInitialization(m_config_dictionary, m_dependency_map, user_values, pair.first);
   }
   for (auto& pair : m_config_dictionary) {
+    logger.debug() << "Post-Initializing configuration :" <<  pair.first.name();
     pair.second->postInitialize(user_values);
     pair.second->getCurrentState() = Configuration::State::FINAL;
   }
