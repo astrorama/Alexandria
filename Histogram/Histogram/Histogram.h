@@ -319,7 +319,8 @@ private:
 
     virtual ~ComputationInterface() = default;
 
-    ComputationInterface(): m_counts(new std::vector<WeightType>()) {}
+    ComputationInterface() : m_counts(new std::vector<WeightType>()), m_clip_left(0),
+                             m_clip_right(m_counts->size() - 1) {}
 
     size_t size() const {
       return m_clip_right - m_clip_left + 1;
