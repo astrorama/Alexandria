@@ -317,6 +317,8 @@ private:
     std::shared_ptr<std::vector<WeightType>> m_counts;
     ssize_t m_clip_left, m_clip_right;
 
+    virtual ~ComputationInterface() = default;
+
     ComputationInterface(): m_counts(new std::vector<WeightType>()) {}
 
     size_t size() const {
