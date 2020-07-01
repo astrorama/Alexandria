@@ -25,7 +25,6 @@
 
 #include "SourceCatalog/SourceAttributes/Photometry.h"
 
-using namespace std;
 
 namespace Euclid {
 namespace SourceCatalog {
@@ -33,10 +32,9 @@ namespace SourceCatalog {
 //-----------------------------------------------------------------------------
 // find the value and error in the map for a specific filter name
 // return a ptr to a ValuePair(value, error) and null pointer otherwise
-unique_ptr<FluxErrorPair> Photometry::find(string filter_name) const
+std::unique_ptr<FluxErrorPair> Photometry::find(std::string filter_name) const
 {
-
-  unique_ptr<FluxErrorPair> flux_found_ptr {};
+  std::unique_ptr<FluxErrorPair> flux_found_ptr {};
   auto filter_iter = m_filter_name_vector_ptr->begin();
   auto photometry_iter = m_value_vector.begin();
   while (filter_iter != m_filter_name_vector_ptr->end()) {
@@ -47,7 +45,7 @@ unique_ptr<FluxErrorPair> Photometry::find(string filter_name) const
     ++photometry_iter;
   }
   if (filter_iter != m_filter_name_vector_ptr->end()) {
-    flux_found_ptr = unique_ptr<FluxErrorPair>{new FluxErrorPair{*photometry_iter} };
+    flux_found_ptr = std::unique_ptr<FluxErrorPair>{new FluxErrorPair{*photometry_iter} };
   }
 
   return flux_found_ptr;

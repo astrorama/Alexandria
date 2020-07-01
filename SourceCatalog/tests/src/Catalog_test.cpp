@@ -1,21 +1,21 @@
 /*
- * Copyright (C) 2012-2020 Euclid Science Ground Segment    
- *  
+ * Copyright (C) 2012-2020 Euclid Science Ground Segment
+ *
  * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free 
- * Software Foundation; either version 3.0 of the License, or (at your option)  
- * any later version.  
- *  
- * This library is distributed in the hope that it will be useful, but WITHOUT 
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 3.0 of the License, or (at your option)
+ * any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more  
- * details.  
- *  
- * You should have received a copy of the GNU Lesser General Public License 
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
  * along with this library; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA  
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
- 
+
  /**
  * @file tests/src/Catalog_test.cpp
  *
@@ -36,11 +36,7 @@
 // Include the CatalogFixture which include a photometry mock object we use here for the test
 #include "tests/src/CatalogFixture.h"
 
-
 using namespace Euclid::SourceCatalog;
-using namespace std;
-
-
 
 
 //-----------------------------------------------------------------------------
@@ -63,8 +59,8 @@ BOOST_FIXTURE_TEST_CASE( find_test, CatalogFixture ) {
 
   BOOST_TEST_MESSAGE("--> find test ");
 
-  shared_ptr<Source> a_source(catalog.find(expected_source_id_2));
-  shared_ptr<Coordinates> coordinates(a_source->getAttribute<Coordinates>());
+  std::shared_ptr<Source> a_source(catalog.find(expected_source_id_2));
+  std::shared_ptr<Coordinates> coordinates(a_source->getAttribute<Coordinates>());
 
   BOOST_CHECK_EQUAL(expected_ra_2, coordinates->getRa());
   BOOST_CHECK_EQUAL(expected_dec_2, coordinates->getDec());
@@ -77,7 +73,7 @@ BOOST_FIXTURE_TEST_CASE( find_missig_source_test, CatalogFixture ) {
 
   BOOST_TEST_MESSAGE("--> find test ");
 
-  shared_ptr<Source> pSource(catalog.find(999999));
+  std::shared_ptr<Source> pSource(catalog.find(999999));
 
   BOOST_CHECK(nullptr == pSource);
 
@@ -89,7 +85,7 @@ BOOST_FIXTURE_TEST_CASE( identical_sources_test, CatalogFixture ) {
 
   BOOST_TEST_MESSAGE("--> identical_sources test ");
 
-  vector<Source> source_vector_identical {};
+  std::vector<Source> source_vector_identical {};
 
   source_vector_identical.push_back(Source(expected_source_id_1, attribute_vector_1));
   source_vector_identical.push_back(Source(expected_source_id_2, attribute_vector_2));
