@@ -1,17 +1,17 @@
-/*  
- * Copyright (C) 2012-2020 Euclid Science Ground Segment    
- *  
- * This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General  
- * Public License as published by the Free Software Foundation; either version 3.0 of the License, or (at your option)  
- * any later version.  
- *  
- * This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied  
- * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more  
- * details.  
- *  
- * You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to  
- * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA  
- */  
+/*
+ * Copyright (C) 2012-2020 Euclid Science Ground Segment
+ *
+ * This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General
+ * Public License as published by the Free Software Foundation; either version 3.0 of the License, or (at your option)
+ * any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
+ * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+ */
 
 /**
  * @file src/lib/CatalogConfig.icpp
@@ -134,9 +134,9 @@ FormatType getFormatTypeFromOptions(const Configuration::UserValues& args,
 
 std::unique_ptr<Table::TableReader> getTableReaderImpl(bool fits_format, const boost::filesystem::path& filename) {
   if (fits_format) {
-    return make_unique<Table::FitsReader>(filename.native(), 1);
+    return Euclid::make_unique<Table::FitsReader>(filename.native(), 1);
   } else {
-    return make_unique<Table::AsciiReader>(filename.native());
+    return Euclid::make_unique<Table::AsciiReader>(filename.native());
   }
 }
 
@@ -206,22 +206,22 @@ std::string CatalogConfig::getIdColumn() const {
 namespace {
 
 class ConverterImpl {
-  
+
 public:
-  
+
   ConverterImpl(std::shared_ptr<Table::ColumnInfo> column_info, const std::string& id_column_name,
                 std::vector<std::shared_ptr<SourceCatalog::AttributeFromRow>> attribute_handlers)
           : m_converter(column_info, id_column_name, std::move(attribute_handlers)) {
   }
-          
+
   SourceCatalog::Catalog operator()(const Table::Table& table) {
     return m_converter.createCatalog(table);
   }
-  
+
 private:
-  
+
   SourceCatalog::CatalogFromTable m_converter;
-  
+
 };
 
 } // Anonymous namespace

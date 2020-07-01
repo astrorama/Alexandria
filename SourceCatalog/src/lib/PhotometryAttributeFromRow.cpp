@@ -1,21 +1,21 @@
 /*
- * Copyright (C) 2012-2020 Euclid Science Ground Segment    
- *  
+ * Copyright (C) 2012-2020 Euclid Science Ground Segment
+ *
  * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free 
- * Software Foundation; either version 3.0 of the License, or (at your option)  
- * any later version.  
- *  
- * This library is distributed in the hope that it will be useful, but WITHOUT 
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 3.0 of the License, or (at your option)
+ * any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more  
- * details.  
- *  
- * You should have received a copy of the GNU Lesser General Public License 
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
  * along with this library; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA  
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
- 
+
  /**
  * @file src/lib/PhotometryAttributeFromRow.cpp
  *
@@ -34,14 +34,12 @@
 #include "Table/CastVisitor.h"
 
 
-using namespace std;
-
 namespace Euclid {
 namespace SourceCatalog {
 
 PhotometryAttributeFromRow::PhotometryAttributeFromRow(
     std::shared_ptr<Euclid::Table::ColumnInfo> column_info_ptr,
-    const vector<pair<string, std::pair<string, string>>>& filter_name_mapping,
+    const std::vector<std::pair<std::string, std::pair<std::string, std::string>>>& filter_name_mapping,
     const bool missing_photometry_enabled,
     const double missing_photometry_flag,
     const bool upper_limit_enabled,
@@ -53,8 +51,8 @@ PhotometryAttributeFromRow::PhotometryAttributeFromRow(
     m_n_map(n_map),
     m_n_upper_limit_flag(n_upper_limit_flag) {
 
-  unique_ptr<size_t> flux_column_index_ptr;
-  unique_ptr<size_t> error_column_index_ptr;
+  std::unique_ptr<size_t> flux_column_index_ptr;
+  std::unique_ptr<size_t> error_column_index_ptr;
 
   for (auto filter_name_pair : filter_name_mapping) {
     flux_column_index_ptr = column_info_ptr->find(filter_name_pair.second.first);
@@ -68,11 +66,11 @@ PhotometryAttributeFromRow::PhotometryAttributeFromRow(
       throw Elements::Exception() << "Column info does not have the flux error column "
                                   << filter_name_pair.second.second;
     }
-    m_table_index_vector.push_back(make_pair(*(flux_column_index_ptr), *(error_column_index_ptr)));
+    m_table_index_vector.push_back(std::make_pair(*(flux_column_index_ptr), *(error_column_index_ptr)));
   }
 
   // create and filled the shared pointer to the filter name vector
-  m_filter_name_vector_ptr = shared_ptr<vector<string>>{new vector<string>{} };
+  m_filter_name_vector_ptr = std::make_shared<std::vector<std::string>>();
   for(auto a_filter_name_map: filter_name_mapping) {
     m_filter_name_vector_ptr->push_back(a_filter_name_map.first);
   }
@@ -83,10 +81,10 @@ PhotometryAttributeFromRow::~PhotometryAttributeFromRow() {
   // @todo Auto-generated destructor stub
 }
 
-unique_ptr<Attribute> PhotometryAttributeFromRow::createAttribute(
+std::unique_ptr<Attribute> PhotometryAttributeFromRow::createAttribute(
     const Euclid::Table::Row& row) {
 
-  vector<FluxErrorPair> photometry_vector {};
+  std::vector<FluxErrorPair> photometry_vector {};
 
   auto n_threshod_iter = m_n_map.begin();
   for (auto& filter_index_pair : m_table_index_vector) {
@@ -195,7 +193,7 @@ unique_ptr<Attribute> PhotometryAttributeFromRow::createAttribute(
     ++n_threshod_iter;
   }//Eof for
 
-  unique_ptr<Attribute> photometry_ptr { new Photometry{m_filter_name_vector_ptr, photometry_vector } };
+  std::unique_ptr<Attribute> photometry_ptr { new Photometry{m_filter_name_vector_ptr, photometry_vector } };
 
   return photometry_ptr;
 }
