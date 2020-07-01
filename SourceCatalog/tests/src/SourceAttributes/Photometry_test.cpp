@@ -32,7 +32,6 @@
 #include "tests/src/CatalogFixture.h"
 
 using namespace Euclid::SourceCatalog;
-using namespace std;
 
 //----------------------------------------------------------------------------
 
@@ -42,8 +41,8 @@ BOOST_FIXTURE_TEST_CASE( find_test, CatalogFixture ) {
 
   BOOST_TEST_MESSAGE("--> find test ");
 
-  shared_ptr<FluxErrorPair> ptr1 = photometry.find(expected_filter_name_1);
-  shared_ptr<FluxErrorPair> ptr2 = photometry.find(expected_filter_name_2);
+  std::shared_ptr<FluxErrorPair> ptr1 = photometry.find(expected_filter_name_1);
+  std::shared_ptr<FluxErrorPair> ptr2 = photometry.find(expected_filter_name_2);
 
   BOOST_CHECK_CLOSE(expected_flux_1, ptr1->flux, tolerance);
   BOOST_CHECK_CLOSE(expected_error_1, ptr1->error, tolerance);
@@ -55,7 +54,7 @@ BOOST_FIXTURE_TEST_CASE( not_found_test, CatalogFixture ) {
 
   BOOST_TEST_MESSAGE("--> not found find test! ");
 
-  unique_ptr<FluxErrorPair> ptr1 = photometry.find("AnotherFilterGroup/AnotherFilterName");
+  std::unique_ptr<FluxErrorPair> ptr1 = photometry.find("AnotherFilterGroup/AnotherFilterName");
   BOOST_CHECK(ptr1 == nullptr);
 }
 
@@ -102,7 +101,7 @@ BOOST_FIXTURE_TEST_CASE( iterator_getter_test, CatalogFixture ) {
 BOOST_FIXTURE_TEST_CASE ( iterator_modify_test, CatalogFixture ) {
   BOOST_TEST_MESSAGE("--> iterator set test ");
 
-  vector<FluxErrorPair> new_values {{1.56, 0.3}, {4.4, 1e-3}};
+  std::vector<FluxErrorPair> new_values {{1.56, 0.3}, {4.4, 1e-3}};
 
   // Modify the photometries
   size_t i = 0;

@@ -30,30 +30,30 @@ namespace Euclid {
 namespace {
 
 class Worker {
-  
+
 public:
-  
+
   Worker(std::mutex& queue_mutex, std::deque<ThreadPool::Task>& queue,
                   std::atomic<bool>& run_flag, std::atomic<bool>& sleeping_flag,
                   std::atomic<bool>& done_flag, unsigned int empty_queue_wait_time,
                   std::exception_ptr& exception_ptr)
         : m_queue_mutex(queue_mutex), m_queue(queue), m_run_flag(run_flag),
-          m_sleeping_flag(sleeping_flag), m_done_flag(done_flag), 
+          m_sleeping_flag(sleeping_flag), m_done_flag(done_flag),
           m_empty_queue_wait_time(empty_queue_wait_time),
           m_exception_ptr(exception_ptr) {
   }
-        
+
   void operator()() {
     while (m_run_flag.get() && m_exception_ptr == nullptr) {
       // Check if there is anything it the queue to be done and get it
       std::unique_ptr<ThreadPool::Task> task_ptr = nullptr;
       std::unique_lock<std::mutex> lock {m_queue_mutex.get()};
       if (!m_queue.get().empty()) {
-        task_ptr = make_unique<ThreadPool::Task>(m_queue.get().front());
+        task_ptr = Euclid::make_unique<ThreadPool::Task>(m_queue.get().front());
         m_queue.get().pop_front();
       }
       lock.unlock();
-      
+
       // If we have some work to do, do it. Otherwise sleep for some time.
       if (task_ptr) {
         try {
@@ -71,7 +71,7 @@ public:
     m_sleeping_flag.get() = true;
     m_done_flag.get() = true;
   }
-  
+
 private:
 
   std::reference_wrapper<std::mutex> m_queue_mutex;
@@ -81,9 +81,9 @@ private:
   std::reference_wrapper<std::atomic<bool>> m_done_flag;
   unsigned int m_empty_queue_wait_time;
   std::reference_wrapper<std::exception_ptr> m_exception_ptr;
-  
+
 };
-  
+
 } // end of anonymous namespace
 
 ThreadPool::ThreadPool(unsigned int thread_count, unsigned int empty_queue_wait_time)

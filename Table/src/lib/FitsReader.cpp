@@ -51,11 +51,11 @@ FitsReader::FitsReader(const CCfits::HDU& hdu) : m_hdu(hdu) {
 }
 
 FitsReader::FitsReader(const std::string& filename, int hduIndex)
-        : m_fits(make_unique<CCfits::FITS>(filename)), m_hdu(_readKeys(m_fits->extension(hduIndex))) {
+        : m_fits(Euclid::make_unique<CCfits::FITS>(filename)), m_hdu(_readKeys(m_fits->extension(hduIndex))) {
 }
 
 FitsReader::FitsReader(const std::string& filename, const std::string& hduName)
-        : m_fits(make_unique<CCfits::FITS>(filename)), m_hdu(_readKeys(m_fits->extension(hduName))) {
+        : m_fits(Euclid::make_unique<CCfits::FITS>(filename)), m_hdu(_readKeys(m_fits->extension(hduName))) {
 }
 
 FitsReader& FitsReader::fixColumnNames(std::vector<std::string> column_names) {
@@ -63,9 +63,9 @@ FitsReader& FitsReader::fixColumnNames(std::vector<std::string> column_names) {
     throw Elements::Exception() << "Fixing the column names after reading "
             << "has started is not allowed";
   }
-  
+
   m_column_names = std::move(column_names);
-  
+
   std::set<std::string> set {};
   regex whitespace {".*\\s.*"}; // Checks if input contains any whitespace characters
   for (const auto& name : m_column_names) {
@@ -80,7 +80,7 @@ FitsReader& FitsReader::fixColumnNames(std::vector<std::string> column_names) {
       throw Elements::Exception() << "Duplicate column name " << name;
     }
   }
-  
+
   return *this;
 }
 
@@ -89,14 +89,14 @@ void FitsReader::readColumnInfo() {
     return;
   }
   m_reading_started = true;
-  
+
   try {
     ELEMENTS_UNUSED auto& temp = dynamic_cast<const CCfits::Table&>(m_hdu.get());
   } catch (std::bad_cast&) {
     throw Elements::Exception() << "Given HDU is not a table";
   }
   const CCfits::Table& table_hdu = dynamic_cast<const CCfits::Table&>(m_hdu.get());
-  
+
   m_total_rows = table_hdu.rows();
 
   std::vector<std::string> names {};
@@ -125,7 +125,7 @@ std::string FitsReader::getComment() {
 
 Table FitsReader::readImpl(long rows) {
   readColumnInfo();
-  
+
   // Compute how many rows we are going to read
   if (m_current_row > m_total_rows) {
     throw Elements::Exception() << "No more table rows left";
@@ -134,7 +134,7 @@ Table FitsReader::readImpl(long rows) {
     rows = m_total_rows - m_current_row + 1;
   }
   rows = std::min(rows, m_total_rows-m_current_row+1);
-  
+
   const CCfits::Table& table_hdu = dynamic_cast<const CCfits::Table&>(m_hdu.get());
 
   // CCfits reads per column, so we first read all the columns and then we
@@ -144,7 +144,7 @@ Table FitsReader::readImpl(long rows) {
     // The i-1 is because CCfits starts from 1 and ColumnInfo from 0
     data.push_back(translateColumn(table_hdu.column(i), m_column_info->getDescription(i-1).type, m_current_row, m_current_row + rows - 1));
   }
-  
+
   m_current_row += rows;
 
   std::vector<Row> row_list;
