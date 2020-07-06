@@ -36,15 +36,15 @@ BOOST_AUTO_TEST_SUITE (GridAxis_test)
 BOOST_AUTO_TEST_CASE(name) {
   
   // Given
-  std::string name = "AxisName";
+  std::string test_name = "AxisName";
   std::vector<double> knots {};
-  Euclid::GridContainer::GridAxis<double> axis {name, knots};
+  Euclid::GridContainer::GridAxis<double> axis {test_name, knots};
   
   // When
   auto& result = axis.name();
   
   // Then
-  BOOST_CHECK_EQUAL(result, name);
+  BOOST_CHECK_EQUAL(result, test_name);
   
 }
 
@@ -55,9 +55,9 @@ BOOST_AUTO_TEST_CASE(name) {
 BOOST_AUTO_TEST_CASE(size) {
   
   // Given
-  std::string name = "AxisName";
+  std::string test_name = "AxisName";
   std::vector<double> knots {{1., 2., 2.5, 3.8}};
-  Euclid::GridContainer::GridAxis<double> axis {name, knots};
+  Euclid::GridContainer::GridAxis<double> axis {test_name, knots};
   
   // When
   auto size = axis.size();
@@ -74,9 +74,9 @@ BOOST_AUTO_TEST_CASE(size) {
 BOOST_AUTO_TEST_CASE(iterator) {
   
   // Given
-  std::string name = "AxisName";
+  std::string test_name = "AxisName";
   std::vector<double> knots {{1., 2., 2.5, 3.8}};
-  Euclid::GridContainer::GridAxis<double> axis {name, knots};
+  Euclid::GridContainer::GridAxis<double> axis {test_name, knots};
   
   // When
   auto axis_iter = axis.begin();
@@ -99,9 +99,9 @@ BOOST_AUTO_TEST_CASE(iterator) {
 BOOST_AUTO_TEST_CASE(indexAccess) {
   
   // Given
-  std::string name = "AxisName";
+  std::string test_name = "AxisName";
   std::vector<double> knots {{1., 2., 2.5, 3.8}};
-  Euclid::GridContainer::GridAxis<double> axis {name, knots};
+  Euclid::GridContainer::GridAxis<double> axis {test_name, knots};
   
   // When
   auto axis_iter = axis.begin();

@@ -20,6 +20,7 @@
  */
 
 #include <fstream>
+#include <string>
 #include <boost/test/unit_test.hpp>
 #include <boost/filesystem.hpp>
 #include <CCfits/CCfits>
@@ -65,7 +66,7 @@ struct BaseDirConfig : public Configuration {
 };
 
 struct TestAttribute : public Attribute {
-  explicit TestAttribute(std::int64_t value) : value{value} {}
+  explicit TestAttribute(std::int64_t test_value) : value{test_value} {}
   std::int64_t value;
 };
 
@@ -488,8 +489,8 @@ BOOST_FIXTURE_TEST_CASE(getTableReader_test, CatalogConfig_fixture) {
   // When
   config_manager.initialize(options_map);
   auto reader = config_manager.getConfiguration<CatalogConfig>().getTableReader();
-  auto table = reader->read();
-  auto& column_info = *table.getColumnInfo();
+  auto test_table = reader->read();
+  auto& column_info = *test_table.getColumnInfo();
 
 
   //Then
@@ -499,18 +500,18 @@ BOOST_FIXTURE_TEST_CASE(getTableReader_test, CatalogConfig_fixture) {
   BOOST_CHECK_EQUAL(column_info.getDescription(2).name, "ID1");
   BOOST_CHECK_EQUAL(column_info.getDescription(3).name, "ID2");
 
-  BOOST_CHECK_EQUAL(boost::get<std::int64_t>(table[0][0]), 10);
-  BOOST_CHECK_EQUAL(boost::get<std::int64_t>(table[0][1]), 20);
-  BOOST_CHECK_EQUAL(boost::get<std::int64_t>(table[0][2]), 30);
-  BOOST_CHECK_EQUAL(boost::get<std::int64_t>(table[0][3]), 40);
-  BOOST_CHECK_EQUAL(boost::get<std::int64_t>(table[1][0]), 11);
-  BOOST_CHECK_EQUAL(boost::get<std::int64_t>(table[1][1]), 21);
-  BOOST_CHECK_EQUAL(boost::get<std::int64_t>(table[1][2]), 31);
-  BOOST_CHECK_EQUAL(boost::get<std::int64_t>(table[1][3]), 41);
-  BOOST_CHECK_EQUAL(boost::get<std::int64_t>(table[2][0]), 12);
-  BOOST_CHECK_EQUAL(boost::get<std::int64_t>(table[2][1]), 22);
-  BOOST_CHECK_EQUAL(boost::get<std::int64_t>(table[2][2]), 32);
-  BOOST_CHECK_EQUAL(boost::get<std::int64_t>(table[2][3]), 42);
+  BOOST_CHECK_EQUAL(boost::get<std::int64_t>(test_table[0][0]), 10);
+  BOOST_CHECK_EQUAL(boost::get<std::int64_t>(test_table[0][1]), 20);
+  BOOST_CHECK_EQUAL(boost::get<std::int64_t>(test_table[0][2]), 30);
+  BOOST_CHECK_EQUAL(boost::get<std::int64_t>(test_table[0][3]), 40);
+  BOOST_CHECK_EQUAL(boost::get<std::int64_t>(test_table[1][0]), 11);
+  BOOST_CHECK_EQUAL(boost::get<std::int64_t>(test_table[1][1]), 21);
+  BOOST_CHECK_EQUAL(boost::get<std::int64_t>(test_table[1][2]), 31);
+  BOOST_CHECK_EQUAL(boost::get<std::int64_t>(test_table[1][3]), 41);
+  BOOST_CHECK_EQUAL(boost::get<std::int64_t>(test_table[2][0]), 12);
+  BOOST_CHECK_EQUAL(boost::get<std::int64_t>(test_table[2][1]), 22);
+  BOOST_CHECK_EQUAL(boost::get<std::int64_t>(test_table[2][2]), 32);
+  BOOST_CHECK_EQUAL(boost::get<std::int64_t>(test_table[2][3]), 42);
 
 }
 
@@ -526,9 +527,9 @@ BOOST_FIXTURE_TEST_CASE(getTableToCatalogConverter_test, CatalogConfig_fixture) 
   // When
   config_manager.initialize(options_map);
   auto reader = config_manager.getConfiguration<CatalogConfig>().getTableReader();
-  auto table = reader->read();
+  auto test_table = reader->read();
   auto converter = config_manager.getConfiguration<CatalogConfig>().getTableToCatalogConverter();
-  auto catalog = converter(table);
+  auto catalog = converter(test_table);
 
   //Then
   BOOST_CHECK_EQUAL(catalog.size(), 3);

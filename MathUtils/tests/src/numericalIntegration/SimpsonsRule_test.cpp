@@ -219,14 +219,14 @@ BOOST_FIXTURE_TEST_CASE(Linear, simpsonsRule_Fixture) {
 }
 
 BOOST_FIXTURE_TEST_CASE(quadratic, simpsonsRule_Fixture) {
-  QuadraticFunction quadratic { 1.0, 0., 0, };
-  double result = quadrature(quadratic, 0., 1., 3);
+  QuadraticFunction quadratic_func_test { 1.0, 0., 0, };
+  double result = quadrature(quadratic_func_test, 0., 1., 3);
   BOOST_CHECK(Elements::isEqual(result, 1. / 3.));
 }
 
 BOOST_FIXTURE_TEST_CASE(cubic, simpsonsRule_Fixture) {
-  CubicFunction cubic { 1., 0., 0., 0. };
-  double result = quadrature(cubic, 0., 1., 3);
+  CubicFunction cubic_func_test { 1., 0., 0., 0. };
+  double result = quadrature(cubic_func_test, 0., 1., 3);
   BOOST_CHECK(Elements::isEqual(result, 1. / 4.));
 }
 
