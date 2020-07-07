@@ -176,11 +176,11 @@ BOOST_FIXTURE_TEST_CASE(Spline_extrapolation, Spline_Fixture) {
 BOOST_FIXTURE_TEST_CASE(Spline_1DataPoint, Spline_Fixture) {
 
   // Given
-  std::vector<double> x {2.};
-  std::vector<double> y {42.};
+  std::vector<double> x_test_value {2.};
+  std::vector<double> y_test_value {42.};
 
   // When
-  auto linear = Euclid::MathUtils::interpolate(x, y, Euclid::MathUtils::InterpolationType::CUBIC_SPLINE, true);
+  auto linear = Euclid::MathUtils::interpolate(x_test_value, y_test_value, Euclid::MathUtils::InterpolationType::CUBIC_SPLINE, true);
   double value1 = (*linear)(-2.);
   double value2 = (*linear)(-1.);
   double value3 = (*linear)(-.5);
