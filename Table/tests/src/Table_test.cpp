@@ -107,10 +107,10 @@ BOOST_FIXTURE_TEST_CASE(size, Table_Fixture) {
   Euclid::Table::Table table{row_list};
   
   // When
-  std::size_t size = table.size();
+  std::size_t size_test_value = table.size();
   
   // Then
-  BOOST_CHECK_EQUAL(size, row_list.size());
+  BOOST_CHECK_EQUAL(size_test_value, row_list.size());
   
 }
 

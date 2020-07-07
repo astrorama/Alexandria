@@ -118,20 +118,20 @@ Cumulative Cumulative::fromPdf(const XYDataset::XYDataset &  sampling) {
       ++iter_x;
       ++iter_y;
     }
-    double begin = *iter_x;
+    double begin_value = *iter_x;
     double tray = *iter_y;
     while (iter_y!=m_y_sampling.cend() && (*iter_y)==tray){
       ++iter_x;
       ++iter_y;
     }
     
-    double end = *(--iter_x);
+    double end_value = *(--iter_x);
     
     double result = 0;
     switch(position) {
-        case TrayPosition::begin: result = begin;   break;
-        case TrayPosition::middle: result = 0.5*(begin + end); break;
-        case TrayPosition::end: result = end;  break;
+        case TrayPosition::begin: result = begin_value;   break;
+        case TrayPosition::middle: result = 0.5*(begin_value + end_value); break;
+        case TrayPosition::end: result = end_value;  break;
     }
     
     return result;

@@ -27,8 +27,8 @@
 namespace Euclid {
 namespace SourceCatalog {
 
-FluxErrorPair::FluxErrorPair(double flux, double error, bool no_data, bool upper_limit)
-        : flux(flux), error(error), missing_photometry_flag(no_data),
+FluxErrorPair::FluxErrorPair(double input_flux, double input_error, bool no_data, bool upper_limit)
+        : flux(input_flux), error(input_error), missing_photometry_flag(no_data),
           upper_limit_flag(upper_limit) { }
 
 bool FluxErrorPair::operator ==(const FluxErrorPair& other) const {
