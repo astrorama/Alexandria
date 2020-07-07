@@ -49,12 +49,12 @@ BOOST_FIXTURE_TEST_CASE( getAttribute_test, CatalogFixture ) {
 
    BOOST_TEST_MESSAGE("--> getAttribute test ");
 
-  std::shared_ptr<Photometry> photometry_ptr(source_1.getAttribute<Photometry>());
+  std::shared_ptr<Photometry> test_photometry_ptr(source_1.getAttribute<Photometry>());
 //   cout << " Flux  : " << (ptrPhoto->find(expectedFilterName))->flux
 //        << " Error : " << (ptrPhoto->find(expectedFilterName))->error
 //        << endl;
-   BOOST_CHECK_CLOSE(expected_flux_1, (photometry_ptr->find(expected_filter_name_1))->flux, tolerance);
-   BOOST_CHECK_CLOSE(expected_error_2, (photometry_ptr->find(expected_filter_name_2))->error, tolerance);
+   BOOST_CHECK_CLOSE(expected_flux_1, (test_photometry_ptr->find(expected_filter_name_1))->flux, tolerance);
+   BOOST_CHECK_CLOSE(expected_error_2, (test_photometry_ptr->find(expected_filter_name_2))->error, tolerance);
 
   std::shared_ptr<Coordinates> coordinate_ptr(source_1.getAttribute<Coordinates>());
 //   cout << " Ra  : " << ptrCoord->getRa()

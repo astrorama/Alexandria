@@ -24,6 +24,7 @@
 #include <boost/test/unit_test.hpp>
 #include <ElementsKernel/Exception.h>
 #include <ElementsKernel/Real.h>
+#include <ElementsKernel/Unused.h>
 
 #include "XYDataset/CachedProvider.h"
 
@@ -90,7 +91,7 @@ struct MockProvider: public XYDatasetProvider {
     return std::unique_ptr<XYDataset>{new XYDataset{i->second}};
   }
 
-  std::string getParameter(const QualifiedName& qualified_name, const std::string& key_word){
+  std::string getParameter(ELEMENTS_UNUSED const QualifiedName& qualified_name, const std::string& key_word){
      return key_word;
   }
 };

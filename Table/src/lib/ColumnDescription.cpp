@@ -36,14 +36,14 @@ using boost::regex_match;
 namespace Euclid {
 namespace Table {
 
-ColumnDescription::ColumnDescription(std::string name, std::type_index type,
-                                     std::string unit, std::string description)
-        : name(name), type(type), unit(unit), description(description) {
-    if (name.empty()) {
+ColumnDescription::ColumnDescription(std::string input_name, std::type_index input_type,
+                                     std::string input_unit, std::string input_description)
+        : name(input_name), type(input_type), unit(input_unit), description(input_description) {
+    if (input_name.empty()) {
       throw Elements::Exception() << "Empty string name is not allowed";
     }
-    if (regex_match(name, regex{".*\\v.*"})) {
-      throw Elements::Exception() << "Column name '" << name << "' contains "
+    if (regex_match(input_name, regex{".*\\v.*"})) {
+      throw Elements::Exception() << "Column name '" << input_name << "' contains "
                                 << "vertical whitespace characters";
     }
 }

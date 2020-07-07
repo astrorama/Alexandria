@@ -144,10 +144,10 @@ BOOST_AUTO_TEST_CASE(size) {
   Euclid::Table::ColumnInfo columnInfo {info_list};
   
   // When
-  std::size_t size = columnInfo.size();
+  std::size_t size_test_value = columnInfo.size();
   
   // Then
-  BOOST_CHECK_EQUAL(size, 6u);
+  BOOST_CHECK_EQUAL(size_test_value, 6u);
   
 }
 
