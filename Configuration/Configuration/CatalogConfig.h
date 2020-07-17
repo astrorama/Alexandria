@@ -159,12 +159,28 @@ public:
    */
   void addAttributeHandler(std::shared_ptr<SourceCatalog::AttributeFromRow> handler);
 
+  /**
+   * @return
+   *    A TableReader object that can be used to read the configured catalog
+   */
   std::unique_ptr<Table::TableReader> getTableReader() const;
 
+  /**
+   * @return
+   *    Column information about the catalog
+   */
   std::shared_ptr<Table::ColumnInfo> getColumnInfo() const;
 
+  /**
+   * @return
+   *    The name of the column that stores the object ID
+   */
   std::string getIdColumn() const;
 
+  /**
+   * @return
+   *    A callable that converts the table to a SourceCatalog
+   */
   TableToCatalogConverter getTableToCatalogConverter() const;
 
   /**
@@ -230,12 +246,12 @@ public:
 
 private:
 
-  boost::filesystem::path m_base_dir {};
-  boost::filesystem::path m_filename {};
-  bool m_fits_format {true};
-  std::string m_id_column_name {};
-  std::vector<std::shared_ptr<SourceCatalog::AttributeFromRow>> m_attribute_handlers {};
-  std::shared_ptr<Table::ColumnInfo> m_column_info {};
+  boost::filesystem::path m_base_dir;
+  boost::filesystem::path m_filename;
+  bool m_fits_format = true;
+  std::string m_id_column_name;
+  std::vector<std::shared_ptr<SourceCatalog::AttributeFromRow>> m_attribute_handlers;
+  std::shared_ptr<Table::ColumnInfo> m_column_info;
 
 }; /* End of CatalogConfig class */
 

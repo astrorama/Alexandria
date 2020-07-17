@@ -1,20 +1,20 @@
-/*  
- * Copyright (C) 2012-2020 Euclid Science Ground Segment    
- *  
+/*
+ * Copyright (C) 2012-2020 Euclid Science Ground Segment
+ *
  * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free 
- * Software Foundation; either version 3.0 of the License, or (at your option)  
- * any later version.  
- *  
- * This library is distributed in the hope that it will be useful, but WITHOUT 
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 3.0 of the License, or (at your option)
+ * any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more  
- * details.  
- *  
- * You should have received a copy of the GNU Lesser General Public License 
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
  * along with this library; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA  
- */  
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+ */
 
 /**
  * @file src/lib/PhotometricBandMappingConfig.cpp
@@ -46,7 +46,7 @@ static Elements::Logging logger = Elements::Logging::getLogger("PhotometricBandM
 static const std::string FILTER_MAPPING_FILE {"filter-mapping-file"};
 static const std::string EXCLUDE_FILTER {"exclude-filter"};
 
-PhotometricBandMappingConfig::PhotometricBandMappingConfig(long manager_id) 
+PhotometricBandMappingConfig::PhotometricBandMappingConfig(long manager_id)
         : Configuration(manager_id) { }
 
 auto PhotometricBandMappingConfig::getProgramOptions() -> std::map<std::string, OptionDescriptionList> {
@@ -73,7 +73,8 @@ static fs::path getMappingFileFromOptions(const Configuration::UserValues& args,
   return mapping_file;
 }
 
-static std::pair<PhotometricBandMappingConfig::MappingMap, PhotometricBandMappingConfig::UpperLimitThresholdMap> parseFile(fs::path filename) {
+static std::pair<PhotometricBandMappingConfig::MappingMap, PhotometricBandMappingConfig::UpperLimitThresholdMap>
+parseFile(fs::path filename) {
   PhotometricBandMappingConfig::MappingMap filter_name_mapping {};
   PhotometricBandMappingConfig::UpperLimitThresholdMap threshold_mapping{};
   std::ifstream in {filename.string()};
@@ -102,13 +103,13 @@ static std::pair<PhotometricBandMappingConfig::MappingMap, PhotometricBandMappin
 }
 
 void PhotometricBandMappingConfig::initialize(const UserValues& args) {
-  
+
   // Parse the file with the mapping
   auto filename = getMappingFileFromOptions(args, m_base_dir);
   auto parsed = parseFile(filename);
   auto all_filter_name_mapping = parsed.first;
   auto all_threshold_mapping = parsed.second;
-  
+
   // Remove the filters which are marked to exclude
   auto exclude_vector = args.at(EXCLUDE_FILTER).as<std::vector<std::string>>();
   std::set<std::string> exclude_filters {exclude_vector.begin(), exclude_vector.end()};
@@ -136,7 +137,7 @@ void PhotometricBandMappingConfig::initialize(const UserValues& args) {
     throw Elements::Exception() << "Wrong " << EXCLUDE_FILTER << " option value(s) : "
                                 << wrong_filters.str();
   }
-  
+
 }
 
 void PhotometricBandMappingConfig::setBaseDir(const boost::filesystem::path& base_dir) {
@@ -155,7 +156,8 @@ const PhotometricBandMappingConfig::MappingMap& PhotometricBandMappingConfig::ge
 }
 
 
-const PhotometricBandMappingConfig::UpperLimitThresholdMap& PhotometricBandMappingConfig::getUpperLimitThresholdMapping() {
+const PhotometricBandMappingConfig::UpperLimitThresholdMap&
+PhotometricBandMappingConfig::getUpperLimitThresholdMapping() {
   if (getCurrentState() < State::INITIALIZED) {
      throw Elements::Exception() << "getUpperLimitThresholdMapping() call to uninitialized "
                                  << "PhotometricBandMappingConfig";

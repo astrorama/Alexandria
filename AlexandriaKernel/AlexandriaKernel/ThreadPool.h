@@ -80,7 +80,8 @@ public:
    *    The time (in milliseconds) the pool threads sleep after they try to get
    *    a task from an empty queue before they retry
    */
-  explicit ThreadPool(unsigned int thread_count=std::thread::hardware_concurrency(), unsigned int empty_queue_wait_time=50);
+  explicit ThreadPool(unsigned int thread_count = std::thread::hardware_concurrency(),
+                      unsigned int empty_queue_wait_time = 50);
 
   /// All tasks not yet started are discarded and it blocks until all already
   /// executing tasks are finished
@@ -98,11 +99,11 @@ public:
 
 private:
 
-  std::mutex m_queue_mutex {};
+  std::mutex m_queue_mutex;
   std::vector<std::atomic<bool>> m_worker_run_flags;
   std::vector<std::atomic<bool>> m_worker_sleeping_flags;
   std::vector<std::atomic<bool>> m_worker_done_flags;
-  std::deque<Task> m_queue {};
+  std::deque<Task> m_queue;
   unsigned int m_empty_queue_wait_time;
   std::exception_ptr m_exception_ptr;
 

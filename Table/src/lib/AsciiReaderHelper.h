@@ -47,7 +47,8 @@ namespace Table {
  */
 class StreamRewinder {
 public:
-  explicit StreamRewinder(std::istream& stream) : m_stream(stream), m_state(stream.exceptions()), m_position(stream.tellg()) { }
+  explicit StreamRewinder(std::istream& stream) : m_stream(stream), m_state(stream.exceptions()),
+                                                  m_position(stream.tellg()) {}
   ~StreamRewinder() {
     m_stream.clear();
     m_stream.seekg(m_position);

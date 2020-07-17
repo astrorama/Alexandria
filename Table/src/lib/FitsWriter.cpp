@@ -74,7 +74,7 @@ void FitsWriter::init(const Table& table) {
     std::string filename = (m_override_file ? "!" : "") + m_filename;
     fits = std::make_shared<CCfits::FITS>(filename, CCfits::RWmode::Write);
   }
-  
+
   // Create the column info arrays to feed the CCfits based on the ColumnInfo object
   auto& info = *table.getColumnInfo();
   std::vector<std::string> column_name_list {};
@@ -86,18 +86,18 @@ void FitsWriter::init(const Table& table) {
   std::vector<std::string> column_format_list = (m_format == Format::BINARY)
                                               ? getBinaryFormatList(table)
                                               : getAsciiFormatList(table);
-  
+
   CCfits::HduType hdu_type = (m_format == Format::BINARY)
-                           ? CCfits::HduType::BinaryTbl 
+                           ? CCfits::HduType::BinaryTbl
                            : CCfits::HduType::AsciiTbl;
-  
+
   auto number_of_hdus_before = fits->extension().size();
   CCfits::Table* table_hdu = fits->addTable(m_hdu_name, 0, column_name_list,
                                            column_format_list, column_unit_list, hdu_type);
   bool new_hdu = number_of_hdus_before != fits->extension().size();
   m_hdu_index = table_hdu->index();
   m_current_line = table_hdu->rows() + 1;
-  
+
   if (new_hdu) {
     // Write the customized description header keywords, and also dimensions for multidimensional arrays
     for (size_t column_index=0; column_index<info.size(); ++column_index) {
@@ -109,12 +109,12 @@ void FitsWriter::init(const Table& table) {
         table_hdu->addKey(CCfits::Column::TDIM() + std::to_string(column_index+1), shape_str, "");
       }
     }
-    
+
     for (auto& c : m_comments) {
       table_hdu->writeComment(c);
     }
   }
-  
+
   m_initialized = true;
 }
 
@@ -126,7 +126,7 @@ void FitsWriter::append(const Table& table) {
     fits = std::make_shared<CCfits::FITS>(m_filename, CCfits::RWmode::Write);
   }
   auto& table_hdu = fits->extension(m_hdu_index);
-  
+
   auto& info = *table.getColumnInfo();
   for (size_t column_index=0; column_index<info.size(); ++column_index) {
     populateColumn(table, column_index, table_hdu, m_current_line);
@@ -136,6 +136,3 @@ void FitsWriter::append(const Table& table) {
 
 } // Table namespace
 } // Euclid namespace
-
-
-

@@ -50,6 +50,3 @@ ColumnDescription::ColumnDescription(std::string input_name, std::type_index inp
 
 } // Table namespace
 } // Euclid namespace
-
-
-

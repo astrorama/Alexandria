@@ -73,16 +73,18 @@ public:
    * @tparam Const
    *    A boolean. If true, this will be a const iterator
    */
-  template <bool Const>
-  class PhotometryIterator
-    : public std::iterator<std::forward_iterator_tag, typename std::conditional<Const, const FluxErrorPair, FluxErrorPair>::type> {
+  template<bool Const>
+  class PhotometryIterator : public std::iterator<std::forward_iterator_tag,
+    typename std::conditional<Const, const FluxErrorPair, FluxErrorPair>::type> {
   public:
     using value_t = typename std::conditional<Const, const FluxErrorPair, FluxErrorPair>::type;
     using typename std::iterator<std::forward_iterator_tag, value_t>::reference;
     using typename std::iterator<std::forward_iterator_tag, value_t>::pointer;
 
-    using filters_iter_t = typename std::conditional<Const, std::vector<std::string>::const_iterator, std::vector<std::string>::iterator>::type;
-    using values_iter_t = typename std::conditional<Const, std::vector<FluxErrorPair>::const_iterator, std::vector<FluxErrorPair>::iterator>::type;
+    using filters_iter_t = typename std::conditional<
+      Const, std::vector<std::string>::const_iterator, std::vector<std::string>::iterator>::type;
+    using values_iter_t = typename std::conditional<
+      Const, std::vector<FluxErrorPair>::const_iterator, std::vector<FluxErrorPair>::iterator>::type;
 
     /**
      * Constructor from non-const iterator
@@ -213,7 +215,7 @@ public:
    * @return
    *  A pair containing a value and the corresponding error
    */
-  std::unique_ptr<FluxErrorPair> find(std::string filter_name) const;
+  std::unique_ptr<FluxErrorPair> find(const std::string& filter_name) const;
 
   const std::shared_ptr<std::vector<std::string>>& getFilterNames() const;
 

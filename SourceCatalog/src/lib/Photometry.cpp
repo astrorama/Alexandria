@@ -32,7 +32,7 @@ namespace SourceCatalog {
 //-----------------------------------------------------------------------------
 // find the value and error in the map for a specific filter name
 // return a ptr to a ValuePair(value, error) and null pointer otherwise
-std::unique_ptr<FluxErrorPair> Photometry::find(std::string filter_name) const
+std::unique_ptr<FluxErrorPair> Photometry::find(const std::string& filter_name) const
 {
   std::unique_ptr<FluxErrorPair> flux_found_ptr {};
   auto filter_iter = m_filter_name_vector_ptr->begin();

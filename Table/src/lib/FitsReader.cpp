@@ -142,7 +142,8 @@ Table FitsReader::readImpl(long rows) {
   std::vector<std::vector<Row::cell_type>> data;
   for (int i=1; i<=table_hdu.numCols(); ++i) {
     // The i-1 is because CCfits starts from 1 and ColumnInfo from 0
-    data.push_back(translateColumn(table_hdu.column(i), m_column_info->getDescription(i-1).type, m_current_row, m_current_row + rows - 1));
+    data.push_back(translateColumn(table_hdu.column(i), m_column_info->getDescription(i - 1).type, m_current_row,
+                                   m_current_row + rows - 1));
   }
 
   m_current_row += rows;
@@ -177,6 +178,3 @@ std::size_t FitsReader::rowsLeft() {
 
 } // Table namespace
 } // Euclid namespace
-
-
-

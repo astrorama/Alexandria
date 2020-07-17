@@ -23,7 +23,7 @@
  */
 
 #ifndef GRIDCONTAINER_GRIDINDEXHELPER_H
-#define	GRIDCONTAINER_GRIDINDEXHELPER_H
+#define GRIDCONTAINER_GRIDINDEXHELPER_H
 
 #include <vector>
 #include <tuple>
@@ -135,5 +135,5 @@ GridIndexHelper<AxesTypes...> makeGridIndexHelper(const std::tuple<GridAxis<Axes
 
 #include "GridContainer/_impl/GridIndexHelper.icpp"
 
-#endif	/* GRIDCONTAINER_GRIDINDEXHELPER_H */
+#endif  /* GRIDCONTAINER_GRIDINDEXHELPER_H */
 

@@ -49,19 +49,23 @@ PhotometryCatalogConfig::PhotometryCatalogConfig(long manager_id) : Configuratio
 auto PhotometryCatalogConfig::getProgramOptions() -> std::map<std::string, OptionDescriptionList> {
   return {{"Input catalog options", {
     {MISSING_PHOTOMETRY_FLAG.c_str(), po::value<double>(),
-        "The value passed in the flux indicating that the photometry is missing, if the flag is not provided the functionality is disabled"},
+      "The value passed in the flux indicating that the photometry is missing, if the flag is not provided "
+      "the functionality is disabled"},
     {ENABLE_UPPER_LIMIT.c_str(), po::value<std::string>()->default_value("NO"),
-            "Define if the catalog contains flux upper limit (YES/NO by default NO)"},
+      "Define if the catalog contains flux upper limit (YES/NO by default NO)"},
     {UPPER_LIMIT_USE_THRESHOLD_FLAG.c_str(), po::value<double>()->default_value(-99),
-                "Define a flag (in the flux error column) telling that the sigma has to be computed from the flux and the Upper Limit threshold defined for each filter (must be <0 to trigger upper limit functionality, by default -99)"}
+      "Define a flag (in the flux error column) telling that the sigma has to be computed from "
+      "the flux and the Upper Limit threshold defined for each filter (must be <0 to trigger upper limit "
+      "functionality, by default -99)"}
   }}};
 }
 
 void PhotometryCatalogConfig::initialize(const UserValues& args) {
 
-  m_upper_limit_enabled =  (args.find(ENABLE_UPPER_LIMIT) != args.end()) && args.at(ENABLE_UPPER_LIMIT).as<std::string>() =="YES";
+  m_upper_limit_enabled = (args.find(ENABLE_UPPER_LIMIT) != args.end())
+                          && args.at(ENABLE_UPPER_LIMIT).as<std::string>() == "YES";
   logger.info() << "Upper limit functionality is " << (m_upper_limit_enabled ? "ENABLED" : "DISABLED");
-  
+
   double upper_limit_threshold_flag =-99.;
   if ( args.find(UPPER_LIMIT_USE_THRESHOLD_FLAG) != args.end() ) {
      upper_limit_threshold_flag = args.at(UPPER_LIMIT_USE_THRESHOLD_FLAG).as<double>();

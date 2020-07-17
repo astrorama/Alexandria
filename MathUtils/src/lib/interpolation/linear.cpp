@@ -34,10 +34,10 @@ namespace MathUtils {
 std::unique_ptr<Function> linearInterpolation(const std::vector<double>& x, const std::vector<double>& y,
                                               bool extrapolate) {
   std::vector<std::shared_ptr<Function>> functions {};
-  for (size_t i=0; i<x.size()-1; i++) {
-    double coef1 = (y[i+1]-y[i]) / (x[i+1]-x[i]);
-    double coef0 = y[i] - coef1*x[i];
-    functions.push_back(std::shared_ptr<Function>(new Polynomial{{coef0,coef1}}));
+  for (size_t i = 0; i < x.size() - 1; i++) {
+    double coef1 = (y[i + 1] - y[i]) / (x[i + 1] - x[i]);
+    double coef0 = y[i] - coef1 * x[i];
+    functions.push_back(std::shared_ptr<Function>(new Polynomial{{coef0, coef1}}));
   }
 
   if (extrapolate) {

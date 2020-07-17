@@ -22,7 +22,8 @@ elements_depends_on_subdirs(AlexandriaKernel)
 #                     INCLUDE_DIRS Boost ElementsKernel
 #                     PUBLIC_HEADERS ElementsExamples)
 #===============================================================================
-elements_add_library(Histogram src/lib/*.cpp
+elements_add_library(Histogram
+        LINKER_LANGUAGE CXX
         LINK_LIBRARIES ElementsKernel GridContainer
         PUBLIC_HEADERS Histogram)
 

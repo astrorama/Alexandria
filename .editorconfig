@@ -1,10 +1,13 @@
 # EditorConfig is awesome: https://EditorConfig.org
 
 [*]
+end_of_line = lf
 indent_style = space
 trim_trailing_whitespace = true
 charset = utf-8
 indent_size = 2
+max_line_length = 120
+insert_final_newline = true
 
 [*.py]
 indent_size = 4
