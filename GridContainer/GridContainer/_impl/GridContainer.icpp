@@ -1,21 +1,21 @@
 /*
- * Copyright (C) 2012-2020 Euclid Science Ground Segment    
- *  
+ * Copyright (C) 2012-2020 Euclid Science Ground Segment
+ *
  * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free 
- * Software Foundation; either version 3.0 of the License, or (at your option)  
- * any later version.  
- *  
- * This library is distributed in the hope that it will be useful, but WITHOUT 
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 3.0 of the License, or (at your option)
+ * any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more  
- * details.  
- *  
- * You should have received a copy of the GNU Lesser General Public License 
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
  * along with this library; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA  
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
- 
+
  /**
  * @file GridContainer/_impl/GridContainer.icpp
  * @date May 13, 2014
@@ -47,7 +47,7 @@ template<typename GridCellManager, typename... AxesTypes>
 GridContainer<GridCellManager, AxesTypes...>::GridContainer(
                       const GridContainer<GridCellManager, AxesTypes...>& other,
                       size_t axis, size_t index)
-      : m_axes{other.m_axes}, m_axes_fixed{fixAxis(other.m_axes_fixed, axis, index)},
+      : m_axes{other.m_axes}, m_axes_fixed{fixAxis(other.m_axes, axis, index)},
         m_fixed_indices{other.m_fixed_indices}, m_cell_manager{other.m_cell_manager} {
   // Update the fixed indices
   if (m_fixed_indices.find(axis) != m_fixed_indices.end()) {
@@ -155,7 +155,7 @@ template<typename GridCellManager, typename... AxesTypes>
 template<int I>
 GridContainer<GridCellManager, AxesTypes...>  GridContainer<GridCellManager, AxesTypes...>::fixAxisByIndex(size_t index) {
   if (index >= getOriginalAxis<I>().size()) {
-    throw Elements::Exception() << "Index (" << index << ") out of axis " 
+    throw Elements::Exception() << "Index (" << index << ") out of axis "
                               << getOriginalAxis<I>().name() << " size ("
                               << getOriginalAxis<I>().size() << ")";
   }
