@@ -23,7 +23,7 @@
  */
 
 #ifndef MATHUTILS_PIECEWISE_H
-#define	MATHUTILS_PIECEWISE_H
+#define MATHUTILS_PIECEWISE_H
 
 #include <vector>
 #include <memory>
@@ -104,5 +104,5 @@ private:
 } // End of MathUtils
 } // end of namespace Euclid
 
-#endif	/* MATHUTILS_PIECEWISE_H */
+#endif  /* MATHUTILS_PIECEWISE_H */
 

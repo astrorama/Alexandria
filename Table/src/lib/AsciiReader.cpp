@@ -265,6 +265,3 @@ std::size_t AsciiReader::rowsLeft() {
 
 } // Table namespace
 } // Euclid namespace
-
-
-

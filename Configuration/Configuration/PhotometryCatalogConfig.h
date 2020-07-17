@@ -76,8 +76,16 @@ public:
    */
   void initialize(const UserValues& args) override;
 
+  /**
+   * @return
+   *    True if the flag to recognize missing photometry values is enabled
+   */
   bool isMissingPhotometryEnabled();
 
+  /**
+   * @return
+   *    True if the upper limit is enabled
+   */
   bool isUpperLimitEnabled();
 
 private:

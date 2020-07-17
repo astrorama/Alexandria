@@ -23,7 +23,7 @@
  */
 
 #ifndef MATHUTILS_DIFFERENTIABLE_H
-#define	MATHUTILS_DIFFERENTIABLE_H
+#define MATHUTILS_DIFFERENTIABLE_H
 
 #include <memory>
 
@@ -70,4 +70,4 @@ public:
 } // End of MathUtils
 } // end of namespace Euclid
 
-#endif	/* MATHUTILS_DIFFERENTIABLE_H */
+#endif  /* MATHUTILS_DIFFERENTIABLE_H */

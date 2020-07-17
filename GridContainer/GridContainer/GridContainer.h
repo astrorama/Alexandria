@@ -23,7 +23,7 @@
  */
 
 #ifndef GRIDCONTAINER_GRIDCONTAINER_H
-#define	GRIDCONTAINER_GRIDCONTAINER_H
+#define GRIDCONTAINER_GRIDCONTAINER_H
 
 #include <memory>
 #include <tuple>
@@ -507,5 +507,5 @@ private:
 #include "GridContainer/_impl/GridContainer.icpp"
 #include "GridContainer/_impl/GridIterator.icpp"
 
-#endif	/* GRIDCONTAINER_GRIDCONTAINER_H */
+#endif  /* GRIDCONTAINER_GRIDCONTAINER_H */
 

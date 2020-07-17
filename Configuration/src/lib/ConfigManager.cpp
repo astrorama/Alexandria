@@ -43,8 +43,10 @@ ConfigManager& ConfigManager::getInstance(long id) {
 ConfigManager::ConfigManager(long id) : m_id{id} {
 }
 
-std::vector<std::type_index> hasCircularDependencies(const std::map<std::type_index, std::set<std::type_index>>& dependency_map,
-                                                     const std::type_index& root, const std::pair<const std::type_index, std::set<std::type_index>>& config_pair) {
+std::vector<std::type_index> hasCircularDependencies(
+  const std::map<std::type_index, std::set<std::type_index>>& dependency_map,
+  const std::type_index& root, const std::pair<const std::type_index, std::set<std::type_index>>& config_pair) {
+
   if (config_pair.second.find(root) != config_pair.second.end()) {
     return {root};
   }

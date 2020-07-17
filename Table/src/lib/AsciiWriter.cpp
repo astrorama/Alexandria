@@ -132,6 +132,3 @@ void AsciiWriter::append(const Table& table) {
 
 } // Table namespace
 } // Euclid namespace
-
-
-

@@ -171,8 +171,8 @@ protected:
 private:
 
   long m_manager_id;
-  std::set<std::type_index> m_dependencies {};
-  State m_state {State::CONSTRUCTED};
+  std::set<std::type_index> m_dependencies;
+  State m_state = State::CONSTRUCTED;
 
 }; /* End of Configuration class */
 

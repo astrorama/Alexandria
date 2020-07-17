@@ -101,7 +101,8 @@ std::pair<size_t, size_t> catchPeak(const std::vector<double>& pdf, size_t cente
 }
 
 // basic integration may be refined
-std::pair<double, double>  avgArea(std::pair<std::vector<double>, std::vector<double>>& pdf, size_t min_x, size_t max_x) {
+std::pair<double, double>
+avgArea(std::pair<std::vector<double>, std::vector<double>>& pdf, size_t min_x, size_t max_x) {
 
   double num = 0.;
   double area = 0.;
@@ -125,9 +126,9 @@ std::pair<double, double>  avgArea(std::pair<std::vector<double>, std::vector<do
 double getInterpolationAround(const std::pair<std::vector<double>, std::vector<double>>& pdf, size_t x_index) {
    /*
    without assuming equi-distant sampling
-   
+
    x_max= ((x1^2-x0^2)*y2 - (x2^2-x0^2)*y1+(x2^2-x1^2)*y0)/(2*((x1-x0)*y2-(x2-x0)*y1+(x2-x1)*y0))
-   
+
    */
   if (x_index>= pdf.first.size()) {
     throw  Elements::Exception("getInterpolationAround: x_index out of range.");

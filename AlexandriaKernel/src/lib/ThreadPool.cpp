@@ -143,9 +143,7 @@ void ThreadPool::block() {
 ThreadPool::~ThreadPool() {
   // Stop all the workers. They will stop right after they finish the task
   // they already run.
-  for (auto& flag : m_worker_run_flags) {
-    flag = false;
-  }
+  std::fill(m_worker_run_flags.begin(), m_worker_run_flags.end(), false);
   // Now wait until all the workers have finish any current tasks
   waitWorkers(m_worker_done_flags, m_empty_queue_wait_time);
 }
