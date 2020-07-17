@@ -23,7 +23,7 @@
  */
 
 #ifndef INTERPOLATION_H
-#define	INTERPOLATION_H
+#define INTERPOLATION_H
 
 #include <memory>
 #include <vector>
@@ -80,4 +80,4 @@ ELEMENTS_API std::unique_ptr<Function> interpolate(const Euclid::XYDataset::XYDa
 } // End of MathUtils
 } // end of namespace Euclid
 
-#endif	/* INTERPOLATION_H */
+#endif  /* INTERPOLATION_H */

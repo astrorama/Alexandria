@@ -154,7 +154,8 @@ public:
    * @param bin_type
    *    An instance of BinType. It will be taken ownership of by the Histogram
    */
-  template<typename IterType, typename BinType, typename=typename std::enable_if<std::is_move_constructible<BinType>::value>::type>
+  template<typename IterType, typename BinType,
+    typename=typename std::enable_if<std::is_move_constructible<BinType>::value>::type>
   Histogram(IterType begin, IterType end, BinType&& bin_type) {
     auto binning_impl = make_unique<ComputationImpl<BinType>>(std::move(bin_type));
     binning_impl->computeBins(begin, end, ConstantWeight{});
@@ -182,7 +183,8 @@ public:
    * @note
    *    The number of values and weights must match
    */
-  template<typename IterType, typename WeightIterType, typename BinType, typename=typename std::enable_if<std::is_move_constructible<BinType>::value>::type>
+  template<typename IterType, typename WeightIterType, typename BinType,
+    typename=typename std::enable_if<std::is_move_constructible<BinType>::value>::type>
   Histogram(IterType begin, IterType end, WeightIterType wbegin, WeightIterType wend, BinType&& bin_type) {
     assert(wend - wbegin == end - begin);
     auto binning_impl = make_unique<ComputationImpl<BinType>>(std::move(bin_type));

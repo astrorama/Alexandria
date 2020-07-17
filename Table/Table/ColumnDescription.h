@@ -36,7 +36,7 @@ namespace Table {
 
 /**
  * @class ColumnDescription
- * 
+ *
  * @brief Contains the description of a specific column of a Table
  *
  * @details
@@ -45,17 +45,17 @@ namespace Table {
  * - type : The type of its data
  * - unit : The unit in which the data are expressed
  * - description : A string describing the column
- * 
+ *
  * The access to the above is done by directly accessing the public members of
  * the ColumnDescription class.
- * 
- * The ColumnDescription implements the comparison operators by checking only 
+ *
+ * The ColumnDescription implements the comparison operators by checking only
  * the name, type and unit and by ignoring the description text.
  */
 class ColumnDescription {
 
 public:
-  
+
   /// Constructs a new ColumnDescription instance
   /// @throws Elements::Exception
   ///     if the name is the empty string or if it contains whitespaces
@@ -67,13 +67,13 @@ public:
   ColumnDescription& operator=(const ColumnDescription&) = default;
   ColumnDescription& operator=(ColumnDescription&&) = default;
 
-  
-  /// Returns true if the two ColumnDescriptions do not describe the same column 
+
+  /// Returns true if the two ColumnDescriptions do not describe the same column
   bool operator!=(const ColumnDescription& other) const {
     return !(*this == other); // Reuse equals operator
   }
 
-  /// Returns true if the two ColumnDescriptions describe the same column 
+  /// Returns true if the two ColumnDescriptions describe the same column
   /// (ignoring the description text)
   bool operator==(const ColumnDescription& other) const {
     return name == other.name && type == other.type && unit == other.unit;

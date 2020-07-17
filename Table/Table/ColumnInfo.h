@@ -23,7 +23,7 @@
  */
 
 #ifndef TABLE_COLUMNINFO_H
-#define	TABLE_COLUMNINFO_H
+#define TABLE_COLUMNINFO_H
 
 #include <string>
 #include <vector>
@@ -146,5 +146,5 @@ private:
 }
 } // end of namespace Euclid
 
-#endif	/* TABLE_COLUMNINFO_H */
+#endif  /* TABLE_COLUMNINFO_H */
 

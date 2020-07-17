@@ -44,9 +44,8 @@ std::unique_ptr<Function> splineInterpolation(const std::vector<double>& x, cons
 
   std::vector<double> mu (n, 0.);
   std::vector<double> z (n+1, 0.);
-  double g {0};
-  for (int i=1; i<n; ++i) {
-    g = 2.*(x[i+1]-x[i-1]) - h[i-1]*mu[i-1];
+  for (int i = 1; i < n; ++i) {
+    double g = 2. * (x[i + 1] - x[i - 1]) - h[i - 1] * mu[i - 1];
     mu[i] = h[i] / g;
     z[i] = (3.*(y[i+1]*h[i-1] - y[i]*(x[i+1]-x[i-1])+ y[i-1]*h[i]) / (h[i-1]*h[i]) - h[i-1] * z[i-1]) / g;
   }
@@ -60,29 +59,29 @@ std::unique_ptr<Function> splineInterpolation(const std::vector<double>& x, cons
   z[n] = 0.;
   c[n] = 0.;
 
-  for (int j=n-1; j>=0; j--) {
+  for (int j = n - 1; j >= 0; j--) {
     a[j] = y[j];
-    c[j] = z[j] - mu[j] * c[j+1];
-    b[j] = (y[j+1] - y[j]) / h[j] - h[j] * (c[j+1] + 2. * c[j]) / 3.;
-    d[j] = (c[j+1] - c[j]) / (3. * h[j]);
+    c[j] = z[j] - mu[j] * c[j + 1];
+    b[j] = (y[j + 1] - y[j]) / h[j] - h[j] * (c[j + 1] + 2. * c[j]) / 3.;
+    d[j] = (c[j + 1] - c[j]) / (3. * h[j]);
   }
 
   // The above were taken from SplineInterpolator from Apache commons math. These
   // polynomials need to be shifted by -x[i] in our case.
-  for (int i=0; i<n; i++) {
+  for (int i = 0; i < n; i++) {
     double x_1 = -x[i];
     double x_2 = x_1 * x_1;
     double x_3 = x_1 * x_2;
-    a[i] = a[i] + b[i]*x_1 + c[i]*x_2 + d[i]*x_3;
-    b[i] = b[i] + 2.*c[i]*x_1 + 3.*d[i]*x_2;
-    c[i] = c[i] + 3.*d[i]*x_1;
+    a[i] = a[i] + b[i] * x_1 + c[i] * x_2 + d[i] * x_3;
+    b[i] = b[i] + 2. * c[i] * x_1 + 3. * d[i] * x_2;
+    c[i] = c[i] + 3. * d[i] * x_1;
     // d[i] keeps the same value
   }
 
   std::vector<std::unique_ptr<Function>> functions;
   functions.reserve(n);
-  for (int i=0; i<n; i++) {
-    functions.emplace_back(std::unique_ptr<Function>(new Polynomial{{a[i],b[i],c[i],d[i]}}));
+  for (int i = 0; i < n; i++) {
+    functions.emplace_back(std::unique_ptr<Function>(new Polynomial{{a[i], b[i], c[i], d[i]}}));
   }
 
   if (extrapolate) {

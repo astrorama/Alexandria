@@ -1,29 +1,29 @@
 /*
- * Copyright (C) 2012-2020 Euclid Science Ground Segment    
- *  
+ * Copyright (C) 2012-2020 Euclid Science Ground Segment
+ *
  * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free 
- * Software Foundation; either version 3.0 of the License, or (at your option)  
- * any later version.  
- *  
- * This library is distributed in the hope that it will be useful, but WITHOUT 
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 3.0 of the License, or (at your option)
+ * any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more  
- * details.  
- *  
- * You should have received a copy of the GNU Lesser General Public License 
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
  * along with this library; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA  
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
- 
- /** 
+
+ /**
  * @file GridContainer/serialization/tuple.h
  * @date May 16, 2014
  * @author Nikolaos Apostolakos
  */
 
 #ifndef GRIDCONTAINER_SERIALIZATION_TUPLE_H
-#define	GRIDCONTAINER_SERIALIZATION_TUPLE_H
+#define GRIDCONTAINER_SERIALIZATION_TUPLE_H
 
 #include <tuple>
 #include <type_traits>
@@ -38,22 +38,26 @@ namespace serialization {
 /// depending if their type has default constructor or not.
 template<size_t N>
 struct Save {
-  
+
   /// Version of save for default constructible tuple elements. It just saves
   /// in the archive the element.
   template<typename Archive, typename... Args>
   static void save(Archive& ar, const std::tuple<Args...>& t, const unsigned int version,
-                          typename std::enable_if<std::is_default_constructible<typename std::tuple_element<N-1, std::tuple<Args...>>::type>::value>::type* = 0) {
+                   typename std::enable_if<std::is_default_constructible<
+                     typename std::tuple_element<N - 1, std::tuple<Args...>>::type>::value
+                   >::type* = 0) {
     ar << std::get<N-1>(t);
     Save<N-1>::save(ar, t, version);
   }
-  
+
   /// Version of save for non default constructible tuple elements. It saves
   /// in the archive a pointer to the element, to enable the boost serialization
   /// non default constructor support. These objects must be read as pointers.
   template<typename Archive, typename... Args>
   static void save(Archive& ar, const std::tuple<Args...>& t, const unsigned int version,
-                          typename std::enable_if<!std::is_default_constructible<typename std::tuple_element<N-1, std::tuple<Args...>>::type>::value>::type* = 0) {
+                   typename std::enable_if<!std::is_default_constructible<
+                     typename std::tuple_element<N - 1, std::tuple<Args...>>::type
+                   >::value>::type * = 0) {
     // Do NOT delete this pointer! It points in the element of the tuple and
     // the tuple will take care of the memory management
     typename std::remove_reference<decltype(std::get<N-1>(t))>::type* ptr = &std::get<N-1>(t);
@@ -77,24 +81,28 @@ struct Save<0> {
 /// default constructible elements must have a copy assignment operator.
 template<size_t N>
 struct Load {
-  
+
   /// Version of load for default constructible tuple elements. It just loads
   /// from the archive the element into the default constructed element of the
   /// tuple.
   template<typename Archive, typename... Args>
   static void load(Archive& ar, std::tuple<Args...>& t, const unsigned int version,
-                          typename std::enable_if<std::is_default_constructible<typename std::tuple_element<N-1, std::tuple<Args...>>::type>::value>::type* = 0) {
+                   typename std::enable_if<std::is_default_constructible<
+                     typename std::tuple_element<N - 1, std::tuple<Args...>>::type>::value
+                   >::type * = 0) {
     ar >> std::get<N-1>(t);
     Load<N-1>::load(ar, t, version);
   }
-  
+
   /// Version of load for non default constructible tuple elements. It reads
   /// from the archive a pointer to enable the boost non default constructor
   /// mechanisms and then it uses the copy assignment operator to move the
   /// just red object in the tuple.
   template<typename Archive, typename... Args>
   static void load(Archive& ar, std::tuple<Args...>& t, const unsigned int version,
-                          typename std::enable_if<!std::is_default_constructible<typename std::tuple_element<N-1, std::tuple<Args...>>::type>::value>::type* = 0) {
+                   typename std::enable_if<!std::is_default_constructible<
+                     typename std::tuple_element<N - 1, std::tuple<Args...>>::type
+                   >::value>::type * = 0) {
     typedef typename std::remove_reference<decltype(std::get<N-1>(t))>::type ElementType;
     ElementType* ptr;
     ar >> ptr;
@@ -138,5 +146,5 @@ void serialize(Archive& ar, std::tuple<Args...>& t, const unsigned int version) 
 } /* end of namespace serialization */
 } /* end of namespace boost */
 
-#endif	/* GRIDCONTAINER_SERIALIZATION_TUPLE_H */
+#endif  /* GRIDCONTAINER_SERIALIZATION_TUPLE_H */
 

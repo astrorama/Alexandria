@@ -23,7 +23,7 @@
  */
 
 #ifndef GRIDCONTAINER_SERIALIZE_H
-#define	GRIDCONTAINER_SERIALIZE_H
+#define GRIDCONTAINER_SERIALIZE_H
 
 #include <iostream>
 #include <memory>
@@ -163,5 +163,5 @@ GridType gridFitsImport(const boost::filesystem::path& filename, int hdu_index);
 
 #include "GridContainer/_impl/FitsSerialize.icpp"
 
-#endif	/* GRIDCONTAINER_SERIALIZE_H */
+#endif  /* GRIDCONTAINER_SERIALIZE_H */
 

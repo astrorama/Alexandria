@@ -23,7 +23,7 @@
  */
 
 #ifndef MATHUTILS_POLYNOMIAL_H
-#define	MATHUTILS_POLYNOMIAL_H
+#define MATHUTILS_POLYNOMIAL_H
 
 #include <vector>
 
@@ -85,5 +85,5 @@ private:
 } // End of MathUtils
 } // end of namespace Euclid
 
-#endif	/* MATHUTILS_POLYNOMIAL_H */
+#endif  /* MATHUTILS_POLYNOMIAL_H */
 

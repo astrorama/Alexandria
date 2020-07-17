@@ -195,9 +195,9 @@ private:
 
   long m_id;
   State m_state = State::REGISTRATION;
-  std::unique_ptr<std::type_index> m_root_config {nullptr};
-  std::map<std::type_index, std::unique_ptr<Configuration>> m_config_dictionary {};
-  std::map<std::type_index, std::set<std::type_index>> m_dependency_map {};
+  std::unique_ptr<std::type_index> m_root_config;
+  std::map<std::type_index, std::unique_ptr<Configuration>> m_config_dictionary;
+  std::map<std::type_index, std::set<std::type_index>> m_dependency_map;
 
 }; /* End of ConfigManager class */
 

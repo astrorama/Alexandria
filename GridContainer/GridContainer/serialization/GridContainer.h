@@ -1,30 +1,30 @@
 /*
- * Copyright (C) 2012-2020 Euclid Science Ground Segment    
- *  
+ * Copyright (C) 2012-2020 Euclid Science Ground Segment
+ *
  * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free 
- * Software Foundation; either version 3.0 of the License, or (at your option)  
- * any later version.  
- *  
- * This library is distributed in the hope that it will be useful, but WITHOUT 
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 3.0 of the License, or (at your option)
+ * any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more  
- * details.  
- *  
- * You should have received a copy of the GNU Lesser General Public License 
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
  * along with this library; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA  
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
- 
- /** 
- * 
+
+ /**
+ *
  * @file GridContainer/serialization/GridContainer.h
  * @date May 17, 2014
  * @author Nikolaos Apostolakos
  */
 
 #ifndef GRIDCONTAINER_SERIALIZATION_GRIDCONTAINER_H
-#define	GRIDCONTAINER_SERIALIZATION_GRIDCONTAINER_H
+#define GRIDCONTAINER_SERIALIZATION_GRIDCONTAINER_H
 
 #include <type_traits>
 #include <memory>
@@ -38,21 +38,25 @@
 namespace boost {
 namespace serialization {
 
-/// Method which saves a GridContainer instance to an archive. This version handles 
+/// Method which saves a GridContainer instance to an archive. This version handles
 /// default constructible cell values.
 template<class Archive, typename GridCellManager, typename... AxesTypes>
 void save(Archive& ar, const Euclid::GridContainer::GridContainer<GridCellManager,AxesTypes...>& grid, const unsigned int,
-               typename std::enable_if<std::is_default_constructible<typename Euclid::GridContainer::GridCellManagerTraits<GridCellManager>::data_type>::value>::type* = 0) {
+          typename std::enable_if<std::is_default_constructible<
+            typename Euclid::GridContainer::GridCellManagerTraits<GridCellManager>::data_type
+          >::value>::type * = 0) {
   for (auto& cell : grid) {
     ar << cell;
   }
 }
 
-/// Method which saves a GridContainer instance to an archive. This version handles 
+/// Method which saves a GridContainer instance to an archive. This version handles
 /// non-default constructible cell values.
 template<class Archive, typename GridCellManager, typename... AxesTypes>
 void save(Archive& ar, const Euclid::GridContainer::GridContainer<GridCellManager,AxesTypes...>& grid, const unsigned int,
-               typename std::enable_if<!std::is_default_constructible<typename Euclid::GridContainer::GridCellManagerTraits<GridCellManager>::data_type>::value>::type* = 0) {
+          typename std::enable_if<!std::is_default_constructible<
+            typename Euclid::GridContainer::GridCellManagerTraits<GridCellManager>::data_type
+          >::value>::type * = 0) {
   for (auto& cell : grid) {
     // Do NOT delete this pointer! It points to the cell of the grid and the
     // grid will take care of the memory management
@@ -61,21 +65,25 @@ void save(Archive& ar, const Euclid::GridContainer::GridContainer<GridCellManage
   }
 }
 
-/// Method which loads a GridContainer instance from an archive. This version handles 
+/// Method which loads a GridContainer instance from an archive. This version handles
 /// default constructible cell values.
 template<class Archive, typename GridCellManager, typename... AxesTypes>
 void load(Archive& ar, Euclid::GridContainer::GridContainer<GridCellManager,AxesTypes...>& grid, const unsigned int,
-               typename std::enable_if<std::is_default_constructible<typename Euclid::GridContainer::GridCellManagerTraits<GridCellManager>::data_type>::value>::type* = 0) {
+          typename std::enable_if<std::is_default_constructible<
+            typename Euclid::GridContainer::GridCellManagerTraits<GridCellManager>::data_type
+          >::value>::type * = 0) {
   for (auto& cell : grid) {
     ar >> cell;
   }
 }
 
-/// Method which loads a GridContainer instance from an archive. This version handles 
+/// Method which loads a GridContainer instance from an archive. This version handles
 /// non-default constructible cell values.
 template<class Archive, typename GridCellManager, typename... AxesTypes>
 void load(Archive& ar, Euclid::GridContainer::GridContainer<GridCellManager,AxesTypes...>& grid, const unsigned int,
-               typename std::enable_if<!std::is_default_constructible<typename Euclid::GridContainer::GridCellManagerTraits<GridCellManager>::data_type>::value>::type* = 0) {
+          typename std::enable_if<!std::is_default_constructible<
+            typename Euclid::GridContainer::GridCellManagerTraits<GridCellManager>::data_type
+          >::value>::type * = 0) {
   for (auto& cell : grid) {
     typename Euclid::GridContainer::GridCellManagerTraits<GridCellManager>::data_type* ptr;
     ar >> ptr;
@@ -90,7 +98,8 @@ void load(Archive& ar, Euclid::GridContainer::GridContainer<GridCellManager,Axes
 /// This check is done in compilation time. After the check the save/load action
 /// is delegated to the save and load methods.
 template<class Archive, typename GridCellManager, typename... AxesTypes>
-void serialize(Archive& ar, Euclid::GridContainer::GridContainer<GridCellManager,AxesTypes...>& grid, const unsigned int version) {
+void serialize(Archive& ar, Euclid::GridContainer::GridContainer<GridCellManager, AxesTypes...>& grid,
+               const unsigned int version) {
   static_assert(Euclid::GridContainer::GridCellManagerTraits<GridCellManager>::enable_boost_serialize,
                 "Boost serialization of GridContainer with unsupported GridCellManager");
   split_free(ar, grid, version);
@@ -134,5 +143,5 @@ void load_construct_data(Archive& ar, Euclid::GridContainer::GridContainer<GridC
 } /* end of namespace serialization */
 } /* end of namespace boost */
 
-#endif	/* GRIDCONTAINER_SERIALIZATION_GRIDCONTAINER_H */
+#endif  /* GRIDCONTAINER_SERIALIZATION_GRIDCONTAINER_H */
 

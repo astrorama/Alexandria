@@ -130,9 +130,9 @@ public:
 
 private:
 
-  boost::filesystem::path m_base_dir {};
-  MappingMap m_mapping_map {};
-  UpperLimitThresholdMap m_threshold_map{};
+  boost::filesystem::path m_base_dir;
+  MappingMap m_mapping_map;
+  UpperLimitThresholdMap m_threshold_map;
 
 }; /* End of PhotometricBandMappingConfig class */
 

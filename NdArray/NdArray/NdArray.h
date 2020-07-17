@@ -319,7 +319,8 @@ private:
   size_t get_offset(const std::vector<size_t> &coords) const {
     if (coords.size() != m_shape.size()) {
       throw std::out_of_range(
-        "Invalid number of coordinates, got " + std::to_string(coords.size()) + ", expected " + std::to_string(m_shape.size())
+        "Invalid number of coordinates, got " + std::to_string(coords.size())
+        + ", expected " + std::to_string(m_shape.size())
       );
     }
 

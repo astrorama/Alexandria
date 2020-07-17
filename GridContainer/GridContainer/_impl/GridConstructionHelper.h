@@ -1,29 +1,29 @@
 /*
- * Copyright (C) 2012-2020 Euclid Science Ground Segment    
- *  
+ * Copyright (C) 2012-2020 Euclid Science Ground Segment
+ *
  * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free 
- * Software Foundation; either version 3.0 of the License, or (at your option)  
- * any later version.  
- *  
- * This library is distributed in the hope that it will be useful, but WITHOUT 
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 3.0 of the License, or (at your option)
+ * any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more  
- * details.  
- *  
- * You should have received a copy of the GNU Lesser General Public License 
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
  * along with this library; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA  
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
- 
- /** 
+
+ /**
  * @file GridContainer/_impl/GridConstructionHelper.h
  * @date May 13, 2014
  * @author Nikolaos Apostolakos
  */
 
 #ifndef GRIDCONTAINER_GRIDCONSTRUCTIONHELPER_H
-#define	GRIDCONTAINER_GRIDCONSTRUCTIONHELPER_H
+#define GRIDCONTAINER_GRIDCONSTRUCTIONHELPER_H
 
 #include <vector>
 #include <tuple>
@@ -37,22 +37,22 @@ namespace GridContainer {
 
 /**
  * @class GridConstructionHelper
- * 
+ *
  * @brief GridContainer construction helper class
- * 
+ *
  * @brief
  * The GridConstructionHelper is a helper class, which provides functions
  * which use iteration over variadic templates to construct some collections
  * required during the construction of the GridContainer class. It is meant to be
  * used by the GridContainer constructor. For a helper class with similar behavior
  * to be used outside the GridContainer class see the GridIndexHelper class.
- * 
+ *
  * @tparam Axes the types of the axes
  */
 template<typename... Axes>
 class GridConstructionHelper {
 public:
-  
+
   /**
    * @brief
    * Creates a vector which contains the sizes of the given axes
@@ -60,8 +60,8 @@ public:
    * Note that this method is using variadic template iteration by using the
    * second parameter (TemplateLoopCounter). To initiate the iteration the
    * counter must be equal with the number of axes in the tuple.
-   * 
-   * @tparam I the index of the axis until which the results are calculated 
+   *
+   * @tparam I the index of the axis until which the results are calculated
    * @param axes A tuple containing the GridAxis objects describing the axes
    * @return A vector containing the sizes of the axes
    */
@@ -78,7 +78,7 @@ public:
                                                      const TemplateLoopCounter<0>&) {
     return std::vector<size_t>{};
   }
-  
+
   /**
    * @brief
    * Creates a vector which contains the names of the given axes
@@ -86,8 +86,8 @@ public:
    * Note that this method is using variadic template iteration by using the
    * second parameter (TemplateLoopCounter). To initiate the iteration the
    * counter must be equal with the number of axes in the tuple.
-   * 
-   * @tparam I the index of the axis until which the results are calculated 
+   *
+   * @tparam I the index of the axis until which the results are calculated
    * @param axes A tuple containing the GridAxis objects describing the axes
    * @return A vector containing the names of the axes
    */
@@ -104,7 +104,7 @@ public:
                                                      const TemplateLoopCounter<0>&) {
     return std::vector<std::string>{};
   }
-  
+
   /**
    * @brief
    * Returns the index factor of an axis
@@ -114,7 +114,7 @@ public:
    * to the multiplication of the sizes of all the axes which have faster
    * iteration rate. Its purpose is to facilitate the conversion of multi-
    * dimensional coordinates to the index of a long array.
-   * 
+   *
    * @tparam I the index of the axis to get the factor for
    * @param axes The axes to use for the calculation
    * @return The index factor of the Ith axis
@@ -124,13 +124,13 @@ public:
                                     const TemplateLoopCounter<I>&) {
     return std::get<I>(axes).size() * getAxisIndexFactor(axes, TemplateLoopCounter<I-1>{});
   }
-  
+
   /// Method which terminates the iteration when calculating the axis index factors
   static size_t getAxisIndexFactor(const std::tuple<GridAxis<Axes>...>&,
                                     const TemplateLoopCounter<-1>&) {
     return 1;
   }
-  
+
   /**
    * @brief
    * Creates a vector which contains the index factors of the given axes
@@ -142,8 +142,8 @@ public:
    * Note that this method is using variadic template iteration by using the
    * second parameter (TemplateLoopCounter). To initiate the iteration the
    * counter must be equal with the number of axes in the tuple.
-   * 
-   * @tparam I the index of the axis until which the results are calculated 
+   *
+   * @tparam I the index of the axis until which the results are calculated
    * @param axes A tuple containing the GridAxis objects describing the axes
    * @return A vector containing the index factors of the axes
    */
@@ -154,13 +154,13 @@ public:
     result.push_back(getAxisIndexFactor(axes, TemplateLoopCounter<I-1>{}));
     return result;
   }
-  
+
   /// Method which terminates the iteration when creating the axes index factors
   static std::vector<size_t> createAxisIndexFactorVector(
             const std::tuple<GridAxis<Axes>...>&,const TemplateLoopCounter<0>&) {
     return std::vector<size_t> {1};
   }
-  
+
   template<int I>
   static void findAndFixAxis(std::tuple<GridAxis<Axes>...>& axes_tuple, size_t axis,
                              size_t index, const TemplateLoopCounter<I>&) {
@@ -172,12 +172,12 @@ public:
     }
     findAndFixAxis(axes_tuple, axis, index, TemplateLoopCounter<I+1>{});
   }
-  
+
   static void findAndFixAxis(std::tuple<GridAxis<Axes>...>&, size_t,
                              size_t, const TemplateLoopCounter<sizeof...(Axes)>&) {
     // does nothing
   }
-  
+
   template<typename IterType, int I>
   static void fixIteratorAxes(IterType& iter, std::map<size_t, size_t> fix_indices,
                               const TemplateLoopCounter<I>&) {
@@ -187,17 +187,17 @@ public:
     }
     fixIteratorAxes(iter, fix_indices, TemplateLoopCounter<I+1>{});
   }
-  
+
   template<typename IterType>
   static void fixIteratorAxes(IterType&, std::map<size_t, size_t>,
                               const TemplateLoopCounter<sizeof...(Axes)>&) {
     // does nothing
   }
-  
+
 };
 
 } // end of namespace GridContainer
 } // end of namespace Euclid
 
-#endif	/* GRIDCONTAINER_GRIDCONSTRUCTIONHELPER_H */
+#endif  /* GRIDCONTAINER_GRIDCONSTRUCTIONHELPER_H */
 

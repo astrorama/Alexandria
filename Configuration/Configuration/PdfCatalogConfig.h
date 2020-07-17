@@ -32,6 +32,11 @@
 namespace Euclid {
 namespace Configuration {
 
+/**
+ * Adds to the configured catalog attributes to handle PDF columns
+ * @tparam T
+ *  The value type of the PDF (i.e. double or float)
+ */
 template <typename T>
 class PdfCatalogConfig : public Configuration {
 
@@ -43,8 +48,7 @@ public:
 
   virtual ~PdfCatalogConfig() = default;
 
-  void addPdfColumn(const std::string& pdf_name, const std::string& col_name,
-                    std::vector<T> keys) {
+  void addPdfColumn(const std::string& pdf_name, const std::string& col_name, std::vector<T> keys) {
     if (getCurrentState() >= State::INITIALIZED) {
       throw Elements::Exception() << "addPdfColumn() call to initialized PdfCatalogConfig";
     }
@@ -53,9 +57,9 @@ public:
   }
 
   void initialize(const UserValues&) override {
-    getDependency<CatalogConfig>().addAttributeHandler(std::make_shared<SourceCatalog::PdfFromRow<T>>(m_keys, m_column_names));
+    getDependency<CatalogConfig>().addAttributeHandler(
+      std::make_shared<SourceCatalog::PdfFromRow<T>>(m_keys, m_column_names));
   }
-
 
 private:
 

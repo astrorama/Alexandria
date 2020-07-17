@@ -23,7 +23,7 @@
  */
 
 #ifndef TABLE_TABLE_H
-#define	TABLE_TABLE_H
+#define TABLE_TABLE_H
 
 #include <memory>
 #include <vector>
@@ -120,5 +120,5 @@ private:
 }
 } // end of namespace Euclid
 
-#endif	/* TABLE_TABLE_H */
+#endif  /* TABLE_TABLE_H */
 
