@@ -170,10 +170,9 @@ BOOST_AUTO_TEST_CASE(comparison_test) {
   Euclid::XYDataset::QualifiedName qualifiedName3 {{"bgroup"}, "bname"};
 
   // Then
-  BOOST_CHECK(qualifiedName1 < qualifiedName2);
-  BOOST_CHECK(qualifiedName2 < qualifiedName3);
-  BOOST_CHECK(qualifiedName1 < qualifiedName3);
-
+  BOOST_CHECK(qualifiedName1 < qualifiedName2 ^ qualifiedName2 < qualifiedName1);
+  BOOST_CHECK(qualifiedName2 < qualifiedName3 ^ qualifiedName3 < qualifiedName2);
+  BOOST_CHECK(qualifiedName1 < qualifiedName3 ^ qualifiedName3 < qualifiedName1);
 }
 
 //-----------------------------------------------------------------------------

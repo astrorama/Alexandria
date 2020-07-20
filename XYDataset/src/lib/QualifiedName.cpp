@@ -93,7 +93,14 @@ size_t QualifiedName::hash() const {
 }
 
 bool QualifiedName::operator<(const QualifiedName& other) const {
-  return this->qualifiedName() < other.qualifiedName();
+  size_t thisHash = this->hash();
+  size_t otherHash = other.hash();
+  if (thisHash != otherHash) {
+    return thisHash < otherHash;
+  }
+  else {
+    return this->qualifiedName() < other.qualifiedName();
+  }
 }
 
 bool QualifiedName::operator==(const QualifiedName& other) const {
