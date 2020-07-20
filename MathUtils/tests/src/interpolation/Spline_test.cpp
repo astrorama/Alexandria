@@ -32,8 +32,9 @@ using namespace Euclid::MathUtils;
 
 
 struct Spline_Fixture {
-  double close_tolerance{1.2E-2};
-  double small_tolerance{1E-12};
+  const double eps = std::sqrt(std::numeric_limits<double>::epsilon());
+  const double close_tolerance{1.2E-2};
+  const double small_tolerance{1E-12};
 
   std::vector<double> x, y;
 
@@ -65,7 +66,13 @@ BOOST_FIXTURE_TEST_CASE(fx, Spline_Fixture) {
 
   // Then
   for (size_t i = 0; i < y.size(); i++) {
-    BOOST_CHECK_CLOSE(result[i], y[i], close_tolerance);
+    if (std::abs(result[i]) <= eps) {
+        BOOST_CHECK_SMALL(result[i], small_tolerance);
+        BOOST_CHECK_SMALL(y[i], small_tolerance);
+    }
+    else {
+        BOOST_CHECK_CLOSE(result[i], y[i], close_tolerance);
+    }
   }
   BOOST_CHECK_SMALL(outside1, small_tolerance);
   BOOST_CHECK_SMALL(outside2, small_tolerance);
@@ -84,8 +91,18 @@ BOOST_FIXTURE_TEST_CASE(Spline_fx, Spline_Fixture) {
     auto x0 = x[i + 1];
     auto& left = splines[i];
     auto& right = splines[i + 1];
-    BOOST_CHECK_CLOSE((*left)(x0), (*right)(x0), close_tolerance);
-    BOOST_CHECK_CLOSE((*left)(x0), y[i + 1], close_tolerance);
+    auto left_val = (*left)(x0);
+    auto right_val = (*right)(x0);
+
+    if (std::abs(left_val) <= eps || std::abs(right_val) <= eps) {
+        BOOST_CHECK_SMALL(left_val, small_tolerance);
+        BOOST_CHECK_SMALL(right_val, small_tolerance);
+        BOOST_CHECK_SMALL(y[i + 1], small_tolerance);
+    }
+    else {
+        BOOST_CHECK_CLOSE(left_val, right_val, close_tolerance);
+        BOOST_CHECK_CLOSE(left_val, y[i + 1], close_tolerance);
+    }
   }
 }
 
@@ -105,7 +122,13 @@ BOOST_FIXTURE_TEST_CASE(Spline_dfx, Spline_Fixture) {
     auto left_dy = derivative(*left, x0);
     auto right_dy = derivative(*right, x0);
 
-    BOOST_CHECK_CLOSE(left_dy, right_dy, close_tolerance);
+    if (std::abs(left_dy) <= eps || std::abs(right_dy) <= eps) {
+      BOOST_CHECK_SMALL(left_dy, small_tolerance);
+      BOOST_CHECK_SMALL(right_dy, small_tolerance);
+    }
+    else {
+      BOOST_CHECK_CLOSE(left_dy, right_dy, close_tolerance);
+    }
   }
 }
 
@@ -114,8 +137,6 @@ BOOST_FIXTURE_TEST_CASE(Spline_dfx, Spline_Fixture) {
 // also the second derivative of the splines to each side must match
 //-----------------------------------------------------------------------------
 BOOST_FIXTURE_TEST_CASE(Spline_ddfx, Spline_Fixture) {
-  const double eps = std::sqrt(std::numeric_limits<double>::epsilon());
-
   auto cubic_f = interpolate(x, y, InterpolationType::CUBIC_SPLINE);
   auto cubic_pieces = dynamic_cast<Piecewise *>(cubic_f.get());
   auto& splines = cubic_pieces->getFunctions();
@@ -152,8 +173,8 @@ BOOST_FIXTURE_TEST_CASE(Spline_ddfx_endpoint, Spline_Fixture) {
   auto left_ddy = derivative2nd(*left, x.front());
   auto right_ddy = derivative2nd(*right, x.back());
 
-  BOOST_CHECK_SMALL(left_ddy, 1e-5);
-  BOOST_CHECK_SMALL(right_ddy, 1e-5);
+  BOOST_CHECK_SMALL(left_ddy, 1e-4);
+  BOOST_CHECK_SMALL(right_ddy, 1e-4);
 }
 
 //-----------------------------------------------------------------------------
@@ -165,8 +186,8 @@ BOOST_FIXTURE_TEST_CASE(Spline_extrapolation, Spline_Fixture) {
   auto left_ddy = derivative2nd(*cubic_f, x.front());
   auto right_ddy = derivative2nd(*cubic_f, x.back());
 
-  BOOST_CHECK_SMALL(left_ddy, 1e-5);
-  BOOST_CHECK_SMALL(right_ddy, 1e-5);
+  BOOST_CHECK_SMALL(left_ddy, 1e-4);
+  BOOST_CHECK_SMALL(right_ddy, 1e-4);
 }
 
 //-----------------------------------------------------------------------------
