@@ -23,7 +23,6 @@
 */
 
 #include <boost/test/unit_test.hpp>
-#include <boost/test/floating_point_comparison.hpp>
 #include <cmath>
 #include "MathUtils/interpolation/interpolation.h"
 #include "MathUtils/function/Piecewise.h"
@@ -115,7 +114,7 @@ BOOST_FIXTURE_TEST_CASE(Spline_dfx, Spline_Fixture) {
 // also the second derivative of the splines to each side must match
 //-----------------------------------------------------------------------------
 BOOST_FIXTURE_TEST_CASE(Spline_ddfx, Spline_Fixture) {
-  const double eps = std::numeric_limits<double>::epsilon();
+  const double eps = std::sqrt(std::numeric_limits<double>::epsilon());
 
   auto cubic_f = interpolate(x, y, InterpolationType::CUBIC_SPLINE);
   auto cubic_pieces = dynamic_cast<Piecewise *>(cubic_f.get());
