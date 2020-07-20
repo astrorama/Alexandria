@@ -1,22 +1,22 @@
 /*
- * Copyright (C) 2012-2020 Euclid Science Ground Segment    
- *  
+ * Copyright (C) 2012-2020 Euclid Science Ground Segment
+ *
  * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free 
- * Software Foundation; either version 3.0 of the License, or (at your option)  
- * any later version.  
- *  
- * This library is distributed in the hope that it will be useful, but WITHOUT 
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 3.0 of the License, or (at your option)
+ * any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more  
- * details.  
- *  
- * You should have received a copy of the GNU Lesser General Public License 
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
  * along with this library; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA  
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
- 
- /** 
+
+ /**
  * @file src/lib/QualifiedName.cpp
  * @date May 19, 2014
  * @author Nikolaos Apostolakos
@@ -44,7 +44,7 @@ QualifiedName::QualifiedName(std::vector<std::string> groups, std::string name)
   }
   m_qualified_name.append(m_dataset_name);
 }
-            
+
 std::vector<std::string> getGroups(const std::string& qualified_name) {
   std::vector<std::string> groups {};
   boost::split(groups, qualified_name, boost::is_any_of("/"));
@@ -52,7 +52,7 @@ std::vector<std::string> getGroups(const std::string& qualified_name) {
   groups.pop_back();
   return groups;
 }
-            
+
 std::string getName(const std::string& qualified_name) {
   std::vector<std::string> groups {};
   boost::split(groups, qualified_name, boost::is_any_of("/"));
@@ -79,7 +79,7 @@ bool QualifiedName::belongsInGroup(const QualifiedName& group) const {
     return false;
   }
   bool group_check = std::equal(group.m_groups.begin(), group.m_groups.end(), this->m_groups.begin());
-  return group_check 
+  return group_check
         ? group.m_dataset_name == this->m_groups.at(group.m_groups.size())
         : false;
 }
@@ -97,7 +97,8 @@ bool QualifiedName::operator<(const QualifiedName& other) const {
   size_t otherHash = other.hash();
   if (thisHash != otherHash) {
     return thisHash < otherHash;
-  } else{
+  }
+  else {
     return this->qualifiedName() < other.qualifiedName();
   }
 }
