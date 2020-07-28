@@ -1,22 +1,22 @@
 /*
- * Copyright (C) 2012-2020 Euclid Science Ground Segment    
- *  
+ * Copyright (C) 2012-2020 Euclid Science Ground Segment
+ *
  * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free 
- * Software Foundation; either version 3.0 of the License, or (at your option)  
- * any later version.  
- *  
- * This library is distributed in the hope that it will be useful, but WITHOUT 
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 3.0 of the License, or (at your option)
+ * any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more  
- * details.  
- *  
- * You should have received a copy of the GNU Lesser General Public License 
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
  * along with this library; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA  
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
- 
- /** 
+
+ /**
  * @file src/lib/FitsWriterHelper.cpp
  * @date April 23, 2014
  * @author Nikolaos Apostolakos
@@ -140,9 +140,6 @@ std::vector<std::string> getBinaryFormatList(const Table& table) {
     } else if (type == typeid(std::vector<double>)) {
       size_t size = vectorSize<double>(table, column_index);
       format_list.push_back(boost::lexical_cast<std::string>(size) + "D");
-    } else if (type == typeid(NdArray<bool>)) {
-      size_t size = ndArraySize<bool>(table, column_index);
-      format_list.push_back(boost::lexical_cast<std::string>(size) + "L");
     } else if (type == typeid(NdArray<int32_t>)) {
       size_t size = ndArraySize<int32_t>(table, column_index);
       format_list.push_back(boost::lexical_cast<std::string>(size) + "J");
@@ -196,7 +193,9 @@ std::vector<std::valarray<T>> createNdArrayColumnData(const Euclid::Table::Table
   std::vector<std::valarray<T>> result{};
   for (auto& row : table) {
     const auto& ndarray = boost::get<NdArray<T>>(row[column_index]);
-    result.emplace_back(ndarray.data().data(), ndarray.size());
+    std::valarray<T> data(ndarray.size());
+    std::copy(std::begin(ndarray), std::end(ndarray), std::begin(data));
+    result.emplace_back(std::move(data));
   }
   return result;
 }
@@ -241,9 +240,7 @@ std::string getTDIM(const Table& table, size_t column_index) {
   auto type = table.getColumnInfo()->getDescription(column_index).type;
   std::vector<size_t> shape;
 
-  if (type == typeid(NdArray<bool>)) {
-    shape = boost::get<NdArray<bool>>(cell).shape();
-  } else if (type == typeid(NdArray<int32_t>)) {
+  if (type == typeid(NdArray<int32_t>)) {
     shape = boost::get<NdArray<int32_t>>(cell).shape();
   } else if (type == typeid(NdArray<int64_t>)) {
     shape = boost::get<NdArray<int64_t>>(cell).shape();

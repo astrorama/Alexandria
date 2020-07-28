@@ -59,8 +59,6 @@ std::string typeToKeyword(std::type_index type) {
     return "[float]";
   } if (type == typeid(std::vector<double>)) {
     return "[double]";
-  } if (type == typeid(NdArray<bool>)) {
-    return "[bool+]";
   } if (type == typeid(NdArray<int32_t>)) {
     return "[int+]";
   } if (type == typeid(NdArray<int64_t>)) {

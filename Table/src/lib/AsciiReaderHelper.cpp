@@ -92,8 +92,6 @@ std::type_index keywordToType(const std::string& keyword) {
     return typeid(std::vector<float>);
   } else if (keyword == "[double]") {
     return typeid(std::vector<double>);
-  } else if (keyword == "[bool+]" || keyword == "[boolean+]") {
-    return typeid(NdArray<bool>);
   } else if (keyword == "[int+]" || keyword == "[int32+]") {
     return typeid(NdArray<int32_t>);
   } else if (keyword == "[long+]" || keyword == "[int64+]") {
@@ -316,8 +314,6 @@ Row::cell_type convertToCellType(const std::string& value, std::type_index type)
       return Row::cell_type {convertStringToVector<float>(value)};
     } else if (type == typeid(std::vector<double>)) {
       return Row::cell_type {convertStringToVector<double>(value)};
-    } else if (type == typeid(NdArray<bool>)) {
-      return Row::cell_type {convertStringToNdArray<bool>(value)};
     } else if (type == typeid(NdArray<int32_t>)) {
       return Row::cell_type {convertStringToNdArray<int32_t>(value)};
     } else if (type == typeid(NdArray<int64_t>)) {
