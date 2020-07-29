@@ -3,6 +3,7 @@ elements_subdir(NdArray)
 #===== Libraries ===============================================================
 elements_add_library(NdArray
         LINKER_LANGUAGE CXX
+        LINK_LIBRARIES AlexandriaKernel
         PUBLIC_HEADERS NdArray)
 
 #===== Boost tests =============================================================
