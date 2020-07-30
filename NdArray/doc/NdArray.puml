@@ -1,9 +1,9 @@
 @startuml
 
-class NdArray<T> {
+class NdArray<T, Container> {
   - m_shape : vector<size_t>
   - m_stride_size : vector<size_t>
-  - m_container : ContainerWrapper<T>
+  - m_container : Container<T>
   --
   + NdArray(shape)
   + NdArray(shape, data)
@@ -19,14 +19,5 @@ class NdArray<T> {
   + operator == () : bool
   + operator != () : bool
 }
-
-class ContainerWrapper<T> {
-  + m_data : T*
-  --
-  + size() : size_t
-  + copy() : ContainerWrapper<T>
-}
-
-NdArray o-- ContainerWrapper
 
 @enduml
