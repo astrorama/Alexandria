@@ -1,0 +1,79 @@
+/*
+ * Copyright (C) 2012-2020 Euclid Science Ground Segment
+ *
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 3.0 of the License, or (at your option)
+ * any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+ */
+
+#ifdef NPYMMAP_IMPL
+
+#include "NpyCommon.h"
+#include <boost/iostreams/stream.hpp>
+#include <boost/iostreams/device/mapped_file.hpp>
+#include <boost/filesystem/path.hpp>
+#include <numeric>
+
+namespace Euclid {
+namespace NdArray {
+
+typedef boost::iostreams::stream<boost::iostreams::mapped_file> MappedStream;
+
+template<typename T>
+NdArray <T> mmapNpy(const boost::filesystem::path& path, boost::iostreams::mapped_file_base::mapmode mode) {
+  std::string dtype;
+  size_t n_elements = 0;
+  std::vector<size_t> shape;
+
+  boost::iostreams::mapped_file_params map_params;
+  map_params.path = path.native();
+  map_params.flags = mode;
+
+  boost::iostreams::mapped_file input(map_params);
+  MappedStream stream(input);
+  stream.set_auto_close(false);
+  readNpyHeader(stream, dtype, shape, n_elements);
+
+  if (dtype != NpyDtype<T>::str)
+    throw Elements::Exception() << "Can not cast " << dtype << " into " << typeid(T).name();
+
+  return {shape, std::move(MappedContainer<T>(stream.tellg(), n_elements, std::move(input)))};
+}
+
+template<typename T>
+NdArray<T> createMmapNpy(const boost::filesystem::path& path, const std::vector<size_t>& shape) {
+  // Pre-generate header
+  std::stringstream header;
+  writeNpyHeader<T>(header, shape);
+  auto header_str = header.str();
+  auto header_size = header_str.size();
+
+  // Compute file expected size
+  size_t n_elements = std::accumulate(shape.begin(), shape.end(), 1, std::multiplies<size_t>());
+  size_t data_size = n_elements * sizeof(T);
+  size_t total_size = header_size + data_size;
+
+  boost::iostreams::mapped_file_params map_params;
+  map_params.path = path.native();
+  map_params.flags = boost::iostreams::mapped_file_base::readwrite;
+  map_params.new_file_size = total_size;
+
+  boost::iostreams::mapped_file output(map_params);
+  std::copy(header_str.begin(), header_str.end(), output.begin());
+  return {shape, std::move(MappedContainer<T>(header_size, n_elements, std::move(output)))};
+}
+
+} // end of namespace NdArray
+} // end of namespace Euclid
+
+#endif // NPYMMAP_IMPL
