@@ -30,6 +30,7 @@
 #include <stdexcept>
 #include <vector>
 #include <cassert>
+#include "AlexandriaKernel/memory_tools.h"
 
 namespace Euclid {
 namespace NdArray {
@@ -41,12 +42,137 @@ namespace NdArray {
  * @tparam Container
  *  Which container to use, by default std::vector
  */
-template<typename T, template<class...> class Container = std::vector>
+template<typename T>
 class NdArray {
+private:
+  class ContainerInterface;
+
+  template<template<class...> class Container = std::vector>
+  class ContainerWrapper;
+
 public:
-  typedef typename Container<T>::iterator iterator;
-  typedef typename Container<T>::const_iterator const_iterator;
-  typedef NdArray<T, Container> self_type;
+  typedef NdArray<T> self_type;
+
+  /**
+   * Iterator type
+   * @tparam Const
+   *    If true, this defines a const iterator
+   */
+  template<bool Const>
+  class Iterator
+    : public std::iterator<std::random_access_iterator_tag, typename std::conditional<Const, const T, T>::type> {
+  private:
+    ContainerInterface *m_container_ptr;
+    size_t m_offset;
+
+    Iterator(ContainerInterface *container_ptr, size_t offset);
+
+    friend class NdArray;
+
+  public:
+    using value_t = typename std::conditional<Const, const T, T>::type;
+    using typename std::iterator<std::random_access_iterator_tag, value_t>::reference;
+    using typename std::iterator<std::random_access_iterator_tag, value_t>::pointer;
+    using typename std::iterator<std::random_access_iterator_tag, value_t>::difference_type;
+
+    /**
+     * Construct a const iterator from a non-const iterator
+     */
+    Iterator(const Iterator<false>& other);
+
+    /**
+     * Pre-increment
+     */
+    Iterator& operator++();
+
+    /**
+     * Post-increment
+     */
+    Iterator operator++(int);
+
+    /**
+     * Two iterators are equal if they point to the same position on the same data
+     */
+    bool operator==(const Iterator& other) const;
+
+    /**
+     * Two iterators are not equal if they point to different data, or to different positions on the same
+     */
+    bool operator!=(const Iterator& other) const;
+
+    /**
+     * De-reference operator
+     * @return
+     *  A modifiable reference to the value
+     */
+    value_t& operator*();
+
+    /**
+     * De-reference operator
+     * @return
+     *  A non modifiable copy of the value
+     */
+    value_t operator*() const;
+
+    /**
+     * Increment the iterator n times in place
+     * @note
+     *  No out of bounds check is perform! Going beyond the end of the container is undefined behavior
+     */
+    Iterator& operator+=(size_t n);
+
+    /**
+     * @return A new iterator incremented n times
+     * @note
+     *  No out of bounds check is perform! Going beyond the end of the container is undefined behavior
+     */
+    Iterator operator+(size_t n);
+
+    /**
+     * Decrement the iterator n times in place
+     * @note
+     *  There is an assert in place to make sure n is not greater than the current position.
+     *  However, the assert can be gone when compiling for release
+     */
+    Iterator& operator-=(size_t n);
+
+    /**
+     * @return A new iterator incremented n times
+     * @note
+     *  There is an assert in place to make sure n is not greater than the current position.
+     *  However, the assert can be gone when compiling for release
+     */
+    Iterator operator-(size_t n);
+
+    /**
+     * @return The number of positions between this and other
+     * @note
+     *  If this and other point to different underlying data, this is undefined behavior
+     */
+    difference_type operator-(const Iterator& other);
+
+    /**
+     * Equivalent to *(iterator + i)
+     */
+    value_t& operator[](size_t i);
+
+    /**
+     * @return true if this is less than other
+     * @note
+     *  If this and other point to different underlying data, this is undefined behavior
+     */
+    bool operator<(const Iterator& other);
+
+    /**
+     * @return true if this is greater than other
+     * @note
+     *  If this and other point to different underlying data, this is undefined behavior
+     */
+    bool operator>(const Iterator& other);
+  };
+
+  typedef Iterator<true> const_iterator;
+  typedef Iterator<false> iterator;
 
   /**
    * Destructor.
@@ -59,10 +185,7 @@ public:
    *    The shape of the matrix. The number of elements in shape corresponds to the number
    *    of dimensions, the values to each dimension size.
    */
-  explicit NdArray(const std::vector<size_t> &shape) : m_shape{shape}, m_container(
-    std::accumulate(m_shape.begin(), m_shape.end(), 1, std::multiplies<size_t>())) {
-    update_strides();
-  }
+  explicit NdArray(const std::vector<size_t>& shape);
 
   /**
    * Constructs a matrix and initialize it with the given data.
@@ -74,16 +197,13 @@ public:
    * @throws std::invalid_argument
    *    If the data size does not corresponds to the matrix size.
    */
-  NdArray(const std::vector<size_t> &shape, const Container<T> &data) : m_shape{shape}, m_container{data} {
-    size_t expected_size = std::accumulate(m_shape.begin(), m_shape.end(), 1, std::multiplies<size_t>());
-    if (expected_size != m_container.size()) {
-      throw std::invalid_argument("Data size does not match the shape");
-    }
-    update_strides();
-  }
+  template<template<class...> class Container = std::vector>
+  NdArray(const std::vector<size_t>& shape, const Container<T>& data);
 
   /**
    * Constructs a matrix and initialize it with the given data.
+   * @tparam Container
+   *    Owns the memory used by the NdArray. It must expose the methods size() and data().
    * @param shape
    *    The shape of the matrix. The number of elements in shape corresponds to the number
    *    of dimensions, the values to each dimension size.
@@ -94,13 +214,8 @@ public:
    * @throws std::invalid_argument
    *    If the data size does not corresponds to the matrix size.
    */
-  NdArray(const std::vector<size_t> &shape, Container<T> &&data) : m_shape{shape}, m_container{std::move(data)} {
-    size_t expected_size = std::accumulate(m_shape.begin(), m_shape.end(), 1, std::multiplies<size_t>());
-    if (expected_size != m_container.size()) {
-      throw std::invalid_argument("Data size does not match the shape");
-    }
-    update_strides();
-  }
+  template<template<class...> class Container = std::vector>
+  NdArray(const std::vector<size_t>& shape, Container<T>&& data);
 
   /**
    * Constructs a matrix and initialize it with from the given iterators
@@ -114,14 +229,8 @@ public:
    * @throws std::invalid_argument
    *    If the data size does not corresponds to the matrix size.
    */
-  template <typename Iterator>
-  NdArray(const std::vector<size_t> &shape, Iterator begin, Iterator end) : m_shape{shape}, m_container{begin, end} {
-    size_t expected_size = std::accumulate(m_shape.begin(), m_shape.end(), 1, std::multiplies<size_t>());
-    if (expected_size != m_container.size()) {
-      throw std::invalid_argument("Data size does not match the shape");
-    }
-    update_strides();
-  }
+  template<typename Iterator>
+  NdArray(const std::vector<size_t>& shape, Iterator begin, Iterator end);
 
   /**
    * Constructs a default-initialized matrix with the given shape (as an initializer list).
@@ -129,10 +238,12 @@ public:
    *    The shape of the matrix. The number of elements in shape corresponds to the number
    *    of dimensions, the values to each dimension size.
    */
-  NdArray(const std::initializer_list<size_t> &shape) : NdArray(std::vector<size_t>{shape}) {}
+  NdArray(const std::initializer_list<size_t>& shape) : NdArray(std::vector<size_t>{shape}) {}
 
   /**
    * Copy constructor
+   * @note
+   *    The underlying data is not copied, but shared
    */
   NdArray(const self_type&) = default;
 
@@ -143,8 +254,17 @@ public:
 
   /**
    * Assignment
+   * @note
+   *    The underlying data is not copied, but shared
    */
-  NdArray& operator = (const NdArray&) = default;
+  NdArray& operator=(const NdArray&) = default;
+
+  /**
+   * Create a copy of the NdArray
+   */
+  NdArray copy() const {
+    return {m_shape, m_container->copy()};
+  }
 
   /**
    * Gets the shape of the matrix.
@@ -165,15 +285,7 @@ public:
    * @return
    *    *this
    */
-  self_type& reshape(const std::vector<size_t> new_shape) {
-    size_t new_size = std::accumulate(new_shape.begin(), new_shape.end(), 1, std::multiplies<size_t>());
-    if (new_size != m_container.size()) {
-      throw std::range_error("New shape does not match the number of contained elements");
-    }
-    m_shape = new_shape;
-    update_strides();
-    return *this;
-  }
+  self_type& reshape(const std::vector<size_t> new_shape);
 
   /**
    * Reshape the NdArray.
@@ -185,11 +297,8 @@ public:
    * @return
    *    *this
    */
-  template <typename ...D>
-  self_type& reshape(size_t i, D... rest) {
-    std::vector<size_t> acc{i};
-    return reshape_helper(acc, rest...);
-  }
+  template<typename ...D>
+  self_type& reshape(size_t i, D... rest);
 
   /**
    * Gets a reference to the value stored at the given coordinates.
@@ -198,10 +307,7 @@ public:
    * @throws std::out_of_range
    *    If the number of coordinates is invalid, or any of them is out of bounds.
    */
-  T &at(const std::vector<size_t> &coords) {
-    auto offset = get_offset(coords);
-    return m_container[offset];
-  };
+  T& at(const std::vector<size_t>& coords);
 
   /**
    * Gets a constant reference to the value stored at the given coordinates
@@ -210,10 +316,7 @@ public:
    * @throws std::out_of_range
    *    If the number of coordinates is invalid, or any of them is out of bounds.
    */
-  const T &at(const std::vector<size_t> &coords) const {
-    auto offset = get_offset(coords);
-    return m_container[offset];
-  };
+  const T& at(const std::vector<size_t>& coords) const;
 
   /**
    * Gets a reference to the value stored at the given coordinates.
@@ -225,11 +328,8 @@ public:
    *    This is a convenience function that allows access without requiring a vector when the
    *    number of dimensions is known in advance (i.e. `at(x, y, z)` instead of `at(std::vector<size_t>{x, y, z})`).
    */
-  template <typename ...D>
-  T &at(size_t i, D... rest) {
-    std::vector<size_t> acc{i};
-    return at_helper(acc, rest...);
-  }
+  template<typename ...D>
+  T& at(size_t i, D... rest);
 
   /**
    * Gets a constant reference to the value stored at the given coordinates.
@@ -241,182 +341,159 @@ public:
    *    This is a convenience function that allows access without requiring a vector when the
    *    number of dimensions is known in advance (i.e. `at(x, y, z)` instead of `at(std::vector<size_t>{x, y, z})`).
    */
-  template <typename ...D>
-  const T &at(size_t i, D... rest) const {
-    std::vector<size_t> acc{i};
-    return at_helper(acc, rest...);
-  }
+  template<typename ...D>
+  const T& at(size_t i, D... rest) const;
 
   /**
    * @return An iterator pointing to the first element (which corresponds to the one with
    * the coordinates set to 0).
    */
-  iterator begin() {
-    return m_container.begin();
-  }
+  iterator begin();
 
   /**
    * @return An iterator pointing just after the last element (which correspond to the one with
    * the coordinates set to (shape[0]-1, shape[1]-1, ... shape[n]-1).
    */
-  iterator end() {
-    return m_container.end();
-  }
+  iterator end();
 
   /**
    * @return A constant iterator pointing to the first element (which corresponds to the one with
    * the coordinates set to 0).
    */
-  const_iterator begin() const {
-    return m_container.begin();
-  }
+  const_iterator begin() const;
 
   /**
    * @return A constant iterator pointing just after the last element (which correspond to the one with
    * the coordinates set to (shape[0]-1, shape[1]-1, ... shape[n]-1).
    */
-  const_iterator end() const {
-    return m_container.end();
-  }
-
-  /**
-   * @return A const reference to the underlying container
-   */
-  const Container<T>& data() const {
-    return m_container;
-  }
+  const_iterator end() const;
 
   /**
    * Size of the underlying container
    */
-  size_t size() const {
-    return m_container.size();
-  }
+  size_t size() const;
 
   /**
    * Two NdArrays are equal if their shapes and their content are equal
    */
-  bool operator == (const self_type& b) const {
-    return shape() == b.shape() && data() == b.data();
-  }
+  bool operator==(const self_type& b) const;
 
   /**
    * Two NdArrays are not equal if their shapes or their content are not equal
    */
-  bool operator != (const self_type& b) const {
-    return shape() != b.shape() || data() != b.data();
-  }
+  bool operator!=(const self_type& b) const;
 
 private:
   std::vector<size_t> m_shape, m_stride_size;
-  Container<T> m_container;
+  size_t m_size;
+
+  struct ContainerInterface {
+    /// Owned by the specific implementation ContainerWrapper,
+    /// but exposed here to avoid indirections
+    T* m_data_ptr;
+
+    virtual ~ContainerInterface() = default;
+
+    /// @copydoc std::vector::at
+    T at(size_t offset) const {
+      return m_data_ptr[offset];
+    }
+
+    /// @copydoc std::vector::at
+    T& at(size_t offset) {
+      return m_data_ptr[offset];
+    }
+
+    /// @copydoc std::vector::size
+    virtual size_t size() const = 0;
+
+    /// Expected to generate a deep copy of the underlying data
+    virtual std::unique_ptr<ContainerInterface> copy() const = 0;
+  };
+
+  template<template<class...> class Container>
+  struct ContainerWrapper : public ContainerInterface {
+    using ContainerInterface::m_data_ptr;
+    Container<T> m_container;
+
+    ~ContainerWrapper() = default;
+
+    ContainerWrapper(const ContainerWrapper&) = delete;
+
+    ContainerWrapper(ContainerWrapper&&) = default;
+
+    template<typename ...Args>
+    ContainerWrapper(Args&& ... args) : m_container(std::forward<Args>(args)...) {
+      m_data_ptr = m_container.data();
+    }
+
+    size_t size() const final {
+      return m_container.size();
+    }
+
+    std::unique_ptr<ContainerInterface> copy() const final {
+      return Euclid::make_unique<ContainerWrapper>(m_container);
+    }
+  };
+
+  std::shared_ptr<ContainerInterface> m_container;
+
+  /**
+   * Private constructor used for deep copies
+   */
+  NdArray(const std::vector<size_t>& shape, const std::shared_ptr<ContainerInterface>& container);
 
   /**
    * Gets the total offset for the given coordinates.
    * @throws std::out_of_range
    *    If the number of coordinates is invalid, or any of them is out of bounds.
    */
-  size_t get_offset(const std::vector<size_t> &coords) const {
-    if (coords.size() != m_shape.size()) {
-      throw std::out_of_range(
-        "Invalid number of coordinates, got " + std::to_string(coords.size())
-        + ", expected " + std::to_string(m_shape.size())
-      );
-    }
-
-    size_t offset = 0;
-    for (size_t i = 0; i < coords.size(); ++i) {
-      if (coords[i] >= m_shape[i]) {
-        throw std::out_of_range(
-          std::to_string(coords[i]) + " >= " + std::to_string(m_shape[i]) + " for axis " + std::to_string(i)
-        );
-      }
-      offset += coords[i] * m_stride_size[i];
-    }
-
-    assert(offset < m_container.size());
-    return offset;
-  };
+  size_t get_offset(const std::vector<size_t>& coords) const;
 
   /**
    * Compute the stride size for each dimension
    */
-  void update_strides() {
-    m_stride_size.resize(m_shape.size());
-
-    size_t acc = 1;
-    for (size_t i = m_stride_size.size(); i > 0; --i) {
-      m_stride_size[i - 1] = acc;
-      acc *= m_shape[i - 1];
-    }
-  }
+  void update_strides();
 
   /**
    * Helper to expand at with a variable number of arguments
    */
-  template <typename ...D>
-  T &at_helper(std::vector<size_t> &acc, size_t i, D... rest) {
-    acc.push_back(i);
-    return at_helper(acc, rest...);
-  }
+  template<typename ...D>
+  T& at_helper(std::vector<size_t>& acc, size_t i, D... rest);
 
   /**
    * Helper to expand at with a variable number of arguments (base case)
    */
-  T &at_helper(std::vector<size_t> &acc) {
-    return at(acc);
-  }
+  T& at_helper(std::vector<size_t>& acc);
 
   /**
    * Helper to expand constant at with a variable number of arguments
    */
-  template <typename ...D>
-  const T &at_helper(std::vector<size_t> &acc, size_t i, D... rest) const {
-    acc.push_back(i);
-    return at_helper(acc, rest...);
-  }
+  template<typename ...D>
+  const T& at_helper(std::vector<size_t>& acc, size_t i, D... rest) const;
 
   /**
    * Helper to expand constant at with a variable number of arguments (base case)
    */
-  const T &at_helper(std::vector<size_t> &acc) const {
-    return at(acc);
-  }
+  const T& at_helper(std::vector<size_t>& acc) const;
 
-  template <typename ...D>
-  self_type& reshape_helper(std::vector<size_t>& acc, size_t i, D... rest) {
-    acc.push_back(i);
-    return reshape_helper(acc, rest...);
-  }
+  template<typename ...D>
+  self_type& reshape_helper(std::vector<size_t>& acc, size_t i, D... rest);
 
-  self_type& reshape_helper(std::vector<size_t>& acc) {
-    return reshape(acc);
-  }
+  self_type& reshape_helper(std::vector<size_t>& acc);
 };
 
 /**
  * Serialize a NdArray
  */
-template<typename T, template<class...> class Container>
-std::ostream& operator << (std::ostream &out, const NdArray<T, Container> &ndarray) {
-  size_t i;
-  auto shape = ndarray.shape();
-
-  if (ndarray.size()) {
-    out << "<";
-    for (i = 0; i < shape.size() - 1; ++i) {
-      out << shape[i] << ",";
-    }
-    out << shape[i] << ">";
-    for (i = 0; i < ndarray.size() - 1; ++i) {
-      out << ndarray.data()[i] << ",";
-    }
-    out << ndarray.data()[i];
-  }
-  return out;
-}
+template<typename T>
+std::ostream& operator<<(std::ostream& out, const NdArray<T>& ndarray);
 
 } // end NdArray
 } // end Euclid
+
+#define NDARRAY_IMPL
+#include "NdArray/_impl/NdArray.icpp"
+#undef NDARRAY_IMPL
 
 #endif // ALEXANDRIA_NDARRAY_H

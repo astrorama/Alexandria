@@ -97,7 +97,7 @@ BOOST_AUTO_TEST_CASE(Fill_test) {
   BOOST_CHECK_EQUAL(m.at(1, 1), 42);
 }
 
-BOOST_AUTO_TEST_CASE(Copy_test) {
+BOOST_AUTO_TEST_CASE(VectorCopy_test) {
   std::vector<int> original{1, 1, 2, 3, 5, 8};
   std::vector<int> expected(original.begin(), original.end());
   NdArray<int> m(std::vector<size_t>{2, 3}, original);
@@ -106,7 +106,7 @@ BOOST_AUTO_TEST_CASE(Copy_test) {
   BOOST_CHECK_EQUAL_COLLECTIONS(m.begin(), m.end(), expected.begin(), expected.end());
 }
 
-BOOST_AUTO_TEST_CASE(Move_test) {
+BOOST_AUTO_TEST_CASE(VectorMove_test) {
   std::vector<int> original{1, 1, 2, 3, 5, 8};
   std::vector<int> expected(original.begin(), original.end());
   NdArray<int> m(std::vector<size_t>{2, 3}, std::move(original));
@@ -153,6 +153,18 @@ BOOST_AUTO_TEST_CASE(BadReshape_test) {
 
   BOOST_CHECK_THROW(m.reshape(3), std::range_error);
   BOOST_CHECK_THROW(m.reshape(10), std::range_error);
+}
+
+BOOST_AUTO_TEST_CASE(Copy_test) {
+  std::vector<int> values{10, 50, 0, 15, 20, 0};
+  NdArray<int> m{std::vector<size_t>{2, 3}, values};
+
+  auto copy = m.copy();
+  copy.at(0, 0) = 1;
+  copy.at(0, 1) = 0;
+
+  BOOST_CHECK_EQUAL(m.at(0, 0), values[0]);
+  BOOST_CHECK_EQUAL(m.at(0, 1), values[1]);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
