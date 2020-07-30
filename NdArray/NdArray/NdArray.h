@@ -48,7 +48,7 @@ private:
   class ContainerInterface;
 
   template<template<class...> class Container = std::vector>
-  class ContainerImpl;
+  class ContainerWrapper;
 
 public:
   typedef NdArray<T> self_type;
@@ -202,6 +202,8 @@ public:
 
   /**
    * Constructs a matrix and initialize it with the given data.
+   * @tparam Container
+   *    Owns the memory used by the NdArray. It must expose the methods size() and data().
    * @param shape
    *    The shape of the matrix. The number of elements in shape corresponds to the number
    *    of dimensions, the values to each dimension size.
@@ -383,48 +385,63 @@ public:
 
 private:
   std::vector<size_t> m_shape, m_stride_size;
+  size_t m_size;
 
   struct ContainerInterface {
+    /// Owned by the specific implementation ContainerWrapper,
+    /// but exposed here to avoid indirections
+    T* m_data_ptr;
+
     virtual ~ContainerInterface() = default;
 
+    /// @copydoc std::vector::at
+    T at(size_t offset) const {
+      return m_data_ptr[offset];
+    }
+
+    /// @copydoc std::vector::at
+    T& at(size_t offset) {
+      return m_data_ptr[offset];
+    }
+
+    /// @copydoc std::vector::size
     virtual size_t size() const = 0;
 
-    virtual T at(size_t offset) const = 0;
-
-    virtual T& at(size_t offset) = 0;
-
+    /// Expected to generate a deep copy of the underlying data
     virtual std::unique_ptr<ContainerInterface> copy() const = 0;
   };
 
   template<template<class...> class Container>
-  struct ContainerImpl : public ContainerInterface {
+  struct ContainerWrapper : public ContainerInterface {
+    using ContainerInterface::m_data_ptr;
     Container<T> m_container;
 
-    ~ContainerImpl() = default;
+    ~ContainerWrapper() = default;
 
-    ContainerImpl(ContainerImpl&&) = default;
+    ContainerWrapper(const ContainerWrapper&) = delete;
+
+    ContainerWrapper(ContainerWrapper&&) = default;
 
     template<typename ...Args>
-    ContainerImpl(Args&& ... args) : m_container(std::forward<Args>(args)...) {}
+    ContainerWrapper(Args&& ... args) : m_container(std::forward<Args>(args)...) {
+      m_data_ptr = m_container.data();
+    }
 
-    size_t size() const override {
+    size_t size() const final {
       return m_container.size();
     }
 
-    T at(size_t offset) const override {
-      return m_container.at(offset);
-    }
-
-    T& at(size_t offset) override {
-      return m_container.at(offset);
-    }
-
-    std::unique_ptr<ContainerInterface> copy() const override {
-      return Euclid::make_unique<ContainerImpl>(m_container);
+    std::unique_ptr<ContainerInterface> copy() const final {
+      return Euclid::make_unique<ContainerWrapper>(m_container);
     }
   };
 
   std::shared_ptr<ContainerInterface> m_container;
+
+  /**
+   * Private constructor used for deep copies
+   */
+  NdArray(const std::vector<size_t>& shape, const std::shared_ptr<ContainerInterface>& container);
 
   /**
    * Gets the total offset for the given coordinates.

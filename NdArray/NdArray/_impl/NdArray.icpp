@@ -128,18 +128,17 @@ bool NdArray<T>::Iterator<Const>::operator>(const Iterator& other) {
 
 template<typename T>
 NdArray<T>::NdArray(const std::vector<size_t>& shape)
-  : m_shape{shape}, m_container(
-  new ContainerImpl<std::vector>(std::accumulate(m_shape.begin(), m_shape.end(), 1, std::multiplies<size_t>()))
-) {
+  : m_shape{shape}, m_size{std::accumulate(m_shape.begin(), m_shape.end(), 1u, std::multiplies<size_t>())},
+    m_container(new ContainerWrapper<std::vector>(m_size)) {
   update_strides();
 }
 
 template<typename T>
 template<template<class...> class Container>
 NdArray<T>::NdArray(const std::vector<size_t>& shape, const Container<T>& data)
-  : m_shape{shape}, m_container{new ContainerImpl<Container>(data)} {
-  size_t expected_size = std::accumulate(m_shape.begin(), m_shape.end(), 1, std::multiplies<size_t>());
-  if (expected_size != m_container->size()) {
+  : m_shape{shape}, m_size{std::accumulate(m_shape.begin(), m_shape.end(), 1u, std::multiplies<size_t>())},
+    m_container{new ContainerWrapper<Container>(data)} {
+  if (m_size != m_container->size()) {
     throw std::invalid_argument("Data size does not match the shape");
   }
   update_strides();
@@ -148,9 +147,9 @@ NdArray<T>::NdArray(const std::vector<size_t>& shape, const Container<T>& data)
 template<typename T>
 template<template<class...> class Container>
 NdArray<T>::NdArray(const std::vector<size_t>& shape, Container<T>&& data)
-  : m_shape{shape}, m_container{new ContainerImpl<Container>(std::move(data))} {
-  size_t expected_size = std::accumulate(m_shape.begin(), m_shape.end(), 1, std::multiplies<size_t>());
-  if (expected_size != m_container->size()) {
+  : m_shape{shape}, m_size{std::accumulate(m_shape.begin(), m_shape.end(), 1u, std::multiplies<size_t>())},
+    m_container{new ContainerWrapper<Container>(std::move(data))} {
+  if (m_size != m_container->size()) {
     throw std::invalid_argument("Data size does not match the shape");
   }
   update_strides();
@@ -159,18 +158,25 @@ NdArray<T>::NdArray(const std::vector<size_t>& shape, Container<T>&& data)
 template<typename T>
 template<typename II>
 NdArray<T>::NdArray(const std::vector<size_t>& shape, II begin, II end)
-  : m_shape{shape}, m_container{new ContainerImpl<std::vector>(begin, end)} {
-  size_t expected_size = std::accumulate(m_shape.begin(), m_shape.end(), 1, std::multiplies<size_t>());
-  if (expected_size != m_container->size()) {
+  : m_shape{shape}, m_size{std::accumulate(m_shape.begin(), m_shape.end(), 1u, std::multiplies<size_t>())},
+    m_container{new ContainerWrapper<std::vector>(begin, end)} {
+  if (m_size != m_container->size()) {
     throw std::invalid_argument("Data size does not match the shape");
   }
   update_strides();
 }
 
 template<typename T>
+NdArray<T>::NdArray(const std::vector<size_t>& shape, const std::shared_ptr<ContainerInterface>& container)
+  : m_shape{shape}, m_size{std::accumulate(m_shape.begin(), m_shape.end(), 1u, std::multiplies<size_t>())},
+    m_container{container} {
+  update_strides();
+}
+
+template<typename T>
 auto NdArray<T>::reshape(const std::vector<size_t> new_shape) -> self_type& {
   size_t new_size = std::accumulate(new_shape.begin(), new_shape.end(), 1, std::multiplies<size_t>());
-  if (new_size != m_container->size()) {
+  if (new_size != m_size) {
     throw std::range_error("New shape does not match the number of contained elements");
   }
   m_shape = new_shape;
@@ -218,7 +224,7 @@ auto NdArray<T>::begin() -> iterator {
 
 template<typename T>
 auto NdArray<T>::end() -> iterator {
-  return iterator{m_container.get(), m_container->size()};
+  return iterator{m_container.get(), m_size};
 }
 
 template<typename T>
@@ -228,12 +234,12 @@ auto NdArray<T>::begin() const -> const_iterator {
 
 template<typename T>
 auto NdArray<T>::end() const -> const_iterator {
-  return const_iterator{m_container.get(), m_container->size()};
+  return const_iterator{m_container.get(), m_size};
 }
 
 template<typename T>
 size_t NdArray<T>::size() const {
-  return m_container->size();
+  return m_size;
 }
 
 template<typename T>
