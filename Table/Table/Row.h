@@ -77,7 +77,6 @@ public:
                          std::vector<int64_t>,
                          std::vector<float>,
                          std::vector<double>,
-                         NdArray::NdArray<bool>,
                          NdArray::NdArray<int32_t>,
                          NdArray::NdArray<int64_t>,
                          NdArray::NdArray<float>,

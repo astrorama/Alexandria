@@ -73,7 +73,7 @@ strings. As can be seen above, our table will have three columns defined as:
 - **Y**: the Y value calculated using the function
 
 The ColumnInfo object will be shared between the Table and all its Row%s, so it
-is stored in a std::shared_ptr. Note that at the construction of 
+is stored in a std::shared_ptr. Note that at the construction of
 the ColumnInfo the `info_list` vector is moved because it is not needed anymore.
 This is optional (but recommended).
 
@@ -94,7 +94,6 @@ specialization allowing for the following types:
 - `std::vector<int64_t>`
 - `std::vector<float>`
 - `std::vector<double>`
-- `NdArray::NdArray<bool>`
 - `NdArray::NdArray<int32_t>`
 - `NdArray::NdArray<int64_t>`
 - `NdArray::NdArray<float>`
@@ -236,7 +235,7 @@ not be detected until a cell value is retrieved during runtime. For this
 reason, to minimize the debugging effort and to allow better log messages,
 it is recommended to always check the types of the Table columns in interest,
 before trying to read the data from the Row%s cells. This can easily be done
-by using the `typeid()` method: 
+by using the `typeid()` method:
 
 \code{.cpp}
   if (column_info->getDescription(*x_index).type == typeid(double)) {
@@ -271,17 +270,17 @@ contents of a table, by using these iterators:
 Output:
 
 \code
-sin 0 0 
-cos 0 1 
-sin 0.628319 0.587785 
-cos 0.628319 0.809017 
-sin 1.25664 0.951057 
-cos 1.25664 0.309017 
-sin 1.88496 0.951057 
-cos 1.88496 -0.309017 
-sin 2.51327 0.587785 
-cos 2.51327 -0.809017 
-sin 3.14159 1.22465e-16 
+sin 0 0
+cos 0 1
+sin 0.628319 0.587785
+cos 0.628319 0.809017
+sin 1.25664 0.951057
+cos 1.25664 0.309017
+sin 1.88496 0.951057
+cos 1.88496 -0.309017
+sin 2.51327 0.587785
+cos 2.51327 -0.809017
+sin 3.14159 1.22465e-16
 cos 3.14159 -1
 \endcode
 
@@ -323,8 +322,8 @@ Most of the time, to use the data of the Table cells, they must be retrieved wit
 the correct type. The Row::cell_type objects can be converted to the actual
 type by using the `boost::get()` method. Note that trying to convert the cell
 value to a wrong type will result to a `boost::bad_get` exception. For example,
-the following lines of code calculate the sum of the Y column values 
-(column of `double` type): 
+the following lines of code calculate the sum of the Y column values
+(column of `double` type):
 
 \code{.cpp}
   double sum {0};
@@ -383,9 +382,9 @@ class encapsulates the format details for a table reader:
 
 \code{.cpp}
 class ReaderProvider {
-  
+
 public:
-  
+
   ReaderProvider() {
     if (...) { // format is ASCII
       m_reader_ptr = make_unique<AsciiReader>(...);
@@ -393,15 +392,15 @@ public:
       m_reader_ptr = make_unique<FitsReader>(...);
     }
   }
-  
+
   TableReader& get() {
     return *m_reader_ptr;
   }
-  
+
 private:
-  
+
   unique_ptr<TableReader> m_reader_ptr;
-  
+
 };
 \endcode
 
@@ -472,32 +471,32 @@ computed:
 
 \code{.cpp}
 class OutputResults {
-  
+
 public:
-  
+
   virtual ~OutputResults() {
     // Flush any remaining rows
     flush();
   }
-  
+
   void addResult(const Result& result) {
     m_rows.push_back(convertToRow(result));
     if (m_rows.size() >= 100) {
       flush();
     }
   }
-  
+
 private:
-  
+
   void flush() {
     Table table {m_rows};
     m_writer->addData(table);
     m_rows.clear();
   }
-  
+
   unique_ptr<TableWriter> m_writer;
   vector<Row> m_rows;
-  
+
 };
 \endcode
 
@@ -521,7 +520,7 @@ valid for all the lifetime of the AsciiReader.
 As the most common use is to read a file, there is provided a second constructor
 which gets as parameter a string with the file name. When using this constructor
 the AsciiReader will handle any file stream opening internally, so the user does
-not need to worry about any broken references. This is the recommended way of 
+not need to worry about any broken references. This is the recommended way of
 using the AsciiReader:
 
 \code{.cpp}
