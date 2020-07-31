@@ -33,8 +33,13 @@ static std::stringstream runPython(const char *code, const boost::filesystem::pa
   out << code;
   out.close();
 
+  auto python_exec = bp::search_path("python3");
+  if (python_exec.empty())
+    python_exec = bp::search_path("python");
+  BOOST_CHECK(!python_exec.empty());
+
   bp::ipstream py_output;
-  int r = bp::system(bp::search_path("python"), code_file.path().native(), npy.native(), bp::std_out > py_output);
+  int r = bp::system(python_exec, code_file.path().native(), npy.native(), bp::std_out > py_output);
   BOOST_CHECK_EQUAL(r, 0);
 
   std::stringstream stream;
