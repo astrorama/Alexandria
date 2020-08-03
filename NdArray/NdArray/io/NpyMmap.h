@@ -20,6 +20,7 @@
 #define ALEXANDRIA_NDARRAY_IO_NPYMMAP_H
 
 #include <boost/filesystem/path.hpp>
+#include <boost/iostreams/device/mapped_file.hpp>
 #include "NdArray/NdArray.h"
 
 namespace Euclid {
@@ -35,6 +36,8 @@ namespace NdArray {
  *  Open mode. By default read/write, so changes are persisted to disk.
  *  boost::iostreams::mapped_file_base::priv enabled a Copy-On-Write, so the memory can be modified
  *  but the changes will not persist
+ * @param max_size
+ *  Maximum size of the file. If you are going to call NdArray<T>::concatenate, mind this parameter!
  * @return
  *  A new NdArray
  * @note
@@ -44,7 +47,8 @@ namespace NdArray {
  */
 template<typename T>
 NdArray<T> mmapNpy(const boost::filesystem::path& path,
-                   boost::iostreams::mapped_file_base::mapmode mode = boost::iostreams::mapped_file_base::readwrite);
+                   boost::iostreams::mapped_file_base::mapmode mode = boost::iostreams::mapped_file_base::readwrite,
+                   size_t max_size = 0);
 
 /**
  * Create using mmap an NdArray backed by a numpy file
@@ -54,11 +58,13 @@ NdArray<T> mmapNpy(const boost::filesystem::path& path,
  *  Output path
  * @param shape
  *  NdArray shape
+ * @param max_size
+ *  Maximum size of the file. If you are going to call NdArray<T>::concatenate, mind this parameter!
  * @return
  *  A new NdArray
  */
 template<typename T>
-NdArray<T> createMmapNpy(const boost::filesystem::path& path, const std::vector<size_t>& shape);
+NdArray<T> createMmapNpy(const boost::filesystem::path& path, const std::vector<size_t>& shape, size_t max_size = 0);
 
 } // end of namespace NdArray
 } // end of namespace Euclid

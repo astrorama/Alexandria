@@ -19,8 +19,9 @@
 #ifndef ALEXANDRIA_NDARRAY_IMPL_NPYCOMMON_H
 #define ALEXANDRIA_NDARRAY_IMPL_NPYCOMMON_H
 
-#include <boost/iostreams/device/mapped_file.hpp>
 #include <boost/endian/arithmetic.hpp>
+#include <boost/filesystem/operations.hpp>
+#include <boost/iostreams/device/mapped_file.hpp>
 #include "AlexandriaKernel/StringUtils.h"
 
 namespace Euclid {
@@ -33,6 +34,17 @@ using boost::endian::little_uint32_t;
  * Magic string for .npy files
  */
 constexpr const char NPY_MAGIC[] = {'\x93', 'N', 'U', 'M', 'P', 'Y'};
+
+/**
+ * Endianness marker for the numpy array
+ */
+#if __BYTE_ORDER == __LITTLE_ENDIAN
+constexpr const char *ENDIAN_MARKER = "<";
+#elif __BYTE_ORDER == __BIG_ENDIAN
+constexpr const char* ENDIAN_MARKER = ">";
+#else
+#error "__PDP_ENDIAN not supported"
+#endif
 
 /**
  * Map a primitive type to a string representation for numpy
@@ -170,6 +182,61 @@ void readNpyHeader(std::istream& input, std::string& dtype, std::vector<size_t>&
 }
 
 /**
+ * We write arrays following 2.0 version (32 bits header size)
+ */
+constexpr const uint8_t NPY_VERSION[] = {'\x02', '\x00'};
+
+/**
+ * Generate a string that represents an NdArray shape vector as a Python tuple
+ * @param shape
+ * @return
+ *  A string with the Python representation of a tuple
+ */
+inline std::string npyShape(const std::vector<size_t>& shape) {
+  std::stringstream shape_stream;
+  shape_stream << "(";
+  for (auto s : shape) {
+    shape_stream << s << ',';
+  }
+  shape_stream << ")";
+  return shape_stream.str();
+}
+
+/**
+ * Write header
+ */
+template<typename T>
+void writeNpyHeader(std::ostream& out, const std::vector<size_t>& shape) {
+  // Serialize header as a Python dict
+  std::stringstream header;
+  header << "{"
+         << "'descr': '" << ENDIAN_MARKER << NpyDtype<T>::str << "', 'fortran_order': False, 'shape': "
+         << npyShape(shape)
+         << "}";
+  auto header_str = header.str();
+  little_uint32_t header_len = header_str.size();
+
+  // Pad header with spaces so the header block is 64 bytes aligned
+  size_t total_length = sizeof(NPY_MAGIC) + sizeof(NPY_VERSION) + sizeof(header_len) + header_len - 1; // Keep 1 for \n
+  size_t padding = 64 - total_length % 64;
+  if (padding) {
+    header << std::string(padding, '\x20') << '\n';
+    header_str = header.str();
+    header_len = header_str.size();
+  }
+
+  // Magic and version
+  out.write(NPY_MAGIC, sizeof(NPY_MAGIC));
+  out.write(reinterpret_cast<const char *>(&NPY_VERSION), sizeof(NPY_VERSION));
+
+  // HEADER_LEN
+  out.write(reinterpret_cast<char*>(&header_len), sizeof(header_len));
+
+  // HEADER
+  out.write(header_str.data(), header_str.size());
+}
+
+/**
  * A memory mapped container that can be used by NdArray.
  * Builds on top of boost::iostream::mapped_file
  * @tparam T
@@ -178,21 +245,41 @@ void readNpyHeader(std::istream& input, std::string& dtype, std::vector<size_t>&
 template<typename T>
 class MappedContainer {
 public:
-  MappedContainer(size_t offset, size_t data_size, boost::iostreams::mapped_file&& input)
-    : m_size(data_size), m_input(std::move(input)), m_data(reinterpret_cast<T *>(m_input.data() + offset)) {
+  MappedContainer(const boost::filesystem::path& path, size_t data_offset, size_t n_elements,
+                  boost::iostreams::mapped_file&& input)
+    : m_path(path), m_data_offset(data_offset), m_n_elements(n_elements), m_mapped(std::move(input)),
+      m_data(reinterpret_cast<T *>(m_mapped.data() + data_offset)) {
   }
 
   size_t size() const {
-    return m_size;
+    return m_n_elements;
   }
 
   T* data () {
     return m_data;
   }
 
+  void resize(const std::vector<size_t>& shape) {
+    // Generate header
+    std::stringstream header;
+    writeNpyHeader<T>(header, shape);
+    auto header_str = header.str();
+    auto header_size = header_str.size();
+    // Make sure we are in place
+    if (header_size != m_data_offset) {
+      throw Elements::Exception() << "Can not resize memory mapped NPY file. "
+                                     "The new header length must match the allocated space.";
+    }
+
+    m_n_elements = std::accumulate(shape.begin(), shape.end(), 1u, std::multiplies<size_t>());
+    boost::filesystem::resize_file(m_path, header_size + sizeof(T) * m_n_elements);
+    std::copy(header_str.begin(), header_str.end(), m_mapped.data());
+  }
+
 private:
-  size_t m_size;
-  boost::iostreams::mapped_file m_input;
+  boost::filesystem::path m_path;
+  size_t m_data_offset, m_n_elements;
+  boost::iostreams::mapped_file m_mapped;
   T *m_data;
 };
 
