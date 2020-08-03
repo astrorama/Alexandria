@@ -108,8 +108,8 @@ struct NpyDtype<double> {
  * @param n_elements [out]
  *  Total number of elements (multiplication of shape)
  */
-void parseNpyDict(const std::string& header, bool& fortran_order, bool& big_endian,
-                  std::string& dtype, std::vector<size_t>& shape, size_t& n_elements) {
+inline void parseNpyDict(const std::string& header, bool& fortran_order, bool& big_endian,
+                         std::string& dtype, std::vector<size_t>& shape, size_t& n_elements) {
   auto loc = header.find("fortran_order") + 16;
   fortran_order = (header.substr(loc, 4) == "True");
 
@@ -140,7 +140,7 @@ void parseNpyDict(const std::string& header, bool& fortran_order, bool& big_endi
  *  Total number of elements (multiplication of shape)
  * @return
  */
-void readNpyHeader(std::istream& input, std::string& dtype, std::vector<size_t>& shape, size_t& n_elements) {
+inline void readNpyHeader(std::istream& input, std::string& dtype, std::vector<size_t>& shape, size_t& n_elements) {
   // Magic
   char magic[6];
   input.read(magic, sizeof(magic));
