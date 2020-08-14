@@ -167,4 +167,30 @@ BOOST_AUTO_TEST_CASE(Copy_test) {
   BOOST_CHECK_EQUAL(m.at(0, 1), values[1]);
 }
 
+BOOST_AUTO_TEST_CASE(Concatenate_test) {
+  std::vector<int> values1{1, 2, 3, 4, 5, 6};
+  std::vector<int> values2{50, 60, 70, 80, 90, 100};
+  NdArray<int> m{std::vector<size_t>{2, 3}, values1};
+  NdArray<int> add{std::vector<size_t>{2, 3}, values2};
+
+  m.concatenate(add);
+
+  BOOST_CHECK_EQUAL(m.shape()[0], 4);
+  BOOST_CHECK_EQUAL(m.shape()[1], 3);
+
+  std::vector<int> expected = values1;
+  std::copy(values2.begin(), values2.end(), std::back_inserter(values1));
+
+  BOOST_CHECK_EQUAL_COLLECTIONS(expected.begin(), expected.end(), m.begin(), m.end());
+}
+
+BOOST_AUTO_TEST_CASE(BadConcatenate_test) {
+  NdArray<int> m{std::vector<size_t>{2, 3}};
+  NdArray<int> add1{std::vector<size_t>{2, 4}};
+  NdArray<int> add2{std::vector<size_t>{2, 3, 4}};
+
+  //BOOST_CHECK_THROW(m.concatenate(add1), std::length_error);
+  //BOOST_CHECK_THROW(m.concatenate(add2), std::length_error);
+}
+
 BOOST_AUTO_TEST_SUITE_END()

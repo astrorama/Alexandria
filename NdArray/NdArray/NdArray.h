@@ -383,6 +383,12 @@ public:
    */
   bool operator!=(const self_type& b) const;
 
+  /**
+   * Concatenate to this array another one *along the first axis*
+   * @return *this
+   */
+  self_type& concatenate(const self_type &other);
+
 private:
   std::vector<size_t> m_shape, m_stride_size;
   size_t m_size;
@@ -407,6 +413,9 @@ private:
     /// @copydoc std::vector::size
     virtual size_t size() const = 0;
 
+    /// Resize container
+    virtual void resize(const std::vector<size_t>& shape) = 0;
+
     /// Expected to generate a deep copy of the underlying data
     virtual std::unique_ptr<ContainerInterface> copy() const = 0;
   };
@@ -429,6 +438,31 @@ private:
 
     size_t size() const final {
       return m_container.size();
+    }
+
+    template<typename T2>
+    auto resizeImpl(const std::vector<size_t>& shape)
+    -> decltype((void) std::declval<Container<T2>>().resize(std::vector<size_t>{}), void()) {
+      m_container.resize(shape);
+    }
+
+    template<typename T2>
+    auto resizeImpl(const std::vector<size_t>& shape)
+    -> decltype((void) std::declval<Container<T2>>().resize(size_t{}), void()) {
+      auto new_size = std::accumulate(shape.begin(), shape.end(), 1u, std::multiplies<size_t>());
+      m_container.resize(new_size);
+    }
+
+    /**
+     * @copybrief std::vector::resize
+     * @note
+     *  This method delegates to resizeImpl, which uses SFINAE to switch at compilation time between
+     *  an implementation adapted to STL containers [resize(size_t)], and another for containers that need
+     *  the shape information (i.e. Npy)
+     */
+    void resize(const std::vector<size_t>& shape) final {
+      resizeImpl<T>(shape);
+      m_data_ptr = m_container.data();
     }
 
     std::unique_ptr<ContainerInterface> copy() const final {

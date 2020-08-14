@@ -259,6 +259,32 @@ bool NdArray<T>::operator!=(const self_type& b) const {
 }
 
 template<typename T>
+auto NdArray<T>::concatenate(const self_type& other) -> self_type& {
+  // Verify dimensionality
+  if (m_shape.size() != other.m_shape.size()) {
+    throw std::length_error("Can not concatenate arrays with different dimensionality");
+  }
+  for (size_t i = 1; i < m_shape.size(); ++i) {
+    if (m_shape[i] != other.m_shape[i])
+      throw std::length_error("The size of all axis except for the first one must match");
+  }
+
+  // New shape
+  auto old_size = m_container->size();
+  auto shape = m_shape;
+  shape[0] += other.m_shape[0];
+
+  // Resize container
+  m_container->resize(shape);
+
+  // Copy to the end
+  std::copy(std::begin(other), std::end(other), m_container->m_data_ptr + old_size);
+  // Done!
+  m_shape = shape;
+  return *this;
+}
+
+template<typename T>
 size_t NdArray<T>::get_offset(const std::vector<size_t>& coords) const {
   if (coords.size() != m_shape.size()) {
     throw std::out_of_range(

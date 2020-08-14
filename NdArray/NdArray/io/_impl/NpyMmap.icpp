@@ -20,7 +20,6 @@
 
 #include "NpyCommon.h"
 #include <boost/iostreams/stream.hpp>
-#include <boost/iostreams/device/mapped_file.hpp>
 #include <boost/filesystem/path.hpp>
 #include <numeric>
 
@@ -30,7 +29,8 @@ namespace NdArray {
 typedef boost::iostreams::stream<boost::iostreams::mapped_file> MappedStream;
 
 template<typename T>
-NdArray <T> mmapNpy(const boost::filesystem::path& path, boost::iostreams::mapped_file_base::mapmode mode) {
+NdArray <T> mmapNpy(const boost::filesystem::path& path, boost::iostreams::mapped_file_base::mapmode mode,
+                    size_t max_size) {
   std::string dtype;
   size_t n_elements = 0;
   std::vector<size_t> shape;
@@ -38,6 +38,8 @@ NdArray <T> mmapNpy(const boost::filesystem::path& path, boost::iostreams::mappe
   boost::iostreams::mapped_file_params map_params;
   map_params.path = path.native();
   map_params.flags = mode;
+  if (max_size)
+    map_params.length = max_size;
 
   boost::iostreams::mapped_file input(map_params);
   MappedStream stream(input);
@@ -47,11 +49,11 @@ NdArray <T> mmapNpy(const boost::filesystem::path& path, boost::iostreams::mappe
   if (dtype != NpyDtype<T>::str)
     throw Elements::Exception() << "Can not cast " << dtype << " into " << typeid(T).name();
 
-  return {shape, std::move(MappedContainer<T>(stream.tellg(), n_elements, std::move(input)))};
+  return {shape, std::move(MappedContainer<T>(path, stream.tellg(), n_elements, std::move(input)))};
 }
 
 template<typename T>
-NdArray<T> createMmapNpy(const boost::filesystem::path& path, const std::vector<size_t>& shape) {
+NdArray<T> createMmapNpy(const boost::filesystem::path& path, const std::vector<size_t>& shape, size_t max_size) {
   // Pre-generate header
   std::stringstream header;
   writeNpyHeader<T>(header, shape);
@@ -67,10 +69,12 @@ NdArray<T> createMmapNpy(const boost::filesystem::path& path, const std::vector<
   map_params.path = path.native();
   map_params.flags = boost::iostreams::mapped_file_base::readwrite;
   map_params.new_file_size = total_size;
+  if (max_size)
+    map_params.length = max_size;
 
   boost::iostreams::mapped_file output(map_params);
   std::copy(header_str.begin(), header_str.end(), output.begin());
-  return {shape, std::move(MappedContainer<T>(header_size, n_elements, std::move(output)))};
+  return {shape, std::move(MappedContainer<T>(path, header_size, n_elements, std::move(output)))};
 }
 
 } // end of namespace NdArray
