@@ -230,7 +230,7 @@ void writeNpyHeader(std::ostream& out, const std::vector<size_t>& shape) {
   out.write(reinterpret_cast<const char *>(&NPY_VERSION), sizeof(NPY_VERSION));
 
   // HEADER_LEN
-  out.write(reinterpret_cast<char*>(&header_len), sizeof(header_len));
+  out.write(reinterpret_cast<char *>(&header_len), sizeof(header_len));
 
   // HEADER
   out.write(header_str.data(), header_str.size());
@@ -246,16 +246,16 @@ template<typename T>
 class MappedContainer {
 public:
   MappedContainer(const boost::filesystem::path& path, size_t data_offset, size_t n_elements,
-                  boost::iostreams::mapped_file&& input)
-    : m_path(path), m_data_offset(data_offset), m_n_elements(n_elements), m_mapped(std::move(input)),
-      m_data(reinterpret_cast<T *>(m_mapped.data() + data_offset)) {
+                  boost::iostreams::mapped_file&& input, size_t max_size)
+    : m_path(path), m_data_offset(data_offset), m_n_elements(n_elements), m_max_size(max_size),
+      m_mapped(std::move(input)), m_data(reinterpret_cast<T *>(m_mapped.data() + data_offset)) {
   }
 
   size_t size() const {
     return m_n_elements;
   }
 
-  T* data () {
+  T *data() {
     return m_data;
   }
 
@@ -272,13 +272,18 @@ public:
     }
 
     m_n_elements = std::accumulate(shape.begin(), shape.end(), 1u, std::multiplies<size_t>());
-    boost::filesystem::resize_file(m_path, header_size + sizeof(T) * m_n_elements);
+    size_t new_size = header_size + sizeof(T) * m_n_elements;
+    if (new_size > m_max_size) {
+      throw Elements::Exception() << "resize request bigger than maximum allocated size: " << new_size << " > "
+                                  << m_max_size;
+    }
+    boost::filesystem::resize_file(m_path, new_size);
     std::copy(header_str.begin(), header_str.end(), m_mapped.data());
   }
 
 private:
   boost::filesystem::path m_path;
-  size_t m_data_offset, m_n_elements;
+  size_t m_data_offset, m_n_elements, m_max_size;
   boost::iostreams::mapped_file m_mapped;
   T *m_data;
 };
