@@ -111,7 +111,7 @@ assert np.isclose(np.average(a[:,0], weights=a[:,1]),66.33333, 1e-3)
 BOOST_AUTO_TEST_CASE(MmapAppend_test) {
   Elements::TempFile file("npy_resize_mmap_%%.npy");
 
-  auto ndarray = createMmapNpy<double>(file.path(), {100, 2});
+  auto ndarray = createMmapNpy<double>(file.path(), {100, 2}, 10240);
   for (size_t i = 0; i < 100; ++i) {
     ndarray.at(i, 0) = i;
     ndarray.at(i, 1) = 2 * i;
@@ -132,6 +132,22 @@ assert np.isclose(np.average(a[0:100,0], weights=a[0:100,1]), 66.33333, 1e-3)
 assert np.allclose(a[100:,:], 4.2)
 )EDOCYP";
   runPython(PYCODE, file.path());
+}
+
+BOOST_AUTO_TEST_CASE(MmapAppend_NotEnough_test) {
+  Elements::TempFile file("npy_resize_mmap_%%.npy");
+
+  // This allocates only enough for the 100x2 doubles
+  auto ndarray = createMmapNpy<double>(file.path(), {100, 2});
+  for (size_t i = 0; i < 100; ++i) {
+    ndarray.at(i, 0) = i;
+    ndarray.at(i, 1) = 2 * i;
+  }
+
+  NdArray<double> another({50, 2});
+  std::fill(another.begin(), another.end(), 4.2);
+
+  BOOST_CHECK_THROW(ndarray.concatenate(another), Elements::Exception);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
