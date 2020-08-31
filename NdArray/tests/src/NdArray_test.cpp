@@ -189,8 +189,8 @@ BOOST_AUTO_TEST_CASE(BadConcatenate_test) {
   NdArray<int> add1{std::vector<size_t>{2, 4}};
   NdArray<int> add2{std::vector<size_t>{2, 3, 4}};
 
-  //BOOST_CHECK_THROW(m.concatenate(add1), std::length_error);
-  //BOOST_CHECK_THROW(m.concatenate(add2), std::length_error);
+  BOOST_CHECK_THROW(m.concatenate(add1), std::length_error);
+  BOOST_CHECK_THROW(m.concatenate(add2), std::length_error);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

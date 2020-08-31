@@ -391,6 +391,7 @@ public:
 
 private:
   std::vector<size_t> m_shape, m_stride_size;
+  std::vector<std::string> m_attr_names;
   size_t m_size;
 
   struct ContainerInterface {
