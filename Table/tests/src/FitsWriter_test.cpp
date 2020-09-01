@@ -44,12 +44,12 @@ struct BinaryFitsWriter_Fixture {
   std::shared_ptr<ColumnInfo> column_info {new ColumnInfo {info_list}};
   std::vector<Row::cell_type> values0{true, 1, int64_t{123}, 0.F, 0., std::string{"first"},
                                       NdArray<double>({2, 3}, {1, 2, 3, 4, 5, 6}),
-                                      NdArray<double>({1}, {41})};
+                                      NdArray<double>({1}, std::vector<double>{41.})};
   Row row0 {values0, column_info};
   std::vector<Row::cell_type> values1{false, 12345, int64_t{123456789}, 2.3e-2F, 1.12345e-18,
                                       std::string{"second with spaces on top of that"},
                                       NdArray<double>({ 2, 3 }, { 6, 5, 4, 3, 2, 1 }),
-                                      NdArray<double>({1}, {42})};
+                                      NdArray<double>({1}, std::vector<double>{42.})};
   Row row1 {values1, column_info};
   std::vector<Row> row_list {row0, row1};
   Table table {row_list};

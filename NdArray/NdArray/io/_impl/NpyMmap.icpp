@@ -51,14 +51,15 @@ NdArray <T> mmapNpy(const boost::filesystem::path& path, boost::iostreams::mappe
   if (dtype != NpyDtype<T>::str)
     throw Elements::Exception() << "Can not cast " << dtype << " into " << typeid(T).name();
 
-  return {shape, std::move(MappedContainer<T>(path, stream.tellg(), n_elements, std::move(input), max_size))};
+  return {shape, std::move(MappedContainer<T>(path, stream.tellg(), n_elements, {}, std::move(input), max_size))};
 }
 
 template<typename T>
-NdArray<T> createMmapNpy(const boost::filesystem::path& path, const std::vector<size_t>& shape, size_t max_size) {
+NdArray <T> createMmapNpy(const boost::filesystem::path& path, const std::vector<size_t>& shape,
+                          const std::vector<std::string>& attrs, size_t max_size) {
   // Pre-generate header
   std::stringstream header;
-  writeNpyHeader<T>(header, shape);
+  writeNpyHeader<T>(header, shape, attrs);
   auto header_str = header.str();
   auto header_size = header_str.size();
 
@@ -78,7 +79,7 @@ NdArray<T> createMmapNpy(const boost::filesystem::path& path, const std::vector<
 
   boost::iostreams::mapped_file output(map_params);
   std::copy(header_str.begin(), header_str.end(), output.begin());
-  return {shape, std::move(MappedContainer<T>(path, header_size, n_elements, std::move(output), max_size))};
+  return {shape, attrs, std::move(MappedContainer<T>(path, header_size, n_elements, attrs, std::move(output), max_size))};
 }
 
 } // end of namespace NdArray

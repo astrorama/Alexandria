@@ -189,10 +189,9 @@ constexpr const uint8_t NPY_VERSION[] = {'\x02', '\x00'};
 /**
  * Generate a string that represents an NdArray shape vector as a Python tuple
  * @param shape
- * @return
  *  A string with the Python representation of a tuple
  */
-inline std::string npyShape(const std::vector<size_t>& shape) {
+inline std::string npyShape(std::vector<size_t> shape) {
   std::stringstream shape_stream;
   shape_stream << "(";
   for (auto s : shape) {
@@ -202,15 +201,37 @@ inline std::string npyShape(const std::vector<size_t>& shape) {
   return shape_stream.str();
 }
 
+
+std::string typeDescription(const std::string& type, const std::vector<std::string>& attrs) {
+  std::stringstream dtype;
+  if (attrs.empty()) {
+    dtype << '\'' << ENDIAN_MARKER << type << '\'';
+  }
+  else {
+    dtype << '[';
+    for (auto &attr : attrs) {
+      dtype << "('" << attr << "', '" << ENDIAN_MARKER << type << "'), ";
+    }
+    dtype << ']';
+  }
+  return dtype.str();
+}
+
 /**
  * Write header
  */
 template<typename T>
-void writeNpyHeader(std::ostream& out, const std::vector<size_t>& shape) {
+void writeNpyHeader(std::ostream& out, std::vector<size_t> shape, const std::vector<std::string>& attrs) {
+  if (!attrs.empty()) {
+    if (attrs.size() != shape.back()) {
+      throw std::out_of_range("Last axis does not match number of attribute names");
+    }
+    shape.pop_back();
+  }
   // Serialize header as a Python dict
   std::stringstream header;
   header << "{"
-         << "'descr': '" << ENDIAN_MARKER << NpyDtype<T>::str << "', 'fortran_order': False, 'shape': "
+         << "'descr': " << typeDescription(NpyDtype<T>::str, attrs) << ", 'fortran_order': False, 'shape': "
          << npyShape(shape)
          << "}";
   auto header_str = header.str();
@@ -246,8 +267,9 @@ template<typename T>
 class MappedContainer {
 public:
   MappedContainer(const boost::filesystem::path& path, size_t data_offset, size_t n_elements,
+                  const std::vector<std::string>& attr_names,
                   boost::iostreams::mapped_file&& input, size_t max_size)
-    : m_path(path), m_data_offset(data_offset), m_n_elements(n_elements), m_max_size(max_size),
+    : m_path(path), m_data_offset(data_offset), m_n_elements(n_elements), m_attr_names(attr_names), m_max_size(max_size),
       m_mapped(std::move(input)), m_data(reinterpret_cast<T *>(m_mapped.data() + data_offset)) {
   }
 
@@ -262,7 +284,7 @@ public:
   void resize(const std::vector<size_t>& shape) {
     // Generate header
     std::stringstream header;
-    writeNpyHeader<T>(header, shape);
+    writeNpyHeader<T>(header, shape, m_attr_names);
     auto header_str = header.str();
     auto header_size = header_str.size();
     // Make sure we are in place
@@ -284,6 +306,7 @@ public:
 private:
   boost::filesystem::path m_path;
   size_t m_data_offset, m_n_elements, m_max_size;
+  std::vector<std::string> m_attr_names;
   boost::iostreams::mapped_file m_mapped;
   T *m_data;
 };

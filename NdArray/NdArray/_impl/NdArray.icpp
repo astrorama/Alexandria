@@ -158,7 +158,8 @@ NdArray<T>::NdArray(const std::vector<size_t>& shape, Container<T>&& data)
 template<typename T>
 template<typename II>
 NdArray<T>::NdArray(const std::vector<size_t>& shape, II begin, II end)
-  : m_shape{shape}, m_size{std::accumulate(m_shape.begin(), m_shape.end(), 1u, std::multiplies<size_t>())},
+  : m_shape{shape},
+    m_size{std::accumulate(m_shape.begin(), m_shape.end(), 1u, std::multiplies<size_t>())},
     m_container{new ContainerWrapper<std::vector>(begin, end)} {
   if (m_size != m_container->size()) {
     throw std::invalid_argument("Data size does not match the shape");
@@ -167,14 +168,31 @@ NdArray<T>::NdArray(const std::vector<size_t>& shape, II begin, II end)
 }
 
 template<typename T>
-NdArray<T>::NdArray(const std::vector<size_t>& shape, const std::shared_ptr<ContainerInterface>& container)
-  : m_shape{shape}, m_size{std::accumulate(m_shape.begin(), m_shape.end(), 1u, std::multiplies<size_t>())},
-    m_container{container} {
+NdArray<T>::NdArray(const self_type* other)
+  : m_shape{other->m_shape}, m_attr_names{other->m_attr_names},
+    m_size{std::accumulate(m_shape.begin(), m_shape.end(), 1u, std::multiplies<size_t>())},
+    m_container{other->m_container->copy()} {
   update_strides();
+}
+
+inline std::vector<size_t> appendAttrShape(std::vector<size_t> shape, size_t append) {
+  if (append)
+    shape.push_back(append);
+  return shape;
+}
+
+template<typename T>
+template<typename ...Args>
+NdArray<T>::NdArray(const std::vector<size_t>& shape, const std::vector<std::string>& attr_names, Args&& ... args)
+  : NdArray{appendAttrShape(shape, attr_names.size()), std::forward<Args>(args)...} {
+  m_attr_names = attr_names;
 }
 
 template<typename T>
 auto NdArray<T>::reshape(const std::vector<size_t> new_shape) -> self_type& {
+  if (!m_attr_names.empty())
+    throw std::invalid_argument("Can not reshape arrays with attribute names");
+
   size_t new_size = std::accumulate(new_shape.begin(), new_shape.end(), 1, std::multiplies<size_t>());
   if (new_size != m_size) {
     throw std::range_error("New shape does not match the number of contained elements");
@@ -200,6 +218,18 @@ T& NdArray<T>::at(const std::vector<size_t>& coords) {
 template<typename T>
 const T& NdArray<T>::at(const std::vector<size_t>& coords) const {
   auto offset = get_offset(coords);
+  return m_container->at(offset);
+}
+
+template<typename T>
+T& NdArray<T>::at(const std::vector<size_t>& coords, const std::string& attr) {
+  auto offset = get_offset(coords, attr);
+  return m_container->at(offset);
+}
+
+template<typename T>
+const T& NdArray<T>::at(const std::vector<size_t>& coords, const std::string& attr) const {
+  auto offset = get_offset(coords, attr);
   return m_container->at(offset);
 }
 
@@ -259,6 +289,11 @@ bool NdArray<T>::operator!=(const self_type& b) const {
 }
 
 template<typename T>
+const std::vector<std::string>& NdArray<T>::attributes() const {
+  return m_attr_names;
+}
+
+template<typename T>
 auto NdArray<T>::concatenate(const self_type& other) -> self_type& {
   // Verify dimensionality
   if (m_shape.size() != other.m_shape.size()) {
@@ -308,6 +343,16 @@ size_t NdArray<T>::get_offset(const std::vector<size_t>& coords) const {
 }
 
 template<typename T>
+size_t NdArray<T>::get_offset(std::vector<size_t> coords, const std::string& attr) const {
+  auto i = std::find(m_attr_names.begin(), m_attr_names.end(), attr);
+  if (i == m_attr_names.end())
+    throw std::out_of_range(attr);
+  auto last = i - m_attr_names.begin();
+  coords.emplace_back(last);
+  return get_offset(coords);
+}
+
+template<typename T>
 void NdArray<T>::update_strides() {
   m_stride_size.resize(m_shape.size());
 
@@ -331,6 +376,11 @@ T& NdArray<T>::at_helper(std::vector<size_t>& acc, size_t i, D... rest) {
 template<typename T>
 T& NdArray<T>::at_helper(std::vector<size_t>& acc) {
   return at(acc);
+}
+
+template<typename T>
+T& NdArray<T>::at_helper(std::vector<size_t>& acc, const std::string& attr) {
+  return at(acc, attr);
 }
 
 template<typename T>

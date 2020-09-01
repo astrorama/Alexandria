@@ -33,7 +33,7 @@ namespace NdArray {
  */
 template<typename T>
 void writeNpy(std::ostream& out, const NdArray<T>& array) {
-  writeNpyHeader<T>(out, array.shape());
+  writeNpyHeader<T>(out, array.shape(), array.attributes());
   // The header already has the endian type, so just dump the content of the array
   for (auto v : array) {
     out.write(reinterpret_cast<const char *>(&v), sizeof(v));
