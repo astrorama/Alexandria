@@ -67,7 +67,26 @@ NdArray<T> mmapNpy(const boost::filesystem::path& path,
  */
 template<typename T>
 NdArray<T> createMmapNpy(const boost::filesystem::path& path, const std::vector<size_t>& shape,
-                         const std::vector<std::string>& attr_names = {}, size_t max_size = 0);
+                         const std::vector<std::string>& attr_names, size_t max_size = 0);
+
+/**
+ * Create using mmap an NdArray backed by a numpy file
+ * @tparam T
+ *  NdArray cell type
+ * @param path
+ *  Output path
+ * @param shape
+ *  NdArray shape
+ * @param max_size
+ *  Maximum size of the file. If you are going to call NdArray<T>::concatenate, mind this parameter!
+ * @return
+ *  A new NdArray
+ */
+template<typename T>
+NdArray<T> createMmapNpy(const boost::filesystem::path& path, const std::vector<size_t>& shape,
+                         size_t max_size = 0) {
+  return createMmapNpy<T>(path, shape, {}, max_size);
+}
 
 } // end of namespace NdArray
 } // end of namespace Euclid
