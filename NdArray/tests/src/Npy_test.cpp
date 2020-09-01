@@ -206,4 +206,54 @@ for i in range(20):
   runPython(PYCODE, file.path());
 }
 
+BOOST_AUTO_TEST_CASE(ReadAttrNames_test) {
+  Elements::TempFile file(std::string("npy_testpy_read_attrs_%%.npy"));
+
+  std::vector<std::string> expected_attrs{"a", "b"};
+
+  // Write from Python
+  constexpr const char *PYCODE = R"EDOCYP(
+import sys
+import numpy as np
+
+a = np.array([(1, 2), (3, 4), (5, 6), (7, 8)], dtype=[('a', np.int16), ('b', np.int16)])
+np.save(sys.argv[1], a)
+)EDOCYP";
+
+  runPython(PYCODE, file.path());
+
+  // Read
+  auto array = readNpy<int16_t>(file.path());
+  BOOST_CHECK_EQUAL(array.shape().size(), 2);
+  BOOST_CHECK_EQUAL(array.shape()[0], 4);
+  BOOST_CHECK_EQUAL(array.shape()[1], 2);
+
+  auto attrs = array.attributes();
+  BOOST_CHECK_EQUAL_COLLECTIONS(attrs.begin(), attrs.end(), expected_attrs.begin(), expected_attrs.end());
+
+  // Check values
+  for (size_t i = 0; i < 4; ++i) {
+    BOOST_CHECK_EQUAL(array.at(i, "a"), i * 2 + 1);
+    BOOST_CHECK_EQUAL(array.at(i, "b"), i * 2 + 2);
+  }
+}
+
+BOOST_AUTO_TEST_CASE(AttrNames_mixed_test) {
+  Elements::TempFile file(std::string("npy_testpy_read_attrs_%%.npy"));
+
+  // Write from Python
+  constexpr const char *PYCODE = R"EDOCYP(
+import sys
+import numpy as np
+
+a = np.array([(1, 2), (3, 4), (5, 6), (7, 8)], dtype=[('a', np.int16), ('b', np.int64)])
+np.save(sys.argv[1], a)
+)EDOCYP";
+
+  runPython(PYCODE, file.path());
+
+  // Read
+  BOOST_CHECK_THROW(readNpy<int16_t>(file.path()), std::invalid_argument);
+}
+
 BOOST_AUTO_TEST_SUITE_END()
