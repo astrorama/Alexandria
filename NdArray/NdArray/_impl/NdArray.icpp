@@ -18,6 +18,8 @@
 
 #ifdef NDARRAY_IMPL
 
+#include <algorithm>
+
 namespace Euclid {
 namespace NdArray {
 
