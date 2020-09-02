@@ -22,6 +22,7 @@
 #include <boost/endian/arithmetic.hpp>
 #include <boost/filesystem/operations.hpp>
 #include <boost/iostreams/device/mapped_file.hpp>
+#include <boost/regex.hpp>
 #include "AlexandriaKernel/StringUtils.h"
 
 namespace Euclid {
@@ -59,6 +60,11 @@ struct NpyDtype<int8_t> {
 };
 
 template<>
+struct NpyDtype<int16_t> {
+  static constexpr const char *str = "i2";
+};
+
+template<>
 struct NpyDtype<int32_t> {
   static constexpr const char *str = "i4";
 };
@@ -71,6 +77,11 @@ struct NpyDtype<int64_t> {
 template<>
 struct NpyDtype<uint8_t> {
   static constexpr const char *str = "B";
+};
+
+template<>
+struct NpyDtype<uint16_t> {
+  static constexpr const char *str = "u2";
 };
 
 template<>
@@ -94,6 +105,48 @@ struct NpyDtype<double> {
 };
 
 /**
+ * Parse a single dtype description (i.e. '<f8')
+ */
+inline void parseSingleValue(const std::string& descr, bool& big_endian, std::string& dtype) {
+  big_endian = (descr.front() == '>');
+  dtype = descr.substr(1);
+}
+
+/**
+ * Parse the description field from npy arrays with named fields, which are stored as the
+ * string representation of a list of tuples (name, dtype). i.e:
+ * [('a', '<i4'), ('b', '<i4')]
+ * @throws std::invalid_argument
+ *  NdArrays only support uniform types, so this method will fail if there are mixed types on the
+ *  npy file
+ */
+inline void parseFieldValues(const std::string& descr, bool& big_endian, std::vector<std::string>& attrs,
+                             std::string& dtype) {
+  static const boost::regex field_expr("\\('([^']*)',\\s*'([^']*)'\\)");
+
+  boost::match_results<std::string::const_iterator> match;
+  auto start = descr.begin();
+  auto end = descr.end();
+
+  while (boost::regex_search(start, end, match, field_expr)) {
+    bool endian_aux;
+    std::string dtype_aux;
+
+    parseSingleValue(match[2].str(), endian_aux, dtype_aux);
+    if (dtype.empty()) {
+      dtype = dtype_aux;
+      big_endian = endian_aux;
+    }
+    else if (dtype != dtype_aux || big_endian != endian_aux) {
+      throw std::invalid_argument("NdArray only supports uniform types");
+    }
+    attrs.emplace_back(match[1].str());
+
+    start = match[0].second;
+  }
+}
+
+/**
  * Parse the dictionary serialized on the npy file
  * @param header
  *  String representation of the dictionary
@@ -105,22 +158,33 @@ struct NpyDtype<double> {
  *  Put here the read dtype
  * @param shape [out]
  *  Put here the read shape
+ * @param attrs[out]
+ *  Put here the attribute names
  * @param n_elements [out]
  *  Total number of elements (multiplication of shape)
  */
 inline void parseNpyDict(const std::string& header, bool& fortran_order, bool& big_endian,
-                         std::string& dtype, std::vector<size_t>& shape, size_t& n_elements) {
+                         std::string& dtype, std::vector<size_t>& shape, std::vector<std::string>& attrs,
+                         size_t& n_elements) {
   auto loc = header.find("fortran_order") + 16;
   fortran_order = (header.substr(loc, 4) == "True");
 
-  loc = header.find("descr") + 9;
-  big_endian = (header[loc] == '>');
+  loc = header.find("descr") + 8;
 
-  auto loc2 = header.find("'", loc);
-  dtype = header.substr(loc + 1, loc2 - loc - 1);
+  if (header[loc] == '\'') {
+    auto end = header.find('\'', loc + 1);
+    parseSingleValue(header.substr(loc + 1, end - loc - 1), big_endian, dtype);
+  }
+  else if (header[loc] == '[') {
+    auto end = header.find(']', loc + 1);
+    parseFieldValues(header.substr(loc + 1, end - loc - 1), big_endian, attrs, dtype);
+  }
+  else {
+    throw Elements::Exception() << "Failed to parse the array description: " << header;
+  }
 
   loc = header.find("shape") + 9;
-  loc2 = header.find(")", loc);
+  auto loc2 = header.find(')', loc);
   auto shape_str = header.substr(loc, loc2 - loc);
   if (shape_str.back() == ',')
     shape_str.resize(shape_str.size() - 1);
@@ -136,11 +200,14 @@ inline void parseNpyDict(const std::string& header, bool& fortran_order, bool& b
  *  Put here the read dtype
  * @param shape [out]
  *  Put here the read shape
+ * @param attrs [out]
+ *  Put here the attribute names
  * @param n_elements [out]
  *  Total number of elements (multiplication of shape)
  * @return
  */
-inline void readNpyHeader(std::istream& input, std::string& dtype, std::vector<size_t>& shape, size_t& n_elements) {
+inline void readNpyHeader(std::istream& input, std::string& dtype, std::vector<size_t>& shape,
+                          std::vector<std::string>& attrs, size_t& n_elements) {
   // Magic
   char magic[6];
   input.read(magic, sizeof(magic));
@@ -172,7 +239,7 @@ inline void readNpyHeader(std::istream& input, std::string& dtype, std::vector<s
 
   // Parse header
   bool fortran_order, big_endian;
-  parseNpyDict(header, fortran_order, big_endian, dtype, shape, n_elements);
+  parseNpyDict(header, fortran_order, big_endian, dtype, shape, attrs, n_elements);
 
   if (fortran_order)
     throw Elements::Exception() << "Fortran order not supported";
@@ -189,10 +256,9 @@ constexpr const uint8_t NPY_VERSION[] = {'\x02', '\x00'};
 /**
  * Generate a string that represents an NdArray shape vector as a Python tuple
  * @param shape
- * @return
  *  A string with the Python representation of a tuple
  */
-inline std::string npyShape(const std::vector<size_t>& shape) {
+inline std::string npyShape(std::vector<size_t> shape) {
   std::stringstream shape_stream;
   shape_stream << "(";
   for (auto s : shape) {
@@ -202,15 +268,37 @@ inline std::string npyShape(const std::vector<size_t>& shape) {
   return shape_stream.str();
 }
 
+
+inline std::string typeDescription(const std::string& type, const std::vector<std::string>& attrs) {
+  std::stringstream dtype;
+  if (attrs.empty()) {
+    dtype << '\'' << ENDIAN_MARKER << type << '\'';
+  }
+  else {
+    dtype << '[';
+    for (auto& attr : attrs) {
+      dtype << "('" << attr << "', '" << ENDIAN_MARKER << type << "'), ";
+    }
+    dtype << ']';
+  }
+  return dtype.str();
+}
+
 /**
  * Write header
  */
 template<typename T>
-void writeNpyHeader(std::ostream& out, const std::vector<size_t>& shape) {
+void writeNpyHeader(std::ostream& out, std::vector<size_t> shape, const std::vector<std::string>& attrs) {
+  if (!attrs.empty()) {
+    if (attrs.size() != shape.back()) {
+      throw std::out_of_range("Last axis does not match number of attribute names");
+    }
+    shape.pop_back();
+  }
   // Serialize header as a Python dict
   std::stringstream header;
   header << "{"
-         << "'descr': '" << ENDIAN_MARKER << NpyDtype<T>::str << "', 'fortran_order': False, 'shape': "
+         << "'descr': " << typeDescription(NpyDtype<T>::str, attrs) << ", 'fortran_order': False, 'shape': "
          << npyShape(shape)
          << "}";
   auto header_str = header.str();
@@ -246,8 +334,10 @@ template<typename T>
 class MappedContainer {
 public:
   MappedContainer(const boost::filesystem::path& path, size_t data_offset, size_t n_elements,
+                  const std::vector<std::string>& attr_names,
                   boost::iostreams::mapped_file&& input, size_t max_size)
-    : m_path(path), m_data_offset(data_offset), m_n_elements(n_elements), m_max_size(max_size),
+    : m_path(path), m_data_offset(data_offset), m_n_elements(n_elements),
+      m_max_size(max_size), m_attr_names(attr_names),
       m_mapped(std::move(input)), m_data(reinterpret_cast<T *>(m_mapped.data() + data_offset)) {
   }
 
@@ -262,7 +352,7 @@ public:
   void resize(const std::vector<size_t>& shape) {
     // Generate header
     std::stringstream header;
-    writeNpyHeader<T>(header, shape);
+    writeNpyHeader<T>(header, shape, m_attr_names);
     auto header_str = header.str();
     auto header_size = header_str.size();
     // Make sure we are in place
@@ -284,6 +374,7 @@ public:
 private:
   boost::filesystem::path m_path;
   size_t m_data_offset, m_n_elements, m_max_size;
+  std::vector<std::string> m_attr_names;
   boost::iostreams::mapped_file m_mapped;
   T *m_data;
 };

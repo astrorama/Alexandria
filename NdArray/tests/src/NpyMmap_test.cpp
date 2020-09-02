@@ -111,7 +111,7 @@ assert np.isclose(np.average(a[:,0], weights=a[:,1]),66.33333, 1e-3)
 BOOST_AUTO_TEST_CASE(MmapAppend_test) {
   Elements::TempFile file("npy_resize_mmap_%%.npy");
 
-  auto ndarray = createMmapNpy<double>(file.path(), {100, 2}, 10240);
+  auto ndarray = createMmapNpy<double>(file.path(), {100, 2}, {}, 10240);
   for (size_t i = 0; i < 100; ++i) {
     ndarray.at(i, 0) = i;
     ndarray.at(i, 1) = 2 * i;
@@ -148,6 +148,121 @@ BOOST_AUTO_TEST_CASE(MmapAppend_NotEnough_test) {
   std::fill(another.begin(), another.end(), 4.2);
 
   BOOST_CHECK_THROW(ndarray.concatenate(another), Elements::Exception);
+}
+
+BOOST_AUTO_TEST_CASE(MmapNamed_test) {
+  Elements::TempFile file("npy_named_mmap_%%.npy");
+  const std::vector<std::string> attr_names{"ID", "SED", "PDZ"};
+
+  // Create mmap
+  auto ndarray = createMmapNpy<uint64_t>(file.path(), {100}, attr_names);
+  BOOST_CHECK_EQUAL(ndarray.shape().size(), 2);
+  BOOST_CHECK_EQUAL(ndarray.shape()[0], 100);
+  BOOST_CHECK_EQUAL(ndarray.shape()[1], 3);
+  auto attrs = ndarray.attributes();
+  BOOST_CHECK_EQUAL_COLLECTIONS(attrs.begin(), attrs.end(), attr_names.begin(), attr_names.end());
+
+  // Fill
+  for (size_t i = 0; i < ndarray.shape()[0]; ++i) {
+    ndarray.at(i, "ID") = i;
+    ndarray.at(i, "SED") = i * 2;
+    ndarray.at(i, "PDZ") = i * 10 + 5;
+  }
+
+  // Read from Python
+  constexpr const char *PYCODE = R"EDOCYP(
+import sys
+import numpy as np
+a = np.load(sys.argv[1])
+assert a.shape == (100,)
+assert len(a.dtype) == 3
+assert set(a.dtype.names) == {'ID', 'SED', 'PDZ'}
+
+for i in range(100):
+  assert a[i]['ID'] == i
+  assert a[i]['SED'] == i * 2
+  assert a[i]['PDZ'] == i * 10 + 5
+)EDOCYP";
+
+  runPython(PYCODE, file.path());
+}
+
+BOOST_AUTO_TEST_CASE(ReadAttrNames_test) {
+  Elements::TempFile file(std::string("npy_named_mmap_%%.npy"));
+
+  std::vector<std::string> expected_attrs{"a", "b"};
+
+  // Write from Python
+  constexpr const char *PYCODE = R"EDOCYP(
+import sys
+import numpy as np
+
+a = np.array([(1, 2), (3, 4), (5, 6), (7, 8)], dtype=[('a', np.int16), ('b', np.int16)])
+np.save(sys.argv[1], a)
+)EDOCYP";
+
+  runPython(PYCODE, file.path());
+
+  // Read
+  auto array = mmapNpy<int16_t>(file.path());
+  BOOST_CHECK_EQUAL(array.shape().size(), 2);
+  BOOST_CHECK_EQUAL(array.shape()[0], 4);
+  BOOST_CHECK_EQUAL(array.shape()[1], 2);
+
+  auto attrs = array.attributes();
+  BOOST_CHECK_EQUAL_COLLECTIONS(attrs.begin(), attrs.end(), expected_attrs.begin(), expected_attrs.end());
+
+  // Check values
+  for (size_t i = 0; i < 4; ++i) {
+    BOOST_CHECK_EQUAL(array.at(i, "a"), i * 2 + 1);
+    BOOST_CHECK_EQUAL(array.at(i, "b"), i * 2 + 2);
+  }
+
+  // Modify on the fly
+  array.at(0, "a") = 42;
+  array.at(0, "b") = 88;
+  array.at(3, "a") = 78;
+
+  // The changes must be visible to another process
+  constexpr const char *PYCODE2 = R"EDOCYP(
+import sys
+import numpy as np
+
+a = np.load(sys.argv[1])
+assert a.shape == (4,)
+assert set(a.dtype.names) == {"a", "b"}
+expected = np.array([(42, 88), (3, 4), (5, 6), (78, 8)], dtype=[('a', np.int16), ('b', np.int16)])
+assert np.array_equal(expected, a), a
+)EDOCYP";
+
+  runPython(PYCODE2, file.path());
+}
+
+BOOST_AUTO_TEST_CASE(NamedAppend_test) {
+  Elements::TempFile file("npy_named_resize_mmap_%%.npy");
+  const std::vector<std::string> attr_names{"X", "Y"};
+
+  auto ndarray = createMmapNpy<double>(file.path(), {100}, attr_names, 10240);
+  for (size_t i = 0; i < 100; ++i) {
+    ndarray.at(i, "X") = i;
+    ndarray.at(i, "Y") = 2 * i;
+  }
+
+  NdArray<double> another({50}, attr_names);
+  std::fill(another.begin(), another.end(), 4.2);
+
+  ndarray.concatenate(another);
+
+  constexpr const char* PYCODE = R"EDOCYP(
+import sys
+import numpy as np
+a = np.load(sys.argv[1])
+assert a.shape == (150,), a.shape
+assert np.isclose(np.average(a[0:100]['X'], weights=a[0:100]['Y']), 66.33333, 1e-3)
+assert np.allclose(a[100:]['X'], 4.2)
+assert np.allclose(a[100:]['Y'], 4.2)
+)EDOCYP";
+  runPython(PYCODE, file.path());
 }
 
 BOOST_AUTO_TEST_SUITE_END()

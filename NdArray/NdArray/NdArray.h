@@ -233,6 +233,19 @@ public:
   NdArray(const std::vector<size_t>& shape, Iterator begin, Iterator end);
 
   /**
+   * Constructs a matrix, giving a name to each of the items on the last dimension
+   * @param attr_names
+   *    Names for the dimensions of the last axis
+   * @param shape
+   *    Shape for the matrix
+   * @note
+   *    Unlike numpy, attr_names is treated strictly as an alias, so
+   *    NdArray<float>({20}, {"X", "Y"}) has a shape of (20, 2)
+   */
+  template<typename ...Args>
+  NdArray(const std::vector<size_t>& shape, const std::vector<std::string>& attr_names, Args&& ... args);
+
+  /**
    * Constructs a default-initialized matrix with the given shape (as an initializer list).
    * @param shape
    *    The shape of the matrix. The number of elements in shape corresponds to the number
@@ -263,7 +276,7 @@ public:
    * Create a copy of the NdArray
    */
   NdArray copy() const {
-    return {m_shape, m_container->copy()};
+    return self_type{this};
   }
 
   /**
@@ -284,6 +297,8 @@ public:
    *    If the new shape does not match the number of elements already contained within the NdArray.
    * @return
    *    *this
+   * @throws std::invalid_argument
+   *    If the array has attribute names
    */
   self_type& reshape(const std::vector<size_t> new_shape);
 
@@ -317,6 +332,28 @@ public:
    *    If the number of coordinates is invalid, or any of them is out of bounds.
    */
   const T& at(const std::vector<size_t>& coords) const;
+
+  /**
+   * Gets a reference to the value stored at the given coordinates.
+   * @param coords
+   *    Elements coordinates, except last one
+   * @param attr
+   *    Attribute name used to determine the last coordinate
+   * @throws std::out_of_range
+   *    If the number of coordinates is invalid, or any of them is out of bounds.
+   */
+  T& at(const std::vector<size_t>& coords, const std::string& attr);
+
+  /**
+   * Gets a constant reference to the value stored at the given coordinates.
+   * @param coords
+   *    Elements coordinates, except last one
+   * @param attr
+   *    Attribute name used to determine the last coordinate
+   * @throws std::out_of_range
+   *    If the number of coordinates is invalid, or any of them is out of bounds.
+   */
+  const T& at(const std::vector<size_t>& coords, const std::string& attr) const;
 
   /**
    * Gets a reference to the value stored at the given coordinates.
@@ -389,8 +426,15 @@ public:
    */
   self_type& concatenate(const self_type &other);
 
+  /**
+   * @return
+   *    Attribute names
+   */
+  const std::vector<std::string>& attributes() const;
+
 private:
   std::vector<size_t> m_shape, m_stride_size;
+  std::vector<std::string> m_attr_names;
   size_t m_size;
 
   struct ContainerInterface {
@@ -475,7 +519,7 @@ private:
   /**
    * Private constructor used for deep copies
    */
-  NdArray(const std::vector<size_t>& shape, const std::shared_ptr<ContainerInterface>& container);
+  explicit NdArray(const self_type* other);
 
   /**
    * Gets the total offset for the given coordinates.
@@ -483,6 +527,13 @@ private:
    *    If the number of coordinates is invalid, or any of them is out of bounds.
    */
   size_t get_offset(const std::vector<size_t>& coords) const;
+
+  /**
+   * Gets the total offset for the given coordinates.
+   * @throws std::out_of_range
+   *    If the number of coordinates is invalid, or any of them is out of bounds, or the attribute does not exist.
+   */
+  size_t get_offset(std::vector<size_t> coords, const std::string& attr) const;
 
   /**
    * Compute the stride size for each dimension
@@ -499,6 +550,11 @@ private:
    * Helper to expand at with a variable number of arguments (base case)
    */
   T& at_helper(std::vector<size_t>& acc);
+
+  /**
+   * Helper to expand at with a variable number of arguments, being the last an attribute name
+   */
+  T& at_helper(std::vector<size_t>& acc, const std::string& attr);
 
   /**
    * Helper to expand constant at with a variable number of arguments

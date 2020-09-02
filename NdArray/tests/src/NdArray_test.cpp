@@ -160,11 +160,14 @@ BOOST_AUTO_TEST_CASE(Copy_test) {
   NdArray<int> m{std::vector<size_t>{2, 3}, values};
 
   auto copy = m.copy();
+  BOOST_CHECK_EQUAL_COLLECTIONS(values.begin(), values.end(), copy.begin(), copy.end());
   copy.at(0, 0) = 1;
   copy.at(0, 1) = 0;
 
   BOOST_CHECK_EQUAL(m.at(0, 0), values[0]);
   BOOST_CHECK_EQUAL(m.at(0, 1), values[1]);
+  BOOST_CHECK_EQUAL(copy.at(0, 0), 1);
+  BOOST_CHECK_EQUAL(copy.at(0, 1), 0);
 }
 
 BOOST_AUTO_TEST_CASE(Concatenate_test) {
@@ -189,8 +192,27 @@ BOOST_AUTO_TEST_CASE(BadConcatenate_test) {
   NdArray<int> add1{std::vector<size_t>{2, 4}};
   NdArray<int> add2{std::vector<size_t>{2, 3, 4}};
 
-  //BOOST_CHECK_THROW(m.concatenate(add1), std::length_error);
-  //BOOST_CHECK_THROW(m.concatenate(add2), std::length_error);
+  BOOST_CHECK_THROW(m.concatenate(add1), std::length_error);
+  BOOST_CHECK_THROW(m.concatenate(add2), std::length_error);
+}
+
+BOOST_AUTO_TEST_CASE(AttrNames_test) {
+  const std::vector<std::string> attr_names{"ID", "SED", "PDZ"};
+  NdArray<int> named{{20}, attr_names};
+
+  BOOST_CHECK_EQUAL(named.shape().size(), 2);
+  BOOST_CHECK_EQUAL(named.shape()[0], 20);
+  BOOST_CHECK_EQUAL(named.shape()[1], 3);
+  BOOST_CHECK_EQUAL(named.size(), 60);
+
+  for (size_t i = 0; i < named.shape()[0]; ++i) {
+    named.at(i, "ID") = i;
+    named.at(i, "SED") = i * 2;
+    named.at(i, "PDZ") = i * 10 + 5;
+  }
+
+  auto attrs = named.attributes();
+  BOOST_CHECK_EQUAL_COLLECTIONS(attrs.begin(), attrs.end(), attr_names.begin(), attr_names.end());
 }
 
 BOOST_AUTO_TEST_SUITE_END()

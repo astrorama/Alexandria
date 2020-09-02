@@ -91,7 +91,7 @@ struct MockProvider: public XYDatasetProvider {
     return std::unique_ptr<XYDataset>{new XYDataset{i->second}};
   }
 
-  std::string getParameter(ELEMENTS_UNUSED const QualifiedName& qualified_name, const std::string& key_word){
+  std::string getParameter(ELEMENTS_UNUSED const QualifiedName& qualified_name, const std::string& key_word) override{
      return key_word;
   }
 };

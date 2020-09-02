@@ -18,12 +18,9 @@
 
 #ifdef NPY_IMPL
 
-#include <endian.h>
 #include <cstring>
 #include <istream>
-#include <boost/endian/arithmetic.hpp>
 #include <ElementsKernel/Exception.h>
-#include "AlexandriaKernel/StringUtils.h"
 #include "NdArray/NdArray.h"
 #include "NpyCommon.h"
 
@@ -38,14 +35,19 @@ NdArray <T> readNpy(std::istream& input) {
   std::string dtype;
   size_t n_elements;
   std::vector<size_t> shape;
+  std::vector<std::string> attr_names;
 
-  readNpyHeader(input, dtype, shape, n_elements);
+  readNpyHeader(input, dtype, shape, attr_names, n_elements);
   if (dtype != NpyDtype<T>::str)
     throw Elements::Exception() << "Can not cast " << dtype << " into " << typeid(T).name();
 
+  if (!attr_names.empty()) {
+    n_elements *= attr_names.size();
+  }
+
   std::vector<T> data(n_elements);
   input.read(reinterpret_cast<char *>(&data[0]), sizeof(T) * data.size());
-  return {shape, std::move(data)};
+  return {shape, attr_names, std::move(data)};
 }
 
 } // end of namespace NdArray
