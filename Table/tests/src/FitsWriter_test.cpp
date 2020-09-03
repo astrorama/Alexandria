@@ -310,6 +310,32 @@ BOOST_FIXTURE_TEST_CASE(writeAscii, AsciiFitsWriter_Fixture) {
 
 //-----------------------------------------------------------------------------
 
+BOOST_FIXTURE_TEST_CASE(addExisting, BinaryFitsWriter_Fixture) {
+  // Given
+  {
+    FitsWriter writer{fits_file_path};
+    writer.setFormat(FitsWriter::Format::BINARY);
+    writer.setHduName("BinaryTable");
+    writer.addData(table);
+  }
+
+  // When
+  FitsWriter writer{fits_file_path};
+  writer.setFormat(FitsWriter::Format::BINARY);
+  writer.setHduName("BinaryTable");
+  writer.addData(table);
+
+  // Then
+  CCfits::FITS fits {fits_file_path, CCfits::RWmode::Read};
+  auto& result = fits.extension("BinaryTable");
+  result.readAllKeys();
+
+  BOOST_CHECK_EQUAL(result.rows(), 4);
+  BOOST_CHECK_EQUAL(result.numCols(), 8);
+}
+
+//-----------------------------------------------------------------------------
+
 BOOST_AUTO_TEST_SUITE_END ()
 
 
