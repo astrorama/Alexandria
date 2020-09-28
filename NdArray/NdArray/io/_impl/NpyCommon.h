@@ -39,12 +39,12 @@ constexpr const char NPY_MAGIC[] = {'\x93', 'N', 'U', 'M', 'P', 'Y'};
 /**
  * Endianness marker for the numpy array
  */
-#if __BYTE_ORDER == __LITTLE_ENDIAN
+#if BYTE_ORDER == LITTLE_ENDIAN
 constexpr const char *ENDIAN_MARKER = "<";
-#elif __BYTE_ORDER == __BIG_ENDIAN
+#elif BYTE_ORDER == BIG_ENDIAN
 constexpr const char* ENDIAN_MARKER = ">";
 #else
-#error "__PDP_ENDIAN not supported"
+#error "PDP_ENDIAN not supported"
 #endif
 
 /**
@@ -244,7 +244,7 @@ inline void readNpyHeader(std::istream& input, std::string& dtype, std::vector<s
   if (fortran_order)
     throw Elements::Exception() << "Fortran order not supported";
 
-  if (big_endian && (__BYTE_ORDER != __BIG_ENDIAN))
+  if (big_endian && (BYTE_ORDER != BIG_ENDIAN))
     throw Elements::Exception() << "Only native endianness supported for reading";
 }
 
