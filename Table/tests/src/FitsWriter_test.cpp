@@ -44,12 +44,12 @@ struct BinaryFitsWriter_Fixture {
   std::shared_ptr<ColumnInfo> column_info {new ColumnInfo {info_list}};
   std::vector<Row::cell_type> values0{true, 1, int64_t{123}, 0.F, 0., std::string{"first"},
                                       NdArray<double>({2, 3}, {1, 2, 3, 4, 5, 6}),
-                                      NdArray<double>({1}, {41})};
+                                      NdArray<double>({1}, std::vector<double>{41.})};
   Row row0 {values0, column_info};
   std::vector<Row::cell_type> values1{false, 12345, int64_t{123456789}, 2.3e-2F, 1.12345e-18,
                                       std::string{"second with spaces on top of that"},
                                       NdArray<double>({ 2, 3 }, { 6, 5, 4, 3, 2, 1 }),
-                                      NdArray<double>({1}, {42})};
+                                      NdArray<double>({1}, std::vector<double>{42.})};
   Row row1 {values1, column_info};
   std::vector<Row> row_list {row0, row1};
   Table table {row_list};
@@ -306,6 +306,32 @@ BOOST_FIXTURE_TEST_CASE(writeAscii, AsciiFitsWriter_Fixture) {
   BOOST_CHECK_EQUAL(string_data[0], "first");
   BOOST_CHECK_EQUAL(string_data[1], "very spaced");
 
+}
+
+//-----------------------------------------------------------------------------
+
+BOOST_FIXTURE_TEST_CASE(addExisting, BinaryFitsWriter_Fixture) {
+  // Given
+  {
+    FitsWriter writer{fits_file_path};
+    writer.setFormat(FitsWriter::Format::BINARY);
+    writer.setHduName("BinaryTable");
+    writer.addData(table);
+  }
+
+  // When
+  FitsWriter writer{fits_file_path};
+  writer.setFormat(FitsWriter::Format::BINARY);
+  writer.setHduName("BinaryTable");
+  writer.addData(table);
+
+  // Then
+  CCfits::FITS fits {fits_file_path, CCfits::RWmode::Read};
+  auto& result = fits.extension("BinaryTable");
+  result.readAllKeys();
+
+  BOOST_CHECK_EQUAL(result.rows(), 4);
+  BOOST_CHECK_EQUAL(result.numCols(), 8);
 }
 
 //-----------------------------------------------------------------------------
