@@ -18,7 +18,11 @@
 
 #ifdef NPY_IMPL
 
+#ifdef __APPLE__
+#include <machine/endian.h>
+#else
 #include <endian.h>
+#endif
 #include <sstream>
 #include <boost/endian/arithmetic.hpp>
 #include <ElementsKernel/Exception.h>

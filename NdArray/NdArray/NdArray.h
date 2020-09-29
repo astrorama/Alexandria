@@ -45,10 +45,10 @@ namespace NdArray {
 template<typename T>
 class NdArray {
 private:
-  class ContainerInterface;
+  struct ContainerInterface;
 
   template<template<class...> class Container = std::vector>
-  class ContainerWrapper;
+  struct ContainerWrapper;
 
 public:
   typedef NdArray<T> self_type;
