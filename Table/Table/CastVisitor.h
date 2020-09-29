@@ -74,7 +74,8 @@ class CastVisitor<double> : public boost::static_visitor<double> {
 
   template <typename From>
   static constexpr bool generic() {
-    return std::is_arithmetic<From>::value;
+    return std::is_arithmetic<From>::value ||
+           std::is_same<From, typename std::vector<bool>::const_reference>::value;
   }
 
 public:
@@ -111,8 +112,8 @@ class CastVisitor<float> : public boost::static_visitor<float> {
 
   template <typename From>
   static constexpr bool generic() {
-    return std::is_arithmetic<From>::value &&
-           !std::is_same<From, double>::value;
+    return (std::is_arithmetic<From>::value && !std::is_same<From, double>::value) ||
+           std::is_same<From, typename std::vector<bool>::const_reference>::value;
   }
 
 public:
@@ -149,7 +150,8 @@ class CastVisitor<int64_t> : public boost::static_visitor<int64_t> {
 
   template <typename From>
   static constexpr bool generic() {
-    return std::is_integral<From>::value;
+    return std::is_integral<From>::value ||
+           std::is_same<From, typename std::vector<bool>::const_reference>::value;
   }
 
 public:
@@ -182,8 +184,8 @@ class CastVisitor<int32_t> : public boost::static_visitor<int32_t> {
 
   template <typename From>
   static constexpr bool generic() {
-    return std::is_integral<From>::value &&
-            !std::is_same<From, int64_t>::value;
+    return (std::is_integral<From>::value && !std::is_same<From, int64_t>::value) ||
+           std::is_same<From, typename std::vector<bool>::const_reference>::value;
   }
 
 public:
