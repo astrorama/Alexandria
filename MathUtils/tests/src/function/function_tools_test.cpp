@@ -139,8 +139,8 @@ BOOST_FIXTURE_TEST_CASE(SpecificGenericMultiplication, Function_Tools_Fixture) {
   auto mult2 = Euclid::MathUtils::multiply(f2, f1);
   
   // Then
-  BOOST_CHECK(typeid(*mult1) != typeid(DummyMultiplyFunction));
-  BOOST_CHECK(typeid(*mult2) != typeid(DummyMultiplyFunction));
+  BOOST_CHECK(dynamic_cast<DummyMultiplyFunction*>(mult1.get()) == nullptr);
+  BOOST_CHECK(dynamic_cast<DummyMultiplyFunction*>(mult2.get()) == nullptr);
   
   // Given
   Euclid::MathUtils::multiplySpecificGenericMap[typeid(FunctionType1)] = dummyMultiply;
@@ -150,8 +150,8 @@ BOOST_FIXTURE_TEST_CASE(SpecificGenericMultiplication, Function_Tools_Fixture) {
   mult2 = Euclid::MathUtils::multiply(f2, f1);
   
   // Then
-  BOOST_CHECK(typeid(*mult1) == typeid(DummyMultiplyFunction));
-  BOOST_CHECK(typeid(*mult2) == typeid(DummyMultiplyFunction));
+  BOOST_CHECK(dynamic_cast<DummyMultiplyFunction*>(mult1.get()) != nullptr);
+  BOOST_CHECK(dynamic_cast<DummyMultiplyFunction*>(mult2.get()) != nullptr);
   
   Euclid::MathUtils::multiplySpecificGenericMap.erase(typeid(FunctionType1));
   
@@ -172,8 +172,8 @@ BOOST_FIXTURE_TEST_CASE(SpecificSpecificMultiplication, Function_Tools_Fixture) 
   auto mult2 = Euclid::MathUtils::multiply(f2, f1);
   
   // Then
-  BOOST_CHECK(typeid(*mult1) != typeid(DummyMultiplyFunction));
-  BOOST_CHECK(typeid(*mult2) != typeid(DummyMultiplyFunction));
+  BOOST_CHECK(dynamic_cast<DummyMultiplyFunction*>(mult1.get()) == nullptr);
+  BOOST_CHECK(dynamic_cast<DummyMultiplyFunction*>(mult2.get()) == nullptr);
   
   // Given
   Euclid::MathUtils::multiplySpecificSpecificMap[{typeid(FunctionType1),typeid(FunctionType2)}] = dummyMultiply;
@@ -183,8 +183,8 @@ BOOST_FIXTURE_TEST_CASE(SpecificSpecificMultiplication, Function_Tools_Fixture) 
   mult2 = Euclid::MathUtils::multiply(f2, f1);
   
   // Then
-  BOOST_CHECK(typeid(*mult1) == typeid(DummyMultiplyFunction));
-  BOOST_CHECK(typeid(*mult2) == typeid(DummyMultiplyFunction));
+  BOOST_CHECK(dynamic_cast<DummyMultiplyFunction*>(mult1.get()) != nullptr);
+  BOOST_CHECK(dynamic_cast<DummyMultiplyFunction*>(mult2.get()) != nullptr);
   
   Euclid::MathUtils::multiplySpecificSpecificMap.erase({typeid(FunctionType1),typeid(FunctionType2)});
   

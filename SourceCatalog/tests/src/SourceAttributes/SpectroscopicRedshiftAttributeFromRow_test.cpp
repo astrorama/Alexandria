@@ -79,14 +79,10 @@ BOOST_FIXTURE_TEST_CASE( createAttribute_test, TableFixture ) {
 //  }
 
   std::unique_ptr<Euclid::SourceCatalog::Attribute> attribute_ptr_1 = srafr.createAttribute(row1);
-
-  BOOST_CHECK( typeid(*attribute_ptr_1) == typeid(Euclid::SourceCatalog::SpectroscopicRedshift) );
-
-   if(typeid(*attribute_ptr_1) == typeid(Euclid::SourceCatalog::SpectroscopicRedshift)) {
-       Euclid::SourceCatalog::SpectroscopicRedshift& spectroscopicRedshift = dynamic_cast<Euclid::SourceCatalog::SpectroscopicRedshift&>( *attribute_ptr_1 );
-       BOOST_CHECK_CLOSE(spectroscopicRedshift.getValue(), spec_z_val_row1 , tolerance);
-       BOOST_CHECK_CLOSE(spectroscopicRedshift.getError(), spec_z_err_row1 , tolerance);
-   }
+  Euclid::SourceCatalog::SpectroscopicRedshift* spectroscopicRedshift = dynamic_cast<Euclid::SourceCatalog::SpectroscopicRedshift*>(attribute_ptr_1.get());
+  BOOST_CHECK(spectroscopicRedshift != nullptr);
+  BOOST_CHECK_CLOSE(spectroscopicRedshift->getValue(), spec_z_val_row1 , tolerance);
+  BOOST_CHECK_CLOSE(spectroscopicRedshift->getError(), spec_z_err_row1 , tolerance);
 
 }
 
