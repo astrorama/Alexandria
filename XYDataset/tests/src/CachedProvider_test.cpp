@@ -69,8 +69,8 @@ struct MockProvider: public XYDatasetProvider {
     m_listing["B"] = {{"1"}, {"2"}, {"3"}};
     m_listing["C"] = {{"x"}, {"y"}};
 
-    m_dataset.emplace(QualifiedName{"1"}, std::move(XYDataset::factory(m_x, m_y)));
-    m_dataset.emplace(QualifiedName{"2"}, std::move(XYDataset::factory(m_y, m_x)));
+    m_dataset.emplace(QualifiedName{"1"}, XYDataset::factory(m_x, m_y));
+    m_dataset.emplace(QualifiedName{"2"}, XYDataset::factory(m_y, m_x));
   }
 
   std::vector<QualifiedName> listContents(const std::string& group) override {
@@ -91,7 +91,7 @@ struct MockProvider: public XYDatasetProvider {
     return std::unique_ptr<XYDataset>{new XYDataset{i->second}};
   }
 
-  std::string getParameter(ELEMENTS_UNUSED const QualifiedName& qualified_name, const std::string& key_word){
+  std::string getParameter(ELEMENTS_UNUSED const QualifiedName& qualified_name, const std::string& key_word) override{
      return key_word;
   }
 };

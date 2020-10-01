@@ -113,7 +113,7 @@ BOOST_FIXTURE_TEST_CASE(empty_datasetname_test, FileSystemProvider_Fixture) {
   FileSystemProvider fsp {temp_dir.path().native()+"/euclid/", std::move(fp)};
 
   // Even with two slashes in the group it must work
-  group = { "filter/MER/" };
+  group = "filter/MER/";
   std::vector<QualifiedName> result_vector = fsp.listContents(group);
   BOOST_CHECK_EQUAL(2, result_vector.size());
   BOOST_CHECK(std::find(result_vector.begin(), result_vector.end(), QualifiedName{{"filter","MER"},"Dataset_name_for_file1"})!=result_vector.end());
@@ -169,14 +169,14 @@ BOOST_FIXTURE_TEST_CASE(listContent_test, FileSystemProvider_Fixture) {
   FileSystemProvider fsp {temp_dir.path().native()+"/euclid/", std::move(fp)};
 
   // Even with two slashes in the group it must work
-  group = { "filter/MER//" };
+  group = "filter/MER//";
   std::vector<QualifiedName> result_vector = fsp.listContents(group);
   BOOST_CHECK_EQUAL(2, result_vector.size());
   BOOST_CHECK(std::find(result_vector.begin(), result_vector.end(), QualifiedName{{"filter","MER"},"Dataset_name_for_file1"})!=result_vector.end());
   BOOST_CHECK(std::find(result_vector.begin(), result_vector.end(), QualifiedName{{"filter","MER"},"file2"})!=result_vector.end());
 
   // With this group the vector must be empty
-  group = { "MER" };
+  group = "MER";
   std::vector<QualifiedName> result_vector2 = fsp.listContents(group);
   BOOST_CHECK_EQUAL(0, result_vector2.size());
 
@@ -225,7 +225,7 @@ BOOST_FIXTURE_TEST_CASE(empty_order_file_listContents_test, FileSystemProvider_F
   FileSystemProvider fsp {temp_dir.path().native()+"/euclid/", std::move(fp)};
 
   // Even with two slashes in the group it must work
-  group = { "filter/MER//" };
+  group = "filter/MER//";
   std::vector<QualifiedName> result_vector = fsp.listContents(group);
   for(auto& elt : result_vector){
     std::cout<<elt.datasetName()<<std::endl;
@@ -256,7 +256,7 @@ BOOST_FIXTURE_TEST_CASE(ordering_listContents_test, FileSystemProvider_Fixture) 
   FileSystemProvider fsp {temp_dir.path().native()+"/euclid/", std::move(fp)};
 
   // Even with two slashes in the group it must work
-  group = { "filter/MER//" };
+  group = "filter/MER//";
   std::vector<QualifiedName> result_vector = fsp.listContents(group);
   for(auto& elt : result_vector){
     std::cout<<elt.datasetName()<<std::endl;

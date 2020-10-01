@@ -91,14 +91,18 @@ void FitsWriter::init(const Table& table) {
                            ? CCfits::HduType::BinaryTbl
                            : CCfits::HduType::AsciiTbl;
 
-  auto number_of_hdus_before = fits->extension().size();
-  CCfits::Table* table_hdu = fits->addTable(m_hdu_name, 0, column_name_list,
-                                           column_format_list, column_unit_list, hdu_type);
-  bool new_hdu = number_of_hdus_before != fits->extension().size();
-  m_hdu_index = table_hdu->index();
-  m_current_line = table_hdu->rows() + 1;
+  auto extension_map = fits->extension();
+  auto extension_i = extension_map.find(m_hdu_name);
+  bool new_hdu = (extension_i == extension_map.end() || extension_i->second->version() != 1);
 
-  if (new_hdu) {
+  CCfits::Table* table_hdu;
+  if (!new_hdu) {
+    table_hdu = dynamic_cast<CCfits::Table*>(extension_i->second);
+  }
+  else {
+    table_hdu = fits->addTable(m_hdu_name, 0, column_name_list,
+                               column_format_list, column_unit_list, hdu_type);
+
     // Write the customized description header keywords, and also dimensions for multidimensional arrays
     for (size_t column_index=0; column_index<info.size(); ++column_index) {
       auto& desc = info.getDescription(column_index).description;
@@ -115,6 +119,8 @@ void FitsWriter::init(const Table& table) {
     }
   }
 
+  m_hdu_index = table_hdu->index();
+  m_current_line = table_hdu->rows() + 1;
   m_initialized = true;
 }
 
