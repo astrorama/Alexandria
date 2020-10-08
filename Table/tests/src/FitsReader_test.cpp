@@ -24,8 +24,8 @@
 
 #include <boost/test/unit_test.hpp>
 
-#include "ElementsKernel/Temporary.h"
 #include "ElementsKernel/Exception.h"
+#include "ElementsKernel/Temporary.h"
 
 #include "Table/FitsReader.h"
 
@@ -34,31 +34,32 @@ using namespace Euclid::NdArray;
 
 CCfits::Table* addTable(CCfits::FITS& fits) {
 
-  std::vector<std::string> names {"Bool","Int","Long","String","Float","Double","IntVector","DoubleVector","NdArray","Double1"};
-  std::vector<std::string> types {"L","J","K","10A","E","D","2J","2D", "6D", "1D"};
-  std::vector<std::string> units {"deg","mag","erg","ph","s","m","pc","count", "x", "x"};
-  CCfits::Table* table_hdu = fits.addTable("Success", 2, names, types, units);
-  std::vector<bool> bool_values {true, false};
+  std::vector<std::string> names{"Bool",   "Int",       "Long",         "String",  "Float",
+                                 "Double", "IntVector", "DoubleVector", "NdArray", "Double1"};
+  std::vector<std::string> types{"L", "J", "K", "10A", "E", "D", "2J", "2D", "6D", "1D"};
+  std::vector<std::string> units{"deg", "mag", "erg", "ph", "s", "m", "pc", "count", "x", "x"};
+  CCfits::Table*           table_hdu = fits.addTable("Success", 2, names, types, units);
+  std::vector<bool>        bool_values{true, false};
   table_hdu->column(1).write(bool_values, 1);
-  std::vector<int32_t> int_values {3, -2346};
+  std::vector<int32_t> int_values{3, -2346};
   table_hdu->column(2).write(int_values, 1);
-  std::vector<int64_t> long_values {123456789, -6};
+  std::vector<int64_t> long_values{123456789, -6};
   table_hdu->column(3).write(long_values, 1);
-  std::vector<std::string> string_values {"Small", "1234567890"};
+  std::vector<std::string> string_values{"Small", "1234567890"};
   table_hdu->column(4).write(string_values, 1);
-  std::vector<float> float_values {3.4f, 2.1e-3f};
+  std::vector<float> float_values{3.4f, 2.1e-3f};
   table_hdu->column(5).write(float_values, 1);
-  std::vector<double> double_values {3.4, 2.1e-13};
+  std::vector<double> double_values{3.4, 2.1e-13};
   table_hdu->column(6).write(double_values, 1);
-  std::vector<std::valarray<int32_t>> int_vectors {{1,2}, {3,4}};
+  std::vector<std::valarray<int32_t>> int_vectors{{1, 2}, {3, 4}};
   table_hdu->column(7).writeArrays(int_vectors, 1);
-  std::vector<std::valarray<double>> double_vectors {{1.1,1.2}, {2.1,2.2}};
+  std::vector<std::valarray<double>> double_vectors{{1.1, 1.2}, {2.1, 2.2}};
   table_hdu->column(8).writeArrays(double_vectors, 1);
-  std::vector<std::valarray<double>> double_ndarrays {{1,2,3,4,5,6}, {6,5,4,3,2,1}};
+  std::vector<std::valarray<double>> double_ndarrays{{1, 2, 3, 4, 5, 6}, {6, 5, 4, 3, 2, 1}};
   table_hdu->column(9).writeArrays(double_ndarrays, 1);
   table_hdu->column(10).write(double_values, 1);
 
-  for (int i=1; i<=9; i=i+2) {
+  for (int i = 1; i <= 9; i = i + 2) {
     table_hdu->addKey("TDESC" + std::to_string(i), "Desc" + std::to_string(i), "");
   }
   table_hdu->addKey("TDIM9", "(3,2)", "");
@@ -68,18 +69,17 @@ CCfits::Table* addTable(CCfits::FITS& fits) {
 
 struct FitsReader_Fixture {
 
-  Elements::TempDir temp_dir;
-  std::unique_ptr<CCfits::FITS> fits {new CCfits::FITS(
-          (temp_dir.path()/"FitsReader_test.fits").native(), CCfits::RWmode::Write)};
-  const CCfits::PHDU& primary_hdu = fits->pHDU();
-  std::vector<long> image_size {2,2};
-  CCfits::ExtHDU* image_hdu = fits->addImage("Image", FLOAT_IMG, image_size);
-  CCfits::ExtHDU* table_hdu = addTable(*fits);
+  Elements::TempDir             temp_dir;
+  std::unique_ptr<CCfits::FITS> fits{new CCfits::FITS((temp_dir.path() / "FitsReader_test.fits").native(), CCfits::RWmode::Write)};
+  const CCfits::PHDU&           primary_hdu = fits->pHDU();
+  std::vector<long>             image_size{2, 2};
+  CCfits::ExtHDU*               image_hdu = fits->addImage("Image", FLOAT_IMG, image_size);
+  CCfits::ExtHDU*               table_hdu = addTable(*fits);
 };
 
 //-----------------------------------------------------------------------------
 
-BOOST_AUTO_TEST_SUITE (FitsReader_test)
+BOOST_AUTO_TEST_SUITE(FitsReader_test)
 
 //-----------------------------------------------------------------------------
 // Test the exception for duplicate column names
@@ -88,14 +88,13 @@ BOOST_AUTO_TEST_SUITE (FitsReader_test)
 BOOST_FIXTURE_TEST_CASE(DuplicateColumnNames, FitsReader_Fixture) {
 
   // Given
-  std::vector<std::string> names {"First", "Second", "Third", "Second"};
+  std::vector<std::string> names{"First", "Second", "Third", "Second"};
 
   // When
-  FitsReader reader {*table_hdu};
+  FitsReader reader{*table_hdu};
 
   // Then
   BOOST_CHECK_THROW(reader.fixColumnNames(names), Elements::Exception);
-
 }
 
 //-----------------------------------------------------------------------------
@@ -105,14 +104,13 @@ BOOST_FIXTURE_TEST_CASE(DuplicateColumnNames, FitsReader_Fixture) {
 BOOST_FIXTURE_TEST_CASE(EmptyColumnNames, FitsReader_Fixture) {
 
   // Given
-  std::vector<std::string> names {"First", "Second", "", "Forth"};
+  std::vector<std::string> names{"First", "Second", "", "Forth"};
 
   // When
-  FitsReader reader {*table_hdu};
+  FitsReader reader{*table_hdu};
 
   // Then
   BOOST_CHECK_THROW(reader.fixColumnNames(names), Elements::Exception);
-
 }
 
 //-----------------------------------------------------------------------------
@@ -122,14 +120,14 @@ BOOST_FIXTURE_TEST_CASE(EmptyColumnNames, FitsReader_Fixture) {
 BOOST_FIXTURE_TEST_CASE(ColumnNamesWithWhitespaces, FitsReader_Fixture) {
 
   // Given
-  std::vector<std::string> space {"Sp ace"};
-  std::vector<std::string> tab {"T\tab"};
-  std::vector<std::string> carriage_return {"Carriage\rReturn"};
-  std::vector<std::string> new_line {"New\nLine"};
-  std::vector<std::string> new_page {"New\fPage"};
+  std::vector<std::string> space{"Sp ace"};
+  std::vector<std::string> tab{"T\tab"};
+  std::vector<std::string> carriage_return{"Carriage\rReturn"};
+  std::vector<std::string> new_line{"New\nLine"};
+  std::vector<std::string> new_page{"New\fPage"};
 
   // When
-  FitsReader reader {*table_hdu};
+  FitsReader reader{*table_hdu};
 
   // Then
   BOOST_CHECK_THROW(reader.fixColumnNames(space), Elements::Exception);
@@ -137,7 +135,6 @@ BOOST_FIXTURE_TEST_CASE(ColumnNamesWithWhitespaces, FitsReader_Fixture) {
   BOOST_CHECK_THROW(reader.fixColumnNames(carriage_return), Elements::Exception);
   BOOST_CHECK_THROW(reader.fixColumnNames(new_line), Elements::Exception);
   BOOST_CHECK_THROW(reader.fixColumnNames(new_page), Elements::Exception);
-
 }
 
 //-----------------------------------------------------------------------------
@@ -147,13 +144,12 @@ BOOST_FIXTURE_TEST_CASE(ColumnNamesWithWhitespaces, FitsReader_Fixture) {
 BOOST_FIXTURE_TEST_CASE(readNonTable, FitsReader_Fixture) {
 
   // Given
-  FitsReader reader_primary {primary_hdu};
-  FitsReader reader_image {*image_hdu};
+  FitsReader reader_primary{primary_hdu};
+  FitsReader reader_image{*image_hdu};
 
   // Then
   BOOST_CHECK_THROW(reader_primary.read(), Elements::Exception);
   BOOST_CHECK_THROW(reader_image.read(), Elements::Exception);
-
 }
 
 //-----------------------------------------------------------------------------
@@ -163,15 +159,14 @@ BOOST_FIXTURE_TEST_CASE(readNonTable, FitsReader_Fixture) {
 BOOST_FIXTURE_TEST_CASE(ReadWrongColumnNamesNumber, FitsReader_Fixture) {
 
   // Given
-  std::vector<std::string> names {"First","Second"};
-  FitsReader reader {*table_hdu};
+  std::vector<std::string> names{"First", "Second"};
+  FitsReader               reader{*table_hdu};
 
   // When
   reader.fixColumnNames(names);
 
   // Then
   BOOST_CHECK_THROW(reader.read(), Elements::Exception);
-
 }
 
 //-----------------------------------------------------------------------------
@@ -181,10 +176,10 @@ BOOST_FIXTURE_TEST_CASE(ReadWrongColumnNamesNumber, FitsReader_Fixture) {
 BOOST_FIXTURE_TEST_CASE(ReadSuccess, FitsReader_Fixture) {
 
   // Given
-  FitsReader reader {*table_hdu};
+  FitsReader reader{*table_hdu};
 
   // When
-  auto table = reader.read();
+  auto  table       = reader.read();
   auto& column_info = reader.getInfo();
 
   // Then
@@ -209,14 +204,14 @@ BOOST_FIXTURE_TEST_CASE(ReadSuccess, FitsReader_Fixture) {
   BOOST_CHECK(column_info.getDescription(7).type == typeid(std::vector<double>));
   BOOST_CHECK(column_info.getDescription(8).type == typeid(NdArray<double>));
 
-  std::vector<std::string> units {"deg","mag","erg","ph","s","m","pc","count", "x", "x"};
-  for (size_t i=0; i < column_info.size(); ++i) {
-    BOOST_CHECK_EQUAL(column_info.getDescription(i).unit,  units[i]);
+  std::vector<std::string> units{"deg", "mag", "erg", "ph", "s", "m", "pc", "count", "x", "x"};
+  for (size_t i = 0; i < column_info.size(); ++i) {
+    BOOST_CHECK_EQUAL(column_info.getDescription(i).unit, units[i]);
   }
 
-  std::vector<std::string> descriptions {"Desc1","","Desc3","","Desc5","","Desc7","","Desc9", ""};
-  for (size_t i=0; i < column_info.size(); ++i) {
-    BOOST_CHECK_EQUAL(column_info.getDescription(i).description,  descriptions[i]);
+  std::vector<std::string> descriptions{"Desc1", "", "Desc3", "", "Desc5", "", "Desc7", "", "Desc9", ""};
+  for (size_t i = 0; i < column_info.size(); ++i) {
+    BOOST_CHECK_EQUAL(column_info.getDescription(i).description, descriptions[i]);
   }
 
   BOOST_CHECK_EQUAL(boost::get<bool>(table[0][0]), true);
@@ -249,14 +244,12 @@ BOOST_FIXTURE_TEST_CASE(ReadSuccess, FitsReader_Fixture) {
   auto ndarray = boost::get<NdArray<double>>(table[1][8]);
   BOOST_CHECK_EQUAL(ndarray.shape()[0], 2);
   BOOST_CHECK_EQUAL(ndarray.shape()[1], 3);
-  BOOST_CHECK_EQUAL(ndarray.at(0,0), 6);
-  BOOST_CHECK_EQUAL(ndarray.at(1,2), 1);
+  BOOST_CHECK_EQUAL(ndarray.at(0, 0), 6);
+  BOOST_CHECK_EQUAL(ndarray.at(1, 2), 1);
 
   BOOST_CHECK_EQUAL(reader.getComment(), "TEST COMMENT\nWITH LINES");
 }
 
 //-----------------------------------------------------------------------------
 
-BOOST_AUTO_TEST_SUITE_END ()
-
-
+BOOST_AUTO_TEST_SUITE_END()

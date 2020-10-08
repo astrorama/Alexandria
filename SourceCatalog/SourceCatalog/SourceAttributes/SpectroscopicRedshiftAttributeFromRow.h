@@ -16,7 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
- /**
+/**
  * @file SourceCatalog/SourceAttributes/SpectroscopicRedshiftAttributeFromRow.h
  *
  * @date Apr 17, 2014
@@ -26,16 +26,15 @@
 #ifndef SPECTROSCOPICATTRIBUTEFROMROW_H_
 #define SPECTROSCOPICATTRIBUTEFROMROW_H_
 #include <map>
-#include <utility>
-#include <string>
 #include <memory>
+#include <string>
+#include <utility>
 
 #include "ElementsKernel/Logging.h"
 #include "SourceCatalog/AttributeFromRow.h"
 #include "SourceCatalog/Catalog.h"
-#include "Table/Table.h"
 #include "Table/CastVisitor.h"
-
+#include "Table/Table.h"
 
 namespace Euclid {
 namespace SourceCatalog {
@@ -50,7 +49,7 @@ static Elements::Logging logger = Elements::Logging::getLogger("SpectroscopicRed
  * create SpectroscopicRedshift objects.
  *
  */
-class SpectroscopicRedshiftAttributeFromRow: public AttributeFromRow {
+class SpectroscopicRedshiftAttributeFromRow : public AttributeFromRow {
 public:
   /**
    * @brief Create a SpectroscopicRedshiftAttributeFromRow object
@@ -73,8 +72,7 @@ public:
    *  An exception is thrown if the names provided in the mapping are not present in the columnInfo.
    */
   SpectroscopicRedshiftAttributeFromRow(std::shared_ptr<Euclid::Table::ColumnInfo> column_info_ptr,
-                                        const std::string&                         specz_value_column_name,
-                                        const std::string&                         specz_error_column_name) {
+                                        const std::string& specz_value_column_name, const std::string& specz_error_column_name) {
 
     std::unique_ptr<size_t> specz_value_column_index_ptr = column_info_ptr->find(specz_value_column_name);
     if (specz_value_column_index_ptr == nullptr) {
@@ -86,11 +84,10 @@ public:
       throw Elements::Exception() << "Column info does not have the spectroscopic redshift error column!";
     }
 
-    m_has_error_column=true;
+    m_has_error_column   = true;
     m_error_column_index = *(specz_error_column_index_ptr);
     m_value_column_index = *(specz_value_column_index_ptr);
-
- }
+  }
 
   /**
    * @brief Create a SpectroscopicRedshiftAttributeFromRow object
@@ -109,25 +106,23 @@ public:
    * @exception
    *  An exception is thrown if the names provided in the mapping are not present in the columnInfo.
    */
- SpectroscopicRedshiftAttributeFromRow(std::shared_ptr<Euclid::Table::ColumnInfo> column_info_ptr,
-                                       const std::string&                         specz_value_column_name) {
+  SpectroscopicRedshiftAttributeFromRow(std::shared_ptr<Euclid::Table::ColumnInfo> column_info_ptr,
+                                        const std::string&                         specz_value_column_name) {
 
     std::unique_ptr<size_t> specz_value_column_index_ptr = column_info_ptr->find(specz_value_column_name);
     if (specz_value_column_index_ptr == nullptr) {
       throw Elements::Exception() << "Column info does not have the spectroscopic redshift value column!";
     }
 
-    m_has_error_column=false;
+    m_has_error_column   = false;
     m_error_column_index = 0;
     m_value_column_index = *(specz_value_column_index_ptr);
 
     // Log a warning as row is set to zero
     logger.warn() << "specz error values are set to zero by default! ";
- }
-
-  virtual ~SpectroscopicRedshiftAttributeFromRow() {
-
   }
+
+  virtual ~SpectroscopicRedshiftAttributeFromRow() {}
 
   /**
    * @brief Create a photometricAttribute from a Table row
@@ -141,7 +136,7 @@ public:
     if (m_has_error_column) {
       e = boost::apply_visitor(Table::CastVisitor<double>{}, row[m_error_column_index]);
     }
-    return std::unique_ptr<Attribute> {new SpectroscopicRedshift {z, e}};
+    return std::unique_ptr<Attribute>{new SpectroscopicRedshift{z, e}};
   }
 
 private:
@@ -151,11 +146,9 @@ private:
   size_t m_value_column_index;
   bool   m_has_error_column;
   size_t m_error_column_index;
-
 };
 
+}  // namespace SourceCatalog
+}  // end of namespace Euclid
 
-} // namespace SourceCatalog
-} // end of namespace Euclid
-
-#endif // SPECTROSCOPICATTRIBUTEFROMROW_H_
+#endif  // SPECTROSCOPICATTRIBUTEFROMROW_H_

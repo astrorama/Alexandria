@@ -24,36 +24,32 @@
 #ifndef SOM_SOMPROJECTOR_H
 #define SOM_SOMPROJECTOR_H
 
-#include <functional>
-#include <iterator>
 #include "GridContainer/GridContainer.h"
 #include "SOM/SOM.h"
+#include <functional>
+#include <iterator>
 
 namespace Euclid {
 namespace SOM {
 class SOMProjector {
 
 public:
-
   template <typename T>
   using ProjectGrid = GridContainer::GridContainer<std::vector<T>, std::size_t, std::size_t>;
 
-  template<typename T, std::size_t ND, typename DistFunc, typename InputIter, typename WeightFunc, typename AdderFunc>
+  template <typename T, std::size_t ND, typename DistFunc, typename InputIter, typename WeightFunc, typename AdderFunc>
   static ProjectGrid<T> project(const SOM<ND, DistFunc>& som, InputIter begin, InputIter end, WeightFunc weight_func,
                                 AdderFunc adder_func, const T& init_cell = T{});
 
-  template<typename T, std::size_t ND, typename DistFunc, typename InputIter, typename WeightFunc,
-    typename UncertaintyFunc, typename AdderFunc>
+  template <typename T, std::size_t ND, typename DistFunc, typename InputIter, typename WeightFunc, typename UncertaintyFunc,
+            typename AdderFunc>
   static ProjectGrid<T> project(const SOM<ND, DistFunc>& som, InputIter begin, InputIter end, WeightFunc weight_func,
-                                UncertaintyFunc uncertainty_func,
-                                AdderFunc adder_func, const T& init_cell = T{});
-
+                                UncertaintyFunc uncertainty_func, AdderFunc adder_func, const T& init_cell = T{});
 };
 
-}
-}
+}  // namespace SOM
+}  // namespace Euclid
 
 #include "SOM/_impl/SOMProjector.icpp"
 
 #endif /* SOM_SOMPROJECTOR_H */
-

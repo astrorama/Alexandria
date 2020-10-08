@@ -17,19 +17,18 @@
  */
 
 /**
-* @file tests/src/interpolation/Spline_test.cpp
-* @date February 20, 2014
-* @author Nikolaos Apostolakos
-*/
+ * @file tests/src/interpolation/Spline_test.cpp
+ * @date February 20, 2014
+ * @author Nikolaos Apostolakos
+ */
 
+#include "MathUtils/function/Piecewise.h"
+#include "MathUtils/interpolation/interpolation.h"
+#include "MathUtils/numericalDifferentiation/FiniteDifference.h"
 #include <boost/test/unit_test.hpp>
 #include <cmath>
-#include "MathUtils/interpolation/interpolation.h"
-#include "MathUtils/function/Piecewise.h"
-#include "MathUtils/numericalDifferentiation/FiniteDifference.h"
 
 using namespace Euclid::MathUtils;
-
 
 struct Spline_Fixture {
   const double eps = std::sqrt(std::numeric_limits<double>::epsilon());
@@ -48,7 +47,7 @@ struct Spline_Fixture {
 
 //-----------------------------------------------------------------------------
 
-BOOST_AUTO_TEST_SUITE (Spline_test)
+BOOST_AUTO_TEST_SUITE(Spline_test)
 
 //-----------------------------------------------------------------------------
 // The interpolated function value at x must match the same value as the original
@@ -56,7 +55,7 @@ BOOST_AUTO_TEST_SUITE (Spline_test)
 
 BOOST_FIXTURE_TEST_CASE(fx, Spline_Fixture) {
   // When
-  auto cubic = interpolate(x, y, InterpolationType::CUBIC_SPLINE);
+  auto                cubic = interpolate(x, y, InterpolationType::CUBIC_SPLINE);
   std::vector<double> result{};
   for (double xValue : x) {
     result.push_back((*cubic)(xValue));
@@ -67,11 +66,10 @@ BOOST_FIXTURE_TEST_CASE(fx, Spline_Fixture) {
   // Then
   for (size_t i = 0; i < y.size(); i++) {
     if (std::abs(result[i]) <= eps) {
-        BOOST_CHECK_SMALL(result[i], small_tolerance);
-        BOOST_CHECK_SMALL(y[i], small_tolerance);
-    }
-    else {
-        BOOST_CHECK_CLOSE(result[i], y[i], close_tolerance);
+      BOOST_CHECK_SMALL(result[i], small_tolerance);
+      BOOST_CHECK_SMALL(y[i], small_tolerance);
+    } else {
+      BOOST_CHECK_CLOSE(result[i], y[i], close_tolerance);
     }
   }
   BOOST_CHECK_SMALL(outside1, small_tolerance);
@@ -83,25 +81,24 @@ BOOST_FIXTURE_TEST_CASE(fx, Spline_Fixture) {
 // the splines to each side match with the original value
 //-----------------------------------------------------------------------------
 BOOST_FIXTURE_TEST_CASE(Spline_fx, Spline_Fixture) {
-  auto cubic_f = interpolate(x, y, InterpolationType::CUBIC_SPLINE);
-  auto cubic_pieces = dynamic_cast<Piecewise *>(cubic_f.get());
-  auto& splines = cubic_pieces->getFunctions();
+  auto  cubic_f      = interpolate(x, y, InterpolationType::CUBIC_SPLINE);
+  auto  cubic_pieces = dynamic_cast<Piecewise*>(cubic_f.get());
+  auto& splines      = cubic_pieces->getFunctions();
 
   for (size_t i = 0; i < splines.size() - 1; ++i) {
-    auto x0 = x[i + 1];
-    auto& left = splines[i];
-    auto& right = splines[i + 1];
-    auto left_val = (*left)(x0);
-    auto right_val = (*right)(x0);
+    auto  x0        = x[i + 1];
+    auto& left      = splines[i];
+    auto& right     = splines[i + 1];
+    auto  left_val  = (*left)(x0);
+    auto  right_val = (*right)(x0);
 
     if (std::abs(left_val) <= eps || std::abs(right_val) <= eps) {
-        BOOST_CHECK_SMALL(left_val, small_tolerance);
-        BOOST_CHECK_SMALL(right_val, small_tolerance);
-        BOOST_CHECK_SMALL(y[i + 1], small_tolerance);
-    }
-    else {
-        BOOST_CHECK_CLOSE(left_val, right_val, close_tolerance);
-        BOOST_CHECK_CLOSE(left_val, y[i + 1], close_tolerance);
+      BOOST_CHECK_SMALL(left_val, small_tolerance);
+      BOOST_CHECK_SMALL(right_val, small_tolerance);
+      BOOST_CHECK_SMALL(y[i + 1], small_tolerance);
+    } else {
+      BOOST_CHECK_CLOSE(left_val, right_val, close_tolerance);
+      BOOST_CHECK_CLOSE(left_val, y[i + 1], close_tolerance);
     }
   }
 }
@@ -110,23 +107,22 @@ BOOST_FIXTURE_TEST_CASE(Spline_fx, Spline_Fixture) {
 // Similarly, the first derivative of the splines to each side must match
 //-----------------------------------------------------------------------------
 BOOST_FIXTURE_TEST_CASE(Spline_dfx, Spline_Fixture) {
-  auto cubic_f = interpolate(x, y, InterpolationType::CUBIC_SPLINE);
-  auto cubic_pieces = dynamic_cast<Piecewise *>(cubic_f.get());
-  auto& splines = cubic_pieces->getFunctions();
+  auto  cubic_f      = interpolate(x, y, InterpolationType::CUBIC_SPLINE);
+  auto  cubic_pieces = dynamic_cast<Piecewise*>(cubic_f.get());
+  auto& splines      = cubic_pieces->getFunctions();
 
   for (size_t i = 0; i < splines.size() - 1; ++i) {
-    auto x0 = x[i + 1];
-    auto& left = splines[i];
+    auto  x0    = x[i + 1];
+    auto& left  = splines[i];
     auto& right = splines[i + 1];
 
-    auto left_dy = derivative(*left, x0);
+    auto left_dy  = derivative(*left, x0);
     auto right_dy = derivative(*right, x0);
 
     if (std::abs(left_dy) <= eps || std::abs(right_dy) <= eps) {
       BOOST_CHECK_SMALL(left_dy, small_tolerance);
       BOOST_CHECK_SMALL(right_dy, small_tolerance);
-    }
-    else {
+    } else {
       BOOST_CHECK_CLOSE(left_dy, right_dy, close_tolerance);
     }
   }
@@ -137,23 +133,22 @@ BOOST_FIXTURE_TEST_CASE(Spline_dfx, Spline_Fixture) {
 // also the second derivative of the splines to each side must match
 //-----------------------------------------------------------------------------
 BOOST_FIXTURE_TEST_CASE(Spline_ddfx, Spline_Fixture) {
-  auto cubic_f = interpolate(x, y, InterpolationType::CUBIC_SPLINE);
-  auto cubic_pieces = dynamic_cast<Piecewise *>(cubic_f.get());
-  auto& splines = cubic_pieces->getFunctions();
+  auto  cubic_f      = interpolate(x, y, InterpolationType::CUBIC_SPLINE);
+  auto  cubic_pieces = dynamic_cast<Piecewise*>(cubic_f.get());
+  auto& splines      = cubic_pieces->getFunctions();
 
   for (size_t i = 0; i < splines.size() - 1; ++i) {
-    auto x0 = x[i + 1];
-    auto& left = splines[i];
+    auto  x0    = x[i + 1];
+    auto& left  = splines[i];
     auto& right = splines[i + 1];
 
-    auto left_ddy = derivative2nd(*left, x0);
+    auto left_ddy  = derivative2nd(*left, x0);
     auto right_ddy = derivative2nd(*right, x0);
 
     if (std::abs(left_ddy) <= eps || std::abs(right_ddy) <= eps) {
       BOOST_CHECK_SMALL(left_ddy, small_tolerance);
       BOOST_CHECK_SMALL(right_ddy, small_tolerance);
-    }
-    else {
+    } else {
       BOOST_CHECK_CLOSE(left_ddy, right_ddy, 2e-2);
     }
   }
@@ -163,14 +158,14 @@ BOOST_FIXTURE_TEST_CASE(Spline_ddfx, Spline_Fixture) {
 // Second derivative at the endpoints should be 0
 //-----------------------------------------------------------------------------
 BOOST_FIXTURE_TEST_CASE(Spline_ddfx_endpoint, Spline_Fixture) {
-  auto cubic_f = interpolate(x, y, InterpolationType::CUBIC_SPLINE);
-  auto cubic_pieces = dynamic_cast<Piecewise *>(cubic_f.get());
-  auto& splines = cubic_pieces->getFunctions();
+  auto  cubic_f      = interpolate(x, y, InterpolationType::CUBIC_SPLINE);
+  auto  cubic_pieces = dynamic_cast<Piecewise*>(cubic_f.get());
+  auto& splines      = cubic_pieces->getFunctions();
 
-  auto& left = splines.front();
+  auto& left  = splines.front();
   auto& right = splines.back();
 
-  auto left_ddy = derivative2nd(*left, x.front());
+  auto left_ddy  = derivative2nd(*left, x.front());
   auto right_ddy = derivative2nd(*right, x.back());
 
   BOOST_CHECK_SMALL(left_ddy, 1e-4);
@@ -183,7 +178,7 @@ BOOST_FIXTURE_TEST_CASE(Spline_ddfx_endpoint, Spline_Fixture) {
 BOOST_FIXTURE_TEST_CASE(Spline_extrapolation, Spline_Fixture) {
   auto cubic_f = interpolate(x, y, InterpolationType::CUBIC_SPLINE, true);
 
-  auto left_ddy = derivative2nd(*cubic_f, x.front());
+  auto left_ddy  = derivative2nd(*cubic_f, x.front());
   auto right_ddy = derivative2nd(*cubic_f, x.back());
 
   BOOST_CHECK_SMALL(left_ddy, 1e-4);
@@ -196,11 +191,12 @@ BOOST_FIXTURE_TEST_CASE(Spline_extrapolation, Spline_Fixture) {
 BOOST_FIXTURE_TEST_CASE(Spline_1DataPoint, Spline_Fixture) {
 
   // Given
-  std::vector<double> x_test_value {2.};
-  std::vector<double> y_test_value {42.};
+  std::vector<double> x_test_value{2.};
+  std::vector<double> y_test_value{42.};
 
   // When
-  auto linear = Euclid::MathUtils::interpolate(x_test_value, y_test_value, Euclid::MathUtils::InterpolationType::CUBIC_SPLINE, true);
+  auto linear =
+      Euclid::MathUtils::interpolate(x_test_value, y_test_value, Euclid::MathUtils::InterpolationType::CUBIC_SPLINE, true);
   double value1 = (*linear)(-2.);
   double value2 = (*linear)(-1.);
   double value3 = (*linear)(-.5);
@@ -213,9 +209,8 @@ BOOST_FIXTURE_TEST_CASE(Spline_1DataPoint, Spline_Fixture) {
   BOOST_CHECK_CLOSE(value3, 42., close_tolerance);
   BOOST_CHECK_CLOSE(value4, 42., close_tolerance);
   BOOST_CHECK_CLOSE(value5, 42., close_tolerance);
-
 }
 
 //-----------------------------------------------------------------------------
 
-BOOST_AUTO_TEST_SUITE_END ()
+BOOST_AUTO_TEST_SUITE_END()

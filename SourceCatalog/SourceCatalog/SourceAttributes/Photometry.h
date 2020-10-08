@@ -16,7 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
- /**
+/**
  * @file SourceCatalog/SourceAttributes/Photometry.h
  *
  * Created on: Jan 17, 2014
@@ -26,12 +26,12 @@
 #ifndef PHOTOMETRY_H_
 #define PHOTOMETRY_H_
 
+#include <iterator>
 #include <memory>
 #include <vector>
-#include <iterator>
 
-#include "ElementsKernel/Export.h"
 #include "ElementsKernel/Exception.h"
+#include "ElementsKernel/Export.h"
 
 #include "SourceCatalog/Attribute.h"
 
@@ -43,8 +43,7 @@ struct FluxErrorPair {
   double error;
   bool   missing_photometry_flag;
   bool   upper_limit_flag;
-  FluxErrorPair(double flux, double error, bool missing_photometry_flag=false,
-                bool upper_limit_flag=false);
+  FluxErrorPair(double flux, double error, bool missing_photometry_flag = false, bool upper_limit_flag = false);
   FluxErrorPair(const FluxErrorPair&) = default;
   bool operator==(const FluxErrorPair& other) const;
   bool operator!=(const FluxErrorPair& other) const;
@@ -64,27 +63,26 @@ struct FluxErrorPair {
  * Always use the PhotometryAttributeHandler to build Photometry objects.
  *
  */
-class ELEMENTS_API Photometry: public Attribute {
+class ELEMENTS_API Photometry : public Attribute {
 
 public:
-
   /**
    * Iterator class, implemented as a template to avoid repetition for const and non const iterators
    * @tparam Const
    *    A boolean. If true, this will be a const iterator
    */
-  template<bool Const>
+  template <bool Const>
   class PhotometryIterator : public std::iterator<std::forward_iterator_tag,
-    typename std::conditional<Const, const FluxErrorPair, FluxErrorPair>::type> {
+                                                  typename std::conditional<Const, const FluxErrorPair, FluxErrorPair>::type> {
   public:
     using value_t = typename std::conditional<Const, const FluxErrorPair, FluxErrorPair>::type;
     using typename std::iterator<std::forward_iterator_tag, value_t>::reference;
     using typename std::iterator<std::forward_iterator_tag, value_t>::pointer;
 
-    using filters_iter_t = typename std::conditional<
-      Const, std::vector<std::string>::const_iterator, std::vector<std::string>::iterator>::type;
-    using values_iter_t = typename std::conditional<
-      Const, std::vector<FluxErrorPair>::const_iterator, std::vector<FluxErrorPair>::iterator>::type;
+    using filters_iter_t =
+        typename std::conditional<Const, std::vector<std::string>::const_iterator, std::vector<std::string>::iterator>::type;
+    using values_iter_t =
+        typename std::conditional<Const, std::vector<FluxErrorPair>::const_iterator, std::vector<FluxErrorPair>::iterator>::type;
 
     /**
      * Constructor from non-const iterator
@@ -99,12 +97,12 @@ public:
     /**
      * @return true if this iterator and other point to the same position
      */
-    bool operator == (const PhotometryIterator& other) const;
+    bool operator==(const PhotometryIterator& other) const;
 
     /**
      * @return true if this iterator and other do *not* point to the same position
      */
-    bool operator != (const PhotometryIterator& other) const;
+    bool operator!=(const PhotometryIterator& other) const;
 
     /**
      * @return A reference to the FluxErrorPair pointed by this iterator
@@ -114,12 +112,12 @@ public:
     /**
      * @return A pointer to the FluxErrorPair pointed by this iterator
      */
-    pointer operator ->();
+    pointer operator->();
 
     /**
      * @return The number of elements between this iterator and other
      */
-    ssize_t operator - (const PhotometryIterator& other) const;
+    ssize_t operator-(const PhotometryIterator& other) const;
 
     /**
      * @return The filter name corresponding to this FluxErrorPair
@@ -140,12 +138,11 @@ public:
 
   private:
     filters_iter_t m_filters_iter;
-    values_iter_t m_values_iter;
+    values_iter_t  m_values_iter;
   };
 
-  typedef PhotometryIterator<true> const_iterator;
+  typedef PhotometryIterator<true>  const_iterator;
   typedef PhotometryIterator<false> iterator;
-
 
   /**
    * @brief Constructor which should never be called directly. Use the
@@ -157,17 +154,14 @@ public:
    *  the vector of ValuePair, i..e, the flux values with their errors
    *
    */
-  Photometry(std::shared_ptr<std::vector<std::string>> filter_name_vector_ptr,
-      std::vector<FluxErrorPair> value_vector) :
-      m_filter_name_vector_ptr(filter_name_vector_ptr), m_value_vector(
-          std::move(value_vector)) {
+  Photometry(std::shared_ptr<std::vector<std::string>> filter_name_vector_ptr, std::vector<FluxErrorPair> value_vector)
+      : m_filter_name_vector_ptr(filter_name_vector_ptr), m_value_vector(std::move(value_vector)) {
     if (m_filter_name_vector_ptr == nullptr) {
       throw Elements::Exception() << "Photometry filter names vector pointer is null";
     }
     // Only check the size, but not the consistency
     if (m_filter_name_vector_ptr->size() != m_value_vector.size()) {
-      throw Elements::Exception()
-          << "Photometry filter names vector has different size than the values vector";
+      throw Elements::Exception() << "Photometry filter names vector has different size than the values vector";
     }
   }
 
@@ -220,13 +214,11 @@ public:
   const std::shared_ptr<std::vector<std::string>>& getFilterNames() const;
 
 private:
-
   /// Shared pointer to the common list of filter names
   std::shared_ptr<std::vector<std::string>> m_filter_name_vector_ptr;
 
   /// The photometry map
   std::vector<FluxErrorPair> m_value_vector;
-
 };
 // Eof class Photometry
 
@@ -235,6 +227,6 @@ private:
 #undef PHOTOMETRY_IMPL
 
 } /* namespace SourceCatalog */
-} // end of namespace Euclid
+}  // end of namespace Euclid
 
 #endif /* PHOTOMETRY_H_ */

@@ -64,7 +64,7 @@ double derivative(const Function& f, const double x);
  */
 double derivative2nd(const Function& f, const double x);
 
-} // end namespace MathUtils
-} // end namespace Euclid
+}  // end namespace MathUtils
+}  // end namespace Euclid
 
-#endif // MATHUTILS_MATHUTILS_NUMERICALDIFFERENTIATION_FINITEDIFFERENCE_H_
+#endif  // MATHUTILS_MATHUTILS_NUMERICALDIFFERENTIATION_FINITEDIFFERENCE_H_

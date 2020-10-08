@@ -1,40 +1,40 @@
 /*
- * Copyright (C) 2012-2020 Euclid Science Ground Segment    
- *  
+ * Copyright (C) 2012-2020 Euclid Science Ground Segment
+ *
  * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free 
- * Software Foundation; either version 3.0 of the License, or (at your option)  
- * any later version.  
- *  
- * This library is distributed in the hope that it will be useful, but WITHOUT 
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 3.0 of the License, or (at your option)
+ * any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more  
- * details.  
- *  
- * You should have received a copy of the GNU Lesser General Public License 
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
  * along with this library; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA  
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
- 
- /** 
+
+/**
  * @file tests/src/function/Polynomial_test.cpp
  * @date February 19, 2014
  * @author Nikolaos Apostolakos
  */
 
-#include <boost/test/unit_test.hpp>
-#include <boost/test/floating_point_comparison.hpp>
-#include <boost/test/test_tools.hpp>
-#include <memory>
-#include <sstream>
 #include "ElementsKernel/Real.h"
 #include "MathUtils/function/Polynomial.h"
+#include <boost/test/floating_point_comparison.hpp>
+#include <boost/test/test_tools.hpp>
+#include <boost/test/unit_test.hpp>
+#include <memory>
+#include <sstream>
 
 struct Polynomial_Fixture {
-  double relative_error_tolerance {1E-10};
-  template<typename T>
+  double relative_error_tolerance{1E-10};
+  template <typename T>
   void AlmostEqualRelative(T expected, T actual) {
-    T relative_error =  (expected - actual) / actual;
+    T relative_error = (expected - actual) / actual;
     if (relative_error < 0) {
       relative_error = -relative_error;
     }
@@ -48,24 +48,23 @@ struct Polynomial_Fixture {
 
 //-----------------------------------------------------------------------------
 
-BOOST_AUTO_TEST_SUITE (Polynomial_test)
+BOOST_AUTO_TEST_SUITE(Polynomial_test)
 
 //-----------------------------------------------------------------------------
 // Test that the constructor sets the coefficients correctly
 //-----------------------------------------------------------------------------
 
 BOOST_FIXTURE_TEST_CASE(Constructor, Polynomial_Fixture) {
-  
+
   // Given
-  std::vector<double> coef {2.5, 0.8, -1.3, 0.02};
-  Euclid::MathUtils::Polynomial polynomial {coef};
-  
+  std::vector<double>           coef{2.5, 0.8, -1.3, 0.02};
+  Euclid::MathUtils::Polynomial polynomial{coef};
+
   // When
   std::vector<double> resCoef = polynomial.getCoefficients();
-  
+
   // Then
   BOOST_CHECK_EQUAL_COLLECTIONS(resCoef.begin(), resCoef.end(), coef.begin(), coef.end());
-  
 }
 
 //-----------------------------------------------------------------------------
@@ -73,21 +72,20 @@ BOOST_FIXTURE_TEST_CASE(Constructor, Polynomial_Fixture) {
 //-----------------------------------------------------------------------------
 
 BOOST_FIXTURE_TEST_CASE(Clone, Polynomial_Fixture) {
-  
+
   // Given
-  std::vector<double> coef {2.5, 0.8, -1.3, 0.02};
-  Euclid::MathUtils::Polynomial polynomial {coef};
-  
+  std::vector<double>           coef{2.5, 0.8, -1.3, 0.02};
+  Euclid::MathUtils::Polynomial polynomial{coef};
+
   // When
   auto clonePtr = polynomial.clone();
-  
+
   // Then
   BOOST_CHECK(clonePtr);
   Euclid::MathUtils::Polynomial* resPol = dynamic_cast<Euclid::MathUtils::Polynomial*>(clonePtr.get());
   BOOST_CHECK(resPol);
   std::vector<double> resCoef = resPol->getCoefficients();
   BOOST_CHECK_EQUAL_COLLECTIONS(resCoef.begin(), resCoef.end(), coef.begin(), coef.end());
-  
 }
 
 //-----------------------------------------------------------------------------
@@ -97,19 +95,18 @@ BOOST_FIXTURE_TEST_CASE(Clone, Polynomial_Fixture) {
 BOOST_FIXTURE_TEST_CASE(FunctionOperator, Polynomial_Fixture) {
 
   // Given
-  std::vector<double> coef {2.5, 0.8, -1.3, 0.02};
-  Euclid::MathUtils::Polynomial polynomial {coef};
-  
-  for (double x=-10.; x <=10.; x+=0.1) {
-    
+  std::vector<double>           coef{2.5, 0.8, -1.3, 0.02};
+  Euclid::MathUtils::Polynomial polynomial{coef};
+
+  for (double x = -10.; x <= 10.; x += 0.1) {
+
     // When
-    double expected = 2.5 + 0.8*x -1.3*x*x + 0.02*x*x*x;
+    double expected = 2.5 + 0.8 * x - 1.3 * x * x + 0.02 * x * x * x;
     double polValue = polynomial(x);
-    
+
     // Then
     AlmostEqualRelative(expected, polValue);
   }
-
 }
 
 //-----------------------------------------------------------------------------
@@ -117,15 +114,15 @@ BOOST_FIXTURE_TEST_CASE(FunctionOperator, Polynomial_Fixture) {
 //-----------------------------------------------------------------------------
 
 BOOST_FIXTURE_TEST_CASE(Derivative, Polynomial_Fixture) {
-  
+
   // Given
-  std::vector<double> polCoef {2.5, 0.8, -1.3, 0.02};
-  std::vector<double> expectedCoef {0.8, -2.6, 0.06};
-  Euclid::MathUtils::Polynomial polynomial {polCoef};
-  
+  std::vector<double>           polCoef{2.5, 0.8, -1.3, 0.02};
+  std::vector<double>           expectedCoef{0.8, -2.6, 0.06};
+  Euclid::MathUtils::Polynomial polynomial{polCoef};
+
   // When
   auto derivative = std::dynamic_pointer_cast<Euclid::MathUtils::Polynomial>(polynomial.derivative());
-  
+
   // Then
   BOOST_CHECK(derivative);
   std::vector<double> derCoef = derivative->getCoefficients();
@@ -137,15 +134,15 @@ BOOST_FIXTURE_TEST_CASE(Derivative, Polynomial_Fixture) {
 //-----------------------------------------------------------------------------
 
 BOOST_FIXTURE_TEST_CASE(IndefiniteIntegral, Polynomial_Fixture) {
-  
+
   // Given
-  std::vector<double> polCoef {2.5, 0.8, -1.5, 0.02};
-  std::vector<double> expectedCoef {0., 2.5, 0.4, -0.5, 0.005};
-  Euclid::MathUtils::Polynomial polynomial {polCoef};
-  
+  std::vector<double>           polCoef{2.5, 0.8, -1.5, 0.02};
+  std::vector<double>           expectedCoef{0., 2.5, 0.4, -0.5, 0.005};
+  Euclid::MathUtils::Polynomial polynomial{polCoef};
+
   // When
   auto indefiniteIntegral = std::dynamic_pointer_cast<Euclid::MathUtils::Polynomial>(polynomial.indefiniteIntegral());
-  
+
   // Then
   BOOST_CHECK(indefiniteIntegral);
   std::vector<double> indefIntCoef = indefiniteIntegral->getCoefficients();
@@ -154,4 +151,4 @@ BOOST_FIXTURE_TEST_CASE(IndefiniteIntegral, Polynomial_Fixture) {
 
 //-----------------------------------------------------------------------------
 
-BOOST_AUTO_TEST_SUITE_END ()
+BOOST_AUTO_TEST_SUITE_END()

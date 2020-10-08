@@ -16,7 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
- /**
+/**
  * @file src/lib/AsciiWriterHelper.h
  * @date April 16, 2014
  * @author Nikolaos Apostolakos
@@ -25,12 +25,12 @@
 #ifndef TABLE_ASCIIWRITERHELPER_H
 #define TABLE_ASCIIWRITERHELPER_H
 
-#include <vector>
-#include <typeindex>
 #include <boost/io/detail/quoted_manip.hpp>
+#include <sstream>
+#include <typeindex>
+#include <vector>
 
 #include "ElementsKernel/Export.h"
-
 
 #include "Table/Table.h"
 
@@ -70,7 +70,7 @@ ELEMENTS_API std::vector<size_t> calculateColumnLengths(const Table& table);
  * @param str
  * @return
  */
-std::string quoted(const std::string &str);
+std::string quoted(const std::string& str);
 
 /**
  * This visitor will wrap strings between quotes so spaces (and quotes) can be
@@ -83,7 +83,7 @@ struct ToStringVisitor : public boost::static_visitor<std::string> {
     return q.str();
   }
 
-  template<typename T>
+  template <typename T>
   std::string operator()(const T& from) const {
     std::stringstream q;
     q << from;
@@ -91,7 +91,7 @@ struct ToStringVisitor : public boost::static_visitor<std::string> {
   }
 };
 
-}
-} // end of namespace Euclid
+}  // namespace Table
+}  // end of namespace Euclid
 
 #endif /* TABLE_ASCIIWRITERHELPER_H */

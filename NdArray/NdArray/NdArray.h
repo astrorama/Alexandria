@@ -17,20 +17,20 @@
  */
 
 /**
-* @file NdArray/NdArray.h
-* @date November 21, 2018
-* @author Alejandro Alvarez Ayllon
-*/
+ * @file NdArray/NdArray.h
+ * @date November 21, 2018
+ * @author Alejandro Alvarez Ayllon
+ */
 
 #ifndef ALEXANDRIA_NDARRAY_H
 #define ALEXANDRIA_NDARRAY_H
 
+#include "AlexandriaKernel/memory_tools.h"
+#include <cassert>
 #include <iostream>
 #include <numeric>
 #include <stdexcept>
 #include <vector>
-#include <cassert>
-#include "AlexandriaKernel/memory_tools.h"
 
 namespace Euclid {
 namespace NdArray {
@@ -42,12 +42,12 @@ namespace NdArray {
  * @tparam Container
  *  Which container to use, by default std::vector
  */
-template<typename T>
+template <typename T>
 class NdArray {
 private:
   struct ContainerInterface;
 
-  template<template<class...> class Container = std::vector>
+  template <template <class...> class Container = std::vector>
   struct ContainerWrapper;
 
 public:
@@ -58,14 +58,13 @@ public:
    * @tparam Const
    *    If true, this defines a const iterator
    */
-  template<bool Const>
-  class Iterator
-    : public std::iterator<std::random_access_iterator_tag, typename std::conditional<Const, const T, T>::type> {
+  template <bool Const>
+  class Iterator : public std::iterator<std::random_access_iterator_tag, typename std::conditional<Const, const T, T>::type> {
   private:
-    ContainerInterface *m_container_ptr;
-    size_t m_offset;
+    ContainerInterface* m_container_ptr;
+    size_t              m_offset;
 
-    Iterator(ContainerInterface *container_ptr, size_t offset);
+    Iterator(ContainerInterface* container_ptr, size_t offset);
 
     friend class NdArray;
 
@@ -171,7 +170,7 @@ public:
     bool operator>(const Iterator& other);
   };
 
-  typedef Iterator<true> const_iterator;
+  typedef Iterator<true>  const_iterator;
   typedef Iterator<false> iterator;
 
   /**
@@ -197,7 +196,7 @@ public:
    * @throws std::invalid_argument
    *    If the data size does not corresponds to the matrix size.
    */
-  template<template<class...> class Container = std::vector>
+  template <template <class...> class Container = std::vector>
   NdArray(const std::vector<size_t>& shape, const Container<T>& data);
 
   /**
@@ -214,7 +213,7 @@ public:
    * @throws std::invalid_argument
    *    If the data size does not corresponds to the matrix size.
    */
-  template<template<class...> class Container = std::vector>
+  template <template <class...> class Container = std::vector>
   NdArray(const std::vector<size_t>& shape, Container<T>&& data);
 
   /**
@@ -229,7 +228,7 @@ public:
    * @throws std::invalid_argument
    *    If the data size does not corresponds to the matrix size.
    */
-  template<typename Iterator>
+  template <typename Iterator>
   NdArray(const std::vector<size_t>& shape, Iterator begin, Iterator end);
 
   /**
@@ -242,8 +241,8 @@ public:
    *    Unlike numpy, attr_names is treated strictly as an alias, so
    *    NdArray<float>({20}, {"X", "Y"}) has a shape of (20, 2)
    */
-  template<typename ...Args>
-  NdArray(const std::vector<size_t>& shape, const std::vector<std::string>& attr_names, Args&& ... args);
+  template <typename... Args>
+  NdArray(const std::vector<size_t>& shape, const std::vector<std::string>& attr_names, Args&&... args);
 
   /**
    * Constructs a default-initialized matrix with the given shape (as an initializer list).
@@ -312,7 +311,7 @@ public:
    * @return
    *    *this
    */
-  template<typename ...D>
+  template <typename... D>
   self_type& reshape(size_t i, D... rest);
 
   /**
@@ -365,7 +364,7 @@ public:
    *    This is a convenience function that allows access without requiring a vector when the
    *    number of dimensions is known in advance (i.e. `at(x, y, z)` instead of `at(std::vector<size_t>{x, y, z})`).
    */
-  template<typename ...D>
+  template <typename... D>
   T& at(size_t i, D... rest);
 
   /**
@@ -378,7 +377,7 @@ public:
    *    This is a convenience function that allows access without requiring a vector when the
    *    number of dimensions is known in advance (i.e. `at(x, y, z)` instead of `at(std::vector<size_t>{x, y, z})`).
    */
-  template<typename ...D>
+  template <typename... D>
   const T& at(size_t i, D... rest) const;
 
   /**
@@ -424,7 +423,7 @@ public:
    * Concatenate to this array another one *along the first axis*
    * @return *this
    */
-  self_type& concatenate(const self_type &other);
+  self_type& concatenate(const self_type& other);
 
   /**
    * @return
@@ -433,9 +432,9 @@ public:
   const std::vector<std::string>& attributes() const;
 
 private:
-  std::vector<size_t> m_shape, m_stride_size;
+  std::vector<size_t>      m_shape, m_stride_size;
   std::vector<std::string> m_attr_names;
-  size_t m_size;
+  size_t                   m_size;
 
   struct ContainerInterface {
     /// Owned by the specific implementation ContainerWrapper,
@@ -464,7 +463,7 @@ private:
     virtual std::unique_ptr<ContainerInterface> copy() const = 0;
   };
 
-  template<template<class...> class Container>
+  template <template <class...> class Container>
   struct ContainerWrapper : public ContainerInterface {
     using ContainerInterface::m_data_ptr;
     Container<T> m_container;
@@ -475,8 +474,8 @@ private:
 
     ContainerWrapper(ContainerWrapper&&) = default;
 
-    template<typename ...Args>
-    ContainerWrapper(Args&& ... args) : m_container(std::forward<Args>(args)...) {
+    template <typename... Args>
+    ContainerWrapper(Args&&... args) : m_container(std::forward<Args>(args)...) {
       m_data_ptr = m_container.data();
     }
 
@@ -484,15 +483,14 @@ private:
       return m_container.size();
     }
 
-    template<typename T2>
+    template <typename T2>
     auto resizeImpl(const std::vector<size_t>& shape)
-    -> decltype((void) std::declval<Container<T2>>().resize(std::vector<size_t>{}), void()) {
+        -> decltype((void)std::declval<Container<T2>>().resize(std::vector<size_t>{}), void()) {
       m_container.resize(shape);
     }
 
-    template<typename T2>
-    auto resizeImpl(const std::vector<size_t>& shape)
-    -> decltype((void) std::declval<Container<T2>>().resize(size_t{}), void()) {
+    template <typename T2>
+    auto resizeImpl(const std::vector<size_t>& shape) -> decltype((void)std::declval<Container<T2>>().resize(size_t{}), void()) {
       auto new_size = std::accumulate(shape.begin(), shape.end(), 1u, std::multiplies<size_t>());
       m_container.resize(new_size);
     }
@@ -543,7 +541,7 @@ private:
   /**
    * Helper to expand at with a variable number of arguments
    */
-  template<typename ...D>
+  template <typename... D>
   T& at_helper(std::vector<size_t>& acc, size_t i, D... rest);
 
   /**
@@ -559,7 +557,7 @@ private:
   /**
    * Helper to expand constant at with a variable number of arguments
    */
-  template<typename ...D>
+  template <typename... D>
   const T& at_helper(std::vector<size_t>& acc, size_t i, D... rest) const;
 
   /**
@@ -567,7 +565,7 @@ private:
    */
   const T& at_helper(std::vector<size_t>& acc) const;
 
-  template<typename ...D>
+  template <typename... D>
   self_type& reshape_helper(std::vector<size_t>& acc, size_t i, D... rest);
 
   self_type& reshape_helper(std::vector<size_t>& acc);
@@ -576,14 +574,14 @@ private:
 /**
  * Serialize a NdArray
  */
-template<typename T>
+template <typename T>
 std::ostream& operator<<(std::ostream& out, const NdArray<T>& ndarray);
 
-} // end NdArray
-} // end Euclid
+}  // namespace NdArray
+}  // namespace Euclid
 
 #define NDARRAY_IMPL
 #include "NdArray/_impl/NdArray.icpp"
 #undef NDARRAY_IMPL
 
-#endif // ALEXANDRIA_NDARRAY_H
+#endif  // ALEXANDRIA_NDARRAY_H

@@ -19,8 +19,8 @@
 #ifdef NPYMMAP_IMPL
 
 #include "NpyCommon.h"
-#include <boost/iostreams/stream.hpp>
 #include <boost/filesystem/path.hpp>
+#include <boost/iostreams/stream.hpp>
 #include <numeric>
 
 namespace Euclid {
@@ -28,16 +28,15 @@ namespace NdArray {
 
 typedef boost::iostreams::stream<boost::iostreams::mapped_file> MappedStream;
 
-template<typename T>
-NdArray <T> mmapNpy(const boost::filesystem::path& path, boost::iostreams::mapped_file_base::mapmode mode,
-                    size_t max_size) {
-  std::string dtype;
-  size_t n_elements = 0;
-  std::vector<size_t> shape;
+template <typename T>
+NdArray<T> mmapNpy(const boost::filesystem::path& path, boost::iostreams::mapped_file_base::mapmode mode, size_t max_size) {
+  std::string              dtype;
+  size_t                   n_elements = 0;
+  std::vector<size_t>      shape;
   std::vector<std::string> attrs;
 
   boost::iostreams::mapped_file_params map_params;
-  map_params.path = path.native();
+  map_params.path  = path.native();
   map_params.flags = mode;
   if (max_size)
     map_params.length = max_size;
@@ -45,7 +44,7 @@ NdArray <T> mmapNpy(const boost::filesystem::path& path, boost::iostreams::mappe
     max_size = boost::filesystem::file_size(path);
 
   boost::iostreams::mapped_file input(map_params);
-  MappedStream stream(input);
+  MappedStream                  stream(input);
   stream.set_auto_close(false);
   readNpyHeader(stream, dtype, shape, attrs, n_elements);
 
@@ -59,25 +58,25 @@ NdArray <T> mmapNpy(const boost::filesystem::path& path, boost::iostreams::mappe
   return {shape, attrs, std::move(MappedContainer<T>(path, stream.tellg(), n_elements, attrs, std::move(input), max_size))};
 }
 
-template<typename T>
-NdArray <T> createMmapNpy(const boost::filesystem::path& path, const std::vector<size_t>& shape,
-                          const std::vector<std::string>& attrs, size_t max_size) {
+template <typename T>
+NdArray<T> createMmapNpy(const boost::filesystem::path& path, const std::vector<size_t>& shape,
+                         const std::vector<std::string>& attrs, size_t max_size) {
   // Pre-generate header
   std::stringstream header;
   writeNpyHeader<T>(header, appendAttrShape(shape, attrs.size()), attrs);
-  auto header_str = header.str();
+  auto header_str  = header.str();
   auto header_size = header_str.size();
 
   // Compute file expected size
   size_t n_elements = std::accumulate(shape.begin(), shape.end(), 1, std::multiplies<size_t>());
   if (!attrs.empty())
     n_elements *= attrs.size();
-  size_t data_size = n_elements * sizeof(T);
+  size_t data_size  = n_elements * sizeof(T);
   size_t total_size = header_size + data_size;
 
   boost::iostreams::mapped_file_params map_params;
-  map_params.path = path.native();
-  map_params.flags = boost::iostreams::mapped_file_base::readwrite;
+  map_params.path          = path.native();
+  map_params.flags         = boost::iostreams::mapped_file_base::readwrite;
   map_params.new_file_size = total_size;
   if (max_size >= total_size)
     map_params.length = max_size;
@@ -89,7 +88,7 @@ NdArray <T> createMmapNpy(const boost::filesystem::path& path, const std::vector
   return {shape, attrs, std::move(MappedContainer<T>(path, header_size, n_elements, attrs, std::move(output), max_size))};
 }
 
-} // end of namespace NdArray
-} // end of namespace Euclid
+}  // end of namespace NdArray
+}  // end of namespace Euclid
 
-#endif // NPYMMAP_IMPL
+#endif  // NPYMMAP_IMPL

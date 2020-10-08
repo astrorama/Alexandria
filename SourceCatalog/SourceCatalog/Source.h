@@ -16,7 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
- /**
+/**
  * @file SourceCatalog/Source.h
  *
  * Created on: Jan 21, 2014
@@ -25,17 +25,17 @@
 #ifndef SOURCE_H_
 #define SOURCE_H_
 
+#include <boost/variant.hpp>
+#include <memory>
 #include <string>
 #include <vector>
-#include <memory>
-#include <boost/variant.hpp>
 
 #include "ElementsKernel/Exception.h"
 
+#include "SourceCatalog/Attribute.h"
+#include "SourceCatalog/SourceAttributes/Coordinates.h"
 #include "SourceCatalog/SourceAttributes/Photometry.h"
 #include "SourceCatalog/SourceAttributes/SpectroscopicRedshift.h"
-#include "SourceCatalog/SourceAttributes/Coordinates.h"
-#include "SourceCatalog/Attribute.h"
 
 namespace Euclid {
 namespace SourceCatalog {
@@ -48,7 +48,7 @@ namespace SourceCatalog {
 class Source {
 
 public:
-    typedef boost::variant<int64_t, std::string> id_type;
+  typedef boost::variant<int64_t, std::string> id_type;
 
   /**
    * @brief Constructor
@@ -58,11 +58,10 @@ public:
    * Vector of shared pointers on Attribute objects
    */
   Source(id_type source_id, std::vector<std::shared_ptr<Attribute>> attributeVector)
-        : m_source_id(source_id), m_attribute_vector( std::move(attributeVector) ) {
-  }
+      : m_source_id(source_id), m_attribute_vector(std::move(attributeVector)) {}
 
   /// Virtual default destructor
-  virtual ~Source() { }
+  virtual ~Source() {}
 
   /**
    * @brief Get the source ID
@@ -85,18 +84,15 @@ public:
    * @return The pointer to the attribute or nullptr if the attribute is
    *  not found
    */
-  template<typename T>
+  template <typename T>
   std::shared_ptr<T> getAttribute() const;
 
-
- private:
-
+private:
   // Source identification
-  id_type m_source_id { };
+  id_type m_source_id{};
 
   // Vector of shared pointers to attribute
   std::vector<std::shared_ptr<Attribute>> m_attribute_vector;
-
 };
 // Eof class Source
 
@@ -106,7 +102,7 @@ public:
  * This type can be used together with boost::apply_visitor to cast boost::variant
  * with an unknown underlying type, to a Source::id_type
  */
-class CastSourceIdVisitor: public boost::static_visitor<Source::id_type> {
+class CastSourceIdVisitor : public boost::static_visitor<Source::id_type> {
   template <typename From>
   static constexpr bool is_integer() {
     return std::is_integral<From>::value && !std::is_same<From, bool>::value;
@@ -115,19 +111,19 @@ class CastSourceIdVisitor: public boost::static_visitor<Source::id_type> {
 public:
   CastSourceIdVisitor() {}
 
-  Source::id_type operator() (const std::string &from) const {
+  Source::id_type operator()(const std::string& from) const {
     return from;
   }
 
   template <typename From>
-  Source::id_type operator() (const From &from, typename std::enable_if<is_integer<From>()>::type* = 0) const {
+  Source::id_type operator()(const From& from, typename std::enable_if<is_integer<From>()>::type* = 0) const {
     return Source::id_type(static_cast<int64_t>(from));
   }
 
   template <typename From>
-  Source::id_type operator() (const From &, typename std::enable_if<!is_integer<From>()>::type* = 0) const {
-    throw Elements::Exception() << "Only std::string and int64_t are supported types for a source ID, got "
-                                << typeid(From).name() << " instead";
+  Source::id_type operator()(const From&, typename std::enable_if<!is_integer<From>()>::type* = 0) const {
+    throw Elements::Exception() << "Only std::string and int64_t are supported types for a source ID, got " << typeid(From).name()
+                                << " instead";
   }
 };
 
@@ -136,7 +132,7 @@ public:
 #undef SOURCE_IMPL
 
 } /* namespace SourceCatalog */
-} // end of namespace Euclid
+}  // end of namespace Euclid
 
 #if BOOST_VERSION < 105800
 namespace boost {
@@ -146,12 +142,11 @@ namespace boost {
  *  boost::variant specifies an equality operator (==), but, in older boost versions, *not* an inequality one
  *  CCfits expects != to be defined, so we do it here
  */
-inline bool operator!=(const Euclid::SourceCatalog::Source::id_type& a,
-  const Euclid::SourceCatalog::Source::id_type& b) {
+inline bool operator!=(const Euclid::SourceCatalog::Source::id_type& a, const Euclid::SourceCatalog::Source::id_type& b) {
   return !(a == b);
 }
 
-}
+}  // namespace boost
 #endif
 
 #endif /* SOURCE_H_ */

@@ -36,5 +36,4 @@ long getUniqueManagerId();
 } /* namespace Configuration */
 } /* namespace Euclid */
 
-
 #endif

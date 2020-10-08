@@ -22,18 +22,18 @@
  * @author nikoapos
  */
 
-#include <fstream>
 #include <algorithm>
-#include <sstream>
 #include <boost/regex.hpp>
+#include <fstream>
+#include <sstream>
 using boost::regex;
 using boost::regex_match;
 using boost::smatch;
 #include <boost/algorithm/string.hpp>
 
+#include "Configuration/PhotometricBandMappingConfig.h"
 #include "ElementsKernel/Exception.h"
 #include "ElementsKernel/Logging.h"
-#include "Configuration/PhotometricBandMappingConfig.h"
 
 namespace po = boost::program_options;
 namespace fs = boost::filesystem;
@@ -43,24 +43,21 @@ namespace Configuration {
 
 static Elements::Logging logger = Elements::Logging::getLogger("PhotometricBandMappingConfig");
 
-static const std::string FILTER_MAPPING_FILE {"filter-mapping-file"};
-static const std::string EXCLUDE_FILTER {"exclude-filter"};
+static const std::string FILTER_MAPPING_FILE{"filter-mapping-file"};
+static const std::string EXCLUDE_FILTER{"exclude-filter"};
 
-PhotometricBandMappingConfig::PhotometricBandMappingConfig(long manager_id)
-        : Configuration(manager_id) { }
+PhotometricBandMappingConfig::PhotometricBandMappingConfig(long manager_id) : Configuration(manager_id) {}
 
 auto PhotometricBandMappingConfig::getProgramOptions() -> std::map<std::string, OptionDescriptionList> {
-  return {{"Input catalog options", {
-    {FILTER_MAPPING_FILE.c_str(), po::value<std::string>()->default_value("filter_mapping.txt"),
-        "The file containing the photometry mapping of the catalog columns"},
-    {EXCLUDE_FILTER.c_str(), po::value<std::vector<std::string>>()->default_value(std::vector<std::string>{}, ""),
-        "A list of filters to ignore"}
-  }}};
+  return {{"Input catalog options",
+           {{FILTER_MAPPING_FILE.c_str(), po::value<std::string>()->default_value("filter_mapping.txt"),
+             "The file containing the photometry mapping of the catalog columns"},
+            {EXCLUDE_FILTER.c_str(), po::value<std::vector<std::string>>()->default_value(std::vector<std::string>{}, ""),
+             "A list of filters to ignore"}}}};
 }
 
-static fs::path getMappingFileFromOptions(const Configuration::UserValues& args,
-                                          const fs::path& base_dir) {
-  fs::path mapping_file {args.at(FILTER_MAPPING_FILE).as<std::string>()};
+static fs::path getMappingFileFromOptions(const Configuration::UserValues& args, const fs::path& base_dir) {
+  fs::path mapping_file{args.at(FILTER_MAPPING_FILE).as<std::string>()};
   if (mapping_file.is_relative()) {
     mapping_file = base_dir / mapping_file;
   }
@@ -75,11 +72,11 @@ static fs::path getMappingFileFromOptions(const Configuration::UserValues& args,
 
 static std::pair<PhotometricBandMappingConfig::MappingMap, PhotometricBandMappingConfig::UpperLimitThresholdMap>
 parseFile(fs::path filename) {
-  PhotometricBandMappingConfig::MappingMap filter_name_mapping {};
+  PhotometricBandMappingConfig::MappingMap             filter_name_mapping{};
   PhotometricBandMappingConfig::UpperLimitThresholdMap threshold_mapping{};
-  std::ifstream in {filename.string()};
-  std::string line;
-  regex expr {"\\s*([^\\s#]+)\\s+([^\\s#]+)\\s+([^\\s#]+)(\\s+[^\\s#]+\\s*$)?"};
+  std::ifstream                                        in{filename.string()};
+  std::string                                          line;
+  regex                                                expr{"\\s*([^\\s#]+)\\s+([^\\s#]+)\\s+([^\\s#]+)(\\s+[^\\s#]+\\s*$)?"};
   while (std::getline(in, line)) {
     boost::trim(line);
     if (line[0] == '#') {
@@ -92,27 +89,27 @@ parseFile(fs::path filename) {
     }
     filter_name_mapping.emplace_back(match_res.str(1), std::make_pair(match_res.str(2), match_res.str(3)));
 
-    if (match_res.str(4)==""){
-        threshold_mapping.emplace_back(match_res.str(1), 3.0);
+    if (match_res.str(4) == "") {
+      threshold_mapping.emplace_back(match_res.str(1), 3.0);
     } else {
-        float n=std::stof(match_res.str(4));
-        threshold_mapping.emplace_back(match_res.str(1), n);
+      float n = std::stof(match_res.str(4));
+      threshold_mapping.emplace_back(match_res.str(1), n);
     }
   }
-  return std::make_pair(filter_name_mapping,threshold_mapping);
+  return std::make_pair(filter_name_mapping, threshold_mapping);
 }
 
 void PhotometricBandMappingConfig::initialize(const UserValues& args) {
 
   // Parse the file with the mapping
-  auto filename = getMappingFileFromOptions(args, m_base_dir);
-  auto parsed = parseFile(filename);
+  auto filename                = getMappingFileFromOptions(args, m_base_dir);
+  auto parsed                  = parseFile(filename);
   auto all_filter_name_mapping = parsed.first;
-  auto all_threshold_mapping = parsed.second;
+  auto all_threshold_mapping   = parsed.second;
 
   // Remove the filters which are marked to exclude
-  auto exclude_vector = args.at(EXCLUDE_FILTER).as<std::vector<std::string>>();
-  std::set<std::string> exclude_filters {exclude_vector.begin(), exclude_vector.end()};
+  auto                  exclude_vector = args.at(EXCLUDE_FILTER).as<std::vector<std::string>>();
+  std::set<std::string> exclude_filters{exclude_vector.begin(), exclude_vector.end()};
 
   for (auto& pair : all_threshold_mapping) {
     if (exclude_filters.count(pair.first) <= 0) {
@@ -128,16 +125,13 @@ void PhotometricBandMappingConfig::initialize(const UserValues& args) {
     }
   }
 
-
   if (!exclude_filters.empty()) {
-    std::stringstream wrong_filters {};
+    std::stringstream wrong_filters{};
     for (auto& f : exclude_filters) {
       wrong_filters << f << " ";
     }
-    throw Elements::Exception() << "Wrong " << EXCLUDE_FILTER << " option value(s) : "
-                                << wrong_filters.str();
+    throw Elements::Exception() << "Wrong " << EXCLUDE_FILTER << " option value(s) : " << wrong_filters.str();
   }
-
 }
 
 void PhotometricBandMappingConfig::setBaseDir(const boost::filesystem::path& base_dir) {
@@ -155,18 +149,13 @@ const PhotometricBandMappingConfig::MappingMap& PhotometricBandMappingConfig::ge
   return m_mapping_map;
 }
 
-
-const PhotometricBandMappingConfig::UpperLimitThresholdMap&
-PhotometricBandMappingConfig::getUpperLimitThresholdMapping() {
+const PhotometricBandMappingConfig::UpperLimitThresholdMap& PhotometricBandMappingConfig::getUpperLimitThresholdMapping() {
   if (getCurrentState() < State::INITIALIZED) {
-     throw Elements::Exception() << "getUpperLimitThresholdMapping() call to uninitialized "
-                                 << "PhotometricBandMappingConfig";
-   }
-   return m_threshold_map;
+    throw Elements::Exception() << "getUpperLimitThresholdMapping() call to uninitialized "
+                                << "PhotometricBandMappingConfig";
+  }
+  return m_threshold_map;
 }
 
-} // Configuration namespace
-} // Euclid namespace
-
-
-
+}  // namespace Configuration
+}  // namespace Euclid

@@ -1,34 +1,34 @@
 /*
- * Copyright (C) 2012-2020 Euclid Science Ground Segment    
- *  
+ * Copyright (C) 2012-2020 Euclid Science Ground Segment
+ *
  * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free 
- * Software Foundation; either version 3.0 of the License, or (at your option)  
- * any later version.  
- *  
- * This library is distributed in the hope that it will be useful, but WITHOUT 
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 3.0 of the License, or (at your option)
+ * any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more  
- * details.  
- *  
- * You should have received a copy of the GNU Lesser General Public License 
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
  * along with this library; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA  
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
- 
- /**
+
+/**
  * @file tests/src/AsciiParser_test.cpp
  *
  * @date Apr 16, 2014
  * @author Nicolas Morisset
  */
 
-#include <iostream>
 #include <fstream>
+#include <iostream>
 #include <string>
 
-#include <boost/test/unit_test.hpp>
 #include <boost/filesystem.hpp>
+#include <boost/test/unit_test.hpp>
 
 #include "ElementsKernel/Exception.h"
 #include "ElementsKernel/Temporary.h"
@@ -38,26 +38,26 @@
 using namespace Euclid::XYDataset;
 
 std::string makeDir(std::string name) {
-  boost::filesystem::path d {name};
+  boost::filesystem::path d{name};
   boost::filesystem::create_directories(d);
   return name;
 }
 void removeDir(std::string base_dir) {
-  boost::filesystem::path bd {base_dir};
+  boost::filesystem::path bd{base_dir};
   boost::filesystem::remove_all(bd);
 }
 
 struct AsciiParser_Fixture {
 
   // Do not forget the "/" at the end of the base directory
-  std::string no_file {"nofile.txt"};
-  std::string nolines_file {"nolines_file.txt"};
-  std::string empty_file {"empty_file.txt"};
-  std::string file {"Gext_ACSf435w.txt"};
-  std::string file_nodataset_name {"Nodataset_name_inside_file.txt"};
-  std::string not_a_dataset_file  {"not_a_dataset_file.txt"};
+  std::string       no_file{"nofile.txt"};
+  std::string       nolines_file{"nolines_file.txt"};
+  std::string       empty_file{"empty_file.txt"};
+  std::string       file{"Gext_ACSf435w.txt"};
+  std::string       file_nodataset_name{"Nodataset_name_inside_file.txt"};
+  std::string       not_a_dataset_file{"not_a_dataset_file.txt"};
   Elements::TempDir temp_dir;
-  std::string base_directory = makeDir(temp_dir.path().native()+"/euclid/filter/MER/");
+  std::string       base_directory = makeDir(temp_dir.path().native() + "/euclid/filter/MER/");
 
   AsciiParser_Fixture() {
     // Create files
@@ -92,18 +92,16 @@ struct AsciiParser_Fixture {
     ofnolines_file.close();
 
     std::ofstream ofempty_file(base_directory + empty_file);
-     ofempty_file.close();
- }
+    ofempty_file.close();
+  }
   ~AsciiParser_Fixture() {
     removeDir(base_directory);
   }
-
-
 };
 
 //-----------------------------------------------------------------------------
 
-BOOST_AUTO_TEST_SUITE (AsciiParser_test)
+BOOST_AUTO_TEST_SUITE(AsciiParser_test)
 
 //-----------------------------------------------------------------------------
 // Test the exception of the getParameter function
@@ -117,7 +115,7 @@ BOOST_FIXTURE_TEST_CASE(exception_getParameter_function_test, AsciiParser_Fixtur
 
   AsciiParser parser{};
 
-  BOOST_CHECK_THROW(parser.getParameter(base_directory + no_file,"TEST"), Elements::Exception);
+  BOOST_CHECK_THROW(parser.getParameter(base_directory + no_file, "TEST"), Elements::Exception);
 }
 
 //-----------------------------------------------------------------------------
@@ -131,18 +129,14 @@ BOOST_FIXTURE_TEST_CASE(getParameter_function_test, AsciiParser_Fixture) {
   BOOST_TEST_MESSAGE(" ");
 
   // The dataset is the correct name, result: Keyword value
-  AsciiParser parser {};
+  AsciiParser parser{};
 
-  BOOST_CHECK_EQUAL("TEST_VALUE", parser.getParameter(base_directory + file,"TEST"));
+  BOOST_CHECK_EQUAL("TEST_VALUE", parser.getParameter(base_directory + file, "TEST"));
 
-  BOOST_CHECK_EQUAL("", parser.getParameter(base_directory + file_nodataset_name,"TEST2"));
+  BOOST_CHECK_EQUAL("", parser.getParameter(base_directory + file_nodataset_name, "TEST2"));
 
-  BOOST_CHECK_EQUAL("", parser.getParameter(base_directory + file_nodataset_name,"TEST"));
+  BOOST_CHECK_EQUAL("", parser.getParameter(base_directory + file_nodataset_name, "TEST"));
 }
-
-
-
-
 
 //-----------------------------------------------------------------------------
 // Test the exception of the getName function
@@ -179,7 +173,6 @@ BOOST_FIXTURE_TEST_CASE(getName_function_test, AsciiParser_Fixture) {
 
   dataset_name = parser.getName(base_directory + file_nodataset_name);
   BOOST_CHECK_EQUAL("Nodataset_name_inside_file", dataset_name);
-
 }
 
 //-----------------------------------------------------------------------------
@@ -193,9 +186,8 @@ BOOST_FIXTURE_TEST_CASE(getDataset_function_test, AsciiParser_Fixture) {
   BOOST_TEST_MESSAGE(" ");
 
   AsciiParser parser{};
-  auto xy_ptr = parser.getDataset(base_directory + file);
+  auto        xy_ptr = parser.getDataset(base_directory + file);
   BOOST_CHECK_EQUAL(xy_ptr->size(), 3);
-
 }
 
 //-----------------------------------------------------------------------------
@@ -216,11 +208,8 @@ BOOST_FIXTURE_TEST_CASE(isDatatsetFile_function_test, AsciiParser_Fixture) {
   BOOST_CHECK_EQUAL(parser.isDatasetFile(base_directory + nolines_file), false);
   // File with no line at all
   BOOST_CHECK_EQUAL(parser.isDatasetFile(base_directory + empty_file), false);
-
 }
-
-
 
 //-----------------------------------------------------------------------------
 
-BOOST_AUTO_TEST_SUITE_END ()
+BOOST_AUTO_TEST_SUITE_END()

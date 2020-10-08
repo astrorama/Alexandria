@@ -17,16 +17,16 @@
  */
 
 /**
-* @file Histogram/Binning/Sqrt.h
-* @date February 11, 2020
-* @author Alejandro Alvarez Ayllon
-*/
+ * @file Histogram/Binning/Sqrt.h
+ * @date February 11, 2020
+ * @author Alejandro Alvarez Ayllon
+ */
 
 #ifndef ALEXANDRIA_HISTOGRAM_BINNING_SQRT_H
 #define ALEXANDRIA_HISTOGRAM_BINNING_SQRT_H
 
-#include <cmath>
 #include <algorithm>
+#include <cmath>
 #include <numeric>
 #include <vector>
 
@@ -39,17 +39,16 @@ namespace Binning {
 /**
  * Bin strategy that estimates the number of bins as \f$ \sqrt{n} \f$
  */
-template<typename VarType>
+template <typename VarType>
 class Sqrt : public BinStrategy<VarType> {
 public:
-
-  template<typename Iterator>
+  template <typename Iterator>
   void computeBins(Iterator begin, Iterator end) {
-    m_nbins = std::ceil(std::sqrt(end - begin));
+    m_nbins     = std::ceil(std::sqrt(end - begin));
     auto minmax = std::minmax_element(begin, end);
-    m_step = (*minmax.second - *minmax.first) / m_nbins;
-    m_start = *minmax.first;
-    m_end = *minmax.second;
+    m_step      = (*minmax.second - *minmax.first) / m_nbins;
+    m_start     = *minmax.first;
+    m_end       = *minmax.second;
   }
 
   ssize_t getBinIndex(VarType value) const final {
@@ -71,8 +70,8 @@ private:
   VarType m_start, m_step, m_end;
 };
 
-} // end of namespace Binning
-} // end of namespace Histogram
-} // end of namespace Euclid
+}  // end of namespace Binning
+}  // end of namespace Histogram
+}  // end of namespace Euclid
 
-#endif // ALEXANDRIA_HISTOGRAM_BINNING_SQRT_H
+#endif  // ALEXANDRIA_HISTOGRAM_BINNING_SQRT_H

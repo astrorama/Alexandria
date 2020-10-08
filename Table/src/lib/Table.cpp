@@ -16,20 +16,19 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
- /**
+/**
  * @file src/lib/Table.cpp
  * @date April 9, 2014
  * @author Nikolaos Apostolakos
  */
 
-#include "ElementsKernel/Exception.h"
 #include "Table/Table.h"
+#include "ElementsKernel/Exception.h"
 
 namespace Euclid {
 namespace Table {
 
-Table::Table(std::vector<Row> row_list) : m_row_list {std::move(row_list)} ,
-                                          m_column_info {} {
+Table::Table(std::vector<Row> row_list) : m_row_list{std::move(row_list)}, m_column_info{} {
   // Check we have some rows
   if (m_row_list.empty()) {
     throw Elements::Exception() << "Construction of empty tables is not allowed";
@@ -41,7 +40,7 @@ Table::Table(std::vector<Row> row_list) : m_row_list {std::move(row_list)} ,
   for (auto row : m_row_list) {
     if (*row.getColumnInfo() != *m_column_info) {
       throw Elements::Exception() << "Construction of table from rows with different "
-                                << "columns is not allowed";
+                                  << "columns is not allowed";
     }
   }
 }
@@ -54,7 +53,7 @@ std::size_t Table::size() const {
   return m_row_list.size();
 }
 
-const Row& Table::operator [](std::size_t index) const {
+const Row& Table::operator[](std::size_t index) const {
   if (index >= m_row_list.size()) {
     throw Elements::Exception("Index out of bounds");
   }
@@ -69,5 +68,5 @@ Table::const_iterator Table::end() const {
   return m_row_list.cend();
 }
 
-}
-} // end of namespace Euclid
+}  // namespace Table
+}  // end of namespace Euclid
