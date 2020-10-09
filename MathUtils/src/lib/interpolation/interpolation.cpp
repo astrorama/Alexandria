@@ -16,17 +16,17 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
- /**
+/**
  * @file src/lib/interpolation/interpolation.cpp
  * @date February 21, 2014
  * @author Nikolaos Apostolakos
  */
 
-#include <AlexandriaKernel/memory_tools.h>
-#include "ElementsKernel/Logging.h"
 #include "MathUtils/interpolation/interpolation.h"
+#include "ElementsKernel/Logging.h"
 #include "MathUtils/function/FunctionAdapter.h"
 #include "implementations.h"
+#include <AlexandriaKernel/memory_tools.h>
 
 namespace Euclid {
 namespace MathUtils {
@@ -35,19 +35,19 @@ namespace {
 
 Elements::Logging logger = Elements::Logging::getLogger("Interpolation");
 
-} // Anonymous namespace
+}  // Anonymous namespace
 
-std::unique_ptr<Function> interpolate(const std::vector<double>& x, const std::vector<double>& y,
-                                      InterpolationType type, bool extrapolate) {
+std::unique_ptr<Function> interpolate(const std::vector<double>& x, const std::vector<double>& y, InterpolationType type,
+                                      bool extrapolate) {
 
   if (x.size() != y.size()) {
     throw InterpolationException() << "Interpolation using vectors of incompatible "
-            << "size: X=" << x.size() << ", Y=" << y.size();
+                                   << "size: X=" << x.size() << ", Y=" << y.size();
   }
 
   if (x.size() == 1 && extrapolate) {
     auto c = y.front();
-    return make_unique<FunctionAdapter>([c](double){return c;});
+    return make_unique<FunctionAdapter>([c](double) { return c; });
   }
 
   // We remove any duplicate lines and we check that we have only increasing
@@ -61,20 +61,19 @@ std::unique_ptr<Function> interpolate(const std::vector<double>& x, const std::v
   final_x.emplace_back(x[0]);
   final_y.emplace_back(y[0]);
   for (std::size_t i = 1; i < x.size(); ++i) {
-    if (x[i] == x[i-1]) {
-      if (y[i] == y[i-1]) {
-        logger.warn() << "Ignoring duplicate pair (" << x[i] << ", " << y[i]
-                << ") during interpolation";
+    if (x[i] == x[i - 1]) {
+      if (y[i] == y[i - 1]) {
+        logger.warn() << "Ignoring duplicate pair (" << x[i] << ", " << y[i] << ") during interpolation";
         continue;
       } else {
         throw InterpolationException() << "Interpolation of step functions is not "
-                << "supported. Entries: (" << x[i] << ", " << y[i] << ") and ("
-                << x[i-1] << ", " << y[i-1] << ")";
+                                       << "supported. Entries: (" << x[i] << ", " << y[i] << ") and (" << x[i - 1] << ", "
+                                       << y[i - 1] << ")";
       }
     }
-    if (x[i] < x[i-1]) {
+    if (x[i] < x[i - 1]) {
       throw InterpolationException() << "Only increasing X values are supported "
-              << "but found " << x[i] << " after " << x[i-1];
+                                     << "but found " << x[i] << " after " << x[i - 1];
     }
     final_x.emplace_back(x[i]);
     final_y.emplace_back(y[i]);
@@ -89,8 +88,7 @@ std::unique_ptr<Function> interpolate(const std::vector<double>& x, const std::v
   return nullptr;
 }
 
-std::unique_ptr<Function> interpolate(const Euclid::XYDataset::XYDataset& dataset, InterpolationType type,
-                                      bool extrapolate) {
+std::unique_ptr<Function> interpolate(const Euclid::XYDataset::XYDataset& dataset, InterpolationType type, bool extrapolate) {
   std::vector<double> x;
   std::vector<double> y;
   x.reserve(dataset.size());
@@ -102,5 +100,5 @@ std::unique_ptr<Function> interpolate(const Euclid::XYDataset::XYDataset& datase
   return interpolate(x, y, type, extrapolate);
 }
 
-} // End of MathUtils
-} // end of namespace Euclid
+}  // namespace MathUtils
+}  // end of namespace Euclid

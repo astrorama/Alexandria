@@ -16,7 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
- /*
+/*
  * Copyright (C) 2012-2020 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
@@ -44,12 +44,11 @@
 namespace Euclid {
 namespace SourceCatalog {
 
-TableRowAttribute::TableRowAttribute(Table::Row row) : m_row(std::move(row)) {
-}
+TableRowAttribute::TableRowAttribute(Table::Row row) : m_row(std::move(row)) {}
 
 const Table::Row& TableRowAttribute::getRow() const {
   return m_row;
 }
 
-} // namespace SourceCatalog
-} // end of namespace Euclid
+}  // namespace SourceCatalog
+}  // end of namespace Euclid

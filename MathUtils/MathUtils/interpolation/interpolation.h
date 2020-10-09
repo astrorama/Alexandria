@@ -16,7 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
- /**
+/**
  * @file MathUtils/interpolation/interpolation.h
  * @date February 20, 2014
  * @author Nikolaos Apostolakos
@@ -28,19 +28,17 @@
 #include <memory>
 #include <vector>
 
-#include "ElementsKernel/Export.h"
 #include "ElementsKernel/Exception.h"
+#include "ElementsKernel/Export.h"
 
-#include "XYDataset/XYDataset.h"
 #include "MathUtils/function/Function.h"
+#include "XYDataset/XYDataset.h"
 
 namespace Euclid {
 namespace MathUtils {
 
 /// Enumeration of the different supported interpolation types
-enum class InterpolationType {
-  LINEAR, CUBIC_SPLINE
-};
+enum class InterpolationType { LINEAR, CUBIC_SPLINE };
 
 struct InterpolationException : public Elements::Exception {
   using Elements::Exception::Exception;
@@ -61,7 +59,7 @@ struct InterpolationException : public Elements::Exception {
  *    if there are (X,Y) pairs with same X value but different Y value (step functions)
  */
 ELEMENTS_API std::unique_ptr<Function> interpolate(const std::vector<double>& x, const std::vector<double>& y,
-                                                   InterpolationType type, bool extrapolate=false);
+                                                   InterpolationType type, bool extrapolate = false);
 
 /**
  * Returns a Function which performs interpolation for the data points of the
@@ -75,9 +73,9 @@ ELEMENTS_API std::unique_ptr<Function> interpolate(const std::vector<double>& x,
  *    if there are (X,Y) pairs with same X value but different Y value (step functions)
  */
 ELEMENTS_API std::unique_ptr<Function> interpolate(const Euclid::XYDataset::XYDataset& dataset, InterpolationType type,
-                                                   bool extrapolate=false);
+                                                   bool extrapolate = false);
 
-} // End of MathUtils
-} // end of namespace Euclid
+}  // namespace MathUtils
+}  // end of namespace Euclid
 
-#endif  /* INTERPOLATION_H */
+#endif /* INTERPOLATION_H */

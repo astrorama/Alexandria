@@ -1,22 +1,22 @@
 /*
- * Copyright (C) 2012-2020 Euclid Science Ground Segment    
- *  
+ * Copyright (C) 2012-2020 Euclid Science Ground Segment
+ *
  * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free 
- * Software Foundation; either version 3.0 of the License, or (at your option)  
- * any later version.  
- *  
- * This library is distributed in the hope that it will be useful, but WITHOUT 
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 3.0 of the License, or (at your option)
+ * any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more  
- * details.  
- *  
- * You should have received a copy of the GNU Lesser General Public License 
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
  * along with this library; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA  
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
- 
- /**
+
+/**
  * @file MathUtils/numericalIntegration/_impl/AdaptativeIntegration.icpp
  * @date July 2, 2015
  * @author Florian Dubath
@@ -25,29 +25,25 @@
 namespace Euclid {
 namespace MathUtils {
 
-template<typename Quadrature>
-AdaptativeIntegration<Quadrature>::AdaptativeIntegration(
-    double relative_precion, int initial_order) :
-    m_relative_precion { relative_precion }, m_initial_order { initial_order } {
-}
+template <typename Quadrature>
+AdaptativeIntegration<Quadrature>::AdaptativeIntegration(double relative_precion, int initial_order)
+    : m_relative_precion{relative_precion}, m_initial_order{initial_order} {}
 
-template<typename Quadrature>
-double AdaptativeIntegration<Quadrature>::operator()(const Function& function,
-    double min, double max) {
-  int m = m_initial_order;
-  double value_order_m = 0.;
+template <typename Quadrature>
+double AdaptativeIntegration<Quadrature>::operator()(const Function& function, double min, double max) {
+  int    m               = m_initial_order;
+  double value_order_m   = 0.;
   double value_order_m_1 = m_quadrature(function, min, max, m);
-  double diff = 0.;
+  double diff            = 0.;
   do {
     ++m;
-    value_order_m = value_order_m_1;
+    value_order_m   = value_order_m_1;
     value_order_m_1 = m_quadrature(function, min, max, value_order_m, m);
-    diff = value_order_m_1 - value_order_m;
+    diff            = value_order_m_1 - value_order_m;
   } while (std::abs(diff / value_order_m) > m_relative_precion);
 
   return value_order_m_1;
 }
 
-}
-}
-
+}  // namespace MathUtils
+}  // namespace Euclid

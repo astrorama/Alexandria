@@ -40,7 +40,7 @@ namespace Euclid {
  * @return
  *  A vector of type T.
  */
-template<typename T>
+template <typename T>
 std::vector<T> stringToVector(std::string str, const std::string& separators = std::string(", ")) {
   std::vector<std::string> parts;
   boost::trim(str);
@@ -48,13 +48,12 @@ std::vector<T> stringToVector(std::string str, const std::string& separators = s
   std::vector<T> result(parts.size());
   try {
     std::transform(parts.begin(), parts.end(), result.begin(), boost::lexical_cast<T, const std::string&>);
-  }
-  catch (const boost::bad_lexical_cast& e) {
+  } catch (const boost::bad_lexical_cast& e) {
     throw Elements::Exception(e.what());
   }
   return result;
 }
 
-}  /* namespace Euclid */
+} /* namespace Euclid */
 
 #endif /* _ALEXANDRIAKERNEL_STRINGUTILS_H */

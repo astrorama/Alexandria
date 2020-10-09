@@ -16,15 +16,14 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
- /**
+/**
  * @file tests/src/SourceAttributes/Photometry_test.cpp
  *
  * Created on: Jan 20, 2014
  *     Author: Pierre Dubath
  */
-#include <boost/test/unit_test.hpp>
 #include "SourceCatalog/SourceAttributes/Photometry.h"
-
+#include <boost/test/unit_test.hpp>
 
 //-----------------------------------------------------------------------------
 // Include the CatalogFixture which comprises a photometry mock object use here
@@ -35,9 +34,9 @@ using namespace Euclid::SourceCatalog;
 
 //----------------------------------------------------------------------------
 
-BOOST_AUTO_TEST_SUITE (Photometry_test)
+BOOST_AUTO_TEST_SUITE(Photometry_test)
 
-BOOST_FIXTURE_TEST_CASE( find_test, CatalogFixture ) {
+BOOST_FIXTURE_TEST_CASE(find_test, CatalogFixture) {
 
   BOOST_TEST_MESSAGE("--> find test ");
 
@@ -50,7 +49,7 @@ BOOST_FIXTURE_TEST_CASE( find_test, CatalogFixture ) {
   BOOST_CHECK_CLOSE(expected_error_2, ptr2->error, tolerance);
 }
 
-BOOST_FIXTURE_TEST_CASE( not_found_test, CatalogFixture ) {
+BOOST_FIXTURE_TEST_CASE(not_found_test, CatalogFixture) {
 
   BOOST_TEST_MESSAGE("--> not found find test! ");
 
@@ -58,8 +57,7 @@ BOOST_FIXTURE_TEST_CASE( not_found_test, CatalogFixture ) {
   BOOST_CHECK(ptr1 == nullptr);
 }
 
-
-BOOST_FIXTURE_TEST_CASE( iterator_test, CatalogFixture ) {
+BOOST_FIXTURE_TEST_CASE(iterator_test, CatalogFixture) {
 
   BOOST_TEST_MESSAGE("--> iterator test ");
 
@@ -72,17 +70,16 @@ BOOST_FIXTURE_TEST_CASE( iterator_test, CatalogFixture ) {
 
   // loop over the photometry object to check the different filter names, values and errors
   for (auto photo_iter = photometry.begin(); photo_iter != photometry.end(); ++photo_iter) {
-    BOOST_CHECK( photo_iter.filterName() ==  *expected_filter_name_iter );
+    BOOST_CHECK(photo_iter.filterName() == *expected_filter_name_iter);
     ++expected_filter_name_iter;
     BOOST_CHECK_CLOSE((*photo_iter).flux, expected_photo_iter->flux, tolerance);
     BOOST_CHECK_CLOSE((*photo_iter).error, expected_photo_iter->error, tolerance);
     ++expected_photo_iter;
   }
-
 }
 
 // This is how to iterate through the photometry values in most cases
-BOOST_FIXTURE_TEST_CASE( iterator_getter_test, CatalogFixture ) {
+BOOST_FIXTURE_TEST_CASE(iterator_getter_test, CatalogFixture) {
 
   BOOST_TEST_MESSAGE("--> iterator getter test ");
 
@@ -90,7 +87,7 @@ BOOST_FIXTURE_TEST_CASE( iterator_getter_test, CatalogFixture ) {
   auto expected_photo_iter = photometry_vector.cbegin();
 
   // loop over the photometry object to check the different values and errors
-  for (auto FluxErrorPair :  photometry) {
+  for (auto FluxErrorPair : photometry) {
     BOOST_CHECK_CLOSE(FluxErrorPair.flux, expected_photo_iter->flux, tolerance);
     BOOST_CHECK_CLOSE(FluxErrorPair.error, expected_photo_iter->error, tolerance);
     ++expected_photo_iter;
@@ -98,21 +95,21 @@ BOOST_FIXTURE_TEST_CASE( iterator_getter_test, CatalogFixture ) {
 }
 
 // Iterate modifying the values
-BOOST_FIXTURE_TEST_CASE ( iterator_modify_test, CatalogFixture ) {
+BOOST_FIXTURE_TEST_CASE(iterator_modify_test, CatalogFixture) {
   BOOST_TEST_MESSAGE("--> iterator set test ");
 
-  std::vector<FluxErrorPair> new_values {{1.56, 0.3}, {4.4, 1e-3}};
+  std::vector<FluxErrorPair> new_values{{1.56, 0.3}, {4.4, 1e-3}};
 
   // Modify the photometries
   size_t i = 0;
   for (auto iter = photometry.begin(); iter != photometry.end(); ++iter, ++i) {
-    iter->flux = new_values[i].flux;
+    iter->flux  = new_values[i].flux;
     iter->error = new_values[i].error;
   }
 
   // make sure they have been modified
   i = 0;
-  for (auto FluxErrorPair :  photometry) {
+  for (auto FluxErrorPair : photometry) {
     BOOST_CHECK_CLOSE(FluxErrorPair.flux, new_values[i].flux, tolerance);
     BOOST_CHECK_CLOSE(FluxErrorPair.error, new_values[i].error, tolerance);
     ++i;
@@ -120,10 +117,10 @@ BOOST_FIXTURE_TEST_CASE ( iterator_modify_test, CatalogFixture ) {
 }
 
 // Cast a non-const iterator to a const iterator
-BOOST_FIXTURE_TEST_CASE ( iterator_cast_test, CatalogFixture ) {
+BOOST_FIXTURE_TEST_CASE(iterator_cast_test, CatalogFixture) {
   BOOST_TEST_MESSAGE("--> iterator const cast ");
 
-  auto f = [this](Photometry::const_iterator begin, Photometry::const_iterator end){
+  auto f = [this](Photometry::const_iterator begin, Photometry::const_iterator end) {
     BOOST_CHECK_EQUAL(end - begin, 2);
     auto expected_photo_iter = photometry_vector.begin();
     for (auto i = begin; i != end; ++i) {
@@ -136,5 +133,4 @@ BOOST_FIXTURE_TEST_CASE ( iterator_cast_test, CatalogFixture ) {
   f(photometry.begin(), photometry.end());
 }
 
-
-BOOST_AUTO_TEST_SUITE_END ()
+BOOST_AUTO_TEST_SUITE_END()

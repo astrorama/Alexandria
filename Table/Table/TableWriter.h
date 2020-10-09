@@ -25,9 +25,9 @@
 #ifndef _TABLE_TABLEWRITER_H
 #define _TABLE_TABLEWRITER_H
 
-#include <string>
-#include <memory>
 #include "Table/Table.h"
+#include <memory>
+#include <string>
 
 namespace Euclid {
 namespace Table {
@@ -117,11 +117,10 @@ protected:
   virtual void append(const Table& table) = 0;
 
 private:
-  std::unique_ptr<ColumnInfo> m_column_info {nullptr};
-}; // End of TableWriter class
+  std::unique_ptr<ColumnInfo> m_column_info{nullptr};
+};  // End of TableWriter class
 
-} // namespace Table
-} // namespace Euclid
-
+}  // namespace Table
+}  // namespace Euclid
 
 #endif

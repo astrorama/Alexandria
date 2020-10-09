@@ -21,8 +21,8 @@
  * @author nikoapos
  */
 
-#include <type_traits>
 #include "AlexandriaKernel/memory_tools.h"
+#include <type_traits>
 
 namespace Euclid {
 
@@ -31,28 +31,29 @@ namespace InstOrRefHolder_Impl {
 template <typename InterfaceType, typename InstanceType>
 struct InstHolder_Impl : public InstOrRefHolder<InterfaceType> {
   template <typename... Args>
-  InstHolder_Impl(Args... args) : m_instance(std::forward<Args>(args)...) { }
+  InstHolder_Impl(Args... args) : m_instance(std::forward<Args>(args)...) {}
   virtual ~InstHolder_Impl() = default;
   InterfaceType& ref() override {
     return m_instance;
   }
+
 private:
   InstanceType m_instance;
 };
 
 template <typename InterfaceType>
 struct RefHolder_Impl : public InstOrRefHolder<InterfaceType> {
-  RefHolder_Impl(InterfaceType& ref) : m_reference(ref) { }
+  RefHolder_Impl(InterfaceType& ref) : m_reference(ref) {}
   virtual ~RefHolder_Impl() = default;
   InterfaceType& ref() override {
     return m_reference.get();
   }
+
 private:
   std::reference_wrapper<InterfaceType> m_reference;
 };
 
-} // end of namespace InstOrRefHolder_Impl
-
+}  // end of namespace InstOrRefHolder_Impl
 
 template <typename InterfaceType>
 template <typename InstanceType, typename... Args>
@@ -67,5 +68,4 @@ std::unique_ptr<InstOrRefHolder<InterfaceType>> InstOrRefHolder<InterfaceType>::
   return Euclid::make_unique<InstOrRefHolder_Impl::RefHolder_Impl<InterfaceType>>(ref);
 }
 
-} // end of namespace Euclid
-
+}  // end of namespace Euclid

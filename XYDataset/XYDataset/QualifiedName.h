@@ -16,7 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
- /**
+/**
  * @file XYDataset/QualifiedName.h
  * @date May 19, 2014
  * @author Nikolaos Apostolakos
@@ -25,10 +25,10 @@
 #ifndef PHZDATAMODEL_QUALIFIEDNAME_H
 #define PHZDATAMODEL_QUALIFIEDNAME_H
 
-#include <string>
-#include <vector>
 #include <functional>
 #include <iostream>
+#include <string>
+#include <vector>
 
 #include "ElementsKernel/Export.h"
 
@@ -66,7 +66,6 @@ namespace XYDataset {
 class ELEMENTS_API QualifiedName {
 
 public:
-
   /**
    * @brief
    * Constructs a QualifiedName with the given group and name
@@ -90,7 +89,7 @@ public:
    * @throws Elements::Exception
    *    if the given string is an invalid qualified name
    */
-  QualifiedName(const std::string& );
+  QualifiedName(const std::string&);
 
   /**
    * @brief Copy constructor
@@ -101,12 +100,12 @@ public:
    * @brief Copy assignment operator
    * @return A reference to the QualifiedName which was copied to
    */
-  QualifiedName& operator=(const QualifiedName& ) = default;
+  QualifiedName& operator=(const QualifiedName&) = default;
 
   /**
    * @brief Move constructor
    */
-  QualifiedName(QualifiedName&& ) = default;
+  QualifiedName(QualifiedName&&) = default;
 
   /**
    * @brief Move assignment operator
@@ -196,21 +195,18 @@ public:
   };
 
 private:
-
   std::vector<std::string> m_groups;
-  std::string m_dataset_name;
-  std::string m_qualified_name;
-  mutable size_t m_hash {0};
+  std::string              m_dataset_name;
+  std::string              m_qualified_name;
+  mutable size_t           m_hash{0};
 
-}; // class QualifiedName
-
+};  // class QualifiedName
 
 /// Make the QualifiedName streamable
 std::ostream& operator<<(std::ostream& stream, const QualifiedName& qualified_name);
 
-
-} // namespace XYDataset
-} // end of namespace Euclid
+}  // namespace XYDataset
+}  // end of namespace Euclid
 
 namespace std {
 
@@ -230,6 +226,6 @@ struct hash<Euclid::XYDataset::QualifiedName> {
   }
 };
 
-} // namespace std
+}  // namespace std
 
-#endif // PHZDATAMODEL_QUALIFIEDNAME_H
+#endif  // PHZDATAMODEL_QUALIFIEDNAME_H

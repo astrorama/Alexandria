@@ -23,11 +23,11 @@
 #else
 #include <endian.h>
 #endif
-#include <sstream>
-#include <boost/endian/arithmetic.hpp>
-#include <ElementsKernel/Exception.h>
 #include "NdArray/NdArray.h"
 #include "NpyCommon.h"
+#include <ElementsKernel/Exception.h>
+#include <boost/endian/arithmetic.hpp>
+#include <sstream>
 
 namespace Euclid {
 namespace NdArray {
@@ -35,16 +35,16 @@ namespace NdArray {
 /*
  * Implementation of writeNpy
  */
-template<typename T>
+template <typename T>
 void writeNpy(std::ostream& out, const NdArray<T>& array) {
   writeNpyHeader<T>(out, array.shape(), array.attributes());
   // The header already has the endian type, so just dump the content of the array
   for (auto v : array) {
-    out.write(reinterpret_cast<const char *>(&v), sizeof(v));
+    out.write(reinterpret_cast<const char*>(&v), sizeof(v));
   }
 }
 
-} // end of namespace NdArray
-} // end of namespace Euclid
+}  // end of namespace NdArray
+}  // end of namespace Euclid
 
-#endif // NPY_IMPL
+#endif  // NPY_IMPL

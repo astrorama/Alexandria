@@ -39,6 +39,5 @@ void TableWriter::addData(const Table& table) {
   append(table);
 }
 
-
-} // Table namespace
-} // Euclid namespace
+}  // namespace Table
+}  // namespace Euclid

@@ -16,16 +16,16 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
- /**
+/**
  * @file src/lib/XYDataset.cpp
  *
  * @date Apr 9, 2014
  * @author Nicolas Morisset
  */
 
-#include <utility>
 #include <algorithm>
 #include <iostream>
+#include <utility>
 
 #include "ElementsKernel/Exception.h"
 #include "XYDataset/XYDataset.h"
@@ -57,10 +57,9 @@ XYDataset XYDataset::factory(const std::vector<double>& x_vector, const std::vec
   size_t x_size = x_vector.size();
   size_t y_size = y_vector.size();
   // Vector must have the same size
-  if ( x_size != y_size) {
+  if (x_size != y_size) {
     throw Elements::Exception() << " Vectors must have "
-                              << "the same size! x size: %d" <<x_size
-                              <<"  y_size : %d"<< y_size;
+                                << "the same size! x size: %d" << x_size << "  y_size : %d" << y_size;
   }
 
   std::vector<std::pair<double, double>> vector_pair;
@@ -68,10 +67,10 @@ XYDataset XYDataset::factory(const std::vector<double>& x_vector, const std::vec
 
   // Make the pair vector
   transform(x_vector.begin(), x_vector.end(), y_vector.begin(), back_inserter(vector_pair),
-                 [](double a, double b) { return std::make_pair(a, b); });
+            [](double a, double b) { return std::make_pair(a, b); });
 
-  return ( XYDataset(move(vector_pair)) );
+  return (XYDataset(move(vector_pair)));
 }
 
 } /* namespace XYDataset */
-} // end of namespace Euclid
+}  // end of namespace Euclid

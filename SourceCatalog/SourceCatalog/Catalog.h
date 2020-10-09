@@ -16,7 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
- /**
+/**
  * @file SourceCatalog/Catalog.h
  *
  * @author Nicolas Morisset
@@ -44,11 +44,9 @@ namespace SourceCatalog {
  *  Catalog contains a container of sources
  *
  */
-class ELEMENTS_API Catalog
-{
+class ELEMENTS_API Catalog {
 
 public:
-
   /**
    * @brief
    *  Build a catalog of Source objects
@@ -79,7 +77,9 @@ public:
    *  Returns a const_iterator pointing to the first element in the m_source_vector
    *  container
    */
-  const_iterator begin() const { return m_source_vector.cbegin() ; }
+  const_iterator begin() const {
+    return m_source_vector.cbegin();
+  }
 
   /**
    * @brief
@@ -89,7 +89,9 @@ public:
    *  Returns a const_iterator pointing to the past-the-end element in the
    *  m_source_vector container
    */
-  const_iterator end() const { return m_source_vector.cend() ; }
+  const_iterator end() const {
+    return m_source_vector.cend();
+  }
 
   /**
    * @brief
@@ -100,7 +102,7 @@ public:
    * A shared pointer to the Source object or a null pointer in case of
    * no object was found for this source_id
    */
-  std::shared_ptr<Source> find(const Source::id_type &source_id) const;
+  std::shared_ptr<Source> find(const Source::id_type& source_id) const;
 
   /**
    * @brief
@@ -108,18 +110,19 @@ public:
    * @return
    *  The size of the container which is the number of Source objects
    */
-  size_t size() const { return m_source_vector.size();}
+  size_t size() const {
+    return m_source_vector.size();
+  }
 
 private:
   // Vector of Source objects
-  std::vector<Source>        m_source_vector { };
+  std::vector<Source> m_source_vector{};
   // Map of the Source identification and their location
   // in the Source vector
-  std::map<Source::id_type, size_t> m_source_index_map { };
-
+  std::map<Source::id_type, size_t> m_source_index_map{};
 };
 
 } /* namespace SourceCatalog */
-} // end of namespace Euclid
+}  // end of namespace Euclid
 
 #endif /* CATALOG_H_ */

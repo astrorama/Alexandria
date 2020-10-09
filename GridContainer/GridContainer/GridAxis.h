@@ -16,7 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
- /**
+/**
  * @file GridContainer/GridAxis.h
  * @date May 12, 2014
  * @author Nikolaos Apostolakos
@@ -45,11 +45,10 @@ namespace GridContainer {
  *
  * @tparam T the type of the axis values
  */
-template<typename T>
+template <typename T>
 class GridAxis {
 
 public:
-
   /// The type of the axis values
   typedef T data_type;
 
@@ -97,15 +96,13 @@ public:
   bool operator!=(const GridAxis<U>& other) const;
 
 private:
-
-  std::string m_name;
+  std::string    m_name;
   std::vector<T> m_values;
-
 };
 
-} // end of namespace GridContainer
-} // end of namespace Euclid
+}  // end of namespace GridContainer
+}  // end of namespace Euclid
 
 #include "GridContainer/_impl/GridAxis.icpp"
 
-#endif  /* GRIDCONTAINER_GRIDAXIS_H */
+#endif /* GRIDCONTAINER_GRIDAXIS_H */

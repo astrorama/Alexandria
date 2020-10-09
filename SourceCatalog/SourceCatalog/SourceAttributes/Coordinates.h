@@ -1,22 +1,22 @@
 /*
- * Copyright (C) 2012-2020 Euclid Science Ground Segment    
- *  
+ * Copyright (C) 2012-2020 Euclid Science Ground Segment
+ *
  * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free 
- * Software Foundation; either version 3.0 of the License, or (at your option)  
- * any later version.  
- *  
- * This library is distributed in the hope that it will be useful, but WITHOUT 
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 3.0 of the License, or (at your option)
+ * any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more  
- * details.  
- *  
- * You should have received a copy of the GNU Lesser General Public License 
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
  * along with this library; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA  
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
- 
- /**
+
+/**
  * @file SourceCatalog/SourceAttributes/Coordinates.h
  *
  * Created on: Jan 22, 2014
@@ -43,17 +43,20 @@ public:
   Coordinates(double ra, double dec) : m_ra(ra), m_dec(dec) {}
   virtual ~Coordinates() {}
 
-  double getDec() const { return m_dec; }
+  double getDec() const {
+    return m_dec;
+  }
 
-  double getRa() const { return m_ra; }
+  double getRa() const {
+    return m_ra;
+  }
 
 private:
-  double m_ra {};
-  double m_dec {};
-
+  double m_ra{};
+  double m_dec{};
 };
 
-} // namespace SourceCatalog
-} // end of namespace Euclid
+}  // namespace SourceCatalog
+}  // end of namespace Euclid
 
-#endif // COORDINATES_H_ 
+#endif  // COORDINATES_H_

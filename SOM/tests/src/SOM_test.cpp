@@ -24,10 +24,10 @@
 
 #include <boost/test/unit_test.hpp>
 
-#include "SOM/SOM.h"
-#include "SOM/SOMTrainer.h"
 #include "SOM/InitFunc.h"
+#include "SOM/SOM.h"
 #include "SOM/SOMProjector.h"
+#include "SOM/SOMTrainer.h"
 #include "SOM/UMatrix.h"
 
 #include <iostream>
@@ -36,22 +36,20 @@ using namespace Euclid::SOM;
 
 //-----------------------------------------------------------------------------
 
-BOOST_AUTO_TEST_SUITE (SOM_test)
+BOOST_AUTO_TEST_SUITE(SOM_test)
 
 //-----------------------------------------------------------------------------
 
-BOOST_AUTO_TEST_CASE( example_test ) {
+BOOST_AUTO_TEST_CASE(example_test) {
 
-  SOM<2> som {5, 5, InitFunc::uniformRandom(0, 1)};
-  som.findBMU({1,2});
-  som.findBMU({1,2}, {0.1, 0.4});
+  SOM<2> som{5, 5, InitFunc::uniformRandom(0, 1)};
+  som.findBMU({1, 2});
+  som.findBMU({1, 2}, {0.1, 0.4});
 
-  std::vector<std::pair<double,double>> trainset {
-    {1,1}, {0,0}, {0,1}, {1,0}
-  };
+  std::vector<std::pair<double, double>> trainset{{1, 1}, {0, 0}, {0, 1}, {1, 0}};
 
-  SOMTrainer trainer {NeighborhoodFunc::linearUnitDisk(3), LearningRestraintFunc::linear()};
-  auto weight_func = [](const std::pair<double,double>& p) {
+  SOMTrainer trainer{NeighborhoodFunc::linearUnitDisk(3), LearningRestraintFunc::linear()};
+  auto       weight_func = [](const std::pair<double, double>& p) {
     std::array<double, 2> res;
     res[0] = p.first;
     res[1] = p.second;
@@ -59,21 +57,15 @@ BOOST_AUTO_TEST_CASE( example_test ) {
   };
   trainer.train(som, 5, trainset.begin(), trainset.end(), weight_func);
 
-
-  auto adder = [](int& cell, const std::pair<double, double>&) {
-    cell += 1;
-  };
+  auto adder      = [](int& cell, const std::pair<double, double>&) { cell += 1; };
   auto projection = SOMProjector::project<int>(som, trainset.begin(), trainset.end(), weight_func, adder);
-  for (auto it=projection.begin(); it!= projection.end(); ++it) {
+  for (auto it = projection.begin(); it != projection.end(); ++it) {
     std::cout << '(' << it.axisValue<0>() << ',' << it.axisValue<1>() << ") : " << *it << '\n';
   }
 
   auto u_matrix = computeUMatrix(som);
-
 }
 
 //-----------------------------------------------------------------------------
 
-BOOST_AUTO_TEST_SUITE_END ()
-
-
+BOOST_AUTO_TEST_SUITE_END()

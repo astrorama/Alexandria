@@ -21,8 +21,8 @@
 
 #include <boost/test/unit_test.hpp>
 
-#include "Configuration/ConfigManager.h"
 #include "ConfigManager_fixture.h"
+#include "Configuration/ConfigManager.h"
 
 using namespace Euclid::Configuration;
 namespace po = boost::program_options;
@@ -31,10 +31,10 @@ class Config1 : public Configuration {
 public:
   explicit Config1(long id) : Configuration(id) {}
   std::map<std::string, OptionDescriptionList> getProgramOptions() override {
-    return {{"Test",{{"par-1", po::value<int>(), ""}}}};
+    return {{"Test", {{"par-1", po::value<int>(), ""}}}};
   }
-  bool pre_initialized = false;
-  bool initialized = false;
+  bool pre_initialized  = false;
+  bool initialized      = false;
   bool post_initialized = false;
   void preInitialize(const UserValues&) override {
     BOOST_CHECK(!pre_initialized);
@@ -60,10 +60,10 @@ class Config2 : public Configuration {
 public:
   explicit Config2(long id) : Configuration(id) {}
   std::map<std::string, OptionDescriptionList> getProgramOptions() override {
-    return {{"Test",{{"par-2", po::value<int>(), ""}}}};
+    return {{"Test", {{"par-2", po::value<int>(), ""}}}};
   }
-  bool pre_initialized = false;
-  bool initialized = false;
+  bool pre_initialized  = false;
+  bool initialized      = false;
   bool post_initialized = false;
   void preInitialize(const UserValues&) override {
     BOOST_CHECK(!pre_initialized);
@@ -92,10 +92,10 @@ public:
     declareDependency<Config2>();
   }
   std::map<std::string, OptionDescriptionList> getProgramOptions() override {
-    return {{"Test",{{"par-3", po::value<int>(), ""}}}};
+    return {{"Test", {{"par-3", po::value<int>(), ""}}}};
   }
-  bool pre_initialized = false;
-  bool initialized = false;
+  bool pre_initialized  = false;
+  bool initialized      = false;
   bool post_initialized = false;
   void preInitialize(const UserValues&) override {
     BOOST_CHECK(!pre_initialized);
@@ -121,7 +121,7 @@ public:
 
 //-----------------------------------------------------------------------------
 
-BOOST_AUTO_TEST_SUITE (ConfigManager_test)
+BOOST_AUTO_TEST_SUITE(ConfigManager_test)
 
 //-----------------------------------------------------------------------------
 
@@ -138,7 +138,6 @@ BOOST_FIXTURE_TEST_CASE(registerConfiguration, ConfigManager_fixture) {
   BOOST_CHECK_NO_THROW(config_manager.getConfiguration<Config1>());
   BOOST_CHECK_NO_THROW(config_manager.getConfiguration<Config2>());
   BOOST_CHECK_NO_THROW(config_manager.getConfiguration<Config3>());
-
 }
 
 //-----------------------------------------------------------------------------
@@ -150,7 +149,6 @@ BOOST_FIXTURE_TEST_CASE(registerConfigurationWhenClosed, ConfigManager_fixture) 
 
   // Then
   BOOST_CHECK_THROW(config_manager.registerConfiguration<Config1>(), Elements::Exception);
-
 }
 
 //-----------------------------------------------------------------------------
@@ -165,7 +163,6 @@ BOOST_FIXTURE_TEST_CASE(circularDependency, ConfigManager_fixture) {
 
   // Then
   BOOST_CHECK_THROW(config_manager.closeRegistration(), Elements::Exception);
-
 }
 
 //-----------------------------------------------------------------------------
@@ -182,7 +179,6 @@ BOOST_FIXTURE_TEST_CASE(getProgramOptions, ConfigManager_fixture) {
   BOOST_CHECK_NO_THROW(options.find("par-1", false));
   BOOST_CHECK_NO_THROW(options.find("par-2", false));
   BOOST_CHECK_NO_THROW(options.find("par-3", false));
-
 }
 
 //-----------------------------------------------------------------------------
@@ -212,7 +208,6 @@ BOOST_FIXTURE_TEST_CASE(initialize, ConfigManager_fixture) {
   BOOST_CHECK(conf3.initialized);
   BOOST_CHECK(conf3.post_initialized);
   BOOST_CHECK(conf3.getCurrentState() == Configuration::State::FINAL);
-
 }
 
 //-----------------------------------------------------------------------------
@@ -227,7 +222,6 @@ BOOST_FIXTURE_TEST_CASE(getConfigurationNotInitialized, ConfigManager_fixture) {
 
   // Then
   BOOST_CHECK_THROW(config_manager.getConfiguration<Config1>(), Elements::Exception);
-
 }
 
 //-----------------------------------------------------------------------------
@@ -243,11 +237,8 @@ BOOST_FIXTURE_TEST_CASE(getConfigurationNotRegistered, ConfigManager_fixture) {
 
   // Then
   BOOST_CHECK_THROW(config_manager.getConfiguration<Config2>(), Elements::Exception);
-
 }
 
 //-----------------------------------------------------------------------------
 
-BOOST_AUTO_TEST_SUITE_END ()
-
-
+BOOST_AUTO_TEST_SUITE_END()
