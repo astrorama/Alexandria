@@ -16,7 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
- /**
+/**
  * @file MathUtils/function/Differentiable.h
  * @date February 18, 2014
  * @author Nikolaos Apostolakos
@@ -67,7 +67,7 @@ public:
   double integrate(const double x1, const double x2) const final;
 };
 
-} // End of MathUtils
-} // end of namespace Euclid
+}  // namespace MathUtils
+}  // end of namespace Euclid
 
-#endif  /* MATHUTILS_DIFFERENTIABLE_H */
+#endif /* MATHUTILS_DIFFERENTIABLE_H */

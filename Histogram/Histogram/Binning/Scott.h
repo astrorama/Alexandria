@@ -17,22 +17,22 @@
  */
 
 /**
-* @file Histogram/Binning/Scott.h
-* @date February 11, 2020
-* @author Alejandro Alvarez Ayllon
-*/
+ * @file Histogram/Binning/Scott.h
+ * @date February 11, 2020
+ * @author Alejandro Alvarez Ayllon
+ */
 
 #ifndef ALEXANDRIA_HISTOGRAM_BINNING_SCOTT_H
 #define ALEXANDRIA_HISTOGRAM_BINNING_SCOTT_H
 
-#include <cmath>
 #include <algorithm>
-#include <vector>
 #include <boost/accumulators/accumulators.hpp>
-#include <boost/accumulators/statistics/stats.hpp>
 #include <boost/accumulators/statistics/max.hpp>
 #include <boost/accumulators/statistics/min.hpp>
+#include <boost/accumulators/statistics/stats.hpp>
 #include <boost/accumulators/statistics/variance.hpp>
+#include <cmath>
+#include <vector>
 
 #include "Histogram/Histogram.h"
 
@@ -50,11 +50,10 @@ namespace Binning {
  * @see
  *      https://en.wikipedia.org/wiki/Histogram#Scott's_normal_reference_rule
  */
-template<typename VarType>
-class Scott: public BinStrategy<VarType> {
+template <typename VarType>
+class Scott : public BinStrategy<VarType> {
 public:
-
-  template<typename Iterator>
+  template <typename Iterator>
   void computeBins(Iterator begin, Iterator end) {
     using namespace boost::accumulators;
 
@@ -64,9 +63,9 @@ public:
     size_t n = end - begin;
 
     VarType sigma = std::sqrt(variance(acc));
-    VarType h = 3.5 * sigma / std::pow(n, 1. / 3.);
-    VarType vmin = min(acc);
-    VarType vmax = max(acc);
+    VarType h     = 3.5 * sigma / std::pow(n, 1. / 3.);
+    VarType vmin  = min(acc);
+    VarType vmax  = max(acc);
 
     if (sigma == 0) {
       vmax += 0.5;
@@ -78,9 +77,9 @@ public:
 
     m_nbins = std::ceil(range / h);
 
-    m_step = range / m_nbins;
+    m_step  = range / m_nbins;
     m_start = vmin;
-    m_end = vmax;
+    m_end   = vmax;
   }
 
   ssize_t getBinIndex(VarType value) const final {
@@ -102,8 +101,8 @@ private:
   VarType m_start, m_step, m_end;
 };
 
-} // end of namespace Binning
-} // end of namespace Histogram
-} // end of namespace Euclid
+}  // end of namespace Binning
+}  // end of namespace Histogram
+}  // end of namespace Euclid
 
-#endif // ALEXANDRIA_HISTOGRAM_BINNING_SCOTT_H
+#endif  // ALEXANDRIA_HISTOGRAM_BINNING_SCOTT_H

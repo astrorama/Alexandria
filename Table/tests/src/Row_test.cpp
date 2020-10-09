@@ -16,31 +16,30 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
- /**
+/**
  * @file tests/src/Row_test.cpp
  * @date April 8, 2014
  * @author Nikolaos Apostolakos
  */
 
-#include <boost/test/unit_test.hpp>
 #include "ElementsKernel/Exception.h"
 #include "Table/Row.h"
+#include <boost/test/unit_test.hpp>
 
 struct Row_Fixture {
-  std::vector<Euclid::Table::ColumnInfo::info_type> info_list {
+  std::vector<Euclid::Table::ColumnInfo::info_type> info_list{
       Euclid::Table::ColumnInfo::info_type("First", typeid(std::string)),
       Euclid::Table::ColumnInfo::info_type("Second", typeid(std::string)),
       Euclid::Table::ColumnInfo::info_type("Third", typeid(double)),
       Euclid::Table::ColumnInfo::info_type("Fourth", typeid(double)),
       Euclid::Table::ColumnInfo::info_type("Fifth", typeid(int)),
-      Euclid::Table::ColumnInfo::info_type("Sixth", typeid(std::vector<double>))
-  };
-  std::shared_ptr<Euclid::Table::ColumnInfo> column_info {new Euclid::Table::ColumnInfo {info_list}};
+      Euclid::Table::ColumnInfo::info_type("Sixth", typeid(std::vector<double>))};
+  std::shared_ptr<Euclid::Table::ColumnInfo> column_info{new Euclid::Table::ColumnInfo{info_list}};
 };
 
 //-----------------------------------------------------------------------------
 
-BOOST_AUTO_TEST_SUITE (Row_test)
+BOOST_AUTO_TEST_SUITE(Row_test)
 
 //-----------------------------------------------------------------------------
 // Test the constructor throws an exception for wrong number of cell values
@@ -49,11 +48,10 @@ BOOST_AUTO_TEST_SUITE (Row_test)
 BOOST_FIXTURE_TEST_CASE(ConstructorWrongNumberOfValues, Row_Fixture) {
 
   // Given
-  std::vector<Euclid::Table::Row::cell_type> values {std::string{"One"}, std::string{"Two"}, 3.};
+  std::vector<Euclid::Table::Row::cell_type> values{std::string{"One"}, std::string{"Two"}, 3.};
 
   // Then
   BOOST_CHECK_THROW(Euclid::Table::Row(values, column_info), Elements::Exception);
-
 }
 
 //-----------------------------------------------------------------------------
@@ -63,12 +61,12 @@ BOOST_FIXTURE_TEST_CASE(ConstructorWrongNumberOfValues, Row_Fixture) {
 BOOST_FIXTURE_TEST_CASE(ConstructorNullColumnInfo, Row_Fixture) {
 
   // Given
-  std::vector<Euclid::Table::Row::cell_type> values {std::string{"One"}, std::string{"Two"}, 3., 4., 5, std::vector<double>{6.1, 6.2}};
-  std::shared_ptr<Euclid::Table::ColumnInfo> null_col_info {};
+  std::vector<Euclid::Table::Row::cell_type> values{std::string{"One"},           std::string{"Two"}, 3., 4., 5,
+                                                    std::vector<double>{6.1, 6.2}};
+  std::shared_ptr<Euclid::Table::ColumnInfo> null_col_info{};
 
   // Then
   BOOST_CHECK_THROW(Euclid::Table::Row(values, null_col_info), Elements::Exception);
-
 }
 
 //-----------------------------------------------------------------------------
@@ -78,11 +76,11 @@ BOOST_FIXTURE_TEST_CASE(ConstructorNullColumnInfo, Row_Fixture) {
 BOOST_FIXTURE_TEST_CASE(ConstructorWrongCellType, Row_Fixture) {
 
   // Given
-  std::vector<Euclid::Table::Row::cell_type> values {std::string{"One"}, std::string{"Two"}, std::string{"Three"}, 4., 5, std::vector<double>{6.1, 6.2}};
+  std::vector<Euclid::Table::Row::cell_type> values{std::string{"One"},           std::string{"Two"}, std::string{"Three"}, 4., 5,
+                                                    std::vector<double>{6.1, 6.2}};
 
   // Then
   BOOST_CHECK_THROW(Euclid::Table::Row(values, column_info), Elements::Exception);
-
 }
 
 //-----------------------------------------------------------------------------
@@ -92,11 +90,10 @@ BOOST_FIXTURE_TEST_CASE(ConstructorWrongCellType, Row_Fixture) {
 BOOST_FIXTURE_TEST_CASE(ConstructorEmptyCellValue, Row_Fixture) {
 
   // Given
-  std::vector<Euclid::Table::Row::cell_type> values {std::string{"One"}, std::string{""}, 3., 4., 5, std::vector<double>{6.1, 6.2}};
+  std::vector<Euclid::Table::Row::cell_type> values{std::string{"One"}, std::string{""}, 3., 4., 5, std::vector<double>{6.1, 6.2}};
 
   // Then
   BOOST_CHECK_THROW(Euclid::Table::Row(values, column_info), Elements::Exception);
-
 }
 
 //-----------------------------------------------------------------------------
@@ -106,11 +103,16 @@ BOOST_FIXTURE_TEST_CASE(ConstructorEmptyCellValue, Row_Fixture) {
 BOOST_FIXTURE_TEST_CASE(ConstructorCellValueWithWhitespace, Row_Fixture) {
 
   // Given
-  std::vector<Euclid::Table::Row::cell_type> space {std::string{"One"}, std::string{"Sp ace"}, 3., 4., 5, std::vector<double>{6.1, 6.2}};
-  std::vector<Euclid::Table::Row::cell_type> tab {std::string{"One"}, std::string{"T\tab"}, 3., 4., 5, std::vector<double>{6.1, 6.2}};
-  std::vector<Euclid::Table::Row::cell_type> carriage_return {std::string{"One"}, std::string{"Carriage\rReturn"}, 3., 4., 5, std::vector<double>{6.1, 6.2}};
-  std::vector<Euclid::Table::Row::cell_type> new_line {std::string{"One"}, std::string{"New\nLine"}, 3., 4., 5, std::vector<double>{6.1, 6.2}};
-  std::vector<Euclid::Table::Row::cell_type> new_page {std::string{"One"}, std::string{"New\fPage"}, 3., 4., 5, std::vector<double>{6.1, 6.2}};
+  std::vector<Euclid::Table::Row::cell_type> space{std::string{"One"},           std::string{"Sp ace"}, 3., 4., 5,
+                                                   std::vector<double>{6.1, 6.2}};
+  std::vector<Euclid::Table::Row::cell_type> tab{std::string{"One"},           std::string{"T\tab"}, 3., 4., 5,
+                                                 std::vector<double>{6.1, 6.2}};
+  std::vector<Euclid::Table::Row::cell_type> carriage_return{
+      std::string{"One"}, std::string{"Carriage\rReturn"}, 3., 4., 5, std::vector<double>{6.1, 6.2}};
+  std::vector<Euclid::Table::Row::cell_type> new_line{std::string{"One"},           std::string{"New\nLine"}, 3., 4., 5,
+                                                      std::vector<double>{6.1, 6.2}};
+  std::vector<Euclid::Table::Row::cell_type> new_page{std::string{"One"},           std::string{"New\fPage"}, 3., 4., 5,
+                                                      std::vector<double>{6.1, 6.2}};
 
   // Then
   Euclid::Table::Row(space, column_info);
@@ -118,7 +120,6 @@ BOOST_FIXTURE_TEST_CASE(ConstructorCellValueWithWhitespace, Row_Fixture) {
   BOOST_CHECK_THROW(Euclid::Table::Row(carriage_return, column_info), Elements::Exception);
   BOOST_CHECK_THROW(Euclid::Table::Row(new_line, column_info), Elements::Exception);
   BOOST_CHECK_THROW(Euclid::Table::Row(new_page, column_info), Elements::Exception);
-
 }
 
 //-----------------------------------------------------------------------------
@@ -128,15 +129,15 @@ BOOST_FIXTURE_TEST_CASE(ConstructorCellValueWithWhitespace, Row_Fixture) {
 BOOST_FIXTURE_TEST_CASE(getColumnInfo, Row_Fixture) {
 
   // Given
-  std::vector<Euclid::Table::Row::cell_type> values {std::string{"One"}, std::string{"Two"}, 3., 4., 5, std::vector<double>{6.1, 6.2}};
-  Euclid::Table::Row row {values, column_info};
+  std::vector<Euclid::Table::Row::cell_type> values{std::string{"One"},           std::string{"Two"}, 3., 4., 5,
+                                                    std::vector<double>{6.1, 6.2}};
+  Euclid::Table::Row                         row{values, column_info};
 
   // When
   auto result = row.getColumnInfo();
 
   // Then
   BOOST_CHECK(*result == *column_info);
-
 }
 
 //-----------------------------------------------------------------------------
@@ -146,15 +147,15 @@ BOOST_FIXTURE_TEST_CASE(getColumnInfo, Row_Fixture) {
 BOOST_FIXTURE_TEST_CASE(Size, Row_Fixture) {
 
   // Given
-  std::vector<Euclid::Table::Row::cell_type> values {std::string{"One"}, std::string{"Two"}, 3., 4., 5, std::vector<double>{6.1, 6.2}};
-  Euclid::Table::Row row {values, column_info};
+  std::vector<Euclid::Table::Row::cell_type> values{std::string{"One"},           std::string{"Two"}, 3., 4., 5,
+                                                    std::vector<double>{6.1, 6.2}};
+  Euclid::Table::Row                         row{values, column_info};
 
   // When
   std::size_t size = row.size();
 
   // Then
   BOOST_CHECK_EQUAL(size, values.size());
-
 }
 
 //-----------------------------------------------------------------------------
@@ -164,8 +165,9 @@ BOOST_FIXTURE_TEST_CASE(Size, Row_Fixture) {
 BOOST_FIXTURE_TEST_CASE(IndexBracketOperator, Row_Fixture) {
 
   // Given
-  std::vector<Euclid::Table::Row::cell_type> values {std::string{"One"}, std::string{"Two"}, 3., 4., 5, std::vector<double>{6.1, 6.2}};
-  Euclid::Table::Row row {values, column_info};
+  std::vector<Euclid::Table::Row::cell_type> values{std::string{"One"},           std::string{"Two"}, 3., 4., 5,
+                                                    std::vector<double>{6.1, 6.2}};
+  Euclid::Table::Row                         row{values, column_info};
 
   // When
   Euclid::Table::Row::cell_type value0 = row[0];
@@ -183,7 +185,6 @@ BOOST_FIXTURE_TEST_CASE(IndexBracketOperator, Row_Fixture) {
   BOOST_CHECK_EQUAL(value4, values[4]);
   BOOST_CHECK_EQUAL(value5, values[5]);
   BOOST_CHECK_THROW(row[6], Elements::Exception);
-
 }
 
 //-----------------------------------------------------------------------------
@@ -193,8 +194,9 @@ BOOST_FIXTURE_TEST_CASE(IndexBracketOperator, Row_Fixture) {
 BOOST_FIXTURE_TEST_CASE(StringBracketOperator, Row_Fixture) {
 
   // Given
-  std::vector<Euclid::Table::Row::cell_type> values {std::string{"One"}, std::string{"Two"}, 3., 4., 5, std::vector<double>{6.1, 6.2}};
-  Euclid::Table::Row row {values, column_info};
+  std::vector<Euclid::Table::Row::cell_type> values{std::string{"One"},           std::string{"Two"}, 3., 4., 5,
+                                                    std::vector<double>{6.1, 6.2}};
+  Euclid::Table::Row                         row{values, column_info};
 
   // When
   Euclid::Table::Row::cell_type value0 = row["First"];
@@ -212,7 +214,6 @@ BOOST_FIXTURE_TEST_CASE(StringBracketOperator, Row_Fixture) {
   BOOST_CHECK_EQUAL(value4, values[4]);
   BOOST_CHECK_EQUAL(value5, values[5]);
   BOOST_CHECK_THROW(row["None"], Elements::Exception);
-
 }
 
 //-----------------------------------------------------------------------------
@@ -222,9 +223,10 @@ BOOST_FIXTURE_TEST_CASE(StringBracketOperator, Row_Fixture) {
 BOOST_FIXTURE_TEST_CASE(Iterator, Row_Fixture) {
 
   // Given
-  std::vector<Euclid::Table::Row::cell_type> values {std::string{"One"}, std::string{"Two"}, 3., 4., 5, std::vector<double>{6.1, 6.2}};
-  Euclid::Table::Row row {values, column_info};
-  auto valuesIter = values.cbegin();
+  std::vector<Euclid::Table::Row::cell_type> values{std::string{"One"},           std::string{"Two"}, 3., 4., 5,
+                                                    std::vector<double>{6.1, 6.2}};
+  Euclid::Table::Row                         row{values, column_info};
+  auto                                       valuesIter = values.cbegin();
 
   // When
   for (auto cell : row) {
@@ -233,7 +235,6 @@ BOOST_FIXTURE_TEST_CASE(Iterator, Row_Fixture) {
     ++valuesIter;
   }
   BOOST_CHECK(valuesIter == values.cend());
-
 }
 
 //-----------------------------------------------------------------------------
@@ -248,7 +249,7 @@ BOOST_FIXTURE_TEST_CASE(Copy, Row_Fixture) {
 
   // When
   Euclid::Table::Row::cell_type target_constructor{source};
-  target = source; // this will fail to compile if any of the cell_type variants can not be copy-assigned
+  target = source;  // this will fail to compile if any of the cell_type variants can not be copy-assigned
 
   // Then
   BOOST_CHECK(target == source);
@@ -257,4 +258,4 @@ BOOST_FIXTURE_TEST_CASE(Copy, Row_Fixture) {
 
 //-----------------------------------------------------------------------------
 
-BOOST_AUTO_TEST_SUITE_END ()
+BOOST_AUTO_TEST_SUITE_END()

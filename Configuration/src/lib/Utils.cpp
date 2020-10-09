@@ -22,8 +22,8 @@
  * @author nikoapos
  */
 
-#include <chrono>
 #include "Configuration/Utils.h"
+#include <chrono>
 
 namespace Euclid {
 namespace Configuration {
@@ -33,15 +33,11 @@ static long last_manager_id = 0;
 long getUniqueManagerId() {
   long id = last_manager_id;
   while (id == last_manager_id) {
-    id = std::chrono::duration_cast<std::chrono::microseconds>(
-      std::chrono::system_clock::now().time_since_epoch()).count();
+    id = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
   }
   last_manager_id = id;
   return id;
 }
 
-} // Configuration namespace
-} // Euclid namespace
-
-
-
+}  // namespace Configuration
+}  // namespace Euclid

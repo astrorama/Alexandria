@@ -22,15 +22,15 @@
 #ifndef _CONFIGURATION_CATALOGCONFIG_H
 #define _CONFIGURATION_CATALOGCONFIG_H
 
-#include <memory>
-#include <vector>
-#include <functional>
-#include <boost/filesystem.hpp>
+#include "Configuration/Configuration.h"
+#include "SourceCatalog/AttributeFromRow.h"
+#include "SourceCatalog/Catalog.h"
 #include "Table/Table.h"
 #include "Table/TableReader.h"
-#include "SourceCatalog/Catalog.h"
-#include "SourceCatalog/AttributeFromRow.h"
-#include "Configuration/Configuration.h"
+#include <boost/filesystem.hpp>
+#include <functional>
+#include <memory>
+#include <vector>
 
 namespace Euclid {
 namespace Configuration {
@@ -66,7 +66,6 @@ namespace Configuration {
 class CatalogConfig : public Configuration {
 
 public:
-
   /// A function that converts objects of type Table::Table to objects of type
   /// SourceCatalog::Catalog
   using TableToCatalogConverter = std::function<SourceCatalog::Catalog(const Table::Table&)>;
@@ -245,13 +244,12 @@ public:
   const boost::filesystem::path& getFilename() const;
 
 private:
-
-  boost::filesystem::path m_base_dir;
-  boost::filesystem::path m_filename;
-  bool m_fits_format = true;
-  std::string m_id_column_name;
+  boost::filesystem::path                                       m_base_dir;
+  boost::filesystem::path                                       m_filename;
+  bool                                                          m_fits_format = true;
+  std::string                                                   m_id_column_name;
   std::vector<std::shared_ptr<SourceCatalog::AttributeFromRow>> m_attribute_handlers;
-  std::shared_ptr<Table::ColumnInfo> m_column_info;
+  std::shared_ptr<Table::ColumnInfo>                            m_column_info;
 
 }; /* End of CatalogConfig class */
 

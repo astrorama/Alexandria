@@ -31,7 +31,7 @@ namespace MathUtils {
 
 static double guess_h(double initial_h, double x) {
   volatile double xh = x + initial_h;
-  volatile double h = xh - x;
+  volatile double h  = xh - x;
   if (h == 0) {
     h = std::nextafter(x, std::numeric_limits<double>::max()) - x;
   }
@@ -40,7 +40,7 @@ static double guess_h(double initial_h, double x) {
 
 double derivative(const Function& f, const double x) {
   double h = std::sqrt(std::numeric_limits<double>::epsilon()) * 2;
-  h = guess_h(h, x);
+  h        = guess_h(h, x);
 
   double yh = f(x + h);
   double y0 = f(x);
@@ -49,14 +49,14 @@ double derivative(const Function& f, const double x) {
 
 double derivative2nd(const Function& f, const double x) {
   double h = std::sqrt(std::sqrt(std::numeric_limits<double>::epsilon())) * 2;
-  h = guess_h(h, x);
+  h        = guess_h(h, x);
 
   double ymh = f(x - h);
-  double y = f(x);
+  double y   = f(x);
   double yph = f(x + h);
 
   return (yph - 2 * y + ymh) / (h * h);
 }
 
-} // end namespace MathUtils
-} // end namespace Euclid
+}  // end namespace MathUtils
+}  // end namespace Euclid

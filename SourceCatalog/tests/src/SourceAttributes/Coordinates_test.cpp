@@ -16,7 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
- /**
+/**
  * @file tests/src/SourceAttributes/Coordinates_test.cpp
  *
  * @author Nicolas Morisset
@@ -24,14 +24,13 @@
  * Created on: Feb 5, 2014
  */
 
+#include "SourceCatalog/SourceAttributes/Coordinates.h"
 #include <boost/test/unit_test.hpp>
 #include <iostream>
-#include "SourceCatalog/SourceAttributes/Coordinates.h"
 
 using namespace Euclid::SourceCatalog;
 
 //-----------------------------------------------------------------------------
-
 
 struct CoordinatesFixture {
 
@@ -42,15 +41,14 @@ struct CoordinatesFixture {
     expected_ra  = 1.5;
     expected_dec = 2.8;
   }
-  ~CoordinatesFixture() {
-  }
+  ~CoordinatesFixture() {}
 };
 
 //----------------------------------------------------------------------------
 
-BOOST_AUTO_TEST_SUITE (Coordinates_test)
+BOOST_AUTO_TEST_SUITE(Coordinates_test)
 
-BOOST_FIXTURE_TEST_CASE( getter_test, CoordinatesFixture ) {
+BOOST_FIXTURE_TEST_CASE(getter_test, CoordinatesFixture) {
 
   Coordinates coordinates(expected_ra, expected_dec);
 
@@ -59,7 +57,6 @@ BOOST_FIXTURE_TEST_CASE( getter_test, CoordinatesFixture ) {
 
   BOOST_CHECK_EQUAL(expected_ra, ra_result);
   BOOST_CHECK_EQUAL(expected_dec, dec_result);
-
 }
 
-BOOST_AUTO_TEST_SUITE_END ()
+BOOST_AUTO_TEST_SUITE_END()

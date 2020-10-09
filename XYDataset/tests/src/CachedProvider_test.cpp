@@ -21,30 +21,26 @@
  *
  */
 
-#include <boost/test/unit_test.hpp>
 #include <ElementsKernel/Exception.h>
 #include <ElementsKernel/Real.h>
 #include <ElementsKernel/Unused.h>
+#include <boost/test/unit_test.hpp>
 
 #include "XYDataset/CachedProvider.h"
 
 using namespace Euclid::XYDataset;
 
-boost::test_tools::predicate_result checkAllClose(const XYDataset& a, const XYDataset &b) {
+boost::test_tools::predicate_result checkAllClose(const XYDataset& a, const XYDataset& b) {
   boost::test_tools::predicate_result res(true);
 
   if (a.size() != b.size()) {
     res = false;
     res.message() << "Different sizes";
-  }
-  else {
+  } else {
     for (auto i = a.begin(), j = b.begin(); i != a.end(); ++i, ++j) {
       if (!Elements::isEqual(i->first, j->first) || !Elements::isEqual(i->second, j->second)) {
         res = false;
-        res.message()
-          << '<' << i->first << ',' << i->second << '>'
-          << " != "
-          << '<' << j->first << ',' << j->second << ">\n";
+        res.message() << '<' << i->first << ',' << i->second << '>' << " != " << '<' << j->first << ',' << j->second << ">\n";
       }
     }
   }
@@ -52,15 +48,14 @@ boost::test_tools::predicate_result checkAllClose(const XYDataset& a, const XYDa
   return res;
 }
 
-
-struct MockProvider: public XYDatasetProvider {
+struct MockProvider : public XYDatasetProvider {
   int m_list_calls = 0;
   int m_data_calls = 0;
 
   std::map<std::string, std::vector<QualifiedName>> m_listing;
-  std::map<QualifiedName, XYDataset> m_dataset;
-  std::vector<double> m_x = {1., 2., 3.};
-  std::vector<double> m_y = {0., 0.5, 0.6};
+  std::map<QualifiedName, XYDataset>                m_dataset;
+  std::vector<double>                               m_x = {1., 2., 3.};
+  std::vector<double>                               m_y = {0., 0.5, 0.6};
 
   virtual ~MockProvider() = default;
 
@@ -91,8 +86,8 @@ struct MockProvider: public XYDatasetProvider {
     return std::unique_ptr<XYDataset>{new XYDataset{i->second}};
   }
 
-  std::string getParameter(ELEMENTS_UNUSED const QualifiedName& qualified_name, const std::string& key_word) override{
-     return key_word;
+  std::string getParameter(ELEMENTS_UNUSED const QualifiedName& qualified_name, const std::string& key_word) override {
+    return key_word;
   }
 };
 
@@ -102,7 +97,7 @@ struct CachedProvider_fixture {
 
 //-----------------------------------------------------------------------------
 
-BOOST_AUTO_TEST_SUITE (CachedProvider_test)
+BOOST_AUTO_TEST_SUITE(CachedProvider_test)
 
 //-----------------------------------------------------------------------------
 
@@ -119,37 +114,31 @@ BOOST_FIXTURE_TEST_CASE(listContents_test, CachedProvider_fixture) {
   CachedProvider cache{mock_provider};
 
   auto list_return = cache.listContents("A");
-  BOOST_CHECK_EQUAL_COLLECTIONS(
-    list_return.begin(), list_return.end(), mock_provider->m_listing["A"].begin(), mock_provider->m_listing["A"].end()
-  );
+  BOOST_CHECK_EQUAL_COLLECTIONS(list_return.begin(), list_return.end(), mock_provider->m_listing["A"].begin(),
+                                mock_provider->m_listing["A"].end());
 
   list_return = cache.listContents("B");
-  BOOST_CHECK_EQUAL_COLLECTIONS(
-    list_return.begin(), list_return.end(), mock_provider->m_listing["B"].begin(), mock_provider->m_listing["B"].end()
-  );
+  BOOST_CHECK_EQUAL_COLLECTIONS(list_return.begin(), list_return.end(), mock_provider->m_listing["B"].begin(),
+                                mock_provider->m_listing["B"].end());
 
   list_return = cache.listContents("C");
-  BOOST_CHECK_EQUAL_COLLECTIONS(
-    list_return.begin(), list_return.end(), mock_provider->m_listing["C"].begin(), mock_provider->m_listing["C"].end()
-  );
+  BOOST_CHECK_EQUAL_COLLECTIONS(list_return.begin(), list_return.end(), mock_provider->m_listing["C"].begin(),
+                                mock_provider->m_listing["C"].end());
 
   BOOST_CHECK_EQUAL(mock_provider->m_list_calls, 3);
 
   // Repeat
   list_return = cache.listContents("A");
-  BOOST_CHECK_EQUAL_COLLECTIONS(
-    list_return.begin(), list_return.end(), mock_provider->m_listing["A"].begin(), mock_provider->m_listing["A"].end()
-  );
+  BOOST_CHECK_EQUAL_COLLECTIONS(list_return.begin(), list_return.end(), mock_provider->m_listing["A"].begin(),
+                                mock_provider->m_listing["A"].end());
 
   list_return = cache.listContents("B");
-  BOOST_CHECK_EQUAL_COLLECTIONS(
-    list_return.begin(), list_return.end(), mock_provider->m_listing["B"].begin(), mock_provider->m_listing["B"].end()
-  );
+  BOOST_CHECK_EQUAL_COLLECTIONS(list_return.begin(), list_return.end(), mock_provider->m_listing["B"].begin(),
+                                mock_provider->m_listing["B"].end());
 
   list_return = cache.listContents("C");
-  BOOST_CHECK_EQUAL_COLLECTIONS(
-    list_return.begin(), list_return.end(), mock_provider->m_listing["C"].begin(), mock_provider->m_listing["C"].end()
-  );
+  BOOST_CHECK_EQUAL_COLLECTIONS(list_return.begin(), list_return.end(), mock_provider->m_listing["C"].begin(),
+                                mock_provider->m_listing["C"].end());
 
   BOOST_CHECK_EQUAL(mock_provider->m_list_calls, 3);
 }
@@ -187,6 +176,4 @@ BOOST_FIXTURE_TEST_CASE(getDataSet_test, CachedProvider_fixture) {
 
 //-----------------------------------------------------------------------------
 
-BOOST_AUTO_TEST_SUITE_END ()
-
-
+BOOST_AUTO_TEST_SUITE_END()

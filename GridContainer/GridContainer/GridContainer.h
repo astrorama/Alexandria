@@ -16,7 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
- /**
+/**
  * @file GridContainer/GridContainer.h
  * @date May 13, 2014
  * @author Nikolaos Apostolakos
@@ -25,14 +25,14 @@
 #ifndef GRIDCONTAINER_GRIDCONTAINER_H
 #define GRIDCONTAINER_GRIDCONTAINER_H
 
-#include <memory>
-#include <tuple>
-#include <iterator>
-#include <map>
-#include <type_traits>
 #include "GridContainer/GridCellManagerTraits.h"
 #include "GridContainer/GridIndexHelper.h"
 #include "GridContainer/_impl/GridConstructionHelper.h"
+#include <iterator>
+#include <map>
+#include <memory>
+#include <tuple>
+#include <type_traits>
 
 namespace Euclid {
 namespace GridContainer {
@@ -93,14 +93,13 @@ namespace GridContainer {
  *                     delegated
  * @tparam AxesTypes The types of the grid axes
  */
-template<typename GridCellManager, typename... AxesTypes>
+template <typename GridCellManager, typename... AxesTypes>
 class GridContainer {
 
   // The following aliases are used to simplify the definitions inside the class
   typedef typename GridCellManagerTraits<GridCellManager>::iterator cell_manager_iter_type;
 
 public:
-
   /// The type of the values stored in the grid cells
   typedef typename GridCellManagerTraits<GridCellManager>::data_type cell_type;
 
@@ -108,14 +107,14 @@ public:
   typedef std::tuple<GridAxis<AxesTypes>...> AxesTuple;
 
   // The following is a shortcut to retrieve the type of each axis
-  template<int I>
+  template <int I>
   using axis_type = typename std::tuple_element<I, std::tuple<AxesTypes...>>::type;
 
   // The iterator type of the GridContainer. See at the end of the file for its declaration
-  template<typename CellType>
+  template <typename CellType>
   class iter;
 
-  typedef iter<cell_type> iterator;
+  typedef iter<cell_type>       iterator;
   typedef iter<cell_type const> const_iterator;
 
   /**
@@ -142,7 +141,6 @@ public:
   GridContainer(GridContainer<GridCellManager, AxesTypes...>&&) = default;
   GridContainer& operator=(GridContainer<GridCellManager, AxesTypes...>&&) = default;
 
-
   // Do not allow copying of GridContainer objects. This is done because these
   // objects will most of the time be very big and copying them will be a
   // bottleneck. To avoid unvoluntary copy constructor calls, this constructor
@@ -161,7 +159,7 @@ public:
    * @tparam I The (zero based) index of the axis
    * @return the axis information
    */
-  template<int I>
+  template <int I>
   const GridAxis<axis_type<I>>& getAxis() const;
 
   /// Returns a tuple containing the information of all the grid axes.
@@ -333,23 +331,19 @@ public:
   const GridContainer<GridCellManager, AxesTypes...> fixAxisByValue(const axis_type<I>& value) const;
 
 private:
-
   /// A tuple containing the axes of the grid
   std::tuple<GridAxis<AxesTypes>...> m_axes;
   /// A helper class used for calculations of the axes indices
-  GridIndexHelper<AxesTypes...> m_index_helper {m_axes};
+  GridIndexHelper<AxesTypes...> m_index_helper{m_axes};
   /// a tuple containing the original axes of the full grid, if this grid is a slice
-  std::tuple<GridAxis<AxesTypes>...> m_axes_fixed {m_axes};
+  std::tuple<GridAxis<AxesTypes>...> m_axes_fixed{m_axes};
   /// a helper class for calculations of the original axes indices
-  GridIndexHelper<AxesTypes...> m_index_helper_fixed {m_axes_fixed};
+  GridIndexHelper<AxesTypes...> m_index_helper_fixed{m_axes_fixed};
   /// A map containing the axes which have been fixed, if this grid is a slice
-  std::map<size_t, size_t> m_fixed_indices {};
+  std::map<size_t, size_t> m_fixed_indices{};
   /// A pointer to the data of the grid
-  std::shared_ptr<GridCellManager> m_cell_manager {
-          GridCellManagerTraits<GridCellManager>::factory(
-                  GridConstructionHelper<AxesTypes...>::getAxisIndexFactor(
-                          m_axes, TemplateLoopCounter<sizeof...(AxesTypes)-1>{}))
-  };
+  std::shared_ptr<GridCellManager> m_cell_manager{GridCellManagerTraits<GridCellManager>::factory(
+      GridConstructionHelper<AxesTypes...>::getAxisIndexFactor(m_axes, TemplateLoopCounter<sizeof...(AxesTypes) - 1>{}))};
 
   /**
    * @brief Slice constructor
@@ -366,11 +360,10 @@ private:
   /// Returns the original axis. This behaves the same like the getAxis() with
   /// exception the case that the grid is a slice. In that case, it will return
   /// the original axes and not the single value fixed ones.
-  template<int I>
+  template <int I>
   const GridAxis<axis_type<I>>& getOriginalAxis() const;
 
-}; // end of class GridContainer
-
+};  // end of class GridContainer
 
 /**
  * @class GridContainer::iter
@@ -385,11 +378,10 @@ private:
  * information. Slicing can be achieved by using the fixAxisByIndex() and
  * fixAxisByValue() methods.
  */
-template<typename GridCellManager, typename... AxesTypes>
-template<typename CellType>
+template <typename GridCellManager, typename... AxesTypes>
+template <typename CellType>
 class GridContainer<GridCellManager, AxesTypes...>::iter : public std::iterator<std::forward_iterator_tag, CellType> {
 public:
-
   /**
    * @brief Constructs a new iterator for the given grid
    * @details
@@ -399,8 +391,7 @@ public:
    * @param owner The grid to iterate through
    * @param data_iter The GridCellManager iterator indicating the cell position
    */
-  iter(const GridContainer<GridCellManager, AxesTypes...>& owner,
-           const cell_manager_iter_type& data_iter);
+  iter(const GridContainer<GridCellManager, AxesTypes...>& owner, const cell_manager_iter_type& data_iter);
 
   /// Copy constructor
   iter(const iter<CellType>&) = default;
@@ -436,12 +427,12 @@ public:
 
   /// Returns the index (coordinate) of the axis with index I, for the cell
   /// the iterator points
-  template<int I>
+  template <int I>
   size_t axisIndex() const;
 
   /// Returns the value of the axis with index I, for the cell the iterator
   /// points
-  template<int I>
+  template <int I>
   const axis_type<I>& axisValue() const;
 
   /**
@@ -457,7 +448,7 @@ public:
    * @throws Elements::Exception
    *    if the axis has already been fixed for this iterator
    */
-  template<int I>
+  template <int I>
   iter& fixAxisByIndex(size_t index);
 
   /**
@@ -477,7 +468,7 @@ public:
    * @throws Elements::Exception
    *    if the axis has already been fixed for this iterator
    */
-  template<int I>
+  template <int I>
   iter& fixAxisByValue(const axis_type<I>& value);
 
   /**
@@ -489,23 +480,21 @@ public:
    * @param other The iterator to get the axes values from
    * @return the iterator with all its axes fixed
    */
-  template<typename OtherIter>
+  template <typename OtherIter>
   iter& fixAllAxes(const OtherIter& other);
 
 private:
-
   const GridContainer<GridCellManager, AxesTypes...>& m_owner;
-  cell_manager_iter_type m_data_iter;
-  std::map<size_t, size_t> m_fixed_indices;
-  void forwardToIndex(size_t axis, size_t fixed_index);
+  cell_manager_iter_type                              m_data_iter;
+  std::map<size_t, size_t>                            m_fixed_indices;
+  void                                                forwardToIndex(size_t axis, size_t fixed_index);
 
-}; // end of class iter
+};  // end of class iter
 
-} // end of namespace GridContainer
-} // end of namespace Euclid
+}  // end of namespace GridContainer
+}  // end of namespace Euclid
 
 #include "GridContainer/_impl/GridContainer.icpp"
 #include "GridContainer/_impl/GridIterator.icpp"
 
-#endif  /* GRIDCONTAINER_GRIDCONTAINER_H */
-
+#endif /* GRIDCONTAINER_GRIDCONTAINER_H */

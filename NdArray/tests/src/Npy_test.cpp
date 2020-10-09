@@ -16,18 +16,17 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#include <boost/test/unit_test.hpp>
-#include <boost/mpl/list.hpp>
-#include <ElementsKernel/Temporary.h>
 #include "NdArray/io/Npy.h"
 #include "TestHelper.h"
+#include <ElementsKernel/Temporary.h>
+#include <boost/mpl/list.hpp>
+#include <boost/test/unit_test.hpp>
 
 using namespace Euclid::NdArray;
 
 BOOST_AUTO_TEST_SUITE(Npy_test)
 
 typedef boost::mpl::list<int32_t, int64_t, float, double> array_type;
-
 
 BOOST_AUTO_TEST_CASE_TEMPLATE(Npy1d_readwrite_test, T, array_type) {
   std::stringstream stream;
@@ -79,14 +78,14 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(Npy1d_python_test, T, array_type) {
   writeNpy(file.path(), ndarray);
 
   // Read NPY
-  constexpr const char *PYCODE = R"EDOCYP(
+  constexpr const char* PYCODE = R"EDOCYP(
 import sys
 import numpy as np
 a = np.load(sys.argv[1])
 assert a.shape == (100,)
 print(a.sum())
 )EDOCYP";
-  auto output = runPython(PYCODE, file.path());
+  auto                  output = runPython(PYCODE, file.path());
 
   T sum;
   output >> sum;
@@ -104,14 +103,14 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(Npy2d_python_test, T, array_type) {
   writeNpy(file.path(), ndarray);
 
   // Read NPY
-  constexpr const char *PYCODE = R"EDOCYP(
+  constexpr const char* PYCODE = R"EDOCYP(
 import sys
 import numpy as np
 a = np.load(sys.argv[1])
 assert a.shape == (50, 2)
 print((a[:,0] * a[:,1]).sum())
 )EDOCYP";
-  auto output = runPython(PYCODE, file.path());
+  auto                  output = runPython(PYCODE, file.path());
 
   // Must match
   T expected = 0;
@@ -128,7 +127,7 @@ BOOST_AUTO_TEST_CASE(Npy2d_frompython_test) {
   Elements::TempFile file("npy_test_frompython_%%.npy");
 
   // Write NPY from Python
-  constexpr const char *PYCODE = R"EDOCYP(
+  constexpr const char* PYCODE = R"EDOCYP(
 import sys
 import numpy as np
 a = np.save(sys.argv[1], np.arange(0, 100, dtype='=u4').reshape(2, 5, 10))
@@ -161,7 +160,7 @@ BOOST_AUTO_TEST_CASE(Npy_badtype_test) {
 BOOST_AUTO_TEST_CASE(Npy_badendian_test) {
   Elements::TempFile file(std::string("npy_testpy_endian_%%.npy"));
 
-  constexpr const char *PYCODE = R"EDOCYP(
+  constexpr const char* PYCODE = R"EDOCYP(
 import sys
 import numpy as np
 np.save(sys.argv[1], np.arange(100, 400, dtype='>i8'))
@@ -177,10 +176,10 @@ BOOST_AUTO_TEST_CASE(AttrNames_test) {
 
   // Construct NdArray
   const std::vector<std::string> attr_names{"ID", "SED", "PDZ"};
-  NdArray<int> named{{20}, attr_names};
+  NdArray<int>                   named{{20}, attr_names};
 
   for (size_t i = 0; i < named.shape()[0]; ++i) {
-    named.at(i, "ID") = i;
+    named.at(i, "ID")  = i;
     named.at(i, "SED") = i * 2;
     named.at(i, "PDZ") = i * 10 + 5;
   }
@@ -189,7 +188,7 @@ BOOST_AUTO_TEST_CASE(AttrNames_test) {
   writeNpy(file.path(), named);
 
   // Read from Python
-  constexpr const char *PYCODE = R"EDOCYP(
+  constexpr const char* PYCODE = R"EDOCYP(
 import sys
 import numpy as np
 a = np.load(sys.argv[1])
@@ -212,7 +211,7 @@ BOOST_AUTO_TEST_CASE(ReadAttrNames_test) {
   std::vector<std::string> expected_attrs{"a", "b"};
 
   // Write from Python
-  constexpr const char *PYCODE = R"EDOCYP(
+  constexpr const char* PYCODE = R"EDOCYP(
 import sys
 import numpy as np
 
@@ -242,7 +241,7 @@ BOOST_AUTO_TEST_CASE(AttrNames_mixed_test) {
   Elements::TempFile file(std::string("npy_testpy_read_attrs_%%.npy"));
 
   // Write from Python
-  constexpr const char *PYCODE = R"EDOCYP(
+  constexpr const char* PYCODE = R"EDOCYP(
 import sys
 import numpy as np
 

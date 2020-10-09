@@ -1,46 +1,46 @@
 /*
- * Copyright (C) 2012-2020 Euclid Science Ground Segment    
- *  
+ * Copyright (C) 2012-2020 Euclid Science Ground Segment
+ *
  * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free 
- * Software Foundation; either version 3.0 of the License, or (at your option)  
- * any later version.  
- *  
- * This library is distributed in the hope that it will be useful, but WITHOUT 
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 3.0 of the License, or (at your option)
+ * any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more  
- * details.  
- *  
- * You should have received a copy of the GNU Lesser General Public License 
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
  * along with this library; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA  
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
- 
- /** 
+
+/**
  * @file tests/src/function/function_tools_test.cpp
  * @date February 19, 2014
  * @author Nikolaos Apostolakos
  */
 
-#include <boost/test/unit_test.hpp>
 #include "ElementsKernel/Exception.h"
-#include "MathUtils/function/function_tools.h"
 #include "MathUtils/function/Function.h"
 #include "MathUtils/function/Integrable.h"
+#include "MathUtils/function/function_tools.h"
 #include "MathUtils/function/multiplication.h"
 #include "mocks.h"
+#include <boost/test/unit_test.hpp>
 
 class DummyMultiplyFunction : public Euclid::MathUtils::Function {
   double operator()(const double) const override {
     return 0;
   }
   std::unique_ptr<Function> clone() const override {
-    return std::unique_ptr<Function> {new DummyMultiplyFunction{}};
+    return std::unique_ptr<Function>{new DummyMultiplyFunction{}};
   }
 };
 
 std::unique_ptr<Euclid::MathUtils::Function> dummyMultiply(const Euclid::MathUtils::Function&, const Euclid::MathUtils::Function&) {
-  return std::unique_ptr<Euclid::MathUtils::Function>(new DummyMultiplyFunction {});
+  return std::unique_ptr<Euclid::MathUtils::Function>(new DummyMultiplyFunction{});
 }
 
 class FunctionType1 : public Euclid::MathUtils::Function {
@@ -48,7 +48,7 @@ class FunctionType1 : public Euclid::MathUtils::Function {
     return 0;
   }
   std::unique_ptr<Function> clone() const override {
-    return std::unique_ptr<Function> {new FunctionType1{}};
+    return std::unique_ptr<Function>{new FunctionType1{}};
   }
 };
 
@@ -57,31 +57,30 @@ class FunctionType2 : public Euclid::MathUtils::Function {
     return 0;
   }
   std::unique_ptr<Function> clone() const override {
-    return std::unique_ptr<Function> {new FunctionType2{}};
+    return std::unique_ptr<Function>{new FunctionType2{}};
   }
 };
 
 struct Function_Tools_Fixture {
-  double close_tolerance {1E-10};
-  double small_tolerance {1E-20};
+  double close_tolerance{1E-10};
+  double small_tolerance{1E-20};
 };
 
 //-----------------------------------------------------------------------------
 
-BOOST_AUTO_TEST_SUITE (function_tools_test)
+BOOST_AUTO_TEST_SUITE(function_tools_test)
 
 //-----------------------------------------------------------------------------
 // Test that integration of a non-integrable function throws an exception
 //-----------------------------------------------------------------------------
 
 BOOST_AUTO_TEST_CASE(NonIntegrableIntegration) {
-  
+
   // Given
   FunctionMock f = FunctionMock{0.};
-  
+
   // Then
-  BOOST_CHECK_THROW(Euclid::MathUtils::integrate(f,0,1), Elements::Exception);
-  
+  BOOST_CHECK_THROW(Euclid::MathUtils::integrate(f, 0, 1), Elements::Exception);
 }
 
 //-----------------------------------------------------------------------------
@@ -89,21 +88,20 @@ BOOST_AUTO_TEST_CASE(NonIntegrableIntegration) {
 //-----------------------------------------------------------------------------
 
 BOOST_AUTO_TEST_CASE(IntegrableIntegration) {
-  
+
   // Given
-  double min = -1.5;
-  double max = 7.32;
-  IntegrableMock f = IntegrableMock{5.};
-  double expected = 5. * (max - min);
-  
+  double         min      = -1.5;
+  double         max      = 7.32;
+  IntegrableMock f        = IntegrableMock{5.};
+  double         expected = 5. * (max - min);
+
   // When
   double integral = Euclid::MathUtils::integrate(f, min, max);
-  
+
   // Then
   BOOST_CHECK_EQUAL(integral, expected);
   BOOST_CHECK_EQUAL(f.m_min, min);
   BOOST_CHECK_EQUAL(f.m_max, max);
-  
 }
 
 //-----------------------------------------------------------------------------
@@ -111,17 +109,16 @@ BOOST_AUTO_TEST_CASE(IntegrableIntegration) {
 //-----------------------------------------------------------------------------
 
 BOOST_FIXTURE_TEST_CASE(NonMultipliableMultiplication, Function_Tools_Fixture) {
-  
+
   // Given
-  FunctionMock f1 {4.};
-  FunctionMock f2 {3.};
-  
+  FunctionMock f1{4.};
+  FunctionMock f2{3.};
+
   // When
   auto multiplication = Euclid::MathUtils::multiply(f1, f2);
-  
+
   // Then
   BOOST_CHECK_CLOSE((*multiplication)(15.), 12., close_tolerance);
-  
 }
 
 //-----------------------------------------------------------------------------
@@ -129,32 +126,31 @@ BOOST_FIXTURE_TEST_CASE(NonMultipliableMultiplication, Function_Tools_Fixture) {
 //-----------------------------------------------------------------------------
 
 BOOST_FIXTURE_TEST_CASE(SpecificGenericMultiplication, Function_Tools_Fixture) {
-  
+
   // Given
-  FunctionType1 f1 {};
-  FunctionType2 f2 {};
-  
+  FunctionType1 f1{};
+  FunctionType2 f2{};
+
   // When
   auto mult1 = Euclid::MathUtils::multiply(f1, f2);
   auto mult2 = Euclid::MathUtils::multiply(f2, f1);
-  
+
   // Then
   BOOST_CHECK(dynamic_cast<DummyMultiplyFunction*>(mult1.get()) == nullptr);
   BOOST_CHECK(dynamic_cast<DummyMultiplyFunction*>(mult2.get()) == nullptr);
-  
+
   // Given
   Euclid::MathUtils::multiplySpecificGenericMap[typeid(FunctionType1)] = dummyMultiply;
-  
+
   // When
   mult1 = Euclid::MathUtils::multiply(f1, f2);
   mult2 = Euclid::MathUtils::multiply(f2, f1);
-  
+
   // Then
   BOOST_CHECK(dynamic_cast<DummyMultiplyFunction*>(mult1.get()) != nullptr);
   BOOST_CHECK(dynamic_cast<DummyMultiplyFunction*>(mult2.get()) != nullptr);
-  
+
   Euclid::MathUtils::multiplySpecificGenericMap.erase(typeid(FunctionType1));
-  
 }
 
 //-----------------------------------------------------------------------------
@@ -162,34 +158,33 @@ BOOST_FIXTURE_TEST_CASE(SpecificGenericMultiplication, Function_Tools_Fixture) {
 //-----------------------------------------------------------------------------
 
 BOOST_FIXTURE_TEST_CASE(SpecificSpecificMultiplication, Function_Tools_Fixture) {
-  
+
   // Given
-  FunctionType1 f1 {};
-  FunctionType2 f2 {};
-  
+  FunctionType1 f1{};
+  FunctionType2 f2{};
+
   // When
   auto mult1 = Euclid::MathUtils::multiply(f1, f2);
   auto mult2 = Euclid::MathUtils::multiply(f2, f1);
-  
+
   // Then
   BOOST_CHECK(dynamic_cast<DummyMultiplyFunction*>(mult1.get()) == nullptr);
   BOOST_CHECK(dynamic_cast<DummyMultiplyFunction*>(mult2.get()) == nullptr);
-  
+
   // Given
-  Euclid::MathUtils::multiplySpecificSpecificMap[{typeid(FunctionType1),typeid(FunctionType2)}] = dummyMultiply;
-  
+  Euclid::MathUtils::multiplySpecificSpecificMap[{typeid(FunctionType1), typeid(FunctionType2)}] = dummyMultiply;
+
   // When
   mult1 = Euclid::MathUtils::multiply(f1, f2);
   mult2 = Euclid::MathUtils::multiply(f2, f1);
-  
+
   // Then
   BOOST_CHECK(dynamic_cast<DummyMultiplyFunction*>(mult1.get()) != nullptr);
   BOOST_CHECK(dynamic_cast<DummyMultiplyFunction*>(mult2.get()) != nullptr);
-  
-  Euclid::MathUtils::multiplySpecificSpecificMap.erase({typeid(FunctionType1),typeid(FunctionType2)});
-  
+
+  Euclid::MathUtils::multiplySpecificSpecificMap.erase({typeid(FunctionType1), typeid(FunctionType2)});
 }
 
 //-----------------------------------------------------------------------------
 
-BOOST_AUTO_TEST_SUITE_END ()
+BOOST_AUTO_TEST_SUITE_END()

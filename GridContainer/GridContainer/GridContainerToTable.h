@@ -19,10 +19,10 @@
 #ifndef GRIDCONTAINER_GRIDCONTAINERTOTABLE_H
 #define GRIDCONTAINER_GRIDCONTAINERTOTABLE_H
 
-#include <vector>
 #include "GridContainer/GridContainer.h"
 #include "Table/Table.h"
 #include "XYDataset/QualifiedName.h"
+#include <vector>
 
 namespace Euclid {
 namespace GridContainer {
@@ -33,7 +33,7 @@ namespace GridContainer {
  * @tparam T
  *  Type to be mapped
  */
-template<typename T>
+template <typename T>
 struct GridAxisToTable {
   typedef T table_cell_t;
 
@@ -45,7 +45,7 @@ struct GridAxisToTable {
 /**
  * Specialization for mapping a qualified name into a string
  */
-template<>
+template <>
 struct GridAxisToTable<Euclid::XYDataset::QualifiedName> {
   typedef std::string table_cell_t;
 
@@ -59,7 +59,7 @@ struct GridAxisToTable<Euclid::XYDataset::QualifiedName> {
  * @tparam T
  *  Type to be mapped
  */
-template<typename T, typename Enable=void>
+template <typename T, typename Enable = void>
 struct GridCellToTable {
   static_assert(!std::is_same<T, T>::value, "Specialization of GridCellToTable required");
 
@@ -86,7 +86,7 @@ struct GridCellToTable {
 /**
  * Specialization for scalar types
  */
-template<typename T>
+template <typename T>
 struct GridCellToTable<T, typename std::enable_if<std::is_arithmetic<T>::value>::type> {
 
   static void addColumnDescriptions(const T&, std::vector<Table::ColumnDescription>& columns) {
@@ -102,12 +102,12 @@ struct GridCellToTable<T, typename std::enable_if<std::is_arithmetic<T>::value>:
  * Transform a GridContainer into a Table, with an entry for each
  * cell. The content will be unfolded, so the knot values will be repeated.
  */
-template<typename GridCellManager, typename ...AxesTypes>
+template <typename GridCellManager, typename... AxesTypes>
 Table::Table gridContainerToTable(const GridContainer<GridCellManager, AxesTypes...>& grid);
 
-} // end of namespace GridContainer
-} // end of namespace Euclid
+}  // end of namespace GridContainer
+}  // end of namespace Euclid
 
 #include "GridContainer/_impl/GridContainerToTable.icpp"
 
-#endif // GRIDCONTAINER_GRIDCONTAINERTOTABLE_H
+#endif  // GRIDCONTAINER_GRIDCONTAINERTOTABLE_H

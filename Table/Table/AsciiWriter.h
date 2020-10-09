@@ -80,7 +80,6 @@ namespace Table {
 class AsciiWriter : public TableWriter {
 
 public:
-
   /**
    * @brief Constructs an AsciiWriter which contains an object of type StreamType
    *
@@ -167,7 +166,6 @@ public:
   void addComment(const std::string& message) override;
 
 protected:
-
   /// Writes to the stream the column info, following the rules explained at the
   /// class documentation
   void init(const Table& table) override;
@@ -177,20 +175,19 @@ protected:
   void append(const Table& table) override;
 
 private:
-
   AsciiWriter(std::unique_ptr<InstOrRefHolder<std::ostream>> stream_holder);
 
   std::unique_ptr<InstOrRefHolder<std::ostream>> m_stream_holder;
-  bool m_writing_started = false;
-  bool m_initialized = false;
-  std::string m_comment = "#";
-  bool m_show_column_info = true;
-  std::vector<size_t> m_column_lengths;
+  bool                                           m_writing_started  = false;
+  bool                                           m_initialized      = false;
+  std::string                                    m_comment          = "#";
+  bool                                           m_show_column_info = true;
+  std::vector<size_t>                            m_column_lengths;
 
-}; // End of AsciiWriter class
+};  // End of AsciiWriter class
 
-} // namespace Table
-} // namespace Euclid
+}  // namespace Table
+}  // namespace Euclid
 
 #include "Table/_impl/AsciiWriter.icpp"
 

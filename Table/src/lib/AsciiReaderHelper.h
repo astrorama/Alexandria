@@ -16,7 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
- /**
+/**
  * @file src/lib/AsciiReaderHelper.h
  * @date April 15, 2014
  * @author Nikolaos Apostolakos
@@ -26,10 +26,9 @@
 #define TABLE_ASCIIREADERHELPER_H
 
 #include <istream>
+#include <map>
 #include <string>
 #include <typeindex>
-#include <map>
-
 
 #include "ElementsKernel/Export.h"
 #include "Table/Row.h"
@@ -47,17 +46,17 @@ namespace Table {
  */
 class StreamRewinder {
 public:
-  explicit StreamRewinder(std::istream& stream) : m_stream(stream), m_state(stream.exceptions()),
-                                                  m_position(stream.tellg()) {}
+  explicit StreamRewinder(std::istream& stream) : m_stream(stream), m_state(stream.exceptions()), m_position(stream.tellg()) {}
   ~StreamRewinder() {
     m_stream.clear();
     m_stream.seekg(m_position);
     m_stream.setstate(m_state);
   }
+
 private:
-  std::istream& m_stream;
+  std::istream&     m_stream;
   std::ios::iostate m_state;
-  int m_position;
+  int               m_position;
 };
 
 /**
@@ -92,8 +91,7 @@ ELEMENTS_API size_t countColumns(std::istream& in, const std::string& comment);
  * @throws Elements::Exception
  *    if any of the types is not one of the valid keywords
  */
-ELEMENTS_API std::map<std::string, ColumnDescription> autoDetectColumnDescriptions(
-                                      std::istream& in, const std::string& comment);
+ELEMENTS_API std::map<std::string, ColumnDescription> autoDetectColumnDescriptions(std::istream& in, const std::string& comment);
 
 /**
  * @brief
@@ -110,9 +108,7 @@ ELEMENTS_API std::map<std::string, ColumnDescription> autoDetectColumnDescriptio
  * @throws Elements::Exception
  *    if there are duplicate column names
  */
-ELEMENTS_API std::vector<std::string> autoDetectColumnNames(std::istream& in,
-                                               const std::string& comment,
-                                               size_t columns_number);
+ELEMENTS_API std::vector<std::string> autoDetectColumnNames(std::istream& in, const std::string& comment, size_t columns_number);
 
 /**
  * @brief
@@ -133,7 +129,7 @@ ELEMENTS_API bool hasNextRow(std::istream& in, const std::string& comment);
 
 ELEMENTS_API std::size_t countRemainingRows(std::istream& in, const std::string& comment);
 
-}
-} // end of namespace Euclid
+}  // namespace Table
+}  // end of namespace Euclid
 
 #endif /* TABLE_ASCIIREADERHELPER_H */

@@ -25,13 +25,13 @@
 #ifndef _ALEXANDRIAKERNEL_THREADPOOL_H
 #define _ALEXANDRIAKERNEL_THREADPOOL_H
 
-#include <vector>
-#include <thread>
-#include <mutex>
 #include <atomic>
 #include <deque>
-#include <functional>
 #include <exception>
+#include <functional>
+#include <mutex>
+#include <thread>
+#include <vector>
 
 namespace Euclid {
 
@@ -68,7 +68,6 @@ namespace Euclid {
 class ThreadPool {
 
 public:
-
   /// The type of tasks the pool can execute
   using Task = std::function<void(void)>;
 
@@ -80,8 +79,7 @@ public:
    *    The time (in milliseconds) the pool threads sleep after they try to get
    *    a task from an empty queue before they retry
    */
-  explicit ThreadPool(unsigned int thread_count = std::thread::hardware_concurrency(),
-                      unsigned int empty_queue_wait_time = 50);
+  explicit ThreadPool(unsigned int thread_count = std::thread::hardware_concurrency(), unsigned int empty_queue_wait_time = 50);
 
   /// All tasks not yet started are discarded and it blocks until all already
   /// executing tasks are finished
@@ -95,21 +93,19 @@ public:
   void block();
 
   /// Checks if any task has thrown an exception and optionally rethrows it
-  bool checkForException(bool rethrow=false);
+  bool checkForException(bool rethrow = false);
 
 private:
-
-  std::mutex m_queue_mutex;
+  std::mutex                     m_queue_mutex;
   std::vector<std::atomic<bool>> m_worker_run_flags;
   std::vector<std::atomic<bool>> m_worker_sleeping_flags;
   std::vector<std::atomic<bool>> m_worker_done_flags;
-  std::deque<Task> m_queue;
-  unsigned int m_empty_queue_wait_time;
-  std::exception_ptr m_exception_ptr;
+  std::deque<Task>               m_queue;
+  unsigned int                   m_empty_queue_wait_time;
+  std::exception_ptr             m_exception_ptr;
 
 }; /* End of ThreadPool class */
 
 } /* namespace Euclid */
-
 
 #endif
