@@ -16,20 +16,20 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
- /**
+/**
  * @file tests/src/SourceAttributes/SpectroscopicRedshiftAttributeFromRow_test.cpp
  *
  * @date Apr 17, 2014
  * @author Pierre Dubath
  */
 
-#include <boost/test/unit_test.hpp>
-#include <memory>
-#include <map>
-#include "SourceCatalog/SourceAttributes/SpectroscopicRedshiftAttributeFromRow.h"
-#include "SourceCatalog/SourceAttributes/SpectroscopicRedshift.h"
 #include "ElementsKernel/Exception.h"
 #include "SourceCatalog/AttributeFromRow.h"
+#include "SourceCatalog/SourceAttributes/SpectroscopicRedshift.h"
+#include "SourceCatalog/SourceAttributes/SpectroscopicRedshiftAttributeFromRow.h"
+#include <boost/test/unit_test.hpp>
+#include <map>
+#include <memory>
 
 //-----------------------------------------------------------------------------
 // Include the TableFixture which contain a complete table mock object use here
@@ -38,15 +38,14 @@
 
 using namespace Euclid::SourceCatalog;
 
-
 //-----------------------------------------------------------------------------
 //
 
-BOOST_AUTO_TEST_SUITE (SpectroscopicRedshiftAttributeFromRow_test)
+BOOST_AUTO_TEST_SUITE(SpectroscopicRedshiftAttributeFromRow_test)
 
 //-----------------------------------------------------------------------------
 
-//BOOST_FIXTURE_TEST_CASE(createAttribute_test, TableFixture) {
+// BOOST_FIXTURE_TEST_CASE(createAttribute_test, TableFixture) {
 //
 //  BOOST_TEST_MESSAGE("--> createAttribute test ");
 //
@@ -62,32 +61,31 @@ BOOST_AUTO_TEST_SUITE (SpectroscopicRedshiftAttributeFromRow_test)
 
 //-----------------------------------------------------------------------------
 
-BOOST_FIXTURE_TEST_CASE( createAttribute_test, TableFixture ) {
+BOOST_FIXTURE_TEST_CASE(createAttribute_test, TableFixture) {
 
   BOOST_TEST_MESSAGE("--> createAttribute test ");
 
-  SpectroscopicRedshiftAttributeFromRow srafr {column_info_ptr, spec_z_val_col_name, spec_z_err_col_name};
+  SpectroscopicRedshiftAttributeFromRow srafr{column_info_ptr, spec_z_val_col_name, spec_z_err_col_name};
 
-//  unique_ptr<Euclid::SourceCatalog::Attribute> attribute_ptr_0 = srafr.createAttribute(row0);
-//
-//  BOOST_CHECK( typeid(*attribute_ptr_0) == typeid(Euclid::SourceCatalog::SpectroscopicRedshift) );
-//
-//  if(typeid(*attribute_ptr_0) == typeid(Euclid::SourceCatalog::SpectroscopicRedshift)) {
-//      Euclid::SourceCatalog::SpectroscopicRedshift& spectroscopicRedshift = dynamic_cast<Euclid::SourceCatalog::SpectroscopicRedshift&>( *attribute_ptr_0 );
-//      BOOST_CHECK_CLOSE(spectroscopicRedshift.getValue(), spec_z_val_row0 , tolerance);
-//      BOOST_CHECK_CLOSE(spectroscopicRedshift.getError(), spec_z_err_row0 , tolerance);
-//  }
+  //  unique_ptr<Euclid::SourceCatalog::Attribute> attribute_ptr_0 = srafr.createAttribute(row0);
+  //
+  //  BOOST_CHECK( typeid(*attribute_ptr_0) == typeid(Euclid::SourceCatalog::SpectroscopicRedshift) );
+  //
+  //  if(typeid(*attribute_ptr_0) == typeid(Euclid::SourceCatalog::SpectroscopicRedshift)) {
+  //      Euclid::SourceCatalog::SpectroscopicRedshift& spectroscopicRedshift =
+  //      dynamic_cast<Euclid::SourceCatalog::SpectroscopicRedshift&>( *attribute_ptr_0 );
+  //      BOOST_CHECK_CLOSE(spectroscopicRedshift.getValue(), spec_z_val_row0 , tolerance);
+  //      BOOST_CHECK_CLOSE(spectroscopicRedshift.getError(), spec_z_err_row0 , tolerance);
+  //  }
 
   std::unique_ptr<Euclid::SourceCatalog::Attribute> attribute_ptr_1 = srafr.createAttribute(row1);
-  Euclid::SourceCatalog::SpectroscopicRedshift* spectroscopicRedshift = dynamic_cast<Euclid::SourceCatalog::SpectroscopicRedshift*>(attribute_ptr_1.get());
+  Euclid::SourceCatalog::SpectroscopicRedshift*     spectroscopicRedshift =
+      dynamic_cast<Euclid::SourceCatalog::SpectroscopicRedshift*>(attribute_ptr_1.get());
   BOOST_CHECK(spectroscopicRedshift != nullptr);
-  BOOST_CHECK_CLOSE(spectroscopicRedshift->getValue(), spec_z_val_row1 , tolerance);
-  BOOST_CHECK_CLOSE(spectroscopicRedshift->getError(), spec_z_err_row1 , tolerance);
-
+  BOOST_CHECK_CLOSE(spectroscopicRedshift->getValue(), spec_z_val_row1, tolerance);
+  BOOST_CHECK_CLOSE(spectroscopicRedshift->getError(), spec_z_err_row1, tolerance);
 }
 
 //-----------------------------------------------------------------------------
 
-BOOST_AUTO_TEST_SUITE_END ()
-
-
+BOOST_AUTO_TEST_SUITE_END()

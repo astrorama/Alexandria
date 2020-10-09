@@ -16,7 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
- /**
+/**
  * @file Table/Row.h
  * @date April 8, 2014
  * @author Nikolaos Apostolakos
@@ -25,21 +25,21 @@
 #ifndef TABLE_ROW_H
 #define TABLE_ROW_H
 
-#include <memory>
-#include <vector>
-#include <string>
-#include <iterator>
 #include <boost/variant.hpp>
+#include <iterator>
+#include <memory>
+#include <string>
+#include <vector>
 
 #include "ElementsKernel/Export.h"
 
-#include "Table/ColumnInfo.h"
 #include "NdArray/NdArray.h"
+#include "Table/ColumnInfo.h"
 
 namespace std {
 
 template <typename T>
-std::ostream& operator<< (std::ostream& s, const std::vector<T>& v);
+std::ostream& operator<<(std::ostream& s, const std::vector<T>& v);
 
 }
 
@@ -64,23 +64,11 @@ namespace Table {
 class ELEMENTS_API Row {
 
 public:
-
   /// The possible cell types
-  typedef boost::variant<bool,
-                         int32_t,
-                         int64_t,
-                         float,
-                         double,
-                         std::string,
-                         std::vector<bool>,
-                         std::vector<int32_t>,
-                         std::vector<int64_t>,
-                         std::vector<float>,
-                         std::vector<double>,
-                         NdArray::NdArray<int32_t>,
-                         NdArray::NdArray<int64_t>,
-                         NdArray::NdArray<float>,
-                         NdArray::NdArray<double>> cell_type;
+  typedef boost::variant<bool, int32_t, int64_t, float, double, std::string, std::vector<bool>, std::vector<int32_t>,
+                         std::vector<int64_t>, std::vector<float>, std::vector<double>, NdArray::NdArray<int32_t>,
+                         NdArray::NdArray<int64_t>, NdArray::NdArray<float>, NdArray::NdArray<double>>
+      cell_type;
 
   typedef std::vector<cell_type>::const_iterator const_iterator;
 
@@ -166,12 +154,11 @@ public:
   const_iterator end() const;
 
 private:
-  std::vector<cell_type> m_values;
+  std::vector<cell_type>      m_values;
   std::shared_ptr<ColumnInfo> m_column_info;
 };
 
-}
-} // end of namespace Euclid
+}  // namespace Table
+}  // end of namespace Euclid
 
-#endif  /* TABLE_ROW_H */
-
+#endif /* TABLE_ROW_H */

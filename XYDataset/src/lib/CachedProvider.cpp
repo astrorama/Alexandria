@@ -26,28 +26,22 @@
 namespace Euclid {
 namespace XYDataset {
 
+CachedProvider::CachedProvider(std::shared_ptr<Euclid::XYDataset::XYDatasetProvider> provider) : m_provider(provider) {}
 
-CachedProvider::CachedProvider(std::shared_ptr<Euclid::XYDataset::XYDatasetProvider> provider)
-  : m_provider(provider)
-{
-}
-
-
-std::vector<QualifiedName> CachedProvider::listContents(const std::string &group) {
+std::vector<QualifiedName> CachedProvider::listContents(const std::string& group) {
   auto i = m_list_cache.find(group);
   if (i == m_list_cache.end()) {
     auto contents = m_provider->listContents(group);
-    i = m_list_cache.insert(std::make_pair(group, contents)).first;
+    i             = m_list_cache.insert(std::make_pair(group, contents)).first;
   }
   return i->second;
 }
 
-
-std::unique_ptr<XYDataset> CachedProvider::getDataset(const Euclid::XYDataset::QualifiedName &qualified_name) {
+std::unique_ptr<XYDataset> CachedProvider::getDataset(const Euclid::XYDataset::QualifiedName& qualified_name) {
   auto i = m_dataset.find(qualified_name);
   if (i == m_dataset.end()) {
     auto dataset = m_provider->getDataset(qualified_name);
-    i = m_dataset.insert(std::make_pair(qualified_name, std::move(dataset))).first;
+    i            = m_dataset.insert(std::make_pair(qualified_name, std::move(dataset))).first;
   }
   if (i->second)
     return std::unique_ptr<XYDataset>(new XYDataset(*i->second));
@@ -55,8 +49,8 @@ std::unique_ptr<XYDataset> CachedProvider::getDataset(const Euclid::XYDataset::Q
     return nullptr;
 }
 
-std::string CachedProvider::getParameter(const QualifiedName& qualified_name, const std::string& key_word){
-   return m_provider->getParameter(qualified_name, key_word);
+std::string CachedProvider::getParameter(const QualifiedName& qualified_name, const std::string& key_word) {
+  return m_provider->getParameter(qualified_name, key_word);
 }
 
 }  // namespace XYDataset

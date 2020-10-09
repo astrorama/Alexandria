@@ -24,10 +24,10 @@
 #ifndef CONFIGURATION_PDFCATALOGCONFIG_H
 #define CONFIGURATION_PDFCATALOGCONFIG_H
 
+#include "Configuration/CatalogConfig.h"
+#include "Configuration/Configuration.h"
 #include "ElementsKernel/Exception.h"
 #include "SourceCatalog/SourceAttributes/PdfFromRow.h"
-#include "Configuration/Configuration.h"
-#include "Configuration/CatalogConfig.h"
 
 namespace Euclid {
 namespace Configuration {
@@ -41,7 +41,6 @@ template <typename T>
 class PdfCatalogConfig : public Configuration {
 
 public:
-
   explicit PdfCatalogConfig(long manager_id) : Configuration(manager_id) {
     declareDependency<CatalogConfig>();
   }
@@ -57,19 +56,15 @@ public:
   }
 
   void initialize(const UserValues&) override {
-    getDependency<CatalogConfig>().addAttributeHandler(
-      std::make_shared<SourceCatalog::PdfFromRow<T>>(m_keys, m_column_names));
+    getDependency<CatalogConfig>().addAttributeHandler(std::make_shared<SourceCatalog::PdfFromRow<T>>(m_keys, m_column_names));
   }
 
 private:
-
   std::map<std::string, std::vector<T>> m_keys;
-  std::map<std::string, std::string> m_column_names;
-
+  std::map<std::string, std::string>    m_column_names;
 };
 
-}
-}
+}  // namespace Configuration
+}  // namespace Euclid
 
 #endif /* CONFIGURATION_PDFCATALOGCONFIG_H */
-

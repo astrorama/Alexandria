@@ -21,7 +21,6 @@
  * @author nikoapos
  */
 
-
 #include "SOM/ImplTools.h"
 #include "GridContainer/GridAxis.h"
 
@@ -37,7 +36,6 @@ GridContainer::GridAxis<std::size_t> indexAxis(const std::string& name, std::siz
   return GridContainer::GridAxis<std::size_t>{name, std::move(indices)};
 }
 
-}
-}
-}
-
+}  // namespace ImplTools
+}  // namespace SOM
+}  // namespace Euclid

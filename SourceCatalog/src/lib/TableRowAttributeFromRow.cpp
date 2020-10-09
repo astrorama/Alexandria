@@ -16,7 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
- /*
+/*
  * Copyright (C) 2012-2020 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
@@ -39,8 +39,8 @@
  * @author nikoapos
  */
 
-#include "AlexandriaKernel/memory_tools.h"
 #include "SourceCatalog/SourceAttributes/TableRowAttributeFromRow.h"
+#include "AlexandriaKernel/memory_tools.h"
 #include "SourceCatalog/SourceAttributes/TableRowAttribute.h"
 
 namespace Euclid {
@@ -50,5 +50,5 @@ std::unique_ptr<Attribute> TableRowAttributeFromRow::createAttribute(const Eucli
   return make_unique<TableRowAttribute>(row);
 }
 
-} // namespace SourceCatalog
-} // end of namespace Euclid
+}  // namespace SourceCatalog
+}  // end of namespace Euclid

@@ -25,10 +25,10 @@
 #ifndef _CONFIGURATION_PHOTOMETRYCATALOGCONFIG_H
 #define _CONFIGURATION_PHOTOMETRYCATALOGCONFIG_H
 
-#include <vector>
-#include <string>
-#include <boost/filesystem.hpp>
 #include "Configuration/Configuration.h"
+#include <boost/filesystem.hpp>
+#include <string>
+#include <vector>
 
 namespace Euclid {
 namespace Configuration {
@@ -42,7 +42,6 @@ namespace Configuration {
 class PhotometryCatalogConfig : public Configuration {
 
 public:
-
   /// Constructs a new PhotometryCatalogConfig object
   explicit PhotometryCatalogConfig(long manager_id);
 
@@ -89,13 +88,12 @@ public:
   bool isUpperLimitEnabled();
 
 private:
-  bool m_missing_photometry_enabled {false};
-  bool m_upper_limit_enabled {false};
+  bool m_missing_photometry_enabled{false};
+  bool m_upper_limit_enabled{false};
 
 }; /* End of PhotometryCatalogConfig class */
 
 } /* namespace Configuration */
 } /* namespace Euclid */
-
 
 #endif

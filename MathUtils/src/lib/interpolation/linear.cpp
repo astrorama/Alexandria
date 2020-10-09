@@ -16,24 +16,23 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
- /**
+/**
  * @file src/lib/interpolation/linear.cpp
  * @date February 20, 2014
  * @author Nikolaos Apostolakos
  */
 
-#include <limits>
 #include "ElementsKernel/Exception.h"
-#include "MathUtils/interpolation/interpolation.h"
-#include "MathUtils/function/Polynomial.h"
 #include "MathUtils/function/Piecewise.h"
+#include "MathUtils/function/Polynomial.h"
+#include "MathUtils/interpolation/interpolation.h"
+#include <limits>
 
 namespace Euclid {
 namespace MathUtils {
 
-std::unique_ptr<Function> linearInterpolation(const std::vector<double>& x, const std::vector<double>& y,
-                                              bool extrapolate) {
-  std::vector<std::shared_ptr<Function>> functions {};
+std::unique_ptr<Function> linearInterpolation(const std::vector<double>& x, const std::vector<double>& y, bool extrapolate) {
+  std::vector<std::shared_ptr<Function>> functions{};
   for (size_t i = 0; i < x.size() - 1; i++) {
     double coef1 = (y[i + 1] - y[i]) / (x[i + 1] - x[i]);
     double coef0 = y[i] - coef1 * x[i];
@@ -43,12 +42,12 @@ std::unique_ptr<Function> linearInterpolation(const std::vector<double>& x, cons
   if (extrapolate) {
     std::vector<double> x_copy(x);
     x_copy.front() = std::numeric_limits<double>::lowest();
-    x_copy.back() = std::numeric_limits<double>::max();
+    x_copy.back()  = std::numeric_limits<double>::max();
     return std::unique_ptr<Function>(new Piecewise{x_copy, std::move(functions)});
   }
 
   return std::unique_ptr<Function>(new Piecewise{x, std::move(functions)});
 }
 
-} // End of MathUtils
-} // end of namespace Euclid
+}  // namespace MathUtils
+}  // end of namespace Euclid

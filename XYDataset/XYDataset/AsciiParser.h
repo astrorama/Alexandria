@@ -16,7 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
- /**
+/**
  * @file XYDataset/AsciiParser.h
  *
  * @date Apr 14, 2014
@@ -28,9 +28,8 @@
 
 #include "ElementsKernel/Export.h"
 
-#include "XYDataset/XYDataset.h"
 #include "XYDataset/FileParser.h"
-
+#include "XYDataset/XYDataset.h"
 
 namespace Euclid {
 namespace XYDataset {
@@ -51,10 +50,8 @@ namespace XYDataset {
  * @throw
  * ElementException : File not found
  */
-class ELEMENTS_API AsciiParser : public FileParser
-{
- public:
-
+class ELEMENTS_API AsciiParser : public FileParser {
+public:
   /**
    * @brief Constructor
    * Tool for reading ASCII tables from streams
@@ -62,7 +59,7 @@ class ELEMENTS_API AsciiParser : public FileParser
    * The regex for extracting the dataset name. The default is defined as
    * "^\\s*#\\s*(\\w+)\\s*$".
    */
-  explicit AsciiParser(const std::string& regex_str="^\\s*#\\s*(\\w+)\\s*$") : FileParser(), m_regex_name(regex_str) {}
+  explicit AsciiParser(const std::string& regex_str = "^\\s*#\\s*(\\w+)\\s*$") : FileParser(), m_regex_name(regex_str) {}
 
   /**
    * @brief
@@ -84,21 +81,21 @@ class ELEMENTS_API AsciiParser : public FileParser
   std::string getName(const std::string& file) override;
 
   /**
-  * @brief
-  * Get the parameter identified by a given key_word value from a file
-  * @details
-  * This function gets the the parameter if present in the fits HDU keyword.
-  * Return an empty string if the key word is not present.
-  * @param file
-  * Filename of the file to be read including absolute path
-  * @param key_word
-  * key word identifying the parameter
-  * @return
-  * The name of the datatset
-  * @throw
-  * ElementException : File not found
-  */
- std::string getParameter(const std::string& file, const std::string& key_word) override;
+   * @brief
+   * Get the parameter identified by a given key_word value from a file
+   * @details
+   * This function gets the the parameter if present in the fits HDU keyword.
+   * Return an empty string if the key word is not present.
+   * @param file
+   * Filename of the file to be read including absolute path
+   * @param key_word
+   * key word identifying the parameter
+   * @return
+   * The name of the datatset
+   * @throw
+   * ElementException : File not found
+   */
+  std::string getParameter(const std::string& file, const std::string& key_word) override;
 
   /**
    * @brief
@@ -114,31 +111,27 @@ class ELEMENTS_API AsciiParser : public FileParser
   std::unique_ptr<XYDataset> getDataset(const std::string& file) override;
 
   /**
-    * @brief
-    * Check that the ASCII file is a dataset file(with at least one line with
-    * 2 double values)
-    * @details
-    * This checking should avoid reading any files which do not contain
-    * any dataset.
-    * @param file
-    * Filename of the FITS file to be read including the absolute path.
-    * @return
-    * true if it is a FITS file with dataset(at least with one HDU table)
-    */
+   * @brief
+   * Check that the ASCII file is a dataset file(with at least one line with
+   * 2 double values)
+   * @details
+   * This checking should avoid reading any files which do not contain
+   * any dataset.
+   * @param file
+   * Filename of the FITS file to be read including the absolute path.
+   * @return
+   * true if it is a FITS file with dataset(at least with one HDU table)
+   */
   bool isDatasetFile(const std::string& file) override;
 
   /// Default destructor
   virtual ~AsciiParser() = default;
 
- private:
-
+private:
   std::string m_regex_name;
-
 };
 
 } /* namespace XYDataset */
-} // end of namespace Euclid
+}  // end of namespace Euclid
 
-
-
-#endif // ASCIIPARSER_H_
+#endif  // ASCIIPARSER_H_

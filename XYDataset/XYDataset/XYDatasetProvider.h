@@ -1,22 +1,22 @@
 /*
- * Copyright (C) 2012-2020 Euclid Science Ground Segment    
- *  
+ * Copyright (C) 2012-2020 Euclid Science Ground Segment
+ *
  * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free 
- * Software Foundation; either version 3.0 of the License, or (at your option)  
- * any later version.  
- *  
- * This library is distributed in the hope that it will be useful, but WITHOUT 
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 3.0 of the License, or (at your option)
+ * any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more  
- * details.  
- *  
- * You should have received a copy of the GNU Lesser General Public License 
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
  * along with this library; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA  
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
- 
- /**
+
+/**
  * @file XYDataset/XYDatasetProvider.h
  *
  * @date Apr 10, 2014
@@ -26,11 +26,11 @@
 #ifndef XYDATASETPROVIDER_H_
 #define XYDATASETPROVIDER_H_
 
-#include <memory>
-#include <vector>
-#include <string>
-#include "XYDataset/XYDataset.h"
 #include "XYDataset/QualifiedName.h"
+#include "XYDataset/XYDataset.h"
+#include <memory>
+#include <string>
+#include <vector>
 
 namespace Euclid {
 namespace XYDataset {
@@ -46,9 +46,8 @@ namespace XYDataset {
  * getDatatset function gets from a qualified name the dataset of a XYDataset type.
  */
 
-class XYDatasetProvider
-{
- public:
+class XYDatasetProvider {
+public:
   /**
    * @brief
    * Virtual function to list all files contents in the "group" path
@@ -70,10 +69,9 @@ class XYDatasetProvider
    * @return
    * A vector of the qualified names of all datasets inside the given group (recursively)
    */
-   virtual std::vector<QualifiedName> listContents(const std::string& group) = 0;
+  virtual std::vector<QualifiedName> listContents(const std::string& group) = 0;
 
-
-   virtual std::string getParameter(const QualifiedName& qualified_name, const std::string& key_word) =0;
+  virtual std::string getParameter(const QualifiedName& qualified_name, const std::string& key_word) = 0;
 
   /**
    * @brief
@@ -84,15 +82,14 @@ class XYDatasetProvider
    * @return
    * A unique pointer of XYDataset type to the dataset
    */
-   virtual std::unique_ptr<XYDataset> getDataset(const QualifiedName& qualified_name) = 0;
+  virtual std::unique_ptr<XYDataset> getDataset(const QualifiedName& qualified_name) = 0;
 
-   virtual ~XYDatasetProvider() = default;
+  virtual ~XYDatasetProvider() = default;
 
- private:
-
+private:
 };
 
 } /* namespace XYDataset */
-} // end of namespace Euclid
+}  // end of namespace Euclid
 
-#endif // XYDATASETPROVIDER_H_ 
+#endif  // XYDATASETPROVIDER_H_

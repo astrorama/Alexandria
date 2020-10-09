@@ -17,30 +17,29 @@
  */
 
 /**
-* @file tests/src/SourceAttributes/PhotometryAttributeFromRow_test.cpp
-*
-* @date Apr 17, 2014
-* @author Pierre Dubath
-*/
+ * @file tests/src/SourceAttributes/PhotometryAttributeFromRow_test.cpp
+ *
+ * @date Apr 17, 2014
+ * @author Pierre Dubath
+ */
 
-#include <boost/test/unit_test.hpp>
-#include <memory>
-#include <map>
 #include "SourceCatalog/SourceAttributes/PhotometryAttributeFromRow.h"
+#include <boost/test/unit_test.hpp>
+#include <map>
+#include <memory>
 
 #include "../../../SourceCatalog/PhotometryParsingException.h"
-#include "SourceCatalog/SourceAttributes/Photometry.h"
 #include "ElementsKernel/Exception.h"
 #include "SourceCatalog/AttributeFromRow.h"
+#include "SourceCatalog/SourceAttributes/Photometry.h"
 #include "tests/src/TableFixture.h"
 
 using namespace Euclid::SourceCatalog;
 
-
 //-----------------------------------------------------------------------------
 //
 
-BOOST_AUTO_TEST_SUITE (PhotometryAttributeFromRow_test)
+BOOST_AUTO_TEST_SUITE(PhotometryAttributeFromRow_test)
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
@@ -48,18 +47,17 @@ BOOST_AUTO_TEST_SUITE (PhotometryAttributeFromRow_test)
 BOOST_FIXTURE_TEST_CASE(createAttribute_test, TableFixture) {
   BOOST_TEST_MESSAGE("--> createAttribute test ");
 
-  PhotometryAttributeFromRow paft{column_info_ptr, filter_name_mapping, true, 1.12345e-12, true, threshold_mapping,
-                                  -99};
+  PhotometryAttributeFromRow paft{column_info_ptr, filter_name_mapping, true, 1.12345e-12, true, threshold_mapping, -99};
 
   std::unique_ptr<Euclid::SourceCatalog::Attribute> attribute_ptr = paft.createAttribute(row1);
 
-  BOOST_CHECK( dynamic_cast<Euclid::SourceCatalog::Photometry*>(attribute_ptr.get()) != nullptr);
+  BOOST_CHECK(dynamic_cast<Euclid::SourceCatalog::Photometry*>(attribute_ptr.get()) != nullptr);
 
-  Euclid::SourceCatalog::Photometry* photometry = dynamic_cast<Euclid::SourceCatalog::Photometry*>( attribute_ptr.get() );
+  Euclid::SourceCatalog::Photometry* photometry = dynamic_cast<Euclid::SourceCatalog::Photometry*>(attribute_ptr.get());
   if (photometry) {
     BOOST_CHECK_CLOSE(photometry->find(v_filter_name)->flux, flux1_row1, tolerance);
     BOOST_CHECK_CLOSE(photometry->find(v_filter_name)->error, 0,
-                      tolerance); // When the missing photometry is set the error is 0
+                      tolerance);  // When the missing photometry is set the error is 0
     BOOST_CHECK(photometry->find(v_filter_name)->missing_photometry_flag);
     BOOST_CHECK_CLOSE(photometry->find(r_filter_name)->flux, flux2_row1, tolerance);
     BOOST_CHECK_CLOSE(photometry->find(r_filter_name)->error, error2_row1, tolerance);
@@ -102,9 +100,7 @@ BOOST_FIXTURE_TEST_CASE(exceptionalCaseNoMissingNoUpper_test, TableFixture) {
   BOOST_CHECK_THROW(paft_nn.createAttribute(row_zero_error), PhotometryParsingException);
   // error negatif: error
   BOOST_CHECK_THROW(paft_nn.createAttribute(row_neg_error), PhotometryParsingException);
-
 }
-
 
 BOOST_FIXTURE_TEST_CASE(exceptionalCaseMissingNoUpper_test, TableFixture) {
   BOOST_TEST_MESSAGE("--> Missing Data, No Upper Limit ");
@@ -117,7 +113,7 @@ BOOST_FIXTURE_TEST_CASE(exceptionalCaseMissingNoUpper_test, TableFixture) {
   BOOST_CHECK_CLOSE(photometry->find(v_filter_name)->error, 0.5, tolerance);
   BOOST_CHECK(!photometry->find(v_filter_name)->missing_photometry_flag);
   BOOST_CHECK(!photometry->find(v_filter_name)->upper_limit_flag);
-  
+
   // flux zero: read as it, no flags
   std::unique_ptr<Euclid::SourceCatalog::Attribute> attribute_yn_f0_ptr = paft_yn.createAttribute(row_zero_flux);
   photometry = dynamic_cast<Euclid::SourceCatalog::Photometry*>(attribute_yn_f0_ptr.get());
@@ -126,7 +122,7 @@ BOOST_FIXTURE_TEST_CASE(exceptionalCaseMissingNoUpper_test, TableFixture) {
   BOOST_CHECK_CLOSE(photometry->find(v_filter_name)->error, 0.5, tolerance);
   BOOST_CHECK(!photometry->find(v_filter_name)->missing_photometry_flag);
   BOOST_CHECK(!photometry->find(v_filter_name)->upper_limit_flag);
-  
+
   // flux negatif: read as it, no flags
   std::unique_ptr<Euclid::SourceCatalog::Attribute> attribute_yn_fm_ptr = paft_yn.createAttribute(row_neg_flux);
   photometry = dynamic_cast<Euclid::SourceCatalog::Photometry*>(attribute_yn_fm_ptr.get());
@@ -135,7 +131,6 @@ BOOST_FIXTURE_TEST_CASE(exceptionalCaseMissingNoUpper_test, TableFixture) {
   BOOST_CHECK_CLOSE(photometry->find(v_filter_name)->error, 0.5, tolerance);
   BOOST_CHECK(!photometry->find(v_filter_name)->missing_photometry_flag);
   BOOST_CHECK(!photometry->find(v_filter_name)->upper_limit_flag);
-  
 
   // flux =Flag: Missing photometry Flag Error=0
   std::unique_ptr<Euclid::SourceCatalog::Attribute> attribute_yn_fF_ptr = paft_yn.createAttribute(row_flag_flux);
@@ -144,10 +139,9 @@ BOOST_FIXTURE_TEST_CASE(exceptionalCaseMissingNoUpper_test, TableFixture) {
   BOOST_CHECK_CLOSE(photometry->find(v_filter_name)->error, 0., tolerance);
   BOOST_CHECK(photometry->find(v_filter_name)->missing_photometry_flag);
   BOOST_CHECK(!photometry->find(v_filter_name)->upper_limit_flag);
- 
+
   // flux =Flag error<0: Missing photometry Flag Error=0
-  std::unique_ptr<Euclid::SourceCatalog::Attribute> attribute_yn_fFem_ptr = paft_yn.createAttribute(
-    row_flag_flux_neg_error);
+  std::unique_ptr<Euclid::SourceCatalog::Attribute> attribute_yn_fFem_ptr = paft_yn.createAttribute(row_flag_flux_neg_error);
   photometry = dynamic_cast<Euclid::SourceCatalog::Photometry*>(attribute_yn_fFem_ptr.get());
   BOOST_CHECK(photometry != nullptr);
   BOOST_CHECK_CLOSE(photometry->find(v_filter_name)->error, 0., tolerance);
@@ -161,7 +155,6 @@ BOOST_FIXTURE_TEST_CASE(exceptionalCaseMissingNoUpper_test, TableFixture) {
   BOOST_CHECK_THROW(paft_yn.createAttribute(row_neg_error), PhotometryParsingException);
 }
 
-
 BOOST_FIXTURE_TEST_CASE(exceptionalCaseNoMissingUpper_test, TableFixture) {
   BOOST_TEST_MESSAGE("--> No Missing Data, Upper Limit ");
   PhotometryAttributeFromRow paft_ny{column_info_ptr, filter_name_mapping, false, -99., true, threshold_mapping, -99};
@@ -173,7 +166,7 @@ BOOST_FIXTURE_TEST_CASE(exceptionalCaseNoMissingUpper_test, TableFixture) {
   BOOST_CHECK_CLOSE(photometry->find(v_filter_name)->error, 0.5, tolerance);
   BOOST_CHECK(!photometry->find(v_filter_name)->missing_photometry_flag);
   BOOST_CHECK(!photometry->find(v_filter_name)->upper_limit_flag);
- 
+
   // flux zero: read as it, no flags
   std::unique_ptr<Euclid::SourceCatalog::Attribute> attribute_ny_f0_ptr = paft_ny.createAttribute(row_zero_flux);
   photometry = dynamic_cast<Euclid::SourceCatalog::Photometry*>(attribute_ny_f0_ptr.get());
@@ -191,7 +184,7 @@ BOOST_FIXTURE_TEST_CASE(exceptionalCaseNoMissingUpper_test, TableFixture) {
   BOOST_CHECK_CLOSE(photometry->find(v_filter_name)->error, 0.5, tolerance);
   BOOST_CHECK(!photometry->find(v_filter_name)->missing_photometry_flag);
   BOOST_CHECK(!photometry->find(v_filter_name)->upper_limit_flag);
-  
+
   // Error==0: error
   BOOST_CHECK_THROW(paft_ny.createAttribute(row_zero_error), PhotometryParsingException);
   // Error<0 Flux<0: error
@@ -207,11 +200,9 @@ BOOST_FIXTURE_TEST_CASE(exceptionalCaseNoMissingUpper_test, TableFixture) {
   BOOST_CHECK_CLOSE(photometry->find(v_filter_name)->error, 0.5, tolerance);
   BOOST_CHECK(!photometry->find(v_filter_name)->missing_photometry_flag);
   BOOST_CHECK(photometry->find(v_filter_name)->upper_limit_flag);
- 
 
   // error negative = Threshold Flag: flag as upper limit,  Error = |Error|, Flux=Flux/n
-  std::unique_ptr<Euclid::SourceCatalog::Attribute> attribute_ny_em_fl_ptr = paft_ny.createAttribute(
-    row_neg_error_flag);
+  std::unique_ptr<Euclid::SourceCatalog::Attribute> attribute_ny_em_fl_ptr = paft_ny.createAttribute(row_neg_error_flag);
   photometry = dynamic_cast<Euclid::SourceCatalog::Photometry*>(attribute_ny_em_fl_ptr.get());
   BOOST_CHECK(photometry != nullptr);
   BOOST_CHECK_CLOSE(photometry->find(v_filter_name)->flux, 1., tolerance);
@@ -223,9 +214,6 @@ BOOST_FIXTURE_TEST_CASE(exceptionalCaseNoMissingUpper_test, TableFixture) {
   BOOST_CHECK_CLOSE(photometry->find(r_filter_name)->error, 3. / 5., tolerance);
   BOOST_CHECK(!photometry->find(r_filter_name)->missing_photometry_flag);
   BOOST_CHECK(photometry->find(r_filter_name)->upper_limit_flag);
-
-
-
 }
 
 BOOST_FIXTURE_TEST_CASE(exceptionalCaseMissingUpper_test, TableFixture) {
@@ -239,7 +227,7 @@ BOOST_FIXTURE_TEST_CASE(exceptionalCaseMissingUpper_test, TableFixture) {
   BOOST_CHECK_CLOSE(photometry->find(v_filter_name)->error, 0.5, tolerance);
   BOOST_CHECK(!photometry->find(v_filter_name)->missing_photometry_flag);
   BOOST_CHECK(!photometry->find(v_filter_name)->upper_limit_flag);
- 
+
   // flux zero: read as it, no flags
   std::unique_ptr<Euclid::SourceCatalog::Attribute> attribute_yy_f0_ptr = paft_yy.createAttribute(row_zero_flux);
   photometry = dynamic_cast<Euclid::SourceCatalog::Photometry*>(attribute_yy_f0_ptr.get());
@@ -258,7 +246,6 @@ BOOST_FIXTURE_TEST_CASE(exceptionalCaseMissingUpper_test, TableFixture) {
   BOOST_CHECK(!photometry->find(v_filter_name)->missing_photometry_flag);
   BOOST_CHECK(!photometry->find(v_filter_name)->upper_limit_flag);
 
-
   // Error==0: error
   BOOST_CHECK_THROW(paft_yy.createAttribute(row_zero_error), PhotometryParsingException);
 
@@ -269,16 +256,14 @@ BOOST_FIXTURE_TEST_CASE(exceptionalCaseMissingUpper_test, TableFixture) {
   BOOST_CHECK_CLOSE(photometry->find(v_filter_name)->error, 0., tolerance);
   BOOST_CHECK(photometry->find(v_filter_name)->missing_photometry_flag);
   BOOST_CHECK(!photometry->find(v_filter_name)->upper_limit_flag);
-  
+
   // flux = Flag error<0: Missing photometry Flag Error=0
-  std::unique_ptr<Euclid::SourceCatalog::Attribute> attribute_yy_fFem_ptr = paft_yy.createAttribute(
-    row_flag_flux_neg_error);
+  std::unique_ptr<Euclid::SourceCatalog::Attribute> attribute_yy_fFem_ptr = paft_yy.createAttribute(row_flag_flux_neg_error);
   photometry = dynamic_cast<Euclid::SourceCatalog::Photometry*>(attribute_yy_fFem_ptr.get());
   BOOST_CHECK(photometry != nullptr);
   BOOST_CHECK_CLOSE(photometry->find(v_filter_name)->error, 0., tolerance);
   BOOST_CHECK(photometry->find(v_filter_name)->missing_photometry_flag);
   BOOST_CHECK(!photometry->find(v_filter_name)->upper_limit_flag);
-
 
   // error negatif: flag as upper limit Error = |Error|
   std::unique_ptr<Euclid::SourceCatalog::Attribute> attribute_yy_em_ptr = paft_yy.createAttribute(row_neg_error);
@@ -289,7 +274,6 @@ BOOST_FIXTURE_TEST_CASE(exceptionalCaseMissingUpper_test, TableFixture) {
   BOOST_CHECK(!photometry->find(v_filter_name)->missing_photometry_flag);
   BOOST_CHECK(photometry->find(v_filter_name)->upper_limit_flag);
 
-
   // Error<0 Flux=0: error
   BOOST_CHECK_THROW(paft_yy.createAttribute(row_zero_flux_neg_error), PhotometryParsingException);
   // Error<0 Flux<0: error
@@ -298,6 +282,4 @@ BOOST_FIXTURE_TEST_CASE(exceptionalCaseMissingUpper_test, TableFixture) {
 
 //-----------------------------------------------------------------------------
 
-BOOST_AUTO_TEST_SUITE_END ()
-
-
+BOOST_AUTO_TEST_SUITE_END()

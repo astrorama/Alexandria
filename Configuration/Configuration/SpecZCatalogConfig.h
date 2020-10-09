@@ -39,7 +39,6 @@ namespace Configuration {
 class SpecZCatalogConfig : public Configuration {
 
 public:
-
   /// Constructs a new SpecZCatalogConfig object
   explicit SpecZCatalogConfig(long manager_id);
 
@@ -101,11 +100,9 @@ public:
   void initialize(const UserValues& args) override;
 
 private:
-
 }; /* End of SpecZCatalogConfig class */
 
 } /* namespace Configuration */
 } /* namespace Euclid */
-
 
 #endif

@@ -25,11 +25,11 @@
 #ifndef _TABLE_COLUMNDESCRIPTION_H
 #define _TABLE_COLUMNDESCRIPTION_H
 
+#include <functional>
+#include <iomanip>
+#include <ostream>
 #include <string>
 #include <typeindex>
-#include <iomanip>
-#include <functional>
-#include <ostream>
 
 namespace Euclid {
 namespace Table {
@@ -55,22 +55,20 @@ namespace Table {
 class ColumnDescription {
 
 public:
-
   /// Constructs a new ColumnDescription instance
   /// @throws Elements::Exception
   ///     if the name is the empty string or if it contains whitespaces
-  ColumnDescription(std::string name, std::type_index type=typeid(std::string),
-                    std::string unit="", std::string description="");
+  ColumnDescription(std::string name, std::type_index type = typeid(std::string), std::string unit = "",
+                    std::string description = "");
 
   ColumnDescription(const ColumnDescription&) = default;
-  ColumnDescription(ColumnDescription&&) = default;
+  ColumnDescription(ColumnDescription&&)      = default;
   ColumnDescription& operator=(const ColumnDescription&) = default;
   ColumnDescription& operator=(ColumnDescription&&) = default;
 
-
   /// Returns true if the two ColumnDescriptions do not describe the same column
   bool operator!=(const ColumnDescription& other) const {
-    return !(*this == other); // Reuse equals operator
+    return !(*this == other);  // Reuse equals operator
   }
 
   /// Returns true if the two ColumnDescriptions describe the same column
@@ -79,15 +77,14 @@ public:
     return name == other.name && type == other.type && unit == other.unit;
   }
 
-  std::string name;
+  std::string     name;
   std::type_index type;
-  std::string unit;
-  std::string description;
+  std::string     unit;
+  std::string     description;
 
 }; /* End of ColumnDescription class */
 
 } /* namespace Table */
 } /* namespace Euclid */
-
 
 #endif

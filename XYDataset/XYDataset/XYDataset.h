@@ -16,7 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
- /**
+/**
  * @file XYDataset/XYDataset.h
  *
  * @date Apr 8, 2014
@@ -26,11 +26,11 @@
 #ifndef XYDATASET_H_
 #define XYDATASET_H_
 
-#include <memory>
-#include <vector>
-#include <string>
 #include <iterator>
+#include <memory>
+#include <string>
 #include <utility>
+#include <vector>
 
 #include "ElementsKernel/Export.h"
 
@@ -56,110 +56,105 @@ namespace XYDataset {
  * ElementException :  Vectors must have the same size!
  */
 
- class ELEMENTS_API XYDataset
- {
+class ELEMENTS_API XYDataset {
 
- public:
+public:
+  typedef std::vector<std::pair<double, double>>::const_iterator const_iterator;
 
-   typedef std::vector<std::pair<double, double>>::const_iterator const_iterator;
+  /**
+   * @brief Constructor
+   * XYDataset interface represents an immutable data set
+   *
+   * @details
+   * XYDataset interface represents an immutable data set, where both X and Y axes contain double values.
+   * It provides iterators both for the (X,Y) pairs and for the axes values independently.
+   *
+   * @param values
+   * A vector of pair of doubles
+   *
+   */
+  XYDataset(std::vector<std::pair<double, double>> values) : m_values(std::move(values)){};
 
-   /**
-    * @brief Constructor
-    * XYDataset interface represents an immutable data set
-    *
-    * @details
-    * XYDataset interface represents an immutable data set, where both X and Y axes contain double values.
-    * It provides iterators both for the (X,Y) pairs and for the axes values independently.
-    *
-    * @param values
-    * A vector of pair of doubles
-    *
-    */
-   XYDataset(std::vector<std::pair<double, double>> values)
-             : m_values(std::move(values)) {  };
+  /// Copy constructor
+  XYDataset(const XYDataset&) = default;
 
-   /// Copy constructor
-   XYDataset(const XYDataset&) = default;
+  /// Move constructor
+  XYDataset(XYDataset&&) = default;
 
-   /// Move constructor
-   XYDataset(XYDataset&&) = default;
+  /**
+   * @brief
+   * Make a XYDataset object from a vector of pair of doubles
+   * @param vector_pair
+   * A vector of pair of doubles
+   * @return
+   * A unique pointer of XYDataset type
+   */
+  static XYDataset factory(std::vector<std::pair<double, double>> vector_pair);
 
-   /**
-    * @brief
-    * Make a XYDataset object from a vector of pair of doubles
-    * @param vector_pair
-    * A vector of pair of doubles
-     * @return
-    * A unique pointer of XYDataset type
-    */
-   static XYDataset factory(std::vector<std::pair<double, double>> vector_pair);
+  /**
+   * @brief
+   * Make a XYDataset object from two vectors of doubles
+   * @param x
+   * A vector of double values
+   * @param y
+   * A vector of double values
+   * @return
+   * A unique pointer of XYDataset type
+   */
+  static XYDataset factory(const std::vector<double>& x, const std::vector<double>& y);
 
-   /**
-    * @brief
-    * Make a XYDataset object from two vectors of doubles
-    * @param x
-    * A vector of double values
-    * @param y
-    * A vector of double values
-     * @return
-    * A unique pointer of XYDataset type
-    */
-   static XYDataset factory(const std::vector<double>& x, const std::vector<double>& y);
+  /**
+   * @brief Destructor
+   */
+  virtual ~XYDataset() = default;
 
-   /**
-    * @brief Destructor
-    */
-   virtual ~XYDataset() = default;
+  /**
+   * @brief
+   * Returns a const iterator to the first pair of the dataset
+   * @return
+   * An iterator to the first pair
+   */
+  const_iterator begin() const;
 
-   /**
-    * @brief
-    * Returns a const iterator to the first pair of the dataset
-    * @return
-    * An iterator to the first pair
-    */
-   const_iterator begin() const;
+  /**
+   * @brief
+   * Returns a const iterator to the one after last pair dataset
+   * @return
+   * An iterator to the last pair dataset
+   */
+  const_iterator end() const;
 
-   /**
-    * @brief
-    * Returns a const iterator to the one after last pair dataset
-    * @return
-    * An iterator to the last pair dataset
-    */
-   const_iterator end() const;
+  /**
+   * @brief
+   * Returns a reference to the first pair of the dataset
+   * @return
+   * A reference to the first pair of the dataset
+   */
+  const std::pair<double, double>& front() const;
 
-   /**
-    * @brief
-    * Returns a reference to the first pair of the dataset
-    * @return
-    * A reference to the first pair of the dataset
-    */
-   const std::pair<double, double>& front() const;
+  /**
+   * @brief
+   * Returns a reference to the last pair of the dataset
+   * @return
+   * A reference to the last pair of the dataset
+   */
+  const std::pair<double, double>& back() const;
 
-   /**
-    * @brief
-    * Returns a reference to the last pair of the dataset
-    * @return
-    * A reference to the last pair of the dataset
-    */
-   const std::pair<double, double>& back() const;
+  /**
+   * @brief
+   *  Get the size of the vector container
+   * @return
+   *  The size of the container which is the number of Source objects
+   */
+  size_t size() const {
+    return m_values.size();
+  }
 
-   /**
-    * @brief
-    *  Get the size of the vector container
-    * @return
-    *  The size of the container which is the number of Source objects
-    */
-   size_t size() const { return m_values.size(); }
-
- private:
-
-   std::vector<std::pair<double, double>> m_values { };
-
- };
+private:
+  std::vector<std::pair<double, double>> m_values{};
+};
 
 } /* namespace XYDataset */
-} // end of namespace Euclid
+}  // end of namespace Euclid
 
-
-
-#endif // XYDATASET_H_
+#endif  // XYDATASET_H_

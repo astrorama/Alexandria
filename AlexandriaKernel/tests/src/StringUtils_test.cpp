@@ -16,8 +16,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#include <boost/test/unit_test.hpp>
 #include <ElementsKernel/Exception.h>
+#include <boost/test/unit_test.hpp>
 
 #include "AlexandriaKernel/StringUtils.h"
 

@@ -21,50 +21,47 @@
 //-----------------------------------------------------------------------------
 // Implementation of the iterator
 
-template<bool Const>
-Photometry::PhotometryIterator<Const>::PhotometryIterator(const filters_iter_t& filters_iter,
-                                                          const values_iter_t& values_iter)
-  : m_filters_iter{filters_iter}, m_values_iter{values_iter} {
-}
+template <bool Const>
+Photometry::PhotometryIterator<Const>::PhotometryIterator(const filters_iter_t& filters_iter, const values_iter_t& values_iter)
+    : m_filters_iter{filters_iter}, m_values_iter{values_iter} {}
 
-template<bool Const>
+template <bool Const>
 Photometry::PhotometryIterator<Const>::PhotometryIterator(const PhotometryIterator<false>& other)
-  : m_filters_iter{other.m_filters_iter}, m_values_iter{other.m_values_iter} {
-}
+    : m_filters_iter{other.m_filters_iter}, m_values_iter{other.m_values_iter} {}
 
-template<bool Const>
+template <bool Const>
 Photometry::PhotometryIterator<Const>& Photometry::PhotometryIterator<Const>::operator++() {
   ++m_filters_iter;
   ++m_values_iter;
   return *this;
 }
 
-template<bool Const>
+template <bool Const>
 bool Photometry::PhotometryIterator<Const>::operator==(const PhotometryIterator& other) const {
   return m_filters_iter == other.m_filters_iter;
 }
 
-template<bool Const>
+template <bool Const>
 bool Photometry::PhotometryIterator<Const>::operator!=(const PhotometryIterator& other) const {
   return m_filters_iter != other.m_filters_iter;
 }
 
-template<bool Const>
+template <bool Const>
 auto Photometry::PhotometryIterator<Const>::operator*() -> reference {
   return *m_values_iter;
 }
 
-template<bool Const>
+template <bool Const>
 auto Photometry::PhotometryIterator<Const>::operator->() -> pointer {
   return m_values_iter.operator->();
 }
 
-template<bool Const>
+template <bool Const>
 ssize_t Photometry::PhotometryIterator<Const>::operator-(const PhotometryIterator& other) const {
   return m_values_iter - other.m_values_iter;
 }
 
-template<bool Const>
+template <bool Const>
 const std::string& Photometry::PhotometryIterator<Const>::filterName() const {
   return *m_filters_iter;
 }

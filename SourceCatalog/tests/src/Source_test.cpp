@@ -16,19 +16,19 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
- /**
+/**
  * @file tests/src/Source_test.cpp
  *
  *  Created on: Jan 14, 2013
  *      Author: dubath
  */
 
-#include <boost/test/unit_test.hpp>
-#include "SourceCatalog/Source.h"
 #include "SourceCatalog/Attribute.h"
+#include "SourceCatalog/Source.h"
 #include "SourceCatalog/SourceAttributes/Coordinates.h"
 #include "SourceCatalog/SourceAttributes/Photometry.h"
 #include "SourceCatalog/SourceAttributes/SpectroscopicRedshift.h"
+#include <boost/test/unit_test.hpp>
 
 #include "ElementsKernel/Exception.h"
 
@@ -43,54 +43,52 @@ using namespace Euclid::SourceCatalog;
 
 //-----------------------------------------------------------------------------
 
-BOOST_AUTO_TEST_SUITE (Source_test)
+BOOST_AUTO_TEST_SUITE(Source_test)
 
-BOOST_FIXTURE_TEST_CASE( getAttribute_test, CatalogFixture ) {
+BOOST_FIXTURE_TEST_CASE(getAttribute_test, CatalogFixture) {
 
-   BOOST_TEST_MESSAGE("--> getAttribute test ");
+  BOOST_TEST_MESSAGE("--> getAttribute test ");
 
   std::shared_ptr<Photometry> test_photometry_ptr(source_1.getAttribute<Photometry>());
-//   cout << " Flux  : " << (ptrPhoto->find(expectedFilterName))->flux
-//        << " Error : " << (ptrPhoto->find(expectedFilterName))->error
-//        << endl;
-   BOOST_CHECK_CLOSE(expected_flux_1, (test_photometry_ptr->find(expected_filter_name_1))->flux, tolerance);
-   BOOST_CHECK_CLOSE(expected_error_2, (test_photometry_ptr->find(expected_filter_name_2))->error, tolerance);
+  //   cout << " Flux  : " << (ptrPhoto->find(expectedFilterName))->flux
+  //        << " Error : " << (ptrPhoto->find(expectedFilterName))->error
+  //        << endl;
+  BOOST_CHECK_CLOSE(expected_flux_1, (test_photometry_ptr->find(expected_filter_name_1))->flux, tolerance);
+  BOOST_CHECK_CLOSE(expected_error_2, (test_photometry_ptr->find(expected_filter_name_2))->error, tolerance);
 
   std::shared_ptr<Coordinates> coordinate_ptr(source_1.getAttribute<Coordinates>());
-//   cout << " Ra  : " << ptrCoord->getRa()
-//        << " Dec : " << ptrCoord->getDec()
-//        << endl;
-   BOOST_CHECK_CLOSE(expected_ra_1, coordinate_ptr->getRa(), tolerance);
-   BOOST_CHECK_CLOSE(expected_dec_1, coordinate_ptr->getDec(), tolerance);
+  //   cout << " Ra  : " << ptrCoord->getRa()
+  //        << " Dec : " << ptrCoord->getDec()
+  //        << endl;
+  BOOST_CHECK_CLOSE(expected_ra_1, coordinate_ptr->getRa(), tolerance);
+  BOOST_CHECK_CLOSE(expected_dec_1, coordinate_ptr->getDec(), tolerance);
 
   std::shared_ptr<SpectroscopicRedshift> redshift_ptr(source_1.getAttribute<SpectroscopicRedshift>());
-//   cout << " Zvalue : " << ptrRedshift->getValue()
-//        << " Error  : " << ptrRedshift->getError()
-//        << endl;
-   BOOST_CHECK_CLOSE(expected_z_value, redshift_ptr->getValue(), tolerance);
-   BOOST_CHECK_CLOSE(expected_z_error, redshift_ptr->getError(), tolerance);
-
+  //   cout << " Zvalue : " << ptrRedshift->getValue()
+  //        << " Error  : " << ptrRedshift->getError()
+  //        << endl;
+  BOOST_CHECK_CLOSE(expected_z_value, redshift_ptr->getValue(), tolerance);
+  BOOST_CHECK_CLOSE(expected_z_error, redshift_ptr->getError(), tolerance);
 }
 
 //-----------------------------------------------------------------------------
 
-BOOST_FIXTURE_TEST_CASE( getId_test, CatalogFixture ) {
+BOOST_FIXTURE_TEST_CASE(getId_test, CatalogFixture) {
 
-   BOOST_TEST_MESSAGE("--> getId test ");
-   auto sourceId = source_1.getId();
-   BOOST_CHECK_EQUAL(expected_source_id_1, sourceId);
-
+  BOOST_TEST_MESSAGE("--> getId test ");
+  auto sourceId = source_1.getId();
+  BOOST_CHECK_EQUAL(expected_source_id_1, sourceId);
 }
 
 //-----------------------------------------------------------------------------
 
-BOOST_FIXTURE_TEST_CASE( missing_attribute_test, CatalogFixture ) {
+BOOST_FIXTURE_TEST_CASE(missing_attribute_test, CatalogFixture) {
 
-   BOOST_TEST_MESSAGE("--> missing_attribute test ");
-   std::shared_ptr<Photometry> ptrPhoto(source_2.getAttribute<Photometry>());
-   BOOST_CHECK(nullptr == ptrPhoto);
+  BOOST_TEST_MESSAGE("--> missing_attribute test ");
+  std::shared_ptr<Photometry> ptrPhoto(source_2.getAttribute<Photometry>());
+  BOOST_CHECK(nullptr == ptrPhoto);
 }
 
 //-----------------------------------------------------------------------------
 
-BOOST_AUTO_TEST_SUITE_END ()
+BOOST_AUTO_TEST_SUITE_END()

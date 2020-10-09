@@ -19,11 +19,11 @@
 #ifndef ALEXANDRIA_NDARRAY_IMPL_NPYCOMMON_H
 #define ALEXANDRIA_NDARRAY_IMPL_NPYCOMMON_H
 
+#include "AlexandriaKernel/StringUtils.h"
 #include <boost/endian/arithmetic.hpp>
 #include <boost/filesystem/operations.hpp>
 #include <boost/iostreams/device/mapped_file.hpp>
 #include <boost/regex.hpp>
-#include "AlexandriaKernel/StringUtils.h"
 
 namespace Euclid {
 namespace NdArray {
@@ -40,7 +40,7 @@ constexpr const char NPY_MAGIC[] = {'\x93', 'N', 'U', 'M', 'P', 'Y'};
  * Endianness marker for the numpy array
  */
 #if BYTE_ORDER == LITTLE_ENDIAN
-constexpr const char *ENDIAN_MARKER = "<";
+constexpr const char* ENDIAN_MARKER = "<";
 #elif BYTE_ORDER == BIG_ENDIAN
 constexpr const char* ENDIAN_MARKER = ">";
 #else
@@ -50,58 +50,57 @@ constexpr const char* ENDIAN_MARKER = ">";
 /**
  * Map a primitive type to a string representation for numpy
  */
-template<typename T>
-struct NpyDtype {
-};
+template <typename T>
+struct NpyDtype {};
 
-template<>
+template <>
 struct NpyDtype<int8_t> {
-  static constexpr const char *str = "b";
+  static constexpr const char* str = "b";
 };
 
-template<>
+template <>
 struct NpyDtype<int16_t> {
-  static constexpr const char *str = "i2";
+  static constexpr const char* str = "i2";
 };
 
-template<>
+template <>
 struct NpyDtype<int32_t> {
-  static constexpr const char *str = "i4";
+  static constexpr const char* str = "i4";
 };
 
-template<>
+template <>
 struct NpyDtype<int64_t> {
-  static constexpr const char *str = "i8";
+  static constexpr const char* str = "i8";
 };
 
-template<>
+template <>
 struct NpyDtype<uint8_t> {
-  static constexpr const char *str = "B";
+  static constexpr const char* str = "B";
 };
 
-template<>
+template <>
 struct NpyDtype<uint16_t> {
-  static constexpr const char *str = "u2";
+  static constexpr const char* str = "u2";
 };
 
-template<>
+template <>
 struct NpyDtype<uint32_t> {
-  static constexpr const char *str = "u4";
+  static constexpr const char* str = "u4";
 };
 
-template<>
+template <>
 struct NpyDtype<uint64_t> {
-  static constexpr const char *str = "u8";
+  static constexpr const char* str = "u8";
 };
 
-template<>
+template <>
 struct NpyDtype<float> {
-  static constexpr const char *str = "f4";
+  static constexpr const char* str = "f4";
 };
 
-template<>
+template <>
 struct NpyDtype<double> {
-  static constexpr const char *str = "f8";
+  static constexpr const char* str = "f8";
 };
 
 /**
@@ -109,7 +108,7 @@ struct NpyDtype<double> {
  */
 inline void parseSingleValue(const std::string& descr, bool& big_endian, std::string& dtype) {
   big_endian = (descr.front() == '>');
-  dtype = descr.substr(1);
+  dtype      = descr.substr(1);
 }
 
 /**
@@ -120,24 +119,22 @@ inline void parseSingleValue(const std::string& descr, bool& big_endian, std::st
  *  NdArrays only support uniform types, so this method will fail if there are mixed types on the
  *  npy file
  */
-inline void parseFieldValues(const std::string& descr, bool& big_endian, std::vector<std::string>& attrs,
-                             std::string& dtype) {
+inline void parseFieldValues(const std::string& descr, bool& big_endian, std::vector<std::string>& attrs, std::string& dtype) {
   static const boost::regex field_expr("\\('([^']*)',\\s*'([^']*)'\\)");
 
   boost::match_results<std::string::const_iterator> match;
-  auto start = descr.begin();
-  auto end = descr.end();
+  auto                                              start = descr.begin();
+  auto                                              end   = descr.end();
 
   while (boost::regex_search(start, end, match, field_expr)) {
-    bool endian_aux;
+    bool        endian_aux;
     std::string dtype_aux;
 
     parseSingleValue(match[2].str(), endian_aux, dtype_aux);
     if (dtype.empty()) {
-      dtype = dtype_aux;
+      dtype      = dtype_aux;
       big_endian = endian_aux;
-    }
-    else if (dtype != dtype_aux || big_endian != endian_aux) {
+    } else if (dtype != dtype_aux || big_endian != endian_aux) {
       throw std::invalid_argument("NdArray only supports uniform types");
     }
     attrs.emplace_back(match[1].str());
@@ -163,10 +160,9 @@ inline void parseFieldValues(const std::string& descr, bool& big_endian, std::ve
  * @param n_elements [out]
  *  Total number of elements (multiplication of shape)
  */
-inline void parseNpyDict(const std::string& header, bool& fortran_order, bool& big_endian,
-                         std::string& dtype, std::vector<size_t>& shape, std::vector<std::string>& attrs,
-                         size_t& n_elements) {
-  auto loc = header.find("fortran_order") + 16;
+inline void parseNpyDict(const std::string& header, bool& fortran_order, bool& big_endian, std::string& dtype,
+                         std::vector<size_t>& shape, std::vector<std::string>& attrs, size_t& n_elements) {
+  auto loc      = header.find("fortran_order") + 16;
   fortran_order = (header.substr(loc, 4) == "True");
 
   loc = header.find("descr") + 8;
@@ -174,21 +170,19 @@ inline void parseNpyDict(const std::string& header, bool& fortran_order, bool& b
   if (header[loc] == '\'') {
     auto end = header.find('\'', loc + 1);
     parseSingleValue(header.substr(loc + 1, end - loc - 1), big_endian, dtype);
-  }
-  else if (header[loc] == '[') {
+  } else if (header[loc] == '[') {
     auto end = header.find(']', loc + 1);
     parseFieldValues(header.substr(loc + 1, end - loc - 1), big_endian, attrs, dtype);
-  }
-  else {
+  } else {
     throw Elements::Exception() << "Failed to parse the array description: " << header;
   }
 
-  loc = header.find("shape") + 9;
-  auto loc2 = header.find(')', loc);
+  loc            = header.find("shape") + 9;
+  auto loc2      = header.find(')', loc);
   auto shape_str = header.substr(loc, loc2 - loc);
   if (shape_str.back() == ',')
     shape_str.resize(shape_str.size() - 1);
-  shape = stringToVector<size_t>(shape_str);
+  shape      = stringToVector<size_t>(shape_str);
   n_elements = std::accumulate(shape.begin(), shape.end(), 1, std::multiplies<size_t>());
 }
 
@@ -206,8 +200,8 @@ inline void parseNpyDict(const std::string& header, bool& fortran_order, bool& b
  *  Total number of elements (multiplication of shape)
  * @return
  */
-inline void readNpyHeader(std::istream& input, std::string& dtype, std::vector<size_t>& shape,
-                          std::vector<std::string>& attrs, size_t& n_elements) {
+inline void readNpyHeader(std::istream& input, std::string& dtype, std::vector<size_t>& shape, std::vector<std::string>& attrs,
+                          size_t& n_elements) {
   // Magic
   char magic[6];
   input.read(magic, sizeof(magic));
@@ -218,19 +212,17 @@ inline void readNpyHeader(std::istream& input, std::string& dtype, std::vector<s
   // Version and header len
   little_uint32_t header_len;
   little_uint16_t version;
-  input.read(reinterpret_cast<char *>(&version), sizeof(version));
+  input.read(reinterpret_cast<char*>(&version), sizeof(version));
   if (version > 30) {
     throw Elements::Exception() << "Only numpy arrays with version 3 or less are supported";
-  }
-  else if (version.data()[0] == 1) {
+  } else if (version.data()[0] == 1) {
     // 16 bits integer in little endian
     little_uint16_t aux;
-    input.read(reinterpret_cast<char *>(&aux), sizeof(aux));
+    input.read(reinterpret_cast<char*>(&aux), sizeof(aux));
     header_len = aux;
-  }
-  else {
+  } else {
     // 32 bits integer in little endian
-    input.read(reinterpret_cast<char *>(&header_len), sizeof(header_len));
+    input.read(reinterpret_cast<char*>(&header_len), sizeof(header_len));
   }
 
   // Read header
@@ -268,13 +260,11 @@ inline std::string npyShape(std::vector<size_t> shape) {
   return shape_stream.str();
 }
 
-
 inline std::string typeDescription(const std::string& type, const std::vector<std::string>& attrs) {
   std::stringstream dtype;
   if (attrs.empty()) {
     dtype << '\'' << ENDIAN_MARKER << type << '\'';
-  }
-  else {
+  } else {
     dtype << '[';
     for (auto& attr : attrs) {
       dtype << "('" << attr << "', '" << ENDIAN_MARKER << type << "'), ";
@@ -287,7 +277,7 @@ inline std::string typeDescription(const std::string& type, const std::vector<st
 /**
  * Write header
  */
-template<typename T>
+template <typename T>
 void writeNpyHeader(std::ostream& out, std::vector<size_t> shape, const std::vector<std::string>& attrs) {
   if (!attrs.empty()) {
     if (attrs.size() != shape.back()) {
@@ -298,15 +288,14 @@ void writeNpyHeader(std::ostream& out, std::vector<size_t> shape, const std::vec
   // Serialize header as a Python dict
   std::stringstream header;
   header << "{"
-         << "'descr': " << typeDescription(NpyDtype<T>::str, attrs) << ", 'fortran_order': False, 'shape': "
-         << npyShape(shape)
+         << "'descr': " << typeDescription(NpyDtype<T>::str, attrs) << ", 'fortran_order': False, 'shape': " << npyShape(shape)
          << "}";
-  auto header_str = header.str();
+  auto            header_str = header.str();
   little_uint32_t header_len = header_str.size();
 
   // Pad header with spaces so the header block is 64 bytes aligned
-  size_t total_length = sizeof(NPY_MAGIC) + sizeof(NPY_VERSION) + sizeof(header_len) + header_len - 1; // Keep 1 for \n
-  size_t padding = 64 - total_length % 64;
+  size_t total_length = sizeof(NPY_MAGIC) + sizeof(NPY_VERSION) + sizeof(header_len) + header_len - 1;  // Keep 1 for \n
+  size_t padding      = 64 - total_length % 64;
   if (padding) {
     header << std::string(padding, '\x20') << '\n';
     header_str = header.str();
@@ -315,10 +304,10 @@ void writeNpyHeader(std::ostream& out, std::vector<size_t> shape, const std::vec
 
   // Magic and version
   out.write(NPY_MAGIC, sizeof(NPY_MAGIC));
-  out.write(reinterpret_cast<const char *>(&NPY_VERSION), sizeof(NPY_VERSION));
+  out.write(reinterpret_cast<const char*>(&NPY_VERSION), sizeof(NPY_VERSION));
 
   // HEADER_LEN
-  out.write(reinterpret_cast<char *>(&header_len), sizeof(header_len));
+  out.write(reinterpret_cast<char*>(&header_len), sizeof(header_len));
 
   // HEADER
   out.write(header_str.data(), header_str.size());
@@ -330,22 +319,24 @@ void writeNpyHeader(std::ostream& out, std::vector<size_t> shape, const std::vec
  * @tparam T
  *  Contained value type
  */
-template<typename T>
+template <typename T>
 class MappedContainer {
 public:
   MappedContainer(const boost::filesystem::path& path, size_t data_offset, size_t n_elements,
-                  const std::vector<std::string>& attr_names,
-                  boost::iostreams::mapped_file&& input, size_t max_size)
-    : m_path(path), m_data_offset(data_offset), m_n_elements(n_elements),
-      m_max_size(max_size), m_attr_names(attr_names),
-      m_mapped(std::move(input)), m_data(reinterpret_cast<T *>(m_mapped.data() + data_offset)) {
-  }
+                  const std::vector<std::string>& attr_names, boost::iostreams::mapped_file&& input, size_t max_size)
+      : m_path(path)
+      , m_data_offset(data_offset)
+      , m_n_elements(n_elements)
+      , m_max_size(max_size)
+      , m_attr_names(attr_names)
+      , m_mapped(std::move(input))
+      , m_data(reinterpret_cast<T*>(m_mapped.data() + data_offset)) {}
 
   size_t size() const {
     return m_n_elements;
   }
 
-  T *data() {
+  T* data() {
     return m_data;
   }
 
@@ -353,7 +344,7 @@ public:
     // Generate header
     std::stringstream header;
     writeNpyHeader<T>(header, shape, m_attr_names);
-    auto header_str = header.str();
+    auto header_str  = header.str();
     auto header_size = header_str.size();
     // Make sure we are in place
     if (header_size != m_data_offset) {
@@ -361,25 +352,24 @@ public:
                                      "The new header length must match the allocated space.";
     }
 
-    m_n_elements = std::accumulate(shape.begin(), shape.end(), 1u, std::multiplies<size_t>());
+    m_n_elements    = std::accumulate(shape.begin(), shape.end(), 1u, std::multiplies<size_t>());
     size_t new_size = header_size + sizeof(T) * m_n_elements;
     if (new_size > m_max_size) {
-      throw Elements::Exception() << "resize request bigger than maximum allocated size: " << new_size << " > "
-                                  << m_max_size;
+      throw Elements::Exception() << "resize request bigger than maximum allocated size: " << new_size << " > " << m_max_size;
     }
     boost::filesystem::resize_file(m_path, new_size);
     std::copy(header_str.begin(), header_str.end(), m_mapped.data());
   }
 
 private:
-  boost::filesystem::path m_path;
-  size_t m_data_offset, m_n_elements, m_max_size;
-  std::vector<std::string> m_attr_names;
+  boost::filesystem::path       m_path;
+  size_t                        m_data_offset, m_n_elements, m_max_size;
+  std::vector<std::string>      m_attr_names;
   boost::iostreams::mapped_file m_mapped;
-  T *m_data;
+  T*                            m_data;
 };
 
-} // end of namespace NdArray
-} // end of namespace Euclid
+}  // end of namespace NdArray
+}  // end of namespace Euclid
 
-#endif // ALEXANDRIA_NDARRAY_IMPL_NPYCOMMON_H
+#endif  // ALEXANDRIA_NDARRAY_IMPL_NPYCOMMON_H

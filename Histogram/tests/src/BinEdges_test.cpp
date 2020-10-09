@@ -42,7 +42,7 @@ BOOST_FIXTURE_TEST_CASE(scottsBinEdges, BinEdgesFixture) {
   BOOST_CHECK_EQUAL(edges.size(), eedges.size());
 
   auto eei = eedges.begin();
-  auto ei = edges.begin();
+  auto ei  = edges.begin();
   for (; eei != eedges.end(); ++eei, ++ei) {
     BOOST_CHECK_CLOSE(*ei, *eei, 1e-4);
   }
@@ -59,7 +59,7 @@ BOOST_FIXTURE_TEST_CASE(sqrtBinEdges, BinEdgesFixture) {
   BOOST_CHECK_EQUAL(edges.size(), eedges.size());
 
   auto eei = eedges.begin();
-  auto ei = edges.begin();
+  auto ei  = edges.begin();
   for (; eei != eedges.end(); ++eei, ++ei) {
     BOOST_CHECK_CLOSE(*ei, *eei, 1e-4);
   }

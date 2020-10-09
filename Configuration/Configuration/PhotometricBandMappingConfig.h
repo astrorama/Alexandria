@@ -25,10 +25,10 @@
 #ifndef _CONFIGURATION_PHOTOMETRICBANDMAPPINGCONFIG_H
 #define _CONFIGURATION_PHOTOMETRICBANDMAPPINGCONFIG_H
 
+#include <boost/filesystem.hpp>
+#include <string>
 #include <utility>
 #include <vector>
-#include <string>
-#include <boost/filesystem.hpp>
 
 #include "Configuration.h"
 
@@ -45,8 +45,7 @@ namespace Configuration {
 class PhotometricBandMappingConfig : public Configuration {
 
 public:
-
-  using MappingMap = std::vector<std::pair<std::string, std::pair<std::string, std::string>>>;
+  using MappingMap             = std::vector<std::pair<std::string, std::pair<std::string, std::string>>>;
   using UpperLimitThresholdMap = std::vector<std::pair<std::string, float>>;
 
   /// Constructs a new PhotometricBandMappingConfig object
@@ -129,15 +128,13 @@ public:
   const UpperLimitThresholdMap& getUpperLimitThresholdMapping();
 
 private:
-
   boost::filesystem::path m_base_dir;
-  MappingMap m_mapping_map;
-  UpperLimitThresholdMap m_threshold_map;
+  MappingMap              m_mapping_map;
+  UpperLimitThresholdMap  m_threshold_map;
 
 }; /* End of PhotometricBandMappingConfig class */
 
 } /* namespace Configuration */
 } /* namespace Euclid */
-
 
 #endif

@@ -22,11 +22,11 @@
 #ifndef _CONFIGURATION_CONFIGMANAGER_H
 #define _CONFIGURATION_CONFIGMANAGER_H
 
-#include <map>
-#include <string>
-#include <memory>
-#include <typeindex>
 #include <boost/program_options.hpp>
+#include <map>
+#include <memory>
+#include <string>
+#include <typeindex>
 
 namespace Euclid {
 namespace Configuration {
@@ -81,7 +81,6 @@ class Configuration;
 class ConfigManager {
 
 public:
-
   /// Returns a reference to the ConfigManager with the given ID
   static ConfigManager& getInstance(long id);
 
@@ -147,7 +146,6 @@ public:
    */
   boost::program_options::options_description closeRegistration();
 
-
   /**
    * @brief
    * Initialize the manager
@@ -186,18 +184,15 @@ public:
   T& getConfiguration();
 
 private:
-
   explicit ConfigManager(long id);
 
-  enum class State {
-    REGISTRATION, WAITING_INITIALIZATION, INITIALIZED
-  };
+  enum class State { REGISTRATION, WAITING_INITIALIZATION, INITIALIZED };
 
-  long m_id;
-  State m_state = State::REGISTRATION;
-  std::unique_ptr<std::type_index> m_root_config;
+  long                                                      m_id;
+  State                                                     m_state = State::REGISTRATION;
+  std::unique_ptr<std::type_index>                          m_root_config;
   std::map<std::type_index, std::unique_ptr<Configuration>> m_config_dictionary;
-  std::map<std::type_index, std::set<std::type_index>> m_dependency_map;
+  std::map<std::type_index, std::set<std::type_index>>      m_dependency_map;
 
 }; /* End of ConfigManager class */
 
