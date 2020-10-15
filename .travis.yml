@@ -1,6 +1,11 @@
 language: minimal
 
-if: branch IN (master, develop) OR tag IS present
+branches:
+  only:
+  - master
+  - develop
+  - /travis\/*/
+  - /^\d+.\d+(.\d+)?(-\S*)?$/
 
 env:
   global:
@@ -8,7 +13,9 @@ env:
   matrix:
     - OS_TYPE=fedora OS_VERSION=31
     - OS_TYPE=fedora OS_VERSION=32
+    - OS_TYPE=fedora OS_VERSION=33
     - OS_TYPE=centos OS_VERSION=7
+    - OS_TYPE=centos OS_VERSION=8
 
 services:
   - docker
