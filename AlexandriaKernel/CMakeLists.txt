@@ -41,6 +41,9 @@ elements_add_library(AlexandriaKernel src/lib/*.cpp
 #                        LINK_LIBRARIES Boost ElementsExamples
 #                        INCLUDE_DIRS Boost ElementsExamples)
 #===============================================================================
+elements_add_executable(AlexandriaVersion src/program/AlexandriaVersion.cpp
+                     INCLUDE_DIRS ElementsKernel AlexandriaKernel
+                     LINK_LIBRARIES ElementsKernel AlexandriaKernel)
 
 #===============================================================================
 # Declare the Boost tests here
