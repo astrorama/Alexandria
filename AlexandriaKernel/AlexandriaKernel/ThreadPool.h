@@ -95,8 +95,14 @@ public:
   /// Checks if any task has thrown an exception and optionally rethrows it
   bool checkForException(bool rethrow = false);
 
+  /// Return the number of queued tasks
+  size_t queued() const;
+
+  /// Return the number of running tasks
+  size_t running() const;
+
 private:
-  std::mutex                     m_queue_mutex;
+  mutable std::mutex             m_queue_mutex;
   std::vector<std::atomic<bool>> m_worker_run_flags;
   std::vector<std::atomic<bool>> m_worker_sleeping_flags;
   std::vector<std::atomic<bool>> m_worker_done_flags;
