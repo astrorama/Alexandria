@@ -24,6 +24,7 @@
 
 #include "AlexandriaKernel/ThreadPool.h"
 #include "AlexandriaKernel/memory_tools.h"
+#include <numeric>
 
 namespace Euclid {
 
@@ -123,6 +124,17 @@ bool ThreadPool::checkForException(bool rethrow) {
   return false;
 }
 
+size_t ThreadPool::queued() const {
+  std::unique_lock<std::mutex> lock{m_queue_mutex};
+  return m_queue.size();
+}
+
+size_t ThreadPool::running() const {
+  std::unique_lock<std::mutex> lock{m_queue_mutex};
+  auto sleeping = std::accumulate(m_worker_sleeping_flags.begin(), m_worker_sleeping_flags.end(), 0);
+  return m_worker_sleeping_flags.size() - sleeping;
+}
+
 void ThreadPool::block() {
   // Wait for the queue to be empty
   bool queue_is_empty = false;
@@ -150,7 +162,11 @@ ThreadPool::~ThreadPool() {
 
 void ThreadPool::submit(Task task) {
   std::lock_guard<std::mutex> lock{m_queue_mutex};
-  m_queue.emplace_back(std::move(task));
+  if (m_worker_run_flags.empty()) {
+    task();
+  } else {
+    m_queue.emplace_back(std::move(task));
+  }
 }
 
 }  // namespace Euclid
