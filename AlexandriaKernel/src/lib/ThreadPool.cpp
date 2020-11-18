@@ -130,6 +130,7 @@ size_t ThreadPool::queued() const {
 }
 
 size_t ThreadPool::running() const {
+  std::unique_lock<std::mutex> lock{m_queue_mutex};
   auto sleeping = std::accumulate(m_worker_sleeping_flags.begin(), m_worker_sleeping_flags.end(), 0);
   return m_worker_sleeping_flags.size() - sleeping;
 }
