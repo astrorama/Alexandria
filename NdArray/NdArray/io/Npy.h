@@ -21,6 +21,7 @@
 
 #include "NdArray/NdArray.h"
 #include <boost/filesystem/path.hpp>
+#include <fstream>
 
 namespace Euclid {
 namespace NdArray {
