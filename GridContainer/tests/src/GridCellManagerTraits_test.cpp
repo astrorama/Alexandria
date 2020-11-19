@@ -40,7 +40,7 @@ BOOST_AUTO_TEST_CASE(defaultOperations) {
     int m_size;
 
   public:
-    explicit DefaultCellManager(int size) : m_size{size} {}
+    explicit DefaultCellManager(int size_) : m_size{size_} {}
     typedef double data_type;
     struct iterator {
       int m_i{0};

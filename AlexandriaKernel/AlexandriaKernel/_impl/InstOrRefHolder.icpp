@@ -43,7 +43,7 @@ private:
 
 template <typename InterfaceType>
 struct RefHolder_Impl : public InstOrRefHolder<InterfaceType> {
-  RefHolder_Impl(InterfaceType& ref) : m_reference(ref) {}
+  RefHolder_Impl(InterfaceType& ref_) : m_reference(ref_) {}
   virtual ~RefHolder_Impl() = default;
   InterfaceType& ref() override {
     return m_reference.get();

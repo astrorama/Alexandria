@@ -126,8 +126,8 @@ bool NdArray<T>::Iterator<Const>::operator>(const Iterator& other) {
 }
 
 template <typename T>
-NdArray<T>::NdArray(const std::vector<size_t>& shape)
-    : m_shape{shape}
+NdArray<T>::NdArray(const std::vector<size_t>& shape_)
+    : m_shape{shape_}
     , m_size{std::accumulate(m_shape.begin(), m_shape.end(), 1u, std::multiplies<size_t>())}
     , m_container(new ContainerWrapper<std::vector>(m_size)) {
   update_strides();
@@ -135,8 +135,8 @@ NdArray<T>::NdArray(const std::vector<size_t>& shape)
 
 template <typename T>
 template <template <class...> class Container>
-NdArray<T>::NdArray(const std::vector<size_t>& shape, const Container<T>& data)
-    : m_shape{shape}
+NdArray<T>::NdArray(const std::vector<size_t>& shape_, const Container<T>& data)
+    : m_shape{shape_}
     , m_size{std::accumulate(m_shape.begin(), m_shape.end(), 1u, std::multiplies<size_t>())}
     , m_container{new ContainerWrapper<Container>(data)} {
   if (m_size != m_container->size()) {
@@ -147,8 +147,8 @@ NdArray<T>::NdArray(const std::vector<size_t>& shape, const Container<T>& data)
 
 template <typename T>
 template <template <class...> class Container>
-NdArray<T>::NdArray(const std::vector<size_t>& shape, Container<T>&& data)
-    : m_shape{shape}
+NdArray<T>::NdArray(const std::vector<size_t>& shape_, Container<T>&& data)
+    : m_shape{shape_}
     , m_size{std::accumulate(m_shape.begin(), m_shape.end(), 1u, std::multiplies<size_t>())}
     , m_container{new ContainerWrapper<Container>(std::move(data))} {
   if (m_size != m_container->size()) {
@@ -159,10 +159,10 @@ NdArray<T>::NdArray(const std::vector<size_t>& shape, Container<T>&& data)
 
 template <typename T>
 template <typename II>
-NdArray<T>::NdArray(const std::vector<size_t>& shape, II begin, II end)
-    : m_shape{shape}
+NdArray<T>::NdArray(const std::vector<size_t>& shape_, II ibegin, II iend)
+    : m_shape{shape_}
     , m_size{std::accumulate(m_shape.begin(), m_shape.end(), 1u, std::multiplies<size_t>())}
-    , m_container{new ContainerWrapper<std::vector>(begin, end)} {
+    , m_container{new ContainerWrapper<std::vector>(ibegin, iend)} {
   if (m_size != m_container->size()) {
     throw std::invalid_argument("Data size does not match the shape");
   }
@@ -186,8 +186,8 @@ inline std::vector<size_t> appendAttrShape(std::vector<size_t> shape, size_t app
 
 template <typename T>
 template <typename... Args>
-NdArray<T>::NdArray(const std::vector<size_t>& shape, const std::vector<std::string>& attr_names, Args&&... args)
-    : NdArray{appendAttrShape(shape, attr_names.size()), std::forward<Args>(args)...} {
+NdArray<T>::NdArray(const std::vector<size_t>& shape_, const std::vector<std::string>& attr_names, Args&&... args)
+    : NdArray{appendAttrShape(shape_, attr_names.size()), std::forward<Args>(args)...} {
   m_attr_names = attr_names;
 }
 
@@ -308,17 +308,17 @@ auto NdArray<T>::concatenate(const self_type& other) -> self_type& {
   }
 
   // New shape
-  auto old_size = m_container->size();
-  auto shape    = m_shape;
-  shape[0] += other.m_shape[0];
+  auto old_size  = m_container->size();
+  auto new_shape = m_shape;
+  new_shape[0] += other.m_shape[0];
 
   // Resize container
-  m_container->resize(shape);
+  m_container->resize(new_shape);
 
   // Copy to the end
   std::copy(std::begin(other), std::end(other), m_container->m_data_ptr + old_size);
   // Done!
-  m_shape = shape;
+  m_shape = new_shape;
   return *this;
 }
 
