@@ -106,6 +106,7 @@ private:
   std::vector<std::atomic<bool>> m_worker_run_flags;
   std::vector<std::atomic<bool>> m_worker_sleeping_flags;
   std::vector<std::atomic<bool>> m_worker_done_flags;
+  std::vector<std::thread>       m_workers;
   std::deque<Task>               m_queue;
   unsigned int                   m_empty_queue_wait_time;
   std::exception_ptr             m_exception_ptr;
