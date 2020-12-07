@@ -54,7 +54,7 @@ EOF
 fi
 
 # From the CMakeLists.txt, retrieve the list of dependencies
-cmake_deps=$(grep -oP 'elements_project\(\S+\s+\S+ USE \K(\S+ \S+)*(?=\))' /src/CMakeLists.txt)
+cmake_deps=$(grep -oP 'elements_project\(\S+\s+\S+ USE \K(\S+ \S+)*(?=\))' CMakeLists.txt)
 rpm_dev_deps=$(echo ${cmake_deps} | awk '{for(i=1;i<NF;i+=2){print $i "-devel-" $(i+1)}}')
 rpm_doc_deps=$(echo ${cmake_deps} | awk '{for(i=1;i<NF;i+=2){print $i "-doc-" $(i+1)}}')
 yum install -y ${rpm_dev_deps} ${rpm_doc_deps}
@@ -65,8 +65,7 @@ yum install -y boost-devel $PYTHON-pytest log4cpp-devel doxygen CCfits-devel $PY
 yum install -y graphviz $PYTHON-sphinx
 
 # Build
-mkdir -p /build
-cd /build
-cmake -DCMAKE_INSTALL_PREFIX=/usr -DINSTALL_TESTS=OFF -DRPM_NO_CHECK=OFF $CMAKEFLAGS /src
+mkdir -p build
+cd build
+cmake -DCMAKE_INSTALL_PREFIX=/usr -DINSTALL_TESTS=OFF -DRPM_NO_CHECK=OFF $CMAKEFLAGS ..
 make $MAKEFLAGS rpm
-
