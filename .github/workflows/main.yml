@@ -18,12 +18,12 @@ jobs:
             os-version: 31
           - os-type: fedora
             os-version: 32
-#          - os-type: fedora
-#            os-version: 33
-#          - os-type: centos
-#            os-version: 7
-#          - os-type: centos
-#            os-version: 8
+          - os-type: fedora
+            os-version: 33
+          - os-type: centos
+            os-version: 7
+          - os-type: centos
+            os-version: 8
     container: ${{ matrix.os-type }}:${{ matrix.os-version }}
     steps:
       - name: Checkout
