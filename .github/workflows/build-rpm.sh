@@ -50,7 +50,7 @@ gpgcheck=0
 repo_gpgcheck=0
 enabled=1
 EOF
-  CMAKEFLAGS="$CMAKEFLAGS -DCPACK_PACKAGE_RELEASE=dev"
+  CMAKEFLAGS="$CMAKEFLAGS -DCPACK_PACKAGE_RELEASE=r$(date +%Y%m%d%H%M)"
 fi
 
 # From the CMakeLists.txt, retrieve the list of dependencies
