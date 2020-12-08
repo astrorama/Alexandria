@@ -1,0 +1,17 @@
+name: 'Elements Project'
+description: 'Get name and version of an Elements project'
+outputs:
+  project:
+    description: 'Project name'
+    value: ${{ steps.elements-package-version.outputs.package }}
+  version:
+    description: 'Project version'
+    value: ${{ steps.elements-package-version.outputs.version }}
+runs:
+  using: 'composite'
+  steps:
+    - id: elements-package-version
+      shell: bash
+      run: |
+        echo "::set-output name=package::$(grep elements_project CMakeLists.txt | sed 's/.*(//'| cut -d' ' -f1)"
+        echo "::set-output name=version::$(grep elements_project CMakeLists.txt | sed 's/.*(//' | sed 's/[^ ]* //' | sed 's/ .*//')"

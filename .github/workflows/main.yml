@@ -16,23 +16,21 @@ jobs:
         include:
           - os-type: fedora
             os-version: 31
-          - os-type: fedora
-            os-version: 32
-          - os-type: fedora
-            os-version: 33
-          - os-type: centos
-            os-version: 7
-          - os-type: centos
-            os-version: 8
+          #- os-type: fedora
+          #  os-version: 32
+          #- os-type: fedora
+          #  os-version: 33
+          #- os-type: centos
+          #  os-version: 7
+          #- os-type: centos
+          #  os-version: 8
     container: ${{ matrix.os-type }}:${{ matrix.os-version }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Get package name and version
         id: package-version
-        run: |
-          echo "::set-output name=PACKAGE::$(grep elements_project CMakeLists.txt | sed 's/.*(//'| cut -d' ' -f1)"
-          echo "::set-output name=VERSION::$(grep elements_project CMakeLists.txt | sed 's/.*(//' | sed 's/[^ ]* //' | sed 's/ .*//')"
+        uses: ./.github/actions/elements-project
       - name: Build
         run: /usr/bin/bash .github/workflows/build-rpm.sh "${GITHUB_REF##*/}"
       - name: Upload RPM to GitHub
@@ -52,8 +50,8 @@ jobs:
           OS_TYPE: ${{ matrix.os-type }}
           OS_VERSION: ${{ matrix.os-version }}
           OS_ARCH: 'x86_64'
-          PACKAGE: ${{ steps.package-version.outputs.PACKAGE }}
-          VERSION: ${{ steps.package-version.outputs.VERSION }}
+          PACKAGE: ${{ steps.package-version.outputs.package }}
+          VERSION: ${{ steps.package-version.outputs.version }}
         run: |
           jfrog bt config --user "${BINTRAY_USER}" --key "${BINTRAY_TOKEN}" --licenses LGPL3
           jfrog bt u --publish --override "build/Packages/RPM/RPMS/x86_64/*.rpm" "astrorama/travis/${PACKAGE}/${VERSION}" "/${GITHUB_REF##*/}/${OS_TYPE}/${OS_VERSION}/${OS_ARCH}/rpms/"
