@@ -31,6 +31,11 @@ jobs:
       - name: Get package name and version
         id: package-version
         uses: ./.github/actions/elements-project
+      - name: Install dependencies
+        uses: ./.github/actions/setup-dependencies
+        with:
+          dependency-list: .github/workflows/dependencies.txt
+          python-dependency-list: .github/workflows/dependencies-python.txt
       - name: Build
         run: /usr/bin/bash .github/workflows/build-rpm.sh "${GITHUB_REF##*/}"
       - name: Upload RPM to GitHub

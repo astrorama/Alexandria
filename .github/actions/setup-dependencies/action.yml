@@ -1,0 +1,16 @@
+name: 'Setup dependencies'
+description: 'Configure repositories and install dependencies'
+inputs:
+  dependency-list:
+    description: 'File with the list of dependencies'
+    required: true
+  python-dependency-list:
+    description: 'File with the list of python dependencies'
+    required: true
+runs:
+  using: composite
+  steps:
+    - shell: bash
+      run: ${{ github.action_path }}/setup-repositories.sh
+    - shell: bash
+      run: ${{ github.action_path }}/install-dependencies.sh "${{ inputs.dependency-list }}" "${{ python-dependency-list }}"
