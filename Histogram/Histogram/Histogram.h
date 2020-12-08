@@ -347,7 +347,7 @@ private:
 
     explicit ComputationImpl(BinType&& bin_type) : m_binning(std::move(bin_type)) {}
 
-    ComputationImpl(const ComputationImpl& other) = default;
+    ComputationImpl(const ComputationImpl&) = default;
 
     const BinStrategy<VarType>& getBinStrategy() const final {
       return m_binning;

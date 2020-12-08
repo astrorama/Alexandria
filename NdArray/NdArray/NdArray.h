@@ -180,15 +180,15 @@ public:
 
   /**
    * Constructs a default-initialized matrix with the given shape.
-   * @param shape
+   * @param shape_
    *    The shape of the matrix. The number of elements in shape corresponds to the number
    *    of dimensions, the values to each dimension size.
    */
-  explicit NdArray(const std::vector<size_t>& shape);
+  explicit NdArray(const std::vector<size_t>& shape_);
 
   /**
    * Constructs a matrix and initialize it with the given data.
-   * @param shape
+   * @param shape_
    *    The shape of the matrix. The number of elements in shape corresponds to the number
    *    of dimensions, the values to each dimension size.
    * @param data
@@ -197,13 +197,13 @@ public:
    *    If the data size does not corresponds to the matrix size.
    */
   template <template <class...> class Container = std::vector>
-  NdArray(const std::vector<size_t>& shape, const Container<T>& data);
+  NdArray(const std::vector<size_t>& shape_, const Container<T>& data);
 
   /**
    * Constructs a matrix and initialize it with the given data.
    * @tparam Container
    *    Owns the memory used by the NdArray. It must expose the methods size() and data().
-   * @param shape
+   * @param shape_
    *    The shape of the matrix. The number of elements in shape corresponds to the number
    *    of dimensions, the values to each dimension size.
    * @param data
@@ -214,11 +214,11 @@ public:
    *    If the data size does not corresponds to the matrix size.
    */
   template <template <class...> class Container = std::vector>
-  NdArray(const std::vector<size_t>& shape, Container<T>&& data);
+  NdArray(const std::vector<size_t>& shape_, Container<T>&& data);
 
   /**
    * Constructs a matrix and initialize it with from the given iterators
-   * @param shape
+   * @param shape_
    *    The shape of the matrix. The number of elements in shape corresponds to the number
    *    of dimensions, the values to each dimension size.
    * @param begin
@@ -229,28 +229,28 @@ public:
    *    If the data size does not corresponds to the matrix size.
    */
   template <typename Iterator>
-  NdArray(const std::vector<size_t>& shape, Iterator begin, Iterator end);
+  NdArray(const std::vector<size_t>& shape_, Iterator begin, Iterator end);
 
   /**
    * Constructs a matrix, giving a name to each of the items on the last dimension
    * @param attr_names
    *    Names for the dimensions of the last axis
-   * @param shape
+   * @param shape_
    *    Shape for the matrix
    * @note
    *    Unlike numpy, attr_names is treated strictly as an alias, so
    *    NdArray<float>({20}, {"X", "Y"}) has a shape of (20, 2)
    */
   template <typename... Args>
-  NdArray(const std::vector<size_t>& shape, const std::vector<std::string>& attr_names, Args&&... args);
+  NdArray(const std::vector<size_t>& shape_, const std::vector<std::string>& attr_names, Args&&... args);
 
   /**
    * Constructs a default-initialized matrix with the given shape (as an initializer list).
-   * @param shape
+   * @param shape_
    *    The shape of the matrix. The number of elements in shape corresponds to the number
    *    of dimensions, the values to each dimension size.
    */
-  NdArray(const std::initializer_list<size_t>& shape) : NdArray(std::vector<size_t>{shape}) {}
+  NdArray(const std::initializer_list<size_t>& shape_) : NdArray(std::vector<size_t>{shape_}) {}
 
   /**
    * Copy constructor

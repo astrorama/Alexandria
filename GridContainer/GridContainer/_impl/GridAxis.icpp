@@ -28,7 +28,7 @@ namespace Euclid {
 namespace GridContainer {
 
 template <typename T>
-GridAxis<T>::GridAxis(std::string name, std::vector<T> values) : m_name(std::move(name)), m_values(std::move(values)) {}
+GridAxis<T>::GridAxis(std::string name_, std::vector<T> values) : m_name(std::move(name_)), m_values(std::move(values)) {}
 
 template <typename T>
 size_t GridAxis<T>::size() const {
