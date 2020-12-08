@@ -56,8 +56,8 @@ jobs:
           OS_TYPE: ${{ matrix.os-type }}
           OS_VERSION: ${{ matrix.os-version }}
           OS_ARCH: 'x86_64'
-          PACKAGE: ${{ steps.package-version.outputs.package }}
+          PROJECT: ${{ steps.package-version.outputs.project }}
           VERSION: ${{ steps.package-version.outputs.version }}
         run: |
           jfrog bt config --user "${BINTRAY_USER}" --key "${BINTRAY_TOKEN}" --licenses LGPL3
-          jfrog bt u --publish --override "build/Packages/RPM/RPMS/x86_64/*.rpm" "astrorama/travis/${PACKAGE}/${VERSION}" "/${GITHUB_REF##*/}/${OS_TYPE}/${OS_VERSION}/${OS_ARCH}/rpms/"
+          jfrog bt u --publish --override "${{ steps.build.outputs.rpm-dir }}/*.rpm" "astrorama/travis/${PROJECT}/${VERSION}" "/${GITHUB_REF#refs/heads/}/${OS_TYPE}/${OS_VERSION}/${OS_ARCH}/rpms/"
