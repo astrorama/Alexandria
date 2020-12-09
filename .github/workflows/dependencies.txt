@@ -3,3 +3,6 @@ log4cpp-devel
 doxygen
 CCfits-devel
 graphviz
+$PYTHON-numpy
+$PYTHON-pytest
+$PYTHON-sphinx

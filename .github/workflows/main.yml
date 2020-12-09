@@ -35,7 +35,6 @@ jobs:
         uses: astrorama/actions/setup-dependencies@master
         with:
           dependency-list: .github/workflows/dependencies.txt
-          python-dependency-list: .github/workflows/dependencies-python.txt
       - name: Build
         id: build
         uses: astrorama/actions/elements-build-rpm@master
