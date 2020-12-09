@@ -1,0 +1,62 @@
+name: RPM - Bintray
+
+on:
+  push:
+    branches: [ master, develop ]
+  pull_request:
+    branches: [ master, develop ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        include:
+          - os-type: fedora
+            os-version: 31
+          - os-type: fedora
+            os-version: 32
+          - os-type: fedora
+            os-version: 33
+          - os-type: centos
+            os-version: 7
+          - os-type: centos
+            os-version: 8
+    container: ${{ matrix.os-type }}:${{ matrix.os-version }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Get package name and version
+        id: package-version
+        uses: astrorama/actions/elements-project@master
+      - name: Install dependencies
+        uses: astrorama/actions/setup-dependencies@master
+        with:
+          dependency-list: .github/workflows/dependencies.txt
+      - name: Build
+        id: build
+        uses: astrorama/actions/elements-build-rpm@master
+      - name: Upload RPM to GitHub
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ matrix.os-type }}${{ matrix.os-version }}
+          path: ${{ steps.build.outputs.rpm-dir }}/*.rpm
+          retention-days: 15
+      - name: Setup jfrog cli
+        if: ${{ github.event_name != 'pull_request' }}
+        uses: jfrog/setup-jfrog-cli@v1
+      - name: Upload RPM to Bintray
+        if: ${{ github.event_name != 'pull_request' }}
+        env:
+          BINTRAY_TOKEN: ${{ secrets.bintray_token }}
+          BINTRAY_USER: ${{ secrets.bintray_user }}
+          OS_TYPE: ${{ matrix.os-type }}
+          OS_VERSION: ${{ matrix.os-version }}
+          OS_ARCH: 'x86_64'
+          PROJECT: ${{ steps.package-version.outputs.project }}
+          VERSION: ${{ steps.package-version.outputs.version }}
+        run: |
+          jfrog bt config --user "${BINTRAY_USER}" --key "${BINTRAY_TOKEN}" --licenses LGPL3
+          jfrog bt u --publish --override "${{ steps.build.outputs.rpm-dir }}/*.rpm" "astrorama/travis/${PROJECT}/${VERSION}" "/${GITHUB_REF#refs/heads/}/${OS_TYPE}/${OS_VERSION}/${OS_ARCH}/rpms/"
