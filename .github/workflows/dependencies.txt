@@ -1,8 +1,3 @@
-cmake
-make
-gcc-c++
-rpm-build
-
 boost-devel
 log4cpp-devel
 doxygen
