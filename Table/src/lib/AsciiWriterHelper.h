@@ -25,13 +25,11 @@
 #ifndef TABLE_ASCIIWRITERHELPER_H
 #define TABLE_ASCIIWRITERHELPER_H
 
-#include <boost/io/detail/quoted_manip.hpp>
 #include <sstream>
 #include <typeindex>
 #include <vector>
 
 #include "ElementsKernel/Export.h"
-
 #include "Table/Table.h"
 
 namespace Euclid {

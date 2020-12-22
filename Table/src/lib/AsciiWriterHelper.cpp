@@ -25,9 +25,14 @@
 #include "AsciiWriterHelper.h"
 #include "ElementsKernel/Exception.h"
 #include <algorithm>
-#include <boost/io/detail/quoted_manip.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/regex.hpp>
+
+#if BOOST_VERSION < 107300
+#include <boost/io/detail/quoted_manip.hpp>
+#else
+#include <boost/io/quoted.hpp>
+#endif
 
 namespace Euclid {
 namespace Table {
