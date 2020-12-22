@@ -32,7 +32,12 @@
 using boost::regex;
 using boost::regex_match;
 #include <boost/algorithm/string.hpp>
+
+#if BOOST_VERSION < 107300
 #include <boost/io/detail/quoted_manip.hpp>
+#else
+#include <boost/io/quoted.hpp>
+#endif
 
 #include "ElementsKernel/Exception.h"
 #include "Table/AsciiReader.h"
