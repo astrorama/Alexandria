@@ -1,5 +1,8 @@
 elements_subdir(NdArray)
 
+elements_depends_on_subdirs(AlexandriaKernel)
+elements_depends_on_subdirs(ElementsKernel)
+
 find_package(Boost REQUIRED COMPONENTS iostreams)
 
 #===== Libraries ===============================================================

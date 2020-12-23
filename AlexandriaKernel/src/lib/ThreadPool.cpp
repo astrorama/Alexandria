@@ -24,6 +24,7 @@
 
 #include "AlexandriaKernel/ThreadPool.h"
 #include "AlexandriaKernel/memory_tools.h"
+#include <algorithm>
 #include <numeric>
 
 namespace Euclid {
@@ -94,9 +95,8 @@ ThreadPool::ThreadPool(unsigned int thread_count, unsigned int empty_queue_wait_
     m_worker_run_flags.at(i)      = true;
     m_worker_sleeping_flags.at(i) = false;
     m_worker_done_flags.at(i)     = false;
-    std::thread(Worker{m_queue_mutex, m_queue, m_worker_run_flags.at(i), m_worker_sleeping_flags.at(i), m_worker_done_flags.at(i),
-                       m_empty_queue_wait_time, m_exception_ptr})
-        .detach();
+    m_workers.emplace_back(Worker{m_queue_mutex, m_queue, m_worker_run_flags.at(i), m_worker_sleeping_flags.at(i),
+                                  m_worker_done_flags.at(i), m_empty_queue_wait_time, m_exception_ptr});
   }
 }
 
@@ -158,6 +158,9 @@ ThreadPool::~ThreadPool() {
   std::fill(m_worker_run_flags.begin(), m_worker_run_flags.end(), false);
   // Now wait until all the workers have finish any current tasks
   waitWorkers(m_worker_done_flags, m_empty_queue_wait_time);
+  for (auto& worker : m_workers) {
+    worker.join();
+  }
 }
 
 void ThreadPool::submit(Task task) {
