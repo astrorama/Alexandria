@@ -27,7 +27,12 @@
 
 #include <vector>
 #include <typeindex>
+#include <boost/version.hpp>
+#if BOOST_VERSION >= 107300
+#include <boost/io/quoted.hpp>
+#else
 #include <boost/io/detail/quoted_manip.hpp>
+#endif
 
 #include "ElementsKernel/Export.h"
 

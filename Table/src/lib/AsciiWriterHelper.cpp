@@ -25,7 +25,6 @@
 #include <algorithm>
 #include <boost/lexical_cast.hpp>
 #include <boost/regex.hpp>
-#include <boost/io/detail/quoted_manip.hpp>
 #include "ElementsKernel/Exception.h"
 #include "AsciiWriterHelper.h"
 
