@@ -30,6 +30,8 @@
 #include <boost/test/unit_test.hpp>
 #include <sstream>
 
+#include <ElementsKernel/Temporary.h>
+
 #include "SOM/InitFunc.h"
 #include "SOM/SOM.h"
 #include "SOM/SOMTrainer.h"
@@ -94,6 +96,17 @@ BOOST_FIXTURE_TEST_CASE_TEMPLATE(serialize_som_test, T, archive_types, Serializa
 
   auto result = somImport<typename T::iarchive, 2>(stream);
 
+  BOOST_CHECK_EQUAL(m_som.getSize(), result.getSize());
+  BOOST_CHECK_EQUAL_COLLECTIONS(m_som.begin(), m_som.end(), result.begin(), result.end());
+}
+
+//-----------------------------------------------------------------------------
+
+BOOST_FIXTURE_TEST_CASE(serialize_som_fits_test, SerializationFixture) {
+  Elements::TempPath fits_file;
+
+  somFitsExport(fits_file.path().native(), m_som);
+  auto result = somFitsImport<2>(fits_file.path().native());
   BOOST_CHECK_EQUAL(m_som.getSize(), result.getSize());
   BOOST_CHECK_EQUAL_COLLECTIONS(m_som.begin(), m_som.end(), result.begin(), result.end());
 }
