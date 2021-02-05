@@ -1,22 +1,22 @@
 /*
- * Copyright (C) 2012-2020 Euclid Science Ground Segment    
- *  
+ * Copyright (C) 2012-2021 Euclid Science Ground Segment
+ *
  * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free 
- * Software Foundation; either version 3.0 of the License, or (at your option)  
- * any later version.  
- *  
- * This library is distributed in the hope that it will be useful, but WITHOUT 
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 3.0 of the License, or (at your option)
+ * any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more  
- * details.  
- *  
- * You should have received a copy of the GNU Lesser General Public License 
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
  * along with this library; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA  
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
- 
- /**
+
+/**
  * @file src/lib/StringFunctions.cpp
  *
  * @date May 22, 2014
@@ -34,15 +34,14 @@ namespace XYDataset {
 std::string checkBeginSlashes(const std::string& input_str) {
 
   std::string output_str{};
-  size_t pos = input_str.find_first_not_of("/") ;
+  size_t      pos = input_str.find_first_not_of("/");
   if (pos != std::string::npos && pos != 0) {
-     output_str = input_str.substr(pos);
-     output_str = "/" + output_str;
-   }
-   else {
-     // no slash at the beginning
-     output_str = "/" + input_str;
-   }
+    output_str = input_str.substr(pos);
+    output_str = "/" + output_str;
+  } else {
+    // no slash at the beginning
+    output_str = "/" + input_str;
+  }
 
   return (output_str);
 }
@@ -54,12 +53,11 @@ std::string checkNoBeginSlashes(const std::string& input_str) {
 
   std::string output_str{};
 
-  if (! input_str.empty()) {
-    size_t pos = input_str.find_first_not_of("/") ;
-    if ( pos != 0) {
+  if (!input_str.empty()) {
+    size_t pos = input_str.find_first_not_of("/");
+    if (pos != 0) {
       output_str = input_str.substr(pos);
-    }
-    else {
+    } else {
       // no slash
       output_str = input_str;
     }
@@ -76,16 +74,15 @@ std::string checkEndSlashes(const std::string& input_str) {
   std::string output_str{};
 
   size_t pos = input_str.find_last_not_of("/");
-  if (  pos != input_str.length()-1) {
+  if (pos != input_str.length() - 1) {
     // add one
-    output_str = input_str.substr(0, pos+1) + "/";
-  }
-  else {
+    output_str = input_str.substr(0, pos + 1) + "/";
+  } else {
     // No slash at the end
     output_str = input_str + "/";
   }
 
- return (output_str);
+  return (output_str);
 }
 
 //
@@ -95,18 +92,17 @@ std::string removeExtension(const std::string& input_str) {
 
   std::string output_str{};
 
-  if (! input_str.empty()) {
+  if (!input_str.empty()) {
     // Remove any file extension
     size_t pos = input_str.find_last_of(".");
-    if ( pos != std::string::npos) {
-      output_str = input_str.substr(0,pos);
-    }
-    else {
+    if (pos != std::string::npos) {
+      output_str = input_str.substr(0, pos);
+    } else {
       output_str = input_str;
     }
   }
 
-return (output_str);
+  return (output_str);
 }
 
 //
@@ -116,20 +112,18 @@ std::string removeAllBeforeLastSlash(const std::string& input_str) {
 
   std::string output_str{};
 
-  if (! input_str.empty()) {
+  if (!input_str.empty()) {
     // Remove any file extension
     size_t pos = input_str.find_last_of("/");
-    if ( pos != std::string::npos) {
-      output_str = input_str.substr(pos+1);
-    }
-    else {
+    if (pos != std::string::npos) {
+      output_str = input_str.substr(pos + 1);
+    } else {
       output_str = input_str;
     }
   }
 
-return (output_str);
+  return (output_str);
 }
 
-} // XYDataset namespace
-} // end of namespace Euclid
-
+}  // namespace XYDataset
+}  // end of namespace Euclid

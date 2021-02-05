@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2020 Euclid Science Ground Segment
+ * Copyright (C) 2012-2021 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -16,7 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
- /**
+/**
  * @file MathUtils/function/Polynomial.h
  * @date February 19, 2014
  * @author Nikolaos Apostolakos
@@ -29,8 +29,8 @@
 
 #include "ElementsKernel/Export.h"
 
-#include "MathUtils/function/Function.h"
 #include "MathUtils/function/Differentiable.h"
+#include "MathUtils/function/Function.h"
 
 namespace Euclid {
 namespace MathUtils {
@@ -43,7 +43,6 @@ namespace MathUtils {
 class ELEMENTS_API Polynomial : public Differentiable {
 
 public:
-
   /**
    * Constructs a new Polynomial function with the given coefficients. The
    * index of the coefficients in the given vector corresponds to the degree of
@@ -72,18 +71,16 @@ public:
   std::shared_ptr<Function> indefiniteIntegral() const override;
 
 private:
-
   /// The vector where the polynomial coefficients are stored
   std::vector<double> m_coef;
   /// The function representing the derivative (uses lazy initialization)
-  mutable std::shared_ptr<Function> m_derivative {};
+  mutable std::shared_ptr<Function> m_derivative{};
   /// The function representing the indefinite integral (uses lazy initialization)
-  mutable std::shared_ptr<Function> m_indefIntegral {};
+  mutable std::shared_ptr<Function> m_indefIntegral{};
 
-}; // End of Polynomial
+};  // End of Polynomial
 
-} // End of MathUtils
-} // end of namespace Euclid
+}  // namespace MathUtils
+}  // end of namespace Euclid
 
-#endif  /* MATHUTILS_POLYNOMIAL_H */
-
+#endif /* MATHUTILS_POLYNOMIAL_H */

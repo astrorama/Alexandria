@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2020 Euclid Science Ground Segment
+ * Copyright (C) 2012-2021 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -17,13 +17,13 @@
  */
 
 /**
-* @file tests/src/Matrix_test.cpp
-* @date November 21, 2018
-* @author Alejandro Alvarez Ayllon
-*/
+ * @file tests/src/Matrix_test.cpp
+ * @date November 21, 2018
+ * @author Alejandro Alvarez Ayllon
+ */
 
-#include <boost/test/unit_test.hpp>
 #include "NdArray/NdArray.h"
+#include <boost/test/unit_test.hpp>
 
 using namespace Euclid::NdArray;
 
@@ -52,13 +52,10 @@ BOOST_AUTO_TEST_CASE(TwoDimension_test) {
   BOOST_CHECK_EQUAL((m.at(std::vector<size_t>{0, 0})), 10);
   BOOST_CHECK_EQUAL((m.at(1, 1)), 20);
 
-  const NdArray<int> &cm = m;
+  const NdArray<int>& cm = m;
   BOOST_CHECK_EQUAL((cm.at(1, 1)), 20);
 
-  std::vector<int> expected{
-    10, 50, 0,
-    15, 20, 0
-  };
+  std::vector<int> expected{10, 50, 0, 15, 20, 0};
   BOOST_CHECK_EQUAL_COLLECTIONS(cm.begin(), cm.end(), expected.begin(), expected.end());
 }
 
@@ -75,8 +72,7 @@ BOOST_AUTO_TEST_CASE(BadInitFromVector_test) {
   try {
     NdArray<int> m{std::vector<size_t>{2, 3}, {10, 50, 0, 15}};
     BOOST_ERROR("The construction should have failed");
-  }
-  catch (...) {
+  } catch (...) {
   }
 }
 
@@ -100,7 +96,7 @@ BOOST_AUTO_TEST_CASE(Fill_test) {
 BOOST_AUTO_TEST_CASE(VectorCopy_test) {
   std::vector<int> original{1, 1, 2, 3, 5, 8};
   std::vector<int> expected(original.begin(), original.end());
-  NdArray<int> m(std::vector<size_t>{2, 3}, original);
+  NdArray<int>     m(std::vector<size_t>{2, 3}, original);
 
   BOOST_CHECK_EQUAL(original.size(), 6);
   BOOST_CHECK_EQUAL_COLLECTIONS(m.begin(), m.end(), expected.begin(), expected.end());
@@ -109,7 +105,7 @@ BOOST_AUTO_TEST_CASE(VectorCopy_test) {
 BOOST_AUTO_TEST_CASE(VectorMove_test) {
   std::vector<int> original{1, 1, 2, 3, 5, 8};
   std::vector<int> expected(original.begin(), original.end());
-  NdArray<int> m(std::vector<size_t>{2, 3}, std::move(original));
+  NdArray<int>     m(std::vector<size_t>{2, 3}, std::move(original));
 
   BOOST_CHECK_EQUAL(original.size(), 0);
   BOOST_CHECK_EQUAL_COLLECTIONS(m.begin(), m.end(), expected.begin(), expected.end());
@@ -117,7 +113,7 @@ BOOST_AUTO_TEST_CASE(VectorMove_test) {
 
 BOOST_AUTO_TEST_CASE(Ostream_test) {
   std::vector<int> original{1, 1, 2, 3, 5, 8};
-  NdArray<int> m(std::vector<size_t>{2, 3}, std::move(original));
+  NdArray<int>     m(std::vector<size_t>{2, 3}, std::move(original));
 
   std::stringstream stream;
   stream << m;
@@ -127,14 +123,14 @@ BOOST_AUTO_TEST_CASE(Ostream_test) {
 
 BOOST_AUTO_TEST_CASE(FromIterator_test) {
   std::list<int> original{1, 7, 6, 9, 5, 3};
-  NdArray<int> m(std::vector<size_t>{2, 3}, std::begin(original), std::end(original));
+  NdArray<int>   m(std::vector<size_t>{2, 3}, std::begin(original), std::end(original));
   BOOST_CHECK_EQUAL(original.size(), 6);
   BOOST_CHECK_EQUAL_COLLECTIONS(m.begin(), m.end(), original.begin(), original.end());
 }
 
 BOOST_AUTO_TEST_CASE(Reshape_test) {
   std::vector<int> values{10, 50, 0, 15, 20, 0};
-  NdArray<int> m{std::vector<size_t>{2, 3}, values};
+  NdArray<int>     m{std::vector<size_t>{2, 3}, values};
 
   m.reshape(6);
 
@@ -149,7 +145,7 @@ BOOST_AUTO_TEST_CASE(Reshape_test) {
 
 BOOST_AUTO_TEST_CASE(BadReshape_test) {
   std::vector<int> values{10, 50, 0, 15, 20, 0};
-  NdArray<int> m{std::vector<size_t>{2, 3}, values};
+  NdArray<int>     m{std::vector<size_t>{2, 3}, values};
 
   BOOST_CHECK_THROW(m.reshape(3), std::range_error);
   BOOST_CHECK_THROW(m.reshape(10), std::range_error);
@@ -157,7 +153,7 @@ BOOST_AUTO_TEST_CASE(BadReshape_test) {
 
 BOOST_AUTO_TEST_CASE(Copy_test) {
   std::vector<int> values{10, 50, 0, 15, 20, 0};
-  NdArray<int> m{std::vector<size_t>{2, 3}, values};
+  NdArray<int>     m{std::vector<size_t>{2, 3}, values};
 
   auto copy = m.copy();
   BOOST_CHECK_EQUAL_COLLECTIONS(values.begin(), values.end(), copy.begin(), copy.end());
@@ -173,8 +169,8 @@ BOOST_AUTO_TEST_CASE(Copy_test) {
 BOOST_AUTO_TEST_CASE(Concatenate_test) {
   std::vector<int> values1{1, 2, 3, 4, 5, 6};
   std::vector<int> values2{50, 60, 70, 80, 90, 100};
-  NdArray<int> m{std::vector<size_t>{2, 3}, values1};
-  NdArray<int> add{std::vector<size_t>{2, 3}, values2};
+  NdArray<int>     m{std::vector<size_t>{2, 3}, values1};
+  NdArray<int>     add{std::vector<size_t>{2, 3}, values2};
 
   m.concatenate(add);
 
@@ -198,7 +194,7 @@ BOOST_AUTO_TEST_CASE(BadConcatenate_test) {
 
 BOOST_AUTO_TEST_CASE(AttrNames_test) {
   const std::vector<std::string> attr_names{"ID", "SED", "PDZ"};
-  NdArray<int> named{{20}, attr_names};
+  NdArray<int>                   named{{20}, attr_names};
 
   BOOST_CHECK_EQUAL(named.shape().size(), 2);
   BOOST_CHECK_EQUAL(named.shape()[0], 20);
@@ -206,7 +202,7 @@ BOOST_AUTO_TEST_CASE(AttrNames_test) {
   BOOST_CHECK_EQUAL(named.size(), 60);
 
   for (size_t i = 0; i < named.shape()[0]; ++i) {
-    named.at(i, "ID") = i;
+    named.at(i, "ID")  = i;
     named.at(i, "SED") = i * 2;
     named.at(i, "PDZ") = i * 10 + 5;
   }

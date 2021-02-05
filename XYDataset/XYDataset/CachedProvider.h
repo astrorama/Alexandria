@@ -3,7 +3,7 @@
  * @date 08/14/18
  * @author aalvarez
  *
- * @copyright (C) 2012-2020 Euclid Science Ground Segment
+ * @copyright (C) 2012-2021 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -28,8 +28,8 @@
 #include <string>
 
 #include "ElementsKernel/Export.h"
-#include "XYDatasetProvider.h"
 #include "QualifiedName.h"
+#include "XYDatasetProvider.h"
 
 namespace Euclid {
 namespace XYDataset {
@@ -41,10 +41,9 @@ namespace XYDataset {
  * the results, so following calls are cheaper.
  *
  */
-class ELEMENTS_API CachedProvider: public XYDatasetProvider {
+class ELEMENTS_API CachedProvider : public XYDatasetProvider {
 
 public:
-
   /**
    * @brief Destructor
    */
@@ -86,12 +85,11 @@ public:
    */
   std::unique_ptr<XYDataset> getDataset(const QualifiedName& qualified_name) override;
 
-
   std::string getParameter(const QualifiedName& qualified_name, const std::string& key_word) override;
 
 private:
-  std::shared_ptr<XYDatasetProvider> m_provider;
-  std::map<std::string, std::vector<QualifiedName>> m_list_cache;
+  std::shared_ptr<XYDatasetProvider>                  m_provider;
+  std::map<std::string, std::vector<QualifiedName>>   m_list_cache;
   std::map<QualifiedName, std::unique_ptr<XYDataset>> m_dataset;
 
 };  // End of CachedProvider class

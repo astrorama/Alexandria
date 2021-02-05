@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2020 Euclid Science Ground Segment
+ * Copyright (C) 2012-2021 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -16,7 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
- /**
+/**
  * @file GridContainer/GridIndexHelper.h
  * @date May 15, 2014
  * @author Nikolaos Apostolakos
@@ -25,10 +25,10 @@
 #ifndef GRIDCONTAINER_GRIDINDEXHELPER_H
 #define GRIDCONTAINER_GRIDINDEXHELPER_H
 
-#include <vector>
-#include <tuple>
 #include "GridContainer/GridAxis.h"
 #include "GridContainer/_impl/GridConstructionHelper.h"
+#include <tuple>
+#include <vector>
 
 namespace Euclid {
 namespace GridContainer {
@@ -50,11 +50,10 @@ namespace GridContainer {
  *
  * @tparam AxesTypes The types of the GridContainer axes
  */
-template<typename... AxesTypes>
+template <typename... AxesTypes>
 class GridIndexHelper {
 
 public:
-
   /**
    * Constructs a new GridIndexHelper instance for making conversions for
    * a GridContainer with the given axes. For avoiding the long template syntax
@@ -108,11 +107,10 @@ public:
 
   /// Checks if any of the given coordinates is fixed and not zero
   template <typename Coord, typename... RestCoords>
-  void checkAllFixedAreZero(const std::map<size_t, size_t>& fixed_indices,
-                            Coord coord, RestCoords... rest_coords) const;
+  void checkAllFixedAreZero(const std::map<size_t, size_t>& fixed_indices, Coord coord, RestCoords... rest_coords) const;
 
-  std::vector<size_t> m_axes_sizes;
-  std::vector<size_t> m_axes_index_factors;
+  std::vector<size_t>      m_axes_sizes;
+  std::vector<size_t>      m_axes_index_factors;
   std::vector<std::string> m_axes_names;
 };
 
@@ -125,15 +123,14 @@ public:
  * @param axes_tuple the information of the GridContainer axes
  * @return The GridIndexHelper instance
  */
-template<typename... AxesTypes>
+template <typename... AxesTypes>
 GridIndexHelper<AxesTypes...> makeGridIndexHelper(const std::tuple<GridAxis<AxesTypes>...>& axes_tuple) {
   return GridIndexHelper<AxesTypes...>(axes_tuple);
 }
 
-} // end of namespace GridContainer
-} // end of namespace Euclid
+}  // end of namespace GridContainer
+}  // end of namespace Euclid
 
 #include "GridContainer/_impl/GridIndexHelper.icpp"
 
-#endif  /* GRIDCONTAINER_GRIDINDEXHELPER_H */
-
+#endif /* GRIDCONTAINER_GRIDINDEXHELPER_H */

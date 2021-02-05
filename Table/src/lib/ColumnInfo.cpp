@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2020 Euclid Science Ground Segment
+ * Copyright (C) 2012-2021 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -16,26 +16,25 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
- /**
+/**
  * @file src/lib/ColumnInfo.cpp
  * @date April 7, 2014
  * @author Nikolaos Apostolakos
  */
 
+#include "Table/ColumnInfo.h"
+#include "ElementsKernel/Exception.h"
 #include <algorithm>
 #include <set>
-#include "ElementsKernel/Exception.h"
-#include "Table/ColumnInfo.h"
 
 namespace Euclid {
 namespace Table {
 
-ColumnInfo::ColumnInfo(std::vector<info_type> info_list)
-        : m_info_list{std::move(info_list)} {
+ColumnInfo::ColumnInfo(std::vector<info_type> info_list) : m_info_list{std::move(info_list)} {
   if (m_info_list.empty()) {
     throw Elements::Exception() << "Empty info_list is not allowed";
   }
-  std::set<std::string> set {};
+  std::set<std::string> set{};
   for (const auto& info : m_info_list) {
     const auto& name = info.name;
     if (!set.insert(name).second) {  // Check for duplicate names
@@ -51,7 +50,7 @@ bool ColumnInfo::operator==(const ColumnInfo& other) const {
   return std::equal(this->m_info_list.cbegin(), this->m_info_list.cend(), other.m_info_list.cbegin());
 }
 
-bool ColumnInfo::operator !=(const ColumnInfo& other) const {
+bool ColumnInfo::operator!=(const ColumnInfo& other) const {
   return !(*this == other);
 }
 
@@ -67,8 +66,7 @@ const ColumnDescription& ColumnInfo::getDescription(std::size_t index) const {
 }
 
 const ColumnDescription& ColumnInfo::getDescription(const std::string& name) const {
-  auto iter = std::find_if(m_info_list.begin(), m_info_list.end(),
-                           [&name](const info_type& info) { return info.name == name; });
+  auto iter = std::find_if(m_info_list.begin(), m_info_list.end(), [&name](const info_type& info) { return info.name == name; });
   if (iter == m_info_list.end()) {
     throw Elements::Exception() << "Column " << name << " does not exist";
   }
@@ -77,14 +75,14 @@ const ColumnDescription& ColumnInfo::getDescription(const std::string& name) con
 
 std::unique_ptr<size_t> ColumnInfo::find(const std::string& name) const {
   auto begin = m_info_list.begin();
-  auto end = m_info_list.end();
-  auto iter = std::find_if(begin, end, [&name](const info_type& info){return info.name == name;});
+  auto end   = m_info_list.end();
+  auto iter  = std::find_if(begin, end, [&name](const info_type& info) { return info.name == name; });
   if (iter != end) {
-    size_t index {static_cast<size_t>(std::distance(begin, iter))};
-    return std::unique_ptr<size_t> {new size_t {index}};
+    size_t index{static_cast<size_t>(std::distance(begin, iter))};
+    return std::unique_ptr<size_t>{new size_t{index}};
   }
-  return std::unique_ptr<size_t> {};
+  return std::unique_ptr<size_t>{};
 }
 
-}
-} // end of namespace Euclid
+}  // namespace Table
+}  // end of namespace Euclid

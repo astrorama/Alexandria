@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2020 Euclid Science Ground Segment
+ * Copyright (C) 2012-2021 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General
  * Public License as published by the Free Software Foundation; either version 3.0 of the License, or (at your option)
@@ -19,10 +19,10 @@
  * @author nikoapos
  */
 
+#include "Configuration/ConfigManager.h"
+#include "Configuration/Configuration.h"
 #include "ElementsKernel/Exception.h"
 #include "ElementsKernel/Logging.h"
-#include "Configuration/Configuration.h"
-#include "Configuration/ConfigManager.h"
 
 namespace po = boost::program_options;
 
@@ -32,20 +32,19 @@ namespace Configuration {
 static Elements::Logging logger = Elements::Logging::getLogger("ConfigManager");
 
 ConfigManager& ConfigManager::getInstance(long id) {
-  static std::map<long, std::unique_ptr<ConfigManager>> manager_map {};
-  auto& manager_ptr = manager_map[id];
+  static std::map<long, std::unique_ptr<ConfigManager>> manager_map{};
+  auto&                                                 manager_ptr = manager_map[id];
   if (manager_ptr == nullptr) {
     manager_ptr.reset(new ConfigManager{id});
   }
   return *manager_ptr;
 }
 
-ConfigManager::ConfigManager(long id) : m_id{id} {
-}
+ConfigManager::ConfigManager(long id) : m_id{id} {}
 
-std::vector<std::type_index> hasCircularDependencies(
-  const std::map<std::type_index, std::set<std::type_index>>& dependency_map,
-  const std::type_index& root, const std::pair<const std::type_index, std::set<std::type_index>>& config_pair) {
+std::vector<std::type_index>
+hasCircularDependencies(const std::map<std::type_index, std::set<std::type_index>>& dependency_map, const std::type_index& root,
+                        const std::pair<const std::type_index, std::set<std::type_index>>& config_pair) {
 
   if (config_pair.second.find(root) != config_pair.second.end()) {
     return {root};
@@ -53,7 +52,7 @@ std::vector<std::type_index> hasCircularDependencies(
   for (auto& config : config_pair.second) {
     auto found = hasCircularDependencies(dependency_map, root, *dependency_map.find(config));
     if (!found.empty()) {
-      std::vector<std::type_index> result {config};
+      std::vector<std::type_index> result{config};
       for (auto& type : found) {
         result.emplace_back(type);
       }
@@ -63,31 +62,29 @@ std::vector<std::type_index> hasCircularDependencies(
   return {};
 }
 
-static void cleanupNonRegisteredDependencies(std::map<std::type_index, std::set<std::type_index>>& dep_map,
+static void cleanupNonRegisteredDependencies(std::map<std::type_index, std::set<std::type_index>>&            dep_map,
                                              const std::map<std::type_index, std::unique_ptr<Configuration>>& dict) {
   logger.debug() << "Cleaning dependencies of unregistered configurations...";
-  std::vector<std::type_index> unregistered_keys {};
+  std::vector<std::type_index> unregistered_keys{};
   for (auto& pair : dep_map) {
     if (dict.find(pair.first) == dict.end()) {
       unregistered_keys.emplace_back(pair.first);
       continue;
     }
-    std::vector<std::type_index> unregistered_values {};
+    std::vector<std::type_index> unregistered_values{};
     for (auto& value : pair.second) {
       if (dict.find(value) == dict.end()) {
         unregistered_values.emplace_back(value);
       }
     }
     for (auto& to_remove : unregistered_values) {
-      logger.info() << "Removing configuration dependency " << pair.first.name()
-                    << " -> " << to_remove.name();
+      logger.info() << "Removing configuration dependency " << pair.first.name() << " -> " << to_remove.name();
       pair.second.erase(to_remove);
     }
   }
   for (auto& to_remove : unregistered_keys) {
     for (auto& value : dep_map.at(to_remove)) {
-      logger.info() << "Removing configuration dependency " << to_remove.name()
-                    << " -> " << value.name();
+      logger.info() << "Removing configuration dependency " << to_remove.name() << " -> " << value.name();
     }
     dep_map.erase(to_remove);
   }
@@ -98,8 +95,7 @@ po::options_description ConfigManager::closeRegistration() {
 
   // Populate the dependencies map
   for (auto& pair : m_config_dictionary) {
-    m_dependency_map[pair.first].insert(pair.second->getDependencies().begin(),
-                                        pair.second->getDependencies().end());
+    m_dependency_map[pair.first].insert(pair.second->getDependencies().begin(), pair.second->getDependencies().end());
   }
 
   // Cleanup any dependencies related with non register configurations
@@ -119,7 +115,7 @@ po::options_description ConfigManager::closeRegistration() {
     }
   }
 
-  std::map<std::string, po::options_description> all_options {};
+  std::map<std::string, po::options_description> all_options{};
   for (auto& config : m_config_dictionary) {
     for (auto& pair : config.second->getProgramOptions()) {
       if (all_options.find(pair.first) == all_options.end()) {
@@ -132,7 +128,7 @@ po::options_description ConfigManager::closeRegistration() {
     }
   }
 
-  po::options_description result {};
+  po::options_description result{};
   for (auto& pair : all_options) {
     result.add(pair.second);
   }
@@ -141,9 +137,8 @@ po::options_description ConfigManager::closeRegistration() {
 }
 
 static void recursiveInitialization(const std::map<std::type_index, std::unique_ptr<Configuration>>& dictionary,
-                                    const std::map<std::type_index, std::set<std::type_index>>& dependency_map,
-                                    const std::map<std::string, po::variable_value>& user_values,
-                                    const std::type_index& config) {
+                                    const std::map<std::type_index, std::set<std::type_index>>&      dependency_map,
+                                    const std::map<std::string, po::variable_value>& user_values, const std::type_index& config) {
   if (dictionary.at(config)->getCurrentState() >= Configuration::State::INITIALIZED) {
     return;
   }
@@ -159,23 +154,20 @@ static void recursiveInitialization(const std::map<std::type_index, std::unique_
 void ConfigManager::initialize(const std::map<std::string, po::variable_value>& user_values) {
   m_state = State::INITIALIZED;
   for (auto& pair : m_config_dictionary) {
-    logger.debug() << "Pre-Initializing configuration :" <<  pair.first.name();
+    logger.debug() << "Pre-Initializing configuration :" << pair.first.name();
     pair.second->preInitialize(user_values);
     pair.second->getCurrentState() = Configuration::State::PRE_INITIALIZED;
   }
   for (auto& pair : m_config_dictionary) {
-    logger.debug() << "Initializing configuration :" <<  pair.first.name();
+    logger.debug() << "Initializing configuration :" << pair.first.name();
     recursiveInitialization(m_config_dictionary, m_dependency_map, user_values, pair.first);
   }
   for (auto& pair : m_config_dictionary) {
-    logger.debug() << "Post-Initializing configuration :" <<  pair.first.name();
+    logger.debug() << "Post-Initializing configuration :" << pair.first.name();
     pair.second->postInitialize(user_values);
     pair.second->getCurrentState() = Configuration::State::FINAL;
   }
 }
 
-} // Configuration namespace
-} // Euclid namespace
-
-
-
+}  // namespace Configuration
+}  // namespace Euclid

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2020 Euclid Science Ground Segment
+ * Copyright (C) 2012-2021 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -32,31 +32,33 @@
 using boost::regex;
 using boost::regex_match;
 #include <boost/algorithm/string.hpp>
+
+#if BOOST_VERSION < 107300
 #include <boost/io/detail/quoted_manip.hpp>
+#else
+#include <boost/io/quoted.hpp>
+#endif
 
 #include "ElementsKernel/Exception.h"
 #include "Table/AsciiReader.h"
 
-#include "ReaderHelper.h"
 #include "AsciiReaderHelper.h"
+#include "ReaderHelper.h"
 
 namespace Euclid {
 namespace Table {
 
-AsciiReader::AsciiReader(std::istream& stream) : AsciiReader(InstOrRefHolder<std::istream>::create(stream)) {
-}
+AsciiReader::AsciiReader(std::istream& stream) : AsciiReader(InstOrRefHolder<std::istream>::create(stream)) {}
 
-AsciiReader::AsciiReader(const std::string& filename) : AsciiReader(create<std::ifstream>(filename)) {
-}
+AsciiReader::AsciiReader(const std::string& filename) : AsciiReader(create<std::ifstream>(filename)) {}
 
 AsciiReader::AsciiReader(std::unique_ptr<InstOrRefHolder<std::istream>> stream_holder)
-        : m_stream_holder(std::move(stream_holder)) {
-}
+    : m_stream_holder(std::move(stream_holder)) {}
 
 AsciiReader& AsciiReader::setCommentIndicator(const std::string& indicator) {
   if (m_reading_started) {
     throw Elements::Exception() << "Changing comment indicator after reading "
-            << "has started is not allowed";
+                                << "has started is not allowed";
   }
   if (indicator.empty()) {
     throw Elements::Exception() << "Empty string as comment indicator";
@@ -68,27 +70,26 @@ AsciiReader& AsciiReader::setCommentIndicator(const std::string& indicator) {
 AsciiReader& AsciiReader::fixColumnNames(std::vector<std::string> column_names) {
   if (m_reading_started) {
     throw Elements::Exception() << "Fixing the column names after reading "
-            << "has started is not allowed";
+                                << "has started is not allowed";
   }
 
   m_column_names = std::move(column_names);
 
-  std::set<std::string> set {};
-  regex vertical_whitespace {".*\\v.*"}; // Checks if input contains any whitespace characters
+  std::set<std::string> set{};
+  regex                 vertical_whitespace{".*\\v.*"};  // Checks if input contains any whitespace characters
   for (const auto& name : m_column_names) {
     if (name.empty()) {
       throw Elements::Exception() << "Empty string column names are not allowed";
     }
     if (regex_match(name, vertical_whitespace)) {
       throw Elements::Exception() << "Column name '" << name << "' contains "
-                                << "vertical whitespace characters";
+                                  << "vertical whitespace characters";
     }
     if (!set.insert(name).second) {  // Check for duplicate names
       throw Elements::Exception() << "Duplicate column name " << name;
     }
   }
-  if (!m_column_names.empty() && !m_column_types.empty()
-      && m_column_names.size() != m_column_types.size()) {
+  if (!m_column_names.empty() && !m_column_types.empty() && m_column_names.size() != m_column_types.size()) {
     throw Elements::Exception() << "Different number of column names and types";
   }
 
@@ -98,13 +99,12 @@ AsciiReader& AsciiReader::fixColumnNames(std::vector<std::string> column_names) 
 AsciiReader& AsciiReader::fixColumnTypes(std::vector<std::type_index> column_types) {
   if (m_reading_started) {
     throw Elements::Exception() << "Fixing the column types after reading "
-            << "has started is not allowed";
+                                << "has started is not allowed";
   }
 
   m_column_types = std::move(column_types);
 
-  if (!m_column_names.empty() && !m_column_types.empty()
-      && m_column_names.size() != m_column_types.size()) {
+  if (!m_column_names.empty() && !m_column_types.empty() && m_column_names.size() != m_column_types.size()) {
     throw Elements::Exception() << "Different number of column names and types";
   }
 
@@ -121,24 +121,22 @@ void AsciiReader::readColumnInfo() {
 
   size_t columns_number = countColumns(in, m_comment);
   if (!m_column_names.empty() && m_column_names.size() != columns_number) {
-    throw Elements::Exception() << "Columns number in stream (" << columns_number
-                                << ") does not match the column names number ("
+    throw Elements::Exception() << "Columns number in stream (" << columns_number << ") does not match the column names number ("
                                 << m_column_names.size() << ")";
   }
   if (!m_column_types.empty() && m_column_types.size() != columns_number) {
-    throw Elements::Exception() << "Columns number in stream (" << columns_number
-                                << ") does not match the column types number ("
+    throw Elements::Exception() << "Columns number in stream (" << columns_number << ") does not match the column types number ("
                                 << m_column_types.size() << ")";
   }
 
   auto auto_names = autoDetectColumnNames(in, m_comment, columns_number);
-  auto auto_desc = autoDetectColumnDescriptions(in, m_comment);
+  auto auto_desc  = autoDetectColumnDescriptions(in, m_comment);
 
-  std::vector<std::string> names {};
-  std::vector<std::type_index> types {};
-  std::vector<std::string> units {};
-  std::vector<std::string> descriptions {};
-  for (size_t i=0; i<columns_number; ++i) {
+  std::vector<std::string>     names{};
+  std::vector<std::type_index> types{};
+  std::vector<std::string>     units{};
+  std::vector<std::string>     descriptions{};
+  for (size_t i = 0; i < columns_number; ++i) {
     if (m_column_names.empty()) {
       names.emplace_back(auto_names[i]);
     } else {
@@ -164,18 +162,16 @@ void AsciiReader::readColumnInfo() {
     }
   }
   m_column_info = createColumnInfo(names, types, units, descriptions);
-
 }
-
 
 const ColumnInfo& AsciiReader::getInfo() {
   readColumnInfo();
   return *m_column_info;
 }
 
-static std::string _peekLine(std::istream &in) {
+static std::string _peekLine(std::istream& in) {
   std::string line;
-  auto pos = in.tellg();
+  auto        pos = in.tellg();
   getline(in, line);
   in.seekg(pos);
   return line;
@@ -185,7 +181,7 @@ std::string AsciiReader::getComment() {
   std::ostringstream comment;
 
   m_reading_started = true;
-  auto &in = m_stream_holder->ref();
+  auto& in          = m_stream_holder->ref();
   while (in && _peekLine(in).compare(0, m_comment.size(), m_comment) == 0) {
     std::string line;
     getline(in, line);
@@ -204,7 +200,7 @@ Table AsciiReader::readImpl(long rows) {
   auto& in = m_stream_holder->ref();
 
   std::vector<Row> row_list;
-  while(in && rows != 0) {
+  while (in && rows != 0) {
     std::string line;
     getline(in, line);
     size_t comment_pos = line.find(m_comment);
@@ -214,10 +210,10 @@ Table AsciiReader::readImpl(long rows) {
     boost::trim(line);
     if (!line.empty()) {
       --rows;
-      std::stringstream line_stream(line);
-      size_t count {0};
-      std::vector<Row::cell_type> values {};
-      std::string token;
+      std::stringstream           line_stream(line);
+      size_t                      count{0};
+      std::vector<Row::cell_type> values{};
+      std::string                 token;
       line_stream >> token;
       while (line_stream) {
         if (count >= m_column_info->size()) {
@@ -241,7 +237,7 @@ void AsciiReader::skip(long rows) {
   readColumnInfo();
   auto& in = m_stream_holder->ref();
 
-  while(in && rows != 0) {
+  while (in && rows != 0) {
     std::string line;
     getline(in, line);
     size_t comment_pos = line.find(m_comment);
@@ -263,5 +259,5 @@ std::size_t AsciiReader::rowsLeft() {
   return countRemainingRows(m_stream_holder->ref(), m_comment);
 }
 
-} // Table namespace
-} // Euclid namespace
+}  // namespace Table
+}  // namespace Euclid

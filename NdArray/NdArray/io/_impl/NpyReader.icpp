@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2020 Euclid Science Ground Segment
+ * Copyright (C) 2012-2021 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -18,11 +18,11 @@
 
 #ifdef NPY_IMPL
 
-#include <cstring>
-#include <istream>
-#include <ElementsKernel/Exception.h>
 #include "NdArray/NdArray.h"
 #include "NpyCommon.h"
+#include <ElementsKernel/Exception.h>
+#include <cstring>
+#include <istream>
 
 namespace Euclid {
 namespace NdArray {
@@ -30,11 +30,11 @@ namespace NdArray {
 using boost::endian::little_uint16_t;
 using boost::endian::little_uint32_t;
 
-template<typename T>
-NdArray <T> readNpy(std::istream& input) {
-  std::string dtype;
-  size_t n_elements;
-  std::vector<size_t> shape;
+template <typename T>
+NdArray<T> readNpy(std::istream& input) {
+  std::string              dtype;
+  size_t                   n_elements;
+  std::vector<size_t>      shape;
   std::vector<std::string> attr_names;
 
   readNpyHeader(input, dtype, shape, attr_names, n_elements);
@@ -46,11 +46,11 @@ NdArray <T> readNpy(std::istream& input) {
   }
 
   std::vector<T> data(n_elements);
-  input.read(reinterpret_cast<char *>(&data[0]), sizeof(T) * data.size());
+  input.read(reinterpret_cast<char*>(&data[0]), sizeof(T) * data.size());
   return {shape, attr_names, std::move(data)};
 }
 
-} // end of namespace NdArray
-} // end of namespace Euclid
+}  // end of namespace NdArray
+}  // end of namespace Euclid
 
-#endif // NPY_IMPL
+#endif  // NPY_IMPL

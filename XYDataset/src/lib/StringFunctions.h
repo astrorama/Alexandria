@@ -1,22 +1,22 @@
 /*
- * Copyright (C) 2012-2020 Euclid Science Ground Segment    
- *  
+ * Copyright (C) 2012-2021 Euclid Science Ground Segment
+ *
  * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free 
- * Software Foundation; either version 3.0 of the License, or (at your option)  
- * any later version.  
- *  
- * This library is distributed in the hope that it will be useful, but WITHOUT 
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 3.0 of the License, or (at your option)
+ * any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more  
- * details.  
- *  
- * You should have received a copy of the GNU Lesser General Public License 
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
  * along with this library; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA  
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
- 
- /**
+
+/**
  * @file src/lib/StringFunctions.h
  *
  * @date May 21, 2014
@@ -26,8 +26,8 @@
 #ifndef STRINGFUNCTIONS_H_
 #define STRINGFUNCTIONS_H_
 
-#include <string>
 #include <iostream>
+#include <string>
 
 #include "ElementsKernel/Export.h"
 
@@ -54,13 +54,12 @@ std::string checkEndSlashes(const std::string& input_str);
 //
 std::string removeExtension(const std::string& input_str);
 
-
 //
 // Remove all characters before the last "/" character
 //
 std::string removeAllBeforeLastSlash(const std::string& input_str);
 
-} // XYDataset namespace
-} // end of namespace Euclid
+}  // namespace XYDataset
+}  // end of namespace Euclid
 
-#endif // STRINGFUNCTIONS_H_
+#endif  // STRINGFUNCTIONS_H_

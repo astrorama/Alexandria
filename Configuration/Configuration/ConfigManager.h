@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2020 Euclid Science Ground Segment
+ * Copyright (C) 2012-2021 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General
  * Public License as published by the Free Software Foundation; either version 3.0 of the License, or (at your option)
@@ -22,11 +22,11 @@
 #ifndef _CONFIGURATION_CONFIGMANAGER_H
 #define _CONFIGURATION_CONFIGMANAGER_H
 
-#include <map>
-#include <string>
-#include <memory>
-#include <typeindex>
 #include <boost/program_options.hpp>
+#include <map>
+#include <memory>
+#include <string>
+#include <typeindex>
 
 namespace Euclid {
 namespace Configuration {
@@ -81,7 +81,6 @@ class Configuration;
 class ConfigManager {
 
 public:
-
   /// Returns a reference to the ConfigManager with the given ID
   static ConfigManager& getInstance(long id);
 
@@ -147,7 +146,6 @@ public:
    */
   boost::program_options::options_description closeRegistration();
 
-
   /**
    * @brief
    * Initialize the manager
@@ -186,18 +184,15 @@ public:
   T& getConfiguration();
 
 private:
-
   explicit ConfigManager(long id);
 
-  enum class State {
-    REGISTRATION, WAITING_INITIALIZATION, INITIALIZED
-  };
+  enum class State { REGISTRATION, WAITING_INITIALIZATION, INITIALIZED };
 
-  long m_id;
-  State m_state = State::REGISTRATION;
-  std::unique_ptr<std::type_index> m_root_config;
+  long                                                      m_id;
+  State                                                     m_state = State::REGISTRATION;
+  std::unique_ptr<std::type_index>                          m_root_config;
   std::map<std::type_index, std::unique_ptr<Configuration>> m_config_dictionary;
-  std::map<std::type_index, std::set<std::type_index>> m_dependency_map;
+  std::map<std::type_index, std::set<std::type_index>>      m_dependency_map;
 
 }; /* End of ConfigManager class */
 

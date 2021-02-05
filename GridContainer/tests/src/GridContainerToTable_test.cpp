@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2020 Euclid Science Ground Segment
+ * Copyright (C) 2012-2021 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -16,25 +16,25 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+#include "GridContainer/GridContainerToTable.h"
+#include <boost/test/unit_test.hpp>
+#include <cmath>
 #include <string>
 #include <tuple>
 #include <vector>
-#include <boost/test/unit_test.hpp>
-#include <cmath>
-#include "GridContainer/GridContainerToTable.h"
 
 using namespace Euclid::GridContainer;
 
 struct SimpleGridContainer_Fixture {
   typedef GridContainer<std::vector<double>, int, int, std::string, float> GridContainerType;
-  typedef GridAxis<int> IntAxis;
-  typedef GridAxis<std::string> StrAxis;
-  typedef GridAxis<float> FloatAxis;
-  IntAxis axis1{"Axis 1", {1, 2, 3, 4, 5}};
-  IntAxis axis2{"Axis 2", {1, 2, 3}};
-  StrAxis axis3{"Axis 3", {"a", "b", "c", "d", "e", "f"}};
-  FloatAxis axis4{"Axis 4", {1, 2}};
-  std::tuple<IntAxis, IntAxis, StrAxis, FloatAxis> axes_tuple{axis1, axis2, axis3, axis4};
+  typedef GridAxis<int>                                                    IntAxis;
+  typedef GridAxis<std::string>                                            StrAxis;
+  typedef GridAxis<float>                                                  FloatAxis;
+  IntAxis                                                                  axis1{"Axis 1", {1, 2, 3, 4, 5}};
+  IntAxis                                                                  axis2{"Axis 2", {1, 2, 3}};
+  StrAxis                                                                  axis3{"Axis 3", {"a", "b", "c", "d", "e", "f"}};
+  FloatAxis                                                                axis4{"Axis 4", {1, 2}};
+  std::tuple<IntAxis, IntAxis, StrAxis, FloatAxis>                         axes_tuple{axis1, axis2, axis3, axis4};
 
   GridContainerType grid{axis1, axis2, axis3, axis4};
 
@@ -56,12 +56,13 @@ struct SimpleGridContainer_Fixture {
 };
 
 struct CellWithAttributes {
-  double flux, error;
+  double      flux, error;
   std::string description;
 };
 
-namespace Euclid { namespace GridContainer {
-template<>
+namespace Euclid {
+namespace GridContainer {
+template <>
 struct GridCellToTable<CellWithAttributes> {
   static void addColumnDescriptions(const CellWithAttributes&, std::vector<Euclid::Table::ColumnDescription>& columns) {
     columns.emplace_back("MyFlux", typeid(double));
@@ -75,17 +76,18 @@ struct GridCellToTable<CellWithAttributes> {
     row.emplace_back(c.description);
   }
 };
-}}
+}  // namespace GridContainer
+}  // namespace Euclid
 
 struct ComposedGridContainer_Fixture {
   typedef GridContainer<std::vector<CellWithAttributes>, int, int, std::string, float> GridContainerType;
-  typedef GridAxis<int> IntAxis;
-  typedef GridAxis<std::string> StrAxis;
-  typedef GridAxis<float> FloatAxis;
-  IntAxis axis1{"Axis 1", {1, 2, 3, 4, 5}};
-  IntAxis axis2{"Axis 2", {1, 2, 3}};
-  StrAxis axis3{"Axis 3", {"a", "b", "c", "d", "e", "f"}};
-  FloatAxis axis4{"Axis 4", {1, 2}};
+  typedef GridAxis<int>                                                                IntAxis;
+  typedef GridAxis<std::string>                                                        StrAxis;
+  typedef GridAxis<float>                                                              FloatAxis;
+  IntAxis                                                                              axis1{"Axis 1", {1, 2, 3, 4, 5}};
+  IntAxis                                                                              axis2{"Axis 2", {1, 2, 3}};
+  StrAxis                                          axis3{"Axis 3", {"a", "b", "c", "d", "e", "f"}};
+  FloatAxis                                        axis4{"Axis 4", {1, 2}};
   std::tuple<IntAxis, IntAxis, StrAxis, FloatAxis> axes_tuple{axis1, axis2, axis3, axis4};
 
   GridContainerType grid{axis1, axis2, axis3, axis4};
@@ -100,9 +102,9 @@ struct ComposedGridContainer_Fixture {
         for (size_t a3 = 0; a3 < axis3.size(); ++a3) {
           for (size_t a4 = 0; a4 < axis4.size(); ++a4) {
             CellWithAttributes c;
-            c.flux = Fx(axis1[a1], axis2[a2], axis3[a3], axis4[a4]);
-            c.error = std::sqrt(c.flux);
-            c.description = std::string(a4 + 1, 'x');
+            c.flux                  = Fx(axis1[a1], axis2[a2], axis3[a3], axis4[a4]);
+            c.error                 = std::sqrt(c.flux);
+            c.description           = std::string(a4 + 1, 'x');
             grid.at(a1, a2, a3, a4) = c;
           }
         }
@@ -113,7 +115,7 @@ struct ComposedGridContainer_Fixture {
 
 //-----------------------------------------------------------------------------
 
-BOOST_AUTO_TEST_SUITE (GridToTable_test)
+BOOST_AUTO_TEST_SUITE(GridToTable_test)
 
 //-----------------------------------------------------------------------------
 
@@ -140,12 +142,12 @@ BOOST_FIXTURE_TEST_CASE(SimpleToTable, SimpleGridContainer_Fixture) {
   BOOST_CHECK(std::type_index(typeid(double)) == cell_col.type);
 
   // The order is not so important as to keep the proper values together!
-  for (auto& row: table) {
-    auto ax1 = boost::get<int>(row["Axis_1"]);
-    auto ax2 = boost::get<int>(row["Axis_2"]);
-    auto ax3 = boost::get<std::string>(row["Axis_3"]);
-    auto ax4 = boost::get<float>(row["Axis_4"]);
-    double v = Fx(ax1, ax2, ax3, ax4);
+  for (auto& row : table) {
+    auto   ax1 = boost::get<int>(row["Axis_1"]);
+    auto   ax2 = boost::get<int>(row["Axis_2"]);
+    auto   ax3 = boost::get<std::string>(row["Axis_3"]);
+    auto   ax4 = boost::get<float>(row["Axis_4"]);
+    double v   = Fx(ax1, ax2, ax3, ax4);
     BOOST_CHECK_CLOSE(boost::get<double>(row["value"]), v, 1e-7);
   }
 }
@@ -181,12 +183,12 @@ BOOST_FIXTURE_TEST_CASE(ComposedToTable, ComposedGridContainer_Fixture) {
   BOOST_CHECK(std::type_index(typeid(std::string)) == descr_col.type);
 
   // The order is not so important as to keep the proper values together!
-  for (auto& row: table) {
-    auto ax1 = boost::get<int>(row["Axis_1"]);
-    auto ax2 = boost::get<int>(row["Axis_2"]);
-    auto ax3 = boost::get<std::string>(row["Axis_3"]);
-    auto ax4 = boost::get<float>(row["Axis_4"]);
-    double v = Fx(ax1, ax2, ax3, ax4);
+  for (auto& row : table) {
+    auto   ax1 = boost::get<int>(row["Axis_1"]);
+    auto   ax2 = boost::get<int>(row["Axis_2"]);
+    auto   ax3 = boost::get<std::string>(row["Axis_3"]);
+    auto   ax4 = boost::get<float>(row["Axis_4"]);
+    double v   = Fx(ax1, ax2, ax3, ax4);
     BOOST_CHECK_CLOSE(boost::get<double>(row["MyFlux"]), v, 1e-7);
     BOOST_CHECK_CLOSE(boost::get<double>(row["MyError"]), std::sqrt(v), 1e-7);
   }

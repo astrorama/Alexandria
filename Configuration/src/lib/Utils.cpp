@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2020 Euclid Science Ground Segment
+ * Copyright (C) 2012-2021 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -22,8 +22,8 @@
  * @author nikoapos
  */
 
-#include <chrono>
 #include "Configuration/Utils.h"
+#include <chrono>
 
 namespace Euclid {
 namespace Configuration {
@@ -33,15 +33,11 @@ static long last_manager_id = 0;
 long getUniqueManagerId() {
   long id = last_manager_id;
   while (id == last_manager_id) {
-    id = std::chrono::duration_cast<std::chrono::microseconds>(
-      std::chrono::system_clock::now().time_since_epoch()).count();
+    id = std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
   }
   last_manager_id = id;
   return id;
 }
 
-} // Configuration namespace
-} // Euclid namespace
-
-
-
+}  // namespace Configuration
+}  // namespace Euclid

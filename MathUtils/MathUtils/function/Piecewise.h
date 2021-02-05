@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2020 Euclid Science Ground Segment
+ * Copyright (C) 2012-2021 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -16,7 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
- /**
+/**
  * @file MathUtils/function/Piecewise.h
  * @date February 20, 2014
  * @author Nikolaos Apostolakos
@@ -25,8 +25,8 @@
 #ifndef MATHUTILS_PIECEWISE_H
 #define MATHUTILS_PIECEWISE_H
 
-#include <vector>
 #include <memory>
+#include <vector>
 
 #include "ElementsKernel/Export.h"
 
@@ -48,7 +48,6 @@ namespace MathUtils {
 class ELEMENTS_API Piecewise : public Integrable {
 
 public:
-
   /**
    * Creates a new Piecewise instance with the given knots and functions between
    * them. The functions vector must have size one less than the knots. The
@@ -93,16 +92,13 @@ public:
   double integrate(const double x1, const double x2) const override;
 
 private:
-
   /// A vector where the knots are kept
   std::vector<double> m_knots;
   /// A vector where the sub-functions are kept
   std::vector<std::unique_ptr<Function>> m_functions;
-
 };
 
-} // End of MathUtils
-} // end of namespace Euclid
+}  // namespace MathUtils
+}  // end of namespace Euclid
 
-#endif  /* MATHUTILS_PIECEWISE_H */
-
+#endif /* MATHUTILS_PIECEWISE_H */

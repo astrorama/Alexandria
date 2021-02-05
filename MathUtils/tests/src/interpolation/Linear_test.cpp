@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2020 Euclid Science Ground Segment
+ * Copyright (C) 2012-2021 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -16,26 +16,26 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
- /**
+/**
  * @file tests/src/interpolation/Linear_test.cpp
  * @date February 20, 2014
  * @author Nikolaos Apostolakos
  */
 
-#include <boost/test/unit_test.hpp>
-#include <boost/test/floating_point_comparison.hpp>
-#include <memory>
 #include "MathUtils/function/Function.h"
 #include "MathUtils/interpolation/interpolation.h"
+#include <boost/test/floating_point_comparison.hpp>
+#include <boost/test/unit_test.hpp>
+#include <memory>
 
 struct Linear_Fixture {
-  double close_tolerance {1E-10};
-  double small_tolerance {1E-20};
+  double close_tolerance{1E-10};
+  double small_tolerance{1E-20};
 };
 
 //-----------------------------------------------------------------------------
 
-BOOST_AUTO_TEST_SUITE (Linear_test)
+BOOST_AUTO_TEST_SUITE(Linear_test)
 
 //-----------------------------------------------------------------------------
 // Test the linear interpolation
@@ -44,11 +44,11 @@ BOOST_AUTO_TEST_SUITE (Linear_test)
 BOOST_FIXTURE_TEST_CASE(Linear, Linear_Fixture) {
 
   // Given
-  std::vector<double> x {-1.,0.,1.,2.,8.,10.};
-  std::vector<double> y {4.,3.,1.,2.,2.,20.};
+  std::vector<double> x{-1., 0., 1., 2., 8., 10.};
+  std::vector<double> y{4., 3., 1., 2., 2., 20.};
 
   // When
-  auto linear = Euclid::MathUtils::interpolate(x, y, Euclid::MathUtils::InterpolationType::LINEAR, false);
+  auto   linear = Euclid::MathUtils::interpolate(x, y, Euclid::MathUtils::InterpolationType::LINEAR, false);
   double value1 = (*linear)(-2.);
   double value2 = (*linear)(-1.);
   double value3 = (*linear)(-.5);
@@ -69,7 +69,6 @@ BOOST_FIXTURE_TEST_CASE(Linear, Linear_Fixture) {
   BOOST_CHECK_CLOSE(value7, 2., close_tolerance);
   BOOST_CHECK_CLOSE(value8, 11., close_tolerance);
   BOOST_CHECK_SMALL(value9, small_tolerance);
-
 }
 
 //-----------------------------------------------------------------------------
@@ -79,11 +78,11 @@ BOOST_FIXTURE_TEST_CASE(Linear, Linear_Fixture) {
 BOOST_FIXTURE_TEST_CASE(LinearExtrapolation, Linear_Fixture) {
 
   // Given
-  std::vector<double> x {-1.,0.,1.,2.,8.,10.};
-  std::vector<double> y {4.,3.,1.,2.,2.,20.};
+  std::vector<double> x{-1., 0., 1., 2., 8., 10.};
+  std::vector<double> y{4., 3., 1., 2., 2., 20.};
 
   // When
-  auto linear = Euclid::MathUtils::interpolate(x, y, Euclid::MathUtils::InterpolationType::LINEAR, true);
+  auto   linear = Euclid::MathUtils::interpolate(x, y, Euclid::MathUtils::InterpolationType::LINEAR, true);
   double value1 = (*linear)(-2.);
   double value2 = (*linear)(-1.);
   double value3 = (*linear)(-.5);
@@ -104,7 +103,6 @@ BOOST_FIXTURE_TEST_CASE(LinearExtrapolation, Linear_Fixture) {
   BOOST_CHECK_CLOSE(value7, 2., close_tolerance);
   BOOST_CHECK_CLOSE(value8, 11., close_tolerance);
   BOOST_CHECK_CLOSE(value9, 20.9, close_tolerance);
-
 }
 
 //-----------------------------------------------------------------------------
@@ -113,11 +111,11 @@ BOOST_FIXTURE_TEST_CASE(LinearExtrapolation, Linear_Fixture) {
 BOOST_FIXTURE_TEST_CASE(Linear1DataPoint, Linear_Fixture) {
 
   // Given
-  std::vector<double> x {2.};
-  std::vector<double> y {42.};
+  std::vector<double> x{2.};
+  std::vector<double> y{42.};
 
   // When
-  auto linear = Euclid::MathUtils::interpolate(x, y, Euclid::MathUtils::InterpolationType::LINEAR, true);
+  auto   linear = Euclid::MathUtils::interpolate(x, y, Euclid::MathUtils::InterpolationType::LINEAR, true);
   double value1 = (*linear)(-2.);
   double value2 = (*linear)(-1.);
   double value3 = (*linear)(-.5);
@@ -130,10 +128,8 @@ BOOST_FIXTURE_TEST_CASE(Linear1DataPoint, Linear_Fixture) {
   BOOST_CHECK_CLOSE(value3, 42., close_tolerance);
   BOOST_CHECK_CLOSE(value4, 42., close_tolerance);
   BOOST_CHECK_CLOSE(value5, 42., close_tolerance);
-
 }
-
 
 //-----------------------------------------------------------------------------
 
-BOOST_AUTO_TEST_SUITE_END ()
+BOOST_AUTO_TEST_SUITE_END()

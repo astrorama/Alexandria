@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2020 Euclid Science Ground Segment
+ * Copyright (C) 2012-2021 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -16,7 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
- /**
+/**
  * @file Table/Table.h
  * @date April 9, 2014
  * @author Nikolaos Apostolakos
@@ -49,7 +49,6 @@ namespace Table {
 class ELEMENTS_API Table {
 
 public:
-
   typedef std::vector<Row>::const_iterator const_iterator;
 
   /**
@@ -113,12 +112,11 @@ public:
   const_iterator end() const;
 
 private:
-  std::vector<Row> m_row_list;
+  std::vector<Row>            m_row_list;
   std::shared_ptr<ColumnInfo> m_column_info;
 };
 
-}
-} // end of namespace Euclid
+}  // namespace Table
+}  // end of namespace Euclid
 
-#endif  /* TABLE_TABLE_H */
-
+#endif /* TABLE_TABLE_H */

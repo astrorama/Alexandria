@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2020 Euclid Science Ground Segment
+ * Copyright (C) 2012-2021 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -16,7 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
- /**
+/**
  * @file MathUtils/function/Integrable.h
  * @date February 18, 2014
  * @author Nikolaos Apostolakos
@@ -44,7 +44,6 @@ namespace MathUtils {
 class Integrable : public Function {
 
 public:
-
   /// Default destructor
   virtual ~Integrable() = default;
 
@@ -57,8 +56,7 @@ public:
   virtual double integrate(const double a, const double b) const = 0;
 };
 
-} // End of MathUtils
-} // end of namespace Euclid
+}  // namespace MathUtils
+}  // end of namespace Euclid
 
-#endif  /* MATHUTILS_INTEGRABLE_H */
-
+#endif /* MATHUTILS_INTEGRABLE_H */

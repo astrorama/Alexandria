@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2020 Euclid Science Ground Segment
+ * Copyright (C) 2012-2021 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -21,6 +21,7 @@
 
 #include "NdArray/NdArray.h"
 #include <boost/filesystem/path.hpp>
+#include <fstream>
 
 namespace Euclid {
 namespace NdArray {
@@ -38,7 +39,7 @@ namespace NdArray {
  * @param array
  *  NdArray to write
  */
-template<typename T>
+template <typename T>
 void writeNpy(std::ostream& out, const NdArray<T>& array);
 
 /**
@@ -54,9 +55,8 @@ void writeNpy(std::ostream& out, const NdArray<T>& array);
  * @note
  *  The underlying numpy format is expected to match the template type T
  */
-template<typename T>
+template <typename T>
 NdArray<T> readNpy(std::istream& input);
-
 
 /**
  * @see
@@ -70,7 +70,7 @@ NdArray<T> readNpy(std::istream& input);
  * @param array
  *  NdArray to write
  */
-template<typename T>
+template <typename T>
 void writeNpy(const boost::filesystem::path& path, const NdArray<T>& array) {
   std::ofstream output(path.native(), std::ios_base::out | std::ios_base::binary);
   writeNpy(output, array);
@@ -89,19 +89,18 @@ void writeNpy(const boost::filesystem::path& path, const NdArray<T>& array) {
  * @note
  *  The underlying numpy format is expected to match the template type T
  */
-template<typename T>
+template <typename T>
 NdArray<T> readNpy(const boost::filesystem::path& path) {
   std::ifstream input(path.native(), std::ios_base::in | std::ios_base::binary);
   return readNpy<T>(input);
 }
 
-
-} // end of namespace NdArray
-} // end of namespace Euclid
+}  // end of namespace NdArray
+}  // end of namespace Euclid
 
 #define NPY_IMPL
-#include "NdArray/io/_impl/NpyWriter.icpp"
 #include "NdArray/io/_impl/NpyReader.icpp"
+#include "NdArray/io/_impl/NpyWriter.icpp"
 #undef NPY_IMPL
 
-#endif // ALEXANDRIA_NDARRAY_NPY_H
+#endif  // ALEXANDRIA_NDARRAY_NPY_H

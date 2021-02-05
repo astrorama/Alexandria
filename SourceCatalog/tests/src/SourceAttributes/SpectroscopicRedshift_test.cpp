@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2020 Euclid Science Ground Segment
+ * Copyright (C) 2012-2021 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -16,7 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
- /**
+/**
  * @file tests/src/SourceAttributes/SpectroscopicRedshift_test.cpp
  *
  * @author Nicolas Morisset
@@ -24,14 +24,13 @@
  * Created on: Feb 5, 2014
  */
 
+#include "SourceCatalog/SourceAttributes/SpectroscopicRedshift.h"
 #include <boost/test/unit_test.hpp>
 #include <iostream>
-#include "SourceCatalog/SourceAttributes/SpectroscopicRedshift.h"
 
 using namespace Euclid::SourceCatalog;
 
 //-----------------------------------------------------------------------------
-
 
 struct SpectroscopicRedshiftFixture {
 
@@ -42,15 +41,14 @@ struct SpectroscopicRedshiftFixture {
     expected_value = 1.5;
     expected_error = 0.01;
   }
-  ~SpectroscopicRedshiftFixture() {
-  }
+  ~SpectroscopicRedshiftFixture() {}
 };
 
 //----------------------------------------------------------------------------
 
-BOOST_AUTO_TEST_SUITE (SpectroscopicRedshift_test)
+BOOST_AUTO_TEST_SUITE(SpectroscopicRedshift_test)
 
-BOOST_FIXTURE_TEST_CASE( getter_test, SpectroscopicRedshiftFixture ) {
+BOOST_FIXTURE_TEST_CASE(getter_test, SpectroscopicRedshiftFixture) {
 
   SpectroscopicRedshift spectroscopicRedshift(expected_value, expected_error);
 
@@ -59,7 +57,6 @@ BOOST_FIXTURE_TEST_CASE( getter_test, SpectroscopicRedshiftFixture ) {
 
   BOOST_CHECK_EQUAL(expected_value, value_result);
   BOOST_CHECK_EQUAL(expected_error, error_result);
-
 }
 
-BOOST_AUTO_TEST_SUITE_END ()
+BOOST_AUTO_TEST_SUITE_END()

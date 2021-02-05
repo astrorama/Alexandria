@@ -1,22 +1,22 @@
 /*
- * Copyright (C) 2012-2020 Euclid Science Ground Segment    
- *  
+ * Copyright (C) 2012-2021 Euclid Science Ground Segment
+ *
  * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free 
- * Software Foundation; either version 3.0 of the License, or (at your option)  
- * any later version.  
- *  
- * This library is distributed in the hope that it will be useful, but WITHOUT 
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 3.0 of the License, or (at your option)
+ * any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more  
- * details.  
- *  
- * You should have received a copy of the GNU Lesser General Public License 
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
  * along with this library; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA  
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
- 
- /** 
+
+/**
  * @file GridContainer/_impl/GridAxis.icpp
  * @date May 12, 2014
  * @author Nikolaos Apostolakos
@@ -27,38 +27,36 @@
 namespace Euclid {
 namespace GridContainer {
 
-template<typename T>
-GridAxis<T>::GridAxis(std::string name, std::vector<T> values)
-        : m_name(std::move(name)), m_values(std::move(values)) {
-}
+template <typename T>
+GridAxis<T>::GridAxis(std::string name_, std::vector<T> values) : m_name(std::move(name_)), m_values(std::move(values)) {}
 
-template<typename T>
+template <typename T>
 size_t GridAxis<T>::size() const {
   return m_values.size();
 }
 
-template<typename T>
+template <typename T>
 const std::string& GridAxis<T>::name() const {
   return m_name;
 }
 
-template<typename T>
+template <typename T>
 const T& GridAxis<T>::operator[](size_t index) const {
   return m_values[index];
 }
 
-template<typename T>
+template <typename T>
 auto GridAxis<T>::begin() const -> const_iterator {
   return m_values.cbegin();
 }
 
-template<typename T>
+template <typename T>
 auto GridAxis<T>::end() const -> const_iterator {
   return m_values.end();
 }
 
-template<typename T>
-template<typename U>
+template <typename T>
+template <typename U>
 bool GridAxis<T>::operator==(const GridAxis<U>& other) const {
   bool same = false;
   if (this->size() == other.size()) {
@@ -67,11 +65,11 @@ bool GridAxis<T>::operator==(const GridAxis<U>& other) const {
   return same;
 }
 
-template<typename T>
-template<typename U>
+template <typename T>
+template <typename U>
 bool GridAxis<T>::operator!=(const GridAxis<U>& other) const {
   return !this->operator==(other);
 }
 
-} // end of namespace GridContainer
-} // end of namespace Euclid
+}  // end of namespace GridContainer
+}  // end of namespace Euclid

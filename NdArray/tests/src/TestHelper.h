@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2020 Euclid Science Ground Segment
+ * Copyright (C) 2012-2021 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -19,17 +19,19 @@
 #ifndef NDARRAY_TEST_H
 #define NDARRAY_TEST_H
 
-#include <sstream>
+#include "ElementsKernel/Temporary.h"
 #include <boost/filesystem/path.hpp>
 #include <boost/process.hpp>
+#include <boost/test/unit_test.hpp>
+#include <sstream>
 
 /**
  * Run embedded Python code
  */
-static std::stringstream runPython(const char *code, const boost::filesystem::path& npy) {
+static std::stringstream runPython(const char* code, const boost::filesystem::path& npy) {
   namespace bp = boost::process;
   Elements::TempFile code_file("npy_%%%%.py");
-  std::ofstream out(code_file.path().native());
+  std::ofstream      out(code_file.path().native());
   out << code;
   out.close();
 
@@ -39,7 +41,7 @@ static std::stringstream runPython(const char *code, const boost::filesystem::pa
   BOOST_CHECK(!python_exec.empty());
 
   bp::ipstream py_output;
-  int r = bp::system(python_exec, code_file.path().native(), npy.native(), bp::std_out > py_output);
+  int          r = bp::system(python_exec, code_file.path().native(), npy.native(), bp::std_out > py_output);
   BOOST_CHECK_EQUAL(r, 0);
 
   std::stringstream stream;
@@ -47,4 +49,4 @@ static std::stringstream runPython(const char *code, const boost::filesystem::pa
   return stream;
 }
 
-#endif // NDARRAY_TEST_H
+#endif  // NDARRAY_TEST_H

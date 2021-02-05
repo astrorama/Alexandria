@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2020 Euclid Science Ground Segment
+ * Copyright (C) 2012-2021 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General
  * Public License as published by the Free Software Foundation; either version 3.0 of the License, or (at your option)
@@ -22,12 +22,12 @@
 #ifndef _CONFIGURATION_CONFIGURATION_H
 #define _CONFIGURATION_CONFIGURATION_H
 
-#include <vector>
-#include <set>
+#include <boost/program_options.hpp>
 #include <map>
+#include <set>
 #include <string>
 #include <typeindex>
-#include <boost/program_options.hpp>
+#include <vector>
 
 namespace Euclid {
 namespace Configuration {
@@ -45,7 +45,6 @@ namespace Configuration {
 class Configuration {
 
 public:
-
   /// Defines the different states the configuration object can be in
   enum class State {
     /// The object has just been constructed
@@ -59,7 +58,7 @@ public:
   };
 
   using OptionDescriptionList = std::vector<boost::program_options::option_description>;
-  using UserValues = std::map<std::string, boost::program_options::variable_value>;
+  using UserValues            = std::map<std::string, boost::program_options::variable_value>;
 
   /// Constructs a new Configuration instance
   explicit Configuration(long manager_id);
@@ -139,7 +138,6 @@ public:
   State getCurrentState() const;
 
 protected:
-
   /**
    * @brief
    * Declares a Configuration as dependency
@@ -169,10 +167,9 @@ protected:
   const T& getDependency() const;
 
 private:
-
-  long m_manager_id;
+  long                      m_manager_id;
   std::set<std::type_index> m_dependencies;
-  State m_state = State::CONSTRUCTED;
+  State                     m_state = State::CONSTRUCTED;
 
 }; /* End of Configuration class */
 

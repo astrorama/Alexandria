@@ -1,22 +1,22 @@
 /*
- * Copyright (C) 2012-2020 Euclid Science Ground Segment    
- *  
+ * Copyright (C) 2012-2021 Euclid Science Ground Segment
+ *
  * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free 
- * Software Foundation; either version 3.0 of the License, or (at your option)  
- * any later version.  
- *  
- * This library is distributed in the hope that it will be useful, but WITHOUT 
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 3.0 of the License, or (at your option)
+ * any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more  
- * details.  
- *  
- * You should have received a copy of the GNU Lesser General Public License 
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
  * along with this library; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA  
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
- 
- /**
+
+/**
  * @file MathUtils/numericalIntegration/AdaptativeIntegration.h
  * @date July 2, 2015
  * @author Florian Dubath
@@ -24,10 +24,10 @@
 
 #ifndef MATHUTILS_MATHUTILS_NUMERCALINTEGRATION_ADAPTATIVEINTEGRATION_H_
 #define MATHUTILS_MATHUTILS_NUMERCALINTEGRATION_ADAPTATIVEINTEGRATION_H_
-#include <cmath>
 #include "ElementsKernel/Real.h"
 #include "MathUtils/function/Function.h"
 #include "MathUtils/function/function_tools.h"
+#include <cmath>
 
 namespace Euclid {
 namespace MathUtils {
@@ -48,8 +48,8 @@ namespace MathUtils {
  * @tparam quadrature The numerical quadrature used to compute the integral
  * approximation.
  */
-template<typename Quadrature>
-class AdaptativeIntegration: public NumericalIntegrationScheme {
+template <typename Quadrature>
+class AdaptativeIntegration : public NumericalIntegrationScheme {
 
 public:
   /**
@@ -79,13 +79,13 @@ public:
   double operator()(const Function& function, double min, double max) override;
 
 private:
-  Quadrature m_quadrature { };
-  double m_relative_precion;
-  int m_initial_order;
+  Quadrature m_quadrature{};
+  double     m_relative_precion;
+  int        m_initial_order;
 };
 
-}
-}
+}  // namespace MathUtils
+}  // namespace Euclid
 
 #include "MathUtils/numericalIntegration/_impl/AdaptativeIntegration.icpp"
 

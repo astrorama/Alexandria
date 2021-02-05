@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2020 Euclid Science Ground Segment
+ * Copyright (C) 2012-2021 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -22,17 +22,19 @@
  * @author Alejandro Alvarez Ayllon
  */
 
-#include <sstream>
-#include <boost/test/unit_test.hpp>
-#include <boost/mpl/list.hpp>
 #include <boost/archive/binary_iarchive.hpp>
 #include <boost/archive/binary_oarchive.hpp>
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/archive/text_oarchive.hpp>
+#include <boost/mpl/list.hpp>
+#include <boost/test/unit_test.hpp>
+#include <sstream>
 
+#include <ElementsKernel/Temporary.h>
+
+#include "SOM/InitFunc.h"
 #include "SOM/SOM.h"
 #include "SOM/SOMTrainer.h"
-#include "SOM/InitFunc.h"
 #include "SOM/serialize.h"
 
 using namespace Euclid::SOM;
@@ -49,24 +51,19 @@ std::ostream& operator<<(std::ostream& out, const std::pair<size_t, size_t>& pai
   out << '[' << pair.first << ", " << pair.second << ']';
   return out;
 }
-}
+}  // namespace std
 
 struct SerializationFixture {
-  SOM<2> m_som {5, 5, InitFunc::uniformRandom(0, 1)};
+  SOM<2> m_som{5, 5, InitFunc::uniformRandom(0, 1)};
 
   SerializationFixture() {
     m_som.findBMU({1, 2});
     m_som.findBMU({1, 2}, {0.1, 0.4});
 
-    std::vector <std::pair<double, double>> trainset{
-      {1, 1},
-      {0, 0},
-      {0, 1},
-      {1, 0}
-    };
+    std::vector<std::pair<double, double>> trainset{{1, 1}, {0, 0}, {0, 1}, {1, 0}};
 
     SOMTrainer trainer{NeighborhoodFunc::linearUnitDisk(3), LearningRestraintFunc::linear()};
-    auto weight_func = [](const std::pair<double, double>& p) {
+    auto       weight_func = [](const std::pair<double, double>& p) {
       std::array<double, 2> res;
       res[0] = p.first;
       res[1] = p.second;
@@ -78,7 +75,7 @@ struct SerializationFixture {
 
 //-----------------------------------------------------------------------------
 
-BOOST_AUTO_TEST_SUITE (SOM_test)
+BOOST_AUTO_TEST_SUITE(SOM_test)
 
 template <typename I, typename O>
 struct archive {
@@ -87,7 +84,7 @@ struct archive {
 };
 
 typedef archive<boost::archive::binary_iarchive, boost::archive::binary_oarchive> binary_archive;
-typedef archive<boost::archive::text_iarchive, boost::archive::text_oarchive> text_archive;
+typedef archive<boost::archive::text_iarchive, boost::archive::text_oarchive>     text_archive;
 
 typedef boost::mpl::list<binary_archive, text_archive> archive_types;
 
@@ -105,4 +102,15 @@ BOOST_FIXTURE_TEST_CASE_TEMPLATE(serialize_som_test, T, archive_types, Serializa
 
 //-----------------------------------------------------------------------------
 
-BOOST_AUTO_TEST_SUITE_END ()
+BOOST_FIXTURE_TEST_CASE(serialize_som_fits_test, SerializationFixture) {
+  Elements::TempPath fits_file;
+
+  somFitsExport(fits_file.path().native(), m_som);
+  auto result = somFitsImport<2>(fits_file.path().native());
+  BOOST_CHECK_EQUAL(m_som.getSize(), result.getSize());
+  BOOST_CHECK_EQUAL_COLLECTIONS(m_som.begin(), m_som.end(), result.begin(), result.end());
+}
+
+//-----------------------------------------------------------------------------
+
+BOOST_AUTO_TEST_SUITE_END()

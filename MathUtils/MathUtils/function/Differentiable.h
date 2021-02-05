@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2020 Euclid Science Ground Segment
+ * Copyright (C) 2012-2021 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -16,7 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
- /**
+/**
  * @file MathUtils/function/Differentiable.h
  * @date February 18, 2014
  * @author Nikolaos Apostolakos
@@ -67,7 +67,7 @@ public:
   double integrate(const double x1, const double x2) const final;
 };
 
-} // End of MathUtils
-} // end of namespace Euclid
+}  // namespace MathUtils
+}  // end of namespace Euclid
 
-#endif  /* MATHUTILS_DIFFERENTIABLE_H */
+#endif /* MATHUTILS_DIFFERENTIABLE_H */

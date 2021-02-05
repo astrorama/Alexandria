@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2020 Euclid Science Ground Segment
+ * Copyright (C) 2012-2021 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -25,9 +25,9 @@
 #ifndef _TABLE_FITSREADER_H
 #define _TABLE_FITSREADER_H
 
-#include <functional>
-#include <CCfits/CCfits>
 #include "Table/TableReader.h"
+#include <CCfits/CCfits>
+#include <functional>
 
 namespace Euclid {
 namespace Table {
@@ -75,7 +75,6 @@ namespace Table {
 class FitsReader : public TableReader {
 
 public:
-
   /**
    * @brief Creates a FitsReader that reads from the given HDU
    *
@@ -93,7 +92,7 @@ public:
 
   /// Creates a FitsReader that reads a table from a FITS file, based on the
   /// HDU index
-  FitsReader(const std::string& filename, int hdu_index=1);
+  FitsReader(const std::string& filename, int hdu_index = 1);
 
   /// Creates a FitsReader that reads a table from a FITS file, based on the
   /// HDU name
@@ -153,26 +152,23 @@ public:
   std::size_t rowsLeft() override;
 
 protected:
-
   /// Implements the TableReader::readImpl() contract
   Table readImpl(long rows) override;
 
 private:
-
   void readColumnInfo();
 
-  std::unique_ptr<CCfits::FITS> m_fits {nullptr};
+  std::unique_ptr<CCfits::FITS>             m_fits{nullptr};
   std::reference_wrapper<const CCfits::HDU> m_hdu;
-  bool m_reading_started = false;
-  long m_total_rows = -1;
-  long m_current_row = 1;
-  std::vector<std::string> m_column_names {};
-  std::shared_ptr<ColumnInfo> m_column_info;
+  bool                                      m_reading_started = false;
+  long                                      m_total_rows      = -1;
+  long                                      m_current_row     = 1;
+  std::vector<std::string>                  m_column_names{};
+  std::shared_ptr<ColumnInfo>               m_column_info;
 
 }; /* End of FitsReader class */
 
 } /* namespace Table */
 } /* namespace Euclid */
-
 
 #endif

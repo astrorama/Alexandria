@@ -1,22 +1,22 @@
 /*
- * Copyright (C) 2012-2020 Euclid Science Ground Segment    
- *  
+ * Copyright (C) 2012-2021 Euclid Science Ground Segment
+ *
  * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free 
- * Software Foundation; either version 3.0 of the License, or (at your option)  
- * any later version.  
- *  
- * This library is distributed in the hope that it will be useful, but WITHOUT 
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 3.0 of the License, or (at your option)
+ * any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more  
- * details.  
- *  
- * You should have received a copy of the GNU Lesser General Public License 
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
  * along with this library; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA  
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
- 
- /** 
+
+/**
  * @file GridContainer/_impl/GridIndexHelper.icpp
  * @date July 4, 2014
  * @author Nikolaos Apostolakos
@@ -27,23 +27,19 @@
 namespace Euclid {
 namespace GridContainer {
 
-template<typename... AxesTypes>
+template <typename... AxesTypes>
 GridIndexHelper<AxesTypes...>::GridIndexHelper(const std::tuple<GridAxis<AxesTypes>...>& axes_tuple)
-          : m_axes_sizes { 
-                GridConstructionHelper<AxesTypes...>::createAxesSizesVector(
-                        axes_tuple, TemplateLoopCounter<sizeof...(AxesTypes)>{})
-          }, m_axes_index_factors {
-                GridConstructionHelper<AxesTypes...>::createAxisIndexFactorVector(
-                     axes_tuple, TemplateLoopCounter<sizeof...(AxesTypes)>{})
-          }, m_axes_names { 
-                GridConstructionHelper<AxesTypes...>::createAxesNamesVector(
-                        axes_tuple, TemplateLoopCounter<sizeof...(AxesTypes)>{})
-          } { }
+    : m_axes_sizes{GridConstructionHelper<AxesTypes...>::createAxesSizesVector(axes_tuple,
+                                                                               TemplateLoopCounter<sizeof...(AxesTypes)>{})}
+    , m_axes_index_factors{GridConstructionHelper<AxesTypes...>::createAxisIndexFactorVector(
+          axes_tuple, TemplateLoopCounter<sizeof...(AxesTypes)>{})}
+    , m_axes_names{
+          GridConstructionHelper<AxesTypes...>::createAxesNamesVector(axes_tuple, TemplateLoopCounter<sizeof...(AxesTypes)>{})} {}
 
-template<typename... AxesTypes>
+template <typename... AxesTypes>
 size_t GridIndexHelper<AxesTypes...>::axisIndex(size_t axis, size_t array_index) const {
   size_t index = array_index % m_axes_index_factors[axis + 1];
-  index = index / m_axes_index_factors[axis];
+  index        = index / m_axes_index_factors[axis];
   return index;
 }
 
@@ -54,67 +50,63 @@ size_t calculateTotalIndex(const std::vector<size_t>& factors, Coord coord) {
 
 template <typename Coord, typename... RestCoords>
 size_t calculateTotalIndex(const std::vector<size_t>& factors, Coord coord, RestCoords... rest_coords) {
-  return coord * factors[factors.size()-sizeof...(RestCoords)-2] + calculateTotalIndex(factors, rest_coords...);
+  return coord * factors[factors.size() - sizeof...(RestCoords) - 2] + calculateTotalIndex(factors, rest_coords...);
 }
 
-template<typename... AxesTypes>
+template <typename... AxesTypes>
 size_t GridIndexHelper<AxesTypes...>::totalIndex(decltype(std::declval<GridAxis<AxesTypes>>().size())... coords) const {
   return calculateTotalIndex(m_axes_index_factors, coords...);
 }
 
 template <typename Coord>
-void checkBounds(const std::vector<std::string>& axes_names,
-                 const std::vector<size_t>& axes_sizes, Coord coord) {
-  if (coord >= axes_sizes[axes_sizes.size()-1]) {
-    throw Elements::Exception() << "Coordinate " << coord << " for axis "
-                              << axes_names[axes_sizes.size()-1] << " (size " 
-                              << axes_sizes[axes_sizes.size()-1]
-                              << ") is out of bound";
+void checkBounds(const std::vector<std::string>& axes_names, const std::vector<size_t>& axes_sizes, Coord coord) {
+  if (coord >= axes_sizes[axes_sizes.size() - 1]) {
+    throw Elements::Exception() << "Coordinate " << coord << " for axis " << axes_names[axes_sizes.size() - 1] << " (size "
+                                << axes_sizes[axes_sizes.size() - 1] << ") is out of bound";
   }
 }
 
 template <typename Coord, typename... RestCoords>
-void checkBounds(const std::vector<std::string>& axes_names,
-                 const std::vector<size_t>& axes_sizes, Coord coord, RestCoords... rest_coords) {
-  if (coord >= axes_sizes[axes_sizes.size()-sizeof...(RestCoords)-1]) {
+void checkBounds(const std::vector<std::string>& axes_names, const std::vector<size_t>& axes_sizes, Coord coord,
+                 RestCoords... rest_coords) {
+  if (coord >= axes_sizes[axes_sizes.size() - sizeof...(RestCoords) - 1]) {
     throw Elements::Exception() << "Coordinate " << coord << " for axis "
-                              << axes_names[axes_sizes.size()-sizeof...(RestCoords)-1] << " (size " 
-                              << axes_sizes[axes_sizes.size()-sizeof...(RestCoords)-1]
-                              << ") is out of bound";
+                                << axes_names[axes_sizes.size() - sizeof...(RestCoords) - 1] << " (size "
+                                << axes_sizes[axes_sizes.size() - sizeof...(RestCoords) - 1] << ") is out of bound";
   }
   checkBounds(axes_names, axes_sizes, rest_coords...);
 }
 
-template<typename... AxesTypes>
+template <typename... AxesTypes>
 size_t GridIndexHelper<AxesTypes...>::totalIndexChecked(decltype(std::declval<GridAxis<AxesTypes>>().size())... coords) const {
   checkBounds(m_axes_names, m_axes_sizes, coords...);
   return calculateTotalIndex(m_axes_index_factors, coords...);
 }
 
-template<typename... AxesTypes>
+template <typename... AxesTypes>
 template <typename Coord>
 void GridIndexHelper<AxesTypes...>::checkAllFixedAreZero(const std::map<size_t, size_t>& fixed_indices, Coord coord) const {
   if (coord != 0) {
-    if (fixed_indices.find(m_axes_sizes.size()-1) != fixed_indices.end()) {
-      throw Elements::Exception() << "Coordinate " << coord << " for axis "
-                              << m_axes_names[m_axes_sizes.size()-1] << " (size 1) is out of bound";
+    if (fixed_indices.find(m_axes_sizes.size() - 1) != fixed_indices.end()) {
+      throw Elements::Exception() << "Coordinate " << coord << " for axis " << m_axes_names[m_axes_sizes.size() - 1]
+                                  << " (size 1) is out of bound";
     }
   }
 }
 
-template<typename... AxesTypes>
+template <typename... AxesTypes>
 template <typename Coord, typename... RestCoords>
-void GridIndexHelper<AxesTypes...>::checkAllFixedAreZero(const std::map<size_t, size_t>& fixed_indices,
-                          Coord coord, RestCoords... rest_coords) const {
+void GridIndexHelper<AxesTypes...>::checkAllFixedAreZero(const std::map<size_t, size_t>& fixed_indices, Coord coord,
+                                                         RestCoords... rest_coords) const {
   if (coord != 0) {
     size_t axis_index = m_axes_sizes.size() - sizeof...(RestCoords) - 1;
     if (fixed_indices.find(axis_index) != fixed_indices.end()) {
-      throw Elements::Exception() << "Coordinate " << coord << " for axis "
-                              << m_axes_names[axis_index] << " (size 1) is out of bound";
+      throw Elements::Exception() << "Coordinate " << coord << " for axis " << m_axes_names[axis_index]
+                                  << " (size 1) is out of bound";
     }
   }
   checkAllFixedAreZero(fixed_indices, rest_coords...);
 }
 
-}
-} // end of namespace Euclid
+}  // namespace GridContainer
+}  // end of namespace Euclid

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2020 Euclid Science Ground Segment
+ * Copyright (C) 2012-2021 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -38,8 +38,7 @@ template <typename InterfaceType>
 class InstOrRefHolder {
 
 public:
-
-  template <typename InstanceType=InterfaceType, typename... Args>
+  template <typename InstanceType = InterfaceType, typename... Args>
   static std::unique_ptr<InstOrRefHolder<InterfaceType>> create(Args... args);
 
   static std::unique_ptr<InstOrRefHolder<InterfaceType>> create(InterfaceType& ref);
@@ -47,12 +46,10 @@ public:
   virtual ~InstOrRefHolder() = default;
 
   virtual InterfaceType& ref() = 0;
-
 };
 
-} // end of namespace Euclid
+}  // end of namespace Euclid
 
 #include "AlexandriaKernel/_impl/InstOrRefHolder.icpp"
 
 #endif /* _ALEXANDRIAKERNEL_INSTANCEORREFERENCEHOLDER_H */
-

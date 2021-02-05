@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2020 Euclid Science Ground Segment
+ * Copyright (C) 2012-2021 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -19,9 +19,9 @@
 #ifndef ALEXANDRIA_NDARRAY_IO_NPYMMAP_H
 #define ALEXANDRIA_NDARRAY_IO_NPYMMAP_H
 
+#include "NdArray/NdArray.h"
 #include <boost/filesystem/path.hpp>
 #include <boost/iostreams/device/mapped_file.hpp>
-#include "NdArray/NdArray.h"
 
 namespace Euclid {
 namespace NdArray {
@@ -45,10 +45,10 @@ namespace NdArray {
  * @note
  *  If you open in read-only mode, assign to a const NdArray to avoid accidental writes
  */
-template<typename T>
-NdArray<T> mmapNpy(const boost::filesystem::path& path,
-                   boost::iostreams::mapped_file_base::mapmode mode = boost::iostreams::mapped_file_base::readwrite,
-                   size_t max_size = 0);
+template <typename T>
+NdArray<T> mmapNpy(const boost::filesystem::path&              path,
+                   boost::iostreams::mapped_file_base::mapmode mode     = boost::iostreams::mapped_file_base::readwrite,
+                   size_t                                      max_size = 0);
 
 /**
  * Create using mmap an NdArray backed by a numpy file
@@ -65,7 +65,7 @@ NdArray<T> mmapNpy(const boost::filesystem::path& path,
  * @return
  *  A new NdArray
  */
-template<typename T>
+template <typename T>
 NdArray<T> createMmapNpy(const boost::filesystem::path& path, const std::vector<size_t>& shape,
                          const std::vector<std::string>& attr_names, size_t max_size = 0);
 
@@ -82,17 +82,16 @@ NdArray<T> createMmapNpy(const boost::filesystem::path& path, const std::vector<
  * @return
  *  A new NdArray
  */
-template<typename T>
-NdArray<T> createMmapNpy(const boost::filesystem::path& path, const std::vector<size_t>& shape,
-                         size_t max_size = 0) {
+template <typename T>
+NdArray<T> createMmapNpy(const boost::filesystem::path& path, const std::vector<size_t>& shape, size_t max_size = 0) {
   return createMmapNpy<T>(path, shape, {}, max_size);
 }
 
-} // end of namespace NdArray
-} // end of namespace Euclid
+}  // end of namespace NdArray
+}  // end of namespace Euclid
 
 #define NPYMMAP_IMPL
 #include "NdArray/io/_impl/NpyMmap.icpp"
 #undef NPYMMAP_IMPL
 
-#endif // ALEXANDRIA_NDARRAY_IO_NPYMMAP_H
+#endif  // ALEXANDRIA_NDARRAY_IO_NPYMMAP_H

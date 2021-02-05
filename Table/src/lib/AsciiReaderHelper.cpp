@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2020 Euclid Science Ground Segment
+ * Copyright (C) 2012-2021 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -16,21 +16,21 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
- /**
+/**
  * @file src/lib/AsciiReaderHelper.cpp
  * @date April 15, 2014
  * @author Nikolaos Apostolakos
  */
 
-#include <set>
-#include <sstream>
+#include "AsciiReaderHelper.h"
+#include "ElementsKernel/Exception.h"
+#include "ElementsKernel/Logging.h"
+#include "NdArray/NdArray.h"
 #include <boost/algorithm/string.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/tokenizer.hpp>
-#include "ElementsKernel/Exception.h"
-#include "ElementsKernel/Logging.h"
-#include "AsciiReaderHelper.h"
-#include "NdArray/NdArray.h"
+#include <set>
+#include <sstream>
 
 namespace Euclid {
 namespace Table {
@@ -40,8 +40,8 @@ using NdArray::NdArray;
 static Elements::Logging logger = Elements::Logging::getLogger("AsciiReader");
 
 size_t countColumns(std::istream& in, const std::string& comment) {
-  StreamRewinder rewinder {in};
-  size_t count = 0;
+  StreamRewinder rewinder{in};
+  size_t         count = 0;
 
   while (in) {
     std::string line;
@@ -53,7 +53,7 @@ size_t countColumns(std::istream& in, const std::string& comment) {
     }
     boost::trim(line);
     if (!line.empty()) {
-      std::string token;
+      std::string       token;
       std::stringstream line_stream(line);
       line_stream >> boost::io::quoted(token);
       while (line_stream) {
@@ -104,16 +104,15 @@ std::type_index keywordToType(const std::string& keyword) {
   throw Elements::Exception() << "Unknown column type keyword " << keyword;
 }
 
-std::map<std::string, ColumnDescription> autoDetectColumnDescriptions(
-                                      std::istream& in, const std::string& comment) {
-  StreamRewinder rewinder {in};
+std::map<std::string, ColumnDescription> autoDetectColumnDescriptions(std::istream& in, const std::string& comment) {
+  StreamRewinder                           rewinder{in};
   std::map<std::string, ColumnDescription> descriptions;
   while (in) {
     std::string line;
     getline(in, line);
     boost::trim(line);
     if (line.empty()) {
-      continue; // We skip empty lines
+      continue;  // We skip empty lines
     }
     if (boost::starts_with(line, comment)) {
       // If we have a comment we remove all comment characters and check if we have
@@ -124,9 +123,9 @@ std::map<std::string, ColumnDescription> autoDetectColumnDescriptions(
         line.erase(0, 7);
         boost::trim(line);
         if (!line.empty()) {
-          std::string token;
+          std::string       token;
           std::stringstream line_stream(line);
-          std::string name;
+          std::string       name;
           line_stream >> boost::io::quoted(name);
           if (descriptions.count(name) != 0) {
             throw Elements::Exception() << "Duplicate column name " << name;
@@ -144,7 +143,7 @@ std::map<std::string, ColumnDescription> autoDetectColumnDescriptions(
             if (boost::starts_with(token, "(")) {
               unit = token;
               unit.erase(unit.begin());
-              unit.erase(unit.end()-1);
+              unit.erase(unit.end() - 1);
               line_stream >> boost::io::quoted(token);
             }
           }
@@ -158,34 +157,31 @@ std::map<std::string, ColumnDescription> autoDetectColumnDescriptions(
           }
           std::string desc_str = desc.str();
           boost::trim(desc_str);
-          descriptions.emplace(std::piecewise_construct,
-                               std::forward_as_tuple(name),
+          descriptions.emplace(std::piecewise_construct, std::forward_as_tuple(name),
                                std::forward_as_tuple(name, type, unit, desc_str));
         }
       }
     } else {
-      break; // here we reached the first data line
+      break;  // here we reached the first data line
     }
   }
   return descriptions;
 }
 
-std::vector<std::string> autoDetectColumnNames(std::istream& in,
-                                               const std::string& comment,
-                                               size_t columns_number) {
-  StreamRewinder rewinder {in};
-  std::vector<std::string> names {};
+std::vector<std::string> autoDetectColumnNames(std::istream& in, const std::string& comment, size_t columns_number) {
+  StreamRewinder           rewinder{in};
+  std::vector<std::string> names{};
 
   // Find the last comment line and at the same time read the names of the
   // column info description comments
-  std::string last_comment {};
-  std::vector<std::string> desc_names {};
+  std::string              last_comment{};
+  std::vector<std::string> desc_names{};
   while (in) {
     std::string line;
     getline(in, line);
     boost::trim(line);
     if (line.empty()) {
-      continue; // We skip empty lines
+      continue;  // We skip empty lines
     }
     if (boost::starts_with(line, comment)) {
       // If we have a comment we remove all comment characters and check if we have
@@ -206,14 +202,14 @@ std::vector<std::string> autoDetectColumnNames(std::istream& in,
         desc_names.emplace_back(std::move(temp));
       }
     } else {
-      break; // here we reached the first data line
+      break;  // here we reached the first data line
     }
   }
 
   // Check if the last comment line contains the names of the columns
-  if (!last_comment.empty()){
+  if (!last_comment.empty()) {
     std::stringstream line_stream(last_comment);
-    std::string token;
+    std::string       token;
     line_stream >> boost::io::quoted(token);
     while (line_stream) {
       names.push_back(token);
@@ -228,18 +224,18 @@ std::vector<std::string> autoDetectColumnNames(std::istream& in,
   if (names.empty()) {
     if (desc_names.size() != 0 && desc_names.size() != columns_number) {
       logger.warn() << "Number of column descriptions does not matches the number"
-              << " of the columns";
+                    << " of the columns";
     }
     names = desc_names;
   }
 
   if (names.size() < columns_number) {
-    for (size_t i=names.size()+1; i<=columns_number; ++i) {
+    for (size_t i = names.size() + 1; i <= columns_number; ++i) {
       names.push_back("col" + std::to_string(i));
     }
   }
   // Check for duplicate names
-  std::set<std::string> set {};
+  std::set<std::string> set{};
   for (auto name : names) {
     if (!set.insert(name).second) {
       throw Elements::Exception() << "Duplicate column name " << name;
@@ -252,9 +248,9 @@ namespace {
 
 template <typename T>
 std::vector<T> convertStringToVector(const std::string& str) {
-  std::vector<T> result {};
-  boost::char_separator<char> sep {","};
-  boost::tokenizer< boost::char_separator<char> > tok {str, sep};
+  std::vector<T>                                result{};
+  boost::char_separator<char>                   sep{","};
+  boost::tokenizer<boost::char_separator<char>> tok{str, sep};
   for (auto& s : tok) {
     result.push_back(boost::get<T>(convertToCellType(s, typeid(T))));
   }
@@ -275,63 +271,63 @@ NdArray<T> convertStringToNdArray(const std::string& str) {
   }
 
   auto shape_str = str.substr(1, closing_char - 1);
-  auto shape_i = convertStringToVector<int32_t>(shape_str);
-  auto data = convertStringToVector<T>(str.substr(closing_char + 1));
+  auto shape_i   = convertStringToVector<int32_t>(shape_str);
+  auto data      = convertStringToVector<T>(str.substr(closing_char + 1));
 
   std::vector<size_t> shape_u;
   std::copy(shape_i.begin(), shape_i.end(), std::back_inserter(shape_u));
   return NdArray<T>(shape_u, data);
 }
 
-}
+}  // namespace
 
 Row::cell_type convertToCellType(const std::string& value, std::type_index type) {
   try {
     if (type == typeid(bool)) {
       if (value == "true" || value == "t" || value == "yes" || value == "y" || value == "1") {
-        return Row::cell_type {true};
+        return Row::cell_type{true};
       }
       if (value == "false" || value == "f" || value == "no" || value == "n" || value == "0") {
-        return Row::cell_type {false};
+        return Row::cell_type{false};
       }
     } else if (type == typeid(int32_t)) {
-      return Row::cell_type {boost::lexical_cast<int32_t>(value)};
+      return Row::cell_type{boost::lexical_cast<int32_t>(value)};
     } else if (type == typeid(int64_t)) {
-      return Row::cell_type {boost::lexical_cast<int64_t>(value)};
+      return Row::cell_type{boost::lexical_cast<int64_t>(value)};
     } else if (type == typeid(float)) {
-      return Row::cell_type {boost::lexical_cast<float>(value)};
+      return Row::cell_type{boost::lexical_cast<float>(value)};
     } else if (type == typeid(double)) {
-      return Row::cell_type {boost::lexical_cast<double>(value)};
+      return Row::cell_type{boost::lexical_cast<double>(value)};
     } else if (type == typeid(std::string)) {
-      return Row::cell_type {boost::lexical_cast<std::string>(value)};
+      return Row::cell_type{boost::lexical_cast<std::string>(value)};
     } else if (type == typeid(std::vector<bool>)) {
-      return Row::cell_type {convertStringToVector<bool>(value)};
+      return Row::cell_type{convertStringToVector<bool>(value)};
     } else if (type == typeid(std::vector<int32_t>)) {
-      return Row::cell_type {convertStringToVector<int32_t>(value)};
+      return Row::cell_type{convertStringToVector<int32_t>(value)};
     } else if (type == typeid(std::vector<int64_t>)) {
-      return Row::cell_type {convertStringToVector<int64_t>(value)};
+      return Row::cell_type{convertStringToVector<int64_t>(value)};
     } else if (type == typeid(std::vector<float>)) {
-      return Row::cell_type {convertStringToVector<float>(value)};
+      return Row::cell_type{convertStringToVector<float>(value)};
     } else if (type == typeid(std::vector<double>)) {
-      return Row::cell_type {convertStringToVector<double>(value)};
+      return Row::cell_type{convertStringToVector<double>(value)};
     } else if (type == typeid(NdArray<int32_t>)) {
-      return Row::cell_type {convertStringToNdArray<int32_t>(value)};
+      return Row::cell_type{convertStringToNdArray<int32_t>(value)};
     } else if (type == typeid(NdArray<int64_t>)) {
-      return Row::cell_type {convertStringToNdArray<int64_t>(value)};
+      return Row::cell_type{convertStringToNdArray<int64_t>(value)};
     } else if (type == typeid(NdArray<float>)) {
-      return Row::cell_type {convertStringToNdArray<float>(value)};
+      return Row::cell_type{convertStringToNdArray<float>(value)};
     } else if (type == typeid(NdArray<double>)) {
-      return Row::cell_type {convertStringToNdArray<double>(value)};
+      return Row::cell_type{convertStringToNdArray<double>(value)};
     }
-  } catch( boost::bad_lexical_cast const& ) {
+  } catch (boost::bad_lexical_cast const&) {
     throw Elements::Exception() << "Cannot convert " << value << " to " << type.name();
   }
   throw Elements::Exception() << "Unknown type name " << type.name();
 }
 
 bool hasNextRow(std::istream& in, const std::string& comment) {
-  StreamRewinder rewinder {in};
-  while(in) {
+  StreamRewinder rewinder{in};
+  while (in) {
     std::string line;
     getline(in, line);
     size_t comment_pos = line.find(comment);
@@ -347,9 +343,9 @@ bool hasNextRow(std::istream& in, const std::string& comment) {
 }
 
 std::size_t countRemainingRows(std::istream& in, const std::string& comment) {
-  StreamRewinder rewinder {in};
-  std::size_t count = 0;
-  while(in) {
+  StreamRewinder rewinder{in};
+  std::size_t    count = 0;
+  while (in) {
     std::string line;
     getline(in, line);
     size_t comment_pos = line.find(comment);
@@ -364,5 +360,5 @@ std::size_t countRemainingRows(std::istream& in, const std::string& comment) {
   return count;
 }
 
-}
-} // end of namespace Euclid
+}  // namespace Table
+}  // end of namespace Euclid

@@ -1,22 +1,22 @@
 /*
- * Copyright (C) 2012-2020 Euclid Science Ground Segment    
- *  
+ * Copyright (C) 2012-2021 Euclid Science Ground Segment
+ *
  * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free 
- * Software Foundation; either version 3.0 of the License, or (at your option)  
- * any later version.  
- *  
- * This library is distributed in the hope that it will be useful, but WITHOUT 
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 3.0 of the License, or (at your option)
+ * any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more  
- * details.  
- *  
- * You should have received a copy of the GNU Lesser General Public License 
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
  * along with this library; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA  
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
- 
- /**
+
+/**
  * @file XYDataset/FileSystemProvider.h
  *
  * @date Apr 11, 2014
@@ -26,17 +26,16 @@
 #ifndef FILESYSTEMPROVIDER_H_
 #define FILESYSTEMPROVIDER_H_
 
-
-#include <memory>
-#include <vector>
-#include <string>
 #include <map>
+#include <memory>
+#include <string>
+#include <vector>
 
 #include "ElementsKernel/Export.h"
 
+#include "XYDataset/FileParser.h"
 #include "XYDataset/XYDataset.h"
 #include "XYDataset/XYDatasetProvider.h"
-#include "XYDataset/FileParser.h"
 
 namespace Euclid {
 namespace XYDataset {
@@ -55,10 +54,8 @@ namespace XYDataset {
  * operations (it gets dataset name and data).
  */
 
-class ELEMENTS_API FileSystemProvider : public XYDatasetProvider
-{
- public:
-
+class ELEMENTS_API FileSystemProvider : public XYDatasetProvider {
+public:
   /**
    * @brief constructor
    * The FileSystemProvider handles files in a directory tree.
@@ -117,15 +114,12 @@ class ELEMENTS_API FileSystemProvider : public XYDatasetProvider
    */
   std::vector<QualifiedName> listContents(const std::string& group) override;
 
-
-
   std::string getParameter(const QualifiedName& qualified_name, const std::string& key_word) override;
 
   // Default destructor
   ~FileSystemProvider() = default;
 
- private:
-
+private:
   std::string                          m_root_path;
   std::unique_ptr<FileParser>          m_parser;
   std::map<QualifiedName, std::string> m_name_file_map;
@@ -133,6 +127,6 @@ class ELEMENTS_API FileSystemProvider : public XYDatasetProvider
 };
 
 } /* namespace XYDataset */
-} // end of namespace Euclid
+}  // end of namespace Euclid
 
-#endif // FILESYSTEMPROVIDER_H_
+#endif  // FILESYSTEMPROVIDER_H_

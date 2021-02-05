@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2020 Euclid Science Ground Segment
+ * Copyright (C) 2012-2021 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -16,8 +16,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
- /*
- * Copyright (C) 2012-2020 Euclid Science Ground Segment
+/*
+ * Copyright (C) 2012-2021 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -42,8 +42,8 @@
 #ifndef _SOURCECATALOG_SOURCEATTRIBUTES_TABLEROWATTRIBUTE_H
 #define _SOURCECATALOG_SOURCEATTRIBUTES_TABLEROWATTRIBUTE_H
 
-#include "Table/Row.h"
 #include "SourceCatalog/Attribute.h"
+#include "Table/Row.h"
 
 namespace Euclid {
 namespace SourceCatalog {
@@ -54,10 +54,9 @@ namespace SourceCatalog {
  * @brief Source attribute which can be used to retrieve the table row used
  * to create the source
  */
-class TableRowAttribute  : public Attribute {
+class TableRowAttribute : public Attribute {
 
 public:
-
   /// Constructs a new TableRowAttribute with the given row
   explicit TableRowAttribute(Table::Row row);
 
@@ -68,13 +67,10 @@ public:
   const Table::Row& getRow() const;
 
 private:
-
   Table::Row m_row;
-
 };
 
-} // namespace SourceCatalog
-} // end of namespace Euclid
+}  // namespace SourceCatalog
+}  // end of namespace Euclid
 
 #endif /* _SOURCECATALOG_SOURCEATTRIBUTES_TABLEROWATTRIBUTE_H */
-

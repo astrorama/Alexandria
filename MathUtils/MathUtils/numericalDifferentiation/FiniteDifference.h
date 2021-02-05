@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2020 Euclid Science Ground Segment
+ * Copyright (C) 2012-2021 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -64,7 +64,7 @@ double derivative(const Function& f, const double x);
  */
 double derivative2nd(const Function& f, const double x);
 
-} // end namespace MathUtils
-} // end namespace Euclid
+}  // end namespace MathUtils
+}  // end namespace Euclid
 
-#endif // MATHUTILS_MATHUTILS_NUMERICALDIFFERENTIATION_FINITEDIFFERENCE_H_
+#endif  // MATHUTILS_MATHUTILS_NUMERICALDIFFERENTIATION_FINITEDIFFERENCE_H_

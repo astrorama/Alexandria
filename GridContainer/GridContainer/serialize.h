@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2020 Euclid Science Ground Segment
+ * Copyright (C) 2012-2021 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -16,7 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
- /**
+/**
  * @file GridContainer/serialize.h
  * @date May 19, 2014
  * @author Nikolaos Apostolakos
@@ -25,13 +25,13 @@
 #ifndef GRIDCONTAINER_SERIALIZE_H
 #define GRIDCONTAINER_SERIALIZE_H
 
-#include <iostream>
-#include <memory>
+#include "GridContainer/GridContainer.h"
+#include "GridContainer/serialization/GridContainer.h"
 #include <boost/archive/binary_iarchive.hpp>
 #include <boost/archive/binary_oarchive.hpp>
 #include <boost/filesystem.hpp>
-#include "GridContainer/GridContainer.h"
-#include "GridContainer/serialization/GridContainer.h"
+#include <iostream>
+#include <memory>
 
 namespace Euclid {
 namespace GridContainer {
@@ -54,11 +54,11 @@ namespace GridContainer {
  * @param out The stream to write the grid in
  * @param grid The grid to export
  */
-template<typename OArchive, typename GridCellManager, typename... AxesTypes>
+template <typename OArchive, typename GridCellManager, typename... AxesTypes>
 void gridExport(std::ostream& out, const GridContainer<GridCellManager, AxesTypes...>& grid) {
   // Do NOT delete this pointer!!! It  points to the actual grid
   const GridContainer<GridCellManager, AxesTypes...>* ptr = &grid;
-  OArchive boa {out};
+  OArchive                                            boa{out};
   boa << ptr;
 }
 
@@ -79,13 +79,13 @@ void gridExport(std::ostream& out, const GridContainer<GridCellManager, AxesType
  * @param in The stream to read the grid from
  * @return The grid red from the stream
  */
-template<typename GridType, typename IArchive>
+template <typename GridType, typename IArchive>
 GridType gridImport(std::istream& in) {
-  IArchive bia {in};
+  IArchive bia{in};
   // Do NOT delete manually this pointer. It is wrapped with a unique_ptr later.
   GridType* ptr;
   bia >> ptr;
-  std::unique_ptr<GridType> matr_ptr {ptr};
+  std::unique_ptr<GridType> matr_ptr{ptr};
   // We move out to the result the grid pointed by the pointer. The unique_ptr
   // will delete the (now empty) pointed object
   return std::move(*matr_ptr);
@@ -99,7 +99,7 @@ GridType gridImport(std::istream& in) {
  * @param out The stream to write the grid in
  * @param grid The grid to export
  */
-template<typename GridCellManager, typename... AxesTypes>
+template <typename GridCellManager, typename... AxesTypes>
 void gridBinaryExport(std::ostream& out, const GridContainer<GridCellManager, AxesTypes...>& grid) {
   gridExport<boost::archive::binary_oarchive>(out, grid);
 }
@@ -111,7 +111,7 @@ void gridBinaryExport(std::ostream& out, const GridContainer<GridCellManager, Ax
  * @param in The stream to read the grid from
  * @return The grid red from the stream
  */
-template<typename GridType>
+template <typename GridType>
 GridType gridBinaryImport(std::istream& in) {
   return gridImport<GridType, boost::archive::binary_iarchive>(in);
 }
@@ -139,9 +139,8 @@ GridType gridBinaryImport(std::istream& in) {
  * @param hdu_name The name of the array HDU
  * @param grid The grid to store
  */
-template<typename GridCellManager, typename... AxesTypes>
-void gridFitsExport(const boost::filesystem::path& filename,
-                    const std::string& hdu_name,
+template <typename GridCellManager, typename... AxesTypes>
+void gridFitsExport(const boost::filesystem::path& filename, const std::string& hdu_name,
                     const GridContainer<GridCellManager, AxesTypes...>& grid);
 
 /**
@@ -155,13 +154,12 @@ void gridFitsExport(const boost::filesystem::path& filename,
  * @param hdu_index The index of the array HDU with the grid data
  * @return The grid
  */
-template<typename GridType>
+template <typename GridType>
 GridType gridFitsImport(const boost::filesystem::path& filename, int hdu_index);
 
-} // end of namespace GridContainer
-} // end of namespace Euclid
+}  // end of namespace GridContainer
+}  // end of namespace Euclid
 
 #include "GridContainer/_impl/FitsSerialize.icpp"
 
-#endif  /* GRIDCONTAINER_SERIALIZE_H */
-
+#endif /* GRIDCONTAINER_SERIALIZE_H */

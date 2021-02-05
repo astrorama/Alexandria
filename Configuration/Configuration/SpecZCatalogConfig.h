@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2020 Euclid Science Ground Segment
+ * Copyright (C) 2012-2021 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -39,7 +39,6 @@ namespace Configuration {
 class SpecZCatalogConfig : public Configuration {
 
 public:
-
   /// Constructs a new SpecZCatalogConfig object
   explicit SpecZCatalogConfig(long manager_id);
 
@@ -101,11 +100,9 @@ public:
   void initialize(const UserValues& args) override;
 
 private:
-
 }; /* End of SpecZCatalogConfig class */
 
 } /* namespace Configuration */
 } /* namespace Euclid */
-
 
 #endif

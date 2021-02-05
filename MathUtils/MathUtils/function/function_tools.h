@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2020 Euclid Science Ground Segment
+ * Copyright (C) 2012-2021 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -16,7 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
- /**
+/**
  * @file MathUtils/function/function_tools.h
  * @date February 19, 2014
  * @author Nikolaos Apostolakos
@@ -70,9 +70,7 @@ public:
  * integration (if the function do not implement the Integrable interface).
  * @return The integral in the range [min,max]
  */
-ELEMENTS_API double integrate(const Function& function,
-                              const double min,
-                              const double max,
+ELEMENTS_API double integrate(const Function& function, const double min, const double max,
                               std::unique_ptr<NumericalIntegrationScheme> numericalIntegrationScheme = nullptr);
 
 /**
@@ -85,8 +83,7 @@ ELEMENTS_API double integrate(const Function& function,
  */
 ELEMENTS_API std::unique_ptr<Function> multiply(const Function& f1, const Function& f2);
 
-} // End of MathUtils
-} // end of namespace Euclid
+}  // namespace MathUtils
+}  // end of namespace Euclid
 
-#endif  /* MATHUTILS_FUNCTION_TOOLS_H */
-
+#endif /* MATHUTILS_FUNCTION_TOOLS_H */

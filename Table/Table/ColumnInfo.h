@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2020 Euclid Science Ground Segment
+ * Copyright (C) 2012-2021 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -16,7 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
- /**
+/**
  * @file Table/ColumnInfo.h
  * @date April 7, 2014
  * @author Nikolaos Apostolakos
@@ -25,11 +25,11 @@
 #ifndef TABLE_COLUMNINFO_H
 #define TABLE_COLUMNINFO_H
 
-#include <string>
-#include <vector>
 #include <memory>
+#include <string>
 #include <typeindex>
 #include <utility>
+#include <vector>
 
 #include "ElementsKernel/Export.h"
 
@@ -52,7 +52,6 @@ namespace Table {
 class ELEMENTS_API ColumnInfo {
 
 public:
-
   using info_type = ColumnDescription;
 
   /**
@@ -140,11 +139,9 @@ public:
 
 private:
   std::vector<info_type> m_info_list;
-
 };
 
-}
-} // end of namespace Euclid
+}  // namespace Table
+}  // end of namespace Euclid
 
-#endif  /* TABLE_COLUMNINFO_H */
-
+#endif /* TABLE_COLUMNINFO_H */

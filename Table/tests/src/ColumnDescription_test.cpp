@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2020 Euclid Science Ground Segment
+ * Copyright (C) 2012-2021 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -31,27 +31,26 @@ using namespace Euclid::Table;
 
 //-----------------------------------------------------------------------------
 
-BOOST_AUTO_TEST_SUITE (ColumnDescription_test)
+BOOST_AUTO_TEST_SUITE(ColumnDescription_test)
 
 //-----------------------------------------------------------------------------
 
 BOOST_AUTO_TEST_CASE(NominalCase) {
 
   // Given
-  std::string name = "Name";
-  std::type_index type = typeid(double);
-  std::string unit = "u";
-  std::string description = "Desc";
+  std::string     name        = "Name";
+  std::type_index type        = typeid(double);
+  std::string     unit        = "u";
+  std::string     description = "Desc";
 
   // When
-  ColumnDescription result {name, type, unit, description};
+  ColumnDescription result{name, type, unit, description};
 
   // Then
   BOOST_CHECK_EQUAL(result.name, name);
   BOOST_CHECK_EQUAL(result.type.name(), type.name());
   BOOST_CHECK_EQUAL(result.unit, unit);
   BOOST_CHECK_EQUAL(result.description, description);
-
 }
 
 //-----------------------------------------------------------------------------
@@ -62,14 +61,13 @@ BOOST_AUTO_TEST_CASE(DefaultValues) {
   std::string name = "Name";
 
   // When
-  ColumnDescription result {name};
+  ColumnDescription result{name};
 
   // Then
   BOOST_CHECK_EQUAL(result.name, name);
   BOOST_CHECK_EQUAL(result.type.name(), typeid(std::string).name());
   BOOST_CHECK_EQUAL(result.unit, "");
   BOOST_CHECK_EQUAL(result.description, "");
-
 }
 
 //-----------------------------------------------------------------------------
@@ -81,7 +79,6 @@ BOOST_AUTO_TEST_CASE(EmptyStringName) {
 
   // Then
   BOOST_CHECK_THROW(ColumnDescription{name}, Elements::Exception);
-
 }
 
 //-----------------------------------------------------------------------------
@@ -89,11 +86,11 @@ BOOST_AUTO_TEST_CASE(EmptyStringName) {
 BOOST_AUTO_TEST_CASE(NameWithWhitespaces) {
 
   // Given
-  std::string space = "Sp ace";
-  std::string tab = "Ta\tb";
+  std::string space           = "Sp ace";
+  std::string tab             = "Ta\tb";
   std::string carriage_return = "Carrage\rReturn";
-  std::string new_line = "New\nLine";
-  std::string new_page = "New\fPage";
+  std::string new_line        = "New\nLine";
+  std::string new_page        = "New\fPage";
 
   // Then
   ColumnDescription{space};
@@ -101,11 +98,8 @@ BOOST_AUTO_TEST_CASE(NameWithWhitespaces) {
   BOOST_CHECK_THROW(ColumnDescription{carriage_return}, Elements::Exception);
   BOOST_CHECK_THROW(ColumnDescription{new_line}, Elements::Exception);
   BOOST_CHECK_THROW(ColumnDescription{new_page}, Elements::Exception);
-
 }
 
 //-----------------------------------------------------------------------------
 
-BOOST_AUTO_TEST_SUITE_END ()
-
-
+BOOST_AUTO_TEST_SUITE_END()

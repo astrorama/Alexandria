@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2020 Euclid Science Ground Segment
+ * Copyright (C) 2012-2021 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -25,14 +25,14 @@
 #ifndef _SOM_SOM_H
 #define _SOM_SOM_H
 
-#include <vector>
+#include "GridContainer/GridContainer.h"
+#include "SOM/Distance.h"
+#include "SOM/InitFunc.h"
 #include <array>
 #include <limits>
-#include <type_traits>
 #include <tuple>
-#include "GridContainer/GridContainer.h"
-#include "SOM/InitFunc.h"
-#include "SOM/Distance.h"
+#include <type_traits>
+#include <vector>
 
 namespace Euclid {
 namespace SOM {
@@ -42,20 +42,19 @@ namespace SOM {
  * @brief
  *
  */
-template <std::size_t ND, typename DistFunc=Distance::L2<ND>>
+template <std::size_t ND, typename DistFunc = Distance::L2<ND>>
 class SOM {
-  
+
   static_assert(std::is_base_of<Distance::Interface<ND>, DistFunc>::value,
-          "DistFunc must be a subclass of the Distance::Interface<ND>");
+                "DistFunc must be a subclass of the Distance::Interface<ND>");
 
 public:
-  
-  using CellGridType = GridContainer::GridContainer<std::vector<std::array<double, ND>>, std::size_t, std::size_t>;
-  using iterator = typename CellGridType::iterator;
+  using CellGridType   = GridContainer::GridContainer<std::vector<std::array<double, ND>>, std::size_t, std::size_t>;
+  using iterator       = typename CellGridType::iterator;
   using const_iterator = typename CellGridType::const_iterator;
-  
-  SOM(std::size_t x, std::size_t y, InitFunc::Signature init_func=InitFunc::zero);
-  
+
+  SOM(std::size_t x, std::size_t y, InitFunc::Signature init_func = InitFunc::zero);
+
   SOM(SOM<ND, DistFunc>&&) = default;
   SOM& operator=(SOM<ND, DistFunc>&&) = default;
 
@@ -63,42 +62,39 @@ public:
    * @brief Destructor
    */
   virtual ~SOM() = default;
-  
+
   std::array<double, ND>& operator()(std::size_t x, std::size_t y);
-  
+
   const std::array<double, ND>& operator()(std::size_t x, std::size_t y) const;
-  
+
   const std::pair<std::size_t, std::size_t>& getSize() const;
-  
+
   iterator begin();
-  
+
   iterator end();
-  
+
   const_iterator begin() const;
-  
+
   const_iterator end() const;
-  
+
   const_iterator cbegin();
-  
+
   const_iterator cend();
-  
+
   std::tuple<std::size_t, std::size_t, double> findBMU(const std::array<double, ND>& input) const;
-  
+
   std::tuple<std::size_t, std::size_t, double> findBMU(const std::array<double, ND>& input,
-                                              const std::array<double, ND>& uncertainties) const;
-  
+                                                       const std::array<double, ND>& uncertainties) const;
+
   template <typename InputType, typename WeightFunc>
-  std::tuple<std::size_t, std::size_t, double> findBMU(const InputType& input,
-                                              WeightFunc weight_func) const;
-  
+  std::tuple<std::size_t, std::size_t, double> findBMU(const InputType& input, WeightFunc weight_func) const;
+
   template <typename InputType, typename WeightFunc, typename UncertaintyFunc>
-  std::tuple<std::size_t, std::size_t, double> findBMU(const InputType& input,
-                                              WeightFunc weight_func,
-                                              UncertaintyFunc uncertainty_func) const;
+  std::tuple<std::size_t, std::size_t, double> findBMU(const InputType& input, WeightFunc weight_func,
+                                                       UncertaintyFunc uncertainty_func) const;
 
 private:
-  
-  CellGridType m_cells;
+  CellGridType                        m_cells;
   std::pair<std::size_t, std::size_t> m_size;
 
 }; /* End of SOM class */

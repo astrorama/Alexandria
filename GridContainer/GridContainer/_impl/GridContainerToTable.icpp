@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2020 Euclid Science Ground Segment
+ * Copyright (C) 2012-2021 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -16,9 +16,9 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+#include <boost/algorithm/string.hpp>
 #include <type_traits>
 #include <vector>
-#include <boost/algorithm/string.hpp>
 
 namespace Euclid {
 namespace GridContainer {
@@ -28,7 +28,7 @@ namespace GridContainer {
  * @tparam I
  *  Handle the axis stored on the (I-1)th position on the GridContainer::AxesTuple
  */
-template<size_t I, typename GridCellManager, typename ...Axes>
+template <size_t I, typename GridCellManager, typename... Axes>
 struct GridToFitsHelper {
 
   /**
@@ -40,10 +40,10 @@ struct GridToFitsHelper {
    *    A vector where to emplace the description
    */
   static void addColumnDescriptions(const GridContainer<GridCellManager, Axes...>& grid,
-                                    std::vector<Table::ColumnDescription>& description) {
-    auto& axis = grid.template getAxis<I - 1>();
+                                    std::vector<Table::ColumnDescription>&         description) {
+    auto& axis   = grid.template getAxis<I - 1>();
     using knot_t = typename std::remove_reference<decltype(axis)>::type::data_type;
-    auto name = axis.name();
+    auto name    = axis.name();
     boost::replace_all(name, " ", "_");
     description.emplace_back(name, typeid(typename GridAxisToTable<knot_t>::table_cell_t));
 
@@ -63,23 +63,20 @@ struct GridToFitsHelper {
    * @param axes
    *    Used to keep track of the values of the knots of the previous axis
    */
-  template<typename ...Args>
-  static void
-  unfold(const GridContainer<GridCellManager, Axes...>& grid, const std::shared_ptr<Table::ColumnInfo>& column_info,
-         std::vector<Table::Row>& rows, std::pair<size_t, Args>... axes) {
+  template <typename... Args>
+  static void unfold(const GridContainer<GridCellManager, Axes...>& grid, const std::shared_ptr<Table::ColumnInfo>& column_info,
+                     std::vector<Table::Row>& rows, std::pair<size_t, Args>... axes) {
     auto& axis = grid.template getAxis<I - 1>();
     for (size_t i = 0; i < axis.size(); ++i) {
-      GridToFitsHelper<I - 1, GridCellManager, Axes...>::unfold(grid, column_info, rows, std::make_pair(i, axis[i]),
-                                                              axes...);
+      GridToFitsHelper<I - 1, GridCellManager, Axes...>::unfold(grid, column_info, rows, std::make_pair(i, axis[i]), axes...);
     }
   }
 
   /**
    * Same as before, but without the book-keeping data, since this is the entry point
    */
-  static void
-  unfold(const GridContainer<GridCellManager, Axes...>& grid, const std::shared_ptr<Table::ColumnInfo>& column_info,
-         std::vector<Table::Row>& rows) {
+  static void unfold(const GridContainer<GridCellManager, Axes...>& grid, const std::shared_ptr<Table::ColumnInfo>& column_info,
+                     std::vector<Table::Row>& rows) {
     auto& axis = grid.template getAxis<I - 1>();
     for (size_t i = 0; i < axis.size(); ++i) {
       GridToFitsHelper<I - 1, GridCellManager, Axes...>::unfold(grid, column_info, rows, std::make_pair(i, axis[i]));
@@ -90,21 +87,19 @@ struct GridToFitsHelper {
 /**
  * Base class for the recursive traversal of the grid
  */
-template<typename GridCellManager, typename ...Axes>
+template <typename GridCellManager, typename... Axes>
 struct GridToFitsHelper<0, GridCellManager, Axes...> {
   /**
    * There are no more axis, so do nothing for the columns
    */
-  static void addColumnDescriptions(const GridContainer<GridCellManager, Axes...>&,
-                                    std::vector<Table::ColumnDescription>&) {}
+  static void addColumnDescriptions(const GridContainer<GridCellManager, Axes...>&, std::vector<Table::ColumnDescription>&) {}
 
   /**
    * Insert into the row vector the cell value plus the axes values that brought us here
    */
-  template<typename ...Args>
-  static void
-  unfold(const GridContainer<GridCellManager, Axes...>& grid, const std::shared_ptr<Table::ColumnInfo>& column_info,
-         std::vector<Table::Row>& rows, std::pair<size_t, Args> ...axes) {
+  template <typename... Args>
+  static void unfold(const GridContainer<GridCellManager, Axes...>& grid, const std::shared_ptr<Table::ColumnInfo>& column_info,
+                     std::vector<Table::Row>& rows, std::pair<size_t, Args>... axes) {
     using GridType = GridContainer<GridCellManager, Axes...>;
 
     std::vector<Table::Row::cell_type> row_content{GridAxisToTable<Args>::serialize(axes.second)...};
@@ -121,10 +116,10 @@ struct GridToFitsHelper<0, GridCellManager, Axes...> {
  * Transform a GridContainer into a Table, with an entry for each
  * cell. The content will be unfolded, so the knot values will be repeated.
  */
-template<typename GridCellManager, typename ...AxesTypes>
+template <typename GridCellManager, typename... AxesTypes>
 Table::Table gridContainerToTable(const GridContainer<GridCellManager, AxesTypes...>& grid) {
   using GridType = GridContainer<GridCellManager, AxesTypes...>;
-  using Helper = GridToFitsHelper<std::tuple_size<typename GridType::AxesTuple>::value, GridCellManager, AxesTypes...>;
+  using Helper   = GridToFitsHelper<std::tuple_size<typename GridType::AxesTuple>::value, GridCellManager, AxesTypes...>;
 
   std::vector<Table::ColumnDescription> columns;
   Helper::addColumnDescriptions(GridContainer<GridCellManager, AxesTypes...>{grid.getAxesTuple()}, columns);
@@ -142,5 +137,5 @@ Table::Table gridContainerToTable(const GridContainer<GridCellManager, AxesTypes
   return Table::Table{std::move(rows)};
 }
 
-} // end of namespace GridContainer
-} // end of namespace Euclid
+}  // end of namespace GridContainer
+}  // end of namespace Euclid

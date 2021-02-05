@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2020 Euclid Science Ground Segment
+ * Copyright (C) 2012-2021 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -16,28 +16,28 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
- /**
+/**
  * @file src/lib/FitsWriterHelper.cpp
  * @date April 23, 2014
  * @author Nikolaos Apostolakos
  */
 
-#include <algorithm>
-#include <sstream>
-#include <iomanip>
-#include <valarray>
-#include <boost/lexical_cast.hpp>
-#include <CCfits/CCfits>
 #include "FitsWriterHelper.h"
-#include "Table/Table.h"
 #include "ElementsKernel/Exception.h"
+#include "Table/Table.h"
+#include <CCfits/CCfits>
+#include <algorithm>
+#include <boost/lexical_cast.hpp>
+#include <iomanip>
+#include <sstream>
+#include <valarray>
 
 namespace Euclid {
 namespace Table {
 
 using NdArray::NdArray;
 
-template<typename T>
+template <typename T>
 std::string scientificFormat(T value) {
   std::ostringstream stream;
   stream << std::scientific << value;
@@ -61,9 +61,9 @@ size_t maxWidthScientific(const Table& table, size_t column_index) {
 }
 
 std::vector<std::string> getAsciiFormatList(const Table& table) {
-  auto column_info = table.getColumnInfo();
-  std::vector<std::string> format_list {};
-  for (size_t column_index=0; column_index<column_info->size(); ++column_index) {
+  auto                     column_info = table.getColumnInfo();
+  std::vector<std::string> format_list{};
+  for (size_t column_index = 0; column_index < column_info->size(); ++column_index) {
     auto type = column_info->getDescription(column_index).type;
     if (type == typeid(bool)) {
       format_list.push_back("I1");
@@ -96,9 +96,9 @@ size_t vectorSize(const Table& table, size_t column_index) {
 
 template <typename T>
 size_t ndArraySize(const Table& table, size_t column_index) {
-  const auto &ndarray = boost::get<NdArray<T>>(table[0][column_index]);
-  size_t size = ndarray.size();
-  auto shape = ndarray.shape();
+  const auto& ndarray = boost::get<NdArray<T>>(table[0][column_index]);
+  size_t      size    = ndarray.size();
+  auto        shape   = ndarray.shape();
   for (const auto& row : table) {
     if (boost::get<NdArray<T>>(row[column_index]).shape() != shape) {
       throw Elements::Exception() << "Binary FITS table variable shape array columns are not supported";
@@ -108,9 +108,9 @@ size_t ndArraySize(const Table& table, size_t column_index) {
 }
 
 std::vector<std::string> getBinaryFormatList(const Table& table) {
-  auto column_info = table.getColumnInfo();
-  std::vector<std::string> format_list {};
-  for (size_t column_index=0; column_index<column_info->size(); ++column_index) {
+  auto                     column_info = table.getColumnInfo();
+  std::vector<std::string> format_list{};
+  for (size_t column_index = 0; column_index < column_info->size(); ++column_index) {
     auto type = column_info->getDescription(column_index).type;
     if (type == typeid(bool)) {
       format_list.push_back("L");
@@ -159,9 +159,9 @@ std::vector<std::string> getBinaryFormatList(const Table& table) {
   return format_list;
 }
 
-template<typename T>
+template <typename T>
 std::vector<T> createColumnData(const Euclid::Table::Table& table, size_t column_index) {
-  std::vector<T> data {};
+  std::vector<T> data{};
   for (const auto& row : table) {
     data.push_back(boost::get<T>(row[column_index]));
   }
@@ -170,7 +170,7 @@ std::vector<T> createColumnData(const Euclid::Table::Table& table, size_t column
 
 template <typename T>
 std::vector<std::valarray<T>> createVectorColumnData(const Euclid::Table::Table& table, size_t column_index) {
-  std::vector<std::valarray<T>> result {};
+  std::vector<std::valarray<T>> result{};
   for (auto& row : table) {
     const auto& vec = boost::get<std::vector<T>>(row[column_index]);
     result.emplace_back(vec.data(), vec.size());
@@ -180,7 +180,7 @@ std::vector<std::valarray<T>> createVectorColumnData(const Euclid::Table::Table&
 
 template <typename T>
 std::vector<T> createSingleValueVectorColumnData(const Euclid::Table::Table& table, size_t column_index) {
-  std::vector<T> result {};
+  std::vector<T> result{};
   for (auto& row : table) {
     const auto& vec = boost::get<std::vector<T>>(row[column_index]);
     result.push_back(vec.front());
@@ -192,7 +192,7 @@ template <typename T>
 std::vector<std::valarray<T>> createNdArrayColumnData(const Euclid::Table::Table& table, size_t column_index) {
   std::vector<std::valarray<T>> result{};
   for (auto& row : table) {
-    const auto& ndarray = boost::get<NdArray<T>>(row[column_index]);
+    const auto&      ndarray = boost::get<NdArray<T>>(row[column_index]);
     std::valarray<T> data(ndarray.size());
     std::copy(std::begin(ndarray), std::end(ndarray), std::begin(data));
     result.emplace_back(std::move(data));
@@ -202,7 +202,7 @@ std::vector<std::valarray<T>> createNdArrayColumnData(const Euclid::Table::Table
 
 template <typename T>
 std::vector<T> createSingleNdArrayVectorColumnData(const Euclid::Table::Table& table, size_t column_index) {
-  std::vector<T> result {};
+  std::vector<T> result{};
   for (auto& row : table) {
     const auto& nd = boost::get<NdArray<T>>(row[column_index]);
     if (nd.size() > 0)
@@ -217,9 +217,9 @@ template <typename T>
 void populateVectorColumn(const Table& table, size_t column_index, CCfits::ExtHDU& table_hdu, long first_row) {
   const auto& vec = boost::get<std::vector<T>>(table[0][column_index]);
   if (vec.size() > 1) {
-    table_hdu.column(column_index+1).writeArrays(createVectorColumnData<T>(table, column_index), first_row);
+    table_hdu.column(column_index + 1).writeArrays(createVectorColumnData<T>(table, column_index), first_row);
   } else {
-    table_hdu.column(column_index+1).write(createSingleValueVectorColumnData<T>(table, column_index), first_row);
+    table_hdu.column(column_index + 1).write(createSingleValueVectorColumnData<T>(table, column_index), first_row);
   }
 }
 
@@ -228,16 +228,15 @@ void populateNdArrayColumn(const Table& table, size_t column_index, CCfits::ExtH
   const auto& nd = boost::get<NdArray<T>>(table[0][column_index]);
   if (nd.size() > 1) {
     table_hdu.column(column_index + 1).writeArrays(createNdArrayColumnData<T>(table, column_index), first_row);
-  }
-  else {
-    table_hdu.column(column_index+1).write(createSingleNdArrayVectorColumnData<T>(table, column_index), first_row);
+  } else {
+    table_hdu.column(column_index + 1).write(createSingleNdArrayVectorColumnData<T>(table, column_index), first_row);
   }
 }
 
 std::string getTDIM(const Table& table, size_t column_index) {
-  auto& first_row = table[0];
-  auto& cell = first_row[column_index];
-  auto type = table.getColumnInfo()->getDescription(column_index).type;
+  auto&               first_row = table[0];
+  auto&               cell      = first_row[column_index];
+  auto                type      = table.getColumnInfo()->getDescription(column_index).type;
   std::vector<size_t> shape;
 
   if (type == typeid(NdArray<int32_t>)) {
@@ -253,7 +252,7 @@ std::string getTDIM(const Table& table, size_t column_index) {
   }
 
   int64_t ncells = 1;
-  for (auto &axis : shape) {
+  for (auto& axis : shape) {
     ncells *= axis;
   }
   if (ncells == 1) {
@@ -276,17 +275,17 @@ void populateColumn(const Table& table, size_t column_index, CCfits::ExtHDU& tab
   auto type = table.getColumnInfo()->getDescription(column_index).type;
   // CCfits indices start from 1
   if (type == typeid(bool)) {
-    table_hdu.column(column_index+1).write(createColumnData<bool>(table, column_index), first_row);
+    table_hdu.column(column_index + 1).write(createColumnData<bool>(table, column_index), first_row);
   } else if (type == typeid(int32_t)) {
-    table_hdu.column(column_index+1).write(createColumnData<int32_t>(table, column_index), first_row);
+    table_hdu.column(column_index + 1).write(createColumnData<int32_t>(table, column_index), first_row);
   } else if (type == typeid(int64_t)) {
-    table_hdu.column(column_index+1).write(createColumnData<int64_t>(table, column_index), first_row);
+    table_hdu.column(column_index + 1).write(createColumnData<int64_t>(table, column_index), first_row);
   } else if (type == typeid(float)) {
-    table_hdu.column(column_index+1).write(createColumnData<float>(table, column_index), first_row);
+    table_hdu.column(column_index + 1).write(createColumnData<float>(table, column_index), first_row);
   } else if (type == typeid(double)) {
-    table_hdu.column(column_index+1).write(createColumnData<double>(table, column_index), first_row);
+    table_hdu.column(column_index + 1).write(createColumnData<double>(table, column_index), first_row);
   } else if (type == typeid(std::string)) {
-    table_hdu.column(column_index+1).write(createColumnData<std::string>(table, column_index), first_row);
+    table_hdu.column(column_index + 1).write(createColumnData<std::string>(table, column_index), first_row);
   } else if (type == typeid(std::vector<int32_t>)) {
     populateVectorColumn<int32_t>(table, column_index, table_hdu, first_row);
   } else if (type == typeid(std::vector<int64_t>)) {
@@ -308,5 +307,5 @@ void populateColumn(const Table& table, size_t column_index, CCfits::ExtHDU& tab
   }
 }
 
-}
-} // end of namespace Euclid
+}  // namespace Table
+}  // end of namespace Euclid

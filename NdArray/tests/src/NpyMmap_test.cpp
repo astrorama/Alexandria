@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2020 Euclid Science Ground Segment
+ * Copyright (C) 2012-2021 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -16,11 +16,11 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#include <boost/test/unit_test.hpp>
-#include <ElementsKernel/Temporary.h>
 #include "NdArray/io/Npy.h"
 #include "NdArray/io/NpyMmap.h"
 #include "TestHelper.h"
+#include <ElementsKernel/Temporary.h>
+#include <boost/test/unit_test.hpp>
 
 using namespace Euclid::NdArray;
 
@@ -44,7 +44,7 @@ BOOST_AUTO_TEST_CASE(MmapOpen_test) {
     BOOST_CHECK_EQUAL_COLLECTIONS(ndarray.begin(), ndarray.end(), mmapped.begin(), mmapped.end());
     // Modify a couple of elements
     // Note we start at 1024 so there is no chance they have been generated randomly
-    mmapped.at(0, 1, 2) = 1024 + 42;
+    mmapped.at(0, 1, 2)   = 1024 + 42;
     mmapped.at(42, 5, 33) = 1024 + 108;
   }
 
@@ -73,7 +73,7 @@ BOOST_AUTO_TEST_CASE(MmapOpenPrivate_test) {
     BOOST_CHECK_EQUAL_COLLECTIONS(ndarray.begin(), ndarray.end(), mmapped.begin(), mmapped.end());
     // Modify a couple of elements
     // Note we start at 1024 so there is no chance they have been generated randomly
-    mmapped.at(0, 1, 2) = 1024 + 42;
+    mmapped.at(0, 1, 2)   = 1024 + 42;
     mmapped.at(42, 5, 33) = 1024 + 108;
 
     BOOST_CHECK_EQUAL(mmapped.at(0, 1, 2), 1024 + 42);
@@ -151,7 +151,7 @@ BOOST_AUTO_TEST_CASE(MmapAppend_NotEnough_test) {
 }
 
 BOOST_AUTO_TEST_CASE(MmapNamed_test) {
-  Elements::TempFile file("npy_named_mmap_%%.npy");
+  Elements::TempFile             file("npy_named_mmap_%%.npy");
   const std::vector<std::string> attr_names{"ID", "SED", "PDZ"};
 
   // Create mmap
@@ -164,13 +164,13 @@ BOOST_AUTO_TEST_CASE(MmapNamed_test) {
 
   // Fill
   for (size_t i = 0; i < ndarray.shape()[0]; ++i) {
-    ndarray.at(i, "ID") = i;
+    ndarray.at(i, "ID")  = i;
     ndarray.at(i, "SED") = i * 2;
     ndarray.at(i, "PDZ") = i * 10 + 5;
   }
 
   // Read from Python
-  constexpr const char *PYCODE = R"EDOCYP(
+  constexpr const char* PYCODE = R"EDOCYP(
 import sys
 import numpy as np
 a = np.load(sys.argv[1])
@@ -193,7 +193,7 @@ BOOST_AUTO_TEST_CASE(ReadAttrNames_test) {
   std::vector<std::string> expected_attrs{"a", "b"};
 
   // Write from Python
-  constexpr const char *PYCODE = R"EDOCYP(
+  constexpr const char* PYCODE = R"EDOCYP(
 import sys
 import numpy as np
 
@@ -224,7 +224,7 @@ np.save(sys.argv[1], a)
   array.at(3, "a") = 78;
 
   // The changes must be visible to another process
-  constexpr const char *PYCODE2 = R"EDOCYP(
+  constexpr const char* PYCODE2 = R"EDOCYP(
 import sys
 import numpy as np
 
@@ -239,7 +239,7 @@ assert np.array_equal(expected, a), a
 }
 
 BOOST_AUTO_TEST_CASE(NamedAppend_test) {
-  Elements::TempFile file("npy_named_resize_mmap_%%.npy");
+  Elements::TempFile             file("npy_named_resize_mmap_%%.npy");
   const std::vector<std::string> attr_names{"X", "Y"};
 
   auto ndarray = createMmapNpy<double>(file.path(), {100}, attr_names, 10240);

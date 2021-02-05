@@ -1,22 +1,22 @@
 /*
- * Copyright (C) 2012-2020 Euclid Science Ground Segment    
- *  
+ * Copyright (C) 2012-2021 Euclid Science Ground Segment
+ *
  * This library is free software; you can redistribute it and/or modify it under
- * the terms of the GNU Lesser General Public License as published by the Free 
- * Software Foundation; either version 3.0 of the License, or (at your option)  
- * any later version.  
- *  
- * This library is distributed in the hope that it will be useful, but WITHOUT 
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 3.0 of the License, or (at your option)
+ * any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more  
- * details.  
- *  
- * You should have received a copy of the GNU Lesser General Public License 
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
  * along with this library; if not, write to the Free Software Foundation, Inc.,
- * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA  
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
- 
- /**
+
+/**
  * @file SourceCatalog/SourceAttributes/PhotometryAttributeFromRow.h
  *
  * @date Apr 17, 2014
@@ -26,10 +26,9 @@
 #ifndef PHOTOMETRYATTRIBUTEFROMROW_H_
 #define PHOTOMETRYATTRIBUTEFROMROW_H_
 #include <map>
-#include <utility>
-#include <string>
 #include <memory>
-
+#include <string>
+#include <utility>
 
 #include "ElementsKernel/Export.h"
 
@@ -39,7 +38,6 @@
 
 namespace Euclid {
 namespace SourceCatalog {
-
 
 /**
  * @class PhotometryAttributeFromRow
@@ -81,13 +79,11 @@ public:
    * @exception
    *  An exception is thrown if the names provided in the mapping are not present in the columnInfo.
    */
-  PhotometryAttributeFromRow(std::shared_ptr<Euclid::Table::ColumnInfo> column_info_ptr,
-      const std::vector<std::pair<std::string, std::pair<std::string, std::string>>>& filter_name_mapping,
-      const bool missing_photometry_enabled,
-      const double missing_photometry_flag,
-      const bool upper_limit_enabled,
-      const std::vector<std::pair<std::string, float>> n_map,
-      const double n_upper_limit_flag);
+  PhotometryAttributeFromRow(std::shared_ptr<Euclid::Table::ColumnInfo>                                      column_info_ptr,
+                             const std::vector<std::pair<std::string, std::pair<std::string, std::string>>>& filter_name_mapping,
+                             const bool missing_photometry_enabled, const double missing_photometry_flag,
+                             const bool upper_limit_enabled, const std::vector<std::pair<std::string, float>> n_map,
+                             const double n_upper_limit_flag);
 
   virtual ~PhotometryAttributeFromRow();
 
@@ -103,7 +99,7 @@ private:
   /*
    * Map the correspondence between the filterName and the indexes used in the Table columns
    */
-  std::vector<std::pair<size_t, size_t> > m_table_index_vector;
+  std::vector<std::pair<size_t, size_t>> m_table_index_vector;
 
   /*
    * Pointer to the shared filter name vector
@@ -122,10 +118,9 @@ private:
   std::vector<std::pair<std::string, float>> m_n_map;
 
   double m_n_upper_limit_flag;
-
 };
 
-} // namespace SourceCatalog
-} // end of namespace Euclid
+}  // namespace SourceCatalog
+}  // end of namespace Euclid
 
-#endif // PHOTOMETRYATTRIBUTEFROMROW_H_
+#endif  // PHOTOMETRYATTRIBUTEFROMROW_H_

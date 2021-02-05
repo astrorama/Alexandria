@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2020 Euclid Science Ground Segment
+ * Copyright (C) 2012-2021 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General
  * Public License as published by the Free Software Foundation; either version 3.0 of the License, or (at your option)
@@ -21,8 +21,8 @@
 
 #include <boost/test/unit_test.hpp>
 
-#include "Configuration/Configuration.h"
 #include "ConfigManager_fixture.h"
+#include "Configuration/Configuration.h"
 
 using namespace Euclid::Configuration;
 
@@ -46,14 +46,14 @@ public:
 
 //-----------------------------------------------------------------------------
 
-BOOST_AUTO_TEST_SUITE (Configuration_test)
+BOOST_AUTO_TEST_SUITE(Configuration_test)
 
 //-----------------------------------------------------------------------------
 
 BOOST_FIXTURE_TEST_CASE(state_test, ConfigManager_fixture) {
 
   // When
-  Config1 config {timestamp};
+  Config1 config{timestamp};
 
   // Then
   BOOST_CHECK(config.getCurrentState() == Configuration::State::CONSTRUCTED);
@@ -81,7 +81,6 @@ BOOST_FIXTURE_TEST_CASE(state_test, ConfigManager_fixture) {
 
   // Then
   BOOST_CHECK(config.getCurrentState() == Configuration::State::FINAL);
-
 }
 
 //-----------------------------------------------------------------------------
@@ -89,7 +88,7 @@ BOOST_FIXTURE_TEST_CASE(state_test, ConfigManager_fixture) {
 BOOST_FIXTURE_TEST_CASE(dependencies_test, ConfigManager_fixture) {
 
   // When
-  Config3 config {timestamp};
+  Config3 config{timestamp};
 
   // Given
   auto& dependencies = config.getDependencies();
@@ -98,11 +97,8 @@ BOOST_FIXTURE_TEST_CASE(dependencies_test, ConfigManager_fixture) {
   BOOST_CHECK_EQUAL(dependencies.size(), 2);
   BOOST_CHECK_EQUAL(dependencies.count(typeid(Config1)), 1);
   BOOST_CHECK_EQUAL(dependencies.count(typeid(Config2)), 1);
-
 }
 
 //-----------------------------------------------------------------------------
 
-BOOST_AUTO_TEST_SUITE_END ()
-
-
+BOOST_AUTO_TEST_SUITE_END()

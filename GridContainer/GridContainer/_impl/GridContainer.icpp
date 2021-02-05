@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2020 Euclid Science Ground Segment
+ * Copyright (C) 2012-2021 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -16,7 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
- /**
+/**
  * @file GridContainer/_impl/GridContainer.icpp
  * @date May 13, 2014
  * @author Nikolaos Apostolakos
@@ -28,27 +28,27 @@
 namespace Euclid {
 namespace GridContainer {
 
-template<typename GridCellManager, typename... AxesTypes>
-GridContainer<GridCellManager, AxesTypes...>::GridContainer(GridAxis<AxesTypes>... axes)
-      : m_axes{std::move(axes)...} { }
+template <typename GridCellManager, typename... AxesTypes>
+GridContainer<GridCellManager, AxesTypes...>::GridContainer(GridAxis<AxesTypes>... axes) : m_axes{std::move(axes)...} {}
 
-template<typename GridCellManager, typename... AxesTypes>
+template <typename GridCellManager, typename... AxesTypes>
 GridContainer<GridCellManager, AxesTypes...>::GridContainer(std::tuple<GridAxis<AxesTypes>...> axes_tuple)
-      : m_axes{std::move(axes_tuple)} { }
+    : m_axes{std::move(axes_tuple)} {}
 
-template<typename... AxesTypes>
+template <typename... AxesTypes>
 std::tuple<GridAxis<AxesTypes>...> fixAxis(const std::tuple<GridAxis<AxesTypes>...>& original, size_t axis, size_t index) {
-  std::tuple<GridAxis<AxesTypes>...> result {original};
-    GridConstructionHelper<AxesTypes...>::template findAndFixAxis(result, axis, index, TemplateLoopCounter<0>{});
+  std::tuple<GridAxis<AxesTypes>...> result{original};
+  GridConstructionHelper<AxesTypes...>::template findAndFixAxis(result, axis, index, TemplateLoopCounter<0>{});
   return result;
 }
 
-template<typename GridCellManager, typename... AxesTypes>
-GridContainer<GridCellManager, AxesTypes...>::GridContainer(
-                      const GridContainer<GridCellManager, AxesTypes...>& other,
-                      size_t axis, size_t index)
-      : m_axes{other.m_axes}, m_axes_fixed{fixAxis(other.m_axes, axis, index)},
-        m_fixed_indices{other.m_fixed_indices}, m_cell_manager{other.m_cell_manager} {
+template <typename GridCellManager, typename... AxesTypes>
+GridContainer<GridCellManager, AxesTypes...>::GridContainer(const GridContainer<GridCellManager, AxesTypes...>& other, size_t axis,
+                                                            size_t index)
+    : m_axes{other.m_axes}
+    , m_axes_fixed{fixAxis(other.m_axes, axis, index)}
+    , m_fixed_indices{other.m_fixed_indices}
+    , m_cell_manager{other.m_cell_manager} {
   // Update the fixed indices
   if (m_fixed_indices.find(axis) != m_fixed_indices.end()) {
     throw Elements::Exception() << "Axis " << axis << " is already fixed";
@@ -56,71 +56,72 @@ GridContainer<GridCellManager, AxesTypes...>::GridContainer(
   m_fixed_indices[axis] = index;
 }
 
-template<typename GridCellManager, typename... AxesTypes>
-template<int I>
+template <typename GridCellManager, typename... AxesTypes>
+template <int I>
 auto GridContainer<GridCellManager, AxesTypes...>::getOriginalAxis() const -> const GridAxis<axis_type<I>>& {
-    return std::get<I>(m_axes);
+  return std::get<I>(m_axes);
 }
 
-template<typename GridCellManager, typename... AxesTypes>
+template <typename GridCellManager, typename... AxesTypes>
 constexpr size_t GridContainer<GridCellManager, AxesTypes...>::axisNumber() {
   return std::tuple_size<decltype(m_axes_fixed)>::value;
 }
 
-template<typename GridCellManager, typename... AxesTypes>
-template<int I>
+template <typename GridCellManager, typename... AxesTypes>
+template <int I>
 auto GridContainer<GridCellManager, AxesTypes...>::getAxis() const -> const GridAxis<axis_type<I>>& {
-    return std::get<I>(m_axes_fixed);
+  return std::get<I>(m_axes_fixed);
 }
 
-template<typename GridCellManager, typename... AxesTypes>
+template <typename GridCellManager, typename... AxesTypes>
 const std::tuple<GridAxis<AxesTypes>...>& GridContainer<GridCellManager, AxesTypes...>::getAxesTuple() const {
   return m_axes_fixed;
 }
 
-template<typename GridCellManager, typename... AxesTypes>
+template <typename GridCellManager, typename... AxesTypes>
 auto GridContainer<GridCellManager, AxesTypes...>::begin() -> iterator {
-  iterator result {*this, GridCellManagerTraits<GridCellManager>::begin(*m_cell_manager)};
+  iterator result{*this, GridCellManagerTraits<GridCellManager>::begin(*m_cell_manager)};
   GridConstructionHelper<AxesTypes...>::fixIteratorAxes(result, m_fixed_indices, TemplateLoopCounter<0>{});
   return result;
 }
 
-template<typename GridCellManager, typename... AxesTypes>
+template <typename GridCellManager, typename... AxesTypes>
 auto GridContainer<GridCellManager, AxesTypes...>::begin() const -> const_iterator {
-  const_iterator result {*this, GridCellManagerTraits<GridCellManager>::begin(*m_cell_manager)};
+  const_iterator result{*this, GridCellManagerTraits<GridCellManager>::begin(*m_cell_manager)};
   GridConstructionHelper<AxesTypes...>::fixIteratorAxes(result, m_fixed_indices, TemplateLoopCounter<0>{});
   return result;
 }
 
-template<typename GridCellManager, typename... AxesTypes>
+template <typename GridCellManager, typename... AxesTypes>
 auto GridContainer<GridCellManager, AxesTypes...>::cbegin() -> const_iterator {
-  const_iterator result {*this, GridCellManagerTraits<GridCellManager>::begin(*m_cell_manager)};
+  const_iterator result{*this, GridCellManagerTraits<GridCellManager>::begin(*m_cell_manager)};
   GridConstructionHelper<AxesTypes...>::fixIteratorAxes(result, m_fixed_indices, TemplateLoopCounter<0>{});
   return result;
 }
 
-template<typename GridCellManager, typename... AxesTypes>
+template <typename GridCellManager, typename... AxesTypes>
 auto GridContainer<GridCellManager, AxesTypes...>::end() -> iterator {
   return iterator{*this, GridCellManagerTraits<GridCellManager>::end(*m_cell_manager)};
 }
 
-template<typename GridCellManager, typename... AxesTypes>
+template <typename GridCellManager, typename... AxesTypes>
 auto GridContainer<GridCellManager, AxesTypes...>::end() const -> const_iterator {
   return const_iterator{*this, GridCellManagerTraits<GridCellManager>::end(*m_cell_manager)};
 }
 
-template<typename GridCellManager, typename... AxesTypes>
+template <typename GridCellManager, typename... AxesTypes>
 auto GridContainer<GridCellManager, AxesTypes...>::cend() -> const_iterator {
   return const_iterator{*this, GridCellManagerTraits<GridCellManager>::end(*m_cell_manager)};
 }
 
-template<typename GridCellManager, typename... AxesTypes>
+template <typename GridCellManager, typename... AxesTypes>
 size_t GridContainer<GridCellManager, AxesTypes...>::size() const {
   return m_index_helper_fixed.m_axes_index_factors.back();
 }
 
-template<typename GridCellManager, typename... AxesTypes>
-auto GridContainer<GridCellManager, AxesTypes...>::operator()(decltype(std::declval<GridAxis<AxesTypes>>().size())... indices) const -> const cell_type& {
+template <typename GridCellManager, typename... AxesTypes>
+auto GridContainer<GridCellManager, AxesTypes...>::operator()(decltype(std::declval<GridAxis<AxesTypes>>().size())... indices) const
+    -> const cell_type& {
   size_t total_index = m_index_helper.totalIndex(indices...);
   // If we have fixed axes we need to move the index accordingly
   for (auto& pair : m_fixed_indices) {
@@ -129,13 +130,15 @@ auto GridContainer<GridCellManager, AxesTypes...>::operator()(decltype(std::decl
   return (*m_cell_manager)[total_index];
 }
 
-template<typename GridCellManager, typename... AxesTypes>
-auto GridContainer<GridCellManager, AxesTypes...>::operator()(decltype(std::declval<GridAxis<AxesTypes>>().size())... indices) -> cell_type& {
+template <typename GridCellManager, typename... AxesTypes>
+auto GridContainer<GridCellManager, AxesTypes...>::operator()(decltype(std::declval<GridAxis<AxesTypes>>().size())... indices)
+    -> cell_type& {
   return const_cast<cell_type&>(static_cast<const GridContainer&>(*this)(indices...));
 }
 
-template<typename GridCellManager, typename... AxesTypes>
-auto GridContainer<GridCellManager, AxesTypes...>::at(decltype(std::declval<GridAxis<AxesTypes>>().size())... indices) const -> const cell_type& {
+template <typename GridCellManager, typename... AxesTypes>
+auto GridContainer<GridCellManager, AxesTypes...>::at(decltype(std::declval<GridAxis<AxesTypes>>().size())... indices) const
+    -> const cell_type& {
   // First make a check that all the fixed axes are zero
   m_index_helper.checkAllFixedAreZero(m_fixed_indices, indices...);
   size_t total_index = m_index_helper.totalIndexChecked(indices...);
@@ -146,45 +149,47 @@ auto GridContainer<GridCellManager, AxesTypes...>::at(decltype(std::declval<Grid
   return (*m_cell_manager)[total_index];
 }
 
-template<typename GridCellManager, typename... AxesTypes>
-auto GridContainer<GridCellManager, AxesTypes...>::at(decltype(std::declval<GridAxis<AxesTypes>>().size())... indices) -> cell_type& {
+template <typename GridCellManager, typename... AxesTypes>
+auto GridContainer<GridCellManager, AxesTypes...>::at(decltype(std::declval<GridAxis<AxesTypes>>().size())... indices)
+    -> cell_type& {
   return const_cast<cell_type&>(static_cast<const GridContainer&>(*this).at(indices...));
 }
 
-template<typename GridCellManager, typename... AxesTypes>
-template<int I>
-GridContainer<GridCellManager, AxesTypes...>  GridContainer<GridCellManager, AxesTypes...>::fixAxisByIndex(size_t index) {
+template <typename GridCellManager, typename... AxesTypes>
+template <int I>
+GridContainer<GridCellManager, AxesTypes...> GridContainer<GridCellManager, AxesTypes...>::fixAxisByIndex(size_t index) {
   if (index >= getOriginalAxis<I>().size()) {
-    throw Elements::Exception() << "Index (" << index << ") out of axis "
-                              << getOriginalAxis<I>().name() << " size ("
-                              << getOriginalAxis<I>().size() << ")";
+    throw Elements::Exception() << "Index (" << index << ") out of axis " << getOriginalAxis<I>().name() << " size ("
+                                << getOriginalAxis<I>().size() << ")";
   }
   return GridContainer<GridCellManager, AxesTypes...>(*this, I, index);
 }
 
-template<typename GridCellManager, typename... AxesTypes>
-template<int I>
-const GridContainer<GridCellManager, AxesTypes...> GridContainer<GridCellManager, AxesTypes...>::fixAxisByIndex(size_t index) const {
+template <typename GridCellManager, typename... AxesTypes>
+template <int I>
+const GridContainer<GridCellManager, AxesTypes...>
+GridContainer<GridCellManager, AxesTypes...>::fixAxisByIndex(size_t index) const {
   return const_cast<GridContainer<GridCellManager, AxesTypes...>*>(this)->fixAxisByIndex<I>(index);
 }
 
-template<typename GridCellManager, typename... AxesTypes>
-template<int I>
-GridContainer<GridCellManager, AxesTypes...>  GridContainer<GridCellManager, AxesTypes...>::fixAxisByValue(const axis_type<I>& value) {
-  auto& axis = getOriginalAxis<I>();
-  auto found_axis = std::find(axis.begin(), axis.end(), value);
+template <typename GridCellManager, typename... AxesTypes>
+template <int I>
+GridContainer<GridCellManager, AxesTypes...>
+GridContainer<GridCellManager, AxesTypes...>::fixAxisByValue(const axis_type<I>& value) {
+  auto& axis       = getOriginalAxis<I>();
+  auto  found_axis = std::find(axis.begin(), axis.end(), value);
   if (found_axis == axis.end()) {
-    throw Elements::Exception() << "Failed to fix axis " << getOriginalAxis<I>().name()
-                              << " (given value not found)";
+    throw Elements::Exception() << "Failed to fix axis " << getOriginalAxis<I>().name() << " (given value not found)";
   }
-  return GridContainer<GridCellManager, AxesTypes...>(*this, I, found_axis-axis.begin());
+  return GridContainer<GridCellManager, AxesTypes...>(*this, I, found_axis - axis.begin());
 }
 
-template<typename GridCellManager, typename... AxesTypes>
-template<int I>
-const GridContainer<GridCellManager, AxesTypes...> GridContainer<GridCellManager, AxesTypes...>::fixAxisByValue(const axis_type<I>& value) const {
+template <typename GridCellManager, typename... AxesTypes>
+template <int I>
+const GridContainer<GridCellManager, AxesTypes...>
+GridContainer<GridCellManager, AxesTypes...>::fixAxisByValue(const axis_type<I>& value) const {
   return const_cast<GridContainer<GridCellManager, AxesTypes...>*>(this)->fixAxisByValue<I>(value);
 }
 
-} // end of namespace GridContainer
-} // end of namespace Euclid
+}  // end of namespace GridContainer
+}  // end of namespace Euclid

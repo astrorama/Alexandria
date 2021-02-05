@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2020 Euclid Science Ground Segment
+ * Copyright (C) 2012-2021 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -16,7 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
- /**
+/**
  * @file GridContainer/_impl/TemplateLoopCounter.h
  * @date May 13, 2014
  * @author Nikolaos Apostolakos
@@ -30,11 +30,10 @@ namespace GridContainer {
 
 /// This is a dummy class with a integer template parameter, which is used
 /// as a counter for the template recursions.
-template<int>
-struct TemplateLoopCounter { };
+template <int>
+struct TemplateLoopCounter {};
 
-}
-} // end of namespace Euclid
+}  // namespace GridContainer
+}  // end of namespace Euclid
 
-#endif  /* GRIDCONTAINER_TEMPLATELOOPCOUNTER_H */
-
+#endif /* GRIDCONTAINER_TEMPLATELOOPCOUNTER_H */

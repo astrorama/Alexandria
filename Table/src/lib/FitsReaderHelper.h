@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2020 Euclid Science Ground Segment
+ * Copyright (C) 2012-2021 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -16,7 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
- /**
+/**
  * @file src/lib/FitsReaderHelper.h
  * @date April 17, 2014
  * @author Nikolaos Apostolakos
@@ -25,10 +25,10 @@
 #ifndef FITSREADERHELPER_H
 #define FITSREADERHELPER_H
 
-#include <vector>
+#include <CCfits/CCfits>
 #include <string>
 #include <typeindex>
-#include <CCfits/CCfits>
+#include <vector>
 
 #include "ElementsKernel/Export.h"
 
@@ -82,10 +82,9 @@ ELEMENTS_API std::vector<std::string> autoDetectColumnDescriptions(const CCfits:
  */
 ELEMENTS_API std::vector<Row::cell_type> translateColumn(CCfits::Column& column, std::type_index type);
 
-ELEMENTS_API std::vector<Row::cell_type> translateColumn(CCfits::Column& column, std::type_index type,
-                                                         long first, long last);
+ELEMENTS_API std::vector<Row::cell_type> translateColumn(CCfits::Column& column, std::type_index type, long first, long last);
 
-}
-} // end of namespace Euclid
+}  // namespace Table
+}  // end of namespace Euclid
 
 #endif /* FITSREADERHELPER_H */

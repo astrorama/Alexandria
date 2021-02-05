@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2020 Euclid Science Ground Segment
+ * Copyright (C) 2012-2021 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -17,24 +17,24 @@
  */
 
 /**
-* @file Histogram/Histogram.h
-* @date February 11, 2020
-* @author Alejandro Alvarez Ayllon
-*/
+ * @file Histogram/Histogram.h
+ * @date February 11, 2020
+ * @author Alejandro Alvarez Ayllon
+ */
 
 #ifndef ALEXANDRIA_HISTOGRAM_HISTOGRAM_H
 #define ALEXANDRIA_HISTOGRAM_HISTOGRAM_H
 
+#include <AlexandriaKernel/memory_tools.h>
+#include <ElementsKernel/Exception.h>
+#include <algorithm>
 #include <cassert>
 #include <cmath>
-#include <algorithm>
 #include <memory>
-#include <utility>
 #include <tuple>
 #include <type_traits>
+#include <utility>
 #include <vector>
-#include <ElementsKernel/Exception.h>
-#include <AlexandriaKernel/memory_tools.h>
 
 namespace Euclid {
 namespace Histogram {
@@ -45,10 +45,9 @@ namespace Histogram {
  * @tparam VarType
  *  The type of the continuous variable. Must be an arithmetic type (either integral or floating point)
  */
-template<typename VarType>
+template <typename VarType>
 class BinStrategy {
 public:
-
   /**
    * Constructor.
    * @details
@@ -86,7 +85,7 @@ public:
    */
   virtual std::vector<VarType> getEdges() const {
     std::vector<VarType> edges(m_nbins + 1);
-    size_t i = 0;
+    size_t               i = 0;
     std::generate(edges.begin(), edges.end(), [this, &i]() { return getEdge(i++); });
     return edges;
   }
@@ -134,10 +133,9 @@ protected:
  * @tparam WeightType
  *  The type used for the counts, which is the same as the one accepted for the weights.
  */
-template<typename VarType, typename WeightType = float>
+template <typename VarType, typename WeightType = float>
 class Histogram {
 public:
-
   static_assert(std::is_arithmetic<VarType>::value, "Histogram only supports numerical types");
   static_assert(std::is_arithmetic<WeightType>::value, "Histogram only supports numerical weights");
 
@@ -154,8 +152,8 @@ public:
    * @param bin_type
    *    An instance of BinType. It will be taken ownership of by the Histogram
    */
-  template<typename IterType, typename BinType,
-    typename=typename std::enable_if<std::is_move_constructible<BinType>::value>::type>
+  template <typename IterType, typename BinType,
+            typename = typename std::enable_if<std::is_move_constructible<BinType>::value>::type>
   Histogram(IterType begin, IterType end, BinType&& bin_type) {
     auto binning_impl = make_unique<ComputationImpl<BinType>>(std::move(bin_type));
     binning_impl->computeBins(begin, end, ConstantWeight{});
@@ -183,8 +181,8 @@ public:
    * @note
    *    The number of values and weights must match
    */
-  template<typename IterType, typename WeightIterType, typename BinType,
-    typename=typename std::enable_if<std::is_move_constructible<BinType>::value>::type>
+  template <typename IterType, typename WeightIterType, typename BinType,
+            typename = typename std::enable_if<std::is_move_constructible<BinType>::value>::type>
   Histogram(IterType begin, IterType end, WeightIterType wbegin, WeightIterType wend, BinType&& bin_type) {
     assert(wend - wbegin == end - begin);
     auto binning_impl = make_unique<ComputationImpl<BinType>>(std::move(bin_type));
@@ -247,7 +245,7 @@ public:
    */
   std::vector<VarType> getBins() const {
     std::vector<VarType> bins(m_binning_concept->m_counts->size());
-    size_t i = 0;
+    size_t               i = 0;
     std::generate(bins.begin(), bins.end(), [this, &i]() { return m_binning_concept->getBinStrategy().getBin(i++); });
     return bins;
   }
@@ -292,7 +290,6 @@ public:
     return m_binning_concept->getStats();
   }
 
-
 private:
   /**
    * Used internally when no weights are given, which is equivalent to have all weights being 1
@@ -317,12 +314,11 @@ private:
    */
   struct ComputationInterface {
     std::shared_ptr<std::vector<WeightType>> m_counts;
-    ssize_t m_clip_left, m_clip_right;
+    ssize_t                                  m_clip_left, m_clip_right;
 
     virtual ~ComputationInterface() = default;
 
-    ComputationInterface() : m_counts(new std::vector<WeightType>()), m_clip_left(0),
-                             m_clip_right(m_counts->size() - 1) {}
+    ComputationInterface() : m_counts(new std::vector<WeightType>()), m_clip_left(0), m_clip_right(m_counts->size() - 1) {}
 
     size_t size() const {
       return m_clip_right - m_clip_left + 1;
@@ -342,17 +338,16 @@ private:
    * @tparam BinType
    *    Type of the binning strategy
    */
-  template<typename BinType>
+  template <typename BinType>
   struct ComputationImpl : public ComputationInterface {
-    using ComputationInterface::m_counts;
     using ComputationInterface::m_clip_left;
     using ComputationInterface::m_clip_right;
+    using ComputationInterface::m_counts;
     BinType m_binning;
 
-    explicit ComputationImpl(BinType&& bin_type): m_binning(std::move(bin_type)) {
-    }
+    explicit ComputationImpl(BinType&& bin_type) : m_binning(std::move(bin_type)) {}
 
-    ComputationImpl(const ComputationImpl& other) = default;
+    ComputationImpl(const ComputationImpl&) = default;
 
     const BinStrategy<VarType>& getBinStrategy() const final {
       return m_binning;
@@ -375,7 +370,7 @@ private:
      * @param wbegin
      *    Beginning of the weights
      */
-    template<typename IterType, typename WeightIterType>
+    template <typename IterType, typename WeightIterType>
     void computeBins(IterType begin, IterType end, WeightIterType wbegin);
 
     void clip(VarType min, VarType max) final;
@@ -386,9 +381,9 @@ private:
   std::unique_ptr<ComputationInterface> m_binning_concept;
 };
 
-} // end of namespace Histogram
-} // end of namespace Euclid
+}  // end of namespace Histogram
+}  // end of namespace Euclid
 
 #include "Histogram/_impl/ComputationImpl.icpp"
 
-#endif // ALEXANDRIA_HISTOGRAM_HISTOGRAM_H
+#endif  // ALEXANDRIA_HISTOGRAM_HISTOGRAM_H

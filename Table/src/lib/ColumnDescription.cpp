@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2020 Euclid Science Ground Segment
+ * Copyright (C) 2012-2021 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -36,17 +36,17 @@ using boost::regex_match;
 namespace Euclid {
 namespace Table {
 
-ColumnDescription::ColumnDescription(std::string input_name, std::type_index input_type,
-                                     std::string input_unit, std::string input_description)
-        : name(input_name), type(input_type), unit(input_unit), description(input_description) {
-    if (input_name.empty()) {
-      throw Elements::Exception() << "Empty string name is not allowed";
-    }
-    if (regex_match(input_name, regex{".*\\v.*"})) {
-      throw Elements::Exception() << "Column name '" << input_name << "' contains "
+ColumnDescription::ColumnDescription(std::string input_name, std::type_index input_type, std::string input_unit,
+                                     std::string input_description)
+    : name(input_name), type(input_type), unit(input_unit), description(input_description) {
+  if (input_name.empty()) {
+    throw Elements::Exception() << "Empty string name is not allowed";
+  }
+  if (regex_match(input_name, regex{".*\\v.*"})) {
+    throw Elements::Exception() << "Column name '" << input_name << "' contains "
                                 << "vertical whitespace characters";
-    }
+  }
 }
 
-} // Table namespace
-} // Euclid namespace
+}  // namespace Table
+}  // namespace Euclid

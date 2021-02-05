@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2020 Euclid Science Ground Segment
+ * Copyright (C) 2012-2021 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -22,30 +22,27 @@
  * @author nikoapos
  */
 
-#include <fstream>
-#include <sstream>
-#include <boost/lexical_cast.hpp>
-#include "ElementsKernel/Exception.h"
 #include "Table/AsciiWriter.h"
 #include "AsciiWriterHelper.h"
+#include "ElementsKernel/Exception.h"
+#include <boost/lexical_cast.hpp>
+#include <fstream>
+#include <sstream>
 
 namespace Euclid {
 namespace Table {
 
-AsciiWriter::AsciiWriter(std::ostream& stream) : AsciiWriter(InstOrRefHolder<std::ostream>::create(stream)) {
-}
+AsciiWriter::AsciiWriter(std::ostream& stream) : AsciiWriter(InstOrRefHolder<std::ostream>::create(stream)) {}
 
-AsciiWriter::AsciiWriter(const std::string& filename) : AsciiWriter(create<std::ofstream>(filename)) {
-}
+AsciiWriter::AsciiWriter(const std::string& filename) : AsciiWriter(create<std::ofstream>(filename)) {}
 
 AsciiWriter::AsciiWriter(std::unique_ptr<InstOrRefHolder<std::ostream>> stream_holder)
-        : m_stream_holder(std::move(stream_holder)) {
-}
+    : m_stream_holder(std::move(stream_holder)) {}
 
 AsciiWriter& AsciiWriter::setCommentIndicator(const std::string& indicator) {
   if (m_writing_started) {
     throw Elements::Exception() << "Changing comment indicator after writing "
-            << "has started is not allowed";
+                                << "has started is not allowed";
   }
   if (indicator.empty()) {
     throw Elements::Exception() << "Empty string as comment indicator";
@@ -57,7 +54,7 @@ AsciiWriter& AsciiWriter::setCommentIndicator(const std::string& indicator) {
 AsciiWriter& AsciiWriter::showColumnInfo(bool show) {
   if (m_writing_started) {
     throw Elements::Exception() << "Changing column info visibility after writing "
-            << "has started is not allowed";
+                                << "has started is not allowed";
   }
   m_show_column_info = show;
   return *this;
@@ -66,11 +63,11 @@ AsciiWriter& AsciiWriter::showColumnInfo(bool show) {
 void AsciiWriter::addComment(const std::string& message) {
   if (m_initialized) {
     throw Elements::Exception() << "Adding comments after writing data in ASCII "
-            << "format is not allowed";
+                                << "format is not allowed";
   }
   m_writing_started = true;
 
-  std::stringstream message_stream {message};
+  std::stringstream message_stream{message};
   while (!message_stream.eof()) {
     std::string line;
     std::getline(message_stream, line);
@@ -91,7 +88,7 @@ void AsciiWriter::init(const Table& table) {
   // Write the column descriptions
   auto& info = *table.getColumnInfo();
   if (m_show_column_info) {
-    for (size_t i=0; i<info.size(); ++i) {
+    for (size_t i = 0; i < info.size(); ++i) {
       auto& desc = info.getDescription(i);
 
       out << m_comment << " Column: " << quoted(desc.name) << ' ' << typeToKeyword(desc.type);
@@ -109,26 +106,25 @@ void AsciiWriter::init(const Table& table) {
   // Write the column names
   auto column_lengths = calculateColumnLengths(table);
   out << m_comment.c_str();
-  for (size_t i=0; i<info.size(); ++i) {
+  for (size_t i = 0; i < info.size(); ++i) {
     out << std::setw(column_lengths[i]) << quoted(info.getDescription(i).name);
   }
   out << "\n\n";
 }
 
 void AsciiWriter::append(const Table& table) {
-  auto& out = m_stream_holder->ref();
-  auto column_lengths = calculateColumnLengths(table);
+  auto& out            = m_stream_holder->ref();
+  auto  column_lengths = calculateColumnLengths(table);
   // The data lines are not prefixed with the comment string, so we need to fix
   // the length of the first column to get the alignment correctly
   column_lengths[0] = column_lengths[0] + m_comment.size();
   for (auto row : table) {
-    for (size_t i=0; i<row.size(); ++i) {
+    for (size_t i = 0; i < row.size(); ++i) {
       out << std::setw(column_lengths[i]) << boost::apply_visitor(ToStringVisitor{}, row[i]);
     }
     out << "\n";
   }
 }
 
-
-} // Table namespace
-} // Euclid namespace
+}  // namespace Table
+}  // namespace Euclid

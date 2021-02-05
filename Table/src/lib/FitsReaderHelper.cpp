@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2020 Euclid Science Ground Segment
+ * Copyright (C) 2012-2021 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -16,17 +16,17 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
- /**
+/**
  * @file src/lib/FitsReaderHelper.cpp
  * @date April 17, 2014
  * @author Nikolaos Apostolakos
  */
 
+#include "FitsReaderHelper.h"
+#include "ElementsKernel/Exception.h"
 #include <CCfits/CCfits>
 #include <boost/lexical_cast.hpp>
 #include <boost/tokenizer.hpp>
-#include "ElementsKernel/Exception.h"
-#include "FitsReaderHelper.h"
 
 namespace Euclid {
 namespace Table {
@@ -34,8 +34,8 @@ namespace Table {
 using NdArray::NdArray;
 
 std::vector<std::string> autoDetectColumnNames(const CCfits::Table& table_hdu) {
-  std::vector<std::string> names {};
-  for (int i=1; i<=table_hdu.numCols(); ++i) {
+  std::vector<std::string> names{};
+  for (int i = 1; i <= table_hdu.numCols(); ++i) {
     std::string name = table_hdu.column(i).name();
     if (name.empty()) {
       name = "Col" + std::to_string(i);
@@ -58,16 +58,16 @@ std::type_index asciiFormatToType(const std::string& format) {
     return typeid(double);
   }
   throw Elements::Exception() << "FITS ASCII table format " << format << " is not "
-                            << "yet supported";
+                              << "yet supported";
 }
 
 std::type_index binaryFormatToType(const std::string& format, const std::vector<size_t>& shape) {
   // Get the size out of the format string
-  char ft = format.front();
-  int size = 1;
+  char ft   = format.front();
+  int  size = 1;
   if (std::isdigit(format.front())) {
     size = std::stoi(format.substr(0, format.size() - 1));
-    ft = format.back();
+    ft   = format.back();
   }
 
   // If shape is set, it is an NdArray
@@ -90,23 +90,17 @@ std::type_index binaryFormatToType(const std::string& format, const std::vector<
   else if (size == 1) {
     if (ft == 'L') {
       return typeid(bool);
-    }
-    else if (ft == 'B') {
+    } else if (ft == 'B') {
       return typeid(int32_t);
-    }
-    else if (ft == 'I') {
+    } else if (ft == 'I') {
       return typeid(int32_t);
-    }
-    else if (ft == 'J') {
+    } else if (ft == 'J') {
       return typeid(int32_t);
-    }
-    else if (ft == 'K') {
+    } else if (ft == 'K') {
       return typeid(int64_t);
-    }
-    else if (ft == 'E') {
+    } else if (ft == 'E') {
       return typeid(float);
-    }
-    else if (ft == 'D') {
+    } else if (ft == 'D') {
       return typeid(double);
     }
   }
@@ -129,14 +123,14 @@ std::type_index binaryFormatToType(const std::string& format, const std::vector<
     }
   }
   throw Elements::Exception() << "FITS binary table format " << format << " is not "
-                            << "yet supported";
+                              << "yet supported";
 }
 
-std::vector<size_t> parseTDIM(const std::string &tdim) {
-  std::vector<size_t> result {};
+std::vector<size_t> parseTDIM(const std::string& tdim) {
+  std::vector<size_t> result{};
   if (!tdim.empty() && tdim.front() == '(' && tdim.back() == ')') {
-    auto subtdim = tdim.substr(1, tdim.size() - 2);
-    boost::char_separator<char> sep{","};
+    auto                                          subtdim = tdim.substr(1, tdim.size() - 2);
+    boost::char_separator<char>                   sep{","};
     boost::tokenizer<boost::char_separator<char>> tok{subtdim, sep};
     for (auto& s : tok) {
       result.push_back(boost::lexical_cast<size_t>(s));
@@ -148,8 +142,8 @@ std::vector<size_t> parseTDIM(const std::string &tdim) {
 }
 
 std::vector<std::type_index> autoDetectColumnTypes(const CCfits::Table& table_hdu) {
-  std::vector<std::type_index> types {};
-  for (int i=1; i<=table_hdu.numCols(); i++) {
+  std::vector<std::type_index> types{};
+  for (int i = 1; i <= table_hdu.numCols(); i++) {
     auto& column = table_hdu.column(i);
 
     if (typeid(table_hdu) == typeid(CCfits::BinTable)) {
@@ -163,18 +157,18 @@ std::vector<std::type_index> autoDetectColumnTypes(const CCfits::Table& table_hd
 }
 
 std::vector<std::string> autoDetectColumnUnits(const CCfits::Table& table_hdu) {
-  std::vector<std::string> units {};
-  for (int i=1; i<=table_hdu.numCols(); ++i) {
+  std::vector<std::string> units{};
+  for (int i = 1; i <= table_hdu.numCols(); ++i) {
     units.push_back(table_hdu.column(i).unit());
   }
   return units;
 }
 
 std::vector<std::string> autoDetectColumnDescriptions(const CCfits::Table& table_hdu) {
-  std::vector<std::string> descriptions {};
-  for (int i=1; i<=table_hdu.numCols(); ++i) {
+  std::vector<std::string> descriptions{};
+  for (int i = 1; i <= table_hdu.numCols(); ++i) {
     std::string desc;
-    auto key = table_hdu.keyWord().find("TDESC" + std::to_string(i));
+    auto        key = table_hdu.keyWord().find("TDESC" + std::to_string(i));
     if (key != table_hdu.keyWord().end()) {
       key->second->value(desc);
     }
@@ -183,7 +177,7 @@ std::vector<std::string> autoDetectColumnDescriptions(const CCfits::Table& table
   return descriptions;
 }
 
-template<typename T>
+template <typename T>
 std::vector<Row::cell_type> convertScalarColumn(CCfits::Column& column, long first, long last) {
   std::vector<T> data;
   column.read(data, first, last);
@@ -194,18 +188,18 @@ std::vector<Row::cell_type> convertScalarColumn(CCfits::Column& column, long fir
   return result;
 }
 
-template<typename T>
+template <typename T>
 std::vector<Row::cell_type> convertVectorColumn(CCfits::Column& column, long first, long last) {
   std::vector<std::valarray<T>> data;
   column.readArrays(data, first, last);
   std::vector<Row::cell_type> result;
   for (auto& valar : data) {
-    result.push_back(std::vector<T>(std::begin(valar),std::end(valar)));
+    result.push_back(std::vector<T>(std::begin(valar), std::end(valar)));
   }
   return result;
 }
 
-template<typename T>
+template <typename T>
 std::vector<Row::cell_type> convertNdArrayColumn(CCfits::Column& column, long first, long last) {
   std::vector<std::valarray<T>> data;
   column.readArrays(data, first, last);
@@ -255,5 +249,5 @@ std::vector<Row::cell_type> translateColumn(CCfits::Column& column, std::type_in
   throw Elements::Exception() << "Unsupported column type " << type.name();
 }
 
-}
-} // end of namespace Euclid
+}  // namespace Table
+}  // end of namespace Euclid

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2020 Euclid Science Ground Segment
+ * Copyright (C) 2012-2021 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -17,10 +17,10 @@
  */
 
 /**
-* @file Histogram/Binning/EdgeVector.h
-* @date February 17, 2020
-* @author Alejandro Alvarez Ayllon
-*/
+ * @file Histogram/Binning/EdgeVector.h
+ * @date February 17, 2020
+ * @author Alejandro Alvarez Ayllon
+ */
 
 #ifndef ALEXANDRIA_HISTOGRAM_BINNING_EDGEVECTOR_H
 #define ALEXANDRIA_HISTOGRAM_BINNING_EDGEVECTOR_H
@@ -41,17 +41,17 @@ namespace Binning {
  *  \mathit{bin}_i = [\mathit{edge}_{i}, \mathit{edge}_{i+i}) \\
  *  ... \\
  * \mathit{bin}_n= [\mathit{edge}_{n}, \mathit{edge}_{n+i}]
-*  \f]
+ *  \f]
  */
-template<typename VarType>
+template <typename VarType>
 class EdgeVector : public BinStrategy<VarType> {
 public:
   virtual ~EdgeVector() = default;
 
   EdgeVector(EdgeVector&&) = default;
 
-  template<typename... Args>
-  explicit EdgeVector(Args&& ... args): m_edges(std::forward<Args>(args)...) {
+  template <typename... Args>
+  explicit EdgeVector(Args&&... args) : m_edges(std::forward<Args>(args)...) {
     m_nbins = m_edges.size() - 1;
   }
 
@@ -79,8 +79,8 @@ private:
   std::vector<VarType> m_edges;
 };
 
-} // end of namespace Binning
-} // end of namespace Histogram
-} // end of namespace Euclid
+}  // end of namespace Binning
+}  // end of namespace Histogram
+}  // end of namespace Euclid
 
-#endif // ALEXANDRIA_HISTOGRAM_BINNING_EDGEVECTOR_H
+#endif  // ALEXANDRIA_HISTOGRAM_BINNING_EDGEVECTOR_H

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2020 Euclid Science Ground Segment
+ * Copyright (C) 2012-2021 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -25,8 +25,8 @@
 #ifndef _TABLE_FITSWRITER_H
 #define _TABLE_FITSWRITER_H
 
-#include <CCfits/FITS.h>
 #include "Table/TableWriter.h"
+#include <CCfits/FITS.h>
 
 namespace Euclid {
 namespace Table {
@@ -76,7 +76,6 @@ namespace Table {
 class FitsWriter : public TableWriter {
 
 public:
-
   /// The format of the HDUs a FitsWriter creates
   enum class Format {
     /// FITS ASCII table HDU format
@@ -105,7 +104,7 @@ public:
    * @param override_flag
    *    When true, any existing file will be overridden
    */
-  explicit FitsWriter(const std::string& filename, bool override_flag=false);
+  explicit FitsWriter(const std::string& filename, bool override_flag = false);
 
   /**
    * @brief Creates a FitsWriter that writes to a specific CCfits::FITS object
@@ -181,7 +180,6 @@ public:
   void addComment(const std::string& message) override;
 
 protected:
-
   /// Creates the FITS file if it needs to be created, the table HDU if the
   /// name already exist and writes the comments.
   void init(const Table& table) override;
@@ -191,21 +189,19 @@ protected:
   void append(const Table& table) override;
 
 private:
-
-  std::string m_filename = "";
-  std::shared_ptr<CCfits::FITS> m_fits = nullptr;
-  bool m_initialized = false;
-  bool m_override_file = true;
-  Format m_format = Format::BINARY;
-  std::string m_hdu_name = "";
-  std::vector<std::string> m_comments {};
-  int m_hdu_index = -1;
-  long m_current_line = 0;
+  std::string                   m_filename      = "";
+  std::shared_ptr<CCfits::FITS> m_fits          = nullptr;
+  bool                          m_initialized   = false;
+  bool                          m_override_file = true;
+  Format                        m_format        = Format::BINARY;
+  std::string                   m_hdu_name      = "";
+  std::vector<std::string>      m_comments{};
+  int                           m_hdu_index    = -1;
+  long                          m_current_line = 0;
 
 }; /* End of FitsWriter class */
 
 } /* namespace Table */
 } /* namespace Euclid */
-
 
 #endif

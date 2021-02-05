@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2020 Euclid Science Ground Segment
+ * Copyright (C) 2012-2021 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -16,7 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
- /**
+/**
  * @file MathUtils/function/FunctionAdapter.h
  * @date November 2, 2015
  * @author Florian Dubath
@@ -25,8 +25,8 @@
 #ifndef MATHUTILS_FUNCTIONADAPTER_H_
 #define MATHUTILS_FUNCTIONADAPTER_H_
 
-#include <functional>
 #include "MathUtils/function/Function.h"
+#include <functional>
 
 namespace Euclid {
 namespace MathUtils {
@@ -41,7 +41,7 @@ namespace MathUtils {
  * This class provide this functionality. In particular it allows to build a
  * Function out of a Lamda expression.
  */
-class FunctionAdapter: public Function {
+class FunctionAdapter : public Function {
 public:
   /**
    * @brief Constructor
@@ -51,28 +51,27 @@ public:
   explicit FunctionAdapter(std::function<double(double)> function);
 
   /// Default destructor
-  virtual ~FunctionAdapter()=default;
+  virtual ~FunctionAdapter() = default;
 
   /**
-    * Converts the value x from the input domain to the output domain by calling
-    * the internal std::function<double(double)>.
-    * @param x The value to convert
-    * @return The value of the output domain
-    */
+   * Converts the value x from the input domain to the output domain by calling
+   * the internal std::function<double(double)>.
+   * @param x The value to convert
+   * @return The value of the output domain
+   */
   double operator()(const double x) const override;
 
   /**
-    * Creates a clone of the function adapter object.
-    * @return A copy of the FunctionAdapter object
-    */
+   * Creates a clone of the function adapter object.
+   * @return A copy of the FunctionAdapter object
+   */
   std::unique_ptr<Function> clone() const override;
-
 
 private:
   std::function<double(double)> m_function;
 };
 
-}
-}
+}  // namespace MathUtils
+}  // namespace Euclid
 
 #endif /* MATHUTILS_FUNCTIONADAPTER_H_ */

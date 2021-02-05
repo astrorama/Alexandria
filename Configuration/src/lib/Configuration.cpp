@@ -1,17 +1,17 @@
-/*  
- * Copyright (C) 2012-2020 Euclid Science Ground Segment    
- *  
- * This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General  
- * Public License as published by the Free Software Foundation; either version 3.0 of the License, or (at your option)  
- * any later version.  
- *  
- * This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied  
- * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more  
- * details.  
- *  
- * You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to  
- * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA  
- */  
+/*
+ * Copyright (C) 2012-2021 Euclid Science Ground Segment
+ *
+ * This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General
+ * Public License as published by the Free Software Foundation; either version 3.0 of the License, or (at your option)
+ * any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
+ * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+ */
 
 /**
  * @file src/lib/Configuration.cpp
@@ -24,18 +24,17 @@
 namespace Euclid {
 namespace Configuration {
 
-Configuration::Configuration(long manager_id) : m_manager_id{manager_id} {
-}
+Configuration::Configuration(long manager_id) : m_manager_id{manager_id} {}
 
 std::map<std::string, Configuration::OptionDescriptionList> Configuration::getProgramOptions() {
   return std::map<std::string, Configuration::OptionDescriptionList>{};
 }
 
-void Configuration::preInitialize(const UserValues&) { }
+void Configuration::preInitialize(const UserValues&) {}
 
-void Configuration::initialize(const UserValues&) { }
+void Configuration::initialize(const UserValues&) {}
 
-void Configuration::postInitialize(const UserValues&) { }
+void Configuration::postInitialize(const UserValues&) {}
 
 const std::set<std::type_index>& Configuration::getDependencies() {
   return m_dependencies;
@@ -48,8 +47,5 @@ Configuration::State& Configuration::getCurrentState() {
 Configuration::State Configuration::getCurrentState() const {
   return m_state;
 }
-} // Configuration namespace
-} // Euclid namespace
-
-
-
+}  // namespace Configuration
+}  // namespace Euclid

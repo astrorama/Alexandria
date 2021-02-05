@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2020 Euclid Science Ground Segment
+ * Copyright (C) 2012-2021 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -16,7 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
- /**
+/**
  * @file GridContainer/GridCellManagerTraits.h
  * @date May 13, 2014
  * @author Nikolaos Apostolakos
@@ -25,8 +25,8 @@
 #ifndef GRIDCONTAINER_GRIDCELLMANAGERTRAITS_H
 #define GRIDCONTAINER_GRIDCELLMANAGERTRAITS_H
 
-#include <vector>
 #include <memory>
+#include <vector>
 
 namespace Euclid {
 namespace GridContainer {
@@ -46,7 +46,7 @@ namespace GridContainer {
  *
  * @tparam GridCellManager the manager which keeps the GridContainer data
  */
-template<typename GridCellManager>
+template <typename GridCellManager>
 struct GridCellManagerTraits {
 
   /// The type of the data kept by the GridCellManager
@@ -100,8 +100,7 @@ struct GridCellManagerTraits {
   /// this flag set to false cannot be serialized.
   static const bool enable_boost_serialize = false;
 
-}; // end of GridCellManagerTraits
-
+};  // end of GridCellManagerTraits
 
 /**
  * Specialization of the GridCellManagerTraits for vector CellManagers. It uses
@@ -111,7 +110,7 @@ struct GridCellManagerTraits {
  *
  * @tparam T the type of the data kept by the vector
  */
-template<typename T>
+template <typename T>
 struct GridCellManagerTraits<std::vector<T>> {
 
   /// The type of the data kept by the GridCellManager
@@ -136,11 +135,11 @@ struct GridCellManagerTraits<std::vector<T>> {
   /// Enables boost serialization of Grids using vector%s as GridCellManager%s
   static const bool enable_boost_serialize = true;
 
-}; // end of GridCellManagerTraits vector specialization
+};  // end of GridCellManagerTraits vector specialization
 
-} // end of namespace GridContainer
-} // end of namespace Euclid
+}  // end of namespace GridContainer
+}  // end of namespace Euclid
 
 #include "GridContainer/_impl/GridCellManagerTraits.icpp"
 
-#endif  /* GRIDCONTAINER_GRIDCELLMANAGERTRAITS_H */
+#endif /* GRIDCONTAINER_GRIDCELLMANAGERTRAITS_H */

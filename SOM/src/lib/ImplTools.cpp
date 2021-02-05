@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2020 Euclid Science Ground Segment
+ * Copyright (C) 2012-2021 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -21,7 +21,6 @@
  * @author nikoapos
  */
 
-
 #include "SOM/ImplTools.h"
 #include "GridContainer/GridAxis.h"
 
@@ -37,7 +36,6 @@ GridContainer::GridAxis<std::size_t> indexAxis(const std::string& name, std::siz
   return GridContainer::GridAxis<std::size_t>{name, std::move(indices)};
 }
 
-}
-}
-}
-
+}  // namespace ImplTools
+}  // namespace SOM
+}  // namespace Euclid

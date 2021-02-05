@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2020 Euclid Science Ground Segment
+ * Copyright (C) 2012-2021 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -16,8 +16,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
- /*
- * Copyright (C) 2012-2020 Euclid Science Ground Segment
+/*
+ * Copyright (C) 2012-2021 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -42,11 +42,11 @@
 #ifndef SOURCE_CATALOG_PDF_H
 #define SOURCE_CATALOG_PDF_H
 
+#include "GridContainer/GridContainer.h"
+#include "SourceCatalog/Attribute.h"
 #include <map>
 #include <string>
 #include <vector>
-#include "GridContainer/GridContainer.h"
-#include "SourceCatalog/Attribute.h"
 
 namespace Euclid {
 namespace SourceCatalog {
@@ -55,10 +55,9 @@ template <typename T>
 class Pdf : public Attribute {
 
 public:
-
   using PdfType = GridContainer::GridContainer<std::vector<double>, T>;
 
-  explicit Pdf(std::map<std::string, PdfType> pdfs) : m_pdfs(std::move(pdfs)) { }
+  explicit Pdf(std::map<std::string, PdfType> pdfs) : m_pdfs(std::move(pdfs)) {}
 
   virtual ~Pdf() = default;
 
@@ -67,13 +66,10 @@ public:
   }
 
 private:
-
   std::map<std::string, PdfType> m_pdfs;
-
 };
 
-}
-}
+}  // namespace SourceCatalog
+}  // namespace Euclid
 
 #endif /* SOURCE_CATALOG_PDF_H */
-

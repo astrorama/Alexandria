@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2020 Euclid Science Ground Segment
+ * Copyright (C) 2012-2021 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -16,7 +16,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
- /**
+/**
  * @file MathUtils/function/Function.h
  * @date February 18, 2014
  * @author Nikolaos Apostolakos
@@ -25,8 +25,8 @@
 #ifndef MATHUTILS_FUNCTION_H
 #define MATHUTILS_FUNCTION_H
 
-#include <memory>
 #include "ElementsKernel/Exception.h"
+#include <memory>
 
 namespace Euclid {
 namespace MathUtils {
@@ -46,7 +46,6 @@ namespace MathUtils {
 class Function {
 
 public:
-
   /// Default destructor
   virtual ~Function() = default;
 
@@ -66,8 +65,7 @@ public:
   virtual std::unique_ptr<Function> clone() const = 0;
 };
 
-} // End of MathUtils
-} // end of namespace Euclid
+}  // namespace MathUtils
+}  // end of namespace Euclid
 
-#endif  /* MATHUTILS_FUNCTION_H */
-
+#endif /* MATHUTILS_FUNCTION_H */
