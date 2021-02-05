@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2020 Euclid Science Ground Segment
+ * Copyright (C) 2012-2021 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -32,7 +32,12 @@
 using boost::regex;
 using boost::regex_match;
 #include <boost/algorithm/string.hpp>
+
+#if BOOST_VERSION < 107300
 #include <boost/io/detail/quoted_manip.hpp>
+#else
+#include <boost/io/quoted.hpp>
+#endif
 
 #include "ElementsKernel/Exception.h"
 #include "Table/AsciiReader.h"
