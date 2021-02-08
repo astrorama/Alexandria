@@ -236,7 +236,7 @@ inline void readNpyHeader(std::istream& input, std::string& dtype, std::vector<s
   if (fortran_order)
     throw Elements::Exception() << "Fortran order not supported";
 
-  if (big_endian && (BYTE_ORDER != BIG_ENDIAN))
+  if ((big_endian && (BYTE_ORDER != BIG_ENDIAN)) || (!big_endian && (BYTE_ORDER != LITTLE_ENDIAN)))
     throw Elements::Exception() << "Only native endianness supported for reading";
 }
 
