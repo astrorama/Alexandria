@@ -294,13 +294,14 @@ void writeNpyHeader(std::ostream& out, std::vector<size_t> shape, const std::vec
   little_uint32_t header_len = header_str.size();
 
   // Pad header with spaces so the header block is 64 bytes aligned
-  size_t total_length = sizeof(NPY_MAGIC) + sizeof(NPY_VERSION) + sizeof(header_len) + header_len - 1;  // Keep 1 for \n
+  size_t total_length = sizeof(NPY_MAGIC) + sizeof(NPY_VERSION) + sizeof(header_len) + header_len + 1;  // Keep 1 for \n
   size_t padding      = 64 - total_length % 64;
   if (padding) {
-    header << std::string(padding, '\x20') << '\n';
-    header_str = header.str();
-    header_len = header_str.size();
+    header << std::string(padding, '\x20');
   }
+  header << '\n';
+  header_str = header.str();
+  header_len = header_str.size();
 
   // Magic and version
   out.write(NPY_MAGIC, sizeof(NPY_MAGIC));
