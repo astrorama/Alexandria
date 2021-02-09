@@ -40,12 +40,13 @@ PhotometryAttributeFromRow::PhotometryAttributeFromRow(
     std::shared_ptr<Euclid::Table::ColumnInfo>                                      column_info_ptr,
     const std::vector<std::pair<std::string, std::pair<std::string, std::string>>>& filter_name_mapping,
     const bool missing_photometry_enabled, const double missing_photometry_flag, const bool upper_limit_enabled,
-    const std::vector<std::pair<std::string, float>> n_map, const double n_upper_limit_flag)
+    const std::vector<std::pair<std::string, float>> n_map, const double n_upper_limit_flag, const bool convert_from_mag)
     : m_missing_photometry_enabled(missing_photometry_enabled)
     , m_missing_photometry_flag(missing_photometry_flag)
     , m_upper_limit_enabled(upper_limit_enabled)
     , m_n_map(n_map)
-    , m_n_upper_limit_flag(n_upper_limit_flag) {
+    , m_n_upper_limit_flag(n_upper_limit_flag)
+    , m_convert_from_mag(convert_from_mag){
 
   std::unique_ptr<size_t> flux_column_index_ptr;
   std::unique_ptr<size_t> error_column_index_ptr;
@@ -74,6 +75,25 @@ PhotometryAttributeFromRow::~PhotometryAttributeFromRow() {
   // @todo Auto-generated destructor stub
 }
 
+
+
+std::pair<double, double> PhotometryAttributeFromRow::convertFromMag(const double mag, const double mag_err) const{
+
+  if (Elements::isEqual(mag, m_missing_photometry_flag) || std::isnan(mag)) {
+     return std::make_pair(m_missing_photometry_flag, 0);
+  } else {
+    // check if the error is a flag
+    bool is_flag =  Elements::isEqual(mag_err, m_n_upper_limit_flag);
+
+    //compute the flux and the error
+    double flux = 3.631e9*std::pow(10, -0.4 * mag);
+    // with this formula the sign of mag_err is forwarded to the flux_err
+    double flux_err = is_flag ? m_n_upper_limit_flag : 0.4* flux * mag_err * std::log(10);
+
+    return std::make_pair(flux, flux_err);
+  }
+}
+
 std::unique_ptr<Attribute> PhotometryAttributeFromRow::createAttribute(const Euclid::Table::Row& row) {
 
   std::vector<FluxErrorPair> photometry_vector{};
@@ -85,6 +105,12 @@ std::unique_ptr<Attribute> PhotometryAttributeFromRow::createAttribute(const Euc
 
     double flux  = boost::apply_visitor(Table::CastVisitor<double>{}, flux_cell);
     double error = boost::apply_visitor(Table::CastVisitor<double>{}, error_cell);
+
+    if (m_convert_from_mag) {
+      auto converted = convertFromMag(flux, error);
+      flux = converted.first;
+      error = converted.second;
+    }
 
     bool missing_data = false;
     bool upper_limit  = false;
@@ -105,7 +131,7 @@ std::unique_ptr<Attribute> PhotometryAttributeFromRow::createAttribute(const Euc
           }
           if (error < 0) {
             /** Actual upper limit **/
-            if (error == m_n_upper_limit_flag) {
+            if (Elements::isEqual(error, m_n_upper_limit_flag)) {
               error = flux / n_threshod_iter->second;
             }
             upper_limit = true;
@@ -143,7 +169,7 @@ std::unique_ptr<Attribute> PhotometryAttributeFromRow::createAttribute(const Euc
         if (error < 0) {
           /** Actual upper limit **/
           upper_limit = true;
-          if (error == m_n_upper_limit_flag) {
+          if (Elements::isEqual(error, m_n_upper_limit_flag)) {
             error = flux / n_threshod_iter->second;
           }
           if (flux <= 0) {

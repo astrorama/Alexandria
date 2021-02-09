@@ -65,6 +65,46 @@ BOOST_FIXTURE_TEST_CASE(createAttribute_test, TableFixture) {
   }
 }
 
+
+BOOST_FIXTURE_TEST_CASE(convert_from_mag_test, TableFixture) {
+  BOOST_TEST_MESSAGE("--> convertion from mag test ");
+
+  PhotometryAttributeFromRow paft{column_info_ptr, filter_name_mapping, true, -99, true, threshold_mapping, -98, true};
+
+  // simple case
+  auto converted_1 = paft.convertFromMag(24.,0.1);
+  BOOST_CHECK_CLOSE(converted_1.first, 0.91207, 1e-3);
+  BOOST_CHECK_CLOSE(converted_1.second, 0.084004, 1e-3);
+
+  auto converted_2 = paft.convertFromMag(20.,0.2);
+  BOOST_CHECK_CLOSE(converted_2.first, 36.31, 1e-3);
+  BOOST_CHECK_CLOSE(converted_2.second, 6.688549, 1e-3);
+
+  // missing data
+  auto converted_3 = paft.convertFromMag(-99,0.1);
+  BOOST_CHECK_CLOSE(converted_3.first, -99, tolerance);
+  BOOST_CHECK_CLOSE(converted_3.second, 0., 1e-3);
+
+  // upper limit (negative error)
+  auto converted_4 = paft.convertFromMag(20.,-0.2);
+  BOOST_CHECK_CLOSE(converted_4.first, 36.31, 1e-3);
+  BOOST_CHECK_CLOSE(converted_4.second, -6.688549, 1e-3);
+
+  // upper limit (flag)
+  auto converted_5 = paft.convertFromMag(20.,-98);
+  BOOST_CHECK_CLOSE(converted_5.first, 36.31, 1e-3);
+  BOOST_CHECK_CLOSE(converted_5.second, -98, tolerance);
+
+}
+
+
+
+
+
+
+
+
+
 BOOST_FIXTURE_TEST_CASE(exceptionalCaseNoMissingNoUpper_test, TableFixture) {
   BOOST_TEST_MESSAGE("--> No Missing Data, No Upper Limit ");
   PhotometryAttributeFromRow paft_nn{column_info_ptr, filter_name_mapping, false, -99., false, threshold_mapping, -99};
