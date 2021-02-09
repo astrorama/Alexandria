@@ -27,6 +27,7 @@
 #define PHOTOMETRYATTRIBUTEFROMROW_H_
 #include <map>
 #include <memory>
+#include <vector>
 #include <string>
 #include <utility>
 
@@ -82,9 +83,10 @@ public:
   PhotometryAttributeFromRow(std::shared_ptr<Euclid::Table::ColumnInfo>                                      column_info_ptr,
                              const std::vector<std::pair<std::string, std::pair<std::string, std::string>>>& filter_name_mapping,
                              const bool missing_photometry_enabled, const double missing_photometry_flag,
-                             const bool upper_limit_enabled, const std::vector<std::pair<std::string, float>> n_map,
+                             const bool upper_limit_enabled,
+                             const std::vector<std::pair<std::string, float>> n_map,
                              const double n_upper_limit_flag,
-                             const bool convert_from_mag = false);
+                             const std::vector<std::pair<std::string, bool>> convert_from_mag = {});
 
   virtual ~PhotometryAttributeFromRow();
 
@@ -122,7 +124,7 @@ private:
 
   double m_n_upper_limit_flag;
 
-  bool m_convert_from_mag;
+  std::vector<std::pair<std::string, bool>> m_convert_from_mag;
 };
 
 }  // namespace SourceCatalog

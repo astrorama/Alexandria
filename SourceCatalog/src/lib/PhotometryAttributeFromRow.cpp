@@ -40,7 +40,7 @@ PhotometryAttributeFromRow::PhotometryAttributeFromRow(
     std::shared_ptr<Euclid::Table::ColumnInfo>                                      column_info_ptr,
     const std::vector<std::pair<std::string, std::pair<std::string, std::string>>>& filter_name_mapping,
     const bool missing_photometry_enabled, const double missing_photometry_flag, const bool upper_limit_enabled,
-    const std::vector<std::pair<std::string, float>> n_map, const double n_upper_limit_flag, const bool convert_from_mag)
+    const std::vector<std::pair<std::string, float>> n_map, const double n_upper_limit_flag, const std::vector<std::pair<std::string, bool>> convert_from_mag)
     : m_missing_photometry_enabled(missing_photometry_enabled)
     , m_missing_photometry_flag(missing_photometry_flag)
     , m_upper_limit_enabled(upper_limit_enabled)
@@ -68,6 +68,14 @@ PhotometryAttributeFromRow::PhotometryAttributeFromRow(
   m_filter_name_vector_ptr = std::make_shared<std::vector<std::string>>();
   for (auto a_filter_name_map : filter_name_mapping) {
     m_filter_name_vector_ptr->push_back(a_filter_name_map.first);
+  }
+
+  // default the m_convert_from_mag
+  if (m_convert_from_mag.size() != m_n_map.size()) {
+    m_convert_from_mag = std::vector<std::pair<std::string, bool>>();
+    for (auto m_n_pair : m_n_map) {
+      m_convert_from_mag.push_back(std::make_pair(m_n_pair.first, false));
+    }
   }
 }
 
@@ -99,6 +107,7 @@ std::unique_ptr<Attribute> PhotometryAttributeFromRow::createAttribute(const Euc
   std::vector<FluxErrorPair> photometry_vector{};
 
   auto n_threshod_iter = m_n_map.begin();
+  auto convert_from_mag_iter = m_convert_from_mag.begin();
   for (auto& filter_index_pair : m_table_index_vector) {
     Euclid::Table::Row::cell_type flux_cell  = row[filter_index_pair.first];
     Euclid::Table::Row::cell_type error_cell = row[filter_index_pair.second];
@@ -106,7 +115,7 @@ std::unique_ptr<Attribute> PhotometryAttributeFromRow::createAttribute(const Euc
     double flux  = boost::apply_visitor(Table::CastVisitor<double>{}, flux_cell);
     double error = boost::apply_visitor(Table::CastVisitor<double>{}, error_cell);
 
-    if (m_convert_from_mag) {
+    if (convert_from_mag_iter->second) {
       auto converted = convertFromMag(flux, error);
       flux = converted.first;
       error = converted.second;
@@ -191,6 +200,7 @@ std::unique_ptr<Attribute> PhotometryAttributeFromRow::createAttribute(const Euc
 
     photometry_vector.push_back(FluxErrorPair{flux, error, missing_data, upper_limit});
     ++n_threshod_iter;
+    ++convert_from_mag_iter;
   }  // Eof for
 
   std::unique_ptr<Attribute> photometry_ptr{new Photometry{m_filter_name_vector_ptr, photometry_vector}};

@@ -51,6 +51,7 @@ struct PhotometricBandMappingConfig_fixture : public ConfigManager_fixture {
 
   Elements::TempDir temp_dir;
   std::string       filter_mapping_filename{"mapping.txt"};
+  std::string       filter_extended_mapping_filename{"extMapping.txt"};
   std::string       faulty_filter_mapping_filename{"faulty_mapping.txt"};
   fs::path          relative_filename{fs::path{"relative"} / filter_mapping_filename};
   fs::path          absolute_filename{temp_dir.path() / "absolute" / filter_mapping_filename};
@@ -65,12 +66,24 @@ struct PhotometricBandMappingConfig_fixture : public ConfigManager_fixture {
                         "Filter2 F2 F2_ERR\n"
                         "Filter3 F3 F3_ERR 5\n"};
 
+    std::string extended_mapping{"#Comment\n"
+                           "Filter1 F1 F1_ERR 3 1\n"
+                           "Filter2 F2 F2_ERR 3 0\n"
+                           "Filter3 F3 F3_ERR 5 1\n"
+                           "Filter4 F4 F4_ERR 5 0\n"};
+
+
     std::string faulty_mapping{"#Comment\n"
                                "Filter3 F3 F3_ERR a5a.1.2\n"};
 
     {
       std::ofstream out{(temp_dir.path() / filter_mapping_filename).string()};
       out << mapping;
+    }
+
+    {
+      std::ofstream out{(temp_dir.path() / filter_extended_mapping_filename).string()};
+      out << extended_mapping;
     }
 
     {
@@ -146,6 +159,10 @@ BOOST_FIXTURE_TEST_CASE(nominalBandList_test, PhotometricBandMappingConfig_fixtu
   BOOST_CHECK_EQUAL(result[2].second.second, "F3_ERR");
 }
 
+
+
+
+
 BOOST_FIXTURE_TEST_CASE(nominalThresholdList_test, PhotometricBandMappingConfig_fixture) {
 
   // Given
@@ -176,6 +193,87 @@ BOOST_FIXTURE_TEST_CASE(FaultyList_test, PhotometricBandMappingConfig_fixture) {
   // When
   BOOST_CHECK_THROW(config_manager.initialize(options_map), std::invalid_argument);
 }
+
+
+
+BOOST_FIXTURE_TEST_CASE(extendedBandList_test, PhotometricBandMappingConfig_fixture) {
+
+  // Given
+  config_manager.registerConfiguration<PhotometricBandMappingConfig>();
+  config_manager.closeRegistration();
+  options_map[FILTER_MAPPING_FILE].value() = boost::any(filter_extended_mapping_filename);
+
+  // When
+  config_manager.initialize(options_map);
+  auto& result = config_manager.getConfiguration<PhotometricBandMappingConfig>().getPhotometricBandMapping();
+
+  // Then
+  BOOST_CHECK_EQUAL(result.size(), 4);
+  BOOST_CHECK_EQUAL(result[0].first, "Filter1");
+  BOOST_CHECK_EQUAL(result[0].second.first, "F1");
+  BOOST_CHECK_EQUAL(result[0].second.second, "F1_ERR");
+  BOOST_CHECK_EQUAL(result[1].first, "Filter2");
+  BOOST_CHECK_EQUAL(result[1].second.first, "F2");
+  BOOST_CHECK_EQUAL(result[1].second.second, "F2_ERR");
+  BOOST_CHECK_EQUAL(result[2].first, "Filter3");
+  BOOST_CHECK_EQUAL(result[2].second.first, "F3");
+  BOOST_CHECK_EQUAL(result[2].second.second, "F3_ERR");
+  BOOST_CHECK_EQUAL(result[3].first, "Filter4");
+  BOOST_CHECK_EQUAL(result[3].second.first, "F4");
+  BOOST_CHECK_EQUAL(result[3].second.second, "F4_ERR");
+
+  // When
+  auto& result_tr = config_manager.getConfiguration<PhotometricBandMappingConfig>().getUpperLimitThresholdMapping();
+
+  // Then
+  BOOST_CHECK_EQUAL(result_tr.size(), 4);
+  BOOST_CHECK_EQUAL(result_tr[0].first, "Filter1");
+  BOOST_CHECK_EQUAL(result_tr[0].second, 3);
+  BOOST_CHECK_EQUAL(result_tr[1].first, "Filter2");
+  BOOST_CHECK_EQUAL(result_tr[1].second, 3);
+  BOOST_CHECK_EQUAL(result_tr[2].first, "Filter3");
+  BOOST_CHECK_EQUAL(result_tr[2].second, 5);
+  BOOST_CHECK_EQUAL(result_tr[3].first, "Filter4");
+  BOOST_CHECK_EQUAL(result_tr[3].second, 5);
+
+  // When
+  auto& result_mag = config_manager.getConfiguration<PhotometricBandMappingConfig>().getConvertFromMagMapping();
+
+  // Then
+  BOOST_CHECK_EQUAL(result_mag.size(), 4);
+  BOOST_CHECK_EQUAL(result_mag[0].first, "Filter1");
+  BOOST_CHECK_EQUAL(result_mag[0].second, true);
+  BOOST_CHECK_EQUAL(result_mag[1].first, "Filter2");
+  BOOST_CHECK_EQUAL(result_mag[1].second, false);
+  BOOST_CHECK_EQUAL(result_mag[2].first, "Filter3");
+  BOOST_CHECK_EQUAL(result_mag[2].second, true);
+  BOOST_CHECK_EQUAL(result_mag[3].first, "Filter4");
+  BOOST_CHECK_EQUAL(result_mag[3].second, false);
+}
+
+
+BOOST_FIXTURE_TEST_CASE(defaultmag_test, PhotometricBandMappingConfig_fixture) {
+
+  // Given
+  config_manager.registerConfiguration<PhotometricBandMappingConfig>();
+  config_manager.closeRegistration();
+
+  // When
+  config_manager.initialize(options_map);
+  auto& result = config_manager.getConfiguration<PhotometricBandMappingConfig>().getConvertFromMagMapping();
+
+  // Then
+  BOOST_CHECK_EQUAL(result.size(), 3);
+  BOOST_CHECK_EQUAL(result[0].first, "Filter1");
+  BOOST_CHECK_EQUAL(result[0].second, false);
+  BOOST_CHECK_EQUAL(result[1].first, "Filter2");
+  BOOST_CHECK_EQUAL(result[1].second, false);
+  BOOST_CHECK_EQUAL(result[2].first, "Filter3");
+  BOOST_CHECK_EQUAL(result[2].second, false);
+}
+
+
+
 
 //-----------------------------------------------------------------------------
 

@@ -69,7 +69,7 @@ BOOST_FIXTURE_TEST_CASE(createAttribute_test, TableFixture) {
 BOOST_FIXTURE_TEST_CASE(convert_from_mag_test, TableFixture) {
   BOOST_TEST_MESSAGE("--> convertion from mag test ");
 
-  PhotometryAttributeFromRow paft{column_info_ptr, filter_name_mapping, true, -99, true, threshold_mapping, -98, true};
+  PhotometryAttributeFromRow paft{column_info_ptr, filter_name_mapping, true, -99, true, threshold_mapping, -98, {}};
 
   // simple case
   auto converted_1 = paft.convertFromMag(24.,0.1);
@@ -96,11 +96,6 @@ BOOST_FIXTURE_TEST_CASE(convert_from_mag_test, TableFixture) {
   BOOST_CHECK_CLOSE(converted_5.second, -98, tolerance);
 
 }
-
-
-
-
-
 
 
 
