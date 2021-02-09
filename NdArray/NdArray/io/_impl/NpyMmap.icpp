@@ -67,6 +67,8 @@ NdArray<T> createMmapNpy(const boost::filesystem::path& path, const std::vector<
   auto header_str  = header.str();
   auto header_size = header_str.size();
 
+  assert(header_size % 64 == 0);
+
   // Compute file expected size
   size_t n_elements = std::accumulate(shape.begin(), shape.end(), 1, std::multiplies<size_t>());
   if (!attrs.empty())

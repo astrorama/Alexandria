@@ -160,11 +160,19 @@ BOOST_AUTO_TEST_CASE(Npy_badtype_test) {
 BOOST_AUTO_TEST_CASE(Npy_badendian_test) {
   Elements::TempFile file(std::string("npy_testpy_endian_%%.npy"));
 
+#if BYTE_ORDER == LITTLE_ENDIAN
   constexpr const char* PYCODE = R"EDOCYP(
 import sys
 import numpy as np
 np.save(sys.argv[1], np.arange(100, 400, dtype='>i8'))
 )EDOCYP";
+#else
+  constexpr const char* PYCODE = R"EDOCYP(
+import sys
+import numpy as np
+np.save(sys.argv[1], np.arange(100, 400, dtype='<i8'))
+)EDOCYP";
+#endif
 
   runPython(PYCODE, file.path());
 
