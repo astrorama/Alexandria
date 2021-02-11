@@ -80,12 +80,13 @@ void PhotometryCatalogConfig::initialize(const UserValues& args) {
 
   auto filter_name_mapping = getDependency<PhotometricBandMappingConfig>().getPhotometricBandMapping();
   auto threshold_mapping   = getDependency<PhotometricBandMappingConfig>().getUpperLimitThresholdMapping();
+  auto mag_mapping         = getDependency<PhotometricBandMappingConfig>().getConvertFromMagMapping();
   auto column_info         = getDependency<CatalogConfig>().getColumnInfo();
 
   // Add the row handler to parse the photometries
   std::shared_ptr<SourceCatalog::AttributeFromRow> handler_ptr{new SourceCatalog::PhotometryAttributeFromRow{
       column_info, std::move(filter_name_mapping), m_missing_photometry_enabled, missing_photo_flag, m_upper_limit_enabled,
-      threshold_mapping, upper_limit_threshold_flag}};
+      threshold_mapping, upper_limit_threshold_flag, mag_mapping}};
   getDependency<CatalogConfig>().addAttributeHandler(std::move(handler_ptr));
 }
 
