@@ -51,12 +51,10 @@ jobs:
           JF_ARTIFACTORY_1: ${{ secrets.JF_ARTIFACTORY_SECRET_1 }}
       - name: Upload RPM to Artifactory
         if: ${{ github.event_name != 'pull_request' }}
-        env:
-          OS_TYPE: ${{ matrix.os-type }}
-          OS_VERSION: ${{ matrix.os-version }}
-          OS_ARCH: 'x86_64'
-          PROJECT: ${{ steps.package-version.outputs.project }}
-          VERSION: ${{ steps.package-version.outputs.version }}
-        run: |
-          jfrog rt u "${{ steps.build.outputs.rpm-dir }}/*.rpm" "fedora/${GITHUB_REF#refs/heads/}/${OS_TYPE}/${OS_VERSION}/${OS_ARCH}/rpms/"
+        uses: astrorama/actions/upload-rpm@master
+        with:
+          os_type: ${{ matrix.os-type }}
+          os_version: ${{ matrix.os-version }}
+          os_arch: x86_64
+          path: ${{ steps.build.outputs.rpm-dir }}
 
