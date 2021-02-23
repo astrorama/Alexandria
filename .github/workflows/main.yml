@@ -1,4 +1,4 @@
-name: RPM - Bintray
+name: RPM - Artifactory
 
 on:
   push:
@@ -49,7 +49,7 @@ jobs:
         uses: jfrog/setup-jfrog-cli@v1
         env:
           JF_ARTIFACTORY_1: ${{ secrets.JF_ARTIFACTORY_SECRET_1 }}
-      - name: Upload RPM to Bintray
+      - name: Upload RPM to Artifactory
         if: ${{ github.event_name != 'pull_request' }}
         env:
           OS_TYPE: ${{ matrix.os-type }}
