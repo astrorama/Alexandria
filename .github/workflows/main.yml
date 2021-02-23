@@ -15,11 +15,11 @@ jobs:
       matrix:
         include:
           - os-type: fedora
-            os-version: 31
-          - os-type: fedora
             os-version: 32
           - os-type: fedora
             os-version: 33
+          - os-type: fedora
+            os-version: 34
           - os-type: centos
             os-version: 7
           - os-type: centos
