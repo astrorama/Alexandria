@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2020 Euclid Science Ground Segment
+ * Copyright (C) 2012-2021 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -26,6 +26,7 @@
 #include <boost/regex.hpp>
 #include <fstream>
 #include <sstream>
+#include <tuple>
 using boost::regex;
 using boost::regex_match;
 using boost::smatch;
@@ -70,13 +71,14 @@ static fs::path getMappingFileFromOptions(const Configuration::UserValues& args,
   return mapping_file;
 }
 
-static std::pair<PhotometricBandMappingConfig::MappingMap, PhotometricBandMappingConfig::UpperLimitThresholdMap>
+static std::tuple<PhotometricBandMappingConfig::MappingMap, PhotometricBandMappingConfig::UpperLimitThresholdMap, PhotometricBandMappingConfig::ConvertFromMagMap>
 parseFile(fs::path filename) {
   PhotometricBandMappingConfig::MappingMap             filter_name_mapping{};
   PhotometricBandMappingConfig::UpperLimitThresholdMap threshold_mapping{};
+  PhotometricBandMappingConfig::ConvertFromMagMap      convert_from_mag_mapping{};
   std::ifstream                                        in{filename.string()};
   std::string                                          line;
-  regex                                                expr{"\\s*([^\\s#]+)\\s+([^\\s#]+)\\s+([^\\s#]+)(\\s+[^\\s#]+\\s*$)?"};
+  regex                                                expr{"\\s*([^\\s#]+)\\s+([^\\s#]+)\\s+([^\\s#]+)(\\s+[^\\s#]+)?(\\s+[^\\s#]+\\s*$)?"};
   while (std::getline(in, line)) {
     boost::trim(line);
     if (line[0] == '#') {
@@ -89,14 +91,24 @@ parseFile(fs::path filename) {
     }
     filter_name_mapping.emplace_back(match_res.str(1), std::make_pair(match_res.str(2), match_res.str(3)));
 
-    if (match_res.str(4) == "") {
+
+    if (match_res.size() < 5 || match_res.str(4) == "") {
       threshold_mapping.emplace_back(match_res.str(1), 3.0);
     } else {
       float n = std::stof(match_res.str(4));
       threshold_mapping.emplace_back(match_res.str(1), n);
     }
+
+
+    if (match_res.size() < 6 || match_res.str(5) == "") {
+      convert_from_mag_mapping.emplace_back(match_res.str(1), false);
+    } else {
+      bool f = std::stoi(match_res.str(5));
+      convert_from_mag_mapping.emplace_back(match_res.str(1), f);
+    }
+
   }
-  return std::make_pair(filter_name_mapping, threshold_mapping);
+  return std::make_tuple(filter_name_mapping, threshold_mapping, convert_from_mag_mapping);
 }
 
 void PhotometricBandMappingConfig::initialize(const UserValues& args) {
@@ -104,8 +116,9 @@ void PhotometricBandMappingConfig::initialize(const UserValues& args) {
   // Parse the file with the mapping
   auto filename                = getMappingFileFromOptions(args, m_base_dir);
   auto parsed                  = parseFile(filename);
-  auto all_filter_name_mapping = parsed.first;
-  auto all_threshold_mapping   = parsed.second;
+  auto all_filter_name_mapping = std::get<0>(parsed);
+  auto all_threshold_mapping   = std::get<1>(parsed);
+  auto all_convert_mapping     = std::get<2>(parsed);
 
   // Remove the filters which are marked to exclude
   auto                  exclude_vector = args.at(EXCLUDE_FILTER).as<std::vector<std::string>>();
@@ -117,6 +130,12 @@ void PhotometricBandMappingConfig::initialize(const UserValues& args) {
     }
   }
 
+  for (auto& pair : all_convert_mapping) {
+    if (exclude_filters.count(pair.first) <= 0) {
+      m_convert_from_mag_map.push_back(pair);
+    }
+  }
+
   for (auto& pair : all_filter_name_mapping) {
     if (exclude_filters.count(pair.first) > 0) {
       exclude_filters.erase(pair.first);
@@ -124,6 +143,8 @@ void PhotometricBandMappingConfig::initialize(const UserValues& args) {
       m_mapping_map.push_back(pair);
     }
   }
+
+
 
   if (!exclude_filters.empty()) {
     std::stringstream wrong_filters{};
@@ -155,6 +176,14 @@ const PhotometricBandMappingConfig::UpperLimitThresholdMap& PhotometricBandMappi
                                 << "PhotometricBandMappingConfig";
   }
   return m_threshold_map;
+}
+
+const PhotometricBandMappingConfig::ConvertFromMagMap& PhotometricBandMappingConfig::getConvertFromMagMapping() {
+  if (getCurrentState() < State::INITIALIZED) {
+    throw Elements::Exception() << "getConvertFromMagMapping() call to uninitialized "
+                                << "PhotometricBandMappingConfig";
+  }
+  return m_convert_from_mag_map;
 }
 
 }  // namespace Configuration
