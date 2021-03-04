@@ -73,7 +73,7 @@ void somFitsExport(const std::string& filename, const SOM<ND, DistFunc>& som) {
   std::size_t x;
   std::size_t y;
   std::tie(x, y)           = som.getSize();
-  long         ax_sizes[3] = {(long)x, (long)y, (long)ND};
+  long         ax_sizes[3] = {long(x), long(y), long(ND)};
   CCfits::FITS fits(filename, DOUBLE_IMG, n_axes, ax_sizes);
 
   // Write in the header the DistFunc type
@@ -130,7 +130,7 @@ SOM<ND, DistFunc> somFitsImport(const std::string& filename) {
     }
   }
 
-  return std::move(result);
+  return result;
 }
 
 }  // namespace SOM
