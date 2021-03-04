@@ -24,8 +24,10 @@
 #ifndef SOM_DISTANCE_H
 #define SOM_DISTANCE_H
 
-#include "ElementsKernel/Exception.h"
 #include <array>
+#include <cmath>  // for sqrt
+
+#include "ElementsKernel/Exception.h"
 
 namespace Euclid {
 namespace SOM {
