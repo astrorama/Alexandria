@@ -138,6 +138,37 @@ struct OpenCloseTrait<std::fstream> {
     return content;
   }
 };
+
+/**
+ * Directly constructible
+ */
+struct MyConstructibleFd {
+  MyConstructibleFd(const boost::filesystem::path& path, bool write) {
+    auto mode = std::ios_base::in;
+    if (write)
+      mode = std::ios_base::out;
+    m_stream = std::fstream(path.native(), mode);
+    m_stream.exceptions(std::fstream::failbit | std::fstream::badbit);
+  }
+
+  MyConstructibleFd(const MyConstructibleFd&) = delete;
+
+  MyConstructibleFd(MyConstructibleFd&&) = default;
+
+  void write(const std::string& msg) {
+    m_stream << msg;
+  }
+
+  std::string read() {
+    std::string line;
+    std::getline(m_stream, line);
+    return line;
+  }
+
+private:
+  std::fstream m_stream;
+};
+
 #endif
 
 }  // namespace FilePool

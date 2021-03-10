@@ -37,11 +37,15 @@ class FileHandler;
  */
 template <typename TFD>
 struct OpenCloseTrait {
-  static TFD open(const boost::filesystem::path&, bool /*write*/) {
-    static_assert(!std::is_same<TFD, TFD>::value, "Specialization of OpenCloseTrait required");
+  static TFD open(const boost::filesystem::path& path, bool write) {
+    static_assert(std::is_constructible<TFD, const boost::filesystem::path&, bool>::value && std::is_move_constructible<TFD>::value,
+                  "Specialization of OpenCloseTrait or a constructible(path,bool) and movable");
+    return TFD(path, write);
   }
   static void close(TFD& /*fd*/) {
-    static_assert(!std::is_same<TFD, TFD>::value, "Specialization of OpenCloseTrait required");
+    static_assert(std::is_constructible<TFD, const boost::filesystem::path&, bool>::value && std::is_move_constructible<TFD>::value,
+                  "Specialization of OpenCloseTrait or a constructible(path,bool) and movable");
+    // NOOP
   }
 };
 

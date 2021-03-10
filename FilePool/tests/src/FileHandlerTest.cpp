@@ -204,8 +204,6 @@ BOOST_FIXTURE_TEST_CASE(ReadDifferentType2, FileHandlerFixture) {
 
 //-----------------------------------------------------------------------------
 
-//-----------------------------------------------------------------------------
-
 BOOST_FIXTURE_TEST_CASE(ReadDifferentTypes2, FileHandlerFixture) {
   auto        handler = m_file_manager->getFileHandler(m_path.path());
   std::string content("Genève est à nouveau la capitale suisse du bouchon");
@@ -233,6 +231,25 @@ BOOST_FIXTURE_TEST_CASE(ReadDifferentTypes2, FileHandlerFixture) {
     BOOST_CHECK_EQUAL(int_content, content);
   }
 }
+
+//-----------------------------------------------------------------------------
+
+#if !__GNUC__ || __GNUC__ > 4
+
+BOOST_FIXTURE_TEST_CASE(DirectlyConstructible, FileHandlerFixture) {
+  std::string content("Repair the car");
+  auto        handler = m_file_manager->getFileHandler(m_path.path());
+  {
+    auto acc = handler->getAccessor<MyConstructibleFd>(FileHandler::kWrite);
+    BOOST_REQUIRE(acc);
+    acc->m_fd.write(content);
+  }
+  auto acc  = handler->getAccessor<MyConstructibleFd>(FileHandler::kRead);
+  auto line = acc->m_fd.read();
+  BOOST_CHECK_EQUAL(line, content);
+}
+
+#endif
 
 //-----------------------------------------------------------------------------
 
