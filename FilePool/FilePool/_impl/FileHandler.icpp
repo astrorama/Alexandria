@@ -1,0 +1,146 @@
+/*
+ * Copyright (C) 2012-2021 Euclid Science Ground Segment
+ *
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 3.0 of the License, or (at your option)
+ * any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+ */
+
+#ifndef FILEHANDLER_IMPL
+#error "This file should not be included directly! Use FileHandler.h instead"
+#else
+
+namespace Euclid {
+namespace FilePool {
+
+template <typename TFD>
+auto FileHandler::getWriteAccessor(bool try_lock) -> std::unique_ptr<FileAccessor<TFD>> {
+  UniqueLock unique_lock(m_file_mutex, boost::defer_lock);
+  if (try_lock && !unique_lock.try_lock()) {
+    return nullptr;
+  } else {
+    unique_lock.lock();
+  }
+
+  std::lock_guard<std::mutex> this_lock(m_handler_mutex);
+
+  // If we have changed mode, we need to close all existing fd
+  if (m_is_readonly) {
+    for (auto& fd : m_available_fd) {
+      fd.second->close();
+    }
+    m_available_fd.clear();
+    m_is_readonly = false;
+  }
+
+  assert(m_available_fd.size() <= 1);
+
+  // If there is one, but of a different type, close it
+  if (!m_available_fd.empty()) {
+    auto typed_ptr = dynamic_cast<TypedFdWrapper<TFD>*>(m_available_fd.begin()->second.get());
+    if (!typed_ptr) {
+      m_available_fd.clear();
+    }
+  }
+
+  // Open one file if we need
+  if (m_available_fd.empty()) {
+    auto fd = m_file_manager->open<TFD>(m_path, true, [this](FileManager::FileId id) { return this->close(id); });
+    m_available_fd[fd.first] =
+        std::unique_ptr<TypedFdWrapper<TFD>>(new TypedFdWrapper<TFD>(fd.first, std::move(fd.second), m_file_manager));
+  }
+
+  assert(m_available_fd.size() == 1);
+
+  // Build and return accessor
+  auto typed_ptr = dynamic_cast<TypedFdWrapper<TFD>*>(m_available_fd.begin()->second.get());
+  auto fd        = std::move(typed_ptr->m_fd);
+  auto id        = typed_ptr->m_id;
+  m_available_fd.clear();
+
+  auto return_callback = [this, id](TFD&& returned_fd) {
+    std::lock_guard<std::mutex> lambda_this_lock(m_handler_mutex);
+    m_available_fd[id] = std::unique_ptr<TypedFdWrapper<TFD>>(new TypedFdWrapper<TFD>(id, std::move(returned_fd), m_file_manager));
+  };
+
+  m_file_manager->notifyUsed(id);
+  return std::unique_ptr<FileWriteAccessor<TFD>>(
+      new FileWriteAccessor<TFD>(std::move(fd), return_callback, std::move(unique_lock)));
+}
+
+template <typename TFD>
+auto FileHandler::getReadAccessor(bool try_lock) -> std::unique_ptr<FileAccessor<TFD>> {
+  SharedLock shared_lock(m_file_mutex, boost::defer_lock);
+  if (try_lock && !shared_lock.try_lock()) {
+    return nullptr;
+  } else {
+    shared_lock.lock();
+  }
+
+  std::lock_guard<std::mutex> this_lock(m_handler_mutex);
+
+  // If we have changed mode, we need to close all existing fd
+  if (!m_is_readonly) {
+    for (auto& fd : m_available_fd) {
+      fd.second->close();
+    }
+    m_available_fd.clear();
+    m_is_readonly = true;
+  }
+
+  // Find the first with a matching type
+  TypedFdWrapper<TFD>* typed_ptr = nullptr;
+  auto                 avail_i   = m_available_fd.begin();
+  while (typed_ptr == nullptr && avail_i != m_available_fd.end()) {
+    if ((typed_ptr = dynamic_cast<TypedFdWrapper<TFD>*>(avail_i->second.get())) == nullptr)
+      ++avail_i;
+  }
+
+  // Open one file if we need
+  if (!typed_ptr) {
+    auto fd   = m_file_manager->open<TFD>(m_path, false, [this](FileManager::FileId id) { return this->close(id); });
+    typed_ptr = new TypedFdWrapper<TFD>(fd.first, std::move(fd.second), m_file_manager);
+    avail_i   = m_available_fd.emplace(fd.first, std::unique_ptr<TypedFdWrapper<TFD>>(typed_ptr)).first;
+  }
+
+  assert(typed_ptr && avail_i != m_available_fd.end());
+
+  // Build and return accessor
+  auto fd = std::move(typed_ptr->m_fd);
+  auto id = typed_ptr->m_id;
+  m_available_fd.erase(avail_i);
+
+  auto return_callback = [this, id](TFD&& returned_fd) {
+    std::lock_guard<std::mutex> lambda_this_lock(m_handler_mutex);
+    m_available_fd[id] = std::unique_ptr<TypedFdWrapper<TFD>>(new TypedFdWrapper<TFD>(id, std::move(returned_fd), m_file_manager));
+  };
+
+  m_file_manager->notifyUsed(id);
+  return std::unique_ptr<FileReadAccessor<TFD>>(new FileReadAccessor<TFD>(std::move(fd), return_callback, std::move(shared_lock)));
+}
+
+template <typename TFD>
+auto FileHandler::getAccessor(Mode mode) -> std::unique_ptr<FileAccessor<TFD>> {
+  bool write_bool = mode & kWrite;
+  bool try_bool   = mode & kTry;
+
+  if (write_bool) {
+    return getWriteAccessor<TFD>(try_bool);
+  }
+  return getReadAccessor<TFD>(try_bool);
+}
+
+}  // namespace FilePool
+}  // namespace Euclid
+
+#endif
