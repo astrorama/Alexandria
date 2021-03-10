@@ -31,7 +31,7 @@ elements_depends_on_subdirs(AlexandriaKernel)
 #                     LINK_LIBRARIES Boost ElementsKernel
 #                     PUBLIC_HEADERS ElementsExamples)
 #===============================================================================
-elements_add_library(LibFilePool src/lib/*.cpp
+elements_add_library(FilePool src/lib/*.cpp
                     INCLUDE_DIRS ElementsKernel
                     LINK_LIBRARIES ElementsKernel
                     PUBLIC_HEADERS FilePool)
@@ -53,24 +53,19 @@ elements_add_library(LibFilePool src/lib/*.cpp
 #                       LINK_LIBRARIES ElementsExamples TYPE Boost)
 #===============================================================================
 elements_add_unit_test(FileAccessorTest tests/src/FileAccessorTest.cpp
-                      INCLUDE_DIRS LibFilePool
-                      LINK_LIBRARIES LibFilePool
+                      LINK_LIBRARIES FilePool
                       TYPE Boost)
 elements_add_unit_test(FileHandlerTest tests/src/FileHandlerTest.cpp
-                      INCLUDE_DIRS LibFilePool
-                      LINK_LIBRARIES LibFilePool
+                      LINK_LIBRARIES FilePool
                       TYPE Boost)
 elements_add_unit_test(FileManagerTest tests/src/FileManagerTest.cpp
-                      INCLUDE_DIRS LibFilePool
-                      LINK_LIBRARIES LibFilePool
+                      LINK_LIBRARIES FilePool
                       TYPE Boost)
 elements_add_unit_test(LRUFileManagerTest tests/src/LRUFileManagerTest.cpp
-                      INCLUDE_DIRS LibFilePool
-                      LINK_LIBRARIES LibFilePool
+                      LINK_LIBRARIES FilePool
                       TYPE Boost)
 elements_add_unit_test(MultithreadTest tests/src/MultithreadTest.cpp
-                      INCLUDE_DIRS LibFilePool
-                      LINK_LIBRARIES LibFilePool
+                      LINK_LIBRARIES FilePool
                       TYPE Boost)
 
 #===============================================================================
