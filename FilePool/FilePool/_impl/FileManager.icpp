@@ -64,14 +64,10 @@ void FileManager::close(FileId id, TFD& fd) {
 
   notifyClosedFile(id);
 
-  std::unique_ptr<FileMetadata> meta;
-  {
-    std::lock_guard<std::mutex> lock(m_mutex);
-    auto                        iter = m_files.find(id);
-    assert(iter != m_files.end());
-    std::swap(meta, iter->second);
-    m_files.erase(iter);
-  }
+  std::lock_guard<std::mutex> lock(m_mutex);
+  auto                        iter = m_files.find(id);
+  assert(iter != m_files.end());
+  m_files.erase(iter);
 }
 
 }  // namespace FilePool

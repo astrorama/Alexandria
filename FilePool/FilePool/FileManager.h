@@ -155,9 +155,9 @@ protected:
    */
   std::map<FileId, std::unique_ptr<FileMetadata>> m_files;
 
-  /// @warning
-  ///     Concrete implementations *must* call this on their destructors. Otherwise the FileHandlers will
-  ///     be destroyed after they are gone
+  /** @warning
+   *     Concrete implementations *must* call this on their destructors.
+   */
   void closeAll();
 
   virtual void notifyIntentToOpen(bool write) = 0;

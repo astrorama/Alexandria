@@ -63,7 +63,8 @@ std::shared_ptr<FileManager> FileManager::getDefault() {
 
 FileManager::FileManager() {}
 
-FileManager::~FileManager() {}
+FileManager::~FileManager() {
+}
 
 void FileManager::notifyUsed(FileId id) {
   // In principle a FileId should only be hold by a single thread, so no need to lock here
@@ -72,7 +73,19 @@ void FileManager::notifyUsed(FileId id) {
 }
 
 void FileManager::closeAll() {
-  m_handlers.clear();
+  std::vector<FileMetadata*> to_be_closed;
+
+  // To avoid deadlocks on the callback, we get the pointers first
+  {
+    std::unique_lock<std::mutex> lock(m_mutex);
+    std::transform(m_files.begin(), m_files.end(), std::back_inserter(to_be_closed),
+                   [](std::pair<FileId const, std::unique_ptr<FileMetadata>>& entry) { return entry.second.get(); });
+  }
+
+  // And request the closing after
+  for (auto& fd : to_be_closed) {
+    fd->m_request_close();
+  }
 }
 
 std::shared_ptr<FileHandler> FileManager::getFileHandler(const boost::filesystem::path& path) {
