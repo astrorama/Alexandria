@@ -61,9 +61,6 @@ public:
   /// Destructor
   virtual ~FileAccessor() = default;
 
-  /// @return true if the wrapped file descriptor is read-only
-  virtual bool isReadOnly() const = 0;
-
 protected:
   FileAccessor(TFD&& fd, ReleaseDescriptorCallback release_callback);
 

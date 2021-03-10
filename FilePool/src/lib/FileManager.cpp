@@ -18,6 +18,7 @@
 
 #include "FilePool/FileManager.h"
 #include "FilePool/FileHandler.h"
+#include "FilePool/LRUFileManager.h"
 #include <boost/filesystem/operations.hpp>
 
 #if BOOST_VERSION < 106000
@@ -54,6 +55,11 @@ boost::filesystem::path weakly_canonical(const boost::filesystem::path& path) {
 
 namespace Euclid {
 namespace FilePool {
+
+std::shared_ptr<FileManager> FileManager::getDefault() {
+  static auto default_manager = std::make_shared<LRUFileManager>();
+  return default_manager;
+}
 
 FileManager::FileManager() {}
 

@@ -125,6 +125,12 @@ public:
    */
   bool hasHandler(const boost::filesystem::path& path) const;
 
+  /**
+   * @return
+   *    A default FileManager implementation
+   */
+  static std::shared_ptr<FileManager> getDefault();
+
 protected:
   using Clock     = std::chrono::steady_clock;
   using Timestamp = Clock::time_point;
