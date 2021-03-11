@@ -34,7 +34,7 @@ public:
    * @param limit
    *    Limit on the number of open files. If 0, it will query the system to obtain the configured limit.
    */
-  LRUFileManager(unsigned limit = 500);
+  explicit LRUFileManager(unsigned limit = 500);
   virtual ~LRUFileManager();
 
   void notifyUsed(FileId id) override;

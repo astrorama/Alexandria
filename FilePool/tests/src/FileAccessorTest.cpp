@@ -27,7 +27,7 @@ using namespace Euclid::FilePool;
 struct NonCopyableFd {
   int m_fd;
 
-  NonCopyableFd(int fd) : m_fd(fd) {}
+  explicit NonCopyableFd(int fd) : m_fd(fd) {}
   NonCopyableFd(const NonCopyableFd&) = delete;
   NonCopyableFd& operator=(const NonCopyableFd&) = delete;
 
@@ -50,9 +50,11 @@ BOOST_AUTO_TEST_CASE(OnlyReadTest) {
 
   {
     // We can have multiple readers
-    FileReadAccessor<NonCopyableFd> a1(1, callback, boost::shared_lock<boost::shared_mutex>(mutex));
-    FileReadAccessor<NonCopyableFd> a2(2, callback, boost::shared_lock<boost::shared_mutex>(mutex));
-    FileReadAccessor<NonCopyableFd> a3(4, callback, boost::shared_lock<boost::shared_mutex>(mutex));
+    NonCopyableFd f1(1), f2(2), f3(4);
+
+    FileReadAccessor<NonCopyableFd> a1(std::move(f1), callback, boost::shared_lock<boost::shared_mutex>(mutex));
+    FileReadAccessor<NonCopyableFd> a2(std::move(f2), callback, boost::shared_lock<boost::shared_mutex>(mutex));
+    FileReadAccessor<NonCopyableFd> a3(std::move(f3), callback, boost::shared_lock<boost::shared_mutex>(mutex));
 
     BOOST_CHECK_EQUAL(a1.m_fd.m_fd, 1);
     BOOST_CHECK_EQUAL(a2.m_fd.m_fd, 2);
@@ -73,7 +75,8 @@ BOOST_AUTO_TEST_CASE(WriteTest) {
 
   {
     // Only one writer
-    FileWriteAccessor<NonCopyableFd> a1(1, callback, boost::unique_lock<boost::shared_mutex>(mutex));
+    NonCopyableFd f1(1);
+    FileWriteAccessor<NonCopyableFd> a1(std::move(f1), callback, boost::unique_lock<boost::shared_mutex>(mutex));
 
     BOOST_CHECK_EQUAL(a1.m_fd.m_fd, 1);
     BOOST_CHECK(!a1.isReadOnly());
