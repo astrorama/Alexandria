@@ -45,10 +45,10 @@ BOOST_AUTO_TEST_SUITE(LRUFileManagerTest)
 BOOST_FIXTURE_TEST_CASE(TestLRU, LRUFixture) {
   constexpr int LIMIT = 3;
 
-  LRUFileManager                     manager(LIMIT);
-  std::map<FileManager::FileId, int> descriptors;
   std::vector<FileManager::FileId>   order_closed;
+  std::map<FileManager::FileId, int> descriptors;
 
+  LRUFileManager                     manager(LIMIT);
   auto close_callback = [&](FileManager::FileId id) mutable {
     order_closed.push_back(id);
     auto iter = descriptors.find(id);
@@ -77,9 +77,9 @@ BOOST_FIXTURE_TEST_CASE(TestLRU, LRUFixture) {
 BOOST_FIXTURE_TEST_CASE(TestLRUMultiple, LRUFixture) {
   constexpr int LIMIT = 3;
 
-  LRUFileManager                     manager(LIMIT);
   std::map<FileManager::FileId, int> descriptors;
   std::vector<FileManager::FileId>   order_closed;
+  LRUFileManager                     manager(LIMIT);
 
   auto close_callback = [&](FileManager::FileId id) mutable {
     order_closed.push_back(id);
@@ -123,22 +123,33 @@ BOOST_FIXTURE_TEST_CASE(TestLRUMultiple, LRUFixture) {
 
 //-----------------------------------------------------------------------------
 
+template <typename T>
+struct CloseCallback {
+  FileManager* m_manager;
+  T&           m_fd;
+
+  CloseCallback(FileManager* manager, T& fd) : m_manager(manager), m_fd(fd) {}
+
+  bool operator()(FileManager::FileId id) {
+    m_manager->close(id, m_fd);
+    return true;
+  }
+};
+
 BOOST_FIXTURE_TEST_CASE(TestLruMixed, LRUFixture) {
   constexpr int LIMIT = 3;
 
-  LRUFileManager                     manager(LIMIT);
+  int          fint;
+  CfitsioLike* cfits;
+  std::fstream stream;
+
   std::map<FileManager::FileId, int> descriptors;
+  LRUFileManager                     manager(LIMIT);
 
-  auto close_callback = [&](FileManager::FileId id) mutable {
-    auto iter = descriptors.find(id);
-    manager.close(iter->first, iter->second);
-    return true;
-  };
-
-  manager.open<int>(paths[0].path(), false, close_callback);
-  manager.open<CfitsioLike*>(paths[1].path(), false, close_callback);
+  fint  = manager.open<int>(paths[0].path(), true, CloseCallback<int>(&manager, fint)).second;
+  cfits = manager.open<CfitsioLike*>(paths[1].path(), true, CloseCallback<CfitsioLike*>(&manager, cfits)).second;
 #if !__GNUC__ || __GNUC__ > 4
-  manager.open<std::fstream>(paths[2].path(), false, close_callback);
+  stream = manager.open<std::fstream>(paths[2].path(), true, CloseCallback<std::fstream>(&manager, stream)).second;
 
   BOOST_CHECK_EQUAL(manager.getLimit(), 3);
   BOOST_CHECK_EQUAL(manager.getUsed(), 3);

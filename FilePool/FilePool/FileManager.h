@@ -105,6 +105,15 @@ public:
    *    A pair FileId, FileDescriptor
    * @note
    *    An specialization of OpenCloseTrait must exists for TFD.
+   * @warning
+   *    Files will be closed when the FileManager is destroyed. Make sure that the information required by the
+   *    callback lives longer than the FileManager.
+   *    You do not need to care about this when using FileHandlers
+   * @details
+   *    Why the callback? The FilePool is designed to have single ownership of the file descriptors, so it can
+   *    work with non-copyable file types. Files are either owned by the FileHandler (if not in use) or by the FileAccessor
+   *    (if in use). Therefore, it can only let the owner know the file should be closed.
+   *    Again, this caveat is unimportant if the access is done via FileHandlers.
    */
   template <typename TFD>
   std::pair<FileId, TFD> open(const boost::filesystem::path& path, bool write, std::function<bool(FileId)> request_close);
