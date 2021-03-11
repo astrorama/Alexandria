@@ -127,6 +127,13 @@ public:
   void close(FileId id, TFD& fd);
 
   /**
+   * Close all closeable file descriptors
+   * @warning
+   *     Concrete implementations *must* call this on their destructors.
+   */
+  void closeAll();
+
+  /**
    * Notify that the given file has been/is going to be used. This will update
    * the book-keeping data used to decide what to close when.
    */
@@ -163,11 +170,6 @@ protected:
    * Map a file id to its metadata
    */
   std::map<FileId, std::unique_ptr<FileMetadata>> m_files;
-
-  /** @warning
-   *     Concrete implementations *must* call this on their destructors.
-   */
-  void closeAll();
 
   virtual void notifyIntentToOpen(bool write) = 0;
   virtual void notifyOpenedFile(FileId)       = 0;

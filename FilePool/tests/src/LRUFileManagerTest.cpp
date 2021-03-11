@@ -26,13 +26,31 @@ using namespace Euclid::FilePool;
 
 struct LRUFixture {
   static constexpr int            NFILES = 5;
+  static constexpr int            LIMIT  = 3;
   std::vector<Elements::TempPath> paths;
 
-  LRUFixture() : paths(NFILES) {
+  std::vector<FileManager::FileId>   order_closed;
+  std::map<FileManager::FileId, int> descriptors;
+
+  LRUFileManager manager;
+
+  LRUFixture() : paths(NFILES), manager(LIMIT) {
     for (auto& path : paths) {
       std::ofstream stream(path.path().native());
       stream << "THIS IS FILE " << path.path().native();
     }
+  }
+
+  ~LRUFixture() {
+    manager.closeAll();
+  }
+
+  bool close(FileManager::FileId id) {
+    order_closed.push_back(id);
+    auto iter = descriptors.find(id);
+    manager.close(iter->first, iter->second);
+    descriptors.erase(iter);
+    return true;
   }
 };
 
@@ -43,24 +61,10 @@ BOOST_AUTO_TEST_SUITE(LRUFileManagerTest)
 //-----------------------------------------------------------------------------
 
 BOOST_FIXTURE_TEST_CASE(TestLRU, LRUFixture) {
-  constexpr int LIMIT = 3;
-
-  std::vector<FileManager::FileId>   order_closed;
-  std::map<FileManager::FileId, int> descriptors;
-
-  LRUFileManager                     manager(LIMIT);
-  auto close_callback = [&](FileManager::FileId id) mutable {
-    order_closed.push_back(id);
-    auto iter = descriptors.find(id);
-    manager.close(iter->first, iter->second);
-    descriptors.erase(iter);
-    return true;
-  };
-
   // Open all files
   std::vector<FileManager::FileId> order_opened;
   for (auto& path : paths) {
-    auto pair = manager.open<int>(path.path(), false, close_callback);
+    auto pair = manager.open<int>(path.path(), false, std::bind(&LRUFixture::close, this, std::placeholders::_1));
     descriptors.emplace(pair);
     order_opened.push_back(pair.first);
   }
@@ -75,24 +79,11 @@ BOOST_FIXTURE_TEST_CASE(TestLRU, LRUFixture) {
 //-----------------------------------------------------------------------------
 
 BOOST_FIXTURE_TEST_CASE(TestLRUMultiple, LRUFixture) {
-  constexpr int LIMIT = 3;
-
-  std::map<FileManager::FileId, int> descriptors;
-  std::vector<FileManager::FileId>   order_closed;
-  LRUFileManager                     manager(LIMIT);
-
-  auto close_callback = [&](FileManager::FileId id) mutable {
-    order_closed.push_back(id);
-    auto iter = descriptors.find(id);
-    manager.close(iter->first, iter->second);
-    descriptors.erase(iter);
-    return true;
-  };
 
   // Open first three
   std::vector<FileManager::FileId> order_opened;
   for (auto i = paths.begin(); i != paths.end() && order_opened.size() < 3; ++i) {
-    auto pair = manager.open<int>(i->path(), false, close_callback);
+    auto pair = manager.open<int>(i->path(), false, std::bind(&LRUFixture::close, this, std::placeholders::_1));
     descriptors.emplace(pair);
     order_opened.push_back(pair.first);
   }
@@ -107,7 +98,7 @@ BOOST_FIXTURE_TEST_CASE(TestLRUMultiple, LRUFixture) {
 
   // Open two more
   for (auto i = paths.begin(); i != paths.end() && order_opened.size() < 5; ++i) {
-    auto pair = manager.open<int>(i->path(), false, close_callback);
+    auto pair = manager.open<int>(i->path(), false, std::bind(&LRUFixture::close, this, std::placeholders::_1));
     descriptors.emplace(pair);
     order_opened.push_back(pair.first);
   }
@@ -137,14 +128,9 @@ struct CloseCallback {
 };
 
 BOOST_FIXTURE_TEST_CASE(TestLruMixed, LRUFixture) {
-  constexpr int LIMIT = 3;
-
   int          fint;
   CfitsioLike* cfits;
   std::fstream stream;
-
-  std::map<FileManager::FileId, int> descriptors;
-  LRUFileManager                     manager(LIMIT);
 
   fint  = manager.open<int>(paths[0].path(), true, CloseCallback<int>(&manager, fint)).second;
   cfits = manager.open<CfitsioLike*>(paths[1].path(), true, CloseCallback<CfitsioLike*>(&manager, cfits)).second;
@@ -159,6 +145,8 @@ BOOST_FIXTURE_TEST_CASE(TestLruMixed, LRUFixture) {
   BOOST_CHECK_EQUAL(manager.getUsed(), 2);
   BOOST_CHECK_EQUAL(manager.getAvailable(), 1);
 #endif
+
+  manager.closeAll();
 }
 
 //-----------------------------------------------------------------------------
