@@ -46,7 +46,8 @@ static void testThread(FileHandler* handler) {
         auto read_acc = handler->getAccessor<int>(FileHandler::kRead);
         lseek(read_acc->m_fd, 0, SEEK_SET);
         auto line = OpenCloseTrait<int>::read(read_acc->m_fd);
-        BOOST_CHECK_GT(line.size(), 0);
+        // We do not use BOOST_CHECK_GT because it seems not to be thread-safe
+        assert(line.size() > 0);
       }
     } catch (std::ios_base::failure& e) {
       char buffer[512];
