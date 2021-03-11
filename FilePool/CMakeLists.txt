@@ -33,7 +33,7 @@ elements_depends_on_subdirs(AlexandriaKernel)
 #===============================================================================
 elements_add_library(FilePool src/lib/*.cpp
                     INCLUDE_DIRS ElementsKernel
-                    LINK_LIBRARIES ElementsKernel
+                    LINK_LIBRARIES ElementsKernel rt
                     PUBLIC_HEADERS FilePool)
 
 #===============================================================================
