@@ -88,7 +88,7 @@ private:
 
   std::mutex                                                m_handler_mutex;
   boost::filesystem::path                                   m_path;
-  FileManager*                                              m_file_manager;
+  std::weak_ptr<FileManager>                                m_file_manager;
   SharedMutex                                               m_file_mutex;
   std::map<FileManager::FileId, std::unique_ptr<FdWrapper>> m_available_fd;
   bool                                                      m_is_readonly;
@@ -102,7 +102,7 @@ private:
    *    number of opened files. A FileHandler could survive the manager as long as no new
    *    accessors are needed.
    */
-  FileHandler(const boost::filesystem::path& path, FileManager* file_manager);
+  FileHandler(const boost::filesystem::path& path, std::weak_ptr<FileManager> file_manager);
 
   /**
    * This is to be used by the FileManager to request the closing of a file descriptor

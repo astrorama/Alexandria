@@ -21,7 +21,7 @@
 namespace Euclid {
 namespace FilePool {
 
-FileHandler::FileHandler(const boost::filesystem::path& path, FileManager* file_manager)
+FileHandler::FileHandler(const boost::filesystem::path& path, std::weak_ptr<FileManager> file_manager)
     : m_path(path), m_file_manager(file_manager), m_is_readonly(true) {}
 
 FileHandler::~FileHandler() {

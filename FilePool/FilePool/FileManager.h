@@ -53,7 +53,7 @@ struct OpenCloseTrait {
  * Provide an open/close interface to FileHandler. Concrete policies must inherit
  * this interface and implement the notify* methods.
  */
-class FileManager {
+class FileManager : public std::enable_shared_from_this<FileManager> {
 public:
   /// Opaque structure, its members can only be used by FileManager and derived classes
   struct FileMetadata;

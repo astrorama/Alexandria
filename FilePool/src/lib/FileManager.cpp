@@ -100,10 +100,14 @@ std::shared_ptr<FileHandler> FileManager::getFileHandler(const boost::filesystem
   }
   // Either didn't exist or it is gone
   if (!handler_ptr) {
-    handler_ptr           = std::shared_ptr<FileHandler>(new FileHandler(canonical, this), [this, canonical](FileHandler* obj) {
+    std::weak_ptr<FileManager> this_weak = shared_from_this();
+    handler_ptr = std::shared_ptr<FileHandler>(new FileHandler(canonical, this_weak), [this_weak, canonical](FileHandler* obj) {
       {
-        std::lock_guard<std::mutex> manager_lock(m_mutex);
-        m_handlers.erase(canonical);
+        auto this_shared = this_weak.lock();
+        if (this_shared) {
+          std::lock_guard<std::mutex> manager_lock(this_shared->m_mutex);
+          this_shared->m_handlers.erase(canonical);
+        }
       }
       delete obj;
     });
