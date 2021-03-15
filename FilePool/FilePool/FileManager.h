@@ -180,7 +180,7 @@ protected:
 }  // namespace Euclid
 
 #define FILEMANAGER_IMPL
-#include "_impl/FileManager.icpp"
+#include "FilePool/_impl/FileManager.icpp"
 #undef FILEMANAGER_IMPL
 
 #endif  // POOLTESTS_FILEMANAGER_H

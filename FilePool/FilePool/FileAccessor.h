@@ -150,7 +150,7 @@ private:
 }  // namespace Euclid
 
 #define FILEACCESSOR_IMPL
-#include "_impl/FileAccessor.icpp"
+#include "FilePool/_impl/FileAccessor.icpp"
 #undef FILEACCESSOR_IMPL
 
 #endif  // POOLTESTS_FILEACCESSOR_H

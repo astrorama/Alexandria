@@ -124,7 +124,7 @@ private:
 }  // namespace Euclid
 
 #define FILEHANDLER_IMPL
-#include "_impl/FileHandler.icpp"
+#include "FilePool/_impl/FileHandler.icpp"
 #undef FILEHANDLER_IMPL
 
 #endif  // POOLTESTS_FILEHANDLER_H
