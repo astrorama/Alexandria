@@ -1,0 +1,61 @@
+/*
+ * Copyright (C) 2012-2021 Euclid Science Ground Segment
+ *
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 3.0 of the License, or (at your option)
+ * any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+ */
+
+#ifndef FILEACCESSOR_IMPL
+#error "This file should not be included directly! Use FileAccessor.h instead"
+#else
+
+namespace Euclid {
+namespace FilePool {
+
+template <typename TFD>
+FileAccessor<TFD>::FileAccessor(TFD&& fd, ReleaseDescriptorCallback release_callback)
+    : m_fd(std::move(fd)), m_release_callback(release_callback) {}
+
+template <typename TFD>
+FileReadAccessor<TFD>::FileReadAccessor(TFD&& fd, ReleaseDescriptorCallback release_callback, SharedLock lock)
+    : FileAccessor<TFD>(std::move(fd), release_callback), m_shared_lock(std::move(lock)) {}
+
+template <typename TFD>
+FileReadAccessor<TFD>::~FileReadAccessor() {
+  FileAccessor<TFD>::m_release_callback(std::move(FileAccessor<TFD>::m_fd));
+}
+
+template <typename TFD>
+bool FileReadAccessor<TFD>::isReadOnly() const {
+  return true;
+}
+
+template <typename TFD>
+FileWriteAccessor<TFD>::FileWriteAccessor(TFD&& fd, ReleaseDescriptorCallback release_callback, UniqueLock lock)
+    : FileAccessor<TFD>(std::move(fd), release_callback), m_unique_lock(std::move(lock)) {}
+
+template <typename TFD>
+FileWriteAccessor<TFD>::~FileWriteAccessor<TFD>() {
+  FileAccessor<TFD>::m_release_callback(std::move(FileAccessor<TFD>::m_fd));
+}
+
+template <typename TFD>
+bool FileWriteAccessor<TFD>::isReadOnly() const {
+  return false;
+}
+
+}  // namespace FilePool
+}  // namespace Euclid
+
+#endif

@@ -1,0 +1,76 @@
+/*
+ * Copyright (C) 2012-2021 Euclid Science Ground Segment
+ *
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 3.0 of the License, or (at your option)
+ * any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+ */
+
+#ifndef FILEMANAGER_IMPL
+#error "This file should not be included directly! Use FileManager.h instead"
+#else
+#include "AlexandriaKernel/memory_tools.h"
+#include "FilePool/FileHandler.h"
+#include <atomic>
+#include <boost/filesystem/operations.hpp>
+
+namespace Euclid {
+namespace FilePool {
+
+struct FileManager::FileMetadata {
+  boost::filesystem::path   m_path;
+  bool                      m_write;
+  Timestamp                 m_last_used;
+  uint64_t                  m_used_count;
+  std::function<bool(void)> m_request_close;
+
+  FileMetadata(const boost::filesystem::path& path, bool write)
+      : m_path(path), m_write(write), m_last_used(Clock::now()), m_used_count(0) {}
+};
+
+template <typename TFD>
+auto FileManager::open(const boost::filesystem::path& path, bool write, std::function<bool(FileId)> request_close)
+    -> std::pair<FileId, TFD> {
+  notifyIntentToOpen(write);
+
+  auto   meta           = Euclid::make_unique<FileMetadata>(path, write);
+  FileId id             = meta.get();
+  meta->m_request_close = [id, request_close]() -> bool { return request_close(id); };
+
+  TFD fd = OpenCloseTrait<TFD>::open(path, write);
+
+  {
+    std::lock_guard<std::mutex> lock(m_mutex);
+    m_files[id] = std::move(meta);
+  }
+
+  notifyOpenedFile(id);
+  return std::make_pair(id, std::move(fd));
+}
+
+template <typename TFD>
+void FileManager::close(FileId id, TFD& fd) {
+  OpenCloseTrait<TFD>::close(fd);
+
+  notifyClosedFile(id);
+
+  std::lock_guard<std::mutex> lock(m_mutex);
+  auto                        iter = m_files.find(id);
+  assert(iter != m_files.end());
+  m_files.erase(iter);
+}
+
+}  // namespace FilePool
+}  // namespace Euclid
+
+#endif
