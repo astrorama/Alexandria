@@ -51,7 +51,7 @@ struct KdTreeFixture {
       for (int y = 0; y < 3; ++y) {
         for (int z = 0; z < 3; ++z) {
           int i             = z + y * 3 + x * 9;
-          nodes[i].m_coords = {double(x), double(y), double(z)};
+          nodes[i].m_coords = {static_cast<double>(x), static_cast<double>(y), static_cast<double>(z)};
           nodes[i].m_label  = std::string(1, '0' + i);
         }
       }

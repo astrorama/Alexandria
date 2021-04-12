@@ -58,7 +58,7 @@ private:
   std::shared_ptr<Node> m_root;
 };
 
-}
+}  // namespace KdTree
 
 #include "_impl/KdTree.icpp"
 
