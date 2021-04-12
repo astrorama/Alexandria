@@ -15,7 +15,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-namespace SourceXtractor {
+namespace KdTree {
 
 template<typename T, size_t N, size_t S>
 class KdTree<T, N, S>::Node {
@@ -30,7 +30,7 @@ public:
   explicit Leaf(const std::vector<T>&& data) : m_data(data) {}
   virtual ~Leaf() = default;
 
-  virtual std::vector<T> findPointsWithinRadius(Coord coord, double radius) const {
+  std::vector<T> findPointsWithinRadius(Coord coord, double radius) const override {
     std::vector<T> selection;
     for (auto& entry : m_data) {
       double square_dist = 0.0;
@@ -83,7 +83,7 @@ public:
     }
   }
 
-  virtual std::vector<T> findPointsWithinRadius(Coord coord, double radius) const {
+  std::vector<T> findPointsWithinRadius(Coord coord, double radius) const override {
     if (coord.coord[m_axis] + radius < m_split_value) {
       return m_left_child->findPointsWithinRadius(coord, radius);
     } else if (coord.coord[m_axis] - radius > m_split_value) {
