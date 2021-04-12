@@ -101,6 +101,9 @@ public:
   /// Return the number of running tasks
   size_t running() const;
 
+  /// Return the number of active workers (either running or sleeping)
+  size_t activeThreads() const;
+
 private:
   mutable std::mutex             m_queue_mutex;
   std::vector<std::atomic<bool>> m_worker_run_flags;

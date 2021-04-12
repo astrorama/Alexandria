@@ -125,13 +125,13 @@ void PhotometricBandMappingConfig::initialize(const UserValues& args) {
   std::set<std::string> exclude_filters{exclude_vector.begin(), exclude_vector.end()};
 
   for (auto& pair : all_threshold_mapping) {
-    if (exclude_filters.count(pair.first) <= 0) {
+    if (exclude_filters.count(pair.first) == 0) {
       m_threshold_map.push_back(pair);
     }
   }
 
   for (auto& pair : all_convert_mapping) {
-    if (exclude_filters.count(pair.first) <= 0) {
+    if (exclude_filters.count(pair.first) == 0) {
       m_convert_from_mag_map.push_back(pair);
     }
   }

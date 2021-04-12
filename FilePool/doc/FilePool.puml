@@ -1,0 +1,66 @@
+@startuml FilePool.png
+
+skinparam defaultfontsize 15
+
+interface FileAccessor<FileDescriptor> {
+    + FileDescriptor m_fd
+    + {abstract} isReadOnly() : bool
+}
+
+class FileReadAccessor<FileDescriptor> {
+    - SharedLock
+    + isReadOnly() : bool
+}
+
+class FileWriteAccessor<FileDescriptor> {
+    - UniqueLock
+    + isReadOnly() : bool
+}
+
+FileAccessor <|-- FileReadAccessor
+FileAccessor <|-- FileWriteAccessor
+
+class FileHandler<FileDescriptor> {
+    + FileHandler(Path path, FileManager* manager)
+    + getAccessor(Mode mode) : FileAccessor<FileDescriptor>
+    + isReadOnly() : bool
+    - m_shared_mutex : SharedMutex
+    - m_available_fd : Map<FileId, FileDescriptor>
+    - m_is_readonly : bool
+}
+
+interface FileManager {
+    + getFileHandler<FileDescriptor>(Path path) : FileHandler<FileDescriptor>
+    + open<FileDescriptor>(Path path, bool write, Callback request_close) : Pair<FileId, FileDescriptor>
+    + close<FileDescriptor>(FileId id, FileDescriptor fd)
+    + {abstract} notifyUsed(FileId id)
+    # {abstract} notifyIntentToOpen(bool write)
+    # {abstract} notifyOpenedFile(FileId id)
+    # {abstract} notifyClosedFile(FileId id)
+}
+
+class FileMetadata {
+    ~ m_path : Path
+    ~ m_write : bool
+    ~ m_last_used : Timestamp
+    ~ m_used_count : int
+    ~ m_request_close : Callback
+}
+
+FileManager o- FileMetadata : m_files
+
+class LRUFileManager {
+    + LRUFileManager(int limit = 0) // 0 = from getrlimit
+    + notifyUsed(FileId id)
+    # notifyIntentToOpen(bool write)
+    # notifyOpenedFile(FileId id)
+    # notifyClosedFile(FileId id)
+    - m_limit : int
+    - m_sorted_ids : List<FileId>
+    - m_current_pos : Map<FileId, Iterator<List>>
+}
+
+FileManager <- FileHandler : m_file_manager
+FileManager <|-- LRUFileManager
+
+@enduml
