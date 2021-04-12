@@ -31,14 +31,15 @@ elements_depends_on_subdirs(AlexandriaKernel)
 #                     LINK_LIBRARIES Boost ElementsKernel
 #                     PUBLIC_HEADERS ElementsExamples)
 #===============================================================================
+if(UNIX AND NOT APPLE)
+    set(RT rt)
+endif()
+
 elements_add_library(FilePool src/lib/*.cpp
                     INCLUDE_DIRS ElementsKernel
-                    LINK_LIBRARIES ElementsKernel
+                    LINK_LIBRARIES ElementsKernel ${RT}
                     PUBLIC_HEADERS FilePool)
 
-if(UNIX AND NOT APPLE)
-    target_link_libraries(FilePool rt)
-endif()
 
 #===============================================================================
 # Declare the executables here
