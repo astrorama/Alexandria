@@ -52,10 +52,10 @@ elements_add_library(KdTree
 #                       INCLUDE_DIRS ElementsExamples
 #                       LINK_LIBRARIES ElementsExamples TYPE Boost)
 #===============================================================================
-# elements_add_unit_test(KdTree tests/src/KdTree_test.cpp
-#        EXECUTABLE KdTree_KdTree_test
-#        LINK_LIBRARIES KdTree
-#        TYPE Boost)
+elements_add_unit_test(KdTree tests/src/KdTree_test.cpp
+        EXECUTABLE KdTree_test
+        LINK_LIBRARIES KdTree
+        TYPE Boost)
 
 #===============================================================================
 # Use the following macro for python modules, scripts and aux files:
