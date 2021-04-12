@@ -79,6 +79,7 @@ BOOST_AUTO_TEST_CASE(block_test) {
   pool.submit(SleepTask(500, mutex, output));
   pool.submit(SleepTask(350, mutex, output));
   pool.submit(SleepTask(100, mutex, output));
+  BOOST_CHECK_GT(pool.activeThreads(), 0);
   pool.block();
 
   // Then
@@ -91,6 +92,8 @@ BOOST_AUTO_TEST_CASE(block_test) {
   BOOST_CHECK_EQUAL(output[3], 350);
   BOOST_CHECK_EQUAL(output[4], 900);
   BOOST_CHECK_EQUAL(output[5], 1000);
+
+  BOOST_CHECK_GT(pool.activeThreads(), 0);
 }
 
 //-----------------------------------------------------------------------------

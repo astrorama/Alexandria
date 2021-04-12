@@ -72,6 +72,7 @@ public:
     // Indicate that the worker is done
     m_sleeping_flag.get() = true;
     m_done_flag.get()     = true;
+    m_run_flag.get()      = false;
   }
 
 private:
@@ -133,6 +134,11 @@ size_t ThreadPool::running() const {
   std::unique_lock<std::mutex> lock{m_queue_mutex};
   auto sleeping = std::accumulate(m_worker_sleeping_flags.begin(), m_worker_sleeping_flags.end(), 0);
   return m_worker_sleeping_flags.size() - sleeping;
+}
+
+size_t ThreadPool::activeThreads() const {
+  auto done = std::accumulate(m_worker_done_flags.begin(), m_worker_done_flags.end(), 0);
+  return m_worker_done_flags.size() - done;
 }
 
 void ThreadPool::block() {
