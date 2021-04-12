@@ -33,8 +33,12 @@ elements_depends_on_subdirs(AlexandriaKernel)
 #===============================================================================
 elements_add_library(FilePool src/lib/*.cpp
                     INCLUDE_DIRS ElementsKernel
-                    LINK_LIBRARIES ElementsKernel rt
+                    LINK_LIBRARIES ElementsKernel
                     PUBLIC_HEADERS FilePool)
+
+if(UNIX AND NOT APPLE)
+    target_link_libraries(FilePool rt)
+endif()
 
 #===============================================================================
 # Declare the executables here
