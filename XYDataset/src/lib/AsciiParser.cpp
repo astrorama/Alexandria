@@ -46,30 +46,29 @@ namespace XYDataset {
 // Get dataset name from ASCII file
 //
 std::string AsciiParser::getName(const std::string& file) {
+  // The data set name can be a parameter with keyword NAME
+  std::string dataset_name = getParameter(file, "NAME");
 
-  std::ifstream sfile(file);
-  // Check file exists
-  if (!sfile) {
-    throw Elements::Exception() << "File does not exist : " << file;
-  }
+  if (dataset_name == "") {
+    // IF not present chack the first non-empty line (Backward comatibility)
+    std::ifstream sfile(file);
+    std::string line{};
+    // Check dataset name is in the file
+    // Convention: read until found first non empty line, removing empty lines.
+    while (line.empty() && sfile.good()) {
+      std::getline(sfile, line);
+    }
 
-  std::string line{};
-  std::string dataset_name{};
-  // Check dataset name is in the file
-  // Convention: read until found first non empty line, removing empty lines.
-  while (line.empty() && sfile.good()) {
-    std::getline(sfile, line);
-  }
-
-  boost::regex  expression(m_regex_name);
-  boost::smatch s_match;
-  if (boost::regex_match(line, s_match, expression)) {
-    dataset_name = s_match[1].str();
-  } else {
-    // Dataset name is the filename without extension and path
-    std::string str{};
-    str          = removeAllBeforeLastSlash(file);
-    dataset_name = removeExtension(str);
+    boost::regex  expression(m_regex_name);
+    boost::smatch s_match;
+    if (boost::regex_match(line, s_match, expression)) {
+      dataset_name = s_match[1].str();
+    } else {
+      // Dataset name is the filename without extension and path
+      std::string str{};
+      str          = removeAllBeforeLastSlash(file);
+      dataset_name = removeExtension(str);
+    }
   }
 
   return dataset_name;
@@ -84,18 +83,18 @@ std::string AsciiParser::getParameter(const std::string& file, const std::string
   std::string  value{};
   std::string  line{};
   std::string  dataset_name{};
-  std::string  reg_ex_str = "^\\s*#\\s*" + key_word + "\\s+(\\w+)\\s*$";
+  std::string  reg_ex_str = "^\\s*#\\s*" + key_word + "\\s*:\\s*(\\S+)\\s*$";
   boost::regex expression(reg_ex_str);
 
   while (sfile.good()) {
     std::getline(sfile, line);
     boost::smatch s_match;
     if (!line.empty() && boost::regex_match(line, s_match, expression)) {
-      // extract the parameter value
-      size_t start_position = line.find(key_word) + key_word.length();
-      value                 = line.substr(start_position);
-      boost::trim(value);
-      break;
+      if (value!="") {
+         value +=";";
+      }
+      value += s_match[1].str();
+
     }
   }
   return value;
