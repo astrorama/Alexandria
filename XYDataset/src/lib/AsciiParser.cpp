@@ -83,7 +83,7 @@ std::string AsciiParser::getParameter(const std::string& file, const std::string
   std::string  value{};
   std::string  line{};
   std::string  dataset_name{};
-  std::string  reg_ex_str = "^\\s*#\\s*" + key_word + "\\s*:\\s*(\\S+)\\s*$";
+  std::string  reg_ex_str = "^\\s*#\\s*" + key_word + "\\s*:\\s*(.+)\\s*$";
   boost::regex expression(reg_ex_str);
 
   while (sfile.good()) {
@@ -93,7 +93,9 @@ std::string AsciiParser::getParameter(const std::string& file, const std::string
       if (value!="") {
          value +=";";
       }
-      value += s_match[1].str();
+      std::string new_val = s_match[1].str();
+      boost::trim(new_val);
+      value += new_val;
 
     }
   }
