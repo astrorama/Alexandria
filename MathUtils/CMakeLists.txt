@@ -1,5 +1,6 @@
 elements_subdir(MathUtils)
 
+elements_depends_on_subdirs(NdArray)
 elements_depends_on_subdirs(XYDataset)
 
 find_package(GMock)
@@ -10,7 +11,7 @@ elements_add_library(MathUtils
                       src/lib/function/*.cpp src/lib/interpolation/*.cpp
                       src/lib/numericalIntegration/*.cpp src/lib/numericalDifferentiation/*.cpp
                       src/lib/PDF/*.cpp
-                     LINK_LIBRARIES XYDataset
+                     LINK_LIBRARIES NdArray XYDataset
                      PUBLIC_HEADERS MathUtils)
 
 if(ELEMENTS_HIDE_WARNINGS)
