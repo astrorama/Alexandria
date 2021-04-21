@@ -211,4 +211,67 @@ BOOST_AUTO_TEST_CASE(AttrNames_test) {
   BOOST_CHECK_EQUAL_COLLECTIONS(attrs.begin(), attrs.end(), attr_names.begin(), attr_names.end());
 }
 
+BOOST_AUTO_TEST_CASE(Slice_test) {
+  NdArray<int> m({2, 3, 3}, {1, 1, 1, 2, 2, 2, 3, 3, 3, 11, 11, 11, 22, 22, 22, 33, 33, 33});
+  BOOST_CHECK_EQUAL(m.size(), 18);
+
+  auto first  = m.slice(0);
+  auto second = m.slice(1);
+  BOOST_CHECK_THROW(m.slice(2), std::out_of_range);
+
+  BOOST_CHECK_EQUAL(first.size(), 9);
+  BOOST_CHECK_EQUAL(first.shape().size(), 2);
+  BOOST_CHECK_EQUAL(first.shape()[0], 3);
+  BOOST_CHECK_EQUAL(first.shape()[1], 3);
+
+  BOOST_CHECK_EQUAL(first.at(0, 0), 1);
+  BOOST_CHECK_EQUAL(first.at(1, 0), 2);
+  BOOST_CHECK_EQUAL(first.at(2, 1), 3);
+
+  std::vector<int> expected_first{1, 1, 1, 2, 2, 2, 3, 3, 3};
+  BOOST_CHECK_EQUAL_COLLECTIONS(first.begin(), first.end(), expected_first.begin(), expected_first.end());
+
+  BOOST_CHECK_EQUAL(second.size(), 9);
+  BOOST_CHECK_EQUAL(second.shape().size(), 2);
+  BOOST_CHECK_EQUAL(second.shape()[0], 3);
+  BOOST_CHECK_EQUAL(second.shape()[1], 3);
+
+  BOOST_CHECK_EQUAL(second.at(0, 0), 11);
+  BOOST_CHECK_EQUAL(second.at(1, 0), 22);
+  BOOST_CHECK_EQUAL(second.at(2, 1), 33);
+
+  std::vector<int> expected_second{11, 11, 11, 22, 22, 22, 33, 33, 33};
+  BOOST_CHECK_EQUAL_COLLECTIONS(second.begin(), second.end(), expected_second.begin(), expected_second.end());
+}
+
+BOOST_AUTO_TEST_CASE(SliceTwice_test) {
+  NdArray<int> m({2, 3, 3}, {1, 1, 1, 2, 2, 2, 3, 3, 3, 11, 11, 11, 22, 22, 22, 33, 33, 33});
+  BOOST_CHECK_EQUAL(m.size(), 18);
+
+  auto first  = m.slice(0);
+  auto second = first.slice(2);
+
+  BOOST_CHECK_EQUAL(second.size(), 3);
+  BOOST_CHECK_EQUAL(second.shape().size(), 1);
+  BOOST_CHECK_EQUAL(second.shape()[0], 3);
+
+  BOOST_CHECK_EQUAL(second.at(0), 3);
+  BOOST_CHECK_EQUAL(second.at(1), 3);
+  BOOST_CHECK_EQUAL(second.at(2), 3);
+
+  std::vector<int> expected_second{3, 3, 3};
+  BOOST_CHECK_EQUAL_COLLECTIONS(second.begin(), second.end(), expected_second.begin(), expected_second.end());
+}
+
+BOOST_AUTO_TEST_CASE(SliceConst_test) {
+  const NdArray<int> m({2, 3, 3}, {1, 1, 1, 2, 2, 2, 3, 3, 3, 11, 11, 11, 22, 22, 22, 33, 33, 33});
+
+  auto first  = m.slice(0);
+  auto second = first.slice(2);
+
+  BOOST_CHECK_EQUAL(second.at(0), 3);
+  BOOST_CHECK_EQUAL(second.at(1), 3);
+  BOOST_CHECK_EQUAL(second.at(2), 3);
+}
+
 BOOST_AUTO_TEST_SUITE_END()
