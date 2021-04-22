@@ -426,12 +426,23 @@ public:
   self_type& concatenate(const self_type& other);
 
   /**
+   * Return a slice of the array cutting along the first axis
+   */
+  self_type slice(size_t i);
+
+  /**
+   * Return a slice of the array cutting along the first axis
+   */
+  const self_type slice(size_t i) const;
+
+  /**
    * @return
    *    Attribute names
    */
   const std::vector<std::string>& attributes() const;
 
 private:
+  size_t                   m_offset;
   std::vector<size_t>      m_shape, m_stride_size;
   std::vector<std::string> m_attr_names;
   size_t                   m_size;
@@ -518,6 +529,12 @@ private:
    * Private constructor used for deep copies
    */
   explicit NdArray(const self_type* other);
+
+  /**
+   * Private constructor used for slices
+   */
+  NdArray(std::shared_ptr<ContainerInterface> container, size_t offset, std::vector<size_t> shape,
+          std::vector<std::string> attr_names);
 
   /**
    * Gets the total offset for the given coordinates.
