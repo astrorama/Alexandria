@@ -2,6 +2,8 @@
 #error Please, include "MathUtils/interpolation/interpolation.h"
 #endif
 
+#include "MathUtils/helpers/index_sequence.h"
+
 namespace Euclid {
 namespace MathUtils {
 
@@ -19,7 +21,7 @@ class InterpolateNDim;
  * `interpolate`.
  */
 template <>
-class InterpolateNDim<1, std::make_index_sequence<1>> final : public NAryFunction<1> {
+class InterpolateNDim<1, _make_index_sequence<1>> final : public NAryFunction<1> {
 public:
   /**
    * Constructor
@@ -79,14 +81,14 @@ private:
  * @tparam Rest The rest of the elements from the index sequence
  */
 template <std::size_t N, std::size_t F, std::size_t... Rest>
-class InterpolateNDim<N, std::index_sequence<F, Rest...>> final : public NAryFunction<N> {
+class InterpolateNDim<N, _index_sequence<F, Rest...>> final : public NAryFunction<N> {
 public:
   /// Used to expand into as many double parameters as N
   template <std::size_t>
   using Doubles = double;
 
   /// Alias for the next interpolator on the chain
-  using NestedInterpolator = InterpolateNDim<N - 1, std::make_index_sequence<N - 1>>;
+  using NestedInterpolator = InterpolateNDim<N - 1, _make_index_sequence<N - 1>>;
 
   /**
    * Constructor
@@ -179,7 +181,7 @@ private:
 template <std::size_t N>
 std::unique_ptr<NAryFunction<N>> interpn(const Coordinates<N>& grid, const NdArray::NdArray<double>& values, InterpolationType type,
                                          bool extrapolate) {
-  using IT = InterpolateNDim<N, std::make_index_sequence<N>>;
+  using IT = InterpolateNDim<N, _make_index_sequence<N>>;
   return std::unique_ptr<IT>(new IT{grid, values, type, extrapolate});
 }
 

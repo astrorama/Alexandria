@@ -26,6 +26,7 @@
 #define MATHUTILS_FUNCTION_H
 
 #include "ElementsKernel/Exception.h"
+#include "MathUtils/helpers/index_sequence.h"
 #include <memory>
 
 namespace Euclid {
@@ -48,7 +49,7 @@ public:
  *  Specialization of NAryFunctionImpl that works over the concrete sequence std::index_sequence
  */
 template <std::size_t... Is>
-class NAryFunctionImpl<std::index_sequence<Is...>> {
+class NAryFunctionImpl<_index_sequence<Is...>> {
 public:
   template <std::size_t>
   using Doubles = double;
@@ -80,7 +81,7 @@ public:
  *  For a detailed explanation of why `clone()` is defined here and not in NAryFunctionImpl
  */
 template <std::size_t N>
-class NAryFunction : public NAryFunctionImpl<std::make_index_sequence<N>> {
+class NAryFunction : public NAryFunctionImpl<_make_index_sequence<N>> {
 public:
   /**
    * Creates a clone of the function object. All subclasses must implement this
@@ -103,7 +104,7 @@ public:
 class Function;
 
 template <>
-class NAryFunction<1> : public NAryFunctionImpl<std::make_index_sequence<1>> {
+class NAryFunction<1> : public NAryFunctionImpl<_make_index_sequence<1>> {
 public:
   /**
    * Creates a clone of the function object. All subclasses must implement this
