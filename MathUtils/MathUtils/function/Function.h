@@ -26,36 +26,86 @@
 #define MATHUTILS_FUNCTION_H
 
 #include "ElementsKernel/Exception.h"
+#include "MathUtils/helpers/index_sequence.h"
 #include <memory>
 
 namespace Euclid {
 namespace MathUtils {
 
 /**
- * @interface Function
+ * @interface NAryFunctionImpl
+ * @tparam Seq
+ *  Sequence used to repeat N times the parameter to the operator ()
+ */
+template <typename Seq>
+class NAryFunctionImpl {
+public:
+};
+
+/**
+ * @interface NAryFunctionImpl
+ * @tparam Is
+ * @details
+ *  Specialization of NAryFunctionImpl that works over the concrete sequence std::index_sequence
+ */
+template <std::size_t... Is>
+class NAryFunctionImpl<_index_sequence<Is...>> {
+public:
+  template <std::size_t>
+  using Doubles = double;
+
+  /// Default destructor
+  virtual ~NAryFunctionImpl() = default;
+
+  /**
+   * Converts the values x1,...,xm from the input domain to the output domain.
+   * @param x The value to convert
+   * @return The value of the output domain
+   */
+  virtual double operator()(Doubles<Is>... xn) const = 0;
+};
+
+/**
+ * @interface NAryFunction
+ *
+ * @brief Interface class representing a function with an arbitrary number of parameters
+ *
+ * @tparam N
+ *  Number of parameters
+ *
+ * @details
+ *  This class hides away NAryFunctionImpl, making easier to define a function
+ *  with a given number of parameters: i.e. NAryFunction<5>
+ *
+ * @see Function
+ *  For a detailed explanation of why `clone()` is defined here and not in NAryFunctionImpl
+ */
+template <std::size_t N>
+class NAryFunction : public NAryFunctionImpl<_make_index_sequence<N>> {
+public:
+  /**
+   * Creates a clone of the function object. All subclasses must implement this
+   * method, to enable copying of Function objects when only a reference to the
+   * Function class is available.
+   * @return A copy of the Function object
+   */
+  virtual std::unique_ptr<NAryFunction> clone() const = 0;
+};
+
+/**
+ * @interface NAryFunction
  *
  * @brief Interface class representing a function
  *
  * @details
- * A function is an object which can convert a value from domain X to a value
- * of domain Y. This interface is the root of a hierarchy of classes which
- * perform such conversions, with the parenthesis operator. Because this class
- * is designed for inheritance, it requires the implementation of the clone()
- * method for copying functions when a reference of type Function is used.
+ *  Specialization of NAryFunction for a single parameter. This is required to maintain API with existing
+ *  classes implementing Function.
  */
-class Function {
+class Function;
 
+template <>
+class NAryFunction<1> : public NAryFunctionImpl<_make_index_sequence<1>> {
 public:
-  /// Default destructor
-  virtual ~Function() = default;
-
-  /**
-   * Converts the value x from the input domain to the output domain.
-   * @param x The value to convert
-   * @return The value of the output domain
-   */
-  virtual double operator()(const double x) const = 0;
-
   /**
    * Creates a clone of the function object. All subclasses must implement this
    * method, to enable copying of Function objects when only a reference to the
@@ -64,6 +114,15 @@ public:
    */
   virtual std::unique_ptr<Function> clone() const = 0;
 };
+
+/// Alias for an unary function
+class Function : public NAryFunction<1> {};
+
+/// Alias for a binary function
+using BinaryFunction = NAryFunction<2>;
+
+/// Alias for a ternary function
+using TernaryFunction = NAryFunction<3>;
 
 }  // namespace MathUtils
 }  // end of namespace Euclid

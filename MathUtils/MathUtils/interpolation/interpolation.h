@@ -32,6 +32,7 @@
 #include "ElementsKernel/Export.h"
 
 #include "MathUtils/function/Function.h"
+#include "NdArray/NdArray.h"
 #include "XYDataset/XYDataset.h"
 
 namespace Euclid {
@@ -75,7 +76,40 @@ ELEMENTS_API std::unique_ptr<Function> interpolate(const std::vector<double>& x,
 ELEMENTS_API std::unique_ptr<Function> interpolate(const Euclid::XYDataset::XYDataset& dataset, InterpolationType type,
                                                    bool extrapolate = false);
 
+/**
+ * Alias for an array of references to vectors of doubles
+ * @tparam N Number of dimensions
+ * @brief Used to pass the grid coordinates to interpn. Internally will make a copy of the required values.
+ */
+template <std::size_t N>
+using Coordinates = std::array<std::reference_wrapper<const std::vector<double>>, N>;
+
+/**
+ * Returns a NAryFunction<N> which performs a multidimensional interpolation
+ * @tparam N
+ *  Dimensionality
+ * @param grid
+ *  Array containing the knots for each grid dimension
+ * @param values
+ *  Values at each grid point. Its shape must match the grid coordinates
+ * @param type
+ *  Interpolation type. Note that for N >= 2, only linear is supported right now
+ * @param extrapolate
+ *  If true, the values for points outside the grid will be extrapolated. If false,
+ *  they will be 0.
+ * @example
+ *  For a grid of 3 dimensions, and 3 points on each dimension, `grid` must point to three
+ *  vectors of size 3. The shape of values must be (3, 3, 3)
+ */
+template <std::size_t N>
+ELEMENTS_API std::unique_ptr<NAryFunction<N>> interpn(const Coordinates<N>& grid, const NdArray::NdArray<double>& values,
+                                                      InterpolationType type, bool extrapolate = false);
+
 }  // namespace MathUtils
 }  // end of namespace Euclid
+
+#define INTERPOLATION_IMPL
+#include "MathUtils/interpolation/_impl/interpolation.icpp"
+#undef INTERPOLATION_IMPL
 
 #endif /* INTERPOLATION_H */
