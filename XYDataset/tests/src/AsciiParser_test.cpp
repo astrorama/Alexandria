@@ -55,6 +55,7 @@ struct AsciiParser_Fixture {
   std::string       empty_file{"empty_file.txt"};
   std::string       file{"Gext_ACSf435w.txt"};
   std::string       file_nodataset_name{"Nodataset_name_inside_file.txt"};
+  std::string       file_dataset_name_as_param_file{"dataset_name_as_param_file.txt"};
   std::string       not_a_dataset_file{"not_a_dataset_file.txt"};
   Elements::TempDir temp_dir;
   std::string       base_directory = makeDir(temp_dir.path().native() + "/euclid/filter/MER/");
@@ -65,7 +66,8 @@ struct AsciiParser_Fixture {
     // Fill up file
     offile << "\n";
     offile << "# Test_name\n";
-    offile << "# TEST TEST_VALUE\n";
+    offile << "# TEST : TEST_VALUE\n";
+    offile << "   #TEST_2:TEST_VALUE_2  \n";
     offile << "1234. 569.6\n";
     offile << "5678. 569.6\n";
     offile << "91011 569.6\n";
@@ -77,6 +79,17 @@ struct AsciiParser_Fixture {
     offile_nodataset_name << "2222. 2222.2\n";
     offile_nodataset_name << "1111. 1111.1\n";
     offile_nodataset_name.close();
+
+
+    std::ofstream offile_dataset_name_as_param_file(base_directory + file_dataset_name_as_param_file);
+    // Fill up file
+    offile_dataset_name_as_param_file << "\n";
+    offile_dataset_name_as_param_file << "# TEST : TEST_VALUE\n";
+    offile_dataset_name_as_param_file << "# NAME: Test_name\n";
+    offile_dataset_name_as_param_file << "# TEST : OTHER_TEST_VALUE\n";
+    offile_dataset_name_as_param_file << "2222. 2222.2\n";
+    offile_dataset_name_as_param_file << "1111. 1111.1\n";
+    offile_dataset_name_as_param_file.close();
 
     std::ofstream ofnot_a_dataset_file(base_directory + not_a_dataset_file);
     // Fill up file
@@ -132,12 +145,26 @@ BOOST_FIXTURE_TEST_CASE(getParameter_function_test, AsciiParser_Fixture) {
   AsciiParser parser{};
 
   BOOST_CHECK_EQUAL("TEST_VALUE", parser.getParameter(base_directory + file, "TEST"));
+  BOOST_CHECK_EQUAL("TEST_VALUE_2", parser.getParameter(base_directory + file, "TEST_2"));
 
   BOOST_CHECK_EQUAL("", parser.getParameter(base_directory + file_nodataset_name, "TEST2"));
 
   BOOST_CHECK_EQUAL("", parser.getParameter(base_directory + file_nodataset_name, "TEST"));
 }
 
+
+BOOST_FIXTURE_TEST_CASE(getParameter_multiline_function_test, AsciiParser_Fixture) {
+
+  BOOST_TEST_MESSAGE(" ");
+  BOOST_TEST_MESSAGE("--> Testing the  getParameter function with multiline param");
+  BOOST_TEST_MESSAGE(" ");
+
+  // The dataset is the correct name, result: Keyword value
+  AsciiParser parser{};
+
+  BOOST_CHECK_EQUAL("TEST_VALUE;OTHER_TEST_VALUE", parser.getParameter(base_directory + file_dataset_name_as_param_file, "TEST"));
+
+}
 //-----------------------------------------------------------------------------
 // Test the exception of the getName function
 //-----------------------------------------------------------------------------
@@ -165,6 +192,13 @@ BOOST_FIXTURE_TEST_CASE(getName_function_test, AsciiParser_Fixture) {
 
   AsciiParser parser{};
   std::string dataset_name = parser.getName(base_directory + file);
+  BOOST_CHECK_EQUAL("Test_name", dataset_name);
+
+  BOOST_TEST_MESSAGE(" ");
+  BOOST_TEST_MESSAGE("--> Testing the getName function, dataset name inside file as keyword");
+  BOOST_TEST_MESSAGE(" ");
+
+  dataset_name = parser.getName(base_directory + file_dataset_name_as_param_file);
   BOOST_CHECK_EQUAL("Test_name", dataset_name);
 
   BOOST_TEST_MESSAGE(" ");
