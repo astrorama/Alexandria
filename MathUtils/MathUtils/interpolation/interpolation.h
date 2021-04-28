@@ -25,6 +25,7 @@
 #ifndef INTERPOLATION_H
 #define INTERPOLATION_H
 
+#include <array>
 #include <memory>
 #include <vector>
 
