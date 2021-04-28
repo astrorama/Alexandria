@@ -127,7 +127,8 @@ bool NdArray<T>::Iterator<Const>::operator>(const Iterator& other) {
 
 template <typename T>
 NdArray<T>::NdArray(const std::vector<size_t>& shape_)
-    : m_shape{shape_}
+    : m_offset{0}
+    , m_shape{shape_}
     , m_size{std::accumulate(m_shape.begin(), m_shape.end(), 1u, std::multiplies<size_t>())}
     , m_container(new ContainerWrapper<std::vector>(m_size)) {
   update_strides();
@@ -136,7 +137,8 @@ NdArray<T>::NdArray(const std::vector<size_t>& shape_)
 template <typename T>
 template <template <class...> class Container>
 NdArray<T>::NdArray(const std::vector<size_t>& shape_, const Container<T>& data)
-    : m_shape{shape_}
+    : m_offset{0}
+    , m_shape{shape_}
     , m_size{std::accumulate(m_shape.begin(), m_shape.end(), 1u, std::multiplies<size_t>())}
     , m_container{new ContainerWrapper<Container>(data)} {
   if (m_size != m_container->size()) {
@@ -148,7 +150,8 @@ NdArray<T>::NdArray(const std::vector<size_t>& shape_, const Container<T>& data)
 template <typename T>
 template <template <class...> class Container>
 NdArray<T>::NdArray(const std::vector<size_t>& shape_, Container<T>&& data)
-    : m_shape{shape_}
+    : m_offset{0}
+    , m_shape{shape_}
     , m_size{std::accumulate(m_shape.begin(), m_shape.end(), 1u, std::multiplies<size_t>())}
     , m_container{new ContainerWrapper<Container>(std::move(data))} {
   if (m_size != m_container->size()) {
@@ -160,7 +163,8 @@ NdArray<T>::NdArray(const std::vector<size_t>& shape_, Container<T>&& data)
 template <typename T>
 template <typename II>
 NdArray<T>::NdArray(const std::vector<size_t>& shape_, II ibegin, II iend)
-    : m_shape{shape_}
+    : m_offset{0}
+    , m_shape{shape_}
     , m_size{std::accumulate(m_shape.begin(), m_shape.end(), 1u, std::multiplies<size_t>())}
     , m_container{new ContainerWrapper<std::vector>(ibegin, iend)} {
   if (m_size != m_container->size()) {
@@ -171,7 +175,8 @@ NdArray<T>::NdArray(const std::vector<size_t>& shape_, II ibegin, II iend)
 
 template <typename T>
 NdArray<T>::NdArray(const self_type* other)
-    : m_shape{other->m_shape}
+    : m_offset{0}
+    , m_shape{other->m_shape}
     , m_attr_names{other->m_attr_names}
     , m_size{std::accumulate(m_shape.begin(), m_shape.end(), 1u, std::multiplies<size_t>())}
     , m_container{other->m_container->copy()} {
@@ -252,22 +257,22 @@ const T& NdArray<T>::at(size_t i, D... rest) const {
 
 template <typename T>
 auto NdArray<T>::begin() -> iterator {
-  return iterator{m_container.get(), 0};
+  return iterator{m_container.get(), m_offset};
 }
 
 template <typename T>
 auto NdArray<T>::end() -> iterator {
-  return iterator{m_container.get(), m_size};
+  return iterator{m_container.get(), m_size + m_offset};
 }
 
 template <typename T>
 auto NdArray<T>::begin() const -> const_iterator {
-  return const_iterator{m_container.get(), 0};
+  return const_iterator{m_container.get(), m_offset};
 }
 
 template <typename T>
 auto NdArray<T>::end() const -> const_iterator {
-  return const_iterator{m_container.get(), m_size};
+  return const_iterator{m_container.get(), m_size + m_offset};
 }
 
 template <typename T>
@@ -323,13 +328,44 @@ auto NdArray<T>::concatenate(const self_type& other) -> self_type& {
 }
 
 template <typename T>
+NdArray<T>::NdArray(std::shared_ptr<ContainerInterface> container, size_t offset, std::vector<size_t> shape_,
+                    std::vector<std::string> attr_names)
+    : m_offset{offset}, m_shape{shape_}, m_attr_names{attr_names}, m_container{container} {
+  m_size = std::accumulate(m_shape.begin(), m_shape.end(), 1, std::multiplies<size_t>());
+  update_strides();
+}
+
+template <typename T>
+auto NdArray<T>::slice(size_t i) -> self_type {
+  if (m_shape.size() <= 1) {
+    throw std::out_of_range("Can not slice a one dimensional array");
+  }
+  if (i >= m_shape[0]) {
+    throw std::out_of_range("Axis 0 out of range");
+  }
+  std::vector<std::string> attrs;
+  if (!m_attr_names.empty()) {
+    attrs.resize(m_attr_names.size() - 1);
+    std::copy(m_attr_names.begin() + 1, m_attr_names.end(), attrs.begin());
+  }
+  auto                offset = m_offset + i * m_stride_size[0];
+  std::vector<size_t> shape_(m_shape.begin() + 1, m_shape.end());
+  return NdArray(m_container, offset, shape_, attrs);
+}
+
+template <typename T>
+auto NdArray<T>::slice(size_t i) const -> const self_type {
+  return const_cast<NdArray<T>*>(this)->slice(i);
+}
+
+template <typename T>
 size_t NdArray<T>::get_offset(const std::vector<size_t>& coords) const {
   if (coords.size() != m_shape.size()) {
     throw std::out_of_range("Invalid number of coordinates, got " + std::to_string(coords.size()) + ", expected " +
                             std::to_string(m_shape.size()));
   }
 
-  size_t offset = 0;
+  size_t offset = m_offset;
   for (size_t i = 0; i < coords.size(); ++i) {
     if (coords[i] >= m_shape[i]) {
       throw std::out_of_range(std::to_string(coords[i]) + " >= " + std::to_string(m_shape[i]) + " for axis " + std::to_string(i));
