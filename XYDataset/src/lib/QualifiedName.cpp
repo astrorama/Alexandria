@@ -30,8 +30,8 @@
 namespace Euclid {
 namespace XYDataset {
 
-QualifiedName::QualifiedName(std::vector<std::string> groups, std::string name)
-    : m_groups{std::move(groups)}, m_dataset_name{std::move(name)} {
+QualifiedName::QualifiedName(std::vector<std::string> groups_, std::string name)
+    : m_groups{std::move(groups_)}, m_dataset_name{std::move(name)} {
   for (auto& group : m_groups) {
     if (group.empty() || group.find('/') != std::string::npos) {
       throw Elements::Exception() << "Invalid group name : \"" << group << "\""
