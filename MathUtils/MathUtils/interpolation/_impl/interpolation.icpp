@@ -35,7 +35,7 @@ public:
     if (values.shape().size() != 1) {
       throw InterpolationException() << "values and coordinates dimensionalities must match: " << values.shape().size() << " != 1";
     }
-    auto& knots = grid[0].get();
+    auto& knots = grid[0];
     if (knots.size() != values.size()) {
       throw InterpolationException() << "The size of the grid and the size of the values do not match: " << knots.size()
                                      << " != " << values.size();
@@ -106,7 +106,7 @@ public:
       throw InterpolationException() << "values and coordinates dimensionality must match: " << values.shape().size()
                                      << " != " << N;
     }
-    m_knots = grid[0].get();
+    m_knots = grid[0];
     if (!std::is_sorted(m_knots.begin(), m_knots.end())) {
       throw InterpolationException("coordinates must be sorted");
     }

@@ -83,7 +83,7 @@ ELEMENTS_API std::unique_ptr<Function> interpolate(const Euclid::XYDataset::XYDa
  * @brief Used to pass the grid coordinates to interpn. Internally will make a copy of the required values.
  */
 template <std::size_t N>
-using Coordinates = std::array<std::reference_wrapper<const std::vector<double>>, N>;
+using Coordinates = std::array<std::vector<double>, N>;
 
 /**
  * Returns a NAryFunction<N> which performs a multidimensional interpolation
