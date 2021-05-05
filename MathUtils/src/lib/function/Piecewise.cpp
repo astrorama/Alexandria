@@ -41,8 +41,8 @@ Piecewise::Piecewise(std::vector<double> knots, std::vector<std::shared_ptr<Func
 
   auto knotsIter = m_knots.begin();
   while (++knotsIter != m_knots.end()) {
-    if (*knotsIter <= *(knotsIter - 1)) {
-      throw Elements::Exception("knots must be strictly increasing");
+    if (*knotsIter < *(knotsIter - 1)) {
+      throw Elements::Exception("knots must be increasing");
     }
   }
 }
