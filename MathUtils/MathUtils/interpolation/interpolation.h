@@ -89,7 +89,8 @@ using Coordinates = std::array<std::reference_wrapper<const std::vector<double>>
  * @tparam N
  *  Dimensionality
  * @param grid
- *  Array containing the knots for each grid dimension
+ *  Array containing the knots for each grid dimension. Note that the order must follow the same as the axes!
+ *  the first coordinates corresponds to the axis 0, the second coordinates to the axis 1, and so on.
  * @param values
  *  Values at each grid point. Its shape must match the grid coordinates
  * @param type
