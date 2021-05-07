@@ -65,10 +65,6 @@ std::unique_ptr<Function> interpolate(const std::vector<double>& x, const std::v
       if (y[i] == y[i - 1]) {
         logger.warn() << "Ignoring duplicate pair (" << x[i] << ", " << y[i] << ") during interpolation";
         continue;
-      } else {
-        throw InterpolationException() << "Interpolation of step functions is not "
-                                       << "supported. Entries: (" << x[i] << ", " << y[i] << ") and (" << x[i - 1] << ", "
-                                       << y[i - 1] << ")";
       }
     }
     if (x[i] < x[i - 1]) {
