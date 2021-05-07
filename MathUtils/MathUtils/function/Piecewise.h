@@ -63,7 +63,7 @@ public:
    */
   Piecewise(std::vector<double> knots, std::vector<std::shared_ptr<Function>> functions);
 
-  Piecewise(std::vector<double> knots, std::vector<std::unique_ptr<Function>>&& functions);
+  Piecewise(std::vector<double> knots, std::vector<std::unique_ptr<Function>> functions);
 
   /// Default destructor
   virtual ~Piecewise() = default;

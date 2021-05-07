@@ -47,15 +47,15 @@ Piecewise::Piecewise(std::vector<double> knots, std::vector<std::shared_ptr<Func
   }
 }
 
-Piecewise::Piecewise(std::vector<double> knots, std::vector<std::unique_ptr<Function>>&& functions)
+Piecewise::Piecewise(std::vector<double> knots, std::vector<std::unique_ptr<Function>> functions)
     : m_knots{std::move(knots)}, m_functions{std::move(functions)} {
   if (m_knots.size() - m_functions.size() != 1) {
     throw Elements::Exception() << "Invalid number of knots(" << m_knots.size() << ")-functions(" << m_functions.size() << ")";
   }
   auto knotsIter = m_knots.begin();
   while (++knotsIter != m_knots.end()) {
-    if (*knotsIter <= *(knotsIter - 1)) {
-      throw Elements::Exception("knots must be strictly increasing");
+    if (*knotsIter < *(knotsIter - 1)) {
+      throw Elements::Exception("knots must be increasing");
     }
   }
 }
