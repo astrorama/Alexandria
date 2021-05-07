@@ -58,6 +58,20 @@ NdArray<T> sum(const NdArray<T>& array, std::size_t axis) {
   return output;
 }
 
+template <typename T>
+std::vector<std::size_t> argmax(const NdArray<T>& array) {
+  auto max_iter = std::max_element(array.begin(), array.end());
+  auto max_pos  = max_iter - array.begin();
+  return unravel_index(max_pos, array.shape());
+}
+
+template <typename T>
+std::vector<std::size_t> argmin(const NdArray<T>& array) {
+  auto max_iter = std::min_element(array.begin(), array.end());
+  auto max_pos  = max_iter - array.begin();
+  return unravel_index(max_pos, array.shape());
+}
+
 }  // namespace NdArray
 }  // namespace Euclid
 

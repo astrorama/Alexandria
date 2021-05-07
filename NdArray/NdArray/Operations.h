@@ -57,6 +57,30 @@ T sum(const NdArray<T>& array);
 template <typename T>
 NdArray<T> sum(const NdArray<T>& array, std::size_t axis);
 
+/**
+ * Return the coordinates for the maximum element
+ * @tparam T
+ *  NdArray type
+ * @param array
+ *  The ndarray
+ * @return
+ *  Coordinates for the element with the highest value
+ */
+template <typename T>
+std::vector<std::size_t> argmax(const NdArray<T>& array);
+
+/**
+ * Return the coordinates for the minimum element
+ * @tparam T
+ *  NdArray type
+ * @param array
+ *  The ndarray
+ * @return
+ *  Coordinates for the element with the lowest value
+ */
+template <typename T>
+std::vector<std::size_t> argmin(const NdArray<T>& array);
+
 }  // namespace NdArray
 }  // namespace Euclid
 

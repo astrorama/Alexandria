@@ -23,10 +23,11 @@ using namespace Euclid::NdArray;
 
 struct OpsFixture {
   NdArray<int>    one_axis{{3}, {1, 2, 3}};
-  NdArray<float>  two_axes{{3, 4}, {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}};
-  NdArray<double> three_axes{{3, 4, 5}, {0,  1,  2,  3,  4,  5,  6,  7,  8,  9,  10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
-                                         20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39,
-                                         40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59}};
+  NdArray<float>  two_axes{{3, 4}, {7, 8, 3, 4, 5, 2, 1, 12, 11, 6, 10, 9}};
+  NdArray<double> three_axes{{3, 4, 5}, {//
+                                         42, 32, 41, 47, 11, 33, 59, 58, 54, 2, 45, 4,  17, 23, 7,  49, 57, 40, 19, 18,
+                                         6,  39, 24, 36, 50, 52, 12, 38, 37, 8, 15, 30, 5,  20, 26, 43, 28, 10, 27, 44,
+                                         35, 14, 25, 1,  31, 21, 29, 48, 9,  0, 51, 34, 16, 55, 53, 46, 13, 3,  22, 56}};
 };
 
 BOOST_AUTO_TEST_SUITE(NdArrayOps_test)
@@ -60,13 +61,13 @@ BOOST_AUTO_TEST_CASE(UnravelIndexOutOfBounds_test) {
 BOOST_FIXTURE_TEST_CASE(Sum2_test, OpsFixture) {
   BOOST_CHECK_EQUAL(sum(two_axes), 78.);
 
-  std::vector<float> expected0{15, 18, 21, 24};
+  std::vector<float> expected0{23, 16, 14, 25};
   auto               sum0 = sum(two_axes, 0);
   BOOST_REQUIRE_EQUAL(sum0.shape().size(), 1);
   BOOST_REQUIRE_EQUAL(sum0.shape()[0], 4);
   BOOST_CHECK_EQUAL_COLLECTIONS(sum0.begin(), sum0.end(), expected0.begin(), expected0.end());
 
-  std::vector<float> expected1{10, 26, 42};
+  std::vector<float> expected1{22, 20, 36};
   auto               sum1 = sum(two_axes, 1);
   BOOST_REQUIRE_EQUAL(sum1.shape().size(), 1);
   BOOST_REQUIRE_EQUAL(sum1.shape()[0], 3);
@@ -78,21 +79,21 @@ BOOST_FIXTURE_TEST_CASE(Sum2_test, OpsFixture) {
 BOOST_FIXTURE_TEST_CASE(Sum3_test, OpsFixture) {
   BOOST_CHECK_EQUAL(sum(three_axes), 1770.);
 
-  std::vector<double> expected0{60, 63, 66, 69, 72, 75, 78, 81, 84, 87, 90, 93, 96, 99, 102, 105, 108, 111, 114, 117};
+  std::vector<double> expected0{83, 85, 90, 84, 92, 106, 100, 144, 100, 10, 111, 68, 38, 98, 86, 138, 98, 53, 68, 118};
   auto                sum0 = sum(three_axes, 0);
   BOOST_REQUIRE_EQUAL(sum0.shape().size(), 2);
   BOOST_REQUIRE_EQUAL(sum0.shape()[0], 4);
   BOOST_REQUIRE_EQUAL(sum0.shape()[1], 5);
   BOOST_CHECK_EQUAL_COLLECTIONS(sum0.begin(), sum0.end(), expected0.begin(), expected0.end());
 
-  std::vector<double> expected1{30, 34, 38, 42, 46, 110, 114, 118, 122, 126, 190, 194, 198, 202, 206};
+  std::vector<double> expected1{169, 152, 156, 143, 38, 116, 109, 77, 120, 128, 153, 90, 92, 87, 140};
   auto                sum1 = sum(three_axes, 1);
   BOOST_REQUIRE_EQUAL(sum1.shape().size(), 2);
   BOOST_REQUIRE_EQUAL(sum1.shape()[0], 3);
   BOOST_REQUIRE_EQUAL(sum1.shape()[1], 5);
   BOOST_CHECK_EQUAL_COLLECTIONS(sum1.begin(), sum1.end(), expected1.begin(), expected1.end());
 
-  std::vector<double> expected2{10, 35, 60, 85, 110, 135, 160, 185, 210, 235, 260, 285};
+  std::vector<double> expected2{173, 206, 96, 183, 155, 147, 96, 152, 106, 107, 209, 140};
   auto                sum2 = sum(three_axes, 2);
   BOOST_REQUIRE_EQUAL(sum2.shape().size(), 2);
   BOOST_REQUIRE_EQUAL(sum2.shape()[0], 3);
@@ -107,6 +108,34 @@ BOOST_FIXTURE_TEST_CASE(Sum1_test, OpsFixture) {
   BOOST_REQUIRE_EQUAL(sum0.shape().size(), 1);
   BOOST_REQUIRE_EQUAL(sum0.shape()[0], 1);
   BOOST_CHECK_EQUAL(sum0.at(0), 6);
+}
+
+BOOST_FIXTURE_TEST_CASE(ArgMax_test, OpsFixture) {
+  auto argmax1 = argmax(one_axis);
+  BOOST_CHECK_EQUAL(argmax1[0], 2);
+
+  auto argmax2 = argmax(two_axes);
+  BOOST_CHECK_EQUAL(argmax2[0], 1);
+  BOOST_CHECK_EQUAL(argmax2[1], 3);
+
+  auto argmax3 = argmax(three_axes);
+  BOOST_CHECK_EQUAL(argmax3[0], 0);
+  BOOST_CHECK_EQUAL(argmax3[1], 1);
+  BOOST_CHECK_EQUAL(argmax3[2], 1);
+}
+
+BOOST_FIXTURE_TEST_CASE(ArgMin_test, OpsFixture) {
+  auto argmin1 = argmin(one_axis);
+  BOOST_CHECK_EQUAL(argmin1[0], 0);
+
+  auto argmin2 = argmin(two_axes);
+  BOOST_CHECK_EQUAL(argmin2[0], 1);
+  BOOST_CHECK_EQUAL(argmin2[1], 2);
+
+  auto argmin3 = argmin(three_axes);
+  BOOST_CHECK_EQUAL(argmin3[0], 2);
+  BOOST_CHECK_EQUAL(argmin3[1], 1);
+  BOOST_CHECK_EQUAL(argmin3[2], 4);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
