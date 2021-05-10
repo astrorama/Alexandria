@@ -17,7 +17,7 @@
  */
 
 #include "MathUtils/PDF/NdSampler.h"
-#include "NdArray/io/NpyMmap.h"
+//#include "NdArray/io/NpyMmap.h"
 #include <boost/test/unit_test.hpp>
 #include <chrono>
 #include <fstream>
@@ -169,6 +169,7 @@ BOOST_FIXTURE_TEST_CASE(Sample3D, N3DistributionFixture) {
 //-----------------------------------------------------------------------------
 
 // Comment out this test to do profiling
+/*
 BOOST_AUTO_TEST_CASE(PerfSample3D) {
   constexpr std::size_t kRepeats     = 100;
   constexpr std::size_t kSampleCount = 1000;
@@ -202,6 +203,7 @@ BOOST_AUTO_TEST_CASE(PerfSample3D) {
   auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(clock.now() - start).count();
   std::cout << (kSampleCount * kRepeats) / (duration * 1e-3) << " samples / second" << std::endl;
 }
+*/
 
 //-----------------------------------------------------------------------------
 
