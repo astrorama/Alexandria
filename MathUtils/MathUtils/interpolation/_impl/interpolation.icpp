@@ -21,7 +21,7 @@ class InterpolateNDim;
  * `interpolate`.
  */
 template <>
-class InterpolateNDim<1, _make_index_sequence<1>> final : public NAryFunction<1> {
+class InterpolateNDim<1, _make_index_sequence<1>> final : public Function {
 public:
   /**
    * Constructor
@@ -31,16 +31,18 @@ public:
    * @param type
    * @param extrapolate
    */
-  InterpolateNDim(const Coordinates<1>& grid, const NdArray::NdArray<double>& values, InterpolationType type, bool extrapolate) {
+  InterpolateNDim(const Coordinates<1>& grid, const NdArray::NdArray<double>& values, InterpolationType type, bool extrapolate)
+      : m_knots(grid[0]), m_values(values.begin(), values.end()), m_extrapolate(extrapolate) {
+    if (type != InterpolationType::LINEAR) {
+      throw InterpolationException() << "Only Linear interpolation supported for N >= 2";
+    }
     if (values.shape().size() != 1) {
       throw InterpolationException() << "values and coordinates dimensionalities must match: " << values.shape().size() << " != 1";
     }
-    auto& knots = grid[0];
-    if (knots.size() != values.size()) {
-      throw InterpolationException() << "The size of the grid and the size of the values do not match: " << knots.size()
-                                     << " != " << values.size();
+    if (m_knots.size() != values.size()) {
+      throw InterpolationException() << "The size of the grid and the size of the values do not match: " << m_knots.size()
+                                     << " != " << m_values.size();
     }
-    m_interpolator = interpolate(knots, {values.begin(), values.end()}, type, extrapolate);
   }
 
   /**
@@ -56,22 +58,19 @@ public:
    *    Interpolated value
    */
   double operator()(double x) const override {
-    return (*m_interpolator)(x);
+    return simple_interpolation(x, m_knots, m_values, m_extrapolate);
   }
 
-  /**
-   * Since InterpolateNDim<1> is just a wrapper, return directly a clone of the wrapped interpolator
-   */
   std::unique_ptr<Function> clone() const override {
-    return m_interpolator->clone();
+    return Euclid::make_unique<InterpolateNDim>(*this);
   }
 
   /// Copy constructor
-  InterpolateNDim(const InterpolateNDim& other): m_interpolator(other.m_interpolator->clone()) {
-  }
+  InterpolateNDim(const InterpolateNDim&) = default;
 
 private:
-  std::unique_ptr<Function> m_interpolator;
+  std::vector<double> m_knots, m_values;
+  bool                m_extrapolate;
 };
 
 /**
@@ -150,8 +149,7 @@ public:
     double y1 = (*m_interpolators[x1i])(rest...);
     double y2 = (*m_interpolators[x2i])(rest...);
 
-    auto interp1d = interpolate({m_knots[x1i], m_knots[x2i]}, {y1, y2}, m_interp_type, m_extrapolate);
-    return (*interp1d)(x);
+    return simple_interpolation(x, {m_knots[x1i], m_knots[x2i]}, {y1, y2}, m_extrapolate);
   }
 
   /**

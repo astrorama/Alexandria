@@ -96,5 +96,24 @@ std::unique_ptr<Function> interpolate(const Euclid::XYDataset::XYDataset& datase
   return interpolate(x, y, type, extrapolate);
 }
 
+double simple_interpolation(double x, const std::vector<double>& xp, const std::vector<double>& yp, bool extrapolate) {
+  if (!extrapolate && (x < xp.front() || x > xp.back())) {
+    return 0.;
+  }
+  auto        gt = std::upper_bound(xp.begin(), xp.end(), x);
+  std::size_t i  = gt - xp.begin();
+  if (i == 0) {
+    ++i;
+  }
+  if (i == xp.size()) {
+    --i;
+  }
+  double x1 = xp[i], x0 = xp[i - 1];
+  double y1 = yp[i], y0 = yp[i - 1];
+  double coef1 = (y1 - y0) / (x1 - x0);
+  double coef0 = y0 - coef1 * x0;
+  return coef0 + coef1 * x;
+}
+
 }  // namespace MathUtils
 }  // end of namespace Euclid

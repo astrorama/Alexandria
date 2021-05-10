@@ -107,6 +107,22 @@ template <std::size_t N>
 ELEMENTS_API std::unique_ptr<NAryFunction<N>> interpn(const Coordinates<N>& grid, const NdArray::NdArray<double>& values,
                                                       InterpolationType type, bool extrapolate = false);
 
+/**
+ * Simple linear interpolation
+ * @param x
+ *  Target value
+ * @param xp
+ *  x samples
+ * @param yp
+ *  Function samples (yp = f(xp))
+ * @param extrapolate
+ *  If true, extrapolate
+ * @return
+ *  An approximation for f(x)
+ */
+ELEMENTS_API double simple_interpolation(double x, const std::vector<double>& xp, const std::vector<double>& yp,
+                                         bool extrapolate = false);
+
 }  // namespace MathUtils
 }  // end of namespace Euclid
 

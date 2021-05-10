@@ -22,45 +22,41 @@ class NdSampler<1> {
 public:
   virtual ~NdSampler() = default;
 
-  NdSampler(std::vector<double> knots, const NdArray::NdArray<double>& grid) {
+  NdSampler(std::vector<double> knots, const NdArray::NdArray<double>& grid)
+      : m_knots(std::move(knots)), m_cumulative(grid.size()) {
     if (grid.shape().size() != 1) {
       throw Elements::Exception() << "Grid with " << grid.shape().size() << " axes passed to a 1D sampler";
     }
-    if (grid.shape()[0] != knots.size()) {
-      throw Elements::Exception() << "Grid and knots dimensionality do not match: " << grid.shape()[0] << " != " << knots.size();
+    if (grid.shape()[0] != m_knots.size()) {
+      throw Elements::Exception() << "Grid and knots dimensionality do not match: " << grid.shape()[0] << " != " << m_knots.size();
     }
     // Integrate using the trapezoidal method
-    std::vector<double> cumulative(grid.size());
-    cumulative[0] = grid.at(0);
+    m_cumulative[0] = grid.at(0);
     for (std::size_t i = 1; i < grid.size(); ++i) {
-      cumulative[i] = (knots[i] - knots[i - 1]) * (grid.at(i) + grid.at(i - 1)) / 2.;
-      cumulative[i] += cumulative[i - 1];
+      m_cumulative[i] = (m_knots[i] - m_knots[i - 1]) * (grid.at(i) + grid.at(i - 1)) / 2.;
+      m_cumulative[i] += m_cumulative[i - 1];
     }
-    m_min = cumulative.front();
-    m_max = cumulative.back();
-    // Inverse cumulative, so we can draw samples
-    m_inv_cumulative = interpolate(std::move(cumulative), std::move(knots), InterpolationType::LINEAR, false);
   }
 
   NdSampler(std::array<std::vector<double>, 1>&& knots, NdArray::NdArray<double>&& grid) : NdSampler(std::move(knots[0]), grid) {}
 
   template <typename Generator>
   NdArray::NdArray<double> draw(std::size_t ndraws, Generator& rng) const {
-    // The std::nextafter is required so the interval is closed and there is a chance of getting 1.
-    std::uniform_real_distribution<> uniform(m_min, std::nextafter(m_max, std::numeric_limits<double>::max()));
+    // The std::nextafter is required so the interval is closed
+    std::uniform_real_distribution<> uniform(m_cumulative.front(),
+                                             std::nextafter(m_cumulative.back(), std::numeric_limits<double>::max()));
     // Output arena
     NdArray::NdArray<double> samples{{ndraws, 1}};
     // Draw samples
     for (std::size_t i = 0; i < ndraws; ++i) {
       auto p           = uniform(rng);
-      samples.at(i, 0) = (*m_inv_cumulative)(p);
+      samples.at(i, 0) = simple_interpolation(p, m_cumulative, m_knots, true);
     }
     return samples;
   }
 
 private:
-  std::unique_ptr<Function> m_inv_cumulative;
-  double                    m_min, m_max;
+  std::vector<double> m_knots, m_cumulative;
 };
 
 /**
@@ -167,11 +163,9 @@ NdArray::NdArray<double> NdSampler<N>::draw(std::size_t ndraws, Generator& rng) 
       cumulative[i] = dx * (pdf[i] + pdf[i - 1]) / 2.;
       cumulative[i] += cumulative[i - 1];
     }
-    // Knot as a function of the cumulative probability
-    auto invert_cumulative = interpolate(cumulative, m_knots, InterpolationType::LINEAR, false);
     // Generate a random value from the uniform distribution [min_pN, max_pN]
     auto p             = uniform(rng) * (cumulative.back() - cumulative.front()) + cumulative.front();
-    output.at(draw, 0) = (*invert_cumulative)(p);
+    output.at(draw, 0) = simple_interpolation(p, cumulative, m_knots, true);
 
     // Copy the rest of the dimensions
     for (std::size_t i = 1; i < N; ++i) {
