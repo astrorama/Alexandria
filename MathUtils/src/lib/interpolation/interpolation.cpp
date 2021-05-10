@@ -97,15 +97,16 @@ std::unique_ptr<Function> interpolate(const Euclid::XYDataset::XYDataset& datase
 }
 
 double simple_interpolation(double x, const std::vector<double>& xp, const std::vector<double>& yp, bool extrapolate) {
-  if (!extrapolate && (x < xp.front() || x > xp.back())) {
-    return 0.;
-  }
   auto        gt = std::upper_bound(xp.begin(), xp.end(), x);
   std::size_t i  = gt - xp.begin();
   if (i == 0) {
+    if (!extrapolate && x < xp.front())
+      return 0.;
     ++i;
   }
   if (i == xp.size()) {
+    if (!extrapolate && x > xp.back())
+      return 0.;
     --i;
   }
   double x1 = xp[i], x0 = xp[i - 1];
