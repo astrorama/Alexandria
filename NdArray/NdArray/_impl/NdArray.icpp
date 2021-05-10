@@ -350,7 +350,7 @@ auto NdArray<T>::slice(size_t i) -> self_type {
   }
   auto                offset = m_offset + i * m_stride_size[0];
   std::vector<size_t> shape_(m_shape.begin() + 1, m_shape.end());
-  return NdArray(m_container, offset, shape_, attrs);
+  return NdArray(m_container, offset, std::move(shape_), std::move(attrs));
 }
 
 template <typename T>

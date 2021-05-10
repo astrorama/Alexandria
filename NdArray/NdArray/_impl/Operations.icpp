@@ -49,9 +49,10 @@ NdArray<T> sum(const NdArray<T>& array, std::size_t axis) {
     std::vector<std::size_t> in_coordinates(out_coordinates);
     in_coordinates.insert(in_coordinates.begin() + axis, 0ul);
 
+    auto& output_val = output.at(out_coordinates);
     for (std::size_t axis_i = 0; axis_i < axis_size; ++axis_i) {
       in_coordinates[axis] = axis_i;
-      output.at(out_coordinates) += array.at(in_coordinates);
+      output_val += array.at(in_coordinates);
     }
   }
   // Return

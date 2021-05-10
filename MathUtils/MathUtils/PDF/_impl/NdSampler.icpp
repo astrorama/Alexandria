@@ -1,0 +1,204 @@
+#ifdef NDSAMPLER_IMPL
+
+#include "ElementsKernel/Real.h"
+#include "MathUtils/PDF/Cumulative.h"
+#include "MathUtils/function/function_tools.h"
+#include "MathUtils/interpolation/interpolation.h"
+#include "NdArray/Operations.h"
+#include <cmath>
+#include <random>
+
+namespace Euclid {
+namespace MathUtils {
+
+/**
+ * Specialization for a 1D distribution
+ * Having the knots values and their probabilities, we compute the un-normalized cumulative distribution,
+ * pick a value at uniform between the minimum and maximum cumulative values, and return as a sample the
+ * corresponding value on the X axis (linearly interpolated)
+ */
+template <>
+class NdSampler<1> {
+public:
+  virtual ~NdSampler() = default;
+
+  NdSampler(std::vector<double> knots, const NdArray::NdArray<double>& grid)
+      : m_knots(std::move(knots)), m_cumulative(grid.size()) {
+    if (grid.shape().size() != 1) {
+      throw Elements::Exception() << "Grid with " << grid.shape().size() << " axes passed to a 1D sampler";
+    }
+    if (grid.shape()[0] != m_knots.size()) {
+      throw Elements::Exception() << "Grid and knots dimensionality do not match: " << grid.shape()[0] << " != " << m_knots.size();
+    }
+    // Integrate using the trapezoidal method
+    m_cumulative[0] = grid.at(0);
+    for (std::size_t i = 1; i < grid.size(); ++i) {
+      m_cumulative[i] = (m_knots[i] - m_knots[i - 1]) * (grid.at(i) + grid.at(i - 1)) / 2.;
+      m_cumulative[i] += m_cumulative[i - 1];
+    }
+  }
+
+  NdSampler(std::array<std::vector<double>, 1>&& knots, NdArray::NdArray<double>&& grid) : NdSampler(std::move(knots[0]), grid) {}
+
+  template <typename Generator>
+  void draw(std::size_t ndraws, Generator& rng, NdArray::NdArray<double>& output) const {
+    if (output.shape().size() != 2) {
+      throw Elements::Exception() << "Output area does not have two axes, it has " << output.shape().size();
+    }
+    if (output.shape()[0] != ndraws) {
+      throw Elements::Exception() << "Output area does not match the required shape: expected at least (" << ndraws << ", 1), got ("
+                                  << output.shape()[0] << ", " << output.shape()[1] << ")";
+    }
+    // The std::nextafter is required so the interval is closed
+    std::uniform_real_distribution<> uniform(m_cumulative.front(),
+                                             std::nextafter(m_cumulative.back(), std::numeric_limits<double>::max()));
+    // Draw samples
+    auto this_n = output.shape()[1] - 1;
+    for (std::size_t i = 0; i < ndraws; ++i) {
+      auto p               = uniform(rng);
+      output.at(i, this_n) = simple_interpolation(p, m_cumulative, m_knots, true);
+    }
+  }
+
+  template <typename Generator>
+  NdArray::NdArray<double> draw(std::size_t ndraws, Generator& rng) const {
+    NdArray::NdArray<double> samples{{ndraws, 1}};
+    draw(ndraws, rng, samples);
+    return samples;
+  }
+
+private:
+  std::vector<double> m_knots, m_cumulative;
+};
+
+/**
+ * Helper class to unwrap the array indexes for the grid coordinates
+ */
+template <std::size_t N, typename Seq>
+struct _SubsamplerHelper;
+
+/**
+ * "Specialization", really the only implementation
+ * @tparam N
+ *  Create a NdSampler of N dimensions
+ * @tparam Head
+ *  Should be always the axis 0
+ * @tparam Is
+ *  Remaining indexes (i.e. 1...N)
+ *  Used to pass down the coordinates for the sub-space
+ */
+template <std::size_t N, std::size_t Head, std::size_t... Is>
+struct _SubsamplerHelper<N, _index_sequence<Head, Is...>> {
+  static std::unique_ptr<NdSampler<N>> create(std::array<std::vector<double>, N + 1>& knots, NdArray::NdArray<double>&& grid) {
+    static_assert(Head == 0, "Expecting first index to be 0");
+    return Euclid::make_unique<NdSampler<N>>(std::array<std::vector<double>, N>{std::move(knots[Is])...}, std::move(grid));
+  }
+};
+
+/*
+ * Constructor for the general case
+ */
+template <std::size_t N>
+NdSampler<N>::NdSampler(std::array<std::vector<double>, N> knots, const NdArray::NdArray<double>& grid) {
+  if (grid.shape().size() != N) {
+    throw Elements::Exception() << "Grid with " << grid.shape().size() << " axes passed to a " << N << "D sampler";
+  }
+
+  // Interpolate this dimension
+  m_interpolation = interpn<N>(knots, grid, InterpolationType::LINEAR, false);
+  // This axis knots
+  m_knots = std::move(knots[0]);
+
+  // Compute the marginal of the nested dimensions
+  // i.e. for N=2, compute the marginal of N=1
+  auto marginal0 = sum(grid, 0);
+
+  // Nested sampler
+  m_subsampler = _SubsamplerHelper<N - 1, _make_index_sequence<N>>::create(knots, std::move(marginal0));
+}
+
+/**
+ * As _SubsamplerHelper but to call the interpolated function
+ */
+template <typename Seq>
+struct _CallHelper {};
+
+/**
+ * Unwrap the access to the parameters
+ */
+template <std::size_t... Is>
+struct _CallHelper<_index_sequence<Is...>> {
+
+  /**
+   * @tparam Func
+   *    Type of the interpolated function
+   * @param func
+   *    Interpolated function
+   * @param xn
+   *    Value for the N dimension
+   * @param xs
+   *    Rest (fixed) values for the 1,...,N-1 dimensions
+   * @note
+   *    Remember the x_n parameter goes first into the function! This is somewhat confusion, but it relates
+   *    to the order of the axes on the grid (dimension 0 is the faster changing dimension: i.e. row major)
+   */
+  template <typename Func>
+  static double call(Func& func, double xn, const NdArray::NdArray<double>& xs, std::size_t i0) {
+    return func(xn, xs.at(i0 + Is)...);
+  }
+};
+
+/*
+ * Sample
+ */
+template <std::size_t N>
+template <typename Generator>
+NdArray::NdArray<double> NdSampler<N>::draw(std::size_t ndraws, Generator& rng) const {
+  NdArray::NdArray<double> output{{ndraws, N}};
+  draw(ndraws, rng, output);
+  return output;
+}
+
+template <std::size_t N>
+template <typename Generator>
+void NdSampler<N>::draw(std::size_t ndraws, Generator& rng, NdArray::NdArray<double>& output) const {
+  if (output.shape().size() != 2) {
+    throw Elements::Exception() << "Output area does not have two axes, it has " << output.shape().size();
+  }
+  if (output.shape()[0] != ndraws || output.shape()[1] < N) {
+    throw Elements::Exception() << "Output area does not match the required shape: expected at least (" << ndraws << ", " << N
+                                << "), got " << output.shape()[0] << ", " << output.shape()[1] << ")";
+  }
+
+  auto this_n = output.shape()[1] - N;
+
+  // The std::nextafter is required so the interval is closed and there is a chance of getting 1.
+  std::uniform_real_distribution<> uniform(0, std::nextafter(1, std::numeric_limits<double>::max()));
+
+  // Sample from x1..x_{N-1}
+  m_subsampler->draw(ndraws, rng, output);
+
+  // For each sample
+  for (std::size_t draw = 0; draw < ndraws; ++draw) {
+    std::vector<double> pdf(m_knots.size()), cumulative(m_knots.size());
+    auto                subsample = output.slice(draw);
+    // First pass, evaluate the function
+    for (std::size_t i = 0; i < m_knots.size(); ++i) {
+      pdf[i] = _CallHelper<_make_index_sequence<N - 1>>::call(*m_interpolation, m_knots[i], subsample, this_n + 1);
+    }
+    // Second pass, evaluate the integral
+    for (std::size_t i = 1; i < m_knots.size(); ++i) {
+      auto dx       = m_knots[i] - m_knots[i - 1];
+      cumulative[i] = dx * (pdf[i] + pdf[i - 1]) / 2.;
+      cumulative[i] += cumulative[i - 1];
+    }
+    // Generate a random value from the uniform distribution [min_pN, max_pN]
+    auto p                  = uniform(rng) * (cumulative.back() - cumulative.front()) + cumulative.front();
+    output.at(draw, this_n) = simple_interpolation(p, cumulative, m_knots, true);
+  }
+}
+
+}  // namespace MathUtils
+}  // namespace Euclid
+
+#endif
