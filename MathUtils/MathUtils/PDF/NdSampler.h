@@ -71,6 +71,9 @@ public:
   template <typename Generator>
   NdArray::NdArray<double> draw(std::size_t ndraws, Generator& rng) const;
 
+  template<typename Generator>
+  void draw(std::size_t ndraws, Generator &rng, NdArray::NdArray<double>& output) const;
+
 private:
   std::unique_ptr<NdSampler<N - 1>> m_subsampler;
   std::unique_ptr<NAryFunction<N>>  m_interpolation;

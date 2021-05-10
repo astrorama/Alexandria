@@ -41,17 +41,29 @@ public:
   NdSampler(std::array<std::vector<double>, 1>&& knots, NdArray::NdArray<double>&& grid) : NdSampler(std::move(knots[0]), grid) {}
 
   template <typename Generator>
-  NdArray::NdArray<double> draw(std::size_t ndraws, Generator& rng) const {
+  void draw(std::size_t ndraws, Generator& rng, NdArray::NdArray<double>& output) const {
+    if (output.shape().size() != 2) {
+      throw Elements::Exception() << "Output area does not have two axes, it has " << output.shape().size();
+    }
+    if (output.shape()[0] != ndraws) {
+      throw Elements::Exception() << "Output area does not match the required shape: expected at least (" << ndraws << ", 1), got ("
+                                  << output.shape()[0] << ", " << output.shape()[1] << ")";
+    }
     // The std::nextafter is required so the interval is closed
     std::uniform_real_distribution<> uniform(m_cumulative.front(),
                                              std::nextafter(m_cumulative.back(), std::numeric_limits<double>::max()));
-    // Output arena
-    NdArray::NdArray<double> samples{{ndraws, 1}};
     // Draw samples
+    auto this_n = output.shape()[1] - 1;
     for (std::size_t i = 0; i < ndraws; ++i) {
-      auto p           = uniform(rng);
-      samples.at(i, 0) = simple_interpolation(p, m_cumulative, m_knots, true);
+      auto p               = uniform(rng);
+      output.at(i, this_n) = simple_interpolation(p, m_cumulative, m_knots, true);
     }
+  }
+
+  template <typename Generator>
+  NdArray::NdArray<double> draw(std::size_t ndraws, Generator& rng) const {
+    NdArray::NdArray<double> samples{{ndraws, 1}};
+    draw(ndraws, rng, samples);
     return samples;
   }
 
@@ -131,8 +143,8 @@ struct _CallHelper<_index_sequence<Is...>> {
    *    to the order of the axes on the grid (dimension 0 is the faster changing dimension: i.e. row major)
    */
   template <typename Func>
-  static double call(Func& func, double xn, const NdArray::NdArray<double>& xs) {
-    return func(xn, xs.at(Is)...);
+  static double call(Func& func, double xn, const NdArray::NdArray<double>& xs, std::size_t i0) {
+    return func(xn, xs.at(i0 + Is)...);
   }
 };
 
@@ -142,20 +154,37 @@ struct _CallHelper<_index_sequence<Is...>> {
 template <std::size_t N>
 template <typename Generator>
 NdArray::NdArray<double> NdSampler<N>::draw(std::size_t ndraws, Generator& rng) const {
+  NdArray::NdArray<double> output{{ndraws, N}};
+  draw(ndraws, rng, output);
+  return output;
+}
+
+template <std::size_t N>
+template <typename Generator>
+void NdSampler<N>::draw(std::size_t ndraws, Generator& rng, NdArray::NdArray<double>& output) const {
+  if (output.shape().size() != 2) {
+    throw Elements::Exception() << "Output area does not have two axes, it has " << output.shape().size();
+  }
+  if (output.shape()[0] != ndraws || output.shape()[1] < N) {
+    throw Elements::Exception() << "Output area does not match the required shape: expected at least (" << ndraws << ", " << N
+                                << "), got " << output.shape()[0] << ", " << output.shape()[1] << ")";
+  }
+
+  auto this_n = output.shape()[1] - N;
+
   // The std::nextafter is required so the interval is closed and there is a chance of getting 1.
   std::uniform_real_distribution<> uniform(0, std::nextafter(1, std::numeric_limits<double>::max()));
 
   // Sample from x1..x_{N-1}
-  auto xm = m_subsampler->draw(ndraws, rng);
-  // Output area
-  NdArray::NdArray<double> output{{ndraws, N}};
+  m_subsampler->draw(ndraws, rng, output);
+
   // For each sample
   for (std::size_t draw = 0; draw < ndraws; ++draw) {
     std::vector<double> pdf(m_knots.size()), cumulative(m_knots.size());
-    auto                subsample = xm.slice(draw);
+    auto                subsample = output.slice(draw);
     // First pass, evaluate the function
     for (std::size_t i = 0; i < m_knots.size(); ++i) {
-      pdf[i] = _CallHelper<_make_index_sequence<N - 1>>::call(*m_interpolation, m_knots[i], subsample);
+      pdf[i] = _CallHelper<_make_index_sequence<N - 1>>::call(*m_interpolation, m_knots[i], subsample, this_n + 1);
     }
     // Second pass, evaluate the integral
     for (std::size_t i = 1; i < m_knots.size(); ++i) {
@@ -164,16 +193,9 @@ NdArray::NdArray<double> NdSampler<N>::draw(std::size_t ndraws, Generator& rng) 
       cumulative[i] += cumulative[i - 1];
     }
     // Generate a random value from the uniform distribution [min_pN, max_pN]
-    auto p             = uniform(rng) * (cumulative.back() - cumulative.front()) + cumulative.front();
-    output.at(draw, 0) = simple_interpolation(p, cumulative, m_knots, true);
-
-    // Copy the rest of the dimensions
-    for (std::size_t i = 1; i < N; ++i) {
-      output.at(draw, i) = xm.at(draw, i - 1);
-    }
+    auto p                  = uniform(rng) * (cumulative.back() - cumulative.front()) + cumulative.front();
+    output.at(draw, this_n) = simple_interpolation(p, cumulative, m_knots, true);
   }
-
-  return output;
 }
 
 }  // namespace MathUtils
