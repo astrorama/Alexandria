@@ -1,0 +1,79 @@
+/*
+ * Copyright (C) 2012-2021 Euclid Science Ground Segment
+ *
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 3.0 of the License, or (at your option)
+ * any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+ */
+
+#ifdef NDARRAY_OPS_IMPL
+
+namespace Euclid {
+namespace NdArray {
+
+template <typename T>
+T sum(const NdArray<T>& array) {
+  return std::accumulate(array.begin(), array.end(), T{});
+}
+
+template <typename T>
+NdArray<T> sum(const NdArray<T>& array, std::size_t axis) {
+  if (axis >= array.shape().size()) {
+    throw std::out_of_range("Invalid axis");
+  }
+  // Single axis returns a scalar
+  if (array.shape().size() == 1) {
+    NdArray<T> output{{1}};
+    output.at(0) = sum(array);
+    return output;
+  }
+  // Allocate output
+  auto output_shape = array.shape();
+  auto axis_size    = output_shape[axis];
+
+  output_shape.erase(output_shape.begin() + axis);
+  NdArray<T> output(output_shape);
+  // Sum along axis
+  for (std::size_t out_i = 0; out_i < output.size(); ++out_i) {
+    auto                     out_coordinates = unravel_index(out_i, output_shape);
+    std::vector<std::size_t> in_coordinates(out_coordinates);
+    in_coordinates.insert(in_coordinates.begin() + axis, 0ul);
+
+    auto& output_val = output.at(out_coordinates);
+    for (std::size_t axis_i = 0; axis_i < axis_size; ++axis_i) {
+      in_coordinates[axis] = axis_i;
+      output_val += array.at(in_coordinates);
+    }
+  }
+  // Return
+  return output;
+}
+
+template <typename T>
+std::vector<std::size_t> argmax(const NdArray<T>& array) {
+  auto max_iter = std::max_element(array.begin(), array.end());
+  auto max_pos  = max_iter - array.begin();
+  return unravel_index(max_pos, array.shape());
+}
+
+template <typename T>
+std::vector<std::size_t> argmin(const NdArray<T>& array) {
+  auto max_iter = std::min_element(array.begin(), array.end());
+  auto max_pos  = max_iter - array.begin();
+  return unravel_index(max_pos, array.shape());
+}
+
+}  // namespace NdArray
+}  // namespace Euclid
+
+#endif

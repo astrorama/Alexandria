@@ -43,6 +43,9 @@ elements_add_unit_test(SimpsonsRule_test tests/src/numericalIntegration/Simpsons
 elements_add_unit_test(Cumulative_test tests/src/PDF/Cumulative_test.cpp
                      LINK_LIBRARIES MathUtils XYDataset TYPE Boost)
 
+elements_add_unit_test(NdSampler_test tests/src/PDF/NdSampler_test.cpp
+                     LINK_LIBRARIES MathUtils TYPE Boost)
+
 elements_add_unit_test(PdfModeExtraction_test tests/src/PDF/PdfModeExtraction_test.cpp
                      LINK_LIBRARIES MathUtils XYDataset TYPE Boost)
 

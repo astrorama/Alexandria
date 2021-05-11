@@ -83,14 +83,15 @@ ELEMENTS_API std::unique_ptr<Function> interpolate(const Euclid::XYDataset::XYDa
  * @brief Used to pass the grid coordinates to interpn. Internally will make a copy of the required values.
  */
 template <std::size_t N>
-using Coordinates = std::array<std::reference_wrapper<const std::vector<double>>, N>;
+using Coordinates = std::array<std::vector<double>, N>;
 
 /**
  * Returns a NAryFunction<N> which performs a multidimensional interpolation
  * @tparam N
  *  Dimensionality
  * @param grid
- *  Array containing the knots for each grid dimension
+ *  Array containing the knots for each grid dimension. Note that the order must follow the same as the axes!
+ *  the first coordinates corresponds to the axis 0, the second coordinates to the axis 1, and so on.
  * @param values
  *  Values at each grid point. Its shape must match the grid coordinates
  * @param type
@@ -105,6 +106,22 @@ using Coordinates = std::array<std::reference_wrapper<const std::vector<double>>
 template <std::size_t N>
 ELEMENTS_API std::unique_ptr<NAryFunction<N>> interpn(const Coordinates<N>& grid, const NdArray::NdArray<double>& values,
                                                       InterpolationType type, bool extrapolate = false);
+
+/**
+ * Simple linear interpolation
+ * @param x
+ *  Target value
+ * @param xp
+ *  x samples
+ * @param yp
+ *  Function samples (yp = f(xp))
+ * @param extrapolate
+ *  If true, extrapolate
+ * @return
+ *  An approximation for f(x)
+ */
+ELEMENTS_API double simple_interpolation(double x, const std::vector<double>& xp, const std::vector<double>& yp,
+                                         bool extrapolate = false);
 
 }  // namespace MathUtils
 }  // end of namespace Euclid

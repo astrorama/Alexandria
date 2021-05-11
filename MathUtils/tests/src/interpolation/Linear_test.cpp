@@ -130,5 +130,28 @@ BOOST_FIXTURE_TEST_CASE(Linear1DataPoint, Linear_Fixture) {
 }
 
 //-----------------------------------------------------------------------------
+// Step function
+//-----------------------------------------------------------------------------
+
+BOOST_FIXTURE_TEST_CASE(LinearStep, Linear_Fixture) {
+  // Given
+  std::vector<double> x{1., 2., 2., 4.};
+  std::vector<double> y{1., 2., 3., 4.};
+
+  // When
+  auto   linear = Euclid::MathUtils::interpolate(x, y, Euclid::MathUtils::InterpolationType::LINEAR, true);
+  double value1 = (*linear)(1);
+  double value2 = (*linear)(2);
+  double value3 = (*linear)(3);
+  double value4 = (*linear)(4);
+
+  // Then
+  BOOST_CHECK_CLOSE(value1, 1., close_tolerance);
+  BOOST_CHECK_CLOSE(value2, 2., close_tolerance);
+  BOOST_CHECK_CLOSE(value3, 3.5, close_tolerance);
+  BOOST_CHECK_CLOSE(value4, 4., close_tolerance);
+}
+
+//-----------------------------------------------------------------------------
 
 BOOST_AUTO_TEST_SUITE_END()
