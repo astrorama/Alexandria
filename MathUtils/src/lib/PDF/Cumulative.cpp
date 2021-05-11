@@ -24,7 +24,10 @@
 
 #include "MathUtils/PDF/Cumulative.h"
 #include "ElementsKernel/Exception.h"
+#include "MathUtils/helpers/Solvers.h"
 #include "XYDataset/XYDataset.h"
+#include <cassert>
+#include <cmath>
 #include <cstdlib>  // for size_t
 
 namespace Euclid {
@@ -185,6 +188,40 @@ std::pair<double, double> Cumulative::findCenteredInterval(double rate) const {
   double max_x = findValue(max_rate, TrayPosition::begin);
 
   return std::make_pair(min_x, max_x);
+}
+
+double inverseCumulative(const std::vector<double>& knots, const std::vector<double>& cdf, double p) {
+  assert(p >= cdf.front() && p <= cdf.back());
+
+  // Find segment
+  std::size_t i = std::lower_bound(cdf.begin(), cdf.end(), p) - cdf.begin();
+  if (i >= cdf.size())
+    --i;
+
+  // "Derive" the segment of the cdf to get the pdf
+  const double p0 = 0., p1 = cdf[i + 1] - cdf[i];
+  const double x0 = knots[i], x1 = knots[i + 1];
+
+  // If both extremes are 0, then the interval has 0 probability.
+  // If both extremes are the same, this is probably a discontinuity.
+  // In those cases, return the lower bound, which might be at least defined (or has a probability of exactly p).
+  if (p1 <= 0 || x1 == x0)
+    return x0;
+
+  // Linear interpolation of the pdf
+  double a = (x1 - x0) / (p1 - p0);
+  double b = x0 - a * p0;
+
+  // The integration of the linear equation (for dx) is
+  // y = a*x + b => y = a*x^2/2 + bx + c
+  // We need to solve for x, since y is known (the target cumulative probability)
+  double s0, s1;
+  std::tie(s0, s1) = solveSquare(a / 2., b, 0., p);
+
+  if (s0 >= x0 && s0 <= x1) {
+    return s0;
+  }
+  return s1;
 }
 
 }  // namespace MathUtils
