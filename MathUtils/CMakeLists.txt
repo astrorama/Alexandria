@@ -8,7 +8,7 @@ find_package(GMock)
 #===== Libraries ===============================================================
 
 elements_add_library(MathUtils
-                      src/lib/function/*.cpp src/lib/interpolation/*.cpp
+                      src/lib/function/*.cpp src/lib/helpers/*.cpp src/lib/interpolation/*.cpp
                       src/lib/numericalIntegration/*.cpp src/lib/numericalDifferentiation/*.cpp
                       src/lib/PDF/*.cpp
                      LINK_LIBRARIES NdArray XYDataset
@@ -30,6 +30,9 @@ endif()
 
 elements_add_unit_test(function_all_tests tests/src/function/*_test.cpp
                        LINK_LIBRARIES MathUtils XYDataset TYPE Boost)
+
+elements_add_unit_test(helpers_all_tests tests/src/helpers/*_test.cpp
+                       LINK_LIBRARIES MathUtils TYPE Boost)
 
 elements_add_unit_test(interpolation_all_tests tests/src/interpolation/*_test.cpp
                        LINK_LIBRARIES MathUtils XYDataset TYPE Boost)

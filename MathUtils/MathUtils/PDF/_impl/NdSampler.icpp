@@ -1,8 +1,8 @@
 #ifdef NDSAMPLER_IMPL
 
 #include "ElementsKernel/Real.h"
-#include "MathUtils/PDF/Cumulative.h"
 #include "MathUtils/function/function_tools.h"
+#include "MathUtils/helpers/InverseCumulative.h"
 #include "MathUtils/interpolation/interpolation.h"
 #include "NdArray/Operations.h"
 #include <cmath>
@@ -23,18 +23,9 @@ public:
   virtual ~NdSampler() = default;
 
   NdSampler(std::vector<double> knots, const NdArray::NdArray<double>& grid)
-      : m_knots(std::move(knots)), m_cumulative(grid.size()) {
+      : m_inv_cumulative(std::move(knots), std::move(std::vector<double>(grid.begin(), grid.end()))) {
     if (grid.shape().size() != 1) {
       throw Elements::Exception() << "Grid with " << grid.shape().size() << " axes passed to a 1D sampler";
-    }
-    if (grid.shape()[0] != m_knots.size()) {
-      throw Elements::Exception() << "Grid and knots dimensionality do not match: " << grid.shape()[0] << " != " << m_knots.size();
-    }
-    // Integrate using the trapezoidal method
-    m_cumulative[0] = grid.at(0);
-    for (std::size_t i = 1; i < grid.size(); ++i) {
-      m_cumulative[i] = (m_knots[i] - m_knots[i - 1]) * (grid.at(i) + grid.at(i - 1)) / 2.;
-      m_cumulative[i] += m_cumulative[i - 1];
     }
   }
 
@@ -50,13 +41,12 @@ public:
                                   << output.shape()[0] << ", " << output.shape()[1] << ")";
     }
     // The std::nextafter is required so the interval is closed
-    std::uniform_real_distribution<> uniform(m_cumulative.front(),
-                                             std::nextafter(m_cumulative.back(), std::numeric_limits<double>::max()));
+    std::uniform_real_distribution<> uniform(0, std::nextafter(1, std::numeric_limits<double>::max()));
     // Draw samples
     auto this_n = output.shape()[1] - 1;
     for (std::size_t i = 0; i < ndraws; ++i) {
       auto p               = uniform(rng);
-      output.at(i, this_n) = simple_interpolation(p, m_cumulative, m_knots, true);
+      output.at(i, this_n) = m_inv_cumulative(p);
     }
   }
 
@@ -68,7 +58,7 @@ public:
   }
 
 private:
-  std::vector<double> m_knots, m_cumulative;
+  const InverseCumulative m_inv_cumulative;
 };
 
 /**
@@ -180,21 +170,15 @@ void NdSampler<N>::draw(std::size_t ndraws, Generator& rng, NdArray::NdArray<dou
 
   // For each sample
   for (std::size_t draw = 0; draw < ndraws; ++draw) {
-    std::vector<double> pdf(m_knots.size()), cumulative(m_knots.size());
+    std::vector<double> pdf(m_knots.size());
     auto                subsample = output.slice(draw);
-    // First pass, evaluate the function
+    // Evaluate the PDF
     for (std::size_t i = 0; i < m_knots.size(); ++i) {
       pdf[i] = _CallHelper<_make_index_sequence<N - 1>>::call(*m_interpolation, m_knots[i], subsample, this_n + 1);
     }
-    // Second pass, evaluate the integral
-    for (std::size_t i = 1; i < m_knots.size(); ++i) {
-      auto dx       = m_knots[i] - m_knots[i - 1];
-      cumulative[i] = dx * (pdf[i] + pdf[i - 1]) / 2.;
-      cumulative[i] += cumulative[i - 1];
-    }
-    // Generate a random value from the uniform distribution [min_pN, max_pN]
-    auto p                  = uniform(rng) * (cumulative.back() - cumulative.front()) + cumulative.front();
-    output.at(draw, this_n) = simple_interpolation(p, cumulative, m_knots, true);
+    auto p                  = uniform(rng);
+    InverseCumulative inv_cumulative(m_knots, std::move(pdf));
+    output.at(draw, this_n) = inv_cumulative(p);
   }
 }
 
