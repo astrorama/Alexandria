@@ -71,7 +71,7 @@ NdArray<int> bin_samples(const NdArray<double>& samples, const std::vector<doubl
     if (bin0 >= x0.size())
       bin0 = x0.size() - 1;
     if (bin1 >= x1.size())
-      bin1 = x1.size();
+      bin1 = x1.size() - 1;
     ++result.at(bin0, bin1);
     m0 += samples.at(i, 0);
     m1 += samples.at(i, 1);
@@ -84,6 +84,26 @@ NdArray<int> bin_samples(const NdArray<double>& samples, const std::vector<doubl
 //-----------------------------------------------------------------------------
 
 BOOST_AUTO_TEST_SUITE(NdDistribution_test)
+
+//-----------------------------------------------------------------------------
+
+BOOST_FIXTURE_TEST_CASE(Sample1DSingleCell, RandomFixture) {
+  std::vector<double> knots{5, 10};
+
+  // Linear
+  NdArray<double> linear_pdf{{2}, {0., 5.}};
+  NdSampler<1>    linear_sampler{{knots}, linear_pdf};
+  auto            samples = linear_sampler.draw(sample_count, rng);
+  double          mean    = std::accumulate(samples.begin(), samples.end(), 0.) / sample_count;
+  BOOST_CHECK_GT(mean, 7.8);
+
+  // Uniform
+  NdArray<double> uniform_pdf{{2}, {1., 1.}};
+  NdSampler<1>    uniform_sampler{{knots}, uniform_pdf};
+  auto            uniform_samples = uniform_sampler.draw(sample_count, rng);
+  auto            uniform_mean    = std::accumulate(uniform_samples.begin(), uniform_samples.end(), 0.) / sample_count;
+  BOOST_CHECK_CLOSE_FRACTION(uniform_mean, 7.5, 0.05);
+}
 
 //-----------------------------------------------------------------------------
 
@@ -138,6 +158,25 @@ BOOST_FIXTURE_TEST_CASE(Sample2D, N2DistributionFixture) {
 
 //-----------------------------------------------------------------------------
 
+BOOST_FIXTURE_TEST_CASE(Sample2DSingleCell, RandomFixture) {
+  std::vector<double> x0{0, 1}, x1{10, 100};
+  NdArray<double>     pdf{{2, 2}, {1, 550, 1, 550}};
+  NdSampler<2>        dist2{{x0, x1}, pdf};
+  auto                sample = dist2.draw(sample_count, rng);
+  BOOST_CHECK_EQUAL(sample.shape()[0], sample_count);
+  double m0 = 0, m1 = 0;
+  for (size_t i = 0; i < sample.shape()[0]; i++) {
+    m0 += sample.at(i, 0);
+    m1 += sample.at(i, 1);
+  }
+  m0 /= sample_count;
+
+  BOOST_CHECK_CLOSE_FRACTION(m0, 0.5, 0.1);
+  BOOST_CHECK_GT(m1, 60);
+}
+
+//-----------------------------------------------------------------------------
+
 BOOST_FIXTURE_TEST_CASE(Sample3D, N3DistributionFixture) {
   NdSampler<3> dist3{{knots_x0, knots_x1, knots_x2}, pdf};
   auto         samples = dist3.draw(sample_count, rng);
@@ -171,21 +210,21 @@ BOOST_FIXTURE_TEST_CASE(Sample3D, N3DistributionFixture) {
 // Comment out this test to do profiling
 /*
 BOOST_AUTO_TEST_CASE(PerfSample3D) {
-  constexpr std::size_t kRepeats     = 100;
-  constexpr std::size_t kSampleCount = 1000;
+  constexpr std::size_t kRepeats     = 10;
+  constexpr std::size_t kSampleCount = 10000;
   std::mt19937          rng;
 
   // Build knots
   std::vector<double> knots_x0(100), knots_x1(80), knots_x2(90);
 
   for (std::size_t i = 0; i < knots_x0.size(); ++i) {
-    knots_x0[i] = -1.0 + i * 0.21;
+    knots_x0[i] = -1.0 + i * (20 + 1) / 99.;
   }
   for (std::size_t i = 0; i < knots_x1.size(); ++i) {
-    knots_x1[i] = 15.0 + i * 0.266;
+    knots_x1[i] = 15.0 + i * (36 - 15) / 79.;
   }
   for (std::size_t i = 0; i < knots_x2.size(); ++i) {
-    knots_x2[i] = 44.0 + i * 0.83;
+    knots_x2[i] = 44.0 + i * (118 - 44) / 89.;
   }
 
   // Load data
@@ -197,14 +236,16 @@ BOOST_AUTO_TEST_CASE(PerfSample3D) {
   for (std::size_t i = 0; i < kRepeats; ++i) {
     if (i % 10 == 0)
       std::cout << i << std::endl;
-    NdSampler<3> dist3{{knots_x0, knots_x1, knots_x2}, pdf};
-    dist3.draw(kSampleCount, rng);
+    NdSampler<3>  dist3{{knots_x0, knots_x1, knots_x2}, pdf};
+    auto          samples = dist3.draw(kSampleCount, rng);
+    std::ofstream f("/tmp/sample3d.txt");
+    f << samples;
+    break;
   }
   auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(clock.now() - start).count();
   std::cout << (kSampleCount * kRepeats) / (duration * 1e-3) << " samples / second" << std::endl;
 }
 */
-
 //-----------------------------------------------------------------------------
 
 BOOST_AUTO_TEST_SUITE_END()
