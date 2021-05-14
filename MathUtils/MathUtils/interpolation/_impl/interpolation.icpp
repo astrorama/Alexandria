@@ -3,184 +3,44 @@
 #endif
 
 #include "AlexandriaKernel/index_sequence.h"
+#include "MathUtils/interpolation/GridInterpolation.h"
 
 namespace Euclid {
 namespace MathUtils {
 
-/**
- * N-Dimensional interpolation, which is built recursively.
- *
- * @tparam N Dimensionality
- * @tparam Seq Placeholder for a sequence type
- */
-template <std::size_t N, typename Seq>
-class InterpolateNDim;
+template <std::size_t, typename Seq>
+struct InterpNAdapter;
 
-/**
- * Specialization (and end of the recursion) for a 1-dimensional interpolation. It simply builds on top of
- * `interpolate`.
- */
-template <>
-class InterpolateNDim<1, _make_index_sequence<1>> final : public Function {
-public:
-  /**
-   * Constructor
-   * @param grid
-   *    A 1-dimensional grid
-   * @param values
-   * @param type
-   * @param extrapolate
-   */
-  InterpolateNDim(const Coordinates<1>& grid, const NdArray::NdArray<double>& values, InterpolationType type, bool extrapolate)
-      : m_knots(grid[0]), m_values(values.begin(), values.end()), m_extrapolate(extrapolate) {
-    if (type != InterpolationType::LINEAR) {
-      throw InterpolationException() << "Only Linear interpolation supported for N >= 2";
-    }
-    if (values.shape().size() != 1) {
-      throw InterpolationException() << "values and coordinates dimensionalities must match: " << values.shape().size() << " != 1";
-    }
-    if (m_knots.size() != values.size()) {
-      throw InterpolationException() << "The size of the grid and the size of the values do not match: " << m_knots.size()
-                                     << " != " << m_values.size();
-    }
-  }
-
-  /**
-   * Destructor
-   */
-  virtual ~InterpolateNDim() {}
-
-  /**
-   * Call as a function
-   * @param x
-   *    Coordinate value
-   * @return
-   *    Interpolated value
-   */
-  double operator()(double x) const override {
-    return simple_interpolation(x, m_knots, m_values, m_extrapolate);
-  }
-
-  std::unique_ptr<Function> clone() const override {
-    return Euclid::make_unique<InterpolateNDim>(*this);
-  }
-
-  /// Copy constructor
-  InterpolateNDim(const InterpolateNDim&) = default;
-
-private:
-  std::vector<double> m_knots, m_values;
-  bool                m_extrapolate;
-};
-
-/**
- * Recursive specialization of an N-Dimensional interpolator
- * @tparam N Dimensionality (N > 1)
- * @tparam F The first element of the index sequence
- * @tparam Rest The rest of the elements from the index sequence
- */
-template <std::size_t N, std::size_t F, std::size_t... Rest>
-class InterpolateNDim<N, _index_sequence<F, Rest...>> final : public NAryFunction<N> {
-public:
-  /// Used to expand into as many double parameters as N
+template <std::size_t N, std::size_t... Is>
+struct InterpNAdapter<N, _index_sequence<Is...>> : NAryFunction<N> {
   template <std::size_t>
   using Doubles = double;
 
-  /// Alias for the next interpolator on the chain
-  using NestedInterpolator = InterpolateNDim<N - 1, _make_index_sequence<N - 1>>;
-
-  /**
-   * Constructor
-   * @param grid
-   * @param values
-   * @param type
-   * @param extrapolate
-   */
-  InterpolateNDim(const Coordinates<N>& grid, const NdArray::NdArray<double>& values, InterpolationType type, bool extrapolate)
-      : m_interp_type(type), m_extrapolate(extrapolate) {
+  InterpNAdapter(const Coordinates<N>& grid, const NdArray::NdArray<double>& values, InterpolationType type, bool extrapolate)
+      : m_interpn(std::tuple<std::vector<Doubles<Is>>...>{grid[Is]...}, values, extrapolate) {
     if (type != InterpolationType::LINEAR) {
-      throw InterpolationException() << "Only Linear interpolation supported for N >= 2";
-    }
-    if (values.shape().size() != N) {
-      throw InterpolationException() << "values and coordinates dimensionality must match: " << values.shape().size()
-                                     << " != " << N;
-    }
-    m_knots = grid[0];
-    if (!std::is_sorted(m_knots.begin(), m_knots.end())) {
-      throw InterpolationException("coordinates must be sorted");
-    }
-    if (m_knots.size() != values.shape()[0]) {
-      throw InterpolationException("coordinates and value sizes must match");
-    }
-    // Build nested interpolators
-    Coordinates<N - 1> subgrid{grid[Rest]...};
-    m_interpolators.resize(m_knots.size());
-    for (size_t i = 0; i < m_knots.size(); ++i) {
-      auto subvalues = values.slice(i);
-      m_interpolators[i].reset(new NestedInterpolator(subgrid, subvalues, type, extrapolate));
+      throw InterpolationException() << "Only linear interpolation is supported for N-dimensional grids";
     }
   }
 
-  /**
-   * Call as a function
-   * @param x Value for the axis for the first dimension
-   * @param rest Values for the next set of axes
-   * @return The interpolated value
-   * @details
-   *    Doubles<Rest>... is used to expand into (N-1) doubles
-   *    x is used to find the interpolators for x1 and x2 s.t. x1 <= x <=x2
-   *    Those two interpolators are used to compute y1 for x1, and y2 for x2 (based on the rest of the parameters)
-   *    A final linear interpolator is used to get the value of y at the position x
-   */
-  double operator()(double x, Doubles<Rest>... rest) const override {
-    // If no extrapolation, and the value if out-of-bounds, just clip at 0
-    if ((x < m_knots.front() || x > m_knots.back()) && !m_extrapolate) {
-      return 0.;
-    }
-
-    std::size_t x2i = std::lower_bound(m_knots.begin(), m_knots.end(), x) - m_knots.begin();
-    if (x2i == 0) {
-      ++x2i;
-    } else if (x2i == m_knots.size()) {
-      --x2i;
-    }
-    std::size_t x1i = x2i - 1;
-
-    double y1 = (*m_interpolators[x1i])(rest...);
-    double y2 = (*m_interpolators[x2i])(rest...);
-
-    return simple_interpolation(x, {m_knots[x1i], m_knots[x2i]}, {y1, y2}, m_extrapolate);
+  double operator()(Doubles<Is>... xn) const override {
+    return m_interpn(xn...);
   }
 
-  /**
-   * Clone the interpolator
-   */
   std::unique_ptr<NAryFunction<N>> clone() const override {
-    return std::unique_ptr<NAryFunction<N>>(new InterpolateNDim(*this));
+    return Euclid::make_unique<InterpNAdapter>(*this);
   }
 
-  /// (Deep)Copy constructor
-  InterpolateNDim(const InterpolateNDim& other)
-      : m_knots(other.m_knots), m_interp_type(other.m_interp_type), m_extrapolate(other.m_extrapolate) {
-    m_interpolators.resize(m_knots.size());
-    for (size_t i = 0; i < m_interpolators.size(); ++i) {
-      m_interpolators[i].reset(new NestedInterpolator(*other.m_interpolators[i]));
-    }
-  }
+  InterpNAdapter(const InterpNAdapter&) = default;
 
 private:
-  std::vector<double>                              m_knots;
-  std::vector<std::unique_ptr<NestedInterpolator>> m_interpolators;
-  InterpolationType                                m_interp_type;
-  bool                                             m_extrapolate;
+  InterpN<Doubles<Is>...> m_interpn;
 };
 
-// Implementation of interpn declared in interpolation.h
 template <std::size_t N>
 std::unique_ptr<NAryFunction<N>> interpn(const Coordinates<N>& grid, const NdArray::NdArray<double>& values, InterpolationType type,
                                          bool extrapolate) {
-  using IT = InterpolateNDim<N, _make_index_sequence<N>>;
-  return std::unique_ptr<IT>(new IT{grid, values, type, extrapolate});
+  return Euclid::make_unique<InterpNAdapter<N, _make_index_sequence<N>>>(grid, values, type, extrapolate);
 }
 
 }  // namespace MathUtils
