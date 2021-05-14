@@ -17,13 +17,24 @@
  */
 
 #include "MathUtils/PDF/NdSampler.h"
-//#include "NdArray/io/NpyMmap.h"
+#include "NdArray/io/NpyMmap.h"
 #include <boost/test/unit_test.hpp>
 #include <chrono>
 #include <fstream>
 
 using namespace Euclid::MathUtils;
 using namespace Euclid::NdArray;
+
+/// Used for discrete axes
+enum class MyEnum { A, B, C, D, E, F, G, H, I, J, K };
+
+std::ostream& operator<<(std::ostream& out, const MyEnum e) {
+  out << "MyEnum::" << 'A' + static_cast<int>(e) - static_cast<int>(MyEnum::A);
+  return out;
+}
+
+typedef std::map<MyEnum, std::size_t>::value_type counter_t;
+BOOST_TEST_DONT_PRINT_LOG_VALUE(counter_t)
 
 struct RandomFixture {
   std::mt19937 rng;
@@ -50,31 +61,42 @@ struct N1DistributionFixture : public RandomFixture {
 //-----------------------------------------------------------------------------
 
 // Helper function to bin samples
-std::vector<int> bin_samples(const NdArray<double>& samples, const std::vector<double>& edges) {
+std::vector<int> bin_samples(const std::vector<std::tuple<double>>& samples, const std::vector<double>& edges) {
   std::vector<int> result(edges.size() - 1);
   for (auto v : samples) {
-    auto bin_max = std::upper_bound(edges.begin(), edges.end(), v);
+    auto bin_max = std::upper_bound(edges.begin(), edges.end(), std::get<0>(v));
     auto bin     = (bin_max - edges.begin()) - 1;
     ++result[bin];
   }
   return result;
 }
 
-NdArray<int> bin_samples(const NdArray<double>& samples, const std::vector<double>& x0, const std::vector<double>& x1, double& m0,
-                         double& m1) {
+std::vector<int> bin_samples(const std::vector<std::tuple<std::string>>& samples, const std::vector<std::string>& bins) {
+  std::vector<int> result(bins.size());
+  for (auto v : samples) {
+    auto bin = std::find(bins.begin(), bins.end(), std::get<0>(v)) - bins.begin();
+    ++result[bin];
+  }
+  return result;
+}
+
+NdArray<int> bin_samples(const std::vector<std::tuple<double, double>>& samples, const std::vector<double>& x0,
+                         const std::vector<double>& x1, double& m0, double& m1) {
   NdArray<int> result({x0.size(), x1.size()});
-  std::size_t  nsamples = samples.shape()[0];
+  std::size_t  nsamples = samples.size();
   m0 = m1 = 0.;
-  for (std::size_t i = 0; i < nsamples; ++i) {
-    std::size_t bin0 = std::upper_bound(x0.begin(), x0.end(), samples.at(i, 0)) - x0.begin() - 1;
-    std::size_t bin1 = std::upper_bound(x1.begin(), x1.end(), samples.at(i, 1)) - x1.begin() - 1;
+  for (auto& sample : samples) {
+    auto        v0   = std::get<0>(sample);
+    auto        v1   = std::get<1>(sample);
+    std::size_t bin0 = std::upper_bound(x0.begin(), x0.end(), v0) - x0.begin() - 1;
+    std::size_t bin1 = std::upper_bound(x1.begin(), x1.end(), v1) - x1.begin() - 1;
     if (bin0 >= x0.size())
       bin0 = x0.size() - 1;
     if (bin1 >= x1.size())
       bin1 = x1.size() - 1;
     ++result.at(bin0, bin1);
-    m0 += samples.at(i, 0);
-    m1 += samples.at(i, 1);
+    m0 += v0;
+    m1 += v1;
   }
   m0 /= nsamples;
   m1 /= nsamples;
@@ -91,32 +113,37 @@ BOOST_FIXTURE_TEST_CASE(Sample1DSingleCell, RandomFixture) {
   std::vector<double> knots{5, 10};
 
   // Linear
-  NdArray<double> linear_pdf{{2}, {0., 5.}};
-  NdSampler<1>    linear_sampler{{knots}, linear_pdf};
-  auto            samples = linear_sampler.draw(sample_count, rng);
-  double          mean    = std::accumulate(samples.begin(), samples.end(), 0.) / sample_count;
+  NdArray<double>   linear_pdf{{2}, {0., 5.}};
+  NdSampler<double> linear_sampler{{knots}, linear_pdf};
+  auto              samples = linear_sampler.draw(sample_count, rng);
+  double            mean    = 0.;
+  for (auto& s : samples) {
+    mean += std::get<0>(s);
+  }
+  mean /= sample_count;
   BOOST_CHECK_GT(mean, 7.8);
 
   // Uniform
-  NdArray<double> uniform_pdf{{2}, {1., 1.}};
-  NdSampler<1>    uniform_sampler{{knots}, uniform_pdf};
-  auto            uniform_samples = uniform_sampler.draw(sample_count, rng);
-  auto            uniform_mean    = std::accumulate(uniform_samples.begin(), uniform_samples.end(), 0.) / sample_count;
+  NdArray<double>   uniform_pdf{{2}, {1., 1.}};
+  NdSampler<double> uniform_sampler{{knots}, uniform_pdf};
+  auto              uniform_samples = uniform_sampler.draw(sample_count, rng);
+  auto              uniform_mean    = 0.;
+  for (auto& s : uniform_samples) {
+    uniform_mean += std::get<0>(s);
+  }
+  uniform_mean /= sample_count;
   BOOST_CHECK_CLOSE_FRACTION(uniform_mean, 7.5, 0.05);
 }
 
 //-----------------------------------------------------------------------------
 
 BOOST_FIXTURE_TEST_CASE(Sample1D, N1DistributionFixture) {
-  NdSampler<1> dist1{knots, pdf};
-  auto         samples = dist1.draw(sample_count, rng);
-  // Verify output shape
-  BOOST_CHECK_EQUAL(samples.shape().size(), 2);
-  BOOST_CHECK_EQUAL(samples.shape()[0], sample_count);
-  BOOST_CHECK_EQUAL(samples.shape()[1], 1);
+  NdSampler<double> dist1{knots, pdf};
+  auto              samples = dist1.draw(sample_count, rng);
+  BOOST_CHECK_EQUAL(samples.size(), sample_count);
 
-  std::ofstream f("/tmp/test1.txt");
-  f << samples << std::endl;
+  // std::ofstream f("/tmp/test1.txt");
+  // f << samples << std::endl;
 
   auto counts = bin_samples(samples, knots);
   BOOST_CHECK_EQUAL(std::accumulate(counts.begin(), counts.end(), 0), sample_count);
@@ -133,13 +160,34 @@ BOOST_FIXTURE_TEST_CASE(Sample1D, N1DistributionFixture) {
 
 //-----------------------------------------------------------------------------
 
+BOOST_FIXTURE_TEST_CASE(Sample1DDiscrete, N1DistributionFixture) {
+  std::vector<std::string> sknots{"-1", "0",  "1",  "2",  "3",  "4",  "5",  "6",  "7",  "8",  "9",
+                                  "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20"};
+  NdSampler<std::string>   dist1{sknots, pdf};
+  auto                     samples = dist1.draw(sample_count, rng);
+  BOOST_CHECK_EQUAL(samples.size(), sample_count);
+
+  auto counts = bin_samples(samples, sknots);
+  BOOST_CHECK_EQUAL(std::accumulate(counts.begin(), counts.end(), 0), sample_count);
+
+  auto max_i = std::max_element(counts.begin(), counts.end()) - counts.begin();
+  auto min_i = std::min_element(counts.begin(), counts.end()) - counts.begin();
+
+  // Bimodal!
+  BOOST_CHECK(sknots[max_i] == "5" || sknots[max_i] == "11");
+  BOOST_CHECK(min_i <= 1 || min_i >= 18);
+  BOOST_CHECK_GT(counts[4], counts[3]);
+  BOOST_CHECK_GT(counts[6], counts[7]);
+  BOOST_CHECK_GT(counts[13], counts[15]);
+}
+
+//-----------------------------------------------------------------------------
+
 BOOST_FIXTURE_TEST_CASE(Sample2D, N2DistributionFixture) {
-  NdSampler<2> dist2{{knots_x0, knots_x1}, pdf};
-  auto         samples = dist2.draw(sample_count, rng);
+  NdSampler<double, double> dist2{{knots_x0, knots_x1}, pdf};
+  auto                      samples = dist2.draw(sample_count, rng);
   // Verify output shape
-  BOOST_CHECK_EQUAL(samples.shape().size(), 2);
-  BOOST_CHECK_EQUAL(samples.shape()[0], sample_count);
-  BOOST_CHECK_EQUAL(samples.shape()[1], 2);
+  BOOST_CHECK_EQUAL(samples.size(), sample_count);
 
   double mean0, mean1;
   auto   hist2d = bin_samples(samples, knots_x0, knots_x1, mean0, mean1);
@@ -151,23 +199,20 @@ BOOST_FIXTURE_TEST_CASE(Sample2D, N2DistributionFixture) {
   // The mean is in between the two pdf means
   BOOST_CHECK((mode[0] >= 4 && mode[0] <= 8 && mode[1] >= 3 && mode[1] <= 8) ||
               (mode[0] >= 14 && mode[0] <= 18 && mode[1] >= 10 && mode[1] <= 17));
-
-  // std::ofstream f("/tmp/sample2d.txt");
-  // f << samples << std::endl;
 }
 
 //-----------------------------------------------------------------------------
 
 BOOST_FIXTURE_TEST_CASE(Sample2DSingleCell, RandomFixture) {
-  std::vector<double> x0{0, 1}, x1{10, 100};
-  NdArray<double>     pdf{{2, 2}, {1, 550, 1, 550}};
-  NdSampler<2>        dist2{{x0, x1}, pdf};
-  auto                sample = dist2.draw(sample_count, rng);
-  BOOST_CHECK_EQUAL(sample.shape()[0], sample_count);
+  std::vector<double>       x0{0, 1}, x1{10, 100};
+  NdArray<double>           pdf{{2, 2}, {1, 550, 1, 550}};
+  NdSampler<double, double> dist2{{x0, x1}, pdf};
+  auto                      sample = dist2.draw(sample_count, rng);
+  BOOST_CHECK_EQUAL(sample.size(), sample_count);
   double m0 = 0, m1 = 0;
-  for (size_t i = 0; i < sample.shape()[0]; i++) {
-    m0 += sample.at(i, 0);
-    m1 += sample.at(i, 1);
+  for (auto& s : sample) {
+    m0 += std::get<0>(s);
+    m1 += std::get<1>(s);
   }
   m0 /= sample_count;
 
@@ -178,18 +223,16 @@ BOOST_FIXTURE_TEST_CASE(Sample2DSingleCell, RandomFixture) {
 //-----------------------------------------------------------------------------
 
 BOOST_FIXTURE_TEST_CASE(Sample3D, N3DistributionFixture) {
-  NdSampler<3> dist3{{knots_x0, knots_x1, knots_x2}, pdf};
-  auto         samples = dist3.draw(sample_count, rng);
+  NdSampler<double, double, double> dist3{{knots_x0, knots_x1, knots_x2}, pdf};
+  auto                              sample = dist3.draw(sample_count, rng);
   // Verify output shape
-  BOOST_CHECK_EQUAL(samples.shape().size(), 2);
-  BOOST_CHECK_EQUAL(samples.shape()[0], sample_count);
-  BOOST_CHECK_EQUAL(samples.shape()[1], 3);
+  BOOST_CHECK_EQUAL(sample.size(), sample_count);
 
   double mean0 = 0, mean1 = 0, mean2 = 0;
-  for (std::size_t i = 0; i < sample_count; ++i) {
-    mean0 += samples.at(i, 0);
-    mean1 += samples.at(i, 1);
-    mean2 += samples.at(i, 2);
+  for (auto& s : sample) {
+    mean0 += std::get<0>(s);
+    mean1 += std::get<1>(s);
+    mean2 += std::get<2>(s);
   }
   mean0 /= sample_count;
   mean1 /= sample_count;
@@ -197,12 +240,64 @@ BOOST_FIXTURE_TEST_CASE(Sample3D, N3DistributionFixture) {
 
   // Note that the two PDF combined do not have the same scatter.
   // We compare with the weighted mean and weighted standard deviation computed from the grid itself.
-  BOOST_CHECK_CLOSE_FRACTION(mean0, 6.42, 0.5);
-  BOOST_CHECK_CLOSE_FRACTION(mean1, 24, 0.2);
-  BOOST_CHECK_CLOSE_FRACTION(mean2, 67, 0.3);
+  BOOST_CHECK_CLOSE_FRACTION(mean0, 6.42, 0.1);
+  BOOST_CHECK_CLOSE_FRACTION(mean1, 24, 0.1);
+  BOOST_CHECK_CLOSE_FRACTION(mean2, 67, 0.1);
+}
 
-  // std::ofstream f("/tmp/sample3d.txt");
-  // f << samples << std::endl;
+//-----------------------------------------------------------------------------
+
+BOOST_FIXTURE_TEST_CASE(Sample3DDiscrete, N3DistributionFixture) {
+  std::vector<MyEnum> knots_enum0;
+  for (std::size_t i = 0; i <= 'K' - 'A'; ++i) {
+    knots_enum0.emplace_back(static_cast<MyEnum>(static_cast<int>(MyEnum::A) + i));
+  }
+
+  NdSampler<MyEnum, double, double> dist3{{knots_enum0, knots_x1, knots_x2}, pdf};
+  auto                              sample = dist3.draw(sample_count, rng);
+
+  // This will not compile if the output sample type is not what we expect
+  static_assert(std::is_same<std::remove_reference<decltype(sample[0])>::type, std::tuple<MyEnum, double, double>>::value,
+                "Compile time check!");
+
+  BOOST_CHECK_EQUAL(sample.size(), sample_count);
+
+  double                        mean1 = 0, mean2 = 0;
+  std::map<MyEnum, std::size_t> counter0;
+
+  for (auto& s : sample) {
+    ++counter0[std::get<0>(s)];
+    mean1 += std::get<1>(s);
+    mean2 += std::get<2>(s);
+  }
+  mean1 /= sample_count;
+  mean2 /= sample_count;
+
+  // Continuous axes
+  BOOST_CHECK_CLOSE_FRACTION(mean1, 24, 0.1);
+  BOOST_CHECK_CLOSE_FRACTION(mean2, 67, 0.1);
+
+  // Discrete axis. According to the marginalization, the mode is at the third position : that's C
+  auto max_i = std::max_element(counter0.begin(), counter0.end(),
+                                [](const counter_t& a, const counter_t& b) { return a.second < b.second; });
+  BOOST_CHECK_EQUAL(max_i->first, MyEnum::C);
+
+  // E is the second mode
+  BOOST_CHECK_GT(counter0[MyEnum::E], counter0[MyEnum::A]);
+  BOOST_CHECK_GT(counter0[MyEnum::E], counter0[MyEnum::B]);
+  BOOST_CHECK_LT(counter0[MyEnum::E], counter0[MyEnum::C]);  // First mode!
+  BOOST_CHECK_GT(counter0[MyEnum::E], counter0[MyEnum::D]);
+  BOOST_CHECK_GT(counter0[MyEnum::E], counter0[MyEnum::F]);
+  BOOST_CHECK_GT(counter0[MyEnum::E], counter0[MyEnum::G]);
+  BOOST_CHECK_GT(counter0[MyEnum::E], counter0[MyEnum::H]);
+  BOOST_CHECK_GT(counter0[MyEnum::E], counter0[MyEnum::I]);
+  BOOST_CHECK_GT(counter0[MyEnum::E], counter0[MyEnum::J]);
+  BOOST_CHECK_GT(counter0[MyEnum::E], counter0[MyEnum::K]);
+
+  // G should be greater than I, J and K, might be the same as G
+  BOOST_CHECK_GT(counter0[MyEnum::G], counter0[MyEnum::I]);
+  BOOST_CHECK_GT(counter0[MyEnum::G], counter0[MyEnum::J]);
+  BOOST_CHECK_GT(counter0[MyEnum::G], counter0[MyEnum::K]);
 }
 
 //-----------------------------------------------------------------------------
@@ -236,11 +331,8 @@ BOOST_AUTO_TEST_CASE(PerfSample3D) {
   for (std::size_t i = 0; i < kRepeats; ++i) {
     if (i % 10 == 0)
       std::cout << i << std::endl;
-    NdSampler<3>  dist3{{knots_x0, knots_x1, knots_x2}, pdf};
-    auto          samples = dist3.draw(kSampleCount, rng);
-    std::ofstream f("/tmp/sample3d.txt");
-    f << samples;
-    break;
+    NdSampler<double, double, double> dist3{{knots_x0, knots_x1, knots_x2}, pdf};
+    dist3.draw(kSampleCount, rng);
   }
   auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(clock.now() - start).count();
   std::cout << (kSampleCount * kRepeats) / (duration * 1e-3) << " samples / second" << std::endl;
