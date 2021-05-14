@@ -31,8 +31,8 @@ elements_depends_on_subdirs(ElementsKernel)
 #                     PUBLIC_HEADERS ElementsExamples)
 #===============================================================================
 elements_add_library(AlexandriaKernel src/lib/*.cpp
-                     LINK_LIBRARIES ElementsKernel Threads
-                     PUBLIC_HEADERS AlexandriaKernel)
+        LINK_LIBRARIES ElementsKernel Threads
+        PUBLIC_HEADERS AlexandriaKernel)
 
 #===============================================================================
 # Declare the executables here
@@ -42,8 +42,8 @@ elements_add_library(AlexandriaKernel src/lib/*.cpp
 #                        INCLUDE_DIRS Boost ElementsExamples)
 #===============================================================================
 elements_add_executable(AlexandriaVersion src/program/AlexandriaVersion.cpp
-                     INCLUDE_DIRS ElementsKernel AlexandriaKernel
-                     LINK_LIBRARIES ElementsKernel AlexandriaKernel)
+        INCLUDE_DIRS ElementsKernel AlexandriaKernel
+        LINK_LIBRARIES ElementsKernel AlexandriaKernel)
 
 #===============================================================================
 # Declare the Boost tests here
@@ -54,11 +54,14 @@ elements_add_executable(AlexandriaVersion src/program/AlexandriaVersion.cpp
 #                       LINK_LIBRARIES ElementsExamples TYPE Boost)
 #===============================================================================
 elements_add_unit_test(StringUtils_test tests/src/StringUtils_test.cpp
-                     LINK_LIBRARIES AlexandriaKernel
-                     TYPE Boost)
+        LINK_LIBRARIES AlexandriaKernel
+        TYPE Boost)
 elements_add_unit_test(AlexandriaKernel_ThreadPool_test tests/src/ThreadPool_test.cpp
-                     LINK_LIBRARIES AlexandriaKernel
-                     TYPE Boost)
+        LINK_LIBRARIES AlexandriaKernel
+        TYPE Boost)
+elements_add_unit_test(Tuple_test tests/src/Tuple_test.cpp
+        LINK_LIBRARIES AlexandriaKernel
+        TYPE Boost)
 
 #===============================================================================
 # Declare the Python programs here

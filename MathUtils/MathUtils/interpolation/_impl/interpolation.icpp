@@ -2,7 +2,7 @@
 #error Please, include "MathUtils/interpolation/interpolation.h"
 #endif
 
-#include "MathUtils/helpers/index_sequence.h"
+#include "AlexandriaKernel/index_sequence.h"
 
 namespace Euclid {
 namespace MathUtils {
