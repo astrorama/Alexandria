@@ -85,8 +85,8 @@ struct AdaptativeIntegration_Fixture {
       return m_a;
     }
 
-    std::unique_ptr<Function> clone() const override {
-      return std::unique_ptr<Function>{new ConstFunction(m_a)};
+    std::unique_ptr<Euclid::MathUtils::Function> clone() const override {
+      return std::unique_ptr<Euclid::MathUtils::Function>{new ConstFunction(m_a)};
     }
 
   private:

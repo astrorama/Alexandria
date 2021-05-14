@@ -42,8 +42,8 @@ struct simpsonsRule_Fixture {
       return m_a;
     }
 
-    std::unique_ptr<Function> clone() const override {
-      return std::unique_ptr<Function>{new ConstFunction(m_a)};
+    std::unique_ptr<Euclid::MathUtils::Function> clone() const override {
+      return std::unique_ptr<Euclid::MathUtils::Function>{new ConstFunction(m_a)};
     }
 
   private:
@@ -61,8 +61,8 @@ struct simpsonsRule_Fixture {
       return m_a * x + m_b;
     }
 
-    std::unique_ptr<Function> clone() const override {
-      return std::unique_ptr<Function>{new AffineFunction(m_a, m_b)};
+    std::unique_ptr<Euclid::MathUtils::Function> clone() const override {
+      return std::unique_ptr<Euclid::MathUtils::Function>{new AffineFunction(m_a, m_b)};
     }
 
   private:
@@ -81,8 +81,8 @@ struct simpsonsRule_Fixture {
       return m_a * x * x + m_b * x + m_c;
     }
 
-    std::unique_ptr<Function> clone() const override {
-      return std::unique_ptr<Function>{new QuadraticFunction(m_a, m_b, m_c)};
+    std::unique_ptr<Euclid::MathUtils::Function> clone() const override {
+      return std::unique_ptr<Euclid::MathUtils::Function>{new QuadraticFunction(m_a, m_b, m_c)};
     }
 
   private:
@@ -102,8 +102,8 @@ struct simpsonsRule_Fixture {
       return m_a * x * x * x + m_b * x * x + m_c * x + m_d;
     }
 
-    std::unique_ptr<Function> clone() const override {
-      return std::unique_ptr<Function>{new CubicFunction(m_a, m_b, m_c, m_d)};
+    std::unique_ptr<Euclid::MathUtils::Function> clone() const override {
+      return std::unique_ptr<Euclid::MathUtils::Function>{new CubicFunction(m_a, m_b, m_c, m_d)};
     }
 
   private:
@@ -124,8 +124,8 @@ struct simpsonsRule_Fixture {
       return m_a * std::exp(x * m_b);
     }
 
-    std::unique_ptr<Function> clone() const override {
-      return std::unique_ptr<Function>{new ExpFunction(m_a, m_b)};
+    std::unique_ptr<Euclid::MathUtils::Function> clone() const override {
+      return std::unique_ptr<Euclid::MathUtils::Function>{new ExpFunction(m_a, m_b)};
     }
 
   private:
@@ -142,8 +142,8 @@ struct simpsonsRule_Fixture {
       return 1. / std::sqrt(x * x * x);
     }
 
-    std::unique_ptr<Function> clone() const override {
-      return std::unique_ptr<Function>{new TestFunction()};
+    std::unique_ptr<Euclid::MathUtils::Function> clone() const override {
+      return std::unique_ptr<Euclid::MathUtils::Function>{new TestFunction()};
     }
   };
 
@@ -156,8 +156,8 @@ struct simpsonsRule_Fixture {
       return m_result[value];
     }
 
-    std::unique_ptr<Function> clone() const override {
-      return std::unique_ptr<Function>{new MockFunction()};
+    std::unique_ptr<Euclid::MathUtils::Function> clone() const override {
+      return std::unique_ptr<Euclid::MathUtils::Function>{new MockFunction()};
     }
 
     mutable std::set<int> m_called{};
