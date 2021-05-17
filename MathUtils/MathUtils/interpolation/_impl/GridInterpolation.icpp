@@ -46,6 +46,12 @@ struct InterpolationImpl<T, typename std::enable_if<std::is_floating_point<T>::v
 
     return simple_interpolation(x, {knots[x1i], knots[x2i]}, {y1, y2}, extrapolate);
   }
+
+  static void checkOrder(const std::vector<T>& knots) {
+    if (!std::is_sorted(knots.begin(), knots.end())) {
+      throw InterpolationException("coordinates must be sorted");
+    }
+  }
 };
 
 /**
@@ -54,7 +60,7 @@ struct InterpolationImpl<T, typename std::enable_if<std::is_floating_point<T>::v
 template <typename T>
 struct InterpolationImpl<T, typename std::enable_if<!std::is_floating_point<T>::value>::type> {
   static double interpolate(const T x, const std::vector<T>& knots, const std::vector<double>& values, bool /*extrapolate*/) {
-    std::size_t i = std::lower_bound(knots.begin(), knots.end(), x) - knots.begin();
+    std::size_t i = std::find(knots.begin(), knots.end(), x) - knots.begin();
     if (knots[i] != x)
       return 0.;
     return values[i];
@@ -63,10 +69,14 @@ struct InterpolationImpl<T, typename std::enable_if<!std::is_floating_point<T>::
   template <typename... Rest>
   static double interpolate(const T x, const std::vector<T>& knots,
                             const std::vector<std::unique_ptr<InterpN<Rest...>>>& interpolators, bool, const Rest... rest) {
-    std::size_t i = std::lower_bound(knots.begin(), knots.end(), x) - knots.begin();
+    std::size_t i = std::find(knots.begin(), knots.end(), x) - knots.begin();
     if (knots[i] != x)
       return 0.;
     return (*interpolators[i])(rest...);
+  }
+
+  static void checkOrder(const std::vector<T>&) {
+    // Discrete axes do not need to be in order
   }
 };
 
@@ -143,9 +153,7 @@ public:
                                      << " != " << N;
     }
     m_knots = std::get<0>(grid);
-    if (!std::is_sorted(m_knots.begin(), m_knots.end())) {
-      throw InterpolationException("coordinates must be sorted");
-    }
+    InterpolationImpl<T>::checkOrder(m_knots);
     if (m_knots.size() != values.shape()[0]) {
       throw InterpolationException("coordinates and value sizes must match");
     }
