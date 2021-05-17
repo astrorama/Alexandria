@@ -453,11 +453,62 @@ BOOST_FIXTURE_TEST_CASE(RepeatedNonContiguousDiscrete, RandomFixture) {
 
 //-----------------------------------------------------------------------------
 
-BOOST_AUTO_TEST_CASE(RepeatedContiguousContinous) {}
+BOOST_FIXTURE_TEST_CASE(RepeatedContiguousContinous, RandomFixture) {
+  std::vector<MyEnum> knots0{MyEnum::A, MyEnum::B, MyEnum::C};
+  std::vector<double> knots1{0., 1., 2., 2., 3.};
+  NdArray<double>     pdf{{3, 5},
+                      {
+                          //
+                          0.00, 0.15, 0.20, 0.30, 0.20,  //
+                          0.05, 0.10, 0.10, 0.40, 0.10,  //
+                          0.05, 0.08, 0.00, 0.00, 0.30,  //
+                      }};
+
+  NdSampler<MyEnum, double> dist2({knots0, knots1}, pdf);
+  auto                      sample = dist2.draw(sample_count, rng);
+
+  double                        mean = 0.;
+  std::map<MyEnum, std::size_t> counts;
+  for (auto& s : sample) {
+    mean += std::get<1>(s);
+    ++counts[std::get<0>(s)];
+  }
+  mean /= sample_count;
+
+  // Marginal for discrete axis: 0.85, 0.75, 0.43
+  BOOST_CHECK_GT(counts[MyEnum::A], counts[MyEnum::B]);
+  BOOST_CHECK_GT(counts[MyEnum::B], counts[MyEnum::C]);
+  BOOST_CHECK_GT(counts[MyEnum::C], 0);
+
+  // This ~1.8783 was computed numerically using numpy:
+  // interp_prob = np.interp(np.linspace(0, 3, 1000), [0, 1, 2, 2, 3], pdf.sum(axis=0))
+  // np.random.choice(np.linspace(0, 3, 1000), p=interp_prob/interp_prob.sum(), size=20000).mean()
+  BOOST_CHECK_CLOSE_FRACTION(mean, 1.8783, 0.01);
+}
 
 //-----------------------------------------------------------------------------
 
-BOOST_AUTO_TEST_CASE(RepeatedNonContiguousContinuous) {}
+BOOST_FIXTURE_TEST_CASE(RepeatedNonContiguousContinuous, RandomFixture) {
+  std::vector<MyEnum> knots0{MyEnum::A, MyEnum::B, MyEnum::C};
+  // This simply can not be handled
+  std::vector<double> knots1{0., 1., 2., 3., 2.};
+  NdArray<double>     pdf{{3, 5}};
+
+  try {
+    NdSampler<MyEnum, double> dist2({knots0, knots1}, pdf);
+    dist2.draw(sample_count, rng);
+    BOOST_FAIL("Should have thrown");
+  } catch (const Elements::Exception&) {
+  }
+
+  // Swap axes
+  try {
+    NdSampler<double, MyEnum> dist2({knots1, knots0}, pdf.reshape(5, 3));
+    dist2.draw(sample_count, rng);
+    BOOST_FAIL("Should have thrown");
+  } catch (const Elements::Exception&) {
+  }
+}
 
 //-----------------------------------------------------------------------------
 
