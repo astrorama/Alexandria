@@ -294,11 +294,105 @@ BOOST_FIXTURE_TEST_CASE(Sample3DDiscrete, N3DistributionFixture) {
   BOOST_CHECK_GT(counter0[MyEnum::E], counter0[MyEnum::J]);
   BOOST_CHECK_GT(counter0[MyEnum::E], counter0[MyEnum::K]);
 
-  // G should be greater than I, J and K, might be the same as G
+  // G should be greater than I, J and K, might be the same as H
   BOOST_CHECK_GT(counter0[MyEnum::G], counter0[MyEnum::I]);
   BOOST_CHECK_GT(counter0[MyEnum::G], counter0[MyEnum::J]);
   BOOST_CHECK_GT(counter0[MyEnum::G], counter0[MyEnum::K]);
 }
+
+//-----------------------------------------------------------------------------
+
+BOOST_FIXTURE_TEST_CASE(SingleDiscreteValue, RandomFixture) {
+  std::vector<MyEnum> knots0{MyEnum::A};
+  std::vector<double> knots1{0., 1., 2., 3.};
+  NdArray<double>     pdf{{1, 4}, {0.5, 1., 3., 1.5}};
+
+  NdSampler<MyEnum, double> dist2{{knots0, knots1}, pdf};
+  auto                      sample = dist2.draw(sample_count, rng);
+
+  double      mean    = 0;
+  std::size_t count_a = 0;
+  for (auto& s : sample) {
+    mean += std::get<1>(s);
+    count_a += std::get<0>(s) == MyEnum::A;
+  }
+  mean /= sample_count;
+
+  // 1.916667 is the weighted average
+  BOOST_CHECK_CLOSE_FRACTION(mean, 1.916667, 0.06);
+  BOOST_CHECK_EQUAL(count_a, sample_count);
+
+  // Swap axes
+  NdSampler<double, MyEnum> dist2p{{knots1, knots0}, pdf.reshape(4, 1)};
+  auto                      samplep = dist2p.draw(sample_count, rng);
+
+  mean    = 0;
+  count_a = 0;
+  for (auto& s : samplep) {
+    mean += std::get<0>(s);
+    count_a += std::get<1>(s) == MyEnum::A;
+  }
+  mean /= sample_count;
+
+  // 1.916667 is the weighted average
+  BOOST_CHECK_CLOSE_FRACTION(mean, 1.916667, 0.06);
+  BOOST_CHECK_EQUAL(count_a, sample_count);
+}
+
+//-----------------------------------------------------------------------------
+
+BOOST_FIXTURE_TEST_CASE(SingleContinuousValue, RandomFixture) {
+  std::vector<MyEnum> knots0{MyEnum::A, MyEnum::B, MyEnum::C};
+  std::vector<double> knots1{2.};
+  NdArray<double>     pdf{{3, 1}, {0.60, 0.30, 0.10}};
+
+  NdSampler<MyEnum, double> dist2{{knots0, knots1}, pdf};
+  auto                      sample = dist2.draw(sample_count, rng);
+
+  double                        mean = 0;
+  std::map<MyEnum, std::size_t> counts;
+  for (auto& s : sample) {
+    mean += std::get<1>(s);
+    ++counts[std::get<0>(s)];
+  }
+  mean /= sample_count;
+
+  BOOST_CHECK_EQUAL(mean, 2.);
+  BOOST_CHECK_GT(counts[MyEnum::A], counts[MyEnum::B]);
+  BOOST_CHECK_GT(counts[MyEnum::B], counts[MyEnum::C]);
+
+  // Swap axes
+  NdSampler<double, MyEnum> dist2p{{knots1, knots0}, pdf.reshape(1, 3)};
+  auto                      samplep = dist2p.draw(sample_count, rng);
+  mean                              = 0;
+  counts.clear();
+
+  for (auto& s : samplep) {
+    mean += std::get<0>(s);
+    ++counts[std::get<1>(s)];
+  }
+  mean /= sample_count;
+
+  BOOST_CHECK_EQUAL(mean, 2.);
+  BOOST_CHECK_GT(counts[MyEnum::A], counts[MyEnum::B]);
+  BOOST_CHECK_GT(counts[MyEnum::B], counts[MyEnum::C]);
+}
+
+//-----------------------------------------------------------------------------
+
+BOOST_AUTO_TEST_CASE(RepeatedContiguousDiscrete) {}
+
+//-----------------------------------------------------------------------------
+
+BOOST_AUTO_TEST_CASE(RepeatedNonContiguousDiscrete) {}
+
+//-----------------------------------------------------------------------------
+
+BOOST_AUTO_TEST_CASE(RepeatedContiguousContinous) {}
+
+//-----------------------------------------------------------------------------
+
+BOOST_AUTO_TEST_CASE(RepeatedNonContiguousContinuous) {}
 
 //-----------------------------------------------------------------------------
 
