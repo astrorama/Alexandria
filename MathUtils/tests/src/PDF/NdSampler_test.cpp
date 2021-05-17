@@ -380,11 +380,76 @@ BOOST_FIXTURE_TEST_CASE(SingleContinuousValue, RandomFixture) {
 
 //-----------------------------------------------------------------------------
 
-BOOST_AUTO_TEST_CASE(RepeatedContiguousDiscrete) {}
+BOOST_FIXTURE_TEST_CASE(RepeatedContiguousDiscrete, RandomFixture) {
+  std::vector<MyEnum> knots0{MyEnum::A, MyEnum::B, MyEnum::B, MyEnum::C};
+  std::vector<double> knots1{0., 1., 2.};
+
+  NdArray<double> pdf{{4, 3},
+                      {                   //
+                       0.60, 0.30, 0.10,  //
+                       0.00, 0.50, 0.50,  //
+                       0.33, 0.33, 0.33,  //
+                       0.00, 0.00, 1.00}};
+
+  NdSampler<MyEnum, double> dist2({knots0, knots1}, pdf);
+  auto                      sample = dist2.draw(sample_count, rng);
+
+  double                        mean = 0.;
+  std::map<MyEnum, std::size_t> counts;
+  for (auto& s : sample) {
+    mean += std::get<1>(s);
+    ++counts[std::get<0>(s)];
+  }
+  mean /= sample_count;
+
+  // All discrete are roughly equivalent, but B is repeated twice, which means ~2x more likely
+  BOOST_CHECK_GT(counts[MyEnum::A], 0);
+  BOOST_CHECK_GT(counts[MyEnum::C], 0);
+  BOOST_CHECK_GT(counts[MyEnum::B], 1.8 * counts[MyEnum::A]);
+  BOOST_CHECK_GT(counts[MyEnum::B], 1.8 * counts[MyEnum::C]);
+
+  // This ~1.13 was computed numerically using numpy:
+  // interp_prob = np.interp(np.linspace(0, 2, 1000), [0, 1, 2], pdf.sum(axis=0))
+  // np.random.choice(np.linspace(0, 2, 1000), p=interp_prob/interp_prob.sum(), size=20000).mean()
+  BOOST_CHECK_CLOSE_FRACTION(mean, 1.13, 0.04);
+}
 
 //-----------------------------------------------------------------------------
 
-BOOST_AUTO_TEST_CASE(RepeatedNonContiguousDiscrete) {}
+BOOST_FIXTURE_TEST_CASE(RepeatedNonContiguousDiscrete, RandomFixture) {
+  // Note that this is like the previous case, but B is now not contiguous
+  std::vector<MyEnum> knots0{MyEnum::A, MyEnum::B, MyEnum::C, MyEnum::B};
+  std::vector<double> knots1{0., 1., 2.};
+
+  // The PDF has been permuted accordingly
+  NdArray<double> pdf{{4, 3},
+                      {
+                          //
+                          0.60, 0.30, 0.10,  //
+                          0.00, 0.50, 0.50,  //
+                          0.00, 0.00, 1.00,  //
+                          0.33, 0.33, 0.33,  //
+                      }};
+
+  NdSampler<MyEnum, double> dist2({knots0, knots1}, pdf);
+  auto                      sample = dist2.draw(sample_count, rng);
+
+  double                        mean = 0.;
+  std::map<MyEnum, std::size_t> counts;
+  for (auto& s : sample) {
+    mean += std::get<1>(s);
+    ++counts[std::get<0>(s)];
+  }
+  mean /= sample_count;
+
+  // All discrete are roughly equivalent, but B is repeated twice, which means ~2x more likely
+  BOOST_CHECK_GT(counts[MyEnum::A], 0);
+  BOOST_CHECK_GT(counts[MyEnum::C], 0);
+  BOOST_CHECK_GT(counts[MyEnum::B], 1.8 * counts[MyEnum::A]);
+  BOOST_CHECK_GT(counts[MyEnum::B], 1.8 * counts[MyEnum::C]);
+
+  BOOST_CHECK_CLOSE_FRACTION(mean, 1.13, 0.04);
+}
 
 //-----------------------------------------------------------------------------
 
