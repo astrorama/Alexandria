@@ -525,6 +525,10 @@ BOOST_FIXTURE_TEST_CASE(RepeatedNonContiguousContinuous, RandomFixture) {
 
 //-----------------------------------------------------------------------------
 
+// The file with the serialized grid was generated with the version 16 of the archive library (Boost 1.66)
+// We need to skip this test if the boost library is too old (i.e. in centos7)
+#if BOOST_VERSION >= 106600
+
 BOOST_FIXTURE_TEST_CASE(FromGridContainer, RandomFixture) {
   using PhzGrid = GridContainer<std::vector<double>, double, double, QualifiedName, QualifiedName>;
 
@@ -589,6 +593,8 @@ BOOST_FIXTURE_TEST_CASE(FromGridContainer, RandomFixture) {
   // And the third follows a Gaussian centered at 3 and a std of 1
   BOOST_CHECK_CLOSE_FRACTION(sed_mean_z[sed2], 3.0, 0.11);
 }
+
+#endif
 
 //-----------------------------------------------------------------------------
 
