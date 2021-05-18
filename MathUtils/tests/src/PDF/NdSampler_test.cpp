@@ -16,14 +16,26 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+#include "AlexandriaKernel/index_sequence.h"
+#include "ElementsKernel/Auxiliary.h"
+#include "GridContainer/serialize.h"
 #include "MathUtils/PDF/NdSampler.h"
 #include "NdArray/io/NpyMmap.h"
+#include "SourceCatalog/SourceAttributes/Photometry.h"
+#include "XYDataset/QualifiedName.h"
+#include "XYDataset/serialize.h"
+#include <boost/archive/text_iarchive.hpp>
 #include <boost/test/unit_test.hpp>
 #include <chrono>
 #include <fstream>
 
 using namespace Euclid::MathUtils;
 using namespace Euclid::NdArray;
+using Euclid::GridContainer::GridAxis;
+using Euclid::GridContainer::GridContainer;
+using Euclid::GridContainer::gridImport;
+using Euclid::SourceCatalog::Photometry;
+using Euclid::XYDataset::QualifiedName;
 
 /// Used for discrete axes
 enum class MyEnum { A, B, C, D, E, F, G, H, I, J, K };
@@ -508,6 +520,96 @@ BOOST_FIXTURE_TEST_CASE(RepeatedNonContiguousContinuous, RandomFixture) {
     BOOST_FAIL("Should have thrown");
   } catch (const Elements::Exception&) {
   }
+}
+
+//-----------------------------------------------------------------------------
+
+template <typename Seq>
+struct ExtractKnots {};
+
+template <std::size_t... Is>
+struct ExtractKnots<Euclid::_index_sequence<Is...>> {
+  template <typename... Axes>
+  static std::tuple<std::vector<Axes>...> extract(const std::tuple<GridAxis<Axes>...>& axes) {
+    return std::tuple<std::vector<Axes>...>{{std::get<Is>(axes).begin(), std::get<Is>(axes).end()}...};
+  }
+
+  template <typename... Axes>
+  static std::vector<std::size_t> extractShape(const std::tuple<GridAxis<Axes>...>& axes) {
+    return std::vector<std::size_t>{std::get<Is>(axes).size()...};
+  }
+};
+
+template <typename... Axes>
+std::unique_ptr<NdSampler<Axes...>> createSamplerFromGrid(const GridContainer<std::vector<double>, Axes...>& grid) {
+  auto            knots     = ExtractKnots<Euclid::_make_index_sequence<sizeof...(Axes)>>::extract(grid.getAxesTuple());
+  auto            pdf_shape = ExtractKnots<Euclid::_make_index_sequence<sizeof...(Axes)>>::extractShape(grid.getAxesTuple());
+  NdArray<double> pdf(pdf_shape, grid.begin(), grid.end());
+  return Euclid::make_unique<NdSampler<Axes...>>(std::move(knots), std::move(pdf));
+}
+
+BOOST_FIXTURE_TEST_CASE(FromGridContainer, RandomFixture) {
+  using PhzGrid = GridContainer<std::vector<double>, double, double, QualifiedName, QualifiedName>;
+
+  const QualifiedName sed0("CosmosSp/new_name"), sed1("CosmosSp/Sa_A_0"), sed2("CosmosSp/Sa_A_1");
+  const QualifiedName default_qn({}, "dummy");
+
+  // Load grid. It follows the same schema as Phosphoros' grids, with a mock content of three SEDs,
+  // a single reddening curve, a single E(B-V), and 61 knots for Z
+  // Each SED has a Z probability that follows a Gaussian centered at 0, 1.5 and 3 respectively
+  auto          grid_path = Elements::getAuxiliaryPath("MathUtils/Grid_TEST_param_MADAU.txt");
+  std::ifstream grid_stream(grid_path.native());
+  auto          grid = gridImport<PhzGrid, boost::archive::text_iarchive>(grid_stream);
+
+  // Initialize the sampler from the grid
+  auto sampler = createSamplerFromGrid(grid);
+
+  // Draw samples
+  // Since QualifiedName is not default constructible, we allocate the output area here with
+  // a default value
+  std::vector<std::tuple<double, double, QualifiedName, QualifiedName>> sample(sample_count, {0., 0., default_qn, default_qn});
+  sampler->draw(sample_count, rng, sample);
+
+  // Verify that the sample statistics match the known distribution
+  std::map<QualifiedName, std::size_t> sed_count;
+  std::map<QualifiedName, double>      sed_mean_z;
+  std::map<QualifiedName, std::size_t> red_count;
+  double                               ebv_sum = 0.;
+
+  for (auto& s : sample) {
+    double        z, ebv;
+    QualifiedName red(default_qn), sed(default_qn);
+
+    std::tie(z, ebv, red, sed) = s;
+
+    ++sed_count[sed];
+    ++red_count[red];
+    sed_mean_z[sed] += z;
+    ebv_sum += ebv;
+  }
+  sed_mean_z[sed0] /= sed_count[sed0];
+  sed_mean_z[sed1] /= sed_count[sed1];
+  sed_mean_z[sed2] /= sed_count[sed2];
+
+  // The grid has E(B-V) fixed to 0
+  BOOST_CHECK_EQUAL(ebv_sum, 0.);
+
+  // The reddening curve is fixed to SB_calzetti
+  BOOST_CHECK_EQUAL(red_count.size(), 1);
+  BOOST_CHECK_EQUAL(red_count[QualifiedName({}, "SB_calzetti")], sample_count);
+
+  // There are three SEDs, with a marginal probability of 0.45, 0.41, 0.14
+  BOOST_CHECK_EQUAL(sed_count.size(), 3);
+  BOOST_CHECK_GT(sed_count[sed0], 1.05 * sed_count[sed1]);
+  BOOST_CHECK_GT(sed_count[sed1], 2.5 * sed_count[sed2]);
+  BOOST_CHECK_GT(sed_count[sed2], 0);
+
+  // First SED has PDZ following a half-normal distribution located at 0, so has a mean of ~0.8
+  BOOST_CHECK_CLOSE_FRACTION(sed_mean_z[sed0], 0.8, 0.1);
+  // Second follows a Gaussian centered at 1.5 and a std of 1
+  BOOST_CHECK_CLOSE_FRACTION(sed_mean_z[sed1], 1.5, 0.1);
+  // And the third follows a Gaussian centered at 3 and a std of 1
+  BOOST_CHECK_CLOSE_FRACTION(sed_mean_z[sed2], 3.0, 0.1);
 }
 
 //-----------------------------------------------------------------------------
