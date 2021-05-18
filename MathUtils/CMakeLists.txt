@@ -1,7 +1,9 @@
 elements_subdir(MathUtils)
 
+elements_depends_on_subdirs(GridContainer)
 elements_depends_on_subdirs(NdArray)
 elements_depends_on_subdirs(XYDataset)
+elements_depends_on_subdirs(SourceCatalog)
 
 find_package(GMock)
 
@@ -47,7 +49,7 @@ elements_add_unit_test(Cumulative_test tests/src/PDF/Cumulative_test.cpp
                      LINK_LIBRARIES MathUtils XYDataset TYPE Boost)
 
 elements_add_unit_test(NdSampler_test tests/src/PDF/NdSampler_test.cpp
-                     LINK_LIBRARIES MathUtils TYPE Boost)
+                     LINK_LIBRARIES MathUtils GridContainer SourceCatalog TYPE Boost)
 
 elements_add_unit_test(PdfModeExtraction_test tests/src/PDF/PdfModeExtraction_test.cpp
                      LINK_LIBRARIES MathUtils XYDataset TYPE Boost)
