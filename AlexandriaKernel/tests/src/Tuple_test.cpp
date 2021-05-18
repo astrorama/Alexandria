@@ -18,6 +18,7 @@
 
 #include "AlexandriaKernel/Tuples.h"
 #include <boost/test/unit_test.hpp>
+#include <memory>
 
 //-----------------------------------------------------------------------------
 
@@ -36,8 +37,10 @@ BOOST_AUTO_TEST_CASE(GetTail) {
 //-----------------------------------------------------------------------------
 
 BOOST_AUTO_TEST_CASE(MoveTail) {
-  std::tuple<double, std::vector<int>, std::unique_ptr<std::string>> tuple{55., std::vector<int>{1, 2, 3, 4},
-                                                                           new std::string{"HELLO THERE!"}};
+  std::unique_ptr<std::string> str_ptr(new std::string("HELLO THERE!"));
+  std::vector<int> vector{1,2,3,4};
+  std::tuple<double, std::vector<int>, std::unique_ptr<std::string>> tuple(55., vector, std::move(str_ptr));
+
   // This will not compile
   // auto tuple2 = Euclid::Tuple::Tail(tuple);
 

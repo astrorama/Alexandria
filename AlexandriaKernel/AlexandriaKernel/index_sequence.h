@@ -22,6 +22,7 @@
 #if __cplusplus > 201103L
 #include <utility>
 #endif
+#include <cstddef>
 
 namespace Euclid {
 
@@ -39,8 +40,8 @@ using _make_index_sequence = std::make_index_sequence<N>;
 
 template <typename T, T... Idx>
 struct _integer_sequence {
-  typedef T               value_type;
-  static constexpr size_t size() noexcept {
+  typedef T                    value_type;
+  static constexpr std::size_t size() noexcept {
     return sizeof...(Idx);
   }
 };
