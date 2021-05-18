@@ -13,17 +13,20 @@ struct InterpNAdapter;
 
 template <std::size_t N, std::size_t... Is>
 struct InterpNAdapter<N, _index_sequence<Is...>> : NAryFunction<N> {
+  // GCC 4.8 needs this hack
   template <std::size_t>
-  using Doubles = double;
+  struct Doubles {
+    using type = double;
+  };
 
   InterpNAdapter(const Coordinates<N>& grid, const NdArray::NdArray<double>& values, InterpolationType type, bool extrapolate)
-      : m_interpn(std::tuple<std::vector<Doubles<Is>>...>{grid[Is]...}, values, extrapolate) {
+      : m_interpn(std::tuple<std::vector<typename Doubles<Is>::type>...>{grid[Is]...}, values, extrapolate) {
     if (type != InterpolationType::LINEAR) {
       throw InterpolationException() << "Only linear interpolation is supported for N-dimensional grids";
     }
   }
 
-  double operator()(Doubles<Is>... xn) const override {
+  double operator()(typename Doubles<Is>::type... xn) const override {
     return m_interpn(xn...);
   }
 
@@ -34,7 +37,7 @@ struct InterpNAdapter<N, _index_sequence<Is...>> : NAryFunction<N> {
   InterpNAdapter(const InterpNAdapter&) = default;
 
 private:
-  InterpN<Doubles<Is>...> m_interpn;
+  InterpN<typename Doubles<Is>::type...> m_interpn;
 };
 
 template <std::size_t N>
