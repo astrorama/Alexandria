@@ -160,9 +160,9 @@ public:
     m_subsampler->draw(ndraws, rng, output);
 
     // For each sample
-    for (std::size_t draw = 0; draw < ndraws; ++draw) {
+    for (std::size_t draw_i = 0; draw_i < ndraws; ++draw_i) {
       std::vector<double> pdf(m_knots0.size());
-      auto&               subsample = output[draw];
+      auto&               subsample = output[draw_i];
       // Evaluate the PDF
       for (std::size_t i = 0; i < m_knots0.size(); ++i) {
         pdf[i] = _CallHelper<this_n, _make_index_sequence<sizeof...(TKnotN)>>::call(*m_interpolation, m_knots0[i], subsample);
