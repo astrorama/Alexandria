@@ -21,6 +21,7 @@
 #include "GridContainer/serialize.h"
 #include "MathUtils/PDF/NdSampler.h"
 //#include "NdArray/io/NpyMmap.h"
+#include "MathUtils/PDF/NdSamplerFromGrid.h"
 #include "SourceCatalog/SourceAttributes/Photometry.h"
 #include "XYDataset/QualifiedName.h"
 #include "XYDataset/serialize.h"
@@ -437,14 +438,13 @@ BOOST_FIXTURE_TEST_CASE(RepeatedNonContiguousDiscrete, RandomFixture) {
   std::vector<double> knots1{0., 1., 2.};
 
   // The PDF has been permuted accordingly
-  NdArray<double> pdf({4, 3},
-                      {
-                          //
-                          0.60, 0.30, 0.10,  //
-                          0.00, 0.50, 0.50,  //
-                          0.00, 0.00, 1.00,  //
-                          0.33, 0.33, 0.33,  //
-                      });
+  NdArray<double> pdf({4, 3}, {
+                                  //
+                                  0.60, 0.30, 0.10,  //
+                                  0.00, 0.50, 0.50,  //
+                                  0.00, 0.00, 1.00,  //
+                                  0.33, 0.33, 0.33,  //
+                              });
 
   NdSampler<MyEnum, double> dist2(std::tuple<std::vector<MyEnum>, std::vector<double>>(knots0, knots1), pdf);
   auto                      sample = dist2.draw(sample_count, rng);
@@ -471,13 +471,12 @@ BOOST_FIXTURE_TEST_CASE(RepeatedNonContiguousDiscrete, RandomFixture) {
 BOOST_FIXTURE_TEST_CASE(RepeatedContiguousContinous, RandomFixture) {
   std::vector<MyEnum> knots0{MyEnum::A, MyEnum::B, MyEnum::C};
   std::vector<double> knots1{0., 1., 2., 2., 3.};
-  NdArray<double>     pdf({3, 5},
-                      {
-                          //
-                          0.00, 0.15, 0.20, 0.30, 0.20,  //
-                          0.05, 0.10, 0.10, 0.40, 0.10,  //
-                          0.05, 0.08, 0.00, 0.00, 0.30,  //
-                      });
+  NdArray<double>     pdf({3, 5}, {
+                                  //
+                                  0.00, 0.15, 0.20, 0.30, 0.20,  //
+                                  0.05, 0.10, 0.10, 0.40, 0.10,  //
+                                  0.05, 0.08, 0.00, 0.00, 0.30,  //
+                              });
 
   NdSampler<MyEnum, double> dist2(std::tuple<std::vector<MyEnum>, std::vector<double>>(knots0, knots1), pdf);
   auto                      sample = dist2.draw(sample_count, rng);
@@ -526,30 +525,6 @@ BOOST_FIXTURE_TEST_CASE(RepeatedNonContiguousContinuous, RandomFixture) {
 }
 
 //-----------------------------------------------------------------------------
-
-template <typename Seq>
-struct ExtractKnots {};
-
-template <std::size_t... Is>
-struct ExtractKnots<Euclid::_index_sequence<Is...>> {
-  template <typename... Axes>
-  static std::tuple<std::vector<Axes>...> extract(const std::tuple<GridAxis<Axes>...>& axes) {
-    return std::tuple<std::vector<Axes>...>{{std::get<Is>(axes).begin(), std::get<Is>(axes).end()}...};
-  }
-
-  template <typename... Axes>
-  static std::vector<std::size_t> extractShape(const std::tuple<GridAxis<Axes>...>& axes) {
-    return std::vector<std::size_t>{std::get<Is>(axes).size()...};
-  }
-};
-
-template <typename... Axes>
-std::unique_ptr<NdSampler<Axes...>> createSamplerFromGrid(const GridContainer<std::vector<double>, Axes...>& grid) {
-  auto            knots     = ExtractKnots<Euclid::_make_index_sequence<sizeof...(Axes)>>::extract(grid.getAxesTuple());
-  auto            pdf_shape = ExtractKnots<Euclid::_make_index_sequence<sizeof...(Axes)>>::extractShape(grid.getAxesTuple());
-  NdArray<double> pdf(pdf_shape, grid.begin(), grid.end());
-  return Euclid::make_unique<NdSampler<Axes...>>(std::move(knots), std::move(pdf));
-}
 
 BOOST_FIXTURE_TEST_CASE(FromGridContainer, RandomFixture) {
   using PhzGrid = GridContainer<std::vector<double>, double, double, QualifiedName, QualifiedName>;
