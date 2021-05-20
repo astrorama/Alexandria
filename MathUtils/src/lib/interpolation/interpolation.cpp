@@ -120,6 +120,11 @@ double simple_interpolation(double x, const std::vector<double>& xp, const std::
   }
   double x1 = xp[i], x0 = xp[i - 1];
   double y1 = yp[i], y0 = yp[i - 1];
+
+  if (x1 == x0) {
+    return (x1 + y1) / 2.;
+  }
+
   double coef1 = (y1 - y0) / (x1 - x0);
   double coef0 = y0 - coef1 * x0;
   return coef0 + coef1 * x;
