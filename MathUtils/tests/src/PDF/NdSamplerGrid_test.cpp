@@ -150,14 +150,14 @@ BOOST_FIXTURE_TEST_CASE(FromGridVectorContainer, RandomFixture) {
   for (std::size_t i = 0; i < scale_axis.size(); ++i) {
     scale_axis[i] = i * 0.01;
   }
-  /*
-    auto dsampler = createSamplerFromGrid(grid, scale_axis);
-    BOOST_CHECK(dsampler);
 
-    std::vector<std::tuple<double, double, QualifiedName, QualifiedName, double>> dsample(
-        1, std::make_tuple(0, 0, default_qn, default_qn, 0));
-    dsampler->draw(1, rng, dsample);
-  */
+  auto dsampler = createSamplerFromGrid(grid, scale_axis);
+  BOOST_CHECK(dsampler);
+
+  std::vector<std::tuple<double, double, QualifiedName, QualifiedName, double>> dsample(
+      1, std::make_tuple(0, 0, default_qn, default_qn, 0));
+  dsampler->draw(1, rng, dsample);
+
   // For testing, use the default conversion (discrete axis), which is Phosphoros' use case
   auto sampler = createSamplerFromGrid(grid);
   BOOST_CHECK(sampler);
