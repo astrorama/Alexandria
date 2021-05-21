@@ -6,6 +6,7 @@ elements_depends_on_subdirs(XYDataset)
 elements_depends_on_subdirs(SourceCatalog)
 
 find_package(GMock)
+find_package(Boost REQUIRED)
 
 #===== Libraries ===============================================================
 
@@ -49,7 +50,12 @@ elements_add_unit_test(Cumulative_test tests/src/PDF/Cumulative_test.cpp
                      LINK_LIBRARIES MathUtils XYDataset TYPE Boost)
 
 elements_add_unit_test(NdSampler_test tests/src/PDF/NdSampler_test.cpp
+                     LINK_LIBRARIES MathUtils SourceCatalog TYPE Boost)
+
+if (Boost_VERSION GREATER "106600")
+elements_add_unit_test(NdSamplerGrid_test tests/src/PDF/NdSamplerGrid_test.cpp
                      LINK_LIBRARIES MathUtils GridContainer SourceCatalog TYPE Boost)
+endif ()
 
 elements_add_unit_test(PdfModeExtraction_test tests/src/PDF/PdfModeExtraction_test.cpp
                      LINK_LIBRARIES MathUtils XYDataset TYPE Boost)

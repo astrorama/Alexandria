@@ -32,11 +32,6 @@
 
 using namespace Euclid::MathUtils;
 using namespace Euclid::NdArray;
-using Euclid::GridContainer::GridAxis;
-using Euclid::GridContainer::GridContainer;
-using Euclid::GridContainer::gridImport;
-using Euclid::SourceCatalog::Photometry;
-using Euclid::XYDataset::QualifiedName;
 
 /// Used for discrete axes
 enum class MyEnum { A, B, C, D, E, F, G, H, I, J, K };
@@ -522,79 +517,6 @@ BOOST_FIXTURE_TEST_CASE(RepeatedNonContiguousContinuous, RandomFixture) {
   } catch (const Elements::Exception&) {
   }
 }
-
-//-----------------------------------------------------------------------------
-
-// The file with the serialized grid was generated with the version 16 of the archive library (Boost 1.66)
-// We need to skip this test if the boost library is too old (i.e. in centos7)
-#if BOOST_VERSION >= 106600
-
-BOOST_FIXTURE_TEST_CASE(FromGridContainer, RandomFixture) {
-  using PhzGrid = GridContainer<std::vector<double>, double, double, QualifiedName, QualifiedName>;
-
-  const QualifiedName sed0("CosmosSp/new_name"), sed1("CosmosSp/Sa_A_0"), sed2("CosmosSp/Sa_A_1");
-  const QualifiedName default_qn({}, "dummy");
-
-  // Load grid. It follows the same schema as Phosphoros' grids, with a mock content of three SEDs,
-  // a single reddening curve, a single E(B-V), and 61 knots for Z
-  // Each SED has a Z probability that follows a Gaussian centered at 0, 1.5 and 3 respectively
-  auto          grid_path = Elements::getAuxiliaryPath("MathUtils/Grid_TEST_param_MADAU.txt");
-  std::ifstream grid_stream(grid_path.native());
-  auto          grid = gridImport<PhzGrid, boost::archive::text_iarchive>(grid_stream);
-
-  // Initialize the sampler from the grid
-  auto sampler = createSamplerFromGrid(grid);
-
-  // Draw samples
-  // Since QualifiedName is not default constructible, we allocate the output area here with
-  // a default value
-  std::tuple<double, double, QualifiedName, QualifiedName> default_tuple(0., 0., default_qn, default_qn);
-  std::vector<decltype(default_tuple)>                     sample(sample_count, default_tuple);
-  sampler->draw(sample_count, rng, sample);
-
-  // Verify that the sample statistics match the known distribution
-  std::map<QualifiedName, std::size_t> sed_count;
-  std::map<QualifiedName, double>      sed_mean_z;
-  std::map<QualifiedName, std::size_t> red_count;
-  double                               ebv_sum = 0.;
-
-  for (auto& s : sample) {
-    double        z, ebv;
-    QualifiedName red(default_qn), sed(default_qn);
-
-    std::tie(z, ebv, red, sed) = s;
-
-    ++sed_count[sed];
-    ++red_count[red];
-    sed_mean_z[sed] += z;
-    ebv_sum += ebv;
-  }
-  sed_mean_z[sed0] /= sed_count[sed0];
-  sed_mean_z[sed1] /= sed_count[sed1];
-  sed_mean_z[sed2] /= sed_count[sed2];
-
-  // The grid has E(B-V) fixed to 0
-  BOOST_CHECK_EQUAL(ebv_sum, 0.);
-
-  // The reddening curve is fixed to SB_calzetti
-  BOOST_CHECK_EQUAL(red_count.size(), 1);
-  BOOST_CHECK_EQUAL(red_count[QualifiedName({}, "SB_calzetti")], sample_count);
-
-  // There are three SEDs, with a marginal probability of 0.45, 0.41, 0.14
-  BOOST_CHECK_EQUAL(sed_count.size(), 3);
-  BOOST_CHECK_GT(sed_count[sed0], 1.05 * sed_count[sed1]);
-  BOOST_CHECK_GT(sed_count[sed1], 2.5 * sed_count[sed2]);
-  BOOST_CHECK_GT(sed_count[sed2], 0);
-
-  // First SED has PDZ following a half-normal distribution located at 0, so has a mean of ~0.8
-  BOOST_CHECK_CLOSE_FRACTION(sed_mean_z[sed0], 0.8, 0.11);
-  // Second follows a Gaussian centered at 1.5 and a std of 1
-  BOOST_CHECK_CLOSE_FRACTION(sed_mean_z[sed1], 1.5, 0.11);
-  // And the third follows a Gaussian centered at 3 and a std of 1
-  BOOST_CHECK_CLOSE_FRACTION(sed_mean_z[sed2], 3.0, 0.11);
-}
-
-#endif
 
 //-----------------------------------------------------------------------------
 
