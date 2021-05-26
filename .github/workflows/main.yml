@@ -28,12 +28,11 @@ jobs:
 
     strategy:
       matrix:
+        os-type: fedora
+        os-version: ${{ fromJson(needs.get_fedora_releases.outputs.stable) }}
         include:
-          os-type: fedora
-          os-version: ${{ fromJson(needs.get_fedora_releases.outputs.stable) }}
-          include:
-            - os-type: centos
-              os-version: [7, 8]
+          - os-type: centos
+            os-version: [7, 8]
     container: ${{ matrix.os-type }}:${{ matrix.os-version }}
     steps:
       - name: Checkout
