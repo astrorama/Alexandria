@@ -21,7 +21,7 @@ jobs:
       active: ${{ steps.releases.outputs.active }}
 
   build:
-    name: Build (Stable)
+    name: Build (Active)
     needs: get_fedora_releases
     continue-on-error: false
     runs-on: ubuntu-latest
@@ -29,7 +29,7 @@ jobs:
     strategy:
       matrix:
         os-type: [fedora]
-        os-version: ${{ fromJson(needs.get_fedora_releases.outputs.stable) }}
+        os-version: ${{ fromJson(needs.get_fedora_releases.outputs.active) }}
         include:
           - os-type: centos
             os-version: 7
