@@ -8,18 +8,29 @@ on:
   workflow_dispatch:
 
 jobs:
+  get_fedora_releases:
+    name: Get Fedora Releases
+    runs-on: ubuntu-latest
+    steps:
+      - name: Query Fedora
+        id: releases
+        uses: sgallagher/get-fedora-releases-action@v1
+    outputs:
+      stable: ${{ steps.releases.outputs.stable }}
+      development: ${{ steps.releases.outputs.development }}
+      active: ${{ steps.releases.outputs.active }}
+
   build:
+    name: Build (Stable)
+    needs: get_fedora_releases
+    continue-on-error: false
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
         include:
           - os-type: fedora
-            os-version: 32
-          - os-type: fedora
-            os-version: 33
-          - os-type: fedora
-            os-version: 34
+            os-version: ${{ fromJson(needs.get_fedora_releases.outputs.stable) }}
           - os-type: centos
             os-version: 7
           - os-type: centos
