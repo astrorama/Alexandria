@@ -71,5 +71,14 @@ bool GridAxis<T>::operator!=(const GridAxis<U>& other) const {
   return !this->operator==(other);
 }
 
+template <typename T>
+auto GridAxis<T>::infimum(const T& value) const -> const_iterator {
+  auto upper_bound = std::upper_bound(m_values.begin(), m_values.end(), value);
+  if (upper_bound == m_values.begin() || (upper_bound != m_values.end() && *upper_bound == value)) {
+    return upper_bound;
+  }
+  return upper_bound - 1;
+}
+
 }  // end of namespace GridContainer
 }  // end of namespace Euclid

@@ -1033,4 +1033,24 @@ BOOST_FIXTURE_TEST_CASE(sliceFixAxisNonZeroIndexAccess, GridContainer_Fixture) {
 
 //-----------------------------------------------------------------------------
 
+BOOST_FIXTURE_TEST_CASE(infimumGrid, GridContainer_Fixture) {
+  // Given
+  GridContainerType grid{axes_tuple};
+
+  // When
+  auto low_corner = grid.infimum(2, 1, 4, 1);
+  BOOST_CHECK_EQUAL(std::get<0>(low_corner), 1);
+  BOOST_CHECK_EQUAL(std::get<1>(low_corner), 0);
+  BOOST_CHECK_EQUAL(std::get<2>(low_corner), 3);
+  BOOST_CHECK_EQUAL(std::get<3>(low_corner), 0);
+
+  low_corner = grid.infimum(4, 2, 5, 2);
+  BOOST_CHECK_EQUAL(std::get<0>(low_corner), 3);
+  BOOST_CHECK_EQUAL(std::get<1>(low_corner), 1);
+  BOOST_CHECK_EQUAL(std::get<2>(low_corner), 4);
+  BOOST_CHECK_EQUAL(std::get<3>(low_corner), 1);
+}
+
+//-----------------------------------------------------------------------------
+
 BOOST_AUTO_TEST_SUITE_END()

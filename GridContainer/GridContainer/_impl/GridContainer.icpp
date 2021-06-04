@@ -155,6 +155,59 @@ auto GridContainer<GridCellManager, AxesTypes...>::at(decltype(std::declval<Grid
   return const_cast<cell_type&>(static_cast<const GridContainer&>(*this).at(indices...));
 }
 
+template <std::size_t I>
+struct InfimumHelper {
+  template <typename>
+  using Index = std::size_t;
+
+  template <typename... AxesType>
+  static std::tuple<Index<AxesType>...> getIndex(const std::tuple<AxesType...>&           coords,
+                                                 const std::tuple<GridAxis<AxesType>...>& axes) {
+    std::tuple<Index<AxesType>...> index;
+    getIndex(coords, axes, index);
+    return index;
+  }
+
+  template <typename... AxesType>
+  static void getIndex(const std::tuple<AxesType...>& coords, const std::tuple<GridAxis<AxesType>...>& axes,
+                       std::tuple<Index<AxesType>...>& index) {
+    auto& axn          = std::get<I>(axes);
+    std::get<I>(index) = axn.infimum(std::get<I>(coords)) - axn.begin();
+    InfimumHelper<I - 1>::getIndex(coords, axes, index);
+  }
+};
+
+template <>
+struct InfimumHelper<0> {
+  template <typename>
+  using Index = std::size_t;
+
+  template <typename... AxesType>
+  static std::tuple<std::size_t> getIndex(const std::tuple<AxesType...>& coords, const std::tuple<GridAxis<AxesType>...>& axes) {
+    auto i0 = std::get<0>(axes).infimum(std::get<0>(coords));
+    return std::make_tuple(i0);
+  }
+
+  template <typename... AxesType>
+  static void getIndex(const std::tuple<AxesType...>& coords, const std::tuple<GridAxis<AxesType>...>& axes,
+                       std::tuple<Index<AxesType>...>& index) {
+    auto& ax0          = std::get<0>(axes);
+    std::get<0>(index) = ax0.infimum(std::get<0>(coords)) - ax0.begin();
+  }
+};
+
+template <typename GridCellManager, typename... AxesTypes>
+auto GridContainer<GridCellManager, AxesTypes...>::infimum(const AxesTypes... coordinates) const
+    -> std::tuple<decltype(std::declval<GridAxis<AxesTypes>>().size())...> {
+  return infimum(std::make_tuple(coordinates...));
+}
+
+template <typename GridCellManager, typename... AxesTypes>
+auto GridContainer<GridCellManager, AxesTypes...>::infimum(const std::tuple<AxesTypes...>& coords) const
+    -> std::tuple<decltype(std::declval<GridAxis<AxesTypes>>().size())...> {
+  return InfimumHelper<sizeof...(AxesTypes) - 1>::getIndex(coords, m_axes);
+}
+
 template <typename GridCellManager, typename... AxesTypes>
 template <int I>
 GridContainer<GridCellManager, AxesTypes...> GridContainer<GridCellManager, AxesTypes...>::fixAxisByIndex(size_t index) {

@@ -252,5 +252,28 @@ BOOST_AUTO_TEST_CASE(equalityOperatorDifferentTypeDifferentSize) {
 }
 
 //-----------------------------------------------------------------------------
+// Test the upper bound method
+//-----------------------------------------------------------------------------
+
+BOOST_AUTO_TEST_CASE(infimum) {
+
+  // Given
+  std::string         name = "Axis";
+  std::vector<double> knots{1., 2., 3., 4.};
+
+  // When
+  Euclid::GridContainer::GridAxis<double> axis{name, knots};
+
+  // Then
+  BOOST_CHECK(axis.infimum(0.1) == axis.begin());
+  BOOST_CHECK(axis.infimum(1.) == axis.begin());
+  BOOST_CHECK(axis.infimum(1.5) == axis.begin());
+  BOOST_CHECK(axis.infimum(2.) == axis.begin() + 1);
+  BOOST_CHECK(axis.infimum(3.88) == axis.begin() + 2);
+  BOOST_CHECK(axis.infimum(4.) == axis.end() - 1);
+  BOOST_CHECK(axis.infimum(5.) == axis.end() - 1);
+}
+
+//-----------------------------------------------------------------------------
 
 BOOST_AUTO_TEST_SUITE_END()
