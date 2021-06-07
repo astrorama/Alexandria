@@ -27,8 +27,12 @@ T sum(const NdArray<T>& array) {
 }
 
 template <typename T>
-NdArray<T> sum(const NdArray<T>& array, std::size_t axis) {
-  if (axis >= array.shape().size()) {
+NdArray<T> sum(const NdArray<T>& array, int axis) {
+  if (axis < 0) {
+    axis = array.shape().size() + axis;
+  }
+  assert(axis >= 0);
+  if (static_cast<std::size_t>(axis) >= array.shape().size()) {
     throw std::out_of_range("Invalid axis");
   }
   // Single axis returns a scalar

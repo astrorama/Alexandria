@@ -82,6 +82,11 @@ BOOST_FIXTURE_TEST_CASE(Sum2_test, OpsFixture) {
   BOOST_REQUIRE_EQUAL(sum1.shape()[0], 3);
   BOOST_CHECK_EQUAL_COLLECTIONS(sum1.begin(), sum1.end(), expected1.begin(), expected1.end());
 
+  auto sum_1 = sum(two_axes, -1);
+  BOOST_REQUIRE_EQUAL(sum_1.shape().size(), 1);
+  BOOST_REQUIRE_EQUAL(sum_1.shape()[0], 3);
+  BOOST_CHECK_EQUAL_COLLECTIONS(sum_1.begin(), sum_1.end(), expected1.begin(), expected1.end());
+
   BOOST_CHECK_THROW(sum(two_axes, 2), std::out_of_range);
 }
 
@@ -110,6 +115,12 @@ BOOST_FIXTURE_TEST_CASE(Sum3_test, OpsFixture) {
   BOOST_REQUIRE_EQUAL(sum2.shape()[0], 3);
   BOOST_REQUIRE_EQUAL(sum2.shape()[1], 4);
   BOOST_CHECK_EQUAL_COLLECTIONS(sum2.begin(), sum2.end(), expected2.begin(), expected2.end());
+
+  auto sum_1 = sum(three_axes, -1);
+  BOOST_REQUIRE_EQUAL(sum_1.shape().size(), 2);
+  BOOST_REQUIRE_EQUAL(sum_1.shape()[0], 3);
+  BOOST_REQUIRE_EQUAL(sum_1.shape()[1], 4);
+  BOOST_CHECK_EQUAL_COLLECTIONS(sum_1.begin(), sum_1.end(), expected2.begin(), expected2.end());
 
   BOOST_CHECK_THROW(sum(two_axes, 3), std::out_of_range);
 }
