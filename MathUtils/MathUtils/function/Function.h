@@ -25,8 +25,8 @@
 #ifndef MATHUTILS_FUNCTION_H
 #define MATHUTILS_FUNCTION_H
 
+#include "AlexandriaKernel/index_sequence.h"
 #include "ElementsKernel/Exception.h"
-#include "MathUtils/helpers/index_sequence.h"
 #include <memory>
 
 namespace Euclid {

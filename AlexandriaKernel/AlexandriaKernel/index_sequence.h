@@ -16,15 +16,15 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#ifndef MATHUTILS_SEQUENCE_H
-#define MATHUTILS_SEQUENCE_H
+#ifndef _ALEXANDRIAKERNEL_SEQUENCE_H
+#define _ALEXANDRIAKERNEL_SEQUENCE_H
 
 #if __cplusplus > 201103L
 #include <utility>
 #endif
+#include <cstddef>
 
 namespace Euclid {
-namespace MathUtils {
 
 #if __cplusplus > 201103L
 template <typename T, T... Idx>
@@ -40,8 +40,8 @@ using _make_index_sequence = std::make_index_sequence<N>;
 
 template <typename T, T... Idx>
 struct _integer_sequence {
-  typedef T               value_type;
-  static constexpr size_t size() noexcept {
+  typedef T                    value_type;
+  static constexpr std::size_t size() noexcept {
     return sizeof...(Idx);
   }
 };
@@ -60,7 +60,7 @@ struct _index_sequence_helper<0, Rest...> {
 template <std::size_t N>
 using _make_index_sequence = typename _index_sequence_helper<N>::type;
 #endif
-}  // namespace MathUtils
+
 }  // namespace Euclid
 
-#endif  // MATHUTILS_SEQUENCE_H
+#endif  // _ALEXANDRIAKERNEL_SEQUENCE_H
