@@ -27,7 +27,11 @@
 
 using namespace Euclid::NdArray;
 
+//-----------------------------------------------------------------------------
+
 BOOST_AUTO_TEST_SUITE(Matrix_test)
+
+//-----------------------------------------------------------------------------
 
 BOOST_AUTO_TEST_CASE(OneDimension_test) {
   NdArray<int> m{5};
@@ -37,6 +41,8 @@ BOOST_AUTO_TEST_CASE(OneDimension_test) {
   BOOST_CHECK_EQUAL(m.shape()[0], 5);
   BOOST_CHECK_EQUAL(m.at(0), 10);
 }
+
+//-----------------------------------------------------------------------------
 
 BOOST_AUTO_TEST_CASE(TwoDimension_test) {
   NdArray<int> m{2, 3};
@@ -59,6 +65,8 @@ BOOST_AUTO_TEST_CASE(TwoDimension_test) {
   BOOST_CHECK_EQUAL_COLLECTIONS(cm.begin(), cm.end(), expected.begin(), expected.end());
 }
 
+//-----------------------------------------------------------------------------
+
 BOOST_AUTO_TEST_CASE(InitFromVector_test) {
   NdArray<int> m{std::vector<size_t>{2, 3}, {10, 50, 0, 15, 20, 0}};
 
@@ -68,6 +76,8 @@ BOOST_AUTO_TEST_CASE(InitFromVector_test) {
   BOOST_CHECK_EQUAL((m.at(1, 1)), 20);
 }
 
+//-----------------------------------------------------------------------------
+
 BOOST_AUTO_TEST_CASE(BadInitFromVector_test) {
   try {
     NdArray<int> m{std::vector<size_t>{2, 3}, {10, 50, 0, 15}};
@@ -76,6 +86,8 @@ BOOST_AUTO_TEST_CASE(BadInitFromVector_test) {
   }
 }
 
+//-----------------------------------------------------------------------------
+
 BOOST_AUTO_TEST_CASE(BadCoordinates_test) {
   NdArray<int> m{std::vector<size_t>{2, 3}, {10, 50, 0, 15, 20, 0}};
 
@@ -83,6 +95,8 @@ BOOST_AUTO_TEST_CASE(BadCoordinates_test) {
   BOOST_CHECK_THROW(m.at(1, 2, 3), std::out_of_range);
   BOOST_CHECK_THROW(m.at(4, 2), std::out_of_range);
 }
+
+//-----------------------------------------------------------------------------
 
 BOOST_AUTO_TEST_CASE(Fill_test) {
   NdArray<int> m{2, 3};
@@ -93,6 +107,8 @@ BOOST_AUTO_TEST_CASE(Fill_test) {
   BOOST_CHECK_EQUAL(m.at(1, 1), 42);
 }
 
+//-----------------------------------------------------------------------------
+
 BOOST_AUTO_TEST_CASE(VectorCopy_test) {
   std::vector<int> original{1, 1, 2, 3, 5, 8};
   std::vector<int> expected(original.begin(), original.end());
@@ -102,6 +118,8 @@ BOOST_AUTO_TEST_CASE(VectorCopy_test) {
   BOOST_CHECK_EQUAL_COLLECTIONS(m.begin(), m.end(), expected.begin(), expected.end());
 }
 
+//-----------------------------------------------------------------------------
+
 BOOST_AUTO_TEST_CASE(VectorMove_test) {
   std::vector<int> original{1, 1, 2, 3, 5, 8};
   std::vector<int> expected(original.begin(), original.end());
@@ -110,6 +128,8 @@ BOOST_AUTO_TEST_CASE(VectorMove_test) {
   BOOST_CHECK_EQUAL(original.size(), 0);
   BOOST_CHECK_EQUAL_COLLECTIONS(m.begin(), m.end(), expected.begin(), expected.end());
 }
+
+//-----------------------------------------------------------------------------
 
 BOOST_AUTO_TEST_CASE(Ostream_test) {
   std::vector<int> original{1, 1, 2, 3, 5, 8};
@@ -121,12 +141,16 @@ BOOST_AUTO_TEST_CASE(Ostream_test) {
   BOOST_CHECK_EQUAL(stream.str(), std::string("<2,3>1,1,2,3,5,8"));
 }
 
+//-----------------------------------------------------------------------------
+
 BOOST_AUTO_TEST_CASE(FromIterator_test) {
   std::list<int> original{1, 7, 6, 9, 5, 3};
   NdArray<int>   m(std::vector<size_t>{2, 3}, std::begin(original), std::end(original));
   BOOST_CHECK_EQUAL(original.size(), 6);
   BOOST_CHECK_EQUAL_COLLECTIONS(m.begin(), m.end(), original.begin(), original.end());
 }
+
+//-----------------------------------------------------------------------------
 
 BOOST_AUTO_TEST_CASE(Reshape_test) {
   std::vector<int> values{10, 50, 0, 15, 20, 0};
@@ -143,6 +167,8 @@ BOOST_AUTO_TEST_CASE(Reshape_test) {
   }
 }
 
+//-----------------------------------------------------------------------------
+
 BOOST_AUTO_TEST_CASE(BadReshape_test) {
   std::vector<int> values{10, 50, 0, 15, 20, 0};
   NdArray<int>     m{std::vector<size_t>{2, 3}, values};
@@ -150,6 +176,8 @@ BOOST_AUTO_TEST_CASE(BadReshape_test) {
   BOOST_CHECK_THROW(m.reshape(3), std::range_error);
   BOOST_CHECK_THROW(m.reshape(10), std::range_error);
 }
+
+//-----------------------------------------------------------------------------
 
 BOOST_AUTO_TEST_CASE(Copy_test) {
   std::vector<int> values{10, 50, 0, 15, 20, 0};
@@ -165,6 +193,8 @@ BOOST_AUTO_TEST_CASE(Copy_test) {
   BOOST_CHECK_EQUAL(copy.at(0, 0), 1);
   BOOST_CHECK_EQUAL(copy.at(0, 1), 0);
 }
+
+//-----------------------------------------------------------------------------
 
 BOOST_AUTO_TEST_CASE(Concatenate_test) {
   std::vector<int> values1{1, 2, 3, 4, 5, 6};
@@ -183,6 +213,8 @@ BOOST_AUTO_TEST_CASE(Concatenate_test) {
   BOOST_CHECK_EQUAL_COLLECTIONS(expected.begin(), expected.end(), m.begin(), m.end());
 }
 
+//-----------------------------------------------------------------------------
+
 BOOST_AUTO_TEST_CASE(BadConcatenate_test) {
   NdArray<int> m{std::vector<size_t>{2, 3}};
   NdArray<int> add1{std::vector<size_t>{2, 4}};
@@ -191,6 +223,8 @@ BOOST_AUTO_TEST_CASE(BadConcatenate_test) {
   BOOST_CHECK_THROW(m.concatenate(add1), std::length_error);
   BOOST_CHECK_THROW(m.concatenate(add2), std::length_error);
 }
+
+//-----------------------------------------------------------------------------
 
 BOOST_AUTO_TEST_CASE(AttrNames_test) {
   const std::vector<std::string> attr_names{"ID", "SED", "PDZ"};
@@ -210,6 +244,8 @@ BOOST_AUTO_TEST_CASE(AttrNames_test) {
   auto attrs = named.attributes();
   BOOST_CHECK_EQUAL_COLLECTIONS(attrs.begin(), attrs.end(), attr_names.begin(), attr_names.end());
 }
+
+//-----------------------------------------------------------------------------
 
 BOOST_AUTO_TEST_CASE(Slice_test) {
   NdArray<int> m({2, 3, 3}, {1, 1, 1, 2, 2, 2, 3, 3, 3, 11, 11, 11, 22, 22, 22, 33, 33, 33});
@@ -244,6 +280,8 @@ BOOST_AUTO_TEST_CASE(Slice_test) {
   BOOST_CHECK_EQUAL_COLLECTIONS(second.begin(), second.end(), expected_second.begin(), expected_second.end());
 }
 
+//-----------------------------------------------------------------------------
+
 BOOST_AUTO_TEST_CASE(SliceTwice_test) {
   NdArray<int> m({2, 3, 3}, {1, 1, 1, 2, 2, 2, 3, 3, 3, 11, 11, 11, 22, 22, 22, 33, 33, 33});
   BOOST_CHECK_EQUAL(m.size(), 18);
@@ -263,6 +301,8 @@ BOOST_AUTO_TEST_CASE(SliceTwice_test) {
   BOOST_CHECK_EQUAL_COLLECTIONS(second.begin(), second.end(), expected_second.begin(), expected_second.end());
 }
 
+//-----------------------------------------------------------------------------
+
 BOOST_AUTO_TEST_CASE(SliceConst_test) {
   const NdArray<int> m({2, 3, 3}, {1, 1, 1, 2, 2, 2, 3, 3, 3, 11, 11, 11, 22, 22, 22, 33, 33, 33});
 
@@ -274,4 +314,69 @@ BOOST_AUTO_TEST_CASE(SliceConst_test) {
   BOOST_CHECK_EQUAL(second.at(2), 3);
 }
 
+//-----------------------------------------------------------------------------
+
+BOOST_AUTO_TEST_CASE(RSlice_test) {
+  NdArray<int> m({2, 3, 3}, {1, 1, 1, 2, 2, 2, 3, 3, 3, 11, 11, 11, 22, 22, 22, 33, 33, 33});
+  BOOST_CHECK_EQUAL(m.size(), 18);
+
+  auto first  = m.rslice(0);
+  auto second = m.rslice(1);
+  auto third  = m.rslice(2);
+  BOOST_CHECK_THROW(m.slice(3), std::out_of_range);
+
+  BOOST_CHECK_EQUAL(first.size(), 6);
+  BOOST_CHECK_EQUAL(first.shape().size(), 2);
+  BOOST_CHECK_EQUAL(first.shape()[0], 2);
+  BOOST_CHECK_EQUAL(first.shape()[1], 3);
+
+  BOOST_CHECK_EQUAL(first.at(0, 0), 1);
+  BOOST_CHECK_EQUAL(first.at(1, 0), 11);
+  BOOST_CHECK_EQUAL(first.at(0, 1), 2);
+  BOOST_CHECK_EQUAL(first.at(1, 1), 22);
+  BOOST_CHECK_EQUAL(first.at(0, 2), 3);
+  BOOST_CHECK_EQUAL(first.at(1, 2), 33);
+
+  std::vector<int> expected_first{1, 2, 3, 11, 22, 33};
+  BOOST_CHECK_EQUAL_COLLECTIONS(first.begin(), first.end(), expected_first.begin(), expected_first.end());
+
+  BOOST_CHECK_EQUAL(second.size(), 6);
+  BOOST_CHECK_EQUAL(second.shape().size(), 2);
+  BOOST_CHECK_EQUAL(second.shape()[0], 2);
+  BOOST_CHECK_EQUAL(second.shape()[1], 3);
+
+  BOOST_CHECK_EQUAL(second.at(0, 0), 1);
+  BOOST_CHECK_EQUAL(second.at(1, 0), 11);
+  BOOST_CHECK_EQUAL(second.at(0, 1), 2);
+  BOOST_CHECK_EQUAL(second.at(1, 1), 22);
+  BOOST_CHECK_EQUAL(second.at(0, 2), 3);
+  BOOST_CHECK_EQUAL(second.at(1, 2), 33);
+
+  BOOST_CHECK_EQUAL_COLLECTIONS(second.begin(), second.end(), expected_first.begin(), expected_first.end());
+}
+
+//-----------------------------------------------------------------------------
+
+BOOST_AUTO_TEST_CASE(RSliceTwice_test) {
+  NdArray<int> m({2, 3, 3}, {1, 1, 1, 2, 2, 2, 3, 3, 3, 11, 11, 11, 22, 22, 22, 33, 33, 33});
+  BOOST_CHECK_EQUAL(m.size(), 18);
+
+  auto first  = m.rslice(0);
+  auto second = first.rslice(2);
+
+  BOOST_CHECK_EQUAL(second.size(), 2);
+  BOOST_CHECK_EQUAL(second.shape().size(), 1);
+  BOOST_CHECK_EQUAL(second.shape()[0], 2);
+
+  BOOST_CHECK_EQUAL(second.at(0), 3);
+  BOOST_CHECK_EQUAL(second.at(1), 33);
+
+  std::vector<int> expected_second{3, 33};
+  BOOST_CHECK_EQUAL_COLLECTIONS(second.begin(), second.end(), expected_second.begin(), expected_second.end());
+}
+
+//-----------------------------------------------------------------------------
+
 BOOST_AUTO_TEST_SUITE_END()
+
+//-----------------------------------------------------------------------------
