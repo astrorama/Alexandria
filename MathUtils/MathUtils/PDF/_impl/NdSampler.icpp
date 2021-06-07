@@ -12,6 +12,35 @@ namespace Euclid {
 namespace MathUtils {
 
 /**
+ * Integrate the marginal
+ */
+template <typename T, typename Enabled = void>
+struct TrapzHelper {};
+
+/**
+ * Specialization for continuous
+ */
+template <typename T>
+struct TrapzHelper<T, typename std::enable_if<std::is_floating_point<T>::value>::type> {
+  static NdArray::NdArray<double> trapz(const NdArray::NdArray<double>& grid, const std::vector<T>& knots, size_t axis) {
+    if (knots.size() == 1) {
+      return NdArray::sum(grid, axis);
+    }
+    return NdArray::trapz(grid, knots.begin(), knots.end(), axis);
+  }
+};
+
+/**
+ * Specialization for discrete
+ */
+template <typename T>
+struct TrapzHelper<T, typename std::enable_if<!std::is_floating_point<T>::value>::type> {
+  static NdArray::NdArray<double> trapz(const NdArray::NdArray<double>& grid, const std::vector<T>&, size_t axis) {
+    return NdArray::sum(grid, axis);
+  }
+};
+
+/**
  * Specialization for a 1D distribution
  * Having the knots values and their probabilities, we compute the un-normalized cumulative distribution,
  * pick a value at uniform between the minimum and maximum cumulative values, and return as a sample the
@@ -116,7 +145,7 @@ public:
 
     // Compute the marginal of the first nested dimension
     // i.e. for N=2, compute the marginal of N=1
-    auto marginal = sum(values, -1);
+    auto marginal = TrapzHelper<TKnot0>::trapz(values, m_knots0, -1);
 
     // Nested sampler
     auto rest_knots = Tuple::Tail(std::move(knots));
