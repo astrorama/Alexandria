@@ -50,8 +50,9 @@ public:
   /**
    * Constructor
    * @param knots
-   *    Dimensions of the n-dimensional grid. Coordinates must follow the same order as the grid
-   *    axes: first set of coordinates correspond to axis0, second to axis1, and so on
+   *    Dimensions of the n-dimensional grid. The first coordinate axis corresponds to the faster changing
+   *    index on the grid (last one), and the last to the slowest axis (first one).
+   *    This is compatible with the GridContainer internal memory layout
    * @param grid
    *    Values of the PDF at each grid intersection.
    */

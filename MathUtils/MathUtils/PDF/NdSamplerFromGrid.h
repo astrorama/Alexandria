@@ -38,7 +38,7 @@ struct ExtractKnots<Euclid::_index_sequence<Is...>> {
 
   template <typename... Axes>
   static std::vector<std::size_t> extractShape(const std::tuple<GridContainer::GridAxis<Axes>...>& axes) {
-    return std::vector<std::size_t>{std::get<Is>(axes).size()...};
+    return std::vector<std::size_t>{std::get<sizeof...(Is) - Is - 1>(axes).size()...};
   }
 };
 
@@ -78,8 +78,8 @@ std::unique_ptr<NdSampler<Axes...>> createSamplerFromGrid(const GridContainer::G
  * @param cell_axis
  *  User-defined knots for the embedded axis
  */
-template <typename... GridAxes, typename CellAxis>
-std::unique_ptr<NdSampler<GridAxes..., CellAxis>>
+template <typename CellAxis, typename... GridAxes>
+std::unique_ptr<NdSampler<CellAxis, GridAxes...>>
 createSamplerFromGrid(const GridContainer::GridContainer<std::vector<std::vector<double>>, GridAxes...>& grid,
                       const std::vector<CellAxis>&                                                       cell_axis) {
   auto grid_knots = ExtractKnots<Euclid::_make_index_sequence<sizeof...(GridAxes)>>::extract(grid.getAxesTuple());
@@ -87,7 +87,7 @@ createSamplerFromGrid(const GridContainer::GridContainer<std::vector<std::vector
 
   // Add one extra
   pdf_shape.push_back(cell_axis.size());
-  auto knots = std::tuple_cat(grid_knots, std::make_tuple(cell_axis));
+  auto knots = std::tuple_cat(std::make_tuple(cell_axis), grid_knots);
 
   // Build PDF considering the cell the last axis
   NdArray::NdArray<double> pdf(pdf_shape);
@@ -100,7 +100,7 @@ createSamplerFromGrid(const GridContainer::GridContainer<std::vector<std::vector
     }
   }
 
-  return Euclid::make_unique<NdSampler<GridAxes..., CellAxis>>(std::move(knots), std::move(pdf));
+  return Euclid::make_unique<NdSampler<CellAxis, GridAxes...>>(std::move(knots), std::move(pdf));
 }
 
 /**
@@ -112,7 +112,7 @@ createSamplerFromGrid(const GridContainer::GridContainer<std::vector<std::vector
  *  Grid axes
  */
 template <typename... GridAxes>
-std::unique_ptr<NdSampler<GridAxes..., std::size_t>>
+std::unique_ptr<NdSampler<std::size_t, GridAxes...>>
 createSamplerFromGrid(const GridContainer::GridContainer<std::vector<std::vector<double>>, GridAxes...>& grid) {
   auto&                    cell_ref = *grid.begin();
   std::vector<std::size_t> cell_axis(cell_ref.size());

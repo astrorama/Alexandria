@@ -11,6 +11,13 @@ namespace MathUtils {
 template <std::size_t, typename Seq>
 struct InterpNAdapter;
 
+/**
+ * @description
+ *  GridInterpolation expects the data to follow GridContainer memory layout, but
+ *  originally interpn is expected to follow a numpy memory layout.
+ *  We use template dirty tricks to re-use GridInterpolation, transposing the axis at creation time,
+ *  and the arguments at interpolation time
+ */
 template <std::size_t N, std::size_t... Is>
 struct InterpNAdapter<N, _index_sequence<Is...>> : NAryFunction<N> {
   // GCC 4.8 needs this hack
@@ -20,14 +27,15 @@ struct InterpNAdapter<N, _index_sequence<Is...>> : NAryFunction<N> {
   };
 
   InterpNAdapter(const Coordinates<N>& grid, const NdArray::NdArray<double>& values, InterpolationType type, bool extrapolate)
-      : m_interpn(std::tuple<std::vector<typename Doubles<Is>::type>...>{grid[Is]...}, values, extrapolate) {
+      : m_interpn(std::tuple<std::vector<typename Doubles<Is>::type>...>{grid[N - Is - 1]...}, values, extrapolate) {
     if (type != InterpolationType::LINEAR) {
       throw InterpolationException() << "Only linear interpolation is supported for N-dimensional grids";
     }
   }
 
   double operator()(typename Doubles<Is>::type... xn) const override {
-    return m_interpn(xn...);
+    auto as_tuple = std::make_tuple(xn...);
+    return m_interpn(std::get<N - Is - 1>(as_tuple)...);
   }
 
   std::unique_ptr<NAryFunction<N>> clone() const override {
