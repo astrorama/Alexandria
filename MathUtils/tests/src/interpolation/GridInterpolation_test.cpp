@@ -47,11 +47,7 @@ BOOST_AUTO_TEST_CASE(DiscreteAxis1) {
 BOOST_AUTO_TEST_CASE(CombinedAxes2) {
   std::vector<EnumType> knots0{EnumType::A, EnumType::B, EnumType::C, EnumType::E};
   std::vector<double>   knots1{0., 1., 2., 3., 4.};
-  NdArray<double>       values({4, 5}, {                     //
-                                  1,  2,  4,  3,  5,   //
-                                  6,  8,  9,  10, 11,  //
-                                  90, 80, 70, 60, 65,  //
-                                  1,  1,  1,  1,  1});
+  NdArray<double>       values({5, 4}, {1, 6, 90, 1, 2, 8, 80, 1, 4, 9, 70, 1, 3, 10, 60, 1, 5, 11, 65, 1});
 
   InterpN<EnumType, double> interp2(std::tuple<std::vector<EnumType>, std::vector<double>>(knots0, knots1), values, true);
 
@@ -68,12 +64,7 @@ BOOST_AUTO_TEST_CASE(CombinedAxesReversed2) {
   std::vector<double>   knots0{0., 1., 2., 3., 4.};
   std::vector<EnumType> knots1{EnumType::A, EnumType::B, EnumType::C, EnumType::E};
 
-  NdArray<double> values({5, 4}, {                 //
-                                  1,  4,  3,  5,   //
-                                  6,  9,  10, 11,  //
-                                  90, 70, 60, 65,  //
-                                  1,  1,  1,  1,   //
-                                  0,  3,  0,  0});
+  NdArray<double> values({4, 5}, {1, 6, 90, 1, 0, 4, 9, 70, 1, 3, 3, 10, 60, 1, 0, 5, 11, 65, 1, 0});
 
   InterpN<double, EnumType> interp2(std::tuple<std::vector<double>, std::vector<EnumType>>(knots0, knots1), values, true);
 
@@ -90,12 +81,7 @@ BOOST_AUTO_TEST_CASE(CopyConstructor) {
   std::vector<double>   knots0{0., 1., 2., 3., 4.};
   std::vector<EnumType> knots1{EnumType::A, EnumType::B, EnumType::C, EnumType::E};
 
-  NdArray<double> values({5, 4}, {                 //
-                                  1,  4,  3,  5,   //
-                                  6,  9,  10, 11,  //
-                                  90, 70, 60, 65,  //
-                                  1,  1,  1,  1,   //
-                                  0,  3,  0,  0});
+  NdArray<double> values({4, 5}, {1, 6, 90, 1, 0, 4, 9, 70, 1, 3, 3, 10, 60, 1, 0, 5, 11, 65, 1, 0});
 
   InterpN<double, EnumType> interp2(std::tuple<std::vector<double>, std::vector<EnumType>>(knots0, knots1), values, true);
 
@@ -116,7 +102,7 @@ BOOST_AUTO_TEST_CASE(CopyConstructor) {
 BOOST_AUTO_TEST_CASE(SingleDiscreteValue) {
   std::vector<double>   knots0{0., 1., 2., 3.};
   std::vector<EnumType> knots1{EnumType::A};
-  NdArray<double>       values({4, 1}, {1., 2., 3., 4.});
+  NdArray<double>       values({1, 4}, {1., 2., 3., 4.});
 
   InterpN<double, EnumType> interp(std::tuple<std::vector<double>, std::vector<EnumType>>(knots0, knots1), values, true);
 
@@ -125,7 +111,7 @@ BOOST_AUTO_TEST_CASE(SingleDiscreteValue) {
   BOOST_CHECK_EQUAL(interp(1.8, EnumType::B), 0.0);
 
   // Swap axes
-  InterpN<EnumType, double> interp2(std::tuple<std::vector<EnumType>, std::vector<double>>(knots1, knots0), values.reshape(1, 4),
+  InterpN<EnumType, double> interp2(std::tuple<std::vector<EnumType>, std::vector<double>>(knots1, knots0), values.reshape(4, 1),
                                     true);
   BOOST_CHECK_CLOSE(interp2(EnumType::A, 1.), 2., 1e-8);
   BOOST_CHECK_CLOSE(interp2(EnumType::A, 2.5), 3.5, 1e-8);
@@ -137,7 +123,7 @@ BOOST_AUTO_TEST_CASE(SingleDiscreteValue) {
 BOOST_AUTO_TEST_CASE(SingleContinuousValue) {
   std::vector<double>   knots0{1.};
   std::vector<EnumType> knots1{EnumType::A, EnumType::B, EnumType::C};
-  NdArray<double>       values({1, 3}, {2., 3., 4.});
+  NdArray<double>       values({3, 1}, {2., 3., 4.});
 
   InterpN<double, EnumType> interp(std::tuple<std::vector<double>, std::vector<EnumType>>(knots0, knots1), values, true);
 
@@ -147,7 +133,7 @@ BOOST_AUTO_TEST_CASE(SingleContinuousValue) {
   BOOST_CHECK_EQUAL(interp(1.8, EnumType::D), 0.0);
 
   // Swap axes
-  InterpN<EnumType, double> interp2(std::tuple<std::vector<EnumType>, std::vector<double>>(knots1, knots0), values.reshape(3, 1),
+  InterpN<EnumType, double> interp2(std::tuple<std::vector<EnumType>, std::vector<double>>(knots1, knots0), values.reshape(1, 3),
                                     true);
   BOOST_CHECK_CLOSE(interp2(EnumType::A, 1.), 2., 1e-8);
   BOOST_CHECK_CLOSE(interp2(EnumType::A, 2.5), 2., 1e-8);

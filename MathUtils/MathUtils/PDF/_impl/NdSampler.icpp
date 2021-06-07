@@ -116,7 +116,7 @@ public:
 
     // Compute the marginal of the first nested dimension
     // i.e. for N=2, compute the marginal of N=1
-    auto marginal = sum(values, 0);
+    auto marginal = sum(values, -1);
 
     // Nested sampler
     auto rest_knots = Tuple::Tail(std::move(knots));

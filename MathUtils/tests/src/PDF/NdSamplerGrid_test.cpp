@@ -154,16 +154,16 @@ BOOST_FIXTURE_TEST_CASE(FromGridVectorContainer, RandomFixture) {
   auto dsampler = createSamplerFromGrid(grid, scale_axis);
   BOOST_CHECK(dsampler);
 
-  std::vector<std::tuple<double, double, QualifiedName, QualifiedName, double>> dsample(
-      1, std::make_tuple(0, 0, default_qn, default_qn, 0));
+  std::vector<std::tuple<double, double, double, QualifiedName, QualifiedName>> dsample(
+      1, std::make_tuple(0, 0, 0, default_qn, default_qn));
   dsampler->draw(1, rng, dsample);
 
   // For testing, use the default conversion (discrete axis), which is Phosphoros' use case
   auto sampler = createSamplerFromGrid(grid);
   BOOST_CHECK(sampler);
 
-  std::vector<std::tuple<double, double, QualifiedName, QualifiedName, std::size_t>> sample(
-      sample_count, std::make_tuple(0, 0, default_qn, default_qn, 0));
+  std::vector<std::tuple<std::size_t, double, double, QualifiedName, QualifiedName>> sample(
+      sample_count, std::make_tuple(0, 0, 0, default_qn, default_qn));
   sampler->draw(sample_count, rng, sample);
 
   // Verify that the sample statistics match the known distribution
@@ -178,7 +178,7 @@ BOOST_FIXTURE_TEST_CASE(FromGridVectorContainer, RandomFixture) {
     std::size_t   scale;
     QualifiedName red(default_qn), sed(default_qn);
 
-    std::tie(z, ebv, red, sed, scale) = s;
+    std::tie(scale, z, ebv, red, sed) = s;
 
     ++sed_count[sed];
     ++red_count[red];

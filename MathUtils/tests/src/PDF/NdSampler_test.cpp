@@ -18,7 +18,6 @@
 
 #include "AlexandriaKernel/index_sequence.h"
 #include "ElementsKernel/Auxiliary.h"
-#include "GridContainer/serialize.h"
 #include "MathUtils/PDF/NdSampler.h"
 //#include "NdArray/io/NpyMmap.h"
 #include "MathUtils/PDF/NdSamplerFromGrid.h"
@@ -27,7 +26,6 @@
 #include "XYDataset/serialize.h"
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/test/unit_test.hpp>
-#include <chrono>
 #include <fstream>
 
 using namespace Euclid::MathUtils;
@@ -212,7 +210,7 @@ BOOST_FIXTURE_TEST_CASE(Sample2D, N2DistributionFixture) {
 
 BOOST_FIXTURE_TEST_CASE(Sample2DSingleCell, RandomFixture) {
   std::vector<double>       x0{0, 1}, x1{10, 100};
-  NdArray<double>           pdf({2, 2}, {1, 550, 1, 550});
+  NdArray<double>           pdf({2, 2}, {1, 1, 550, 550});
   NdSampler<double, double> dist2(std::tuple<std::vector<double>, std::vector<double>>(x0, x1), pdf);
   auto                      sample = dist2.draw(sample_count, rng);
   BOOST_CHECK_EQUAL(sample.size(), sample_count);
@@ -315,7 +313,7 @@ BOOST_FIXTURE_TEST_CASE(Sample3DDiscrete, N3DistributionFixture) {
 BOOST_FIXTURE_TEST_CASE(SingleDiscreteValue, RandomFixture) {
   std::vector<MyEnum> knots0{MyEnum::A};
   std::vector<double> knots1{0., 1., 2., 3.};
-  NdArray<double>     pdf({1, 4}, {0.5, 1., 3., 1.5});
+  NdArray<double>     pdf({4, 1}, {0.5, 1., 3., 1.5});
 
   NdSampler<MyEnum, double> dist2(std::tuple<std::vector<MyEnum>, std::vector<double>>(knots0, knots1), pdf);
   auto                      sample = dist2.draw(sample_count, rng);
@@ -333,7 +331,7 @@ BOOST_FIXTURE_TEST_CASE(SingleDiscreteValue, RandomFixture) {
   BOOST_CHECK_EQUAL(count_a, sample_count);
 
   // Swap axes
-  NdSampler<double, MyEnum> dist2p(std::tuple<std::vector<double>, std::vector<MyEnum>>(knots1, knots0), pdf.reshape(4, 1));
+  NdSampler<double, MyEnum> dist2p(std::tuple<std::vector<double>, std::vector<MyEnum>>(knots1, knots0), pdf.reshape(1, 4));
   auto                      samplep = dist2p.draw(sample_count, rng);
 
   mean    = 0;
@@ -354,7 +352,7 @@ BOOST_FIXTURE_TEST_CASE(SingleDiscreteValue, RandomFixture) {
 BOOST_FIXTURE_TEST_CASE(SingleContinuousValue, RandomFixture) {
   std::vector<MyEnum> knots0{MyEnum::A, MyEnum::B, MyEnum::C};
   std::vector<double> knots1{2.};
-  NdArray<double>     pdf({3, 1}, {0.60, 0.30, 0.10});
+  NdArray<double>     pdf({1, 3}, {0.60, 0.30, 0.10});
 
   NdSampler<MyEnum, double> dist2(std::tuple<std::vector<MyEnum>, std::vector<double>>(knots0, knots1), pdf);
   auto                      sample = dist2.draw(sample_count, rng);
@@ -372,7 +370,7 @@ BOOST_FIXTURE_TEST_CASE(SingleContinuousValue, RandomFixture) {
   BOOST_CHECK_GT(counts[MyEnum::B], counts[MyEnum::C]);
 
   // Swap axes
-  NdSampler<double, MyEnum> dist2p(std::tuple<std::vector<double>, std::vector<MyEnum>>(knots1, knots0), pdf.reshape(1, 3));
+  NdSampler<double, MyEnum> dist2p(std::tuple<std::vector<double>, std::vector<MyEnum>>(knots1, knots0), pdf.reshape(3, 1));
   auto                      samplep = dist2p.draw(sample_count, rng);
   mean                              = 0;
   counts.clear();
@@ -394,12 +392,7 @@ BOOST_FIXTURE_TEST_CASE(RepeatedContiguousDiscrete, RandomFixture) {
   std::vector<MyEnum> knots0{MyEnum::A, MyEnum::B, MyEnum::B, MyEnum::C};
   std::vector<double> knots1{0., 1., 2.};
 
-  NdArray<double> pdf({4, 3},
-                      {                   //
-                       0.60, 0.30, 0.10,  //
-                       0.00, 0.50, 0.50,  //
-                       0.33, 0.33, 0.33,  //
-                       0.00, 0.00, 1.00});
+  NdArray<double> pdf({3, 4}, {0.6, 0., 0.33, 0., 0.3, 0.5, 0.33, 0., 0.1, 0.5, 0.33, 1.});
 
   NdSampler<MyEnum, double> dist2(std::tuple<std::vector<MyEnum>, std::vector<double>>{knots0, knots1}, pdf);
   auto                      sample = dist2.draw(sample_count, rng);
@@ -432,13 +425,7 @@ BOOST_FIXTURE_TEST_CASE(RepeatedNonContiguousDiscrete, RandomFixture) {
   std::vector<double> knots1{0., 1., 2.};
 
   // The PDF has been permuted accordingly
-  NdArray<double> pdf({4, 3}, {
-                                  //
-                                  0.60, 0.30, 0.10,  //
-                                  0.00, 0.50, 0.50,  //
-                                  0.00, 0.00, 1.00,  //
-                                  0.33, 0.33, 0.33,  //
-                              });
+  NdArray<double> pdf({3, 4}, {0.6, 0., 0.33, 0., 0.3, 0.5, 0.33, 0., 0.1, 0.5, 0.33, 1.});
 
   NdSampler<MyEnum, double> dist2(std::tuple<std::vector<MyEnum>, std::vector<double>>(knots0, knots1), pdf);
   auto                      sample = dist2.draw(sample_count, rng);
@@ -465,12 +452,7 @@ BOOST_FIXTURE_TEST_CASE(RepeatedNonContiguousDiscrete, RandomFixture) {
 BOOST_FIXTURE_TEST_CASE(RepeatedContiguousContinous, RandomFixture) {
   std::vector<MyEnum> knots0{MyEnum::A, MyEnum::B, MyEnum::C};
   std::vector<double> knots1{0., 1., 2., 2., 3.};
-  NdArray<double>     pdf({3, 5}, {
-                                  //
-                                  0.00, 0.15, 0.20, 0.30, 0.20,  //
-                                  0.05, 0.10, 0.10, 0.40, 0.10,  //
-                                  0.05, 0.08, 0.00, 0.00, 0.30,  //
-                              });
+  NdArray<double>     pdf({5, 3}, {0., 0.05, 0.05, 0.15, 0.1, 0.08, 0.2, 0.1, 0., 0.3, 0.4, 0., 0.2, 0.1, 0.3});
 
   NdSampler<MyEnum, double> dist2(std::tuple<std::vector<MyEnum>, std::vector<double>>(knots0, knots1), pdf);
   auto                      sample = dist2.draw(sample_count, rng);
@@ -500,7 +482,7 @@ BOOST_FIXTURE_TEST_CASE(RepeatedNonContiguousContinuous, RandomFixture) {
   std::vector<MyEnum> knots0{MyEnum::A, MyEnum::B, MyEnum::C};
   // This simply can not be handled
   std::vector<double> knots1{0., 1., 2., 3., 2.};
-  NdArray<double>     pdf({3, 5});
+  NdArray<double>     pdf({5, 3});
 
   try {
     NdSampler<MyEnum, double> dist2(std::tuple<std::vector<MyEnum>, std::vector<double>>(knots0, knots1), pdf);
