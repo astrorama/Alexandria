@@ -44,18 +44,19 @@ namespace MathUtils {
  * @tparam N
  *  The number of dimensions
  */
-template <std::size_t N>
+template <typename... TKnot>
 class NdSampler {
 public:
   /**
    * Constructor
    * @param knots
-   *    Dimensions of the n-dimensional grid. Coordinates must follow the same order as the grid
-   *    axes: first set of coordinates correspond to axis0, second to axis1, and so on
+   *    Dimensions of the n-dimensional grid. The first coordinate axis corresponds to the faster changing
+   *    index on the grid (last one), and the last to the slowest axis (first one).
+   *    This is compatible with the GridContainer internal memory layout
    * @param grid
    *    Values of the PDF at each grid intersection.
    */
-  NdSampler(std::array<std::vector<double>, N> knots, const NdArray::NdArray<double>& grid);
+  NdSampler(std::tuple<std::vector<TKnot>...> knots, const NdArray::NdArray<double>& grid);
 
   /**
    * Draw samples from the n-dimensional distribution
@@ -69,15 +70,10 @@ public:
    *    An NdArray, where the first axis corresponds to the number of draws, and the second to the number of dimensions
    */
   template <typename Generator>
-  NdArray::NdArray<double> draw(std::size_t ndraws, Generator& rng) const;
+  std::vector<std::tuple<TKnot...>> draw(std::size_t ndraws, Generator& rng) const;
 
-  template<typename Generator>
-  void draw(std::size_t ndraws, Generator &rng, NdArray::NdArray<double>& output) const;
-
-private:
-  std::unique_ptr<NdSampler<N - 1>> m_subsampler;
-  std::unique_ptr<NAryFunction<N>>  m_interpolation;
-  std::vector<double>               m_knots;
+  template <typename Generator, typename... OKnots>
+  void draw(std::size_t ndraws, Generator& rng, std::vector<std::tuple<OKnots...>>& output) const;
 };
 
 }  // namespace MathUtils

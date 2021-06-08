@@ -154,14 +154,14 @@ public:
     }
     m_knots = std::get<0>(grid);
     InterpolationImpl<T>::checkOrder(m_knots);
-    if (m_knots.size() != values.shape()[0]) {
+    if (m_knots.size() != values.shape().back()) {
       throw InterpolationException("coordinates and value sizes must match");
     }
     // Build nested interpolators
     auto subgrid = Tuple::Tail(std::move(grid));
     m_interpolators.resize(m_knots.size());
     for (size_t i = 0; i < m_knots.size(); ++i) {
-      auto subvalues = values.slice(i);
+      auto subvalues = values.rslice(i);
       m_interpolators[i].reset(new InterpN<Rest...>(subgrid, subvalues, extrapolate));
     }
   }

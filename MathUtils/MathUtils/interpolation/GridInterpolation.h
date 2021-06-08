@@ -56,6 +56,9 @@ public:
    *    Grid values
    * @param extrapolate
    *    If true, values will be extrapolated on continuous dimensions
+   * @warning
+   *    The memory layout of values is expected to follow the same as GridContainer: the faster changing axis (the last)
+   *    corresponds to the first grid axis
    */
   InterpN(const std::tuple<std::vector<AxisType>...>& grid, const NdArray::NdArray<double>& values, bool extrapolate);
 
