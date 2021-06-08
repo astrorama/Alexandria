@@ -76,6 +76,10 @@ public:
   /// Returns an iterator after the last knot of the axis
   const_iterator end() const;
 
+  /// Returns an iterator to the greatest element still smaller or equal than value
+  /// @note The value is clipped, so if value is less than the first element, still begin() is returned
+  const_iterator infimum(const T& value) const;
+
   /**
    * @brief
    * Compares the axis with another axis

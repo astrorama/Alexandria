@@ -219,6 +219,17 @@ public:
   cell_type& at(decltype(std::declval<GridAxis<AxesTypes>>().size())... indices);
 
   /**
+   * @brief Returns the grid indexes to the greatest knot less or equal to the given coordinates
+   * @param coordinates The coordinates
+   * @return The indices
+   */
+  std::tuple<decltype(std::declval<GridAxis<AxesTypes>>().size())...> infimum(const AxesTypes... coordinates) const;
+
+  ///@copydoc infimum(const AxesTypes... coordinates) const
+  std::tuple<decltype(std::declval<GridAxis<AxesTypes>>().size())...>
+  infimum(const std::tuple<AxesTypes...>& coordinates) const;
+
+  /**
    * @brief Returns a slice of the grid based on an axis index
    * @details
    * The returned GridContainer has the same number of axes with the original,
