@@ -343,7 +343,7 @@ BOOST_FIXTURE_TEST_CASE(SingleDiscreteValue, RandomFixture) {
   mean /= sample_count;
 
   // 1.916667 is the weighted average
-  BOOST_CHECK_CLOSE_FRACTION(mean, 1.916667, 0.06);
+  BOOST_CHECK_CLOSE_FRACTION(mean, 1.916667, 0.1);
   BOOST_CHECK_EQUAL(count_a, sample_count);
 }
 
