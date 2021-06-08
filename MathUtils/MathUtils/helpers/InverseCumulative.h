@@ -37,7 +37,7 @@ namespace MathUtils {
  */
 template <typename TKnot, typename E = void>
 class InverseCumulative {
-
+public:
   /**
    * Constructor
    * @param knots
