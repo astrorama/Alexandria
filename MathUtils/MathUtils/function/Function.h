@@ -25,8 +25,8 @@
 #ifndef MATHUTILS_FUNCTION_H
 #define MATHUTILS_FUNCTION_H
 
+#include "AlexandriaKernel/index_sequence.h"
 #include "ElementsKernel/Exception.h"
-#include "MathUtils/helpers/index_sequence.h"
 #include <memory>
 
 namespace Euclid {
@@ -92,31 +92,8 @@ public:
   virtual std::unique_ptr<NAryFunction> clone() const = 0;
 };
 
-/**
- * @interface NAryFunction
- *
- * @brief Interface class representing a function
- *
- * @details
- *  Specialization of NAryFunction for a single parameter. This is required to maintain API with existing
- *  classes implementing Function.
- */
-class Function;
-
-template <>
-class NAryFunction<1> : public NAryFunctionImpl<_make_index_sequence<1>> {
-public:
-  /**
-   * Creates a clone of the function object. All subclasses must implement this
-   * method, to enable copying of Function objects when only a reference to the
-   * Function class is available.
-   * @return A copy of the Function object
-   */
-  virtual std::unique_ptr<Function> clone() const = 0;
-};
-
 /// Alias for an unary function
-class Function : public NAryFunction<1> {};
+using Function = NAryFunction<1>;
 
 /// Alias for a binary function
 using BinaryFunction = NAryFunction<2>;

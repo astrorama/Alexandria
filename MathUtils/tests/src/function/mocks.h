@@ -17,7 +17,7 @@
  */
 
 /**
- * @file tests/src/function/mocks.h
+ * @file tests/src/std::unique_ptr<Euclid::MathUtils::Function>/mocks.h
  * @date February 20, 2014
  * @author Nikolaos Apostolakos
  */
@@ -35,8 +35,8 @@ public:
   double operator()(const double) const override {
     return m_value;
   }
-  std::unique_ptr<Function> clone() const override {
-    return std::unique_ptr<Function>{new FunctionMock{m_value}};
+  std::unique_ptr<Euclid::MathUtils::Function> clone() const override {
+    return std::unique_ptr<Euclid::MathUtils::Function>{new FunctionMock{m_value}};
   }
 
 private:
@@ -49,8 +49,8 @@ public:
   double operator()(const double) const override {
     return m_value;
   }
-  std::unique_ptr<Function> clone() const override {
-    return std::unique_ptr<Function>{new IntegrableMock{m_value}};
+  std::unique_ptr<Euclid::MathUtils::Function> clone() const override {
+    return std::unique_ptr<Euclid::MathUtils::Function>{new IntegrableMock{m_value}};
   }
   double integrate(const double min, const double max) const override {
     m_min = min;
@@ -73,8 +73,8 @@ public:
       return 1;
     }
   }
-  std::unique_ptr<Function> clone() const override {
-    return std::unique_ptr<Function>{new DifferentiableMock{}};
+  std::unique_ptr<Euclid::MathUtils::Function> clone() const override {
+    return std::unique_ptr<Euclid::MathUtils::Function>{new DifferentiableMock{}};
   }
   std::shared_ptr<Euclid::MathUtils::Function> derivative() const override {
     return nullptr;

@@ -50,12 +50,27 @@ T sum(const NdArray<T>& array);
  * @param array
  *  The ndarray
  * @param axis
- *  The axis. 0 is the first.
+ *  The axis. 0 is the first. Negative values index from the end.
  * @return
  *  Another NdArray with one axis less
  */
 template <typename T>
-NdArray<T> sum(const NdArray<T>& array, std::size_t axis);
+NdArray<T> sum(const NdArray<T>& array, int axis);
+
+/**
+ * Integrate elements in an ndarray along the given axis
+ * @param array
+ *  The ndarray
+ * @param kbegin
+ *  Iterator to the beginning of the knot valuess
+ * @param kend
+ *  Iterator to the end of the knot values
+ * @param axis
+ *  The axis. 0 is the first. Negative values index from the end.
+ * @return
+ */
+template<typename T, typename Iterator>
+NdArray<T> trapz(const NdArray<T>& array, const Iterator kbegin, const Iterator kend, int axis);
 
 /**
  * Return the coordinates for the maximum element

@@ -1,0 +1,199 @@
+#ifndef GRIDINTERPOLATION_IMPL
+#error Please, include "MathUtils/interpolation/GridInterpolation.h"
+#endif
+
+#include "AlexandriaKernel/Tuples.h"
+#include "MathUtils/interpolation/interpolation.h"
+
+namespace Euclid {
+namespace MathUtils {
+
+template <typename T, typename Enable = void>
+struct InterpolationImpl;
+
+/**
+ * Trait for continuous types
+ */
+template <typename T>
+struct InterpolationImpl<T, typename std::enable_if<std::is_floating_point<T>::value>::type> {
+  static double interpolate(const T x, const std::vector<T>& knots, const std::vector<double>& values, bool extrapolate) {
+    return simple_interpolation(x, knots, values, extrapolate);
+  }
+
+  template <typename... Rest>
+  static double interpolate(const T x, const std::vector<T>& knots,
+                            const std::vector<std::unique_ptr<InterpN<Rest...>>>& interpolators, bool extrapolate,
+                            const Rest... rest) {
+    // If no extrapolation, and the value if out-of-bounds, just clip at 0
+    if ((x < knots.front() || x > knots.back()) && !extrapolate) {
+      return 0.;
+    }
+
+    if (knots.size() == 1) {
+      return (*interpolators[0])(rest...);
+    }
+
+    std::size_t x2i = std::lower_bound(knots.begin(), knots.end(), x) - knots.begin();
+    if (x2i == 0) {
+      ++x2i;
+    } else if (x2i == knots.size()) {
+      --x2i;
+    }
+    std::size_t x1i = x2i - 1;
+
+    double y1 = (*interpolators[x1i])(rest...);
+    double y2 = (*interpolators[x2i])(rest...);
+
+    return simple_interpolation(x, {knots[x1i], knots[x2i]}, {y1, y2}, extrapolate);
+  }
+
+  static void checkOrder(const std::vector<T>& knots) {
+    if (!std::is_sorted(knots.begin(), knots.end())) {
+      throw InterpolationException("coordinates must be sorted");
+    }
+  }
+};
+
+/**
+ * Trait for discrete types
+ */
+template <typename T>
+struct InterpolationImpl<T, typename std::enable_if<!std::is_floating_point<T>::value>::type> {
+  static double interpolate(const T x, const std::vector<T>& knots, const std::vector<double>& values, bool /*extrapolate*/) {
+    std::size_t i = std::find(knots.begin(), knots.end(), x) - knots.begin();
+    if (knots[i] != x)
+      return 0.;
+    return values[i];
+  }
+
+  template <typename... Rest>
+  static double interpolate(const T x, const std::vector<T>& knots,
+                            const std::vector<std::unique_ptr<InterpN<Rest...>>>& interpolators, bool, const Rest... rest) {
+    std::size_t i = std::find(knots.begin(), knots.end(), x) - knots.begin();
+    if (knots[i] != x)
+      return 0.;
+    return (*interpolators[i])(rest...);
+  }
+
+  static void checkOrder(const std::vector<T>&) {
+    // Discrete axes do not need to be in order
+  }
+};
+
+/**
+ * Specialization (and end of the recursion) for a 1-dimensional interpolation.
+ */
+template <typename T>
+class InterpN<T> {
+public:
+  /**
+   * Constructor
+   * @param grid
+   *    A 1-dimensional grid
+   * @param values
+   * @param type
+   * @param extrapolate
+   */
+  InterpN(const std::tuple<std::vector<T>>& grid, const NdArray::NdArray<double>& values, bool extrapolate)
+      : m_knots(std::get<0>(grid)), m_values(values.begin(), values.end()), m_extrapolate(extrapolate) {
+    if (values.shape().size() != 1) {
+      throw InterpolationException() << "values and coordinates dimensionalities must match: " << values.shape().size() << " != 1";
+    }
+    if (m_knots.size() != values.size()) {
+      throw InterpolationException() << "The size of the grid and the size of the values do not match: " << m_knots.size()
+                                     << " != " << m_values.size();
+    }
+  }
+
+  /**
+   * Call as a function
+   * @param x
+   *    Coordinate value
+   * @return
+   *    Interpolated value
+   */
+  double operator()(const T x) const {
+    return InterpolationImpl<T>::interpolate(x, m_knots, m_values, m_extrapolate);
+  }
+
+  /// Copy constructor
+  InterpN(const InterpN&) = default;
+
+  /// Move constructor
+  InterpN(InterpN&&) = default;
+
+private:
+  std::vector<T>      m_knots;
+  std::vector<double> m_values;
+  bool                m_extrapolate;
+};
+
+/**
+ * Recursive specialization of an N-Dimensional interpolator
+ * @tparam N Dimensionality (N > 1)
+ * @tparam F The first element of the index sequence
+ * @tparam Rest The rest of the elements from the index sequence
+ */
+template <typename T, typename... Rest>
+class InterpN<T, Rest...> {
+public:
+  /**
+   * Constructor
+   * @param grid
+   * @param values
+   * @param type
+   * @param extrapolate
+   */
+  InterpN(const std::tuple<std::vector<T>, std::vector<Rest>...>& grid, const NdArray::NdArray<double>& values, bool extrapolate)
+      : m_extrapolate(extrapolate) {
+    constexpr std::size_t N = sizeof...(Rest) + 1;
+
+    if (values.shape().size() != N) {
+      throw InterpolationException() << "values and coordinates dimensionality must match: " << values.shape().size()
+                                     << " != " << N;
+    }
+    m_knots = std::get<0>(grid);
+    InterpolationImpl<T>::checkOrder(m_knots);
+    if (m_knots.size() != values.shape()[0]) {
+      throw InterpolationException("coordinates and value sizes must match");
+    }
+    // Build nested interpolators
+    auto subgrid = Tuple::Tail(std::move(grid));
+    m_interpolators.resize(m_knots.size());
+    for (size_t i = 0; i < m_knots.size(); ++i) {
+      auto subvalues = values.slice(i);
+      m_interpolators[i].reset(new InterpN<Rest...>(subgrid, subvalues, extrapolate));
+    }
+  }
+
+  /**
+   * Call as a function
+   * @param x Value for the axis for the first dimension
+   * @param rest Values for the next set of axes
+   * @return The interpolated value
+   * @details
+   *    Doubles<Rest>... is used to expand into (N-1) doubles
+   *    x is used to find the interpolators for x1 and x2 s.t. x1 <= x <=x2
+   *    Those two interpolators are used to compute y1 for x1, and y2 for x2 (based on the rest of the parameters)
+   *    A final linear interpolator is used to get the value of y at the position x
+   */
+  double operator()(T x, Rest... rest) const {
+    return InterpolationImpl<T>::interpolate(x, m_knots, m_interpolators, m_extrapolate, rest...);
+  }
+
+  /// Copy constructor
+  InterpN(const InterpN& other) : m_knots(other.m_knots), m_extrapolate(other.m_extrapolate) {
+    m_interpolators.resize(m_knots.size());
+    for (size_t i = 0; i < m_interpolators.size(); ++i) {
+      m_interpolators[i].reset(new InterpN<Rest...>(*other.m_interpolators[i]));
+    }
+  }
+
+private:
+  std::vector<T>                                 m_knots;
+  std::vector<std::unique_ptr<InterpN<Rest...>>> m_interpolators;
+  bool                                           m_extrapolate;
+};
+
+}  // namespace MathUtils
+}  // namespace Euclid

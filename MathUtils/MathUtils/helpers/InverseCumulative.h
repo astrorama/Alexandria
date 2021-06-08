@@ -25,18 +25,42 @@
 namespace Euclid {
 namespace MathUtils {
 
+/**
+ * Model an inverse cumulative, used to sample a value given a PDF
+ * @tparam TKnot
+ *  Knot type, may be discrete or continuous
+ * @tparam E
+ *  Used by the discrete and continuous specializations.
+ * @details
+ *  The PDF is linearly interpolated. This implies that the CDF
+ *  is computed deriving analytically each segment into a quadratic function.
+ */
+template <typename TKnot, typename E = void>
 class InverseCumulative {
 public:
-  InverseCumulative(std::vector<double> knots, std::vector<double> pdf);
+  /**
+   * Constructor
+   * @param knots
+   *    PDF knots. For continuous distributions, they must be in order.
+   *    Discrete distributions do not need to be sorted.
+   * @param pdf
+   *    Distribution PDF
+   */
+  InverseCumulative(std::vector<TKnot> knots, std::vector<double> pdf);
 
-  double operator()(double p) const;
-
-private:
-  std::vector<double> m_knots, m_pdf, m_cdf;
-  double              m_min, m_range;
+  /**
+   * Return the first value where the CDF has a value >= p
+   * For continuous distributions each segment of the PDF is assumed to be linearly interpolated,
+   * so the integral of the PDF is used to interpolate the knot value.
+   */
+  TKnot operator()(double p) const;
 };
 
 }  // namespace MathUtils
 }  // namespace Euclid
+
+#define INVERSE_CUMULATIVE_IMPL
+#include "MathUtils/helpers/_impl/InverseCumulative.icpp"
+#undef INVERSE_CUMULATIVE_IMPL
 
 #endif  // MATHUTILS_INV_CUMULATIVE_H

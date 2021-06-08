@@ -19,110 +19,132 @@
 #ifdef NDARRAY_IMPL
 
 #include <algorithm>
+#include <cstring>
 
 namespace Euclid {
 namespace NdArray {
 
 template <typename T>
 template <bool Const>
-NdArray<T>::Iterator<Const>::Iterator(ContainerInterface* container_ptr, size_t offset)
-    : m_container_ptr{container_ptr}, m_offset{offset} {}
+NdArray<T>::Iterator<Const>::Iterator(ContainerInterface* container_ptr, size_t offset, const std::vector<size_t>& shape,
+                                      const std::vector<size_t>& strides, size_t start)
+    : m_container_ptr(container_ptr)
+    , m_offset(offset)
+    , m_row_size(std::accumulate(shape.begin(), shape.end(), 1, std::multiplies<size_t>()))
+    , m_stride{strides.back()}
+    , m_i{start} {}
+
+template <typename T>
+template <bool Const>
+NdArray<T>::Iterator<Const>::Iterator(ContainerInterface* container_ptr, size_t offset, size_t row_size, size_t stride,
+                                      size_t start)
+    : m_container_ptr(container_ptr), m_offset(offset), m_row_size(row_size), m_stride(stride), m_i(start) {}
 
 template <typename T>
 template <bool Const>
 NdArray<T>::Iterator<Const>::Iterator(const Iterator<false>& other)
-    : m_container_ptr{other.m_container_ptr}, m_offset{other.m_offset} {}
+    : m_container_ptr{other.m_container_ptr}
+    , m_offset{other.m_offset}
+    , m_row_size{other.m_row_size}
+    , m_stride{other.m_stride}
+    , m_i{other.m_i} {}
 
 template <typename T>
 template <bool Const>
 auto NdArray<T>::Iterator<Const>::operator++() -> Iterator& {
-  ++m_offset;
+  ++m_i;
   return *this;
 }
 
 template <typename T>
 template <bool Const>
 auto NdArray<T>::Iterator<Const>::operator++(int) -> Iterator {
-  return Iterator{m_container_ptr, m_offset + 1};
+  return Iterator{m_container_ptr, m_offset, m_row_size, m_stride, m_i + 1};
 }
 
 template <typename T>
 template <bool Const>
 bool NdArray<T>::Iterator<Const>::operator==(const Iterator& other) const {
-  return m_container_ptr == other.m_container_ptr && m_offset == other.m_offset;
+  return std::memcmp(this, &other, sizeof(*this)) == 0;
 }
 
 template <typename T>
 template <bool Const>
 bool NdArray<T>::Iterator<Const>::operator!=(const Iterator& other) const {
-  return m_container_ptr != other.m_container_ptr || m_offset != other.m_offset;
+  return !(*this == other);
 }
 
 template <typename T>
 template <bool Const>
 auto NdArray<T>::Iterator<Const>::operator*() -> value_t& {
-  return m_container_ptr->at(m_offset);
+  return operator[](0);
 }
 
 template <typename T>
 template <bool Const>
 auto NdArray<T>::Iterator<Const>::operator*() const -> value_t {
-  return m_container_ptr->at(m_offset);
+  return operator[](0);
 }
 
 template <typename T>
 template <bool Const>
 auto NdArray<T>::Iterator<Const>::operator+=(size_t n) -> Iterator& {
-  m_offset += n;
+  m_i += n;
   return *this;
 }
 
 template <typename T>
 template <bool Const>
 auto NdArray<T>::Iterator<Const>::operator+(size_t n) -> Iterator {
-  return Iterator{m_container_ptr, m_offset + n};
+  return Iterator{m_container_ptr, m_offset, m_row_size, m_stride, m_i + n};
 }
 
 template <typename T>
 template <bool Const>
 auto NdArray<T>::Iterator<Const>::operator-=(size_t n) -> Iterator& {
-  assert(n <= m_offset);
-  m_offset -= n;
+  assert(n <= m_i);
+  m_i -= n;
   return *this;
 }
 
 template <typename T>
 template <bool Const>
 auto NdArray<T>::Iterator<Const>::operator-(size_t n) -> Iterator {
-  assert(n <= m_offset);
-  return Iterator{m_container_ptr, m_offset - n};
+  assert(n <= m_i);
+  return Iterator{m_container_ptr, m_offset, m_row_size, m_stride, m_i - n};
 }
 
 template <typename T>
 template <bool Const>
 auto NdArray<T>::Iterator<Const>::operator-(const Iterator& other) -> difference_type {
   assert(m_container_ptr == other.m_container_ptr);
-  return m_offset - other.m_offset;
+  return m_i - other.m_i;
 }
 
 template <typename T>
 template <bool Const>
 auto NdArray<T>::Iterator<Const>::operator[](size_t i) -> value_t& {
-  return m_container_ptr->at(m_offset + i);
+  return m_container_ptr->at(m_offset + (m_i + i) * m_stride);
+}
+
+template <typename T>
+template <bool Const>
+auto NdArray<T>::Iterator<Const>::operator[](size_t i) const -> value_t {
+  return m_container_ptr->at(m_offset + (m_i + i) * m_stride);
 }
 
 template <typename T>
 template <bool Const>
 bool NdArray<T>::Iterator<Const>::operator<(const Iterator& other) {
   assert(m_container_ptr == other.m_container_ptr);
-  return m_offset < other.m_offset;
+  return m_i < other.m_i;
 }
 
 template <typename T>
 template <bool Const>
 bool NdArray<T>::Iterator<Const>::operator>(const Iterator& other) {
   assert(m_container_ptr == other.m_container_ptr);
-  return m_offset > other.m_offset;
+  return m_i > other.m_i;
 }
 
 template <typename T>
@@ -257,22 +279,22 @@ const T& NdArray<T>::at(size_t i, D... rest) const {
 
 template <typename T>
 auto NdArray<T>::begin() -> iterator {
-  return iterator{m_container.get(), m_offset};
+  return iterator{m_container.get(), m_offset, m_shape, m_stride_size, 0};
 }
 
 template <typename T>
 auto NdArray<T>::end() -> iterator {
-  return iterator{m_container.get(), m_size + m_offset};
+  return iterator{m_container.get(), m_offset, m_shape, m_stride_size, size()};
 }
 
 template <typename T>
 auto NdArray<T>::begin() const -> const_iterator {
-  return const_iterator{m_container.get(), m_offset};
+  return const_iterator{m_container.get(), m_offset, m_shape, m_stride_size, 0};
 }
 
 template <typename T>
 auto NdArray<T>::end() const -> const_iterator {
-  return const_iterator{m_container.get(), m_size + m_offset};
+  return const_iterator{m_container.get(), m_offset, m_shape, m_stride_size, size()};
 }
 
 template <typename T>
@@ -329,10 +351,9 @@ auto NdArray<T>::concatenate(const self_type& other) -> self_type& {
 
 template <typename T>
 NdArray<T>::NdArray(std::shared_ptr<ContainerInterface> container, size_t offset, std::vector<size_t> shape_,
-                    std::vector<std::string> attr_names)
-    : m_offset{offset}, m_shape{shape_}, m_attr_names{attr_names}, m_container{container} {
+                    std::vector<size_t> stride, std::vector<std::string> attr_names)
+    : m_offset{offset}, m_shape{shape_}, m_stride_size{stride}, m_attr_names{attr_names}, m_container{container} {
   m_size = std::accumulate(m_shape.begin(), m_shape.end(), 1, std::multiplies<size_t>());
-  update_strides();
 }
 
 template <typename T>
@@ -349,13 +370,38 @@ auto NdArray<T>::slice(size_t i) -> self_type {
     std::copy(m_attr_names.begin() + 1, m_attr_names.end(), attrs.begin());
   }
   auto                offset = m_offset + i * m_stride_size[0];
+  std::vector<size_t> stride_(m_stride_size.begin() + 1, m_stride_size.end());
   std::vector<size_t> shape_(m_shape.begin() + 1, m_shape.end());
-  return NdArray(m_container, offset, std::move(shape_), std::move(attrs));
+  return NdArray(m_container, offset, std::move(shape_), std::move(stride_), std::move(attrs));
 }
 
 template <typename T>
 auto NdArray<T>::slice(size_t i) const -> const self_type {
   return const_cast<NdArray<T>*>(this)->slice(i);
+}
+
+template <typename T>
+auto NdArray<T>::rslice(size_t i) -> self_type {
+  if (m_shape.size() <= 1) {
+    throw std::out_of_range("Can not slice a one dimensional array");
+  }
+  if (i >= m_shape.back()) {
+    throw std::out_of_range("Axis -1 out of range");
+  }
+  std::vector<std::string> attrs;
+  if (!m_attr_names.empty()) {
+    attrs.resize(m_attr_names.size() - 1);
+    std::copy(m_attr_names.begin(), m_attr_names.end() - 1, attrs.begin());
+  }
+  auto                offset = m_offset + i * m_stride_size.back();
+  std::vector<size_t> strides_(m_stride_size.begin(), m_stride_size.end() - 1);
+  std::vector<size_t> shape_(m_shape.begin(), m_shape.end() - 1);
+  return NdArray(m_container, offset, std::move(shape_), std::move(strides_), std::move(attrs));
+}
+
+template <typename T>
+auto NdArray<T>::rslice(size_t i) const -> const self_type {
+  return const_cast<NdArray<T>*>(this)->rslice(i);
 }
 
 template <typename T>

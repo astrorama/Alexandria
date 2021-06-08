@@ -27,8 +27,12 @@ T sum(const NdArray<T>& array) {
 }
 
 template <typename T>
-NdArray<T> sum(const NdArray<T>& array, std::size_t axis) {
-  if (axis >= array.shape().size()) {
+NdArray<T> sum(const NdArray<T>& array, int axis) {
+  if (axis < 0) {
+    axis = array.shape().size() + axis;
+  }
+  assert(axis >= 0);
+  if (static_cast<std::size_t>(axis) >= array.shape().size()) {
     throw std::out_of_range("Invalid axis");
   }
   // Single axis returns a scalar
@@ -53,6 +57,54 @@ NdArray<T> sum(const NdArray<T>& array, std::size_t axis) {
     for (std::size_t axis_i = 0; axis_i < axis_size; ++axis_i) {
       in_coordinates[axis] = axis_i;
       output_val += array.at(in_coordinates);
+    }
+  }
+  // Return
+  return output;
+}
+
+template <typename T, typename Iterator>
+NdArray<T> trapz(const NdArray<T>& array, const Iterator kbegin, const Iterator kend, int axis) {
+  if (axis < 0) {
+    axis = array.shape().size() + axis;
+  }
+  assert(axis >= 0);
+  if (static_cast<std::size_t>(axis) >= array.shape().size()) {
+    throw std::out_of_range("Invalid axis");
+  }
+  // Allocate output
+  auto output_shape = array.shape();
+  auto axis_size    = output_shape[axis];
+  // Verify knots size
+  if (static_cast<std::size_t>(kend - kbegin) != axis_size) {
+    throw std::length_error("Integration axis value does not match the size of the array axis");
+  }
+  // Single axis returns a scalar
+  bool output_scalar = (array.shape().size() == 1);
+  if (output_scalar) {
+    output_shape.clear();
+    output_shape.emplace_back(1);
+  } else {
+    output_shape.erase(output_shape.begin() + axis);
+  }
+  NdArray<T> output(output_shape);
+  // Integrate along axis
+  for (std::size_t out_i = 0; out_i < output.size(); ++out_i) {
+    auto                     out_coordinates = unravel_index(out_i, output_shape);
+    std::vector<std::size_t> in_coordinates(out_coordinates);
+    if (!output_scalar) {
+      in_coordinates.insert(in_coordinates.begin() + axis, 0ul);
+    }
+
+    auto& output_val = output.at(out_coordinates);
+    auto  ki         = kbegin + 1;
+    for (std::size_t axis_i = 1; axis_i < axis_size; ++axis_i, ++ki) {
+      auto dx              = (*ki) - *(ki - 1);
+      in_coordinates[axis] = axis_i;
+      auto b               = array.at(in_coordinates);
+      --in_coordinates[axis];
+      auto a = array.at(in_coordinates);
+      output_val += ((a + b) * dx) / 2;
     }
   }
   // Return

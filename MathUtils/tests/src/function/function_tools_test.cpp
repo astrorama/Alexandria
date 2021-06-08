@@ -34,8 +34,8 @@ class DummyMultiplyFunction : public Euclid::MathUtils::Function {
   double operator()(const double) const override {
     return 0;
   }
-  std::unique_ptr<Function> clone() const override {
-    return std::unique_ptr<Function>{new DummyMultiplyFunction{}};
+  std::unique_ptr<Euclid::MathUtils::Function> clone() const override {
+    return std::unique_ptr<Euclid::MathUtils::Function>{new DummyMultiplyFunction{}};
   }
 };
 
@@ -47,8 +47,8 @@ class FunctionType1 : public Euclid::MathUtils::Function {
   double operator()(const double) const override {
     return 0;
   }
-  std::unique_ptr<Function> clone() const override {
-    return std::unique_ptr<Function>{new FunctionType1{}};
+  std::unique_ptr<Euclid::MathUtils::Function> clone() const override {
+    return std::unique_ptr<Euclid::MathUtils::Function>{new FunctionType1{}};
   }
 };
 
@@ -56,8 +56,8 @@ class FunctionType2 : public Euclid::MathUtils::Function {
   double operator()(const double) const override {
     return 0;
   }
-  std::unique_ptr<Function> clone() const override {
-    return std::unique_ptr<Function>{new FunctionType2{}};
+  std::unique_ptr<Euclid::MathUtils::Function> clone() const override {
+    return std::unique_ptr<Euclid::MathUtils::Function>{new FunctionType2{}};
   }
 };
 

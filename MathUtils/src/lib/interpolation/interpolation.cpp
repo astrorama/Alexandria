@@ -97,6 +97,15 @@ std::unique_ptr<Function> interpolate(const Euclid::XYDataset::XYDataset& datase
 }
 
 double simple_interpolation(double x, const std::vector<double>& xp, const std::vector<double>& yp, bool extrapolate) {
+  if (xp.empty()) {
+    throw InterpolationException() << "Can not interpolate an empty list of values";
+  }
+  if (xp.size() != yp.size()) {
+    throw InterpolationException() << "Number of knots and number of values do not match";
+  }
+  if (xp.size() == 1) {
+    return (extrapolate || xp.front() == x) ? yp.front() : 0.;
+  }
   auto        gt = std::upper_bound(xp.begin(), xp.end(), x);
   std::size_t i  = gt - xp.begin();
   if (i == 0) {
@@ -111,6 +120,11 @@ double simple_interpolation(double x, const std::vector<double>& xp, const std::
   }
   double x1 = xp[i], x0 = xp[i - 1];
   double y1 = yp[i], y0 = yp[i - 1];
+
+  if (x1 == x0) {
+    return (x1 + y1) / 2.;
+  }
+
   double coef1 = (y1 - y0) / (x1 - x0);
   double coef0 = y0 - coef1 * x0;
   return coef0 + coef1 * x;
