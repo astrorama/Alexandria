@@ -58,7 +58,7 @@ public:
   }
 
 private:
-  const InverseCumulative m_inv_cumulative;
+  const InverseCumulative<double> m_inv_cumulative;
 };
 
 /**
@@ -177,7 +177,7 @@ void NdSampler<N>::draw(std::size_t ndraws, Generator& rng, NdArray::NdArray<dou
       pdf[i] = _CallHelper<_make_index_sequence<N - 1>>::call(*m_interpolation, m_knots[i], subsample, this_n + 1);
     }
     auto p                  = uniform(rng);
-    InverseCumulative inv_cumulative(m_knots, std::move(pdf));
+    InverseCumulative<double> inv_cumulative(m_knots, std::move(pdf));
     output.at(draw, this_n) = inv_cumulative(p);
   }
 }
