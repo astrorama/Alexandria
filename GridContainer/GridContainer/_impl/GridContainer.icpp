@@ -168,9 +168,9 @@ struct InfimumHelper {
     return index;
   }
 
-  template <typename... AxesType>
+  template <typename IndexTuple, typename... AxesType>
   static void getIndex(const std::tuple<AxesType...>& coords, const std::tuple<GridAxis<AxesType>...>& axes,
-                       std::tuple<Index<AxesType>...>& index) {
+                       IndexTuple& index) {
     auto& axn          = std::get<I>(axes);
     std::get<I>(index) = axn.infimum(std::get<I>(coords)) - axn.begin();
     InfimumHelper<I - 1>::getIndex(coords, axes, index);
@@ -188,9 +188,9 @@ struct InfimumHelper<0> {
     return std::make_tuple(i0);
   }
 
-  template <typename... AxesType>
+  template <typename IndexTuple, typename... AxesType>
   static void getIndex(const std::tuple<AxesType...>& coords, const std::tuple<GridAxis<AxesType>...>& axes,
-                       std::tuple<Index<AxesType>...>& index) {
+                       IndexTuple& index) {
     auto& ax0          = std::get<0>(axes);
     std::get<0>(index) = ax0.infimum(std::get<0>(coords)) - ax0.begin();
   }
