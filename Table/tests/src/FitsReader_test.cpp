@@ -251,5 +251,25 @@ BOOST_FIXTURE_TEST_CASE(ReadSuccess, FitsReader_Fixture) {
 }
 
 //-----------------------------------------------------------------------------
+// Regression test for an off-by-one bug in hasMoreRows
+//-----------------------------------------------------------------------------
+
+BOOST_FIXTURE_TEST_CASE(ReadInChunks_test, FitsReader_Fixture) {
+  FitsReader reader{*table_hdu};
+  BOOST_CHECK(reader.hasMoreRows());
+  BOOST_CHECK_EQUAL(reader.rowsLeft(), 2);
+
+  auto rows = reader.read(1);
+  BOOST_CHECK_EQUAL(rows.size(), 1);
+  BOOST_CHECK(reader.hasMoreRows());
+  BOOST_CHECK_EQUAL(reader.rowsLeft(), 1);
+
+  rows = reader.read(1);
+  BOOST_CHECK_EQUAL(rows.size(), 1);
+  BOOST_CHECK(!reader.hasMoreRows());
+  BOOST_CHECK_EQUAL(reader.rowsLeft(), 0);
+}
+
+//-----------------------------------------------------------------------------
 
 BOOST_AUTO_TEST_SUITE_END()

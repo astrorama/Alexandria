@@ -163,7 +163,7 @@ void FitsReader::skip(long rows) {
 
 bool FitsReader::hasMoreRows() {
   readColumnInfo();
-  return m_current_row < m_total_rows;
+  return m_current_row <= m_total_rows;
 }
 
 std::size_t FitsReader::rowsLeft() {
