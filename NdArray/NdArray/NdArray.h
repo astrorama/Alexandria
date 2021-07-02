@@ -309,7 +309,7 @@ public:
    * @throws std::invalid_argument
    *    If the array has attribute names
    */
-  self_type& reshape(const std::vector<size_t> new_shape);
+  self_type& reshape(const std::vector<size_t>& new_shape);
 
   /**
    * Reshape the NdArray.
@@ -554,8 +554,8 @@ private:
   /**
    * Private constructor used for slices
    */
-  NdArray(std::shared_ptr<ContainerInterface> container, size_t offset, std::vector<size_t> shape,
-          std::vector<size_t> stride, std::vector<std::string> attr_names);
+  NdArray(std::shared_ptr<ContainerInterface> container, size_t offset, const std::vector<size_t>& shape,
+          const std::vector<size_t>& stride, const std::vector<std::string>& attr_names);
 
   /**
    * Gets the total offset for the given coordinates.

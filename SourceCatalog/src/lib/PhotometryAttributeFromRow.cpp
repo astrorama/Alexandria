@@ -40,8 +40,8 @@ PhotometryAttributeFromRow::PhotometryAttributeFromRow(
     std::shared_ptr<Euclid::Table::ColumnInfo>                                      column_info_ptr,
     const std::vector<std::pair<std::string, std::pair<std::string, std::string>>>& filter_name_mapping,
     const bool missing_photometry_enabled, const double missing_photometry_flag, const bool upper_limit_enabled,
-    const std::vector<std::pair<std::string, float>> n_map, const double n_upper_limit_flag,
-    const std::vector<std::pair<std::string, bool>> convert_from_mag)
+    const std::vector<std::pair<std::string, float>>& n_map, const double n_upper_limit_flag,
+    const std::vector<std::pair<std::string, bool>>& convert_from_mag)
     : m_missing_photometry_enabled(missing_photometry_enabled)
     , m_missing_photometry_flag(missing_photometry_flag)
     , m_upper_limit_enabled(upper_limit_enabled)

@@ -33,7 +33,7 @@ namespace SourceCatalog {
 
 //-----------------------------------------------------------------------------
 // Constructor
-Catalog::Catalog(std::vector<Source> source_vector) : m_source_vector(source_vector) {
+Catalog::Catalog(const std::vector<Source>& source_vector) : m_source_vector(source_vector) {
   // Set the m_indices_map map
   for (size_t index = 0; index < m_source_vector.size(); ++index) {
     auto it = m_source_index_map.emplace(m_source_vector[index].getId(), index);

@@ -219,7 +219,7 @@ NdArray<T>::NdArray(const std::vector<size_t>& shape_, const std::vector<std::st
 }
 
 template <typename T>
-auto NdArray<T>::reshape(const std::vector<size_t> new_shape) -> self_type& {
+auto NdArray<T>::reshape(const std::vector<size_t>& new_shape) -> self_type& {
   if (!m_attr_names.empty())
     throw std::invalid_argument("Can not reshape arrays with attribute names");
 
@@ -350,8 +350,8 @@ auto NdArray<T>::concatenate(const self_type& other) -> self_type& {
 }
 
 template <typename T>
-NdArray<T>::NdArray(std::shared_ptr<ContainerInterface> container, size_t offset, std::vector<size_t> shape_,
-                    std::vector<size_t> stride, std::vector<std::string> attr_names)
+NdArray<T>::NdArray(std::shared_ptr<ContainerInterface> container, size_t offset, const std::vector<size_t>& shape_,
+                    const std::vector<size_t>& stride, const std::vector<std::string>& attr_names)
     : m_offset(offset)
     , m_shape(shape_)
     , m_stride_size(stride)
