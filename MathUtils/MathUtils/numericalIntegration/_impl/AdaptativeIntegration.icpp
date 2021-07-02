@@ -27,7 +27,7 @@ namespace MathUtils {
 
 template <typename Quadrature>
 AdaptativeIntegration<Quadrature>::AdaptativeIntegration(double relative_precion, int initial_order)
-    : m_relative_precion{relative_precion}, m_initial_order{initial_order} {}
+    : m_relative_precion(relative_precion), m_initial_order(initial_order) {}
 
 template <typename Quadrature>
 double AdaptativeIntegration<Quadrature>::operator()(const Function& function, double min, double max) {

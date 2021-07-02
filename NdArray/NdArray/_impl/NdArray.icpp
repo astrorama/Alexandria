@@ -149,9 +149,9 @@ bool NdArray<T>::Iterator<Const>::operator>(const Iterator& other) {
 
 template <typename T>
 NdArray<T>::NdArray(const std::vector<size_t>& shape_)
-    : m_offset{0}
-    , m_shape{shape_}
-    , m_size{std::accumulate(m_shape.begin(), m_shape.end(), 1u, std::multiplies<size_t>())}
+    : m_offset(0)
+    , m_shape(shape_)
+    , m_size(std::accumulate(m_shape.begin(), m_shape.end(), 1u, std::multiplies<size_t>()))
     , m_container(new ContainerWrapper<std::vector>(m_size)) {
   update_strides();
 }
@@ -159,10 +159,10 @@ NdArray<T>::NdArray(const std::vector<size_t>& shape_)
 template <typename T>
 template <template <class...> class Container>
 NdArray<T>::NdArray(const std::vector<size_t>& shape_, const Container<T>& data)
-    : m_offset{0}
-    , m_shape{shape_}
-    , m_size{std::accumulate(m_shape.begin(), m_shape.end(), 1u, std::multiplies<size_t>())}
-    , m_container{new ContainerWrapper<Container>(data)} {
+    : m_offset(0)
+    , m_shape(shape_)
+    , m_size(std::accumulate(m_shape.begin(), m_shape.end(), 1u, std::multiplies<size_t>()))
+    , m_container(new ContainerWrapper<Container>(data)) {
   if (m_size != m_container->size()) {
     throw std::invalid_argument("Data size does not match the shape");
   }
@@ -172,10 +172,10 @@ NdArray<T>::NdArray(const std::vector<size_t>& shape_, const Container<T>& data)
 template <typename T>
 template <template <class...> class Container>
 NdArray<T>::NdArray(const std::vector<size_t>& shape_, Container<T>&& data)
-    : m_offset{0}
-    , m_shape{shape_}
-    , m_size{std::accumulate(m_shape.begin(), m_shape.end(), 1u, std::multiplies<size_t>())}
-    , m_container{new ContainerWrapper<Container>(std::move(data))} {
+    : m_offset(0)
+    , m_shape(shape_)
+    , m_size(std::accumulate(m_shape.begin(), m_shape.end(), 1u, std::multiplies<size_t>()))
+    , m_container(new ContainerWrapper<Container>(std::move(data))) {
   if (m_size != m_container->size()) {
     throw std::invalid_argument("Data size does not match the shape");
   }
@@ -185,10 +185,10 @@ NdArray<T>::NdArray(const std::vector<size_t>& shape_, Container<T>&& data)
 template <typename T>
 template <typename II>
 NdArray<T>::NdArray(const std::vector<size_t>& shape_, II ibegin, II iend)
-    : m_offset{0}
-    , m_shape{shape_}
-    , m_size{std::accumulate(m_shape.begin(), m_shape.end(), 1u, std::multiplies<size_t>())}
-    , m_container{new ContainerWrapper<std::vector>(ibegin, iend)} {
+    : m_offset(0)
+    , m_shape(shape_)
+    , m_size(std::accumulate(m_shape.begin(), m_shape.end(), 1u, std::multiplies<size_t>()))
+    , m_container(new ContainerWrapper<std::vector>(ibegin, iend)) {
   if (m_size != m_container->size()) {
     throw std::invalid_argument("Data size does not match the shape");
   }
@@ -197,11 +197,11 @@ NdArray<T>::NdArray(const std::vector<size_t>& shape_, II ibegin, II iend)
 
 template <typename T>
 NdArray<T>::NdArray(const self_type* other)
-    : m_offset{0}
-    , m_shape{other->m_shape}
-    , m_attr_names{other->m_attr_names}
-    , m_size{std::accumulate(m_shape.begin(), m_shape.end(), 1u, std::multiplies<size_t>())}
-    , m_container{other->m_container->copy()} {
+    : m_offset(0)
+    , m_shape(other->m_shape)
+    , m_attr_names(other->m_attr_names)
+    , m_size(std::accumulate(m_shape.begin(), m_shape.end(), 1u, std::multiplies<size_t>()))
+    , m_container(other->m_container->copy()) {
   update_strides();
 }
 
@@ -214,7 +214,7 @@ inline std::vector<size_t> appendAttrShape(std::vector<size_t> shape, size_t app
 template <typename T>
 template <typename... Args>
 NdArray<T>::NdArray(const std::vector<size_t>& shape_, const std::vector<std::string>& attr_names, Args&&... args)
-    : NdArray{appendAttrShape(shape_, attr_names.size()), std::forward<Args>(args)...} {
+    : NdArray(appendAttrShape(shape_, attr_names.size()), std::forward<Args>(args)...) {
   m_attr_names = attr_names;
 }
 
@@ -352,8 +352,12 @@ auto NdArray<T>::concatenate(const self_type& other) -> self_type& {
 template <typename T>
 NdArray<T>::NdArray(std::shared_ptr<ContainerInterface> container, size_t offset, std::vector<size_t> shape_,
                     std::vector<size_t> stride, std::vector<std::string> attr_names)
-    : m_offset{offset}, m_shape{shape_}, m_stride_size{stride}, m_attr_names{attr_names}, m_container{container} {
-  m_size = std::accumulate(m_shape.begin(), m_shape.end(), 1, std::multiplies<size_t>());
+    : m_offset(offset)
+    , m_shape(shape_)
+    , m_stride_size(stride)
+    , m_attr_names(attr_names)
+    , m_size(std::accumulate(m_shape.begin(), m_shape.end(), 1, std::multiplies<size_t>()))
+    , m_container(container) {
 }
 
 template <typename T>
