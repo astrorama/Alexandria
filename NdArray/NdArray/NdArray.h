@@ -59,14 +59,15 @@ public:
    *    If true, this defines a const iterator
    */
   template <bool Const>
-  class Iterator : public std::iterator<std::random_access_iterator_tag, typename std::conditional<Const, const T, T>::type> {
+  class Iterator
+      : public std::iterator<std::random_access_iterator_tag, typename std::conditional<Const, const T, T>::type> {
   private:
     ContainerInterface* m_container_ptr;
     size_t              m_offset, m_row_size, m_stride;
     size_t              m_i;
 
-    Iterator(ContainerInterface* container_ptr, size_t offset, const std::vector<size_t>& shape, const std::vector<size_t>& strides,
-             size_t start);
+    Iterator(ContainerInterface* container_ptr, size_t offset, const std::vector<size_t>& shape,
+             const std::vector<size_t>& strides, size_t start);
 
     Iterator(ContainerInterface* container_ptr, size_t offset, size_t row_size, size_t stride, size_t start);
 
@@ -520,7 +521,8 @@ private:
     }
 
     template <typename T2>
-    auto resizeImpl(const std::vector<size_t>& shape) -> decltype((void)std::declval<Container<T2>>().resize(size_t{}), void()) {
+    auto resizeImpl(const std::vector<size_t>& shape)
+        -> decltype((void)std::declval<Container<T2>>().resize(size_t{}), void()) {
       auto new_size = std::accumulate(shape.begin(), shape.end(), 1u, std::multiplies<size_t>());
       m_container.resize(new_size);
     }
@@ -552,8 +554,8 @@ private:
   /**
    * Private constructor used for slices
    */
-  NdArray(std::shared_ptr<ContainerInterface> container, size_t offset, std::vector<size_t> shape, std::vector<size_t> stride,
-          std::vector<std::string> attr_names);
+  NdArray(std::shared_ptr<ContainerInterface> container, size_t offset, std::vector<size_t> shape,
+          std::vector<size_t> stride, std::vector<std::string> attr_names);
 
   /**
    * Gets the total offset for the given coordinates.

@@ -124,7 +124,8 @@ std::map<std::pair<std::type_index, std::type_index>, MultiplyFunction> multiply
     {std::pair<std::type_index, std::type_index>(typeid(Polynomial), typeid(Polynomial)), multiplyPolynomials},
     {std::pair<std::type_index, std::type_index>(typeid(Piecewise), typeid(Piecewise)), multiplyPiecewises}};
 
-std::map<std::type_index, MultiplyFunction> multiplySpecificGenericMap{{typeid(Piecewise), multiplyPiecewiseWithGeneric}};
+std::map<std::type_index, MultiplyFunction> multiplySpecificGenericMap{
+    {typeid(Piecewise), multiplyPiecewiseWithGeneric}};
 
 }  // namespace MathUtils
 }  // end of namespace Euclid

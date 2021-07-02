@@ -30,7 +30,8 @@
 namespace Euclid {
 namespace Table {
 
-FitsWriter::FitsWriter(const std::string& filename, bool override_flag) : m_filename(filename), m_override_file(override_flag) {}
+FitsWriter::FitsWriter(const std::string& filename, bool override_flag)
+    : m_filename(filename), m_override_file(override_flag) {}
 
 FitsWriter::FitsWriter(std::shared_ptr<CCfits::FITS> fits) : m_fits(fits) {}
 

@@ -75,7 +75,8 @@ public:
           if (neighborhood_factor != 0) {
             auto& cell_weights = *cell_it;
             for (std::size_t wi = 0; wi < ND; ++wi) {
-              cell_weights[wi] = cell_weights[wi] + neighborhood_factor * learn_factor * (input_weights[wi] - cell_weights[wi]);
+              cell_weights[wi] =
+                  cell_weights[wi] + neighborhood_factor * learn_factor * (input_weights[wi] - cell_weights[wi]);
             }
           }
         }

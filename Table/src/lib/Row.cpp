@@ -74,15 +74,16 @@ Row::Row(std::vector<cell_type> values, std::shared_ptr<ColumnInfo> column_info)
     throw Elements::Exception() << "Row construction with nullptr column_info";
   }
   if (m_values.size() != m_column_info->size()) {
-    throw Elements::Exception() << "Wrong number of row values (" << m_values.size() << " instead of " << m_column_info->size();
+    throw Elements::Exception() << "Wrong number of row values (" << m_values.size() << " instead of "
+                                << m_column_info->size();
   }
   for (std::size_t i = 0; i < m_values.size(); ++i) {
     auto& value_type  = m_values[i].type();
     auto& column_type = column_info->getDescription(i).type;
     auto& column_name = column_info->getDescription(i).name;
     if (std::type_index{value_type} != column_type) {
-      throw Elements::Exception() << "Incompatible cell type for " << column_name << ": expected " << demangle(column_type.name())
-                                  << ", got " << demangle(value_type.name());
+      throw Elements::Exception() << "Incompatible cell type for " << column_name << ": expected "
+                                  << demangle(column_type.name()) << ", got " << demangle(value_type.name());
     }
   }
   regex vertical_whitespace{".*\\v.*"};  // Checks if input contains any vertical whitespace characters

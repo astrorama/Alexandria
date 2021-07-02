@@ -37,8 +37,8 @@ Elements::Logging logger = Elements::Logging::getLogger("Interpolation");
 
 }  // Anonymous namespace
 
-std::unique_ptr<Function> interpolate(const std::vector<double>& x, const std::vector<double>& y, InterpolationType type,
-                                      bool extrapolate) {
+std::unique_ptr<Function> interpolate(const std::vector<double>& x, const std::vector<double>& y,
+                                      InterpolationType type, bool extrapolate) {
 
   if (x.size() != y.size()) {
     throw InterpolationException() << "Interpolation using vectors of incompatible "
@@ -84,7 +84,8 @@ std::unique_ptr<Function> interpolate(const std::vector<double>& x, const std::v
   return nullptr;
 }
 
-std::unique_ptr<Function> interpolate(const Euclid::XYDataset::XYDataset& dataset, InterpolationType type, bool extrapolate) {
+std::unique_ptr<Function> interpolate(const Euclid::XYDataset::XYDataset& dataset, InterpolationType type,
+                                      bool extrapolate) {
   std::vector<double> x;
   std::vector<double> y;
   x.reserve(dataset.size());

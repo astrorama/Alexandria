@@ -46,7 +46,8 @@ namespace Table {
  */
 class StreamRewinder {
 public:
-  explicit StreamRewinder(std::istream& stream) : m_stream(stream), m_state(stream.exceptions()), m_position(stream.tellg()) {}
+  explicit StreamRewinder(std::istream& stream)
+      : m_stream(stream), m_state(stream.exceptions()), m_position(stream.tellg()) {}
   ~StreamRewinder() {
     m_stream.clear();
     m_stream.seekg(m_position);
@@ -91,7 +92,8 @@ ELEMENTS_API size_t countColumns(std::istream& in, const std::string& comment);
  * @throws Elements::Exception
  *    if any of the types is not one of the valid keywords
  */
-ELEMENTS_API std::map<std::string, ColumnDescription> autoDetectColumnDescriptions(std::istream& in, const std::string& comment);
+ELEMENTS_API std::map<std::string, ColumnDescription> autoDetectColumnDescriptions(std::istream&      in,
+                                                                                   const std::string& comment);
 
 /**
  * @brief
@@ -108,7 +110,8 @@ ELEMENTS_API std::map<std::string, ColumnDescription> autoDetectColumnDescriptio
  * @throws Elements::Exception
  *    if there are duplicate column names
  */
-ELEMENTS_API std::vector<std::string> autoDetectColumnNames(std::istream& in, const std::string& comment, size_t columns_number);
+ELEMENTS_API std::vector<std::string> autoDetectColumnNames(std::istream& in, const std::string& comment,
+                                                            size_t columns_number);
 
 /**
  * @brief

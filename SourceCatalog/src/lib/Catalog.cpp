@@ -40,7 +40,8 @@ Catalog::Catalog(std::vector<Source> source_vector) : m_source_vector(source_vec
     // Make sure the element does not already exist
     if (!it.second) {
       throw Elements::Exception() << "Euclid::SourceCatalog::Catalog: Source object already exist "
-                                  << "in the map for source ID : " << m_source_vector[index].getId() << ", index: " << index;
+                                  << "in the map for source ID : " << m_source_vector[index].getId()
+                                  << ", index: " << index;
     }
   }
 }  // Eof Euclid::SourceCatalog::Catalog

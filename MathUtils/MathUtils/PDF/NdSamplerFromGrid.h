@@ -53,7 +53,8 @@ struct ExtractKnots<Euclid::_index_sequence<Is...>> {
  * \endcode
  */
 template <typename... Axes>
-std::unique_ptr<NdSampler<Axes...>> createSamplerFromGrid(const GridContainer::GridContainer<std::vector<double>, Axes...>& grid) {
+std::unique_ptr<NdSampler<Axes...>>
+createSamplerFromGrid(const GridContainer::GridContainer<std::vector<double>, Axes...>& grid) {
   auto knots     = ExtractKnots<Euclid::_make_index_sequence<sizeof...(Axes)>>::extract(grid.getAxesTuple());
   auto pdf_shape = ExtractKnots<Euclid::_make_index_sequence<sizeof...(Axes)>>::extractShape(grid.getAxesTuple());
   NdArray::NdArray<double> pdf(pdf_shape, grid.begin(), grid.end());

@@ -274,15 +274,15 @@ public:
   /**
    * Compute the mean, the median and the standard deviation of the histogram
    * @details
-   *    \f[
-   *    \mu = \frac{\sum_{i=0}^{n} \mathit{bin}_i * \mathit{count}_i}{\sum_{i=0}^{n}count_i}
-   *    \f]
-   *    \f[
-   *    \sigma = \sqrt{\frac{\sum_{i=0}^n \mathit{count}_i \times (\mathit{center}_i - \mu)^2}{\sum_{i=0}^n \mathit{count}_i}}
-   *    \f]
+   * \f[
+   * \mu = \frac{\sum_{i=0}^{n} \mathit{bin}_i * \mathit{cnt}_i}{\sum_{i=0}^{n}cnt_i}
+   * \f]
+   * \f[
+   * \sigma = \sqrt{\frac{\sum_{i=0}^n \mathit{cnt}_i \times (\mathit{center}_i - \mu)^2}{\sum_{i=0}^n \mathit{cnt}_i}}
+   * \f]
    *
-   *    To find the median, a second pass is done over the bins, computing the cumulative distribution until the bin
-   *    where it is greater or equal to 0.5. The median is then interpolated between the lower and higher edges.
+   * To find the median, a second pass is done over the bins, computing the cumulative distribution until the bin
+   * where it is greater or equal to 0.5. The median is then interpolated between the lower and higher edges.
    * @return
    *    A tuple (mean, median, sigma)
    */
@@ -318,7 +318,8 @@ private:
 
     virtual ~ComputationInterface() = default;
 
-    ComputationInterface() : m_counts(new std::vector<WeightType>()), m_clip_left(0), m_clip_right(m_counts->size() - 1) {}
+    ComputationInterface()
+        : m_counts(new std::vector<WeightType>()), m_clip_left(0), m_clip_right(m_counts->size() - 1) {}
 
     size_t size() const {
       return m_clip_right - m_clip_left + 1;

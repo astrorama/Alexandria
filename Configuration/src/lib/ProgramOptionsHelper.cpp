@@ -33,7 +33,7 @@ std::string ProgramOptionsHelper::wildcard(const std::string& name, const std::s
 }
 
 std::set<std::string>
-ProgramOptionsHelper::findWildcardNames(const std::vector<std::string>&                                      option_name_list,
+ProgramOptionsHelper::findWildcardNames(const std::vector<std::string>& option_name_list,
                                         const std::map<std::string, boost::program_options::variable_value>& options) {
   std::set<std::string> result;
   for (auto& option_name : option_name_list) {

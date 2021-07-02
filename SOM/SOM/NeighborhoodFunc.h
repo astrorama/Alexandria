@@ -31,8 +31,9 @@ namespace Euclid {
 namespace SOM {
 namespace NeighborhoodFunc {
 
-using Signature = std::function<double(std::pair<std::size_t, std::size_t> bmu, std::pair<std::size_t, std::size_t> cell,
-                                       std::size_t iteration, std::size_t total_iterations)>;
+using Signature =
+    std::function<double(std::pair<std::size_t, std::size_t> bmu, std::pair<std::size_t, std::size_t> cell,
+                         std::size_t iteration, std::size_t total_iterations)>;
 
 ELEMENTS_API Signature linearUnitDisk(double initial_radius);
 

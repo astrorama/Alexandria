@@ -38,12 +38,14 @@ class FileHandler;
 template <typename TFD>
 struct OpenCloseTrait {
   static TFD open(const boost::filesystem::path& path, bool write) {
-    static_assert(std::is_constructible<TFD, const boost::filesystem::path&, bool>::value && std::is_move_constructible<TFD>::value,
+    static_assert(std::is_constructible<TFD, const boost::filesystem::path&, bool>::value &&
+                      std::is_move_constructible<TFD>::value,
                   "Specialization of OpenCloseTrait or a constructible(path,bool) and movable");
     return TFD(path, write);
   }
   static void close(TFD& /*fd*/) {
-    static_assert(std::is_constructible<TFD, const boost::filesystem::path&, bool>::value && std::is_move_constructible<TFD>::value,
+    static_assert(std::is_constructible<TFD, const boost::filesystem::path&, bool>::value &&
+                      std::is_move_constructible<TFD>::value,
                   "Specialization of OpenCloseTrait or a constructible(path,bool) and movable");
     // NOOP
   }
@@ -111,12 +113,13 @@ public:
    *    You do not need to care about this when using FileHandlers
    * @details
    *    Why the callback? The FilePool is designed to have single ownership of the file descriptors, so it can
-   *    work with non-copyable file types. Files are either owned by the FileHandler (if not in use) or by the FileAccessor
-   *    (if in use). Therefore, it can only let the owner know the file should be closed.
-   *    Again, this caveat is unimportant if the access is done via FileHandlers.
+   *    work with non-copyable file types. Files are either owned by the FileHandler (if not in use) or by the
+   * FileAccessor (if in use). Therefore, it can only let the owner know the file should be closed. Again, this caveat
+   * is unimportant if the access is done via FileHandlers.
    */
   template <typename TFD>
-  std::pair<FileId, TFD> open(const boost::filesystem::path& path, bool write, std::function<bool(FileId)> request_close);
+  std::pair<FileId, TFD> open(const boost::filesystem::path& path, bool write,
+                              std::function<bool(FileId)> request_close);
 
   /**
    * Close a file

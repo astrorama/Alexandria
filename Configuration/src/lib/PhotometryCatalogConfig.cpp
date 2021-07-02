@@ -60,7 +60,8 @@ auto PhotometryCatalogConfig::getProgramOptions() -> std::map<std::string, Optio
 
 void PhotometryCatalogConfig::initialize(const UserValues& args) {
 
-  m_upper_limit_enabled = (args.find(ENABLE_UPPER_LIMIT) != args.end()) && args.at(ENABLE_UPPER_LIMIT).as<std::string>() == "YES";
+  m_upper_limit_enabled =
+      (args.find(ENABLE_UPPER_LIMIT) != args.end()) && args.at(ENABLE_UPPER_LIMIT).as<std::string>() == "YES";
   logger.info() << "Upper limit functionality is " << (m_upper_limit_enabled ? "ENABLED" : "DISABLED");
 
   double upper_limit_threshold_flag = -99.;
@@ -85,8 +86,8 @@ void PhotometryCatalogConfig::initialize(const UserValues& args) {
 
   // Add the row handler to parse the photometries
   std::shared_ptr<SourceCatalog::AttributeFromRow> handler_ptr{new SourceCatalog::PhotometryAttributeFromRow{
-      column_info, std::move(filter_name_mapping), m_missing_photometry_enabled, missing_photo_flag, m_upper_limit_enabled,
-      threshold_mapping, upper_limit_threshold_flag, mag_mapping}};
+      column_info, std::move(filter_name_mapping), m_missing_photometry_enabled, missing_photo_flag,
+      m_upper_limit_enabled, threshold_mapping, upper_limit_threshold_flag, mag_mapping}};
   getDependency<CatalogConfig>().addAttributeHandler(std::move(handler_ptr));
 }
 

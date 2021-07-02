@@ -110,8 +110,8 @@ SOM<ND, DistFunc> somFitsImport(const std::string& filename) {
     throw Elements::Exception() << "Data array in file " << filename << " does not have 3 dimensions";
   }
   if (fits.pHDU().axis(2) != ND) {
-    throw Elements::Exception() << "Weights dimension of array in file " << filename << " should have size " << ND << " but was "
-                                << fits.pHDU().axis(2);
+    throw Elements::Exception() << "Weights dimension of array in file " << filename << " should have size " << ND
+                                << " but was " << fits.pHDU().axis(2);
   }
   std::size_t x = fits.pHDU().axis(0);
   std::size_t y = fits.pHDU().axis(1);

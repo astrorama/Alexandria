@@ -121,12 +121,12 @@ void AsciiReader::readColumnInfo() {
 
   size_t columns_number = countColumns(in, m_comment);
   if (!m_column_names.empty() && m_column_names.size() != columns_number) {
-    throw Elements::Exception() << "Columns number in stream (" << columns_number << ") does not match the column names number ("
-                                << m_column_names.size() << ")";
+    throw Elements::Exception() << "Columns number in stream (" << columns_number
+                                << ") does not match the column names number (" << m_column_names.size() << ")";
   }
   if (!m_column_types.empty() && m_column_types.size() != columns_number) {
-    throw Elements::Exception() << "Columns number in stream (" << columns_number << ") does not match the column types number ("
-                                << m_column_types.size() << ")";
+    throw Elements::Exception() << "Columns number in stream (" << columns_number
+                                << ") does not match the column types number (" << m_column_types.size() << ")";
   }
 
   auto auto_names = autoDetectColumnNames(in, m_comment, columns_number);
