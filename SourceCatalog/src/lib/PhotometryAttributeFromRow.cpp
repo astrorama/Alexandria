@@ -80,7 +80,6 @@ PhotometryAttributeFromRow::PhotometryAttributeFromRow(
 }
 
 PhotometryAttributeFromRow::~PhotometryAttributeFromRow() {
-  // @todo Auto-generated destructor stub
 }
 
 
