@@ -48,9 +48,11 @@ std::ostream& operator<<(std::ostream& s, const std::vector<T>& v) {
   auto it = v.begin();
   if (it != v.end()) {
     s << *it;
+    ++it;
   }
-  while (++it != v.end()) {
+  while (it != v.end()) {
     s << ',' << *it;
+    ++it;
   }
   return s;
 }

@@ -91,6 +91,7 @@ void FitsWriter::init(const Table& table) {
   CCfits::Table* table_hdu;
   if (!new_hdu) {
     table_hdu = dynamic_cast<CCfits::Table*>(extension_i->second);
+    assert(table_hdu != nullptr);
   } else {
     table_hdu = fits->addTable(m_hdu_name, 0, column_name_list, column_format_list, column_unit_list, hdu_type);
 
