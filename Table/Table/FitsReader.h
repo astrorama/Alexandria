@@ -92,7 +92,7 @@ public:
 
   /// Creates a FitsReader that reads a table from a FITS file, based on the
   /// HDU index
-  FitsReader(const std::string& filename, int hdu_index = 1);
+  explicit FitsReader(const std::string& filename, int hdu_index = 1);
 
   /// Creates a FitsReader that reads a table from a FITS file, based on the
   /// HDU name

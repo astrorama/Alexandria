@@ -260,7 +260,7 @@ public:
    *    The shape of the matrix. The number of elements in shape corresponds to the number
    *    of dimensions, the values to each dimension size.
    */
-  NdArray(const std::initializer_list<size_t>& shape_) : NdArray(std::vector<size_t>{shape_}) {}
+  explicit NdArray(const std::initializer_list<size_t>& shape_) : NdArray(std::vector<size_t>{shape_}) {}
 
   /**
    * Copy constructor
@@ -506,7 +506,7 @@ private:
     ContainerWrapper(ContainerWrapper&&) = default;
 
     template <typename... Args>
-    ContainerWrapper(Args&&... args) : m_container(std::forward<Args>(args)...) {
+    explicit ContainerWrapper(Args&&... args) : m_container(std::forward<Args>(args)...) {
       m_data_ptr = m_container.data();
     }
 
