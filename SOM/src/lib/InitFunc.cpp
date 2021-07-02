@@ -16,33 +16,32 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-/*
- * @file InitFunc.h
- * @author nikoapos
- */
-
-#ifndef SOM_INITFUNC_H
-#define SOM_INITFUNC_H
-
-#include <ElementsKernel/Export.h>
-#include <functional>
+#include "SOM/InitFunc.h"
+#include <random>
 
 namespace Euclid {
 namespace SOM {
-
 namespace InitFunc {
 
-using Signature = std::function<double()>;
+double zeroImpl(void) {
+  return 0;
+}
 
-extern Signature zero;
+Signature zero = zeroImpl;
 
-ELEMENTS_API Signature normalDistribution(double sigma, double mu);
+Signature normalDistribution(double sigma, double mu) {
+  std::random_device         rd;
+  std::mt19937               gen(rd());
+  std::normal_distribution<> d(mu, sigma);
+  return [gen, d]() mutable { return d(gen); };
+}
 
-ELEMENTS_API Signature uniformRandom(double min, double max);
+Signature uniformRandom(double min, double max) {
+  std::uniform_real_distribution<double> unif(min, max);
+  std::default_random_engine             re;
+  return [unif, re]() mutable { return unif(re); };
+}
 
 }  // namespace InitFunc
-
 }  // namespace SOM
 }  // namespace Euclid
-
-#endif /* SOM_INITFUNC_H */

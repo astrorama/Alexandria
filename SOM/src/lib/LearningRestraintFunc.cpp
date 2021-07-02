@@ -16,33 +16,25 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-/*
- * @file InitFunc.h
- * @author nikoapos
- */
-
-#ifndef SOM_INITFUNC_H
-#define SOM_INITFUNC_H
-
-#include <ElementsKernel/Export.h>
-#include <functional>
+#include "SOM/LearningRestraintFunc.h"
+#include <cmath>
 
 namespace Euclid {
 namespace SOM {
+namespace LearningRestraintFunc {
 
-namespace InitFunc {
+Signature linear() {
+  return [](std::size_t iteration, std::size_t total_iterations) -> double {
+    return 1.0 * (total_iterations - iteration) / total_iterations;
+  };
+}
 
-using Signature = std::function<double()>;
+Signature exponentialDecay(double initial_rate) {
+  return [initial_rate](std::size_t iteration, std::size_t total_iterations) -> double {
+    return initial_rate * std::exp(-1. * iteration / total_iterations);
+  };
+}
 
-extern Signature zero;
-
-ELEMENTS_API Signature normalDistribution(double sigma, double mu);
-
-ELEMENTS_API Signature uniformRandom(double min, double max);
-
-}  // namespace InitFunc
-
+}  // namespace LearningRestraintFunc
 }  // namespace SOM
 }  // namespace Euclid
-
-#endif /* SOM_INITFUNC_H */
