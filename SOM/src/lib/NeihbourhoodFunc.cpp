@@ -18,6 +18,7 @@
 
 #include "SOM/NeighborhoodFunc.h"
 #include <cmath>
+#include <algorithm> // std::max
 
 namespace Euclid {
 namespace SOM {
