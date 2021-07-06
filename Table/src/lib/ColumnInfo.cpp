@@ -66,7 +66,8 @@ const ColumnDescription& ColumnInfo::getDescription(std::size_t index) const {
 }
 
 const ColumnDescription& ColumnInfo::getDescription(const std::string& name) const {
-  auto iter = std::find_if(m_info_list.begin(), m_info_list.end(), [&name](const info_type& info) { return info.name == name; });
+  auto iter = std::find_if(m_info_list.begin(), m_info_list.end(),
+                           [&name](const info_type& info) { return info.name == name; });
   if (iter == m_info_list.end()) {
     throw Elements::Exception() << "Column " << name << " does not exist";
   }

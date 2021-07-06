@@ -69,7 +69,8 @@ public:
    * @param relative_precision The requested precision.
    *
    */
-  double comovingDistance(double z, const CosmologicalParameters& parameters, double relative_precision = 0.0000001) const;
+  double comovingDistance(double z, const CosmologicalParameters& parameters,
+                          double relative_precision = 0.0000001) const;
 
   /**
    * @brief return the transverse comoving distance in [pc]

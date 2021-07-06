@@ -63,8 +63,7 @@ std::shared_ptr<FileManager> FileManager::getDefault() {
 
 FileManager::FileManager() {}
 
-FileManager::~FileManager() {
-}
+FileManager::~FileManager() {}
 
 void FileManager::notifyUsed(FileId id) {
   // In principle a FileId should only be hold by a single thread, so no need to lock here
@@ -100,17 +99,16 @@ std::shared_ptr<FileHandler> FileManager::getFileHandler(const boost::filesystem
   }
   // Either didn't exist or it is gone
   if (!handler_ptr) {
-    std::weak_ptr<FileManager> this_weak = shared_from_this();
-    handler_ptr = std::shared_ptr<FileHandler>(new FileHandler(canonical, this_weak), [this_weak, canonical](FileHandler* obj) {
-      {
-        auto this_shared = this_weak.lock();
-        if (this_shared) {
-          std::lock_guard<std::mutex> manager_lock(this_shared->m_mutex);
-          this_shared->m_handlers.erase(canonical);
-        }
+    std::weak_ptr<FileManager> this_weak       = shared_from_this();
+    auto                       handler_destroy = [this_weak, canonical](FileHandler* obj) {
+      auto this_shared = this_weak.lock();
+      if (this_shared) {
+        std::lock_guard<std::mutex> manager_lock(this_shared->m_mutex);
+        this_shared->m_handlers.erase(canonical);
       }
       delete obj;
-    });
+    };
+    handler_ptr           = std::shared_ptr<FileHandler>(new FileHandler(canonical, this_weak), handler_destroy);
     m_handlers[canonical] = handler_ptr;
   }
   return handler_ptr;

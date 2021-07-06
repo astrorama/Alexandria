@@ -353,8 +353,9 @@ private:
   /// A map containing the axes which have been fixed, if this grid is a slice
   std::map<size_t, size_t> m_fixed_indices{};
   /// A pointer to the data of the grid
-  std::shared_ptr<GridCellManager> m_cell_manager{GridCellManagerTraits<GridCellManager>::factory(
-      GridConstructionHelper<AxesTypes...>::getAxisIndexFactor(m_axes, TemplateLoopCounter<sizeof...(AxesTypes) - 1>{}))};
+  std::shared_ptr<GridCellManager> m_cell_manager{
+      GridCellManagerTraits<GridCellManager>::factory(GridConstructionHelper<AxesTypes...>::getAxisIndexFactor(
+          m_axes, TemplateLoopCounter<sizeof...(AxesTypes) - 1>{}))};
 
   /**
    * @brief Slice constructor

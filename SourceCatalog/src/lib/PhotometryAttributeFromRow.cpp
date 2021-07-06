@@ -40,13 +40,14 @@ PhotometryAttributeFromRow::PhotometryAttributeFromRow(
     std::shared_ptr<Euclid::Table::ColumnInfo>                                      column_info_ptr,
     const std::vector<std::pair<std::string, std::pair<std::string, std::string>>>& filter_name_mapping,
     const bool missing_photometry_enabled, const double missing_photometry_flag, const bool upper_limit_enabled,
-    const std::vector<std::pair<std::string, float>> n_map, const double n_upper_limit_flag, const std::vector<std::pair<std::string, bool>> convert_from_mag)
+    const std::vector<std::pair<std::string, float>>& n_map, const double n_upper_limit_flag,
+    const std::vector<std::pair<std::string, bool>>& convert_from_mag)
     : m_missing_photometry_enabled(missing_photometry_enabled)
     , m_missing_photometry_flag(missing_photometry_flag)
     , m_upper_limit_enabled(upper_limit_enabled)
     , m_n_map(n_map)
     , m_n_upper_limit_flag(n_upper_limit_flag)
-    , m_convert_from_mag(convert_from_mag){
+    , m_convert_from_mag(convert_from_mag) {
 
   std::unique_ptr<size_t> flux_column_index_ptr;
   std::unique_ptr<size_t> error_column_index_ptr;
@@ -59,7 +60,8 @@ PhotometryAttributeFromRow::PhotometryAttributeFromRow(
       throw Elements::Exception() << "Column info does not have the flux column " << filter_name_pair.second.first;
     }
     if (error_column_index_ptr == nullptr) {
-      throw Elements::Exception() << "Column info does not have the flux error column " << filter_name_pair.second.second;
+      throw Elements::Exception() << "Column info does not have the flux error column "
+                                  << filter_name_pair.second.second;
     }
     m_table_index_vector.push_back(std::make_pair(*(flux_column_index_ptr), *(error_column_index_ptr)));
   }
@@ -79,24 +81,20 @@ PhotometryAttributeFromRow::PhotometryAttributeFromRow(
   }
 }
 
-PhotometryAttributeFromRow::~PhotometryAttributeFromRow() {
-  // @todo Auto-generated destructor stub
-}
+PhotometryAttributeFromRow::~PhotometryAttributeFromRow() {}
 
-
-
-std::pair<double, double> PhotometryAttributeFromRow::convertFromMag(const double mag, const double mag_err) const{
+std::pair<double, double> PhotometryAttributeFromRow::convertFromMag(const double mag, const double mag_err) const {
 
   if (Elements::isEqual(mag, m_missing_photometry_flag) || std::isnan(mag)) {
-     return std::make_pair(m_missing_photometry_flag, 0);
+    return std::make_pair(m_missing_photometry_flag, 0);
   } else {
     // check if the error is a flag
-    bool is_flag =  Elements::isEqual(mag_err, m_n_upper_limit_flag);
+    bool is_flag = Elements::isEqual(mag_err, m_n_upper_limit_flag);
 
-    //compute the flux and the error
-    double flux = 3.631e9*std::pow(10, -0.4 * mag);
+    // compute the flux and the error
+    double flux = 3.631e9 * std::pow(10, -0.4 * mag);
     // with this formula the sign of mag_err is forwarded to the flux_err
-    double flux_err = is_flag ? m_n_upper_limit_flag : 0.4* flux * mag_err * std::log(10);
+    double flux_err = is_flag ? m_n_upper_limit_flag : 0.4 * flux * mag_err * std::log(10);
 
     return std::make_pair(flux, flux_err);
   }
@@ -106,7 +104,7 @@ std::unique_ptr<Attribute> PhotometryAttributeFromRow::createAttribute(const Euc
 
   std::vector<FluxErrorPair> photometry_vector{};
 
-  auto n_threshod_iter = m_n_map.begin();
+  auto n_threshod_iter       = m_n_map.begin();
   auto convert_from_mag_iter = m_convert_from_mag.begin();
   for (auto& filter_index_pair : m_table_index_vector) {
     Euclid::Table::Row::cell_type flux_cell  = row[filter_index_pair.first];
@@ -117,14 +115,15 @@ std::unique_ptr<Attribute> PhotometryAttributeFromRow::createAttribute(const Euc
 
     if (convert_from_mag_iter->second) {
       auto converted = convertFromMag(flux, error);
-      flux = converted.first;
-      error = converted.second;
+      flux           = converted.first;
+      error          = converted.second;
     }
 
     bool missing_data = false;
     bool upper_limit  = false;
     if (std::isinf(flux)) {
-      throw SourceCatalog::PhotometryParsingException("Infinite flux encountered when parsing the Photometry", flux, error);
+      throw SourceCatalog::PhotometryParsingException("Infinite flux encountered when parsing the Photometry", flux,
+                                                      error);
     }
     if (m_missing_photometry_enabled) {
       /** Missing photometry enabled **/
@@ -136,7 +135,8 @@ std::unique_ptr<Attribute> PhotometryAttributeFromRow::createAttribute(const Euc
           /** Upper limit enabled **/
           if (error == 0.) {
             throw SourceCatalog::PhotometryParsingException(
-                "Zero error encountered when parsing the Photometry with 'missing data' and 'upper limit' enabled", flux, error);
+                "Zero error encountered when parsing the Photometry with 'missing data' and 'upper limit' enabled",
+                flux, error);
           }
           if (error < 0) {
             /** Actual upper limit **/
@@ -146,7 +146,8 @@ std::unique_ptr<Attribute> PhotometryAttributeFromRow::createAttribute(const Euc
             upper_limit = true;
             if (flux <= 0) {
               throw SourceCatalog::PhotometryParsingException(
-                  "Negative or Zero flux encountered when parsing the Photometry in the context of an 'upper limit'", flux, error);
+                  "Negative or Zero flux encountered when parsing the Photometry in the context of an 'upper limit'",
+                  flux, error);
             }
 
             error = std::abs(error);
@@ -171,9 +172,9 @@ std::unique_ptr<Attribute> PhotometryAttributeFromRow::createAttribute(const Euc
       if (m_upper_limit_enabled) {
         /** Upper limit enabled **/
         if (error == 0.) {
-          throw SourceCatalog::PhotometryParsingException(
-              "Zero error encountered when parsing the Photometry with 'missing data' disabled and 'upper limit' enabled", flux,
-              error);
+          throw SourceCatalog::PhotometryParsingException("Zero error encountered when parsing the Photometry with "
+                                                          "'missing data' disabled and 'upper limit' enabled",
+                                                          flux, error);
         }
         if (error < 0) {
           /** Actual upper limit **/
@@ -183,7 +184,8 @@ std::unique_ptr<Attribute> PhotometryAttributeFromRow::createAttribute(const Euc
           }
           if (flux <= 0) {
             throw SourceCatalog::PhotometryParsingException(
-                "Negative or Zero flux encountered when parsing the Photometry in the context of an 'upper limit'", flux, error);
+                "Negative or Zero flux encountered when parsing the Photometry in the context of an 'upper limit'",
+                flux, error);
           }
           error = std::abs(error);
         }

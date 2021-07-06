@@ -48,7 +48,8 @@ public:
 
   template <typename From>
   To operator()(const From&, typename std::enable_if<!std::is_same<From, To>::value>::type* = 0) const {
-    throw Elements::Exception() << "CastVisitor cannot convert " << typeid(From).name() << " type to " << typeid(To).name();
+    throw Elements::Exception() << "CastVisitor cannot convert " << typeid(From).name() << " type to "
+                                << typeid(To).name();
   }
 };
 
@@ -75,7 +76,8 @@ class CastVisitor<double> : public boost::static_visitor<double> {
 public:
   template <typename From>
   double operator()(const From&, typename std::enable_if<!generic<From>()>::type* = 0) const {
-    throw Elements::Exception() << "CastVisitor cannot convert " << typeid(From).name() << " type to " << typeid(double).name();
+    throw Elements::Exception() << "CastVisitor cannot convert " << typeid(From).name() << " type to "
+                                << typeid(double).name();
   }
 
   template <typename From>
@@ -87,10 +89,12 @@ public:
     char*  endptr = nullptr;
     double value  = std::strtod(from.c_str(), &endptr);
     if (endptr == from.c_str()) {
-      throw Elements::Exception() << "CastVisitor cannot convert the string '" << from << "' to " << typeid(double).name();
+      throw Elements::Exception() << "CastVisitor cannot convert the string '" << from << "' to "
+                                  << typeid(double).name();
     }
     if (value == HUGE_VAL || value == -HUGE_VAL) {
-      throw Elements::Exception() << "CastVisitor overflows converting the string '" << from << "' to " << typeid(double).name();
+      throw Elements::Exception() << "CastVisitor overflows converting the string '" << from << "' to "
+                                  << typeid(double).name();
     }
     return value;
   }
@@ -108,7 +112,8 @@ class CastVisitor<float> : public boost::static_visitor<float> {
 public:
   template <typename From>
   double operator()(const From&, typename std::enable_if<!generic<From>()>::type* = 0) const {
-    throw Elements::Exception() << "CastVisitor cannot convert " << typeid(From).name() << " type to " << typeid(float).name();
+    throw Elements::Exception() << "CastVisitor cannot convert " << typeid(From).name() << " type to "
+                                << typeid(float).name();
   }
 
   template <typename From>
@@ -120,10 +125,12 @@ public:
     char* endptr = nullptr;
     float value  = std::strtof(from.c_str(), &endptr);
     if (endptr == from.c_str()) {
-      throw Elements::Exception() << "CastVisitor cannot convert the string '" << from << "' to " << typeid(float).name();
+      throw Elements::Exception() << "CastVisitor cannot convert the string '" << from << "' to "
+                                  << typeid(float).name();
     }
     if (value == HUGE_VALF || value == -HUGE_VALF) {
-      throw Elements::Exception() << "CastVisitor overflows converting the string '" << from << "' to " << typeid(float).name();
+      throw Elements::Exception() << "CastVisitor overflows converting the string '" << from << "' to "
+                                  << typeid(float).name();
     }
     return value;
   }
@@ -140,7 +147,8 @@ class CastVisitor<int64_t> : public boost::static_visitor<int64_t> {
 public:
   template <typename From>
   double operator()(const From&, typename std::enable_if<!generic<From>()>::type* = 0) const {
-    throw Elements::Exception() << "CastVisitor cannot convert " << typeid(From).name() << " type to " << typeid(int64_t).name();
+    throw Elements::Exception() << "CastVisitor cannot convert " << typeid(From).name() << " type to "
+                                << typeid(int64_t).name();
   }
 
   template <typename From>
@@ -152,7 +160,8 @@ public:
     char*   endptr = nullptr;
     int64_t value  = std::strtoll(from.c_str(), &endptr, 10);
     if (endptr == from.c_str()) {
-      throw Elements::Exception() << "CastVisitor cannot convert the string '" << from << "' to " << typeid(int64_t).name();
+      throw Elements::Exception() << "CastVisitor cannot convert the string '" << from << "' to "
+                                  << typeid(int64_t).name();
     }
     return value;
   }
@@ -170,7 +179,8 @@ class CastVisitor<int32_t> : public boost::static_visitor<int32_t> {
 public:
   template <typename From>
   double operator()(const From&, typename std::enable_if<!generic<From>()>::type* = 0) const {
-    throw Elements::Exception() << "CastVisitor cannot convert " << typeid(From).name() << " type to " << typeid(int32_t).name();
+    throw Elements::Exception() << "CastVisitor cannot convert " << typeid(From).name() << " type to "
+                                << typeid(int32_t).name();
   }
 
   template <typename From>
@@ -182,10 +192,12 @@ public:
     char*   endptr = nullptr;
     int64_t value  = std::strtoll(from.c_str(), &endptr, 10);
     if (endptr == from.c_str()) {
-      throw Elements::Exception() << "CastVisitor cannot convert the string '" << from << "' to " << typeid(int32_t).name();
+      throw Elements::Exception() << "CastVisitor cannot convert the string '" << from << "' to "
+                                  << typeid(int32_t).name();
     }
     if (value > INT32_MAX || value < INT32_MIN) {
-      throw Elements::Exception() << "CastVisitor overflows converting the string '" << from << "' to " << typeid(int32_t).name();
+      throw Elements::Exception() << "CastVisitor overflows converting the string '" << from << "' to "
+                                  << typeid(int32_t).name();
     }
     return static_cast<int32_t>(value);
   }

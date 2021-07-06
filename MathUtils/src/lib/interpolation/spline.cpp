@@ -31,7 +31,8 @@
 namespace Euclid {
 namespace MathUtils {
 
-std::unique_ptr<Function> splineInterpolation(const std::vector<double>& x, const std::vector<double>& y, bool extrapolate) {
+std::unique_ptr<Function> splineInterpolation(const std::vector<double>& x, const std::vector<double>& y,
+                                              bool extrapolate) {
 
   // Number of intervals
   int n = x.size() - 1;
@@ -46,8 +47,8 @@ std::unique_ptr<Function> splineInterpolation(const std::vector<double>& x, cons
   for (int i = 1; i < n; ++i) {
     double g = 2. * (x[i + 1] - x[i - 1]) - h[i - 1] * mu[i - 1];
     mu[i]    = h[i] / g;
-    z[i] =
-        (3. * (y[i + 1] * h[i - 1] - y[i] * (x[i + 1] - x[i - 1]) + y[i - 1] * h[i]) / (h[i - 1] * h[i]) - h[i - 1] * z[i - 1]) / g;
+    z[i]     = (3. * (y[i + 1] * h[i - 1] - y[i] * (x[i + 1] - x[i - 1]) + y[i - 1] * h[i]) / (h[i - 1] * h[i]) -
+            h[i - 1] * z[i - 1]) / g;
   }
 
   // cubic spline coefficients --  b is linear, c quadratic, d is cubic (original y's are constants)

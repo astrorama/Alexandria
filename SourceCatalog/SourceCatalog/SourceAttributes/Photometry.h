@@ -72,17 +72,18 @@ public:
    *    A boolean. If true, this will be a const iterator
    */
   template <bool Const>
-  class PhotometryIterator : public std::iterator<std::forward_iterator_tag,
-                                                  typename std::conditional<Const, const FluxErrorPair, FluxErrorPair>::type> {
+  class PhotometryIterator
+      : public std::iterator<std::forward_iterator_tag,
+                             typename std::conditional<Const, const FluxErrorPair, FluxErrorPair>::type> {
   public:
     using value_t = typename std::conditional<Const, const FluxErrorPair, FluxErrorPair>::type;
     using typename std::iterator<std::forward_iterator_tag, value_t>::reference;
     using typename std::iterator<std::forward_iterator_tag, value_t>::pointer;
 
-    using filters_iter_t =
-        typename std::conditional<Const, std::vector<std::string>::const_iterator, std::vector<std::string>::iterator>::type;
-    using values_iter_t =
-        typename std::conditional<Const, std::vector<FluxErrorPair>::const_iterator, std::vector<FluxErrorPair>::iterator>::type;
+    using filters_iter_t = typename std::conditional<Const, std::vector<std::string>::const_iterator,
+                                                     std::vector<std::string>::iterator>::type;
+    using values_iter_t  = typename std::conditional<Const, std::vector<FluxErrorPair>::const_iterator,
+                                                    std::vector<FluxErrorPair>::iterator>::type;
 
     /**
      * Constructor from non-const iterator

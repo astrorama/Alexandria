@@ -56,7 +56,8 @@ public:
   }
 
   void initialize(const UserValues&) override {
-    getDependency<CatalogConfig>().addAttributeHandler(std::make_shared<SourceCatalog::PdfFromRow<T>>(m_keys, m_column_names));
+    getDependency<CatalogConfig>().addAttributeHandler(
+        std::make_shared<SourceCatalog::PdfFromRow<T>>(m_keys, m_column_names));
   }
 
 private:

@@ -30,9 +30,11 @@
 namespace Euclid {
 namespace MathUtils {
 
-Piecewise::Piecewise(std::vector<double> knots, std::vector<std::shared_ptr<Function>> functions) : m_knots{std::move(knots)} {
+Piecewise::Piecewise(std::vector<double> knots, std::vector<std::shared_ptr<Function>> functions)
+    : m_knots{std::move(knots)} {
   if (m_knots.size() - functions.size() != 1) {
-    throw Elements::Exception() << "Invalid number of knots(" << m_knots.size() << ")-functions(" << m_functions.size() << ")";
+    throw Elements::Exception() << "Invalid number of knots(" << m_knots.size() << ")-functions(" << m_functions.size()
+                                << ")";
   }
 
   m_functions.reserve(functions.size());
@@ -50,7 +52,8 @@ Piecewise::Piecewise(std::vector<double> knots, std::vector<std::shared_ptr<Func
 Piecewise::Piecewise(std::vector<double> knots, std::vector<std::unique_ptr<Function>> functions)
     : m_knots{std::move(knots)}, m_functions{std::move(functions)} {
   if (m_knots.size() - m_functions.size() != 1) {
-    throw Elements::Exception() << "Invalid number of knots(" << m_knots.size() << ")-functions(" << m_functions.size() << ")";
+    throw Elements::Exception() << "Invalid number of knots(" << m_knots.size() << ")-functions(" << m_functions.size()
+                                << ")";
   }
   auto knotsIter = m_knots.begin();
   while (++knotsIter != m_knots.end()) {

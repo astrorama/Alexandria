@@ -41,8 +41,8 @@ public:
   static ProjectGrid<T> project(const SOM<ND, DistFunc>& som, InputIter begin, InputIter end, WeightFunc weight_func,
                                 AdderFunc adder_func, const T& init_cell = T{});
 
-  template <typename T, std::size_t ND, typename DistFunc, typename InputIter, typename WeightFunc, typename UncertaintyFunc,
-            typename AdderFunc>
+  template <typename T, std::size_t ND, typename DistFunc, typename InputIter, typename WeightFunc,
+            typename UncertaintyFunc, typename AdderFunc>
   static ProjectGrid<T> project(const SOM<ND, DistFunc>& som, InputIter begin, InputIter end, WeightFunc weight_func,
                                 UncertaintyFunc uncertainty_func, AdderFunc adder_func, const T& init_cell = T{});
 };

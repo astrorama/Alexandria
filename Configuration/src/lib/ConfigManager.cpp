@@ -43,7 +43,8 @@ ConfigManager& ConfigManager::getInstance(long id) {
 ConfigManager::ConfigManager(long id) : m_id{id} {}
 
 std::vector<std::type_index>
-hasCircularDependencies(const std::map<std::type_index, std::set<std::type_index>>& dependency_map, const std::type_index& root,
+hasCircularDependencies(const std::map<std::type_index, std::set<std::type_index>>&        dependency_map,
+                        const std::type_index&                                             root,
                         const std::pair<const std::type_index, std::set<std::type_index>>& config_pair) {
 
   if (config_pair.second.find(root) != config_pair.second.end()) {
@@ -138,7 +139,8 @@ po::options_description ConfigManager::closeRegistration() {
 
 static void recursiveInitialization(const std::map<std::type_index, std::unique_ptr<Configuration>>& dictionary,
                                     const std::map<std::type_index, std::set<std::type_index>>&      dependency_map,
-                                    const std::map<std::string, po::variable_value>& user_values, const std::type_index& config) {
+                                    const std::map<std::string, po::variable_value>&                 user_values,
+                                    const std::type_index&                                           config) {
   if (dictionary.at(config)->getCurrentState() >= Configuration::State::INITIALIZED) {
     return;
   }

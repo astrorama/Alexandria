@@ -119,7 +119,8 @@ inline void parseSingleValue(const std::string& descr, bool& big_endian, std::st
  *  NdArrays only support uniform types, so this method will fail if there are mixed types on the
  *  npy file
  */
-inline void parseFieldValues(const std::string& descr, bool& big_endian, std::vector<std::string>& attrs, std::string& dtype) {
+inline void parseFieldValues(const std::string& descr, bool& big_endian, std::vector<std::string>& attrs,
+                             std::string& dtype) {
   static const boost::regex field_expr("\\('([^']*)',\\s*'([^']*)'\\)");
 
   boost::match_results<std::string::const_iterator> match;
@@ -200,8 +201,8 @@ inline void parseNpyDict(const std::string& header, bool& fortran_order, bool& b
  *  Total number of elements (multiplication of shape)
  * @return
  */
-inline void readNpyHeader(std::istream& input, std::string& dtype, std::vector<size_t>& shape, std::vector<std::string>& attrs,
-                          size_t& n_elements) {
+inline void readNpyHeader(std::istream& input, std::string& dtype, std::vector<size_t>& shape,
+                          std::vector<std::string>& attrs, size_t& n_elements) {
   // Magic
   char magic[6];
   input.read(magic, sizeof(magic));
@@ -288,8 +289,8 @@ void writeNpyHeader(std::ostream& out, std::vector<size_t> shape, const std::vec
   // Serialize header as a Python dict
   std::stringstream header;
   header << "{"
-         << "'descr': " << typeDescription(NpyDtype<T>::str, attrs) << ", 'fortran_order': False, 'shape': " << npyShape(shape)
-         << "}";
+         << "'descr': " << typeDescription(NpyDtype<T>::str, attrs)
+         << ", 'fortran_order': False, 'shape': " << npyShape(shape) << "}";
   auto            header_str = header.str();
   little_uint32_t header_len = header_str.size();
 
@@ -356,7 +357,8 @@ public:
     m_n_elements    = std::accumulate(shape.begin(), shape.end(), 1u, std::multiplies<size_t>());
     size_t new_size = header_size + sizeof(T) * m_n_elements;
     if (new_size > m_max_size) {
-      throw Elements::Exception() << "resize request bigger than maximum allocated size: " << new_size << " > " << m_max_size;
+      throw Elements::Exception() << "resize request bigger than maximum allocated size: " << new_size << " > "
+                                  << m_max_size;
     }
     boost::filesystem::resize_file(m_path, new_size);
     std::copy(header_str.begin(), header_str.end(), m_mapped.data());

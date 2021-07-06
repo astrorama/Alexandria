@@ -60,7 +60,7 @@ public:
    * @throw Elements::Exception
    *  A Source object can not be inserted twice in the map
    */
-  explicit Catalog(std::vector<Source> source_vector);
+  explicit Catalog(const std::vector<Source>& source_vector);
 
   typedef std::vector<Source>::const_iterator const_iterator;
 

@@ -122,8 +122,8 @@ public:
 
   template <typename From>
   Source::id_type operator()(const From&, typename std::enable_if<!is_integer<From>()>::type* = 0) const {
-    throw Elements::Exception() << "Only std::string and int64_t are supported types for a source ID, got " << typeid(From).name()
-                                << " instead";
+    throw Elements::Exception() << "Only std::string and int64_t are supported types for a source ID, got "
+                                << typeid(From).name() << " instead";
   }
 };
 
@@ -142,7 +142,8 @@ namespace boost {
  *  boost::variant specifies an equality operator (==), but, in older boost versions, *not* an inequality one
  *  CCfits expects != to be defined, so we do it here
  */
-inline bool operator!=(const Euclid::SourceCatalog::Source::id_type& a, const Euclid::SourceCatalog::Source::id_type& b) {
+inline bool operator!=(const Euclid::SourceCatalog::Source::id_type& a,
+                       const Euclid::SourceCatalog::Source::id_type& b) {
   return !(a == b);
 }
 

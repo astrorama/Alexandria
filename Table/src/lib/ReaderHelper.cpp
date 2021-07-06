@@ -27,8 +27,10 @@
 namespace Euclid {
 namespace Table {
 
-std::shared_ptr<ColumnInfo> createColumnInfo(const std::vector<std::string>& names, const std::vector<std::type_index>& types,
-                                             const std::vector<std::string>& units, const std::vector<std::string>& descriptions) {
+std::shared_ptr<ColumnInfo> createColumnInfo(const std::vector<std::string>&     names,
+                                             const std::vector<std::type_index>& types,
+                                             const std::vector<std::string>&     units,
+                                             const std::vector<std::string>&     descriptions) {
   std::vector<ColumnInfo::info_type> info_list{};
   for (size_t i = 0; i < names.size(); ++i) {
     info_list.push_back({names[i], types[i], units[i], descriptions[i]});

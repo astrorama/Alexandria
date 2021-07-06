@@ -27,9 +27,9 @@
 #define PHOTOMETRYATTRIBUTEFROMROW_H_
 #include <map>
 #include <memory>
-#include <vector>
 #include <string>
 #include <utility>
+#include <vector>
 
 #include "ElementsKernel/Export.h"
 
@@ -80,13 +80,12 @@ public:
    * @exception
    *  An exception is thrown if the names provided in the mapping are not present in the columnInfo.
    */
-  PhotometryAttributeFromRow(std::shared_ptr<Euclid::Table::ColumnInfo>                                      column_info_ptr,
-                             const std::vector<std::pair<std::string, std::pair<std::string, std::string>>>& filter_name_mapping,
-                             const bool missing_photometry_enabled, const double missing_photometry_flag,
-                             const bool upper_limit_enabled,
-                             const std::vector<std::pair<std::string, float>> n_map,
-                             const double n_upper_limit_flag,
-                             const std::vector<std::pair<std::string, bool>> convert_from_mag = {});
+  PhotometryAttributeFromRow(
+      std::shared_ptr<Euclid::Table::ColumnInfo>                                      column_info_ptr,
+      const std::vector<std::pair<std::string, std::pair<std::string, std::string>>>& filter_name_mapping,
+      const bool missing_photometry_enabled, const double missing_photometry_flag, const bool upper_limit_enabled,
+      const std::vector<std::pair<std::string, float>>& n_map, const double n_upper_limit_flag,
+      const std::vector<std::pair<std::string, bool>>& convert_from_mag = {});
 
   virtual ~PhotometryAttributeFromRow();
 

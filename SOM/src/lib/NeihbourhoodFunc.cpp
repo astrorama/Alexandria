@@ -25,8 +25,8 @@ namespace NeighborhoodFunc {
 
 Signature linearUnitDisk(double initial_radius) {
   double r_square = initial_radius * initial_radius;
-  return [r_square](std::pair<std::size_t, std::size_t> bmu, std::pair<std::size_t, std::size_t> cell, std::size_t iteration,
-                    std::size_t total_iterations) -> double {
+  return [r_square](std::pair<std::size_t, std::size_t> bmu, std::pair<std::size_t, std::size_t> cell,
+                    std::size_t iteration, std::size_t total_iterations) -> double {
     double iter_factor = 1.0 * (total_iterations - iteration) / total_iterations;
     iter_factor        = iter_factor * iter_factor;  // We compare the squared distances
     double x           = bmu.first - cell.first;

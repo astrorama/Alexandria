@@ -42,10 +42,9 @@ struct Save {
   /// Version of save for default constructible tuple elements. It just saves
   /// in the archive the element.
   template <typename Archive, typename... Args>
-  static void
-  save(Archive& ar, const std::tuple<Args...>& t, const unsigned int version,
-       typename std::enable_if<
-           std::is_default_constructible<typename std::tuple_element<N - 1, std::tuple<Args...>>::type>::value>::type* = 0) {
+  static void save(Archive& ar, const std::tuple<Args...>& t, const unsigned int version,
+                   typename std::enable_if<std::is_default_constructible<
+                       typename std::tuple_element<N - 1, std::tuple<Args...>>::type>::value>::type* = 0) {
     ar << std::get<N - 1>(t);
     Save<N - 1>::save(ar, t, version);
   }
@@ -54,10 +53,9 @@ struct Save {
   /// in the archive a pointer to the element, to enable the boost serialization
   /// non default constructor support. These objects must be read as pointers.
   template <typename Archive, typename... Args>
-  static void
-  save(Archive& ar, const std::tuple<Args...>& t, const unsigned int version,
-       typename std::enable_if<
-           !std::is_default_constructible<typename std::tuple_element<N - 1, std::tuple<Args...>>::type>::value>::type* = 0) {
+  static void save(Archive& ar, const std::tuple<Args...>& t, const unsigned int version,
+                   typename std::enable_if<!std::is_default_constructible<
+                       typename std::tuple_element<N - 1, std::tuple<Args...>>::type>::value>::type* = 0) {
     // Do NOT delete this pointer! It points in the element of the tuple and
     // the tuple will take care of the memory management
     typename std::remove_reference<decltype(std::get<N - 1>(t))>::type* ptr = &std::get<N - 1>(t);
@@ -86,10 +84,9 @@ struct Load {
   /// from the archive the element into the default constructed element of the
   /// tuple.
   template <typename Archive, typename... Args>
-  static void
-  load(Archive& ar, std::tuple<Args...>& t, const unsigned int version,
-       typename std::enable_if<
-           std::is_default_constructible<typename std::tuple_element<N - 1, std::tuple<Args...>>::type>::value>::type* = 0) {
+  static void load(Archive& ar, std::tuple<Args...>& t, const unsigned int version,
+                   typename std::enable_if<std::is_default_constructible<
+                       typename std::tuple_element<N - 1, std::tuple<Args...>>::type>::value>::type* = 0) {
     ar >> std::get<N - 1>(t);
     Load<N - 1>::load(ar, t, version);
   }
@@ -99,10 +96,9 @@ struct Load {
   /// mechanisms and then it uses the copy assignment operator to move the
   /// just red object in the tuple.
   template <typename Archive, typename... Args>
-  static void
-  load(Archive& ar, std::tuple<Args...>& t, const unsigned int version,
-       typename std::enable_if<
-           !std::is_default_constructible<typename std::tuple_element<N - 1, std::tuple<Args...>>::type>::value>::type* = 0) {
+  static void load(Archive& ar, std::tuple<Args...>& t, const unsigned int version,
+                   typename std::enable_if<!std::is_default_constructible<
+                       typename std::tuple_element<N - 1, std::tuple<Args...>>::type>::value>::type* = 0) {
     typedef typename std::remove_reference<decltype(std::get<N - 1>(t))>::type ElementType;
     ElementType*                                                               ptr;
     ar >> ptr;
