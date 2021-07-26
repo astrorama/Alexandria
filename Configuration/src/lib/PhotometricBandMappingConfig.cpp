@@ -50,11 +50,12 @@ static const std::string EXCLUDE_FILTER{"exclude-filter"};
 PhotometricBandMappingConfig::PhotometricBandMappingConfig(long manager_id) : Configuration(manager_id) {}
 
 auto PhotometricBandMappingConfig::getProgramOptions() -> std::map<std::string, OptionDescriptionList> {
-  return {{"Input catalog options",
-           {{FILTER_MAPPING_FILE.c_str(), po::value<std::string>()->default_value("filter_mapping.txt"),
-             "The file containing the photometry mapping of the catalog columns"},
-            {EXCLUDE_FILTER.c_str(), po::value<std::vector<std::string>>()->default_value(std::vector<std::string>{}, ""),
-             "A list of filters to ignore"}}}};
+  return {
+      {"Input catalog options",
+       {{FILTER_MAPPING_FILE.c_str(), po::value<std::string>()->default_value("filter_mapping.txt"),
+         "The file containing the photometry mapping of the catalog columns"},
+        {EXCLUDE_FILTER.c_str(), po::value<std::vector<std::string>>()->default_value(std::vector<std::string>{}, ""),
+         "A list of filters to ignore"}}}};
 }
 
 static fs::path getMappingFileFromOptions(const Configuration::UserValues& args, const fs::path& base_dir) {
@@ -71,14 +72,15 @@ static fs::path getMappingFileFromOptions(const Configuration::UserValues& args,
   return mapping_file;
 }
 
-static std::tuple<PhotometricBandMappingConfig::MappingMap, PhotometricBandMappingConfig::UpperLimitThresholdMap, PhotometricBandMappingConfig::ConvertFromMagMap>
+static std::tuple<PhotometricBandMappingConfig::MappingMap, PhotometricBandMappingConfig::UpperLimitThresholdMap,
+                  PhotometricBandMappingConfig::ConvertFromMagMap>
 parseFile(fs::path filename) {
   PhotometricBandMappingConfig::MappingMap             filter_name_mapping{};
   PhotometricBandMappingConfig::UpperLimitThresholdMap threshold_mapping{};
   PhotometricBandMappingConfig::ConvertFromMagMap      convert_from_mag_mapping{};
   std::ifstream                                        in{filename.string()};
   std::string                                          line;
-  regex                                                expr{"\\s*([^\\s#]+)\\s+([^\\s#]+)\\s+([^\\s#]+)(\\s+[^\\s#]+)?(\\s+[^\\s#]+\\s*$)?"};
+  regex expr{"\\s*([^\\s#]+)\\s+([^\\s#]+)\\s+([^\\s#]+)(\\s+[^\\s#]+)?(\\s+[^\\s#]+\\s*$)?"};
   while (std::getline(in, line)) {
     boost::trim(line);
     if (line[0] == '#') {
@@ -91,7 +93,6 @@ parseFile(fs::path filename) {
     }
     filter_name_mapping.emplace_back(match_res.str(1), std::make_pair(match_res.str(2), match_res.str(3)));
 
-
     if (match_res.size() < 5 || match_res.str(4) == "") {
       threshold_mapping.emplace_back(match_res.str(1), 3.0);
     } else {
@@ -99,14 +100,12 @@ parseFile(fs::path filename) {
       threshold_mapping.emplace_back(match_res.str(1), n);
     }
 
-
     if (match_res.size() < 6 || match_res.str(5) == "") {
       convert_from_mag_mapping.emplace_back(match_res.str(1), false);
     } else {
       bool f = std::stoi(match_res.str(5));
       convert_from_mag_mapping.emplace_back(match_res.str(1), f);
     }
-
   }
   return std::make_tuple(filter_name_mapping, threshold_mapping, convert_from_mag_mapping);
 }
@@ -144,8 +143,6 @@ void PhotometricBandMappingConfig::initialize(const UserValues& args) {
     }
   }
 
-
-
   if (!exclude_filters.empty()) {
     std::stringstream wrong_filters{};
     for (auto& f : exclude_filters) {
@@ -170,7 +167,8 @@ const PhotometricBandMappingConfig::MappingMap& PhotometricBandMappingConfig::ge
   return m_mapping_map;
 }
 
-const PhotometricBandMappingConfig::UpperLimitThresholdMap& PhotometricBandMappingConfig::getUpperLimitThresholdMapping() {
+const PhotometricBandMappingConfig::UpperLimitThresholdMap&
+PhotometricBandMappingConfig::getUpperLimitThresholdMapping() {
   if (getCurrentState() < State::INITIALIZED) {
     throw Elements::Exception() << "getUpperLimitThresholdMapping() call to uninitialized "
                                 << "PhotometricBandMappingConfig";

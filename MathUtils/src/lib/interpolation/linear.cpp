@@ -31,7 +31,8 @@
 namespace Euclid {
 namespace MathUtils {
 
-std::unique_ptr<Function> linearInterpolation(const std::vector<double>& x, const std::vector<double>& y, bool extrapolate) {
+std::unique_ptr<Function> linearInterpolation(const std::vector<double>& x, const std::vector<double>& y,
+                                              bool extrapolate) {
   std::vector<std::unique_ptr<Function>> functions{};
   for (size_t i = 0; i < x.size() - 1; i++) {
     double coef1 = (y[i + 1] - y[i]) / (x[i + 1] - x[i]);

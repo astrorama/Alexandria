@@ -72,7 +72,8 @@ public:
    *  An exception is thrown if the names provided in the mapping are not present in the columnInfo.
    */
   SpectroscopicRedshiftAttributeFromRow(std::shared_ptr<Euclid::Table::ColumnInfo> column_info_ptr,
-                                        const std::string& specz_value_column_name, const std::string& specz_error_column_name) {
+                                        const std::string&                         specz_value_column_name,
+                                        const std::string&                         specz_error_column_name) {
 
     std::unique_ptr<size_t> specz_value_column_index_ptr = column_info_ptr->find(specz_value_column_name);
     if (specz_value_column_index_ptr == nullptr) {

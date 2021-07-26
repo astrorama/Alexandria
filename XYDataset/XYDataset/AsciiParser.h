@@ -59,7 +59,8 @@ public:
    * The regex for extracting the dataset name. The default is defined as
    * "^\\s*#\\s*(\\w+)\\s*$".
    */
-  explicit AsciiParser(const std::string& regex_str = "^\\s*#\\s*(\\w+)\\s*$") : FileParser(), m_regex_name(regex_str) {}
+  explicit AsciiParser(const std::string& regex_str = "^\\s*#\\s*(\\w+)\\s*$")
+      : FileParser(), m_regex_name(regex_str) {}
 
   /**
    * @brief

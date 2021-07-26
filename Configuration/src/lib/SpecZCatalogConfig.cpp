@@ -42,22 +42,25 @@ SpecZCatalogConfig::SpecZCatalogConfig(long manager_id) : Configuration(manager_
 }
 
 auto SpecZCatalogConfig::getProgramOptions() -> std::map<std::string, OptionDescriptionList> {
-  return {
-      {"Input catalog options",
-       {{SPECZ_COLUMN_NAME.c_str(), po::value<std::string>(), "The name of the column representing the spectroscopic redshift"},
-        {SPECZ_COLUMN_INDEX.c_str(), po::value<int>(), "The 1-based index of the column representing the spectroscopic redshift"},
-        {SPECZ_ERR_COLUMN_NAME.c_str(), po::value<std::string>(),
-         "The name of the column representing spectroscopic redshift error"},
-        {SPECZ_ERR_COLUMN_INDEX.c_str(), po::value<int>(),
-         "The 1-based index of the column representing the spectroscopic redshift error"}}}};
+  return {{"Input catalog options",
+           {{SPECZ_COLUMN_NAME.c_str(), po::value<std::string>(),
+             "The name of the column representing the spectroscopic redshift"},
+            {SPECZ_COLUMN_INDEX.c_str(), po::value<int>(),
+             "The 1-based index of the column representing the spectroscopic redshift"},
+            {SPECZ_ERR_COLUMN_NAME.c_str(), po::value<std::string>(),
+             "The name of the column representing spectroscopic redshift error"},
+            {SPECZ_ERR_COLUMN_INDEX.c_str(), po::value<int>(),
+             "The 1-based index of the column representing the spectroscopic redshift error"}}}};
 }
 
 void SpecZCatalogConfig::preInitialize(const UserValues& args) {
   if (args.find(SPECZ_COLUMN_NAME) != args.end() && args.find(SPECZ_COLUMN_INDEX) != args.end()) {
-    throw Elements::Exception() << "Options " << SPECZ_COLUMN_NAME << " and " << SPECZ_COLUMN_INDEX << " are mutually exclusive";
+    throw Elements::Exception() << "Options " << SPECZ_COLUMN_NAME << " and " << SPECZ_COLUMN_INDEX
+                                << " are mutually exclusive";
   }
   if (args.find(SPECZ_COLUMN_NAME) == args.end() && args.find(SPECZ_COLUMN_INDEX) == args.end()) {
-    throw Elements::Exception() << "One of the options " << SPECZ_COLUMN_NAME << " and " << SPECZ_COLUMN_INDEX << " must be given";
+    throw Elements::Exception() << "One of the options " << SPECZ_COLUMN_NAME << " and " << SPECZ_COLUMN_INDEX
+                                << " must be given";
   }
   if (args.find(SPECZ_COLUMN_INDEX) != args.end() && args.at(SPECZ_COLUMN_INDEX).as<int>() < 1) {
     throw Elements::Exception() << SPECZ_COLUMN_INDEX << " must be a one-based "
@@ -73,7 +76,8 @@ void SpecZCatalogConfig::preInitialize(const UserValues& args) {
   }
 }
 
-static std::string getFluxColumnFromOptions(const Configuration::UserValues& args, const Table::ColumnInfo& column_info) {
+static std::string getFluxColumnFromOptions(const Configuration::UserValues& args,
+                                            const Table::ColumnInfo&         column_info) {
   if (args.find(SPECZ_COLUMN_NAME) != args.end()) {
     std::string name = args.at(SPECZ_COLUMN_NAME).as<std::string>();
     if (column_info.find(name) == nullptr) {
@@ -84,13 +88,15 @@ static std::string getFluxColumnFromOptions(const Configuration::UserValues& arg
   } else {
     std::size_t index = args.at(SPECZ_COLUMN_INDEX).as<int>();
     if (index > column_info.size()) {
-      throw Elements::Exception() << SPECZ_COLUMN_INDEX << " (" << index << ") is out of range (" << column_info.size() << ")";
+      throw Elements::Exception() << SPECZ_COLUMN_INDEX << " (" << index << ") is out of range (" << column_info.size()
+                                  << ")";
     }
     return column_info.getDescription(index - 1).name;
   }
 }
 
-static std::string getErrColumnFromOptions(const Configuration::UserValues& args, const Table::ColumnInfo& column_info) {
+static std::string getErrColumnFromOptions(const Configuration::UserValues& args,
+                                           const Table::ColumnInfo&         column_info) {
   if (args.find(SPECZ_ERR_COLUMN_NAME) != args.end()) {
     std::string name = args.at(SPECZ_ERR_COLUMN_NAME).as<std::string>();
     if (column_info.find(name) == nullptr) {
@@ -101,7 +107,8 @@ static std::string getErrColumnFromOptions(const Configuration::UserValues& args
   } else {
     std::size_t index = args.at(SPECZ_ERR_COLUMN_INDEX).as<int>();
     if (index > column_info.size()) {
-      throw Elements::Exception() << SPECZ_ERR_COLUMN_INDEX << " (" << index << ") is out of range (" << column_info.size() << ")";
+      throw Elements::Exception() << SPECZ_ERR_COLUMN_INDEX << " (" << index << ") is out of range ("
+                                  << column_info.size() << ")";
     }
     return column_info.getDescription(index - 1).name;
   }

@@ -46,12 +46,13 @@ static const std::string SOURCE_ID_COLUMN_INDEX{"source-id-column-index"};
 CatalogConfig::CatalogConfig(long manager_id) : Configuration(manager_id) {}
 
 auto CatalogConfig::getProgramOptions() -> std::map<std::string, OptionDescriptionList> {
-  return {{"Input catalog options",
-           {{INPUT_CATALOG_FILE.c_str(), po::value<std::string>()->required(), "The file containing the input catalog"},
-            {INPUT_CATALOG_FORMAT.c_str(), po::value<std::string>()->default_value("AUTO"),
-             "The format of the input catalog (AUTO, FITS or ASCII)"},
-            {SOURCE_ID_COLUMN_NAME.c_str(), po::value<std::string>(), "The name of the column representing the source ID"},
-            {SOURCE_ID_COLUMN_INDEX.c_str(), po::value<int>(), "The index of the column representing the source ID"}}}};
+  return {
+      {"Input catalog options",
+       {{INPUT_CATALOG_FILE.c_str(), po::value<std::string>()->required(), "The file containing the input catalog"},
+        {INPUT_CATALOG_FORMAT.c_str(), po::value<std::string>()->default_value("AUTO"),
+         "The format of the input catalog (AUTO, FITS or ASCII)"},
+        {SOURCE_ID_COLUMN_NAME.c_str(), po::value<std::string>(), "The name of the column representing the source ID"},
+        {SOURCE_ID_COLUMN_INDEX.c_str(), po::value<int>(), "The index of the column representing the source ID"}}}};
 }
 
 void CatalogConfig::preInitialize(const UserValues& args) {
@@ -67,7 +68,8 @@ void CatalogConfig::preInitialize(const UserValues& args) {
   }
 
   if (args.find(INPUT_CATALOG_FORMAT) != args.end() && args.at(INPUT_CATALOG_FORMAT).as<std::string>() != "AUTO" &&
-      args.at(INPUT_CATALOG_FORMAT).as<std::string>() != "FITS" && args.at(INPUT_CATALOG_FORMAT).as<std::string>() != "ASCII") {
+      args.at(INPUT_CATALOG_FORMAT).as<std::string>() != "FITS" &&
+      args.at(INPUT_CATALOG_FORMAT).as<std::string>() != "ASCII") {
     throw Elements::Exception() << INPUT_CATALOG_FORMAT << "must be one of "
                                 << "AUTO, FITS or ASCII, but was " << args.at(INPUT_CATALOG_FORMAT).as<std::string>();
   }
@@ -140,7 +142,8 @@ std::string getIdColumnFromOptions(const Configuration::UserValues& args, const 
   if (args.find(SOURCE_ID_COLUMN_INDEX) != args.end()) {
     std::size_t index = args.at(SOURCE_ID_COLUMN_INDEX).as<int>();
     if (index > column_info.size()) {
-      throw Elements::Exception() << SOURCE_ID_COLUMN_INDEX << " (" << index << ") is out of range (" << column_info.size() << ")";
+      throw Elements::Exception() << SOURCE_ID_COLUMN_INDEX << " (" << index << ") is out of range ("
+                                  << column_info.size() << ")";
     }
     id_column_name = column_info.getDescription(index - 1).name;
   }

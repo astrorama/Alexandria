@@ -24,9 +24,8 @@
 #ifndef SOM_INITFUNC_H
 #define SOM_INITFUNC_H
 
+#include <ElementsKernel/Export.h>
 #include <functional>
-#include <random>
-#include <vector>
 
 namespace Euclid {
 namespace SOM {
@@ -35,20 +34,11 @@ namespace InitFunc {
 
 using Signature = std::function<double()>;
 
-Signature zero = []() { return 0; };
+extern Signature zero;
 
-Signature normalDistribution(double sigma, double mu) {
-  std::random_device         rd;
-  std::mt19937               gen(rd());
-  std::normal_distribution<> d(mu, sigma);
-  return [gen, d]() mutable { return d(gen); };
-}
+ELEMENTS_API Signature normalDistribution(double sigma, double mu);
 
-Signature uniformRandom(double min, double max) {
-  std::uniform_real_distribution<double> unif(min, max);
-  std::default_random_engine             re;
-  return [unif, re]() mutable { return unif(re); };
-}
+ELEMENTS_API Signature uniformRandom(double min, double max);
 
 }  // namespace InitFunc
 

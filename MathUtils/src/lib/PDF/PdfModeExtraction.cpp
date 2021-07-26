@@ -96,7 +96,8 @@ std::pair<size_t, size_t> catchPeak(const std::vector<double>& pdf, size_t cente
 }
 
 // basic integration may be refined
-std::pair<double, double> avgArea(std::pair<std::vector<double>, std::vector<double>>& pdf, size_t min_x, size_t max_x) {
+std::pair<double, double> avgArea(std::pair<std::vector<double>, std::vector<double>>& pdf, size_t min_x,
+                                  size_t max_x) {
 
   double num  = 0.;
   double area = 0.;
@@ -163,8 +164,8 @@ double getInterpolationAround(const std::pair<std::vector<double>, std::vector<d
   return x_max;
 }
 
-std::pair<std::vector<double>, std::vector<double>> flatternPeak(const std::pair<std::vector<double>, std::vector<double>>& pdf,
-                                                                 size_t min_x, size_t max_x, double value) {
+std::pair<std::vector<double>, std::vector<double>>
+flatternPeak(const std::pair<std::vector<double>, std::vector<double>>& pdf, size_t min_x, size_t max_x, double value) {
   std::vector<double> flatterned{pdf.second};
   for (size_t index = min_x; index <= max_x; ++index) {
     flatterned[index] = value;
@@ -172,8 +173,8 @@ std::pair<std::vector<double>, std::vector<double>> flatternPeak(const std::pair
   return std::make_pair(pdf.first, flatterned);
 }
 
-std::vector<ModeInfo> extractNHighestModes(std::vector<double>& x_sampling, std::vector<double>& pdf_sampling, double merge_ratio,
-                                           size_t n) {
+std::vector<ModeInfo> extractNHighestModes(std::vector<double>& x_sampling, std::vector<double>& pdf_sampling,
+                                           double merge_ratio, size_t n) {
   std::vector<ModeInfo> result{};
   auto                  pdf_xy = std::make_pair(x_sampling, pdf_sampling);
 
@@ -194,8 +195,8 @@ std::vector<ModeInfo> extractNHighestModes(const XYDataset::XYDataset& pdf, doub
   return extractNHighestModes(pdf_xy.first, pdf_xy.second, merge_ratio, n);
 }
 
-std::vector<ModeInfo> extractNBigestModes(std::vector<double>& x_sampling, std::vector<double>& pdf_sampling, double merge_ratio,
-                                          size_t n) {
+std::vector<ModeInfo> extractNBigestModes(std::vector<double>& x_sampling, std::vector<double>& pdf_sampling,
+                                          double merge_ratio, size_t n) {
   auto   pdf_xy     = std::make_pair(x_sampling, pdf_sampling);
   double total_area = avgArea(pdf_xy, 0, x_sampling.size() - 1).second;
 

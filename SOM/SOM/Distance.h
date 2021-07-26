@@ -41,7 +41,8 @@ public:
 
   virtual double distance(const std::array<double, ND>& left, const std::array<double, ND>& right) const = 0;
 
-  virtual double distance(const std::array<double, ND>&, const std::array<double, ND>&, const std::array<double, ND>&) const {
+  virtual double distance(const std::array<double, ND>&, const std::array<double, ND>&,
+                          const std::array<double, ND>&) const {
     throw Elements::Exception() << "Distance with uncertainties is not supported "
                                 << "for this type of distance";
   }

@@ -67,6 +67,7 @@ auto FileHandler::getWriteAccessor(bool try_lock) -> std::unique_ptr<FileAccesso
 
   // Build and return accessor
   auto typed_ptr = dynamic_cast<TypedFdWrapper<TFD>*>(m_available_fd.begin()->second.get());
+  assert(typed_ptr != nullptr);
   auto fd        = std::move(typed_ptr->m_fd);
   auto id        = typed_ptr->m_id;
   m_available_fd.clear();

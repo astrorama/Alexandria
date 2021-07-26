@@ -16,27 +16,25 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-/**
- * @file src/lib/ReaderHelper.cpp
- * @date April 21, 2014
- * @author Nikolaos Apostolakos
- */
-
-#include "ReaderHelper.h"
+#include "SOM/LearningRestraintFunc.h"
+#include <cmath>
 
 namespace Euclid {
-namespace Table {
+namespace SOM {
+namespace LearningRestraintFunc {
 
-std::shared_ptr<ColumnInfo> createColumnInfo(const std::vector<std::string>&     names,
-                                             const std::vector<std::type_index>& types,
-                                             const std::vector<std::string>&     units,
-                                             const std::vector<std::string>&     descriptions) {
-  std::vector<ColumnInfo::info_type> info_list{};
-  for (size_t i = 0; i < names.size(); ++i) {
-    info_list.push_back({names[i], types[i], units[i], descriptions[i]});
-  }
-  return std::shared_ptr<ColumnInfo>(new ColumnInfo{std::move(info_list)});
+Signature linear() {
+  return [](std::size_t iteration, std::size_t total_iterations) -> double {
+    return 1.0 * (total_iterations - iteration) / total_iterations;
+  };
 }
 
-}  // namespace Table
-}  // end of namespace Euclid
+Signature exponentialDecay(double initial_rate) {
+  return [initial_rate](std::size_t iteration, std::size_t total_iterations) -> double {
+    return initial_rate * std::exp(-1. * iteration / total_iterations);
+  };
+}
+
+}  // namespace LearningRestraintFunc
+}  // namespace SOM
+}  // namespace Euclid

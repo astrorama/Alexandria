@@ -33,14 +33,15 @@ namespace SourceCatalog {
 
 //-----------------------------------------------------------------------------
 // Constructor
-Catalog::Catalog(std::vector<Source> source_vector) : m_source_vector(source_vector) {
+Catalog::Catalog(const std::vector<Source>& source_vector) : m_source_vector(source_vector) {
   // Set the m_indices_map map
   for (size_t index = 0; index < m_source_vector.size(); ++index) {
     auto it = m_source_index_map.emplace(m_source_vector[index].getId(), index);
     // Make sure the element does not already exist
     if (!it.second) {
       throw Elements::Exception() << "Euclid::SourceCatalog::Catalog: Source object already exist "
-                                  << "in the map for source ID : " << m_source_vector[index].getId() << ", index: " << index;
+                                  << "in the map for source ID : " << m_source_vector[index].getId()
+                                  << ", index: " << index;
     }
   }
 }  // Eof Euclid::SourceCatalog::Catalog

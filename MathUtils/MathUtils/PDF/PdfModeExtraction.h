@@ -104,8 +104,8 @@ std::vector<ModeInfo> extractNHighestModes(const XYDataset::XYDataset& pdf, doub
  * @param n The (maximum) number of modes to be returned.
  * @return A vector of ModeInfo containing the position and the area of the modes.
  */
-std::vector<ModeInfo> extractNHighestModes(std::vector<double>& x_sampling, std::vector<double>& pdf_sampling, double merge_ratio,
-                                           size_t n);
+std::vector<ModeInfo> extractNHighestModes(std::vector<double>& x_sampling, std::vector<double>& pdf_sampling,
+                                           double merge_ratio, size_t n);
 
 /**
  * Extract the n modes with biggest area in the provided pdf and compute for
@@ -140,8 +140,8 @@ std::vector<ModeInfo> extractNBigestModes(const XYDataset::XYDataset& pdf, doubl
  * @param n The (maximum) number of modes to be returned.
  * @return A vector of ModeInfo containing the position and the area of the modes.
  */
-std::vector<ModeInfo> extractNBigestModes(std::vector<double>& x_sampling, std::vector<double>& pdf_sampling, double merge_ratio,
-                                          size_t n);
+std::vector<ModeInfo> extractNBigestModes(std::vector<double>& x_sampling, std::vector<double>& pdf_sampling,
+                                          double merge_ratio, size_t n);
 
 } /* namespace MathUtils */
 }  // namespace Euclid

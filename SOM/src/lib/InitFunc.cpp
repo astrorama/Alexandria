@@ -16,27 +16,32 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-/**
- * @file src/lib/ReaderHelper.cpp
- * @date April 21, 2014
- * @author Nikolaos Apostolakos
- */
-
-#include "ReaderHelper.h"
+#include "SOM/InitFunc.h"
+#include <random>
 
 namespace Euclid {
-namespace Table {
+namespace SOM {
+namespace InitFunc {
 
-std::shared_ptr<ColumnInfo> createColumnInfo(const std::vector<std::string>&     names,
-                                             const std::vector<std::type_index>& types,
-                                             const std::vector<std::string>&     units,
-                                             const std::vector<std::string>&     descriptions) {
-  std::vector<ColumnInfo::info_type> info_list{};
-  for (size_t i = 0; i < names.size(); ++i) {
-    info_list.push_back({names[i], types[i], units[i], descriptions[i]});
-  }
-  return std::shared_ptr<ColumnInfo>(new ColumnInfo{std::move(info_list)});
+double zeroImpl(void) {
+  return 0;
 }
 
-}  // namespace Table
-}  // end of namespace Euclid
+Signature zero = zeroImpl;
+
+Signature normalDistribution(double sigma, double mu) {
+  std::random_device         rd;
+  std::mt19937               gen(rd());
+  std::normal_distribution<> d(mu, sigma);
+  return [gen, d]() mutable { return d(gen); };
+}
+
+Signature uniformRandom(double min, double max) {
+  std::uniform_real_distribution<double> unif(min, max);
+  std::default_random_engine             re;
+  return [unif, re]() mutable { return unif(re); };
+}
+
+}  // namespace InitFunc
+}  // namespace SOM
+}  // namespace Euclid

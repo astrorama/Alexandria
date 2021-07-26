@@ -175,7 +175,7 @@ protected:
   void append(const Table& table) override;
 
 private:
-  AsciiWriter(std::unique_ptr<InstOrRefHolder<std::ostream>> stream_holder);
+  explicit AsciiWriter(std::unique_ptr<InstOrRefHolder<std::ostream>> stream_holder);
 
   std::unique_ptr<InstOrRefHolder<std::ostream>> m_stream_holder;
   bool                                           m_writing_started  = false;

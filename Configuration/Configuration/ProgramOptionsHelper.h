@@ -73,8 +73,9 @@ public:
    * @param options The map with the values of the user
    * @return The instance names
    */
-  static std::set<std::string> findWildcardNames(const std::vector<std::string>& option_name_list,
-                                                 const std::map<std::string, boost::program_options::variable_value>& options);
+  static std::set<std::string>
+  findWildcardNames(const std::vector<std::string>&                                      option_name_list,
+                    const std::map<std::string, boost::program_options::variable_value>& options);
 
 }; /* End of ProgramOptionsHelper class */
 

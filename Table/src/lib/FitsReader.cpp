@@ -100,8 +100,8 @@ void FitsReader::readColumnInfo() {
   if (m_column_names.empty()) {
     names = autoDetectColumnNames(table_hdu);
   } else if (m_column_names.size() != static_cast<size_t>(table_hdu.numCols())) {
-    throw Elements::Exception() << "Columns number in HDU (" << table_hdu.numCols() << ") does not match the column names number ("
-                                << m_column_names.size() << ")";
+    throw Elements::Exception() << "Columns number in HDU (" << table_hdu.numCols()
+                                << ") does not match the column names number (" << m_column_names.size() << ")";
   } else {
     names = m_column_names;
   }
@@ -138,8 +138,8 @@ Table FitsReader::readImpl(long rows) {
   std::vector<std::vector<Row::cell_type>> data;
   for (int i = 1; i <= table_hdu.numCols(); ++i) {
     // The i-1 is because CCfits starts from 1 and ColumnInfo from 0
-    data.push_back(
-        translateColumn(table_hdu.column(i), m_column_info->getDescription(i - 1).type, m_current_row, m_current_row + rows - 1));
+    data.push_back(translateColumn(table_hdu.column(i), m_column_info->getDescription(i - 1).type, m_current_row,
+                                   m_current_row + rows - 1));
   }
 
   m_current_row += rows;
@@ -163,7 +163,7 @@ void FitsReader::skip(long rows) {
 
 bool FitsReader::hasMoreRows() {
   readColumnInfo();
-  return m_current_row < m_total_rows;
+  return m_current_row <= m_total_rows;
 }
 
 std::size_t FitsReader::rowsLeft() {

@@ -45,7 +45,6 @@ CatalogFromTable::CatalogFromTable(std::shared_ptr<Euclid::Table::ColumnInfo>   
 }
 
 CatalogFromTable::~CatalogFromTable() {
-  // @todo Auto-generated destructor stub
 }
 
 Euclid::SourceCatalog::Catalog CatalogFromTable::createCatalog(const Euclid::Table::Table& input_table) {

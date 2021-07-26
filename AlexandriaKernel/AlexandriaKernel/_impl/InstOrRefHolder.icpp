@@ -31,7 +31,7 @@ namespace InstOrRefHolder_Impl {
 template <typename InterfaceType, typename InstanceType>
 struct InstHolder_Impl : public InstOrRefHolder<InterfaceType> {
   template <typename... Args>
-  InstHolder_Impl(Args... args) : m_instance(std::forward<Args>(args)...) {}
+  explicit InstHolder_Impl(Args... args) : m_instance(std::forward<Args>(args)...) {}
   virtual ~InstHolder_Impl() = default;
   InterfaceType& ref() override {
     return m_instance;
@@ -43,7 +43,7 @@ private:
 
 template <typename InterfaceType>
 struct RefHolder_Impl : public InstOrRefHolder<InterfaceType> {
-  RefHolder_Impl(InterfaceType& ref_) : m_reference(ref_) {}
+  explicit RefHolder_Impl(InterfaceType& ref_) : m_reference(ref_) {}
   virtual ~RefHolder_Impl() = default;
   InterfaceType& ref() override {
     return m_reference.get();
@@ -60,7 +60,8 @@ template <typename InstanceType, typename... Args>
 std::unique_ptr<InstOrRefHolder<InterfaceType>> InstOrRefHolder<InterfaceType>::create(Args... args) {
   static_assert(std::is_same<InterfaceType, InstanceType>::value || std::is_base_of<InterfaceType, InstanceType>::value,
                 "InstanceType must be a subtype of InterfaceType");
-  return Euclid::make_unique<InstOrRefHolder_Impl::InstHolder_Impl<InterfaceType, InstanceType>>(std::forward<Args>(args)...);
+  return Euclid::make_unique<InstOrRefHolder_Impl::InstHolder_Impl<InterfaceType, InstanceType>>(
+      std::forward<Args>(args)...);
 }
 
 template <typename InterfaceType>

@@ -53,7 +53,8 @@ double CosmologicalDistances::comovingDistance(double z, const CosmologicalParam
   }
 
   std::unique_ptr<MathUtils::NumericalIntegrationScheme> integrationScheme{
-      new MathUtils::AdaptativeIntegration<MathUtils::SimpsonsRule>(relative_precision, MathUtils::SimpsonsRule::minimal_order)};
+      new MathUtils::AdaptativeIntegration<MathUtils::SimpsonsRule>(relative_precision,
+                                                                    MathUtils::SimpsonsRule::minimal_order)};
 
   MathUtils::FunctionAdapter adpater([&parameters, this](double x) { return 1. / hubbleParameter(x, parameters); });
 
@@ -87,7 +88,8 @@ double CosmologicalDistances::distanceModulus(double z, const CosmologicalParame
   return 5. * std::log10(luminousDistance(z, parameters) / 10.);
 }
 
-double CosmologicalDistances::dimensionlessComovingVolumeElement(double z, const CosmologicalParameters& parameters) const {
+double CosmologicalDistances::dimensionlessComovingVolumeElement(double                        z,
+                                                                 const CosmologicalParameters& parameters) const {
   double D_H = hubbleDistance(parameters);
   double E   = hubbleParameter(z, parameters);
   double D_M = transverseComovingDistance(z, parameters);

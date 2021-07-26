@@ -28,7 +28,10 @@ namespace Euclid {
 namespace PhysicsUtils {
 
 CosmologicalParameters::CosmologicalParameters(double omega_m, double omega_lambda, double hubble_constant)
-    : m_omega_m{omega_m}, m_omega_lambda{omega_lambda}, m_omega_k{1.0 - omega_m - omega_lambda}, m_H_0{hubble_constant} {}
+    : m_omega_m{omega_m}
+    , m_omega_lambda{omega_lambda}
+    , m_omega_k{1.0 - omega_m - omega_lambda}
+    , m_H_0{hubble_constant} {}
 
 double CosmologicalParameters::getOmegaM() const {
   return m_omega_m;

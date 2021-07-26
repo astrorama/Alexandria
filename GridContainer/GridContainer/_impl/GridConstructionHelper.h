@@ -65,14 +65,16 @@ public:
    * @return A vector containing the sizes of the axes
    */
   template <int I>
-  static std::vector<size_t> createAxesSizesVector(const std::tuple<GridAxis<Axes>...>& axes, const TemplateLoopCounter<I>&) {
+  static std::vector<size_t> createAxesSizesVector(const std::tuple<GridAxis<Axes>...>& axes,
+                                                   const TemplateLoopCounter<I>&) {
     std::vector<size_t> result{createAxesSizesVector(axes, TemplateLoopCounter<I - 1>{})};
     result.push_back(std::get<I - 1>(axes).size());
     return result;
   }
 
   /// Method which terminates the iteration when creating the axes sizes vector
-  static std::vector<size_t> createAxesSizesVector(const std::tuple<GridAxis<Axes>...>&, const TemplateLoopCounter<0>&) {
+  static std::vector<size_t> createAxesSizesVector(const std::tuple<GridAxis<Axes>...>&,
+                                                   const TemplateLoopCounter<0>&) {
     return std::vector<size_t>{};
   }
 
@@ -89,14 +91,16 @@ public:
    * @return A vector containing the names of the axes
    */
   template <int I>
-  static std::vector<std::string> createAxesNamesVector(const std::tuple<GridAxis<Axes>...>& axes, const TemplateLoopCounter<I>&) {
+  static std::vector<std::string> createAxesNamesVector(const std::tuple<GridAxis<Axes>...>& axes,
+                                                        const TemplateLoopCounter<I>&) {
     std::vector<std::string> result{createAxesNamesVector(axes, TemplateLoopCounter<I - 1>{})};
     result.push_back(std::get<I - 1>(axes).name());
     return result;
   }
 
   /// Method which terminates the iteration when creating the axes names vector
-  static std::vector<std::string> createAxesNamesVector(const std::tuple<GridAxis<Axes>...>&, const TemplateLoopCounter<0>&) {
+  static std::vector<std::string> createAxesNamesVector(const std::tuple<GridAxis<Axes>...>&,
+                                                        const TemplateLoopCounter<0>&) {
     return std::vector<std::string>{};
   }
 
@@ -141,19 +145,22 @@ public:
    * @return A vector containing the index factors of the axes
    */
   template <int I>
-  static std::vector<size_t> createAxisIndexFactorVector(const std::tuple<GridAxis<Axes>...>& axes, const TemplateLoopCounter<I>&) {
+  static std::vector<size_t> createAxisIndexFactorVector(const std::tuple<GridAxis<Axes>...>& axes,
+                                                         const TemplateLoopCounter<I>&) {
     std::vector<size_t> result{createAxisIndexFactorVector(axes, TemplateLoopCounter<I - 1>{})};
     result.push_back(getAxisIndexFactor(axes, TemplateLoopCounter<I - 1>{}));
     return result;
   }
 
   /// Method which terminates the iteration when creating the axes index factors
-  static std::vector<size_t> createAxisIndexFactorVector(const std::tuple<GridAxis<Axes>...>&, const TemplateLoopCounter<0>&) {
+  static std::vector<size_t> createAxisIndexFactorVector(const std::tuple<GridAxis<Axes>...>&,
+                                                         const TemplateLoopCounter<0>&) {
     return std::vector<size_t>{1};
   }
 
   template <int I>
-  static void findAndFixAxis(std::tuple<GridAxis<Axes>...>& axes_tuple, size_t axis, size_t index, const TemplateLoopCounter<I>&) {
+  static void findAndFixAxis(std::tuple<GridAxis<Axes>...>& axes_tuple, size_t axis, size_t index,
+                             const TemplateLoopCounter<I>&) {
     if (axis == I) {
       auto&                                                    old_axis = std::get<I>(axes_tuple);
       typename std::remove_reference<decltype(old_axis)>::type new_axis{old_axis.name(), {old_axis[index]}};
@@ -163,7 +170,8 @@ public:
     findAndFixAxis(axes_tuple, axis, index, TemplateLoopCounter<I + 1>{});
   }
 
-  static void findAndFixAxis(std::tuple<GridAxis<Axes>...>&, size_t, size_t, const TemplateLoopCounter<sizeof...(Axes)>&) {
+  static void findAndFixAxis(std::tuple<GridAxis<Axes>...>&, size_t, size_t,
+                             const TemplateLoopCounter<sizeof...(Axes)>&) {
     // does nothing
   }
 

@@ -41,7 +41,8 @@ namespace serialization {
 /// Method which saves a GridContainer instance to an archive. This version handles
 /// default constructible cell values.
 template <class Archive, typename GridCellManager, typename... AxesTypes>
-void save(Archive& ar, const Euclid::GridContainer::GridContainer<GridCellManager, AxesTypes...>& grid, const unsigned int,
+void save(Archive& ar, const Euclid::GridContainer::GridContainer<GridCellManager, AxesTypes...>& grid,
+          const unsigned int,
           typename std::enable_if<std::is_default_constructible<
               typename Euclid::GridContainer::GridCellManagerTraits<GridCellManager>::data_type>::value>::type* = 0) {
   for (auto& cell : grid) {
@@ -52,7 +53,8 @@ void save(Archive& ar, const Euclid::GridContainer::GridContainer<GridCellManage
 /// Method which saves a GridContainer instance to an archive. This version handles
 /// non-default constructible cell values.
 template <class Archive, typename GridCellManager, typename... AxesTypes>
-void save(Archive& ar, const Euclid::GridContainer::GridContainer<GridCellManager, AxesTypes...>& grid, const unsigned int,
+void save(Archive& ar, const Euclid::GridContainer::GridContainer<GridCellManager, AxesTypes...>& grid,
+          const unsigned int,
           typename std::enable_if<!std::is_default_constructible<
               typename Euclid::GridContainer::GridCellManagerTraits<GridCellManager>::data_type>::value>::type* = 0) {
   for (auto& cell : grid) {
@@ -94,7 +96,8 @@ void load(Archive& ar, Euclid::GridContainer::GridContainer<GridCellManager, Axe
 /// This check is done in compilation time. After the check the save/load action
 /// is delegated to the save and load methods.
 template <class Archive, typename GridCellManager, typename... AxesTypes>
-void serialize(Archive& ar, Euclid::GridContainer::GridContainer<GridCellManager, AxesTypes...>& grid, const unsigned int version) {
+void serialize(Archive& ar, Euclid::GridContainer::GridContainer<GridCellManager, AxesTypes...>& grid,
+               const unsigned int version) {
   static_assert(Euclid::GridContainer::GridCellManagerTraits<GridCellManager>::enable_boost_serialize,
                 "Boost serialization of GridContainer with unsupported GridCellManager");
   split_free(ar, grid, version);
@@ -125,7 +128,8 @@ Euclid::GridContainer::GridAxis<T> emptyGridAxis() {
 /// NOTE: Any changes in this method should be reflected in the
 /// save_construct_data method.
 template <class Archive, typename GridCellManager, typename... AxesTypes>
-void load_construct_data(Archive& ar, Euclid::GridContainer::GridContainer<GridCellManager, AxesTypes...>* t, const unsigned int) {
+void load_construct_data(Archive& ar, Euclid::GridContainer::GridContainer<GridCellManager, AxesTypes...>* t,
+                         const unsigned int) {
   // We create a tuple containing empty GridAxis objects. These will be replaced
   // when we read from the stream with the real GridAxis objects. We have to do
   // that because the GridAxis does not have a default constructor.
