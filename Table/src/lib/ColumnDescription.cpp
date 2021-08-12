@@ -25,10 +25,15 @@
 // The std regex library is not fully implemented in GCC 4.8. The following lines
 // make use of the BOOST library and can be modified if GCC 4.9 will be used in
 // the future.
-// #include <regex>
+#if defined(__GNUC__) && __GNUC__ == 4 && __GNUC_MINOR__ <= 8
 #include <boost/regex.hpp>
 using boost::regex;
 using boost::regex_match;
+#else
+#include <regex>
+using std::regex;
+using std::regex_match;
+#endif
 #include "ElementsKernel/Exception.h"
 
 #include "Table/ColumnDescription.h"
@@ -39,10 +44,12 @@ namespace Table {
 ColumnDescription::ColumnDescription(std::string input_name, std::type_index input_type, std::string input_unit,
                                      std::string input_description)
     : name(input_name), type(input_type), unit(input_unit), description(input_description) {
+  static regex vertical_space_regex{".*\\v.*"};
+
   if (input_name.empty()) {
     throw Elements::Exception() << "Empty string name is not allowed";
   }
-  if (regex_match(input_name, regex{".*\\v.*"})) {
+  if (regex_match(input_name, vertical_space_regex)) {
     throw Elements::Exception() << "Column name '" << input_name << "' contains "
                                 << "vertical whitespace characters";
   }
