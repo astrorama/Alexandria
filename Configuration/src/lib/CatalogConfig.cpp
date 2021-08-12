@@ -98,8 +98,9 @@ FormatType autoDetectFormatType(fs::path file) {
   FormatType result = FormatType::ASCII;
   {
     std::ifstream        in{file.string()};
-    std::array<char, 80> first_header_array;
+    std::array<char, 81> first_header_array;
     in.read(first_header_array.data(), 80);
+    first_header_array.back() = '\0';
     in.close();
     std::string first_header_str{first_header_array.data()};
     if (first_header_str.compare(0, 9, "SIMPLE  =") == 0) {
