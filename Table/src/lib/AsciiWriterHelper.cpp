@@ -23,10 +23,10 @@
  */
 
 #include "AsciiWriterHelper.h"
+#include "AlexandriaKernel/RegexHelper.h"
 #include "ElementsKernel/Exception.h"
 #include <algorithm>
 #include <boost/lexical_cast.hpp>
-#include <boost/regex.hpp>
 
 #if BOOST_VERSION < 107300
 #include <boost/io/detail/quoted_manip.hpp>
@@ -37,8 +37,6 @@
 namespace Euclid {
 namespace Table {
 
-using boost::regex;
-using boost::regex_match;
 using NdArray::NdArray;
 
 std::string typeToKeyword(std::type_index type) {
@@ -109,7 +107,7 @@ std::vector<size_t> calculateColumnLengths(const Table& table) {
 }
 
 std::string quoted(const std::string& str) {
-  regex whitespace_quotes{".*[\\s\"].*"};
+  regex::regex whitespace_quotes{".*[\\s\"].*"};
   if (!regex_match(str, whitespace_quotes))
     return str;
   std::stringstream q;

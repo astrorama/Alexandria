@@ -22,16 +22,9 @@
  * @author nikoapos
  */
 
+#include <boost/algorithm/string.hpp>
 #include <fstream>
 #include <set>
-// The std regex library is not fully implemented in GCC 4.8. The following lines
-// make use of the BOOST library and can be modified if GCC 4.9 will be used in
-// the future.
-// #include <regex>
-#include <boost/regex.hpp>
-using boost::regex;
-using boost::regex_match;
-#include <boost/algorithm/string.hpp>
 
 #if BOOST_VERSION < 107300
 #include <boost/io/detail/quoted_manip.hpp>
@@ -39,6 +32,7 @@ using boost::regex_match;
 #include <boost/io/quoted.hpp>
 #endif
 
+#include "AlexandriaKernel/RegexHelper.h"
 #include "ElementsKernel/Exception.h"
 #include "Table/AsciiReader.h"
 
@@ -76,7 +70,7 @@ AsciiReader& AsciiReader::fixColumnNames(std::vector<std::string> column_names) 
   m_column_names = std::move(column_names);
 
   std::set<std::string> set{};
-  regex                 vertical_whitespace{".*\\v.*"};  // Checks if input contains any whitespace characters
+  static const regex::regex vertical_whitespace{".*[\\n\\v\\f\\r].*"};  // Checks if input contains any whitespace characters
   for (const auto& name : m_column_names) {
     if (name.empty()) {
       throw Elements::Exception() << "Empty string column names are not allowed";

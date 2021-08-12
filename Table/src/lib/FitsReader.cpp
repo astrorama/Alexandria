@@ -23,19 +23,13 @@
  */
 
 #include <set>
-// The std regex library is not fully implemented in GCC 4.8. The following lines
-// make use of the BOOST library and can be modified if GCC 4.9 will be used in
-// the future.
-// #include <regex>
-#include <boost/regex.hpp>
-using boost::regex;
-using boost::regex_match;
 
 #include "AlexandriaKernel/memory_tools.h"
 #include "ElementsKernel/Exception.h"
 #include "ElementsKernel/Unused.h"
 #include "Table/FitsReader.h"
 
+#include "AlexandriaKernel/RegexHelper.h"
 #include "FitsReaderHelper.h"
 #include "ReaderHelper.h"
 
@@ -64,7 +58,7 @@ FitsReader& FitsReader::fixColumnNames(std::vector<std::string> column_names) {
   m_column_names = std::move(column_names);
 
   std::set<std::string> set{};
-  regex                 whitespace{".*\\s.*"};  // Checks if input contains any whitespace characters
+  regex::regex          whitespace{".*\\s.*"};  // Checks if input contains any whitespace characters
   for (const auto& name : m_column_names) {
     if (name.empty()) {
       throw Elements::Exception() << "Empty string column names are not allowed";
