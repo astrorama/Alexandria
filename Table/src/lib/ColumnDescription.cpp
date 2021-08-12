@@ -44,7 +44,7 @@ namespace Table {
 ColumnDescription::ColumnDescription(std::string input_name, std::type_index input_type, std::string input_unit,
                                      std::string input_description)
     : name(input_name), type(input_type), unit(input_unit), description(input_description) {
-  static regex vertical_space_regex{".*\\v.*"};
+  static const regex vertical_space_regex{".*[\\n\\v\\f\\r].*"};
 
   if (input_name.empty()) {
     throw Elements::Exception() << "Empty string name is not allowed";
