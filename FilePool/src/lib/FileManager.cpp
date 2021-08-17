@@ -84,7 +84,9 @@ void FileManager::closeAll() {
 
   // And request the closing after
   for (auto& fd : to_be_closed) {
-    fd->m_request_close();
+    auto req_close_copy = fd->m_request_close;
+    // In case m_request_close is a lambda, which would get freed during the call
+    req_close_copy();
   }
 }
 
