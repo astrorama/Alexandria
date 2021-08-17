@@ -67,8 +67,9 @@ FileManager::~FileManager() {}
 
 void FileManager::notifyUsed(FileId id) {
   // In principle a FileId should only be hold by a single thread, so no need to lock here
-  id->m_last_used = Clock::now();
-  ++id->m_used_count;
+  FileMetadata* f_ptr = reinterpret_cast<FileMetadata*>(id);
+  f_ptr->m_last_used = Clock::now();
+  ++f_ptr->m_used_count;
 }
 
 void FileManager::closeAll() {

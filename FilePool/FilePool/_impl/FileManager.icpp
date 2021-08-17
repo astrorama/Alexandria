@@ -44,7 +44,7 @@ auto FileManager::open(const boost::filesystem::path& path, bool write, std::fun
   notifyIntentToOpen(write);
 
   auto   meta           = Euclid::make_unique<FileMetadata>(path, write);
-  FileId id             = meta.get();
+  FileId id             = reinterpret_cast<FileId>(meta.get());
   meta->m_request_close = [id, request_close]() -> bool { return request_close(id); };
 
   TFD fd = OpenCloseTrait<TFD>::open(path, write);
