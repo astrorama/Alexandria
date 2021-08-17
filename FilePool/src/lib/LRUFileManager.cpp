@@ -37,6 +37,8 @@ LRUFileManager::~LRUFileManager() {
 }
 
 void LRUFileManager::notifyIntentToOpen(bool /*write*/) {
+  // Only one thread can be making space
+  std::lock_guard<std::mutex> close_lock(m_close_fd_mutex);
   std::unique_lock<std::mutex> lock(m_mutex);
 
   while (m_files.size() >= m_limit) {
