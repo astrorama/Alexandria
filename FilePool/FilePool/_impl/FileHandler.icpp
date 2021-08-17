@@ -35,46 +35,52 @@ auto FileHandler::getWriteAccessor(bool try_lock) -> std::unique_ptr<FileAccesso
     unique_lock.lock();
   }
 
-  std::lock_guard<std::mutex> this_lock(m_handler_mutex);
+  std::unique_ptr<FdWrapper> fd_ptr;
+  {
+    std::lock_guard<std::mutex> this_lock(m_handler_mutex);
 
-  // If we have changed mode, we need to close all existing fd
-  if (m_is_readonly) {
-    for (auto& fd : m_available_fd) {
-      fd.second->close();
-    }
-    m_available_fd.clear();
-    m_is_readonly = false;
-  }
-
-  assert(m_available_fd.size() <= 1);
-
-  // If there is one, but of a different type, close it
-  if (!m_available_fd.empty()) {
-    auto typed_ptr = dynamic_cast<TypedFdWrapper<TFD>*>(m_available_fd.begin()->second.get());
-    if (!typed_ptr) {
+    // If we have changed mode, we need to close all existing fd
+    if (m_is_readonly) {
+      for (auto& fd : m_available_fd) {
+        fd.second->close();
+      }
       m_available_fd.clear();
+      m_is_readonly = false;
     }
+
+    assert(m_available_fd.size() <= 1);
+
+    // If there is one, but of a different type, close it
+    if (!m_available_fd.empty()) {
+      auto typed_ptr = dynamic_cast<TypedFdWrapper<TFD>*>(m_available_fd.begin()->second.get());
+      if (!typed_ptr) {
+        m_available_fd.clear();
+      }
+    }
+
+    // Open one file if we need
+    if (m_available_fd.empty()) {
+      auto fd = manager->open<TFD>(m_path, true, [this](FileManager::FileId id) { return this->close(id); });
+      m_available_fd[fd.first] =
+          std::unique_ptr<TypedFdWrapper<TFD>>(new TypedFdWrapper<TFD>(fd.first, std::move(fd.second), manager.get()));
+    }
+
+    assert(m_available_fd.size() == 1);
+
+    // Build and return accessor
+    fd_ptr = std::move(m_available_fd.begin()->second);
+    m_available_fd.clear();
   }
 
-  // Open one file if we need
-  if (m_available_fd.empty()) {
-    auto fd = manager->open<TFD>(m_path, true, [this](FileManager::FileId id) { return this->close(id); });
-    m_available_fd[fd.first] =
-        std::unique_ptr<TypedFdWrapper<TFD>>(new TypedFdWrapper<TFD>(fd.first, std::move(fd.second), manager.get()));
-  }
-
-  assert(m_available_fd.size() == 1);
-
-  // Build and return accessor
-  auto typed_ptr = dynamic_cast<TypedFdWrapper<TFD>*>(m_available_fd.begin()->second.get());
+  auto typed_ptr = dynamic_cast<TypedFdWrapper<TFD>*>(fd_ptr.get());
   assert(typed_ptr != nullptr);
-  auto fd        = std::move(typed_ptr->m_fd);
-  auto id        = typed_ptr->m_id;
-  m_available_fd.clear();
+  auto fd = std::move(typed_ptr->m_fd);
+  auto id = typed_ptr->m_id;
 
   auto return_callback = [this, id, manager](TFD&& returned_fd) {
     std::lock_guard<std::mutex> lambda_this_lock(m_handler_mutex);
-    m_available_fd[id] = std::unique_ptr<TypedFdWrapper<TFD>>(new TypedFdWrapper<TFD>(id, std::move(returned_fd), manager.get()));
+    m_available_fd[id] =
+        std::unique_ptr<TypedFdWrapper<TFD>>(new TypedFdWrapper<TFD>(id, std::move(returned_fd), manager.get()));
   };
 
   manager->notifyUsed(id);
@@ -94,46 +100,55 @@ auto FileHandler::getReadAccessor(bool try_lock) -> std::unique_ptr<FileAccessor
     shared_lock.lock();
   }
 
-  std::lock_guard<std::mutex> this_lock(m_handler_mutex);
+  std::unique_ptr<FdWrapper> fd_ptr = nullptr;
+  {
+    std::lock_guard<std::mutex> this_lock(m_handler_mutex);
 
-  // If we have changed mode, we need to close all existing fd
-  if (!m_is_readonly) {
-    for (auto& fd : m_available_fd) {
-      fd.second->close();
+    // If we have changed mode, we need to close all existing fd
+    if (!m_is_readonly) {
+      for (auto& fd : m_available_fd) {
+        fd.second->close();
+      }
+      m_available_fd.clear();
+      m_is_readonly = true;
     }
-    m_available_fd.clear();
-    m_is_readonly = true;
-  }
 
-  // Find the first with a matching type
-  TypedFdWrapper<TFD>* typed_ptr = nullptr;
-  auto                 avail_i   = m_available_fd.begin();
-  while (typed_ptr == nullptr && avail_i != m_available_fd.end()) {
-    if ((typed_ptr = dynamic_cast<TypedFdWrapper<TFD>*>(avail_i->second.get())) == nullptr)
-      ++avail_i;
-  }
+    // Find the first with a matching type
+    auto                 avail_i   = m_available_fd.begin();
+    TypedFdWrapper<TFD>* typed_ptr = nullptr;
+    while (typed_ptr == nullptr && avail_i != m_available_fd.end()) {
+      if ((typed_ptr = dynamic_cast<TypedFdWrapper<TFD>*>(avail_i->second.get())) == nullptr)
+        ++avail_i;
+    }
 
-  // Open one file if we need
-  if (!typed_ptr) {
-    auto fd   = manager->open<TFD>(m_path, false, [this](FileManager::FileId id) { return this->close(id); });
-    typed_ptr = new TypedFdWrapper<TFD>(fd.first, std::move(fd.second), manager.get());
-    avail_i   = m_available_fd.emplace(fd.first, std::unique_ptr<TypedFdWrapper<TFD>>(typed_ptr)).first;
-  }
+    // Open one file if we need
+    if (!typed_ptr) {
+      auto fd   = manager->open<TFD>(m_path, false, [this](FileManager::FileId id) { return this->close(id); });
+      typed_ptr = new TypedFdWrapper<TFD>(fd.first, std::move(fd.second), manager.get());
+      avail_i   = m_available_fd.emplace(fd.first, std::unique_ptr<TypedFdWrapper<TFD>>(typed_ptr)).first;
+    }
 
-  assert(typed_ptr && avail_i != m_available_fd.end());
+    assert(typed_ptr && avail_i != m_available_fd.end());
+
+    fd_ptr = std::move(avail_i->second);
+    m_available_fd.erase(avail_i);
+  }
 
   // Build and return accessor
+  TypedFdWrapper<TFD>* typed_ptr = dynamic_cast<TypedFdWrapper<TFD>*>(fd_ptr.get());
+  assert(typed_ptr != nullptr);
   auto fd = std::move(typed_ptr->m_fd);
   auto id = typed_ptr->m_id;
-  m_available_fd.erase(avail_i);
 
   auto return_callback = [this, id, manager](TFD&& returned_fd) {
     std::lock_guard<std::mutex> lambda_this_lock(m_handler_mutex);
-    m_available_fd[id] = std::unique_ptr<TypedFdWrapper<TFD>>(new TypedFdWrapper<TFD>(id, std::move(returned_fd), manager.get()));
+    m_available_fd[id] =
+        std::unique_ptr<TypedFdWrapper<TFD>>(new TypedFdWrapper<TFD>(id, std::move(returned_fd), manager.get()));
   };
 
   manager->notifyUsed(id);
-  return std::unique_ptr<FileReadAccessor<TFD>>(new FileReadAccessor<TFD>(std::move(fd), return_callback, std::move(shared_lock)));
+  return std::unique_ptr<FileReadAccessor<TFD>>(
+      new FileReadAccessor<TFD>(std::move(fd), return_callback, std::move(shared_lock)));
 }
 
 template <typename TFD>
