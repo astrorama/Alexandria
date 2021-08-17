@@ -34,8 +34,7 @@ static int randInt(int min, int max) {
 }
 
 static void testThread(FileHandler* handler) {
-  int niter = randInt(10, 50);
-  for (int i = 0; i < niter; ++i) {
+  for (int niter = randInt(10, 50); niter; --niter) {
     try {
       {
         auto write_acc = handler->getAccessor<int>(FileHandler::kWrite);
@@ -92,6 +91,35 @@ BOOST_AUTO_TEST_CASE(MultithreadTest) {
     }
   }
   BOOST_TEST_MESSAGE("Waiting for " << total_threads << " threads");
+  thread_group.join_all();
+}
+
+//-----------------------------------------------------------------------------
+
+static void openThread(FileManager& manager, std::pair<std::mutex, std::map<FileManager::FileId, int>>& files) {
+  Elements::TempPath temp_path;
+  for (int niter = randInt(10, 50); niter; --niter) {
+    auto pair = manager.open<int>(temp_path.path(), true, [&manager, &files](FileManager::FileId fid) {
+      std::lock_guard<std::mutex> lock(files.first);
+      manager.close(fid, files.second[fid]);
+      files.second.erase(fid);
+      return true;
+    });
+    std::lock_guard<std::mutex> lock(files.first);
+    files.second.emplace(std::move(pair));
+  }
+}
+
+BOOST_AUTO_TEST_CASE(MultithreadOpenTest) {
+  int                                                                    n_threads = randInt(8, 32);
+  std::vector<std::pair<std::mutex, std::map<FileManager::FileId, int>>> fd_maps(n_threads);
+  LRUFileManager                                                         manager(5);
+  boost::thread_group                                                    thread_group;
+
+  for (int i = 0; i < n_threads; ++i) {
+    auto& fd_map = fd_maps[i];
+    thread_group.create_thread([&manager, &fd_map]() { openThread(manager, fd_map); });
+  }
   thread_group.join_all();
 }
 
