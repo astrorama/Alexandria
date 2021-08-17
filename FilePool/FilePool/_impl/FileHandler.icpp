@@ -37,7 +37,7 @@ auto FileHandler::getWriteAccessor(bool try_lock) -> std::unique_ptr<FileAccesso
 
   std::unique_ptr<FdWrapper> fd_ptr;
   {
-    std::lock_guard<std::mutex> this_lock(m_handler_mutex);
+    std::unique_lock<std::mutex> this_lock(m_handler_mutex);
 
     // If we have changed mode, we need to close all existing fd
     if (m_is_readonly) {
@@ -60,9 +60,10 @@ auto FileHandler::getWriteAccessor(bool try_lock) -> std::unique_ptr<FileAccesso
 
     // Open one file if we need
     if (m_available_fd.empty()) {
+      this_lock.unlock();
       auto fd = manager->open<TFD>(m_path, true, [this](FileManager::FileId id) { return this->close(id); });
-      m_available_fd[fd.first] =
-          std::unique_ptr<TypedFdWrapper<TFD>>(new TypedFdWrapper<TFD>(fd.first, std::move(fd.second), manager.get()));
+      this_lock.lock();
+      m_available_fd[fd.first].reset(new TypedFdWrapper<TFD>(fd.first, std::move(fd.second), manager.get()));
     }
 
     assert(m_available_fd.size() == 1);
@@ -102,7 +103,7 @@ auto FileHandler::getReadAccessor(bool try_lock) -> std::unique_ptr<FileAccessor
 
   std::unique_ptr<FdWrapper> fd_ptr = nullptr;
   {
-    std::lock_guard<std::mutex> this_lock(m_handler_mutex);
+    std::unique_lock<std::mutex> this_lock(m_handler_mutex);
 
     // If we have changed mode, we need to close all existing fd
     if (!m_is_readonly) {
@@ -123,8 +124,10 @@ auto FileHandler::getReadAccessor(bool try_lock) -> std::unique_ptr<FileAccessor
 
     // Open one file if we need
     if (!typed_ptr) {
+      this_lock.unlock();
       auto fd   = manager->open<TFD>(m_path, false, [this](FileManager::FileId id) { return this->close(id); });
       typed_ptr = new TypedFdWrapper<TFD>(fd.first, std::move(fd.second), manager.get());
+      this_lock.lock();
       avail_i   = m_available_fd.emplace(fd.first, std::unique_ptr<TypedFdWrapper<TFD>>(typed_ptr)).first;
     }
 
