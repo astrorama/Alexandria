@@ -101,7 +101,10 @@ static void openThread(FileManager& manager, std::pair<std::mutex, std::map<File
   for (int niter = randInt(10, 50); niter; --niter) {
     auto pair = manager.open<int>(temp_path.path(), true, [&manager, &files](FileManager::FileId fid) {
       std::lock_guard<std::mutex> lock(files.first);
-      manager.close(fid, files.second[fid]);
+      if (files.second.count(fid) == 0) {
+        return false;
+      }
+      manager.close(fid, files.second.at(fid));
       files.second.erase(fid);
       return true;
     });
