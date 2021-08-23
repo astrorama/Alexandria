@@ -67,8 +67,9 @@ FileManager::~FileManager() {}
 
 void FileManager::notifyUsed(FileId id) {
   // In principle a FileId should only be hold by a single thread, so no need to lock here
-  id->m_last_used = Clock::now();
-  ++id->m_used_count;
+  FileMetadata* f_ptr = reinterpret_cast<FileMetadata*>(id);
+  f_ptr->m_last_used = Clock::now();
+  ++f_ptr->m_used_count;
 }
 
 void FileManager::closeAll() {
@@ -83,7 +84,9 @@ void FileManager::closeAll() {
 
   // And request the closing after
   for (auto& fd : to_be_closed) {
-    fd->m_request_close();
+    auto req_close_copy = fd->m_request_close;
+    // In case m_request_close is a lambda, which would get freed during the call
+    req_close_copy();
   }
 }
 

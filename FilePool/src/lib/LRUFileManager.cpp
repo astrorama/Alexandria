@@ -37,6 +37,8 @@ LRUFileManager::~LRUFileManager() {
 }
 
 void LRUFileManager::notifyIntentToOpen(bool /*write*/) {
+  // Only one thread can be making space
+  std::lock_guard<std::mutex>  close_lock(m_close_fd_mutex);
   std::unique_lock<std::mutex> lock(m_mutex);
 
   while (m_files.size() >= m_limit) {
@@ -73,8 +75,9 @@ void LRUFileManager::notifyClosedFile(FileManager::FileId id) {
 
 void LRUFileManager::notifyUsed(FileManager::FileId id) {
   // Update count
-  id->m_last_used = Clock::now();
-  ++id->m_used_count;
+  FileMetadata* f_ptr = reinterpret_cast<FileMetadata*>(id);
+  f_ptr->m_last_used  = Clock::now();
+  ++f_ptr->m_used_count;
 
   // Bring it to the back, since it is the last used
   std::lock_guard<std::mutex> lock(m_mutex);

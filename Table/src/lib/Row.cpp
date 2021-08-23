@@ -22,16 +22,10 @@
  * @author Nikolaos Apostolakos
  */
 
-#include <algorithm>
-// The std regex library is not fully implemented in GCC 4.8. The following lines
-// make use of the BOOST library and can be modified if GCC 4.9 will be used in
-// the future.
-// #include <regex>
-#include <boost/regex.hpp>
-using boost::regex;
-using boost::regex_match;
-#include "ElementsKernel/Exception.h"
 #include "Table/Row.h"
+#include "AlexandriaKernel/RegexHelper.h"
+#include "ElementsKernel/Exception.h"
+#include <algorithm>
 #include <boost/algorithm/string/join.hpp>
 
 #if BOOST_VERSION < 105600
@@ -86,7 +80,7 @@ Row::Row(std::vector<cell_type> values, std::shared_ptr<ColumnInfo> column_info)
                                   << demangle(column_type.name()) << ", got " << demangle(value_type.name());
     }
   }
-  regex vertical_whitespace{".*\\v.*"};  // Checks if input contains any vertical whitespace characters
+  static const regex::regex vertical_whitespace{".*[\\n\\v\\f\\r].*"};  // Checks if input contains any whitespace characters
   for (auto cell : m_values) {
     if (cell.type() == typeid(std::string)) {
       std::string value = boost::get<std::string>(cell);
