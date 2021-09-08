@@ -113,8 +113,8 @@ parseFile(fs::path filename) {
 void PhotometricBandMappingConfig::initialize(const UserValues& args) {
 
   // Parse the file with the mapping
-  auto filename                = getMappingFileFromOptions(args, m_base_dir);
-  auto parsed                  = parseFile(filename);
+  m_mapping_file                = getMappingFileFromOptions(args, m_base_dir);
+  auto parsed                  = parseFile(m_mapping_file);
   auto all_filter_name_mapping = std::get<0>(parsed);
   auto all_threshold_mapping   = std::get<1>(parsed);
   auto all_convert_mapping     = std::get<2>(parsed);
@@ -182,6 +182,15 @@ const PhotometricBandMappingConfig::ConvertFromMagMap& PhotometricBandMappingCon
                                 << "PhotometricBandMappingConfig";
   }
   return m_convert_from_mag_map;
+}
+
+
+const fs::path PhotometricBandMappingConfig::getMappingFile() {
+  if (getCurrentState() < State::INITIALIZED) {
+    throw Elements::Exception() << "getMappingFile() call to uninitialized "
+                                << "PhotometricBandMappingConfig";
+  }
+  return m_mapping_file;
 }
 
 }  // namespace Configuration

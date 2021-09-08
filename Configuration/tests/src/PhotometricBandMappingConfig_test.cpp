@@ -159,6 +159,20 @@ BOOST_FIXTURE_TEST_CASE(nominalBandList_test, PhotometricBandMappingConfig_fixtu
   BOOST_CHECK_EQUAL(result[2].second.second, "F3_ERR");
 }
 
+BOOST_FIXTURE_TEST_CASE(nominal_mapping_file_trst, PhotometricBandMappingConfig_fixture) {
+
+  // Given
+  config_manager.registerConfiguration<PhotometricBandMappingConfig>();
+  config_manager.closeRegistration();
+
+  // When
+  config_manager.initialize(options_map);
+  auto result = config_manager.getConfiguration<PhotometricBandMappingConfig>().getMappingFile();
+
+  // Then
+  BOOST_CHECK_EQUAL(result.string(), (temp_dir.path() / filter_mapping_filename).string());
+}
+
 
 
 
