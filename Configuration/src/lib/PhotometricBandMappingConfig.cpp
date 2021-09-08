@@ -80,31 +80,84 @@ parseFile(fs::path filename) {
   PhotometricBandMappingConfig::ConvertFromMagMap      convert_from_mag_mapping{};
   std::ifstream                                        in{filename.string()};
   std::string                                          line;
-  regex expr{"\\s*([^\\s#]+)\\s+([^\\s#]+)\\s+([^\\s#]+)(\\s+[^\\s#]+)?(\\s+[^\\s#]+\\s*$)?"};
+
+  bool header_found = false;
+  int filtr_column_index = 0;
+  int flux_column_index = 1;
+  int error_column_index = 2;
+  int upper_limit_column_index = 3;
+  int convertion_column_index = 4;
+
+  std::vector<std::string> expected_column_name {"Filter", "Flux Column", "Error Column", "Upper Limit/error ratio", "Convert from MAG"};
+
+
   while (std::getline(in, line)) {
     boost::trim(line);
     if (line[0] == '#') {
+      if (!header_found) {
+        std::string trimmed_line = line.substr(1);
+        boost::trim(trimmed_line);
+        std::vector<int> proposed_column_index{-1, -1, -1, -1, -1};
+        std::vector<std::string> strs;
+        boost::split(strs, trimmed_line, boost::is_any_of(","));
+
+        for (size_t index = 0; index < expected_column_name.size(); ++index) {
+          for (size_t index_string = 0; index_string < strs.size(); ++index_string) {
+            std::string item = strs[index_string];
+            boost::trim(item);
+            if (item==expected_column_name[index]){
+              proposed_column_index[index] = index_string;
+            }
+          }
+        }
+
+        if (proposed_column_index[0] >= 0 && proposed_column_index[1] >= 0 && proposed_column_index[2] >=0) {
+           header_found = true;
+           filtr_column_index = proposed_column_index[0];
+           flux_column_index = proposed_column_index[1];
+           error_column_index = proposed_column_index[2];
+           upper_limit_column_index = proposed_column_index[3];
+           convertion_column_index = proposed_column_index[4];
+        }
+
+      }
       continue;
     }
-    smatch match_res;
-    if (!regex_match(line, match_res, expr)) {
-      logger.error() << "Syntax error in " << filename << ": " << line;
-      throw Elements::Exception() << "Syntax error in " << filename << ": " << line;
-    }
-    filter_name_mapping.emplace_back(match_res.str(1), std::make_pair(match_res.str(2), match_res.str(3)));
 
-    if (match_res.size() < 5 || match_res.str(4) == "") {
-      threshold_mapping.emplace_back(match_res.str(1), 3.0);
-    } else {
-      float n = std::stof(match_res.str(4));
-      threshold_mapping.emplace_back(match_res.str(1), n);
-    }
+    std::vector<std::string> cells;
+    boost::split(cells, line, boost::is_any_of(" "));
 
-    if (match_res.size() < 6 || match_res.str(5) == "") {
-      convert_from_mag_mapping.emplace_back(match_res.str(1), false);
-    } else {
-      bool f = std::stoi(match_res.str(5));
-      convert_from_mag_mapping.emplace_back(match_res.str(1), f);
+    try {
+     if (int(cells.size()) <= filtr_column_index ||
+         int(cells.size()) <= flux_column_index ||
+         int(cells.size()) <= error_column_index ) {
+       throw Elements::Exception() << "File with missing values for the mandatory fields";
+     }
+      std::string filter_value = cells[filtr_column_index];
+      boost::trim(filter_value);
+      std::string flux_value = cells[flux_column_index];
+      boost::trim(flux_value);
+      std::string error_value = cells[error_column_index];
+      boost::trim(error_value);
+
+      filter_name_mapping.emplace_back(filter_value,std::make_pair(flux_value, error_value));
+
+      if (upper_limit_column_index > 0 && int(cells.size()) > upper_limit_column_index && cells[upper_limit_column_index] != "" ) {
+        float n = std::stof(cells[upper_limit_column_index]);
+        threshold_mapping.emplace_back(filter_value, n);
+      } else {
+        threshold_mapping.emplace_back(filter_value, 3.0);
+      }
+
+      if (convertion_column_index > 0 && int(cells.size()) > convertion_column_index && cells[convertion_column_index] != "") {
+        bool f = std::stoi(cells[convertion_column_index]);
+        convert_from_mag_mapping.emplace_back(filter_value, f);
+      } else {
+        convert_from_mag_mapping.emplace_back(filter_value, false);
+      }
+    } catch (const std::exception& e) {
+           logger.error() << "Syntax error in " << filename << ": " << line << " => " << e.what();;
+           throw Elements::Exception() << "Syntax error in " << filename << ": " << line<< " => " << e.what();
     }
   }
   return std::make_tuple(filter_name_mapping, threshold_mapping, convert_from_mag_mapping);
