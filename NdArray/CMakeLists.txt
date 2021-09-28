@@ -6,7 +6,12 @@ elements_depends_on_subdirs(ElementsKernel)
 find_package(Boost REQUIRED COMPONENTS iostreams)
 
 #===== Libraries ===============================================================
-elements_add_library(NdArray src/*.cpp
+list(APPEND NDARRAY_SOURCES src/Operations.cpp)
+if (Boost_VERSION GREATER "105800")
+    list(APPEND NDARRAY_SOURCES src/NpyCommon.cpp)
+endif ()
+
+elements_add_library(NdArray ${NDARRAY_SOURCES}
         LINK_LIBRARIES AlexandriaKernel Boost
         PUBLIC_HEADERS NdArray)
 

@@ -67,11 +67,13 @@ std::vector<double> overlappingKnots(const std::vector<double>& knots1, const st
   while (p1Iter != knots1.end() && p2Iter != knots2.end()) {
     if (!started) {
       if (*p1Iter < *p2Iter) {
-        if (*(++p1Iter) > *p2Iter) {
+        ++p1Iter;
+        if (p1Iter != knots1.end() && *p1Iter > *p2Iter) {
           started = true;
         }
       } else {
-        if (*p1Iter < *(++p2Iter)) {
+        ++p2Iter;
+        if (p2Iter != knots2.end() && *p1Iter < *p2Iter) {
           started = true;
         }
       }

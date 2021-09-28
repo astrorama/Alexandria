@@ -49,7 +49,8 @@ protected:
   void notifyClosedFile(FileId id) override;
 
 private:
-  unsigned m_limit;
+  unsigned   m_limit;
+  std::mutex m_close_fd_mutex;
   /// Sorted from less to more recent
   std::list<FileId>                             m_sorted_ids;
   std::map<FileId, std::list<FileId>::iterator> m_current_pos;

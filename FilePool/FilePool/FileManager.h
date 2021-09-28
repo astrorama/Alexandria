@@ -61,7 +61,7 @@ public:
   struct FileMetadata;
 
   /// Opaque FileId, its concrete type should only be assumed to be copyable and hashable
-  using FileId = FileMetadata*;
+  using FileId = intptr_t;
 
   /// Constructor
   FileManager();

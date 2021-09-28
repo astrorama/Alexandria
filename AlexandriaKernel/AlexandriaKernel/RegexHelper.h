@@ -16,37 +16,32 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#include "FilePool/FileHandler.h"
+#ifndef _ALEXANDRIAKERNEL_REGEX_HELPER_H
+#define _ALEXANDRIAKERNEL_REGEX_HELPER_H
+
+// The std regex library is not fully implemented in GCC 4.8.
+#if !defined(__llvm__) && !defined(__INTEL_COMPILER) && defined(__GNUC__) && __GNUC__ == 4 && __GNUC_MINOR__ <= 8
+#include <boost/regex.hpp>
 
 namespace Euclid {
-namespace FilePool {
-
-FileHandler::FileHandler(const boost::filesystem::path& path, std::weak_ptr<FileManager> file_manager)
-    : m_path(path), m_file_manager(file_manager), m_is_readonly(true) {}
-
-FileHandler::~FileHandler() {
-  for (auto& avail : m_available_fd) {
-    avail.second->close();
-  }
-}
-
-bool FileHandler::isReadOnly() const {
-  return m_is_readonly;
-}
-
-bool FileHandler::close(FileManager::FileId id) {
-  std::unique_ptr<FdWrapper> fd_ptr;
-  {
-    std::lock_guard<std::mutex> this_lock(m_handler_mutex);
-    auto                        iter = m_available_fd.find(id);
-    if (iter == m_available_fd.end())
-      return false;
-    fd_ptr = std::move(iter->second);
-    m_available_fd.erase(iter);
-  }
-  fd_ptr->close();
-  return true;
-}
-
-}  // namespace FilePool
+namespace regex {
+using boost::match_results;
+using boost::regex;
+using boost::regex_match;
+using boost::regex_search;
+}  // namespace regex
 }  // namespace Euclid
+#else
+#include <regex>
+
+namespace Euclid {
+namespace regex {
+using std::match_results;
+using std::regex;
+using std::regex_match;
+using std::regex_search;
+}  // namespace regex
+}  // namespace Euclid
+#endif
+
+#endif  // _ALEXANDRIAKERNEL_REGEX_HELPER_H

@@ -61,7 +61,7 @@ template <typename T>
 struct InterpolationImpl<T, typename std::enable_if<!std::is_floating_point<T>::value>::type> {
   static double interpolate(const T x, const std::vector<T>& knots, const std::vector<double>& values, bool /*extrapolate*/) {
     std::size_t i = std::find(knots.begin(), knots.end(), x) - knots.begin();
-    if (knots[i] != x)
+    if (i >= knots.size() || knots[i] != x)
       return 0.;
     return values[i];
   }
@@ -70,7 +70,7 @@ struct InterpolationImpl<T, typename std::enable_if<!std::is_floating_point<T>::
   static double interpolate(const T x, const std::vector<T>& knots,
                             const std::vector<std::unique_ptr<InterpN<Rest...>>>& interpolators, bool, const Rest... rest) {
     std::size_t i = std::find(knots.begin(), knots.end(), x) - knots.begin();
-    if (knots[i] != x)
+    if (i >= knots.size() || knots[i] != x)
       return 0.;
     return (*interpolators[i])(rest...);
   }

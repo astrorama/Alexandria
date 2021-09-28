@@ -139,9 +139,20 @@ public:
     */
    const ConvertFromMagMap& getConvertFromMagMapping();
 
+   /**
+      * @brief
+      * Returns the mapping file to be used by other configuration class
+      *
+      * @return
+      *    The mapping file
+      * @throws Elements::Exception
+      *    If the instance is not yet initialized
+      */
+   const boost::filesystem::path getMappingFile();
 
 private:
   boost::filesystem::path m_base_dir;
+  boost::filesystem::path m_mapping_file;
   MappingMap              m_mapping_map;
   UpperLimitThresholdMap  m_threshold_map;
   ConvertFromMagMap       m_convert_from_mag_map;
