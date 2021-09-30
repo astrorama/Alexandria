@@ -17,7 +17,11 @@
  */
 
 #include "AlexandriaKernel/Semaphore.h"
+#ifdef __APPLE__
+#include "SemaphoreMach.icpp"
+#else
 #include "SemaphorePosix.icpp"
+#endif
 
 namespace Euclid {
 
