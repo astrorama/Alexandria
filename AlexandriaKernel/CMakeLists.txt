@@ -62,6 +62,9 @@ elements_add_unit_test(AlexandriaKernel_ThreadPool_test tests/src/ThreadPool_tes
 elements_add_unit_test(Tuple_test tests/src/Tuple_test.cpp
         LINK_LIBRARIES AlexandriaKernel
         TYPE Boost)
+elements_add_unit_test(Semaphore_test tests/src/Semaphore_test.cpp
+        LINK_LIBRARIES AlexandriaKernel
+        TYPE Boost)
 
 #===============================================================================
 # Declare the Python programs here

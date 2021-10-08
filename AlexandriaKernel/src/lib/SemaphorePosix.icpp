@@ -1,0 +1,79 @@
+/*
+ * Copyright (C) 2012-2021 Euclid Science Ground Segment
+ *
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 3.0 of the License, or (at your option)
+ * any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+ */
+
+#include <cerrno>
+#include <semaphore.h>
+#include <system_error>
+
+namespace Euclid {
+class Semaphore::SemaphoreImpl {
+public:
+  explicit SemaphoreImpl(unsigned int i) {
+    if (sem_init(&m_semaphore, 0, i) < 0) {
+      throw std::system_error(errno, std::system_category());
+    }
+  }
+
+  ~SemaphoreImpl() {
+    sem_destroy(&m_semaphore);
+  }
+
+  void post() {
+    if (sem_post(&m_semaphore) < 0) {
+      throw std::system_error(errno, std::system_category());
+    }
+  }
+
+  void wait() {
+    if (sem_wait(&m_semaphore) != 0) {
+      throw std::system_error(errno, std::system_category());
+    }
+  }
+
+  bool try_acquire() {
+    if (sem_trywait(&m_semaphore) == 0) {
+      return true;
+    }
+    if (errno == EAGAIN) {
+      return false;
+    }
+    throw std::system_error(errno, std::system_category());
+  }
+
+  bool try_acquire_until(std::chrono::system_clock::time_point abs_time) {
+    using std::chrono::time_point_cast;
+    auto seconds = time_point_cast<std::chrono::seconds>(abs_time);
+    auto nseconds =
+        time_point_cast<std::chrono::nanoseconds>(abs_time) - time_point_cast<std::chrono::nanoseconds>(seconds);
+
+    struct timespec timeout;
+    timeout.tv_sec  = seconds.time_since_epoch().count();
+    timeout.tv_nsec = nseconds.count();
+    if (sem_timedwait(&m_semaphore, &timeout) == 0) {
+      return true;
+    }
+    if (errno == ETIMEDOUT) {
+      return false;
+    }
+    throw std::system_error(errno, std::system_category());
+  }
+
+private:
+  sem_t m_semaphore;
+};
+}  // namespace Euclid
