@@ -38,11 +38,11 @@ std::pair<double, double> linearRegression(const std::vector<double>& x, const s
     mean_y += y[index];
   }
 
-  mean_x /= x.size();
-  mean_y /= x.size();
+  mean_x /= static_cast<double>(x.size());
+  mean_y /= static_cast<double>(x.size());
 
-  double nom   = 0;
-  double denom = 0;
+  double nom   = 0.0;
+  double denom = 0.0;
   for (std::size_t index = 0; index < x.size(); ++index) {
     nom += (x[index] - mean_x) * (y[index] - mean_y);
     denom += (x[index] - mean_x) * (x[index] - mean_x);
