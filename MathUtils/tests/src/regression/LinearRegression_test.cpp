@@ -29,13 +29,13 @@ BOOST_AUTO_TEST_SUITE(LinearRegression_test)
 //-----------------------------------------------------------------------------
 
 BOOST_AUTO_TEST_CASE(regression_test) {
-  std::vector<double> delta_lambda{-100, -50, -20, -10, 10, 20, 50, 100};
-  std::vector<double> tild_coef{1, 1.5, 1.8, 1.9, 2.1, 2.2, 2.5, 3};
+  std::vector<double> xs{-100., -50., -20., -10., 10., 20., 50., 100.};
+  std::vector<double> ys{1, 1.5, 1.8, 1.9, 2.1, 2.2, 2.5, 3};
 
   double expected_a = 0.01;
   double expected_b = 2.0;
 
-  auto res = linearRegression(delta_lambda, tild_coef);
+  auto res = linearRegression(xs, ys);
 
   BOOST_CHECK_CLOSE(res.first, expected_a, 0.01);
   BOOST_CHECK_CLOSE(res.second, expected_b, 0.01);
@@ -44,7 +44,7 @@ BOOST_AUTO_TEST_CASE(regression_test) {
 //-----------------------------------------------------------------------------
 
 BOOST_AUTO_TEST_CASE(wrong_size) {
-  BOOST_CHECK_THROW(linearRegression(std::vector<double>{1, 2, 3}, std::vector<double>{1, 2}), Elements::Exception);
+  BOOST_CHECK_THROW(linearRegression(std::vector<double>{1., 2., 3.}, std::vector<double>{1., 2.}), Elements::Exception);
   BOOST_CHECK_THROW(linearRegression(std::vector<double>{}, std::vector<double>{}), Elements::Exception);
 }
 
