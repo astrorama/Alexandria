@@ -120,6 +120,7 @@ po::options_description ConfigManager::closeRegistration() {
   for (auto& config : m_config_dictionary) {
     for (auto& pair : config.second->getProgramOptions()) {
       if (all_options.find(pair.first) == all_options.end()) {
+        // cppcheck-suppress "stlFindInsert"
         all_options.emplace(pair.first, po::options_description{pair.first});
       }
       auto& group = all_options.at(pair.first);
