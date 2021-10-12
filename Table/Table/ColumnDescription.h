@@ -58,6 +58,7 @@ public:
   /// Constructs a new ColumnDescription instance
   /// @throws Elements::Exception
   ///     if the name is the empty string or if it contains whitespaces
+  // cppcheck-suppress  noExplicitConstructor
   ColumnDescription(std::string name, std::type_index type = typeid(std::string), std::string unit = "",
                     std::string description = "");
 

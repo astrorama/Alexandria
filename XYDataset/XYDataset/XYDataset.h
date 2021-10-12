@@ -73,7 +73,8 @@ public:
    * A vector of pair of doubles
    *
    */
-  XYDataset(std::vector<std::pair<double, double>> values) : m_values(std::move(values)){};
+  XYDataset(std::vector<std::pair<double, double>> values)  // cppcheck-suppress  noExplicitConstructor
+      : m_values(std::move(values)){};
 
   /// Copy constructor
   XYDataset(const XYDataset&) = default;
