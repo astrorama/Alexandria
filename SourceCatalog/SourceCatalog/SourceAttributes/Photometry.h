@@ -88,7 +88,7 @@ public:
     /**
      * Constructor from non-const iterator
      */
-    PhotometryIterator(const PhotometryIterator<false>& other);
+    PhotometryIterator(const PhotometryIterator<false>& other); // cppcheck-suppress  noExplicitConstructor
 
     /**
      * Increment the iterator

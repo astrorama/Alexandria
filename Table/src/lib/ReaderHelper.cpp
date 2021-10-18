@@ -33,7 +33,7 @@ std::shared_ptr<ColumnInfo> createColumnInfo(const std::vector<std::string>&    
                                              const std::vector<std::string>&     descriptions) {
   std::vector<ColumnInfo::info_type> info_list{};
   for (size_t i = 0; i < names.size(); ++i) {
-    info_list.push_back({names[i], types[i], units[i], descriptions[i]});
+    info_list.emplace_back(names[i], types[i], units[i], descriptions[i]);
   }
   return std::shared_ptr<ColumnInfo>(new ColumnInfo{std::move(info_list)});
 }

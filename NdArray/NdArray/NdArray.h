@@ -82,7 +82,7 @@ public:
     /**
      * Construct a const iterator from a non-const iterator
      */
-    Iterator(const Iterator<false>& other);
+    Iterator(const Iterator<false>& other);  // cppcheck-suppress  noExplicitConstructor
 
     /**
      * Pre-increment

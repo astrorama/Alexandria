@@ -242,24 +242,28 @@ auto NdArray<T>::reshape(size_t i, D... rest) -> self_type& {
 template <typename T>
 T& NdArray<T>::at(const std::vector<size_t>& coords) {
   auto offset = get_offset(coords);
+  // cppcheck-suppress "returnTempReference"
   return m_container->at(offset);
 }
 
 template <typename T>
 const T& NdArray<T>::at(const std::vector<size_t>& coords) const {
   auto offset = get_offset(coords);
+  // cppcheck-suppress "returnTempReference"
   return m_container->at(offset);
 }
 
 template <typename T>
 T& NdArray<T>::at(const std::vector<size_t>& coords, const std::string& attr) {
   auto offset = get_offset(coords, attr);
+  // cppcheck-suppress "returnTempReference"
   return m_container->at(offset);
 }
 
 template <typename T>
 const T& NdArray<T>::at(const std::vector<size_t>& coords, const std::string& attr) const {
   auto offset = get_offset(coords, attr);
+  // cppcheck-suppress "returnTempReference"
   return m_container->at(offset);
 }
 
