@@ -78,7 +78,7 @@ public:
    * @throws Elements::Exception
    *    if any of the parameters is empty or contains the '/' character
    */
-  QualifiedName(std::vector<std::string> groups, std::string name);
+  QualifiedName(std::vector<std::string> groups, std::string name);  // cppcheck-suppress  noExplicitConstructor
 
   /**
    * @brief

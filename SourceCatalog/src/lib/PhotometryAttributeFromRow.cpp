@@ -100,9 +100,24 @@ std::pair<double, double> PhotometryAttributeFromRow::convertFromMag(const doubl
   }
 }
 
-std::unique_ptr<Attribute> PhotometryAttributeFromRow::createAttribute(const Euclid::Table::Row& row) {
+static std::string getContextDescription(bool missing_photometry_enabled, bool upper_limit_enabled) {
+  std::string setup_desc("with ");
+  if (missing_photometry_enabled && upper_limit_enabled) {
+    setup_desc += "'missing data' and 'upper limit' enabled";
+  } else if (missing_photometry_enabled) {
+    setup_desc += "'missing data' and 'upper limit' disabled";
+  } else if (upper_limit_enabled) {
+    setup_desc += "'missing data' disabled and 'upper limit' enabled";
+  } else {
+    setup_desc += "'missing data' and 'upper limit' disabled";
+  }
+  return setup_desc;
+}
 
+std::unique_ptr<Attribute> PhotometryAttributeFromRow::createAttribute(const Euclid::Table::Row& row) {
   std::vector<FluxErrorPair> photometry_vector{};
+
+  auto context_desc = getContextDescription(m_missing_photometry_enabled, m_upper_limit_enabled);
 
   auto n_threshod_iter       = m_n_map.begin();
   auto convert_from_mag_iter = m_convert_from_mag.begin();
@@ -119,84 +134,44 @@ std::unique_ptr<Attribute> PhotometryAttributeFromRow::createAttribute(const Euc
       error          = converted.second;
     }
 
-    bool missing_data = false;
-    bool upper_limit  = false;
+    bool upper_limit = false;
     if (std::isinf(flux)) {
-      throw SourceCatalog::PhotometryParsingException("Infinite flux encountered when parsing the Photometry", flux,
-                                                      error);
+      throw SourceCatalog::PhotometryParsingException("Infinite flux encountered when parsing the Photometry",
+                                                      context_desc.c_str(), flux, error);
     }
-    if (m_missing_photometry_enabled) {
-      /** Missing photometry enabled **/
-      missing_data = Elements::isEqual(flux, m_missing_photometry_flag) || std::isnan(flux);
-      if (missing_data) {
-        error = 0;
-      } else {
-        if (m_upper_limit_enabled) {
-          /** Upper limit enabled **/
-          if (error == 0.) {
-            throw SourceCatalog::PhotometryParsingException(
-                "Zero error encountered when parsing the Photometry with 'missing data' and 'upper limit' enabled",
-                flux, error);
-          }
-          if (error < 0) {
-            /** Actual upper limit **/
-            if (Elements::isEqual(error, m_n_upper_limit_flag)) {
-              error = flux / n_threshod_iter->second;
-            }
-            upper_limit = true;
-            if (flux <= 0) {
-              throw SourceCatalog::PhotometryParsingException(
-                  "Negative or Zero flux encountered when parsing the Photometry in the context of an 'upper limit'",
-                  flux, error);
-            }
 
-            error = std::abs(error);
-          }
-        } else {
-          /** Upper limit disabled **/
-          if (error <= 0) {
-            throw SourceCatalog::PhotometryParsingException(
-                "Negative or Zero error encountered when parsing the Photometry with 'missing data' enabled "
-                "and 'upper limit' disabled",
-                flux, error);
-          }
+    bool missing_data =
+        std::isnan(flux) | (m_missing_photometry_enabled && Elements::isEqual(flux, m_missing_photometry_flag));
+
+    if (m_missing_photometry_enabled && missing_data) {
+      error = 0.;
+    } else if (!m_missing_photometry_enabled && missing_data) {
+      throw SourceCatalog::PhotometryParsingException("NAN flux encountered when parsing the Photometry ",
+                                                      context_desc.c_str(), flux, error);
+    } else if (m_upper_limit_enabled) {
+      /** Upper limit enabled **/
+      if (error == 0.) {
+        throw SourceCatalog::PhotometryParsingException("Zero error encountered when parsing the Photometry",
+                                                        context_desc.c_str(), flux, error);
+      }
+      if (error < 0) {
+        /** Actual upper limit **/
+        if (Elements::isEqual(error, m_n_upper_limit_flag)) {
+          error = flux / n_threshod_iter->second;
         }
+        upper_limit = true;
+        if (flux <= 0) {
+          throw SourceCatalog::PhotometryParsingException(
+              "Negative or Zero flux encountered when parsing the Photometry", context_desc.c_str(), flux, error);
+        }
+
+        error = std::abs(error);
       }
     } else {
-      /** Missing photometry disabled **/
-      if (std::isnan(flux)) {
+      /** Upper limit disabled **/
+      if (error <= 0) {
         throw SourceCatalog::PhotometryParsingException(
-            "NAN flux encountered when parsing the Photometry with 'missing data' disabled", flux, error);
-      }
-
-      if (m_upper_limit_enabled) {
-        /** Upper limit enabled **/
-        if (error == 0.) {
-          throw SourceCatalog::PhotometryParsingException("Zero error encountered when parsing the Photometry with "
-                                                          "'missing data' disabled and 'upper limit' enabled",
-                                                          flux, error);
-        }
-        if (error < 0) {
-          /** Actual upper limit **/
-          upper_limit = true;
-          if (Elements::isEqual(error, m_n_upper_limit_flag)) {
-            error = flux / n_threshod_iter->second;
-          }
-          if (flux <= 0) {
-            throw SourceCatalog::PhotometryParsingException(
-                "Negative or Zero flux encountered when parsing the Photometry in the context of an 'upper limit'",
-                flux, error);
-          }
-          error = std::abs(error);
-        }
-      } else {
-        /** Upper limit disabled **/
-        if (error <= 0) {
-          throw SourceCatalog::PhotometryParsingException(
-              "Negative or Zero error encountered when parsing the Photometry with 'missing data' "
-              "and 'upper limit' disabled",
-              flux, error);
-        }
+            "Negative or Zero error encountered when parsing the Photometry", context_desc.c_str(), flux, error);
       }
     }
 
