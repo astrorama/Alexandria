@@ -69,37 +69,45 @@ size_t countColumns(std::istream& in, const std::string& comment) {
   return count;
 }
 
+/// Mapping between string representation of a type and the typeid
+/// When doing the reverse lookup (from type id to string), the first one is the preferred one
+extern const std::vector<std::pair<std::string, std::type_index>> KeywordTypeMap{
+    // Boolean
+    {"bool", typeid(bool)},
+    {"boolean", typeid(bool)},
+    // Integers
+    {"int", typeid(int32_t)},
+    {"long", typeid(int64_t)},
+    {"int32", typeid(int32_t)},
+    {"int64", typeid(int64_t)},
+    // Floating point
+    {"float", typeid(float)},
+    {"double", typeid(double)},
+    // Strings
+    {"string", typeid(std::string)},
+    // Arrays
+    {"[bool]", typeid(std::vector<bool>)},
+    {"[boolean]", typeid(std::vector<bool>)},
+    {"[int]", typeid(std::vector<int32_t>)},
+    {"[long]", typeid(std::vector<int64_t>)},
+    {"[int32]", typeid(std::vector<int32_t>)},
+    {"[int64]", typeid(std::vector<int64_t>)},
+    {"[float]", typeid(std::vector<float>)},
+    {"[double]", typeid(std::vector<double>)},
+    // NdArrays
+    {"[int+]", typeid(NdArray<int32_t>)},
+    {"[long+]", typeid(NdArray<int64_t>)},
+    {"[int32+]", typeid(NdArray<int32_t>)},
+    {"[int64+]", typeid(NdArray<int64_t>)},
+    {"[float+]", typeid(NdArray<float>)},
+    {"[double+]", typeid(NdArray<double>)},
+};
+
 std::type_index keywordToType(const std::string& keyword) {
-  if (keyword == "bool" || keyword == "boolean") {
-    return typeid(bool);
-  } else if (keyword == "int" || keyword == "int32") {
-    return typeid(int32_t);
-  } else if (keyword == "long" || keyword == "int64") {
-    return typeid(int64_t);
-  } else if (keyword == "float") {
-    return typeid(float);
-  } else if (keyword == "double") {
-    return typeid(double);
-  } else if (keyword == "string") {
-    return typeid(std::string);
-  } else if (keyword == "[bool]" || keyword == "[boolean]") {
-    return typeid(std::vector<bool>);
-  } else if (keyword == "[int]" || keyword == "[int32]") {
-    return typeid(std::vector<int32_t>);
-  } else if (keyword == "[long]" || keyword == "[int64]") {
-    return typeid(std::vector<int64_t>);
-  } else if (keyword == "[float]") {
-    return typeid(std::vector<float>);
-  } else if (keyword == "[double]") {
-    return typeid(std::vector<double>);
-  } else if (keyword == "[int+]" || keyword == "[int32+]") {
-    return typeid(NdArray<int32_t>);
-  } else if (keyword == "[long+]" || keyword == "[int64+]") {
-    return typeid(NdArray<int64_t>);
-  } else if (keyword == "[float+]") {
-    return typeid(NdArray<float>);
-  } else if (keyword == "[double+]") {
-    return typeid(NdArray<double>);
+  for (auto p = KeywordTypeMap.begin(); p != KeywordTypeMap.end(); ++p) {
+    if (p->first == keyword) {
+      return p->second;
+    }
   }
   throw Elements::Exception() << "Unknown column type keyword " << keyword;
 }
@@ -281,48 +289,48 @@ NdArray<T> convertStringToNdArray(const std::string& str) {
 
 }  // namespace
 
+const std::map<std::type_index, std::function<Row::cell_type(const std::string&)>> sCellConverter{
+    // Boolean
+    {typeid(bool),
+     [](const std::string& value) {
+       if (value == "true" || value == "t" || value == "yes" || value == "y" || value == "1") {
+         return true;
+       } else if (value == "false" || value == "f" || value == "no" || value == "n" || value == "0") {
+         return false;
+       }
+       throw Elements::Exception() << "Invalid boolean value " << value;
+     }},
+    // Integers
+    {typeid(int32_t), boost::lexical_cast<int32_t, const std::string&>},
+    {typeid(int64_t), boost::lexical_cast<int64_t, const std::string&>},
+    // Floating point
+    {typeid(float), boost::lexical_cast<float, const std::string&>},
+    {typeid(double), boost::lexical_cast<double, const std::string&>},
+    // String
+    {typeid(std::string), boost::lexical_cast<std::string, const std::string&>},
+    // Arrays
+    {typeid(std::vector<bool>), convertStringToVector<bool>},
+    {typeid(std::vector<int32_t>), convertStringToVector<int32_t>},
+    {typeid(std::vector<int64_t>), convertStringToVector<int64_t>},
+    {typeid(std::vector<float>), convertStringToVector<float>},
+    {typeid(std::vector<double>), convertStringToVector<double>},
+    // NdArray
+    {typeid(NdArray<int32_t>), convertStringToNdArray<int32_t>},
+    {typeid(NdArray<int64_t>), convertStringToNdArray<int64_t>},
+    {typeid(NdArray<float>), convertStringToNdArray<float>},
+    {typeid(NdArray<double>), convertStringToNdArray<double>},
+};
+
 Row::cell_type convertToCellType(const std::string& value, std::type_index type) {
   try {
-    if (type == typeid(bool)) {
-      if (value == "true" || value == "t" || value == "yes" || value == "y" || value == "1") {
-        return Row::cell_type{true};
-      }
-      if (value == "false" || value == "f" || value == "no" || value == "n" || value == "0") {
-        return Row::cell_type{false};
-      }
-    } else if (type == typeid(int32_t)) {
-      return Row::cell_type{boost::lexical_cast<int32_t>(value)};
-    } else if (type == typeid(int64_t)) {
-      return Row::cell_type{boost::lexical_cast<int64_t>(value)};
-    } else if (type == typeid(float)) {
-      return Row::cell_type{boost::lexical_cast<float>(value)};
-    } else if (type == typeid(double)) {
-      return Row::cell_type{boost::lexical_cast<double>(value)};
-    } else if (type == typeid(std::string)) {
-      return Row::cell_type{boost::lexical_cast<std::string>(value)};
-    } else if (type == typeid(std::vector<bool>)) {
-      return Row::cell_type{convertStringToVector<bool>(value)};
-    } else if (type == typeid(std::vector<int32_t>)) {
-      return Row::cell_type{convertStringToVector<int32_t>(value)};
-    } else if (type == typeid(std::vector<int64_t>)) {
-      return Row::cell_type{convertStringToVector<int64_t>(value)};
-    } else if (type == typeid(std::vector<float>)) {
-      return Row::cell_type{convertStringToVector<float>(value)};
-    } else if (type == typeid(std::vector<double>)) {
-      return Row::cell_type{convertStringToVector<double>(value)};
-    } else if (type == typeid(NdArray<int32_t>)) {
-      return Row::cell_type{convertStringToNdArray<int32_t>(value)};
-    } else if (type == typeid(NdArray<int64_t>)) {
-      return Row::cell_type{convertStringToNdArray<int64_t>(value)};
-    } else if (type == typeid(NdArray<float>)) {
-      return Row::cell_type{convertStringToNdArray<float>(value)};
-    } else if (type == typeid(NdArray<double>)) {
-      return Row::cell_type{convertStringToNdArray<double>(value)};
+    auto i = sCellConverter.find(type);
+    if (i == sCellConverter.end()) {
+      throw Elements::Exception() << "Unknown type name " << type.name();
     }
+    return i->second(value);
   } catch (boost::bad_lexical_cast const&) {
     throw Elements::Exception() << "Cannot convert " << value << " to " << type.name();
   }
-  throw Elements::Exception() << "Unknown type name " << type.name();
 }
 
 bool hasNextRow(std::istream& in, const std::string& comment) {
