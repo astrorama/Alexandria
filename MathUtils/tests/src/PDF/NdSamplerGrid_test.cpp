@@ -42,7 +42,7 @@ struct RandomFixture {
   std::mt19937 rng;
   std::size_t  sample_count = 20000;
 
-  RandomFixture() : rng(std::random_device()()) {}
+  RandomFixture() : rng(0) {}
 };
 
 //-----------------------------------------------------------------------------

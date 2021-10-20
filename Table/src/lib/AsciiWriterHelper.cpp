@@ -38,52 +38,13 @@ namespace Euclid {
 namespace Table {
 
 using NdArray::NdArray;
+extern const std::vector<std::pair<std::string, std::type_index>> KeywordTypeMap;
 
 std::string typeToKeyword(std::type_index type) {
-  if (type == typeid(bool)) {
-    return "bool";
-  }
-  if (type == typeid(int32_t)) {
-    return "int";
-  }
-  if (type == typeid(int64_t)) {
-    return "long";
-  }
-  if (type == typeid(float)) {
-    return "float";
-  }
-  if (type == typeid(double)) {
-    return "double";
-  }
-  if (type == typeid(std::string)) {
-    return "string";
-  }
-  if (type == typeid(std::vector<bool>)) {
-    return "[bool]";
-  }
-  if (type == typeid(std::vector<int32_t>)) {
-    return "[int]";
-  }
-  if (type == typeid(std::vector<int64_t>)) {
-    return "[long]";
-  }
-  if (type == typeid(std::vector<float>)) {
-    return "[float]";
-  }
-  if (type == typeid(std::vector<double>)) {
-    return "[double]";
-  }
-  if (type == typeid(NdArray<int32_t>)) {
-    return "[int+]";
-  }
-  if (type == typeid(NdArray<int64_t>)) {
-    return "[long+]";
-  }
-  if (type == typeid(NdArray<float>)) {
-    return "[float+]";
-  }
-  if (type == typeid(NdArray<double>)) {
-    return "[double+]";
+  for (auto p = KeywordTypeMap.begin(); p != KeywordTypeMap.end(); ++p) {
+    if (p->second == type) {
+      return p->first;
+    }
   }
   throw Elements::Exception() << "Conversion to string for type " << type.name() << " is not supported";
 }
