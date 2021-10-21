@@ -26,8 +26,9 @@ namespace NdArray {
 
 template <typename T>
 template <bool Const>
-NdArray<T>::Iterator<Const>::Iterator(ContainerInterface* container_ptr, size_t offset, const std::vector<size_t>& shape,
-                                      const std::vector<size_t>& strides, size_t start)
+NdArray<T>::Iterator<Const>::Iterator(ContainerInterface* container_ptr, size_t offset,
+                                      const std::vector<size_t>& shape, const std::vector<size_t>& strides,
+                                      size_t start)
     : m_container_ptr(container_ptr)
     , m_offset(offset)
     , m_row_size(std::accumulate(shape.begin(), shape.end(), 1, std::multiplies<size_t>()))
@@ -361,21 +362,20 @@ NdArray<T>::NdArray(std::shared_ptr<ContainerInterface> container, size_t offset
     , m_stride_size(stride)
     , m_attr_names(attr_names)
     , m_size(std::accumulate(m_shape.begin(), m_shape.end(), 1, std::multiplies<size_t>()))
-    , m_container(container) {
-}
+    , m_container(container) {}
 
 template <typename T>
 auto NdArray<T>::slice(size_t i) -> self_type {
   if (m_shape.size() <= 1) {
     throw std::out_of_range("Can not slice a one dimensional array");
   }
-  if (i >= m_shape[0]) {
-    throw std::out_of_range("Axis 0 out of range");
-  }
   std::vector<std::string> attrs;
   if (!m_attr_names.empty()) {
-    attrs.resize(m_attr_names.size() - 1);
-    std::copy(m_attr_names.begin() + 1, m_attr_names.end(), attrs.begin());
+    attrs.resize(m_attr_names.size());
+    std::copy(m_attr_names.begin(), m_attr_names.end(), attrs.begin());
+  }
+  if (i >= m_shape[0]) {
+    throw std::out_of_range("Axis 0 out of range");
   }
   auto                offset = m_offset + i * m_stride_size[0];
   std::vector<size_t> stride_(m_stride_size.begin() + 1, m_stride_size.end());
@@ -393,18 +393,16 @@ auto NdArray<T>::rslice(size_t i) -> self_type {
   if (m_shape.size() <= 1) {
     throw std::out_of_range("Can not slice a one dimensional array");
   }
+  if (!m_attr_names.empty()) {
+    throw std::invalid_argument("Can not slice on the last axis for arrays with attribute names");
+  }
   if (i >= m_shape.back()) {
     throw std::out_of_range("Axis -1 out of range");
-  }
-  std::vector<std::string> attrs;
-  if (!m_attr_names.empty()) {
-    attrs.resize(m_attr_names.size() - 1);
-    std::copy(m_attr_names.begin(), m_attr_names.end() - 1, attrs.begin());
   }
   auto                offset = m_offset + i * m_stride_size.back();
   std::vector<size_t> strides_(m_stride_size.begin(), m_stride_size.end() - 1);
   std::vector<size_t> shape_(m_shape.begin(), m_shape.end() - 1);
-  return NdArray(m_container, offset, std::move(shape_), std::move(strides_), std::move(attrs));
+  return NdArray(m_container, offset, std::move(shape_), std::move(strides_), m_attr_names);
 }
 
 template <typename T>
@@ -422,7 +420,8 @@ size_t NdArray<T>::get_offset(const std::vector<size_t>& coords) const {
   size_t offset = m_offset;
   for (size_t i = 0; i < coords.size(); ++i) {
     if (coords[i] >= m_shape[i]) {
-      throw std::out_of_range(std::to_string(coords[i]) + " >= " + std::to_string(m_shape[i]) + " for axis " + std::to_string(i));
+      throw std::out_of_range(std::to_string(coords[i]) + " >= " + std::to_string(m_shape[i]) + " for axis " +
+                              std::to_string(i));
     }
     offset += coords[i] * m_stride_size[i];
   }
