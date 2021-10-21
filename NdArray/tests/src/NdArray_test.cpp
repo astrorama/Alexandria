@@ -24,6 +24,7 @@
 
 #include "NdArray/NdArray.h"
 #include <boost/test/unit_test.hpp>
+#include <sstream>
 
 using namespace Euclid::NdArray;
 
@@ -80,7 +81,24 @@ BOOST_AUTO_TEST_CASE(InitFromVector_test) {
 
 BOOST_AUTO_TEST_CASE(BadInitFromVector_test) {
   try {
-    NdArray<int> m{std::vector<size_t>{2, 3}, {10, 50, 0, 15}};
+    const std::vector<int> v{10, 20, 30, 40};
+    NdArray<int>           m(std::vector<size_t>{2, 3}, v);
+    BOOST_ERROR("The construction should have failed");
+  } catch (...) {
+  }
+  try {
+    NdArray<int> m(std::vector<size_t>{2, 3}, {10, 50, 0, 15});
+    BOOST_ERROR("The construction should have failed");
+  } catch (...) {
+  }
+}
+
+//-----------------------------------------------------------------------------
+
+BOOST_AUTO_TEST_CASE(BadInitFromIterators_test) {
+  const std::vector<int> v{10, 20, 30, 40};
+  try {
+    NdArray<int> m(std::vector<size_t>{2, 3}, v.begin(), v.end());
     BOOST_ERROR("The construction should have failed");
   } catch (...) {
   }
@@ -243,6 +261,15 @@ BOOST_AUTO_TEST_CASE(AttrNames_test) {
 
   auto attrs = named.attributes();
   BOOST_CHECK_EQUAL_COLLECTIONS(attrs.begin(), attrs.end(), attr_names.begin(), attr_names.end());
+  BOOST_CHECK_THROW(named.at(0, "XXX"), std::out_of_range);
+}
+
+//-----------------------------------------------------------------------------
+
+BOOST_AUTO_TEST_CASE(ReshapeWithAttr_test) {
+  const std::vector<std::string> attr_names{"ID", "SED", "PDZ"};
+  NdArray<int>                   named{{20}, attr_names};
+  BOOST_CHECK_THROW(named.reshape(10, 2), std::invalid_argument);
 }
 
 //-----------------------------------------------------------------------------
@@ -373,6 +400,48 @@ BOOST_AUTO_TEST_CASE(RSliceTwice_test) {
 
   std::vector<int> expected_second{3, 33};
   BOOST_CHECK_EQUAL_COLLECTIONS(second.begin(), second.end(), expected_second.begin(), expected_second.end());
+}
+
+//-----------------------------------------------------------------------------
+
+BOOST_AUTO_TEST_CASE(SliceOneAxis) {
+  NdArray<int> array({20});
+
+  BOOST_CHECK_THROW(array.slice(0), std::out_of_range);
+  BOOST_CHECK_THROW(array.rslice(0), std::out_of_range);
+}
+
+//-----------------------------------------------------------------------------
+
+BOOST_AUTO_TEST_CASE(SliceWithAttrNames_test) {
+  const std::vector<std::string> attr_names{"ID", "SED", "PDZ"};
+  NdArray<int>                   named{{20, 10}, attr_names};
+
+  for (size_t i = 0; i < named.shape()[0]; ++i) {
+    for (size_t j = 0; j < named.shape()[1]; ++j) {
+      named.at(i, j, "ID")  = i + j;
+      named.at(i, j, "SED") = i * 2 + j * 3;
+      named.at(i, j, "PDZ") = i * 10 + j * 4;
+    }
+  }
+
+  auto first = named.slice(2);
+  BOOST_CHECK_EQUAL(first.size(), 30);
+  for (size_t j = 0; j < first.shape()[0]; ++j) {
+    BOOST_CHECK_EQUAL(first.at(j, "ID"), 2 + j);
+    BOOST_CHECK_EQUAL(first.at(j, "SED"), 4 + j * 3);
+    BOOST_CHECK_EQUAL(first.at(j, "PDZ"), 20 + j * 4);
+  }
+
+  BOOST_CHECK_THROW(named.rslice(9), std::invalid_argument);
+}
+
+//-----------------------------------------------------------------------------
+
+BOOST_AUTO_TEST_CASE(BadSlicing_test) {
+  NdArray<int> array({20, 10});
+  BOOST_CHECK_THROW(array.slice(-1), std::out_of_range);
+  BOOST_CHECK_THROW(array.rslice(11), std::out_of_range);
 }
 
 //-----------------------------------------------------------------------------

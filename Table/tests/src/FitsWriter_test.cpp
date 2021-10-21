@@ -31,37 +31,42 @@ using namespace Euclid::Table;
 using namespace Euclid::NdArray;
 
 struct BinaryFitsWriter_Fixture {
-  std::vector<ColumnInfo::info_type> info_list{ColumnInfo::info_type("Boolean", typeid(bool), "deg", "Desc1"),
-                                               ColumnInfo::info_type("Integer", typeid(int32_t), "mag", "Desc2"),
-                                               ColumnInfo::info_type("Long", typeid(int64_t), "", "Desc3"),
-                                               ColumnInfo::info_type("Float", typeid(float), "ph", "Desc4"),
-                                               ColumnInfo::info_type("Double", typeid(double), "s", "Desc5"),
-                                               ColumnInfo::info_type("String", typeid(std::string), "m", "Desc6"),
-                                               ColumnInfo::info_type("NdArray", typeid(NdArray<double>), "x", "Desc7"),
-                                               ColumnInfo::info_type("ScalarNdArray", typeid(NdArray<double>), "x", "Desc8")};
-  std::shared_ptr<ColumnInfo>        column_info{new ColumnInfo{info_list}};
-  std::vector<Row::cell_type>        values0{true,
+  std::vector<ColumnInfo::info_type> info_list{
+      ColumnInfo::info_type("Boolean", typeid(bool), "deg", "Desc1"),
+      ColumnInfo::info_type("Integer", typeid(int32_t), "mag", "Desc2"),
+      ColumnInfo::info_type("Long", typeid(int64_t), "", "Desc3"),
+      ColumnInfo::info_type("Float", typeid(float), "ph", "Desc4"),
+      ColumnInfo::info_type("Double", typeid(double), "s", "Desc5"),
+      ColumnInfo::info_type("String", typeid(std::string), "m", "Desc6"),
+      ColumnInfo::info_type("NdArray", typeid(NdArray<double>), "x", "Desc7"),
+      ColumnInfo::info_type("ScalarNdArray", typeid(NdArray<double>), "x", "Desc8"),
+      ColumnInfo::info_type("Vector", typeid(std::vector<float>), "", "Desc9"),
+  };
+  std::shared_ptr<ColumnInfo> column_info{new ColumnInfo{info_list}};
+  std::vector<Row::cell_type> values0{true,
                                       1,
                                       int64_t{123},
                                       0.F,
                                       0.,
                                       std::string{"first"},
                                       NdArray<double>({2, 3}, {1, 2, 3, 4, 5, 6}),
-                                      NdArray<double>({1}, std::vector<double>{41.})};
-  Row                                row0{values0, column_info};
-  std::vector<Row::cell_type>        values1{false,
+                                      NdArray<double>({1}, std::vector<double>{41.}),
+                                      std::vector<float>{1.5, 2.6, 3.7}};
+  Row                         row0{values0, column_info};
+  std::vector<Row::cell_type> values1{false,
                                       12345,
                                       int64_t{123456789},
                                       2.3e-2F,
                                       1.12345e-18,
                                       std::string{"second with spaces on top of that"},
                                       NdArray<double>({2, 3}, {6, 5, 4, 3, 2, 1}),
-                                      NdArray<double>({1}, std::vector<double>{42.})};
-  Row                                row1{values1, column_info};
-  std::vector<Row>                   row_list{row0, row1};
-  Table                              table{row_list};
-  Elements::TempDir                  temp_dir;
-  std::string                        fits_file_path = (temp_dir.path() / "FitsWriter_test.fits").native();
+                                      NdArray<double>({1}, std::vector<double>{42.}),
+                                      std::vector<float>{4.8, 5.9, 6.1}};
+  Row                         row1{values1, column_info};
+  std::vector<Row>            row_list{row0, row1};
+  Table                       table{row_list};
+  Elements::TempDir           temp_dir;
+  std::string                 fits_file_path = (temp_dir.path() / "FitsWriter_test.fits").native();
 };
 
 struct AsciiFitsWriter_Fixture {
@@ -74,7 +79,8 @@ struct AsciiFitsWriter_Fixture {
   std::shared_ptr<ColumnInfo>        column_info{new ColumnInfo{info_list}};
   std::vector<Row::cell_type>        values0{true, 1, int64_t{123}, 0.F, 0., std::string{"first"}};
   Row                                row0{values0, column_info};
-  std::vector<Row::cell_type>        values1{false, 12345, int64_t{123456789}, 2.3e-2F, 1.12345e-18, std::string{"very spaced"}};
+  std::vector<Row::cell_type>        values1{false,   12345,       int64_t{123456789},
+                                      2.3e-2F, 1.12345e-18, std::string{"very spaced"}};
   Row                                row1{values1, column_info};
   std::vector<Row>                   row_list{row0, row1};
   Table                              table{row_list};
@@ -105,7 +111,7 @@ BOOST_FIXTURE_TEST_CASE(writeBinary, BinaryFitsWriter_Fixture) {
 
   // Then
   BOOST_CHECK_EQUAL(result.rows(), 2);
-  BOOST_CHECK_EQUAL(result.numCols(), 8);
+  BOOST_CHECK_EQUAL(result.numCols(), 9);
 
   BOOST_CHECK_EQUAL(result.column(1).name(), "Boolean");
   BOOST_CHECK_EQUAL(result.column(2).name(), "Integer");
@@ -208,8 +214,15 @@ BOOST_FIXTURE_TEST_CASE(writeBinary, BinaryFitsWriter_Fixture) {
   std::vector<double> sna;
   result.column(8).read(sna, 1, 2);
 
+  // Then
   BOOST_CHECK_EQUAL(sna[0], 41);
   BOOST_CHECK_EQUAL(sna[1], 42);
+
+  // When
+  std::valarray<float> vector;
+  std::valarray<float> expectedv{1.5, 2.6, 3.7};
+  result.column(9).read(vector, 1);
+  BOOST_CHECK_EQUAL_COLLECTIONS(std::begin(vector), std::end(vector), std::begin(expectedv), std::end(expectedv));
 }
 
 //-----------------------------------------------------------------------------
@@ -334,7 +347,7 @@ BOOST_FIXTURE_TEST_CASE(addExisting, BinaryFitsWriter_Fixture) {
   result.readAllKeys();
 
   BOOST_CHECK_EQUAL(result.rows(), 4);
-  BOOST_CHECK_EQUAL(result.numCols(), 8);
+  BOOST_CHECK_EQUAL(result.numCols(), 9);
 }
 
 //-----------------------------------------------------------------------------
