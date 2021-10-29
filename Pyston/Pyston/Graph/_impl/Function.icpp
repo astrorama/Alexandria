@@ -1,0 +1,72 @@
+/**
+ * @copyright (C) 2012-2020 Euclid Science Ground Segment
+ *
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 3.0 of the License, or (at your option)
+ * any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+ */
+
+#ifdef PYSTON_GRAPH_FUNCTION_IMPL
+
+namespace Pyston {
+
+template <typename R, size_t N, typename... Evaluated>
+struct FunctionEvalHelper {
+  template <typename Functor, typename ChildrenSet>
+  static R eval(const Context& context, const Arguments& args, const Functor& functor, const ChildrenSet& children,
+                Evaluated&&... evaluated) {
+    auto a = std::get<N - 1>(children)->eval(context, args);
+    return FunctionEvalHelper<R, N - 1, decltype(a), Evaluated...>::eval(
+        context, args, functor, children, std::forward<decltype(a)>(a), std::forward<Evaluated>(evaluated)...);
+  }
+};
+
+template <typename R, typename... Evaluated>
+struct FunctionEvalHelper<R, 0, Evaluated...> {
+  template <typename Functor, typename ChildrenSet>
+  static R eval(const Context& context, const Arguments&, const Functor& functor, const ChildrenSet&,
+                Evaluated&&... evaluated) {
+    return functor(context, std::forward<Evaluated>(evaluated)...);
+  }
+};
+
+template <size_t N>
+struct FunctionVisitHelper {
+  template <typename ChildrenSet>
+  static void visit(Visitor& visitor, const ChildrenSet& children) {
+    FunctionVisitHelper<N - 1>::visit(visitor, children);
+    std::get<N - 1>(children)->visit(visitor);
+  }
+};
+
+template <>
+struct FunctionVisitHelper<0> {
+  template <typename ChildrenSet>
+  static void visit(Visitor&, const ChildrenSet&) {}
+};
+
+template <typename R, typename... Args>
+R Function<R, Args...>::eval(const Context& context, const Arguments& args) const {
+  return FunctionEvalHelper<R, sizeof...(Args)>::eval(context, args, m_functor, m_children);
+}
+
+template <typename R, typename... Args>
+void Function<R, Args...>::visit(Visitor& visitor) const {
+  visitor.enter(this);
+  FunctionVisitHelper<sizeof...(Args)>::visit(visitor, m_children);
+  visitor.exit(this);
+}
+
+}  // end of namespace Pyston
+
+#endif

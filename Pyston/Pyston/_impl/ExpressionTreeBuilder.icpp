@@ -1,0 +1,164 @@
+/**
+ * @copyright (C) 2012-2020 Euclid Science Ground Segment
+ *
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 3.0 of the License, or (at your option)
+ * any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+ */
+
+#include "Pyston/Graph/PythonCall.h"
+#include "Pyston/SharedContext.h"
+
+#ifdef PYSTON_EXPRESSIONTREEBUILDER_IMPL
+
+namespace Pyston {
+
+// Defined in Module.cpp
+extern PyObject* pyRecoverableError;
+
+template <unsigned pos, typename... AN>
+struct placeholderHelper;
+
+template <unsigned pos, typename A0, typename... AN>
+struct placeholderHelper<pos, A0, AN...> {
+
+  template <typename... Prototypes>
+  static void append(boost::python::list& placeholders, Prototypes&&... prototypes) {
+    placeholders.append(std::make_shared<Placeholder<A0>>(boost::python::len(placeholders)));
+    placeholderHelper<pos - 1, AN...>::append(placeholders, std::forward<Prototypes>(prototypes)...);
+  }
+};
+
+template <unsigned pos, typename... AN>
+struct placeholderHelper<pos, AttributeSet, AN...> {
+
+  template <typename P1, typename... Prototypes>
+  static void append(boost::python::list& placeholders, const P1& p1, Prototypes&&... prototypes) {
+    placeholders.append(std::make_shared<Placeholder<AttributeSet>>(boost::python::len(placeholders), p1));
+    placeholderHelper<pos - 1, AN...>::append(placeholders, std::forward<Prototypes>(prototypes)...);
+  }
+
+  template <typename... Prototypes>
+  static void append(boost::python::list&) {
+    static_assert(sizeof...(Prototypes) > 0, "AttributeSet on the signature but no prototype provided");
+  }
+};
+
+template <>
+struct placeholderHelper<0> {
+  static void append(boost::python::list&) {}
+};
+
+template <typename R, typename... Args>
+ExpressionTree<R(Args...)> ExpressionTreeBuilder::compiledOrWrapped(const boost::python::object& pyfunc,
+                                                                    const boost::python::list&   placeholders) {
+  std::shared_ptr<Node<R>>   root;
+  bool                       compiled;
+  std::shared_ptr<Exception> reason;
+
+  // Try building a computing graph
+  try {
+    auto py_comp = pyfunc(*boost::python::tuple(placeholders));
+    root         = boost::python::extract<std::shared_ptr<Node<R>>>(py_comp);
+    compiled     = true;
+  }
+  catch (const boost::python::error_already_set&) {
+    // If the error is not recoverable, just bail out
+    if (!PyErr_ExceptionMatches(pyRecoverableError)) {
+      throw Exception();
+    }
+    // If it is recoverable (i.e. placeholder used on a control flow), wrap the call to python
+    reason = std::make_shared<Exception>();
+    PyErr_Clear();
+    root     = std::make_shared<PythonCall<R>>(pyfunc);
+    compiled = false;
+  }
+  return ExpressionTree<R(Args...)>(compiled, root, std::move(reason));
+}
+
+template <typename R, typename T>
+ExpressionTree<R(const std::vector<T>&)>
+ExpressionTreeBuilder::buildHelper<R(const std::vector<T>&)>::build(const boost::python::object& pyfunc, size_t n) {
+  GILLocker           gil_ensure;
+  boost::python::list placeholders;
+  for (size_t i = 0; i < n; ++i) {
+    placeholders.append(boost::python::object(std::make_shared<Placeholder<T>>(i)));
+  }
+
+  return compiledOrWrapped<R, const std::vector<T>&>(pyfunc, placeholders);
+}
+
+template <typename R, typename... Args>
+template <typename... Prototypes>
+ExpressionTree<R(Args...)> ExpressionTreeBuilder::buildHelper<R(Args...)>::build(const boost::python::object& pyfunc,
+                                                                                 Prototypes&&... prototypes) {
+  GILLocker gil_ensure;
+
+  boost::python::list placeholders;
+  placeholderHelper<sizeof...(Args), typename std::remove_const<typename std::remove_reference<Args>::type>::type...>::
+      append(placeholders, std::forward<Prototypes>(prototypes)...);
+
+  return compiledOrWrapped<R, Args...>(pyfunc, placeholders);
+}
+
+template <typename Signature>
+struct registerHelper;
+
+/**
+ * Register a function that does not receive a context
+ */
+template <typename R, typename... Args>
+struct registerHelper<R(Args...)> {
+  static void registerFunction(const std::string& repr, std::function<R(Args...)> functor) {
+    auto ns = boost::python::import("pyston");
+    // Add the function for Nodes
+    auto function = makeFunction<R(Args...)>(repr, functor);
+    boost::python::objects::add_to_namespace(ns, repr.c_str(), function);
+
+    // Overload for the primitive types, so it can be evaluated even with non compilable expressions
+    auto direct =
+        boost::python::make_function(functor, boost::python::default_call_policies(), boost::mpl::vector<R, Args...>());
+    boost::python::objects::add_to_namespace(ns, repr.c_str(), direct);
+  }
+};
+
+/**
+ * Register a function that receives a Context as first parameter
+ */
+template <typename R, typename... Args>
+struct registerHelper<R(const Context&, Args...)> {
+  static void registerFunction(const std::string& repr, std::function<R(const Context&, Args...)> functor) {
+    auto ns = boost::python::import("pyston");
+    // Add the function for Nodes
+    auto function = makeFunction<R(const Context&, Args...)>(repr, functor);
+    boost::python::objects::add_to_namespace(ns, repr.c_str(), function);
+
+    // Overload for the primitive types, so it can be evaluated even with non compilable expressions
+    auto direct = boost::python::make_function(
+        [functor](Args... v) {
+          // Since this function needs a context, we pass along the global one
+          return functor(sharedContext, v...);
+        },
+        boost::python::default_call_policies(), boost::mpl::vector<R, Args...>());
+    boost::python::objects::add_to_namespace(ns, repr.c_str(), direct);
+  }
+};
+
+template <typename Signature>
+void ExpressionTreeBuilder::registerFunction(const std::string& repr, std::function<Signature> functor) {
+  registerHelper<Signature>::registerFunction(repr, functor);
+}
+
+}  // end of namespace Pyston
+
+#endif
