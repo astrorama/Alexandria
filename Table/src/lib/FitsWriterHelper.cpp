@@ -107,54 +107,76 @@ size_t ndArraySize(const Table& table, size_t column_index) {
   return size;
 }
 
+// Defined in FitsReaderHelper.cpp
+extern const std::vector<std::pair<char, std::type_index>> ScalarTypeMap;
+
+template <typename T>
+static std::string GenericScalarFormat(const Table&, size_t) {
+  char type_format = '\0';
+  for (auto p = ScalarTypeMap.begin(); p != ScalarTypeMap.end(); ++p) {
+    if (p->second == typeid(T)) {
+      type_format = p->first;
+      break;
+    }
+  }
+  if (!type_format) {
+    throw Elements::Exception() << "Unsupported column format for FITS binary table export: " << typeid(T).name();
+  }
+  return std::string(1, type_format);
+}
+
+template <typename T>
+static std::string GenericVectorFormat(const Table& table, size_t column_index) {
+  size_t size = vectorSize<T>(table, column_index);
+  return boost::lexical_cast<std::string>(size) + GenericScalarFormat<T>(table, column_index);
+}
+
+template <typename T>
+static std::string GenericNdFormat(const Table& table, size_t column_index) {
+  size_t size = ndArraySize<T>(table, column_index);
+  return boost::lexical_cast<std::string>(size) + GenericScalarFormat<T>(table, column_index);
+}
+
+const std::map<std::type_index, std::function<std::string(const Table&, size_t)>> BinaryFormatter{
+    // Scalars
+    {typeid(bool), GenericScalarFormat<bool>},
+    {typeid(int32_t), GenericScalarFormat<int32_t>},
+    {typeid(int64_t), GenericScalarFormat<int64_t>},
+    {typeid(float), GenericScalarFormat<float>},
+    {typeid(double), GenericScalarFormat<double>},
+    // Vectors
+    {typeid(std::vector<bool>), GenericVectorFormat<bool>},
+    {typeid(std::vector<int32_t>), GenericVectorFormat<int32_t>},
+    {typeid(std::vector<int64_t>), GenericVectorFormat<int64_t>},
+    {typeid(std::vector<float>), GenericVectorFormat<float>},
+    {typeid(std::vector<double>), GenericVectorFormat<double>},
+    // String
+    {typeid(std::string),
+     [](const Table& table, size_t column) {
+       size_t width = maxWidth(table, column);
+       return boost::lexical_cast<std::string>(width) + "A";
+     }},
+    // NdArray
+    {typeid(NdArray<int32_t>), GenericNdFormat<int32_t>},
+    {typeid(NdArray<int64_t>), GenericNdFormat<int64_t>},
+    {typeid(NdArray<float>), GenericNdFormat<float>},
+    {typeid(NdArray<double>), GenericNdFormat<double>},
+};
+
 std::vector<std::string> getBinaryFormatList(const Table& table) {
   auto                     column_info = table.getColumnInfo();
-  std::vector<std::string> format_list{};
+  std::vector<std::string> format_list;
+  format_list.reserve(column_info->size());
+
   for (size_t column_index = 0; column_index < column_info->size(); ++column_index) {
     auto type = column_info->getDescription(column_index).type;
-    if (type == typeid(bool)) {
-      format_list.push_back("L");
-    } else if (type == typeid(int32_t)) {
-      format_list.push_back("J");
-    } else if (type == typeid(int64_t)) {
-      format_list.push_back("K");
-    } else if (type == typeid(float)) {
-      format_list.push_back("E");
-    } else if (type == typeid(double)) {
-      format_list.push_back("D");
-    } else if (type == typeid(std::string)) {
-      size_t width = maxWidth(table, column_index);
-      format_list.push_back(boost::lexical_cast<std::string>(width) + "A");
-    } else if (type == typeid(std::vector<bool>)) {
-      size_t size = vectorSize<bool>(table, column_index);
-      format_list.push_back(boost::lexical_cast<std::string>(size) + "L");
-    } else if (type == typeid(std::vector<int32_t>)) {
-      size_t size = vectorSize<int32_t>(table, column_index);
-      format_list.push_back(boost::lexical_cast<std::string>(size) + "J");
-    } else if (type == typeid(std::vector<int64_t>)) {
-      size_t size = vectorSize<int64_t>(table, column_index);
-      format_list.push_back(boost::lexical_cast<std::string>(size) + "K");
-    } else if (type == typeid(std::vector<float>)) {
-      size_t size = vectorSize<float>(table, column_index);
-      format_list.push_back(boost::lexical_cast<std::string>(size) + "E");
-    } else if (type == typeid(std::vector<double>)) {
-      size_t size = vectorSize<double>(table, column_index);
-      format_list.push_back(boost::lexical_cast<std::string>(size) + "D");
-    } else if (type == typeid(NdArray<int32_t>)) {
-      size_t size = ndArraySize<int32_t>(table, column_index);
-      format_list.push_back(boost::lexical_cast<std::string>(size) + "J");
-    } else if (type == typeid(NdArray<int64_t>)) {
-      size_t size = ndArraySize<int64_t>(table, column_index);
-      format_list.push_back(boost::lexical_cast<std::string>(size) + "K");
-    } else if (type == typeid(NdArray<float>)) {
-      size_t size = ndArraySize<float>(table, column_index);
-      format_list.push_back(boost::lexical_cast<std::string>(size) + "E");
-    } else if (type == typeid(NdArray<double>)) {
-      size_t size = ndArraySize<double>(table, column_index);
-      format_list.push_back(boost::lexical_cast<std::string>(size) + "D");
-    } else {
+
+    auto i = BinaryFormatter.find(type);
+    if (i == BinaryFormatter.end()) {
       throw Elements::Exception() << "Unsupported column format for FITS binary table export: " << type.name();
     }
+
+    format_list.emplace_back(i->second(table, column_index));
   }
   return format_list;
 }

@@ -61,6 +61,18 @@ std::type_index asciiFormatToType(const std::string& format) {
                               << "yet supported";
 }
 
+extern const std::vector<std::pair<char, std::type_index>>  //
+    NdTypeMap{
+        {'J', typeid(NdArray<int32_t>)}, {'B', typeid(NdArray<int32_t>)}, {'I', typeid(NdArray<int32_t>)},
+        {'K', typeid(NdArray<int64_t>)}, {'E', typeid(NdArray<float>)},   {'D', typeid(NdArray<double>)},
+    },
+    ScalarTypeMap{{'L', typeid(bool)},    {'J', typeid(int32_t)}, {'B', typeid(int32_t)}, {'I', typeid(int32_t)},
+                  {'K', typeid(int64_t)}, {'E', typeid(float)},   {'D', typeid(double)}},
+    VectorTypeMap{{'B', typeid(std::vector<int32_t>)}, {'I', typeid(std::vector<int32_t>)},
+                  {'J', typeid(std::vector<int32_t>)}, {'K', typeid(std::vector<int64_t>)},
+                  {'E', typeid(std::vector<float>)},   {'D', typeid(std::vector<double>)},
+                  {'A', typeid(std::string)}};
+
 std::type_index binaryFormatToType(const std::string& format, const std::vector<size_t>& shape) {
   // Get the size out of the format string
   char ft   = format.front();
@@ -72,54 +84,26 @@ std::type_index binaryFormatToType(const std::string& format, const std::vector<
 
   // If shape is set, it is an NdArray
   if (!shape.empty()) {
-    if (ft == 'B') {
-      return typeid(NdArray<int32_t>);
-    } else if (ft == 'I') {
-      return typeid(NdArray<int32_t>);
-    } else if (ft == 'J') {
-      return typeid(NdArray<int32_t>);
-    } else if (ft == 'K') {
-      return typeid(NdArray<int64_t>);
-    } else if (ft == 'E') {
-      return typeid(NdArray<float>);
-    } else if (ft == 'D') {
-      return typeid(NdArray<double>);
+    auto i = std::find_if(NdTypeMap.begin(), NdTypeMap.end(),
+                          [ft](const std::pair<char, std::type_index>& p) { return p.first == ft; });
+    if (i != NdTypeMap.end()) {
+      return i->second;
     }
   }
   // If the dimensionality is 1, it is a scalar
   else if (size == 1) {
-    if (ft == 'L') {
-      return typeid(bool);
-    } else if (ft == 'B') {
-      return typeid(int32_t);
-    } else if (ft == 'I') {
-      return typeid(int32_t);
-    } else if (ft == 'J') {
-      return typeid(int32_t);
-    } else if (ft == 'K') {
-      return typeid(int64_t);
-    } else if (ft == 'E') {
-      return typeid(float);
-    } else if (ft == 'D') {
-      return typeid(double);
+    auto i = std::find_if(ScalarTypeMap.begin(), ScalarTypeMap.end(),
+                          [ft](const std::pair<char, std::type_index>& p) { return p.first == ft; });
+    if (i != ScalarTypeMap.end()) {
+      return i->second;
     }
   }
   // Last, vectors
   else {
-    if (ft == 'B') {
-      return typeid(std::vector<int32_t>);
-    } else if (ft == 'I') {
-      return typeid(std::vector<int32_t>);
-    } else if (ft == 'J') {
-      return typeid(std::vector<int32_t>);
-    } else if (ft == 'K') {
-      return typeid(std::vector<int64_t>);
-    } else if (ft == 'E') {
-      return typeid(std::vector<float>);
-    } else if (ft == 'D') {
-      return typeid(std::vector<double>);
-    } else if (ft == 'A') {
-      return typeid(std::string);
+    auto i = std::find_if(VectorTypeMap.begin(), VectorTypeMap.end(),
+                          [ft](const std::pair<char, std::type_index>& p) { return p.first == ft; });
+    if (i != VectorTypeMap.end()) {
+      return i->second;
     }
   }
   throw Elements::Exception() << "FITS binary table format " << format << " is not "

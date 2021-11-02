@@ -45,9 +45,13 @@ std::unique_ptr<Function> interpolate(const std::vector<double>& x, const std::v
                                    << "size: X=" << x.size() << ", Y=" << y.size();
   }
 
-  if (x.size() == 1 && extrapolate) {
+  if (x.size() == 1) {
     auto c = y.front();
-    return make_unique<FunctionAdapter>([c](double) { return c; });
+    if (extrapolate) {
+      return make_unique<FunctionAdapter>([c](double) { return c; });
+    }
+    auto sx = x.front();
+    return make_unique<FunctionAdapter>([c, sx](double v) { return c * (v == sx); });
   }
 
   // We remove any duplicate lines and we check that we have only increasing

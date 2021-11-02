@@ -130,6 +130,27 @@ BOOST_FIXTURE_TEST_CASE(Linear1DataPoint, Linear_Fixture) {
 }
 
 //-----------------------------------------------------------------------------
+// Do not extrapolate a single point
+//-----------------------------------------------------------------------------
+BOOST_FIXTURE_TEST_CASE(Linear1DataPointNoExtrapolate, Linear_Fixture) {
+
+  // Given
+  std::vector<double> x{2.};
+  std::vector<double> y{42.};
+
+  // When
+  auto   linear = Euclid::MathUtils::interpolate(x, y, Euclid::MathUtils::InterpolationType::LINEAR, false);
+  double value1 = (*linear)(-2.);
+  double value2 = (*linear)(2.);
+  double value3 = (*linear)(5.);
+
+  // Then
+  BOOST_CHECK_EQUAL(value1, 0.);
+  BOOST_CHECK_CLOSE(value2, 42., close_tolerance);
+  BOOST_CHECK_EQUAL(value3, 0.);
+}
+
+//-----------------------------------------------------------------------------
 // Step function
 //-----------------------------------------------------------------------------
 

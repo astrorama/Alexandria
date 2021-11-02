@@ -24,7 +24,11 @@
 
 using namespace Euclid::NdArray;
 
+//-----------------------------------------------------------------------------
+
 BOOST_AUTO_TEST_SUITE(NpyMmap_test)
+
+//-----------------------------------------------------------------------------
 
 BOOST_AUTO_TEST_CASE(MmapOpen_test) {
   Elements::TempFile file("npy_mmap_%%.npy");
@@ -54,6 +58,8 @@ BOOST_AUTO_TEST_CASE(MmapOpen_test) {
   BOOST_CHECK_EQUAL(read.at(0, 1, 2), 1024 + 42);
   BOOST_CHECK_EQUAL(read.at(42, 5, 33), 1024 + 108);
 }
+
+//-----------------------------------------------------------------------------
 
 BOOST_AUTO_TEST_CASE(MmapOpenPrivate_test) {
   Elements::TempFile file("npy_mmap_%%.npy");
@@ -86,6 +92,8 @@ BOOST_AUTO_TEST_CASE(MmapOpenPrivate_test) {
   BOOST_CHECK_EQUAL_COLLECTIONS(ndarray.begin(), ndarray.end(), read.begin(), read.end());
 }
 
+//-----------------------------------------------------------------------------
+
 BOOST_AUTO_TEST_CASE(MmapCreate_test) {
   Elements::TempFile file("npy_create_mmap_%%.npy");
 
@@ -107,6 +115,8 @@ assert np.isclose(np.average(a[:,0], weights=a[:,1]),66.33333, 1e-3)
 )EDOCYP";
   runPython(PYCODE, file.path());
 }
+
+//-----------------------------------------------------------------------------
 
 BOOST_AUTO_TEST_CASE(MmapAppend_test) {
   Elements::TempFile file("npy_resize_mmap_%%.npy");
@@ -134,6 +144,8 @@ assert np.allclose(a[100:,:], 4.2)
   runPython(PYCODE, file.path());
 }
 
+//-----------------------------------------------------------------------------
+
 BOOST_AUTO_TEST_CASE(MmapAppend_NotEnough_test) {
   Elements::TempFile file("npy_resize_mmap_%%.npy");
 
@@ -149,6 +161,8 @@ BOOST_AUTO_TEST_CASE(MmapAppend_NotEnough_test) {
 
   BOOST_CHECK_THROW(ndarray.concatenate(another), Elements::Exception);
 }
+
+//-----------------------------------------------------------------------------
 
 BOOST_AUTO_TEST_CASE(MmapNamed_test) {
   Elements::TempFile             file("npy_named_mmap_%%.npy");
@@ -186,6 +200,8 @@ for i in range(100):
 
   runPython(PYCODE, file.path());
 }
+
+//-----------------------------------------------------------------------------
 
 BOOST_AUTO_TEST_CASE(ReadAttrNames_test) {
   Elements::TempFile file(std::string("npy_named_mmap_%%.npy"));
@@ -238,6 +254,8 @@ assert np.array_equal(expected, a), a
   runPython(PYCODE2, file.path());
 }
 
+//-----------------------------------------------------------------------------
+
 BOOST_AUTO_TEST_CASE(NamedAppend_test) {
   Elements::TempFile             file("npy_named_resize_mmap_%%.npy");
   const std::vector<std::string> attr_names{"X", "Y"};
@@ -265,4 +283,22 @@ assert np.allclose(a[100:]['Y'], 4.2)
   runPython(PYCODE, file.path());
 }
 
+//-----------------------------------------------------------------------------
+
+BOOST_AUTO_TEST_CASE(BadDtype_test) {
+  Elements::TempFile file("npy_mmap_%%.npy");
+
+  // Create npy
+  NdArray<int32_t> ndarray({50, 10, 40});
+  std::generate(ndarray.begin(), ndarray.end(), []() { return std::rand() % 1024; });
+  writeNpy(file.path(), ndarray);
+
+  // Open with mmap
+  BOOST_CHECK_THROW(mmapNpy<float>(file.path()), Elements::Exception);
+}
+
+//-----------------------------------------------------------------------------
+
 BOOST_AUTO_TEST_SUITE_END()
+
+//-----------------------------------------------------------------------------
