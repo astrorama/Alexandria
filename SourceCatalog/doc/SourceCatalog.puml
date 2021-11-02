@@ -42,6 +42,7 @@ Catalog - CatalogFromTable
 CatalogFromTable "1" *-- "*" AttributeFromRow
 AttributeFromRow <|.. CoordinatesFromRow
 AttributeFromRow <|... PhotometryFromRow
+AttributeFromRow <|... PdfFromRow
 AttributeFromRow <|.. SpecZFromFrow
 
 namespace AlexandriaTable {
