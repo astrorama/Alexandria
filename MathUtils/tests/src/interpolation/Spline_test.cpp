@@ -212,5 +212,27 @@ BOOST_FIXTURE_TEST_CASE(Spline_1DataPoint, Spline_Fixture) {
 }
 
 //-----------------------------------------------------------------------------
+// Do not extrapolate a single point
+//-----------------------------------------------------------------------------
+BOOST_FIXTURE_TEST_CASE(Spline_1DataPoint_NoExtrapolate, Spline_Fixture) {
+
+  // Given
+  std::vector<double> x_test_value{2.};
+  std::vector<double> y_test_value{42.};
+
+  // When
+  auto linear =
+      Euclid::MathUtils::interpolate(x_test_value, y_test_value, Euclid::MathUtils::InterpolationType::CUBIC_SPLINE, false);
+  double value1 = (*linear)(-2.);
+  double value2 = (*linear)(2.);
+  double value3 = (*linear)(5.);
+
+  // Then
+  BOOST_CHECK_EQUAL(value1, 0.);
+  BOOST_CHECK_CLOSE(value2, 42., close_tolerance);
+  BOOST_CHECK_EQUAL(value3, 0.);
+}
+
+//-----------------------------------------------------------------------------
 
 BOOST_AUTO_TEST_SUITE_END()
