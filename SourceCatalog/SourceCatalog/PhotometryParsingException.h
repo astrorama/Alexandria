@@ -33,7 +33,12 @@ namespace SourceCatalog {
 
 class PhotometryParsingException : public Elements::Exception {
 public:
-  explicit PhotometryParsingException(const char* message, const char *context, double flux, double error)
+  explicit PhotometryParsingException(const char* message, double flux, double error)
+      : Elements::Exception(message), m_flux(flux), m_error(error) {
+    *this << " ( Flux=" << flux << ", Error=" << error << ")";
+  }
+
+  explicit PhotometryParsingException(const char* message, const char* context, double flux, double error)
       : Elements::Exception(message), m_flux(flux), m_error(error) {
     *this << context << " ( Flux=" << flux << ", Error=" << error << ")";
   }
