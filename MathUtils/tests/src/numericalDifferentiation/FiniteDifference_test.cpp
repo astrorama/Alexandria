@@ -24,7 +24,7 @@
 
 #include "MathUtils/function/FunctionAdapter.h"
 #include "MathUtils/numericalDifferentiation/FiniteDifference.h"
-#include <boost/test/floating_point_comparison.hpp>
+#include <boost/test/tools/floating_point_comparison.hpp>
 #include <boost/test/unit_test.hpp>
 #include <cmath>
 
