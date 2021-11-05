@@ -22,6 +22,7 @@
 #include "Pyston/Graph/Cast.h"
 #include "Pyston/Graph/Function.h"
 #include <boost/python.hpp>
+#include <boost/mpl/vector.hpp>
 #include <memory>
 
 namespace Pyston {
