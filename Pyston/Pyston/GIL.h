@@ -44,9 +44,9 @@ protected:
  */
 class GILReleaser {
 public:
-  GILReleaser(PyGILState_STATE& state);
+  explicit GILReleaser(PyGILState_STATE& state);
 
-  GILReleaser(GILLocker&);
+  explicit GILReleaser(GILLocker&);
 
   ~GILReleaser();
 

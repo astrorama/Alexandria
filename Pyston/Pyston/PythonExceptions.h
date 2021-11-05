@@ -35,7 +35,7 @@ public:
    * @param msg
    *    Error message
    */
-  UnrecoverableError(const std::string& msg) : std::logic_error(msg) {}
+  explicit UnrecoverableError(const std::string& msg) : std::logic_error(msg) {}
 
   virtual ~UnrecoverableError() = default;
 };
@@ -47,7 +47,7 @@ public:
  */
 class RecoverableError : public std::logic_error {
 public:
-  RecoverableError(const std::string& msg) : std::logic_error(msg) {}
+  explicit RecoverableError(const std::string& msg) : std::logic_error(msg) {}
   virtual ~RecoverableError() = default;
 };
 

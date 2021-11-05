@@ -36,7 +36,7 @@ public:
    * @param label
    *    Name of the whole graph
    */
-  GraphvizGenerator(const std::string& label);
+  explicit GraphvizGenerator(const std::string& label);
 
   /**
    * @copydoc Visitor::enter

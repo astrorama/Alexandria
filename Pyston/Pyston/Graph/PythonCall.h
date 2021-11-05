@@ -35,7 +35,7 @@ namespace Pyston {
 template <typename T>
 class PythonCall : public Node<T> {
 public:
-  PythonCall(boost::python::object callable) : m_callable(callable) {}
+  explicit PythonCall(boost::python::object callable) : m_callable(callable) {}
 
   std::string repr() const override {
     return "PythonCall";

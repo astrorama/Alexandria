@@ -35,7 +35,7 @@ public:
    * @param out_stream
    *    Serialize into this stream
    */
-  TextReprVisitor(std::ostream& out_stream);
+  explicit TextReprVisitor(std::ostream& out_stream);
 
   /**
    * @copydoc Visitor::enter
