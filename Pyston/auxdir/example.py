@@ -16,5 +16,5 @@ def myfunc2(x, y):
 setattr(pyston, 'evaluate', dict())
 #pyston.evaluate[0] = lambda: 5
 #pyston.evaluate[1] = lambda x: True + x
-pyston.evaluate[2] = lambda x, y: myfunc2(x, y)
-#pyston.evaluate[3] = lambda x, y, z: z + y + x  # myfunc2(x, y)
+pyston.evaluate[2] = myfunc2
+#pyston.evaluate[3] = lambda x, y, z: z + y + x
