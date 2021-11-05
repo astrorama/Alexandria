@@ -24,8 +24,12 @@
 
 #include "MathUtils/function/FunctionAdapter.h"
 #include "MathUtils/numericalDifferentiation/FiniteDifference.h"
-#include <boost/test/tools/floating_point_comparison.hpp>
 #include <boost/test/unit_test.hpp>
+#if BOOST_VERSION >= 105900
+#include <boost/test/tools/floating_point_comparison.hpp>
+#else
+#include <boost/test/floating_point_comparison.hpp>
+#endif
 #include <cmath>
 
 using namespace Euclid::MathUtils;

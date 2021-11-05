@@ -25,7 +25,11 @@
 #include "ElementsKernel/Real.h"
 #include "MathUtils/function/Polynomial.h"
 #include <boost/test/test_tools.hpp>
+#if BOOST_VERSION >= 105900
 #include <boost/test/tools/floating_point_comparison.hpp>
+#else
+#include <boost/test/floating_point_comparison.hpp>
+#endif
 #include <boost/test/unit_test.hpp>
 #include <memory>
 #include <sstream>
