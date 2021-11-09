@@ -67,7 +67,6 @@ std::unique_ptr<Function> interpolate(const std::vector<double>& x, const std::v
   for (std::size_t i = 1; i < x.size(); ++i) {
     if (x[i] == x[i - 1]) {
       if (y[i] == y[i - 1]) {
-        logger.warn() << "Ignoring duplicate pair (" << x[i] << ", " << y[i] << ") during interpolation";
         continue;
       }
     }
