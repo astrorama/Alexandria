@@ -82,8 +82,8 @@ std::type_index binaryFormatToType(const std::string& format, const std::vector<
     ft   = format.back();
   }
 
-  // If shape is set, it is an NdArray
-  if (!shape.empty()) {
+  // If shape is set *and* it has more than one dimension, it is an NdArray
+  if (shape.size() > 1) {
     auto i = std::find_if(NdTypeMap.begin(), NdTypeMap.end(),
                           [ft](const std::pair<char, std::type_index>& p) { return p.first == ft; });
     if (i != NdTypeMap.end()) {

@@ -34,10 +34,10 @@ using namespace Euclid::NdArray;
 
 CCfits::Table* addTable(CCfits::FITS& fits) {
 
-  std::vector<std::string> names{"Bool",   "Int",       "Long",         "String",  "Float",
-                                 "Double", "IntVector", "DoubleVector", "NdArray", "Double1"};
-  std::vector<std::string> types{"L", "J", "K", "10A", "E", "D", "2J", "2D", "6D", "1D"};
-  std::vector<std::string> units{"deg", "mag", "erg", "ph", "s", "m", "pc", "count", "x", "x"};
+  std::vector<std::string> names{"Bool",      "Int",          "Long",    "String",  "Float",        "Double",
+                                 "IntVector", "DoubleVector", "NdArray", "Double1", "VectorWithDim"};
+  std::vector<std::string> types{"L", "J", "K", "10A", "E", "D", "2J", "2D", "6D", "1D", "4D"};
+  std::vector<std::string> units{"deg", "mag", "erg", "ph", "s", "m", "pc", "count", "x", "x", "x"};
   CCfits::Table*           table_hdu = fits.addTable("Success", 2, names, types, units);
   std::vector<bool>        bool_values{true, false};
   table_hdu->column(1).write(bool_values, 1);
@@ -58,11 +58,14 @@ CCfits::Table* addTable(CCfits::FITS& fits) {
   std::vector<std::valarray<double>> double_ndarrays{{1, 2, 3, 4, 5, 6}, {6, 5, 4, 3, 2, 1}};
   table_hdu->column(9).writeArrays(double_ndarrays, 1);
   table_hdu->column(10).write(double_values, 1);
+  std::vector<std::valarray<double>> double2_values{{1., 10., 100., 1000.}, {2., 20., 200., 2000.}};
+  table_hdu->column(11).writeArrays(double2_values, 1);
 
   for (int i = 1; i <= 9; i = i + 2) {
     table_hdu->addKey("TDESC" + std::to_string(i), "Desc" + std::to_string(i), "");
   }
   table_hdu->addKey("TDIM9", "(3,2)", "");
+  table_hdu->addKey("TDIM11", "(4)", "");
   table_hdu->writeComment("TEST COMMENT\nWITH LINES");
   return table_hdu;
 }
@@ -70,11 +73,12 @@ CCfits::Table* addTable(CCfits::FITS& fits) {
 struct FitsReader_Fixture {
 
   Elements::TempDir             temp_dir;
-  std::unique_ptr<CCfits::FITS> fits{new CCfits::FITS((temp_dir.path() / "FitsReader_test.fits").native(), CCfits::RWmode::Write)};
-  const CCfits::PHDU&           primary_hdu = fits->pHDU();
-  std::vector<long>             image_size{2, 2};
-  CCfits::ExtHDU*               image_hdu = fits->addImage("Image", FLOAT_IMG, image_size);
-  CCfits::ExtHDU*               table_hdu = addTable(*fits);
+  std::unique_ptr<CCfits::FITS> fits{
+      new CCfits::FITS((temp_dir.path() / "FitsReader_test.fits").native(), CCfits::RWmode::Write)};
+  const CCfits::PHDU& primary_hdu = fits->pHDU();
+  std::vector<long>   image_size{2, 2};
+  CCfits::ExtHDU*     image_hdu = fits->addImage("Image", FLOAT_IMG, image_size);
+  CCfits::ExtHDU*     table_hdu = addTable(*fits);
 };
 
 //-----------------------------------------------------------------------------
@@ -183,7 +187,7 @@ BOOST_FIXTURE_TEST_CASE(ReadSuccess, FitsReader_Fixture) {
   auto& column_info = reader.getInfo();
 
   // Then
-  BOOST_CHECK_EQUAL(column_info.size(), 10);
+  BOOST_CHECK_EQUAL(column_info.size(), 11);
   BOOST_CHECK_EQUAL(column_info.getDescription(0).name, "Bool");
   BOOST_CHECK_EQUAL(column_info.getDescription(1).name, "Int");
   BOOST_CHECK_EQUAL(column_info.getDescription(2).name, "Long");
@@ -193,6 +197,8 @@ BOOST_FIXTURE_TEST_CASE(ReadSuccess, FitsReader_Fixture) {
   BOOST_CHECK_EQUAL(column_info.getDescription(6).name, "IntVector");
   BOOST_CHECK_EQUAL(column_info.getDescription(7).name, "DoubleVector");
   BOOST_CHECK_EQUAL(column_info.getDescription(8).name, "NdArray");
+  BOOST_CHECK_EQUAL(column_info.getDescription(9).name, "Double1");
+  BOOST_CHECK_EQUAL(column_info.getDescription(10).name, "VectorWithDim");
 
   BOOST_CHECK(column_info.getDescription(0).type == typeid(bool));
   BOOST_CHECK(column_info.getDescription(1).type == typeid(int32_t));
@@ -203,13 +209,15 @@ BOOST_FIXTURE_TEST_CASE(ReadSuccess, FitsReader_Fixture) {
   BOOST_CHECK(column_info.getDescription(6).type == typeid(std::vector<int32_t>));
   BOOST_CHECK(column_info.getDescription(7).type == typeid(std::vector<double>));
   BOOST_CHECK(column_info.getDescription(8).type == typeid(NdArray<double>));
+  BOOST_CHECK(column_info.getDescription(9).type == typeid(double));
+  BOOST_CHECK(column_info.getDescription(10).type == typeid(std::vector<double>));
 
-  std::vector<std::string> units{"deg", "mag", "erg", "ph", "s", "m", "pc", "count", "x", "x"};
+  std::vector<std::string> units{"deg", "mag", "erg", "ph", "s", "m", "pc", "count", "x", "x", "x"};
   for (size_t i = 0; i < column_info.size(); ++i) {
     BOOST_CHECK_EQUAL(column_info.getDescription(i).unit, units[i]);
   }
 
-  std::vector<std::string> descriptions{"Desc1", "", "Desc3", "", "Desc5", "", "Desc7", "", "Desc9", ""};
+  std::vector<std::string> descriptions{"Desc1", "", "Desc3", "", "Desc5", "", "Desc7", "", "Desc9", "", ""};
   for (size_t i = 0; i < column_info.size(); ++i) {
     BOOST_CHECK_EQUAL(column_info.getDescription(i).description, descriptions[i]);
   }
@@ -246,6 +254,9 @@ BOOST_FIXTURE_TEST_CASE(ReadSuccess, FitsReader_Fixture) {
   BOOST_CHECK_EQUAL(ndarray.shape()[1], 3);
   BOOST_CHECK_EQUAL(ndarray.at(0, 0), 6);
   BOOST_CHECK_EQUAL(ndarray.at(1, 2), 1);
+
+  auto vector = boost::get<std::vector<double>>(table[1][10]);
+  BOOST_CHECK_EQUAL(vector.size(), 4);
 
   BOOST_CHECK_EQUAL(reader.getComment(), "TEST COMMENT\nWITH LINES");
 }
