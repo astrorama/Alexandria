@@ -118,7 +118,7 @@ Table FitsReader::readImpl(long rows) {
 
   // Compute how many rows we are going to read
   if (m_current_row > m_total_rows) {
-    throw Elements::Exception() << "No more table rows left";
+    return Table(m_column_info);
   }
   if (rows == -1) {
     rows = m_total_rows - m_current_row + 1;

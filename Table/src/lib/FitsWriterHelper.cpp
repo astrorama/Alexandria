@@ -69,13 +69,13 @@ std::vector<std::string> getAsciiFormatList(const Table& table) {
       format_list.push_back("I1");
     } else if (type == typeid(int32_t) || type == typeid(int64_t)) {
       size_t width = maxWidth(table, column_index);
-      format_list.push_back("I" + boost::lexical_cast<std::string>(width));
+      format_list.push_back("I" + boost::lexical_cast<std::string>(std::max(1ul, width)));
     } else if (type == typeid(float) || type == typeid(double)) {
       size_t width = maxWidthScientific(table, column_index);
-      format_list.push_back("E" + boost::lexical_cast<std::string>(width));
+      format_list.push_back("E" + boost::lexical_cast<std::string>(std::max(1ul, width)));
     } else if (type == typeid(std::string)) {
       size_t width = maxWidth(table, column_index);
-      format_list.push_back("A" + boost::lexical_cast<std::string>(width));
+      format_list.push_back("A" + boost::lexical_cast<std::string>(std::max(1ul, width)));
     } else {
       throw Elements::Exception() << "Unsupported column format for FITS ASCII table export: " << type.name();
     }
@@ -85,6 +85,9 @@ std::vector<std::string> getAsciiFormatList(const Table& table) {
 
 template <typename T>
 size_t vectorSize(const Table& table, size_t column_index) {
+  if (table.size() == 0) {
+    return 0;
+  }
   size_t size = boost::get<std::vector<T>>(table[0][column_index]).size();
   for (const auto& row : table) {
     if (boost::get<std::vector<T>>(row[column_index]).size() != size) {
@@ -96,6 +99,9 @@ size_t vectorSize(const Table& table, size_t column_index) {
 
 template <typename T>
 size_t ndArraySize(const Table& table, size_t column_index) {
+  if (table.size() == 0) {
+    return 0;
+  }
   const auto& ndarray = boost::get<NdArray<T>>(table[0][column_index]);
   size_t      size    = ndarray.size();
   auto        shape   = ndarray.shape();
@@ -154,7 +160,8 @@ const std::map<std::type_index, std::function<std::string(const Table&, size_t)>
     {typeid(std::string),
      [](const Table& table, size_t column) {
        size_t width = maxWidth(table, column);
-       return boost::lexical_cast<std::string>(width) + "A";
+       // CCfits uses the width as denominator, so it can't be 0!
+       return boost::lexical_cast<std::string>(std::max(1ul, width)) + "A";
      }},
     // NdArray
     {typeid(NdArray<int32_t>), GenericNdFormat<int32_t>},
@@ -256,6 +263,10 @@ void populateNdArrayColumn(const Table& table, size_t column_index, CCfits::ExtH
 }
 
 std::string getTDIM(const Table& table, size_t column_index) {
+  if (table.size() == 0) {
+    return "";
+  }
+
   auto&               first_row = table[0];
   auto&               cell      = first_row[column_index];
   auto                type      = table.getColumnInfo()->getDescription(column_index).type;
@@ -294,6 +305,9 @@ std::string getTDIM(const Table& table, size_t column_index) {
 }
 
 void populateColumn(const Table& table, size_t column_index, CCfits::ExtHDU& table_hdu, long first_row) {
+  if (table.size() == 0) {
+    return;
+  }
   auto type = table.getColumnInfo()->getDescription(column_index).type;
   // CCfits indices start from 1
   if (type == typeid(bool)) {
