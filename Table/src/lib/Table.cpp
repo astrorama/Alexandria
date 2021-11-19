@@ -45,6 +45,8 @@ Table::Table(std::vector<Row> row_list) : m_row_list{std::move(row_list)}, m_col
   }
 }
 
+Table::Table(std::shared_ptr<ColumnInfo> column_info) : m_column_info(std::move(column_info)) {}
+
 std::shared_ptr<ColumnInfo> Table::getColumnInfo() const {
   return m_column_info;
 }

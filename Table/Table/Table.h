@@ -66,6 +66,13 @@ public:
    */
   explicit Table(std::vector<Row> row_list);
 
+  /**
+   * @brief
+   * Construct an empty Table with associated metadata
+   * @param column_info
+   */
+  explicit Table(std::shared_ptr<ColumnInfo> column_info);
+
   /// Default destructor
   virtual ~Table() = default;
 

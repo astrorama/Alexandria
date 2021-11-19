@@ -51,6 +51,14 @@ static Table createTestTable() {
   return Table{std::move(row_list)};
 }
 
+static Table createEmptyTable() {
+  std::vector<ColumnInfo::info_type> info_list{
+      ColumnInfo::info_type{"Col1", typeid(std::int64_t)}, ColumnInfo::info_type{"ID", typeid(std::int64_t)},
+      ColumnInfo::info_type{"ID1", typeid(std::int64_t)}, ColumnInfo::info_type{"ID2", typeid(std::int64_t)}};
+  auto column_info = std::make_shared<ColumnInfo>(std::move(info_list));
+  return Table(std::move(column_info));
+}
+
 struct BaseDirConfig : public Configuration {
   explicit BaseDirConfig(long id) : Configuration(id) {
     declareDependency<CatalogConfig>();
@@ -88,9 +96,11 @@ struct CatalogConfig_fixture : public ConfigManager_fixture {
   const std::string SOURCE_ID_COLUMN_INDEX{"source-id-column-index"};
 
   Table table = createTestTable();
+  Table empty_table = createEmptyTable();
 
   Elements::TempDir temp_dir;
-  std::string       fits_filename{"catalog.dat"};
+  std::string       fits_filename{"catalog.fits"};
+  std::string       empty_filename{"catalog_empty.fits"};
   std::string       ascii_filename{"catalog.txt"};
   fs::path          relative_filename = fs::path{"relative"} / ascii_filename;
   fs::path          absolute_filename = temp_dir.path() / "absolute" / ascii_filename;
@@ -100,6 +110,7 @@ struct CatalogConfig_fixture : public ConfigManager_fixture {
   CatalogConfig_fixture() {
 
     { FitsWriter{(temp_dir.path() / fits_filename).string()}.setHduName("Test").addData(table); }
+    { FitsWriter{(temp_dir.path() / empty_filename).string()}.setHduName("Empty").addData(empty_table); }
     {
       std::ofstream out{(temp_dir.path() / ascii_filename).string()};
       AsciiWriter(out).addData(table);
@@ -509,6 +520,25 @@ BOOST_FIXTURE_TEST_CASE(getTableToCatalogConverter_test, CatalogConfig_fixture) 
   BOOST_CHECK_EQUAL(catalog.find(20)->getAttribute<TestAttribute>()->value, 10);
   BOOST_CHECK_EQUAL(catalog.find(21)->getAttribute<TestAttribute>()->value, 11);
   BOOST_CHECK_EQUAL(catalog.find(22)->getAttribute<TestAttribute>()->value, 12);
+}
+
+//-----------------------------------------------------------------------------
+
+BOOST_FIXTURE_TEST_CASE(emptyCatalog_test, CatalogConfig_fixture) {
+  // Given
+  config_manager.registerConfiguration<CatalogConfig>();
+  config_manager.closeRegistration();
+  options_map[INPUT_CATALOG_FILE].value()   = boost::any(empty_filename);
+  options_map[INPUT_CATALOG_FORMAT].value() = boost::any(std::string{"FITS"});
+
+  // When
+  config_manager.initialize(options_map);
+  auto catalog = config_manager.getConfiguration<CatalogConfig>().readAsCatalog();
+
+  // Then
+  BOOST_CHECK_EQUAL(catalog.size(), 0);
+  BOOST_CHECK(catalog.find(10) == nullptr);
+  BOOST_CHECK(catalog.find(11) == nullptr);
 }
 
 //-----------------------------------------------------------------------------

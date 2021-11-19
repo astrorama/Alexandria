@@ -50,6 +50,7 @@ struct AsciiWriter_Fixture {
   Row              row2{values2, column_info};
   std::vector<Row> row_list{row0, row1, row2};
   Table            table{row_list};
+  Table            empty_table{column_info};
 };
 
 //-----------------------------------------------------------------------------
@@ -213,6 +214,30 @@ BOOST_FIXTURE_TEST_CASE(addDataComments, AsciiWriter_Fixture) {
                                 "         1              \"Two 1\"          1     4.1 0         1.1,1.2 <2,2>1,2,3,4\n"
                                 "         0              \"Two 2\" 1234567890 4.2e-15 0         2.1,2.2 <2,2>9,8,7,6\n"
                                 "         1              \"Two 3\"        234     4.3 0 3.1,3.2,3.3,3.4 <2,2>1,3,5,7\n"));
+}
+
+//-----------------------------------------------------------------------------
+
+BOOST_FIXTURE_TEST_CASE(emptyCatalog, AsciiWriter_Fixture) {
+  // Given
+  std::stringstream stream_hash{};
+  std::stringstream stream_double_slash{};
+  AsciiWriter       writer_hash{stream_hash};
+
+  // When
+  writer_hash.addData(empty_table);
+
+  // Then
+  BOOST_CHECK_EQUAL(stream_hash.str(),
+                    std::string("# Column: Boolean bool (unit1) - Desc1\n"
+                                "# Column: \"A Long Column Name\" string\n"
+                                "# Column: Integer int (unit3)\n"
+                                "# Column: D double - Desc4\n"
+                                "# Column: F float\n"
+                                "# Column: DoubleVector [double]\n"
+                                "# Column: NdArray [double+]\n"
+                                "\n"
+                                "# Boolean \"A Long Column Name\" Integer D F DoubleVector NdArray\n\n"));
 }
 
 //-----------------------------------------------------------------------------

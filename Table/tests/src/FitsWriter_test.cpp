@@ -65,6 +65,7 @@ struct BinaryFitsWriter_Fixture {
   Row                         row1{values1, column_info};
   std::vector<Row>            row_list{row0, row1};
   Table                       table{row_list};
+  Table                       empty_table{column_info};
   Elements::TempDir           temp_dir;
   std::string                 fits_file_path = (temp_dir.path() / "FitsWriter_test.fits").native();
 };
@@ -84,6 +85,7 @@ struct AsciiFitsWriter_Fixture {
   Row                                row1{values1, column_info};
   std::vector<Row>                   row_list{row0, row1};
   Table                              table{row_list};
+  Table                              empty_table{column_info};
   Elements::TempDir                  temp_dir;
   std::string                        fits_file_path = (temp_dir.path() / "FitsWriter_test.fits").native();
 };
@@ -356,6 +358,67 @@ BOOST_FIXTURE_TEST_CASE(addExisting, BinaryFitsWriter_Fixture) {
 
   BOOST_CHECK_EQUAL(result.rows(), 4);
   BOOST_CHECK_EQUAL(result.numCols(), 9);
+}
+
+//-----------------------------------------------------------------------------
+
+BOOST_FIXTURE_TEST_CASE(emptyBinaryCatalog, BinaryFitsWriter_Fixture) {
+  // Given
+  FitsWriter writer{fits_file_path};
+  writer.setFormat(FitsWriter::Format::BINARY);
+  writer.setHduName("EmptyBinaryTable");
+
+  // When
+  writer.addData(empty_table);
+  CCfits::FITS fits{fits_file_path, CCfits::RWmode::Read};
+  auto&        result = fits.extension("EmptyBinaryTable");
+  result.readAllKeys();
+
+  // Then
+  BOOST_CHECK_EQUAL(result.rows(), 0);
+  BOOST_CHECK_EQUAL(result.numCols(), 9);
+
+  BOOST_CHECK_EQUAL(result.column(1).name(), "Boolean");
+  BOOST_CHECK_EQUAL(result.column(2).name(), "Integer");
+  BOOST_CHECK_EQUAL(result.column(3).name(), "Long");
+  BOOST_CHECK_EQUAL(result.column(4).name(), "Float");
+  BOOST_CHECK_EQUAL(result.column(5).name(), "Double");
+  BOOST_CHECK_EQUAL(result.column(6).name(), "String");
+  BOOST_CHECK_EQUAL(result.column(7).name(), "NdArray");
+  BOOST_CHECK_EQUAL(result.column(8).name(), "ScalarNdArray");
+}
+
+//-----------------------------------------------------------------------------
+
+BOOST_FIXTURE_TEST_CASE(emptyAsciiCatalog, AsciiFitsWriter_Fixture) {
+  // Given
+  FitsWriter writer{fits_file_path};
+  writer.setFormat(FitsWriter::Format::ASCII);
+  writer.setHduName("EmptyAsciiTable");
+
+  // When
+  writer.addData(empty_table);
+  CCfits::FITS fits{fits_file_path, CCfits::RWmode::Read};
+  auto&        result = fits.extension("EmptyAsciiTable");
+  result.readAllKeys();
+
+  // Then
+  BOOST_CHECK_EQUAL(result.rows(), 0);
+  BOOST_CHECK_EQUAL(result.numCols(), 6);
+
+  BOOST_CHECK_EQUAL(result.column(1).name(), "Boolean");
+  BOOST_CHECK_EQUAL(result.column(2).name(), "Integer");
+  BOOST_CHECK_EQUAL(result.column(3).name(), "Long");
+  BOOST_CHECK_EQUAL(result.column(4).name(), "Float");
+  BOOST_CHECK_EQUAL(result.column(5).name(), "Double");
+  BOOST_CHECK_EQUAL(result.column(6).name(), "String");
+
+  BOOST_CHECK_EQUAL(result.column(1).format(), "I1");
+  BOOST_CHECK_EQUAL(result.column(2).format(), "I1");
+  BOOST_CHECK_EQUAL(result.column(3).format(), "I1");
+  BOOST_CHECK_EQUAL(result.column(4).format(), "E1");
+  BOOST_CHECK_EQUAL(result.column(5).format(), "E1");
+  BOOST_CHECK_EQUAL(result.column(6).format(), "A1");
 }
 
 //-----------------------------------------------------------------------------
