@@ -246,7 +246,7 @@ public:
       , m_max_size(max_size)
       , m_attr_names(attr_names)
       , m_mapped(std::move(input))
-      , m_data(reinterpret_cast<T*>(m_mapped.data() + data_offset)) {}
+      , m_data(reinterpret_cast<T*>(const_cast<char*>(m_mapped.const_data()) + data_offset)) {}
 
   size_t size() const {
     return m_n_elements;

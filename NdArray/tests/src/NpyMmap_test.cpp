@@ -94,6 +94,25 @@ BOOST_AUTO_TEST_CASE(MmapOpenPrivate_test) {
 
 //-----------------------------------------------------------------------------
 
+BOOST_AUTO_TEST_CASE(MmapOpenReadOnly_test) {
+  Elements::TempFile file("npy_mmap_%%.npy");
+
+  // Create npy
+  NdArray<int32_t> ndarray({50, 10, 40});
+  std::generate(ndarray.begin(), ndarray.end(), []() { return std::rand() % 1024; });
+  writeNpy(file.path(), ndarray);
+
+  // Open with mmap
+  auto mmapped = mmapNpy<int32_t>(file.path(), boost::iostreams::mapped_file_base::readonly);
+  BOOST_CHECK_EQUAL(mmapped.shape().size(), 3);
+  BOOST_CHECK_EQUAL(mmapped.shape()[0], 50);
+  BOOST_CHECK_EQUAL(mmapped.shape()[1], 10);
+  BOOST_CHECK_EQUAL(mmapped.shape()[2], 40);
+  BOOST_CHECK_EQUAL_COLLECTIONS(ndarray.begin(), ndarray.end(), mmapped.begin(), mmapped.end());
+}
+
+//-----------------------------------------------------------------------------
+
 BOOST_AUTO_TEST_CASE(MmapCreate_test) {
   Elements::TempFile file("npy_create_mmap_%%.npy");
 
