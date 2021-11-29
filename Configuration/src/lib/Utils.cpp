@@ -30,7 +30,7 @@ namespace Configuration {
 
 static long last_manager_id = 0;
 
-long getUniqueManagerId() {
+long getUniqueManagerId() noexcept {
   long id = last_manager_id;
   while (id == last_manager_id) {
     auto now = std::chrono::system_clock::now().time_since_epoch();

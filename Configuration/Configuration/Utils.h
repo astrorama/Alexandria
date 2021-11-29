@@ -31,7 +31,7 @@ namespace Configuration {
 /**
  * Generate an unique ID for the configuration manager
  */
-long getUniqueManagerId();
+long getUniqueManagerId() noexcept;
 
 } /* namespace Configuration */
 } /* namespace Euclid */
