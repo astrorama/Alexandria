@@ -484,6 +484,11 @@ const T& NdArray<T>::at_helper(std::vector<size_t>& acc) const {
 }
 
 template <typename T>
+const T& NdArray<T>::at_helper(std::vector<size_t>& acc, const std::string& attr) const {
+  return at(acc, attr);
+}
+
+template <typename T>
 template <typename... D>
 auto NdArray<T>::reshape_helper(std::vector<size_t>& acc, size_t i, D... rest) -> self_type& {
   acc.push_back(i);

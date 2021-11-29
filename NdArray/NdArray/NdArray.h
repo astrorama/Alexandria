@@ -603,6 +603,11 @@ private:
    */
   const T& at_helper(std::vector<size_t>& acc) const;
 
+  /**
+   * Helper to expand constant at with a variable number of arguments, being the last an attribute name
+   */
+  const T& at_helper(std::vector<size_t>& acc, const std::string& attr) const;
+
   template <typename... D>
   self_type& reshape_helper(std::vector<size_t>& acc, size_t i, D... rest);
 
