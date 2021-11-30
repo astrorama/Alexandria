@@ -22,7 +22,7 @@
  * @author Nikolaos Apostolakos
  */
 
-#include "MathUtils/function/Function.h"
+#include "MathUtils/function/function_tools.h"
 #include "MathUtils/interpolation/interpolation.h"
 #include <boost/test/unit_test.hpp>
 #include <memory>
@@ -171,6 +171,21 @@ BOOST_FIXTURE_TEST_CASE(LinearStep, Linear_Fixture) {
   BOOST_CHECK_CLOSE(value2, 2., close_tolerance);
   BOOST_CHECK_CLOSE(value3, 3.5, close_tolerance);
   BOOST_CHECK_CLOSE(value4, 4., close_tolerance);
+}
+
+//-----------------------------------------------------------------------------
+
+BOOST_FIXTURE_TEST_CASE(Linear_Integration, Linear_Fixture) {
+  // Given
+  std::vector<double> x{-1., 0., 1., 2., 8., 10.};
+  std::vector<double> y{4., 3., 1., 2., 2., 20.};
+
+  // When
+  auto linear = Euclid::MathUtils::interpolate(x, y, Euclid::MathUtils::InterpolationType::LINEAR, true);
+
+  // Then
+  BOOST_CHECK_CLOSE(Euclid::MathUtils::integrate(*linear, -1., 10.), 41., close_tolerance);
+  BOOST_CHECK_CLOSE(Euclid::MathUtils::integrate(*linear, 0.5, 4.), 6.25, close_tolerance);
 }
 
 //-----------------------------------------------------------------------------
