@@ -69,7 +69,7 @@ NdArray<T> sum(const NdArray<T>& array, int axis);
  *  The axis. 0 is the first. Negative values index from the end.
  * @return
  */
-template<typename T, typename Iterator>
+template <typename T, typename Iterator>
 NdArray<T> trapz(const NdArray<T>& array, const Iterator kbegin, const Iterator kend, int axis);
 
 /**
@@ -95,6 +95,18 @@ std::vector<std::size_t> argmax(const NdArray<T>& array);
  */
 template <typename T>
 std::vector<std::size_t> argmin(const NdArray<T>& array);
+
+/**
+ * Sort in place a 2D NdArray based on the attribute names
+ * @tparam T
+ *  NdArray type
+ * @param array
+ *  The ndarray
+ * @param attrs
+ *  List of attributes to use for the sorting
+ */
+template <typename T>
+void sort(NdArray<T>& array, const std::vector<std::string>& attrs);
 
 }  // namespace NdArray
 }  // namespace Euclid
