@@ -23,31 +23,97 @@
  */
 
 #include "ElementsKernel/Exception.h"
-#include "MathUtils/function/Piecewise.h"
-#include "MathUtils/function/Polynomial.h"
+#include "MathUtils/function/Integrable.h"
 #include "MathUtils/interpolation/interpolation.h"
 #include <limits>
 
 namespace Euclid {
 namespace MathUtils {
 
+class LinearInterpolator final : public Integrable {
+public:
+  LinearInterpolator(std::vector<double> knots, std::vector<double> coef0, std::vector<double> coef1)
+      : m_knots(std::move(knots)), m_coef0(std::move(coef0)), m_coef1(std::move(coef1)){};
+
+  virtual ~LinearInterpolator() = default;
+
+  double operator()(double x) const override {
+    auto knotsBegin = m_knots.begin();
+    if (x < *knotsBegin) {
+      return 0;
+    }
+    if (x == *knotsBegin) {
+      return m_coef1.front() * x + m_coef0.front();
+    }
+    auto knotsEnd = m_knots.end();
+    auto findX    = std::lower_bound(knotsBegin, knotsEnd, x);
+    if (findX == knotsEnd) {
+      return 0;
+    }
+    auto i = findX - knotsBegin - 1;
+    return m_coef1[i] * x + m_coef0[i];
+  }
+
+  std::unique_ptr<NAryFunction> clone() const override {
+    return std::unique_ptr<NAryFunction>(new LinearInterpolator(m_knots, m_coef0, m_coef1));
+  }
+
+  double integrate(const double a, const double b) const override {
+    if (a == b) {
+      return 0;
+    }
+    int    direction = 1;
+    double min       = a;
+    double max       = b;
+    if (min > max) {
+      direction = -1;
+      min       = b;
+      max       = a;
+    }
+    double result   = 0;
+    auto   knotIter = std::upper_bound(m_knots.begin(), m_knots.end(), min);
+    if (knotIter != m_knots.begin()) {
+      --knotIter;
+    }
+    auto i = knotIter - m_knots.begin();
+    while (++knotIter != m_knots.end()) {
+      auto prevKnotIter = knotIter - 1;
+      if (max <= *prevKnotIter) {
+        break;
+      }
+      if (min < *knotIter) {
+        double down = (min > *prevKnotIter) ? min : *prevKnotIter;
+        double up   = (max < *knotIter) ? max : *knotIter;
+        result += antiderivative(i, up) - antiderivative(i, down);
+      }
+      ++i;
+    }
+    return direction * result;
+  }
+
+private:
+  const std::vector<double> m_knots, m_coef0, m_coef1;
+
+  double antiderivative(int i, double x) const {
+    return m_coef0[i] * x + m_coef1[i] * x * x / 2;
+  }
+};
+
 std::unique_ptr<Function> linearInterpolation(const std::vector<double>& x, const std::vector<double>& y,
                                               bool extrapolate) {
-  std::vector<std::unique_ptr<Function>> functions{};
+  std::vector<double> coef0, coef1, knots(x);
+
   for (size_t i = 0; i < x.size() - 1; i++) {
-    double coef1 = (y[i + 1] - y[i]) / (x[i + 1] - x[i]);
-    double coef0 = y[i] - coef1 * x[i];
-    functions.push_back(std::unique_ptr<Function>(new Polynomial{{coef0, coef1}}));
+    coef1.emplace_back((y[i + 1] - y[i]) / (x[i + 1] - x[i]));
+    coef0.emplace_back(y[i] - coef1.back() * x[i]);
   }
 
   if (extrapolate) {
-    std::vector<double> x_copy(x);
-    x_copy.front() = std::numeric_limits<double>::lowest();
-    x_copy.back()  = std::numeric_limits<double>::max();
-    return std::unique_ptr<Function>(new Piecewise{x_copy, std::move(functions)});
+    knots.front() = std::numeric_limits<double>::lowest();
+    knots.back()  = std::numeric_limits<double>::max();
   }
 
-  return std::unique_ptr<Function>(new Piecewise{x, std::move(functions)});
+  return std::unique_ptr<Function>(new LinearInterpolator(std::move(knots), std::move(coef0), std::move(coef1)));
 }
 
 }  // namespace MathUtils

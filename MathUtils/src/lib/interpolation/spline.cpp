@@ -23,16 +23,91 @@
  */
 
 #include "ElementsKernel/Exception.h"
-#include "MathUtils/function/Piecewise.h"
-#include "MathUtils/function/Polynomial.h"
+#include "MathUtils/function/Integrable.h"
 #include "MathUtils/interpolation/interpolation.h"
 #include <limits>
 
 namespace Euclid {
 namespace MathUtils {
 
+class CubicInterpolator final : public Integrable {
+public:
+  CubicInterpolator(std::vector<double> knots, std::vector<double> coef0, std::vector<double> coef1,
+                    std::vector<double> coef2, std::vector<double> coef3)
+      : m_knots(std::move(knots))
+      , m_coef0(std::move(coef0))
+      , m_coef1(std::move(coef1))
+      , m_coef2(std::move(coef2))
+      , m_coef3(std::move(coef3)) {}
+
+  virtual ~CubicInterpolator() = default;
+
+  double operator()(double x) const override {
+    auto knotsBegin = m_knots.begin();
+    if (x < *knotsBegin) {
+      return 0;
+    }
+    if (x == *knotsBegin) {
+      return m_coef3.front() * x * x * x + m_coef2.front() * x * x + m_coef1.front() * x + m_coef0.front();
+    }
+    auto knotsEnd = m_knots.end();
+    auto findX    = std::lower_bound(knotsBegin, knotsEnd, x);
+    if (findX == knotsEnd) {
+      return 0;
+    }
+    auto i = findX - knotsBegin - 1;
+    return m_coef3[i] * x * x * x + m_coef2[i] * x * x + m_coef1[i] * x + m_coef0[i];
+  }
+
+  std::unique_ptr<NAryFunction> clone() const override {
+    return std::unique_ptr<NAryFunction>(new CubicInterpolator(m_knots, m_coef0, m_coef1, m_coef2, m_coef3));
+  }
+
+  double integrate(const double a, const double b) const override {
+    if (a == b) {
+      return 0;
+    }
+    int    direction = 1;
+    double min       = a;
+    double max       = b;
+    if (min > max) {
+      direction = -1;
+      min       = b;
+      max       = a;
+    }
+    double result   = 0;
+    auto   knotIter = std::upper_bound(m_knots.begin(), m_knots.end(), min);
+    if (knotIter != m_knots.begin()) {
+      --knotIter;
+    }
+    auto i = knotIter - m_knots.begin();
+    while (++knotIter != m_knots.end()) {
+      auto prevKnotIter = knotIter - 1;
+      if (max <= *prevKnotIter) {
+        break;
+      }
+      if (min < *knotIter) {
+        double down = (min > *prevKnotIter) ? min : *prevKnotIter;
+        double up   = (max < *knotIter) ? max : *knotIter;
+        result += antiderivative(i, up) - antiderivative(i, down);
+      }
+      ++i;
+    }
+    return direction * result;
+  }
+
+private:
+  std::vector<double> m_knots, m_coef0, m_coef1, m_coef2, m_coef3;
+
+  double antiderivative(int i, double x) const {
+    double x2 = x * x;
+    return m_coef0[i] * x + m_coef1[i] * x2 / 2. + m_coef2[i] * x2 * x / 3. + m_coef3[i] * x2 * x2 / 4.;
+  }
+};
+
 std::unique_ptr<Function> splineInterpolation(const std::vector<double>& x, const std::vector<double>& y,
                                               bool extrapolate) {
+  std::vector<double> knots(x);
 
   // Number of intervals
   int n = x.size() - 1;
@@ -48,23 +123,24 @@ std::unique_ptr<Function> splineInterpolation(const std::vector<double>& x, cons
     double g = 2. * (x[i + 1] - x[i - 1]) - h[i - 1] * mu[i - 1];
     mu[i]    = h[i] / g;
     z[i]     = (3. * (y[i + 1] * h[i - 1] - y[i] * (x[i + 1] - x[i - 1]) + y[i - 1] * h[i]) / (h[i - 1] * h[i]) -
-            h[i - 1] * z[i - 1]) / g;
+            h[i - 1] * z[i - 1]) /
+           g;
   }
 
-  // cubic spline coefficients --  b is linear, c quadratic, d is cubic (original y's are constants)
-  std::vector<double> a(n, 0.);
-  std::vector<double> b(n, 0.);
-  std::vector<double> c(n + 1, 0.);
-  std::vector<double> d(n, 0.);
+  // cubic spline coefficients
+  std::vector<double> coef0(n, 0.);
+  std::vector<double> coef1(n, 0.);
+  std::vector<double> coef2(n + 1, 0.);
+  std::vector<double> coef3(n, 0.);
 
-  z[n] = 0.;
-  c[n] = 0.;
+  z[n]     = 0.;
+  coef2[n] = 0.;
 
   for (int j = n - 1; j >= 0; j--) {
-    a[j] = y[j];
-    c[j] = z[j] - mu[j] * c[j + 1];
-    b[j] = (y[j + 1] - y[j]) / h[j] - h[j] * (c[j + 1] + 2. * c[j]) / 3.;
-    d[j] = (c[j + 1] - c[j]) / (3. * h[j]);
+    coef0[j] = y[j];
+    coef2[j] = z[j] - mu[j] * coef2[j + 1];
+    coef1[j] = (y[j + 1] - y[j]) / h[j] - h[j] * (coef2[j + 1] + 2. * coef2[j]) / 3.;
+    coef3[j] = (coef2[j + 1] - coef2[j]) / (3. * h[j]);
   }
 
   // The above were taken from SplineInterpolator from Apache commons math. These
@@ -73,26 +149,19 @@ std::unique_ptr<Function> splineInterpolation(const std::vector<double>& x, cons
     double x_1 = -x[i];
     double x_2 = x_1 * x_1;
     double x_3 = x_1 * x_2;
-    a[i]       = a[i] + b[i] * x_1 + c[i] * x_2 + d[i] * x_3;
-    b[i]       = b[i] + 2. * c[i] * x_1 + 3. * d[i] * x_2;
-    c[i]       = c[i] + 3. * d[i] * x_1;
+    coef0[i]   = coef0[i] + coef1[i] * x_1 + coef2[i] * x_2 + coef3[i] * x_3;
+    coef1[i]   = coef1[i] + 2. * coef2[i] * x_1 + 3. * coef3[i] * x_2;
+    coef2[i]   = coef2[i] + 3. * coef3[i] * x_1;
     // d[i] keeps the same value
   }
 
-  std::vector<std::unique_ptr<Function>> functions;
-  functions.reserve(n);
-  for (int i = 0; i < n; i++) {
-    functions.emplace_back(std::unique_ptr<Function>(new Polynomial{{a[i], b[i], c[i], d[i]}}));
-  }
-
   if (extrapolate) {
-    std::vector<double> x_copy(x);
-    x_copy.front() = std::numeric_limits<double>::lowest();
-    x_copy.back()  = std::numeric_limits<double>::max();
-    return std::unique_ptr<Function>(new Piecewise{x_copy, std::move(functions)});
+    knots.front() = std::numeric_limits<double>::lowest();
+    knots.back()  = std::numeric_limits<double>::max();
   }
 
-  return std::unique_ptr<Function>(new Piecewise{x, std::move(functions)});
+  return std::unique_ptr<Function>(
+      new CubicInterpolator(std::move(knots), std::move(coef0), std::move(coef1), std::move(coef2), std::move(coef3)));
 }
 
 }  // namespace MathUtils
