@@ -23,17 +23,17 @@
  */
 
 #include "ElementsKernel/Exception.h"
-#include "MathUtils/function/Integrable.h"
+#include "MathUtils/function/Piecewise.h"
 #include "MathUtils/interpolation/interpolation.h"
 #include <limits>
 
 namespace Euclid {
 namespace MathUtils {
 
-class LinearInterpolator final : public Integrable {
+class LinearInterpolator final : public PiecewiseBase {
 public:
   LinearInterpolator(std::vector<double> knots, std::vector<double> coef0, std::vector<double> coef1)
-      : m_knots(std::move(knots)), m_coef0(std::move(coef0)), m_coef1(std::move(coef1)){};
+      : PiecewiseBase(std::move(knots)), m_coef0(std::move(coef0)), m_coef1(std::move(coef1)){};
 
   virtual ~LinearInterpolator() = default;
 
@@ -92,7 +92,7 @@ public:
   }
 
 private:
-  const std::vector<double> m_knots, m_coef0, m_coef1;
+  const std::vector<double> m_coef0, m_coef1;
 
   double antiderivative(int i, double x) const {
     return m_coef0[i] * x + m_coef1[i] * x * x / 2;
