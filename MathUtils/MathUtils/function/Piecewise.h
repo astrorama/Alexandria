@@ -36,6 +36,32 @@ namespace Euclid {
 namespace MathUtils {
 
 /**
+ * @class PiecewiseBase
+ *
+ * @brief Represents a piecewise function
+ *
+ * @details
+ * A Piecewise function is defined by multiple sub functions, each applied to an
+ * interval defined by the piecewise knots. Outside of the knots range the
+ * Piecewise evaluates zero.
+ */
+class ELEMENTS_API PiecewiseBase : public Integrable {
+public:
+  virtual ~PiecewiseBase() = default;
+
+  /// Returns the knots of the piecewise function
+  const std::vector<double>& getKnots() const {
+    return m_knots;
+  }
+
+protected:
+  explicit PiecewiseBase(std::vector<double> knots) : m_knots(std::move(knots)) {}
+
+  /// A vector where the knots are kept
+  std::vector<double> m_knots;
+};
+
+/**
  * @class Piecewise
  *
  * @brief Represents a piecewise function
@@ -45,7 +71,7 @@ namespace MathUtils {
  * interval defined by the piecewise knots. Outside of the knots range the
  * Piecewise evaluates zero.
  */
-class ELEMENTS_API Piecewise : public Integrable {
+class ELEMENTS_API Piecewise : public PiecewiseBase {
 
 public:
   /**
@@ -68,9 +94,6 @@ public:
   /// Default destructor
   virtual ~Piecewise() = default;
 
-  /// Returns the knots of the piecewise function
-  const std::vector<double>& getKnots() const;
-
   /// Returns the functions in the ranges between the knots
   const std::vector<std::unique_ptr<Function>>& getFunctions() const;
 
@@ -92,8 +115,6 @@ public:
   double integrate(const double x1, const double x2) const override;
 
 private:
-  /// A vector where the knots are kept
-  std::vector<double> m_knots;
   /// A vector where the sub-functions are kept
   std::vector<std::unique_ptr<Function>> m_functions;
 };

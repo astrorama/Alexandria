@@ -31,7 +31,7 @@ namespace Euclid {
 namespace MathUtils {
 
 Piecewise::Piecewise(std::vector<double> knots, std::vector<std::shared_ptr<Function>> functions)
-    : m_knots{std::move(knots)} {
+    : PiecewiseBase(std::move(knots)) {
   if (m_knots.size() - functions.size() != 1) {
     throw Elements::Exception() << "Invalid number of knots(" << m_knots.size() << ")-functions(" << m_functions.size()
                                 << ")";
@@ -50,7 +50,7 @@ Piecewise::Piecewise(std::vector<double> knots, std::vector<std::shared_ptr<Func
 }
 
 Piecewise::Piecewise(std::vector<double> knots, std::vector<std::unique_ptr<Function>> functions)
-    : m_knots{std::move(knots)}, m_functions{std::move(functions)} {
+    : PiecewiseBase(std::move(knots)), m_functions{std::move(functions)} {
   if (m_knots.size() - m_functions.size() != 1) {
     throw Elements::Exception() << "Invalid number of knots(" << m_knots.size() << ")-functions(" << m_functions.size()
                                 << ")";
@@ -61,10 +61,6 @@ Piecewise::Piecewise(std::vector<double> knots, std::vector<std::unique_ptr<Func
       throw Elements::Exception("knots must be increasing");
     }
   }
-}
-
-const std::vector<double>& Piecewise::getKnots() const {
-  return m_knots;
 }
 
 const std::vector<std::unique_ptr<Function>>& Piecewise::getFunctions() const {
