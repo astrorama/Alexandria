@@ -271,15 +271,13 @@ const T& NdArray<T>::at(const std::vector<size_t>& coords, const std::string& at
 template <typename T>
 template <typename... D>
 T& NdArray<T>::at(size_t i, D... rest) {
-  std::vector<size_t> acc{i};
-  return at_helper(acc, rest...);
+  return at_helper(m_offset, 0, i, rest...);
 }
 
 template <typename T>
 template <typename... D>
 const T& NdArray<T>::at(size_t i, D... rest) const {
-  std::vector<size_t> acc{i};
-  return at_helper(acc, rest...);
+  return at_helper(m_offset, 0, i, rest...);
 }
 
 template <typename T>
@@ -431,13 +429,11 @@ size_t NdArray<T>::get_offset(const std::vector<size_t>& coords) const {
 }
 
 template <typename T>
-size_t NdArray<T>::get_offset(std::vector<size_t> coords, const std::string& attr) const {
+size_t NdArray<T>::get_attr_offset(const std::string& attr) const {
   auto i = std::find(m_attr_names.begin(), m_attr_names.end(), attr);
   if (i == m_attr_names.end())
     throw std::out_of_range(attr);
-  auto last = i - m_attr_names.begin();
-  coords.emplace_back(last);
-  return get_offset(coords);
+  return i - m_attr_names.begin();
 }
 
 template <typename T>
@@ -456,36 +452,48 @@ void NdArray<T>::update_strides() {
  */
 template <typename T>
 template <typename... D>
-T& NdArray<T>::at_helper(std::vector<size_t>& acc, size_t i, D... rest) {
-  acc.push_back(i);
-  return at_helper(acc, rest...);
+T& NdArray<T>::at_helper(size_t offset_acc, size_t axis, size_t i, D... rest) {
+  assert(axis <= m_shape.size() && i < m_shape[axis]);
+  offset_acc += i * m_stride_size[axis];
+  return at_helper(offset_acc, ++axis, rest...);
 }
 
 template <typename T>
-T& NdArray<T>::at_helper(std::vector<size_t>& acc) {
-  return at(acc);
+T& NdArray<T>::at_helper(size_t offset_acc, size_t axis) {
+  assert(axis == m_shape.size());
+  assert(offset_acc < m_container->size());
+  return m_container->at(offset_acc);
 }
 
 template <typename T>
-T& NdArray<T>::at_helper(std::vector<size_t>& acc, const std::string& attr) {
-  return at(acc, attr);
+T& NdArray<T>::at_helper(size_t offset_acc, size_t axis, const std::string& attr) {
+  offset_acc += get_attr_offset(attr);
+  assert(axis == m_shape.size() - 1);
+  assert(offset_acc < m_container->size());
+  return m_container->at(offset_acc);
 }
 
 template <typename T>
 template <typename... D>
-const T& NdArray<T>::at_helper(std::vector<size_t>& acc, size_t i, D... rest) const {
-  acc.push_back(i);
-  return at_helper(acc, rest...);
+const T& NdArray<T>::at_helper(size_t offset_acc, size_t axis, size_t i, D... rest) const {
+  assert(axis <= m_shape.size() && i < m_shape[axis]);
+  offset_acc += i * m_stride_size[axis];
+  return at_helper(offset_acc, ++axis, rest...);
 }
 
 template <typename T>
-const T& NdArray<T>::at_helper(std::vector<size_t>& acc) const {
-  return at(acc);
+const T& NdArray<T>::at_helper(size_t offset_acc, size_t axis) const {
+  assert(axis == m_shape.size());
+  assert(offset_acc < m_container->size());
+  return m_container->at(offset_acc);
 }
 
 template <typename T>
-const T& NdArray<T>::at_helper(std::vector<size_t>& acc, const std::string& attr) const {
-  return at(acc, attr);
+const T& NdArray<T>::at_helper(size_t offset_acc, size_t axis, const std::string& attr) const {
+  offset_acc += get_attr_offset(attr);
+  assert(axis == m_shape.size() - 1);
+  assert(offset_acc < m_container->size());
+  return m_container->at(offset_acc);
 }
 
 template <typename T>

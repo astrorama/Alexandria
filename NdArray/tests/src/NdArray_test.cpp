@@ -106,16 +106,6 @@ BOOST_AUTO_TEST_CASE(BadInitFromIterators_test) {
 
 //-----------------------------------------------------------------------------
 
-BOOST_AUTO_TEST_CASE(BadCoordinates_test) {
-  NdArray<int> m{std::vector<size_t>{2, 3}, {10, 50, 0, 15, 20, 0}};
-
-  BOOST_CHECK_THROW(m.at(1), std::out_of_range);
-  BOOST_CHECK_THROW(m.at(1, 2, 3), std::out_of_range);
-  BOOST_CHECK_THROW(m.at(4, 2), std::out_of_range);
-}
-
-//-----------------------------------------------------------------------------
-
 BOOST_AUTO_TEST_CASE(Fill_test) {
   NdArray<int> m{2, 3};
   std::fill(m.begin(), m.end(), 42);
@@ -299,8 +289,11 @@ BOOST_AUTO_TEST_CASE(Slice_test) {
   BOOST_CHECK_EQUAL(second.shape()[0], 3);
   BOOST_CHECK_EQUAL(second.shape()[1], 3);
 
+  BOOST_CHECK_EQUAL(second.at({0, 0}), 11);
   BOOST_CHECK_EQUAL(second.at(0, 0), 11);
+  BOOST_CHECK_EQUAL(second.at({1, 0}), 22);
   BOOST_CHECK_EQUAL(second.at(1, 0), 22);
+  BOOST_CHECK_EQUAL(second.at({2, 1}), 33);
   BOOST_CHECK_EQUAL(second.at(2, 1), 33);
 
   std::vector<int> expected_second{11, 11, 11, 22, 22, 22, 33, 33, 33};
