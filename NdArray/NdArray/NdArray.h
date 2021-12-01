@@ -368,8 +368,8 @@ public:
    * Gets a reference to the value stored at the given coordinates.
    * @param coords
    *    Elements coordinates.
-   * @throws std::out_of_range
-   *    If the number of coordinates is invalid, or any of them is out of bounds.
+   * @warning
+   *    This method does *not* test for bounds, but it uses asserts to catch bad accesses on debug builds.
    * @note
    *    This is a convenience function that allows access without requiring a vector when the
    *    number of dimensions is known in advance (i.e. `at(x, y, z)` instead of `at(std::vector<size_t>{x, y, z})`).
@@ -381,8 +381,8 @@ public:
    * Gets a constant reference to the value stored at the given coordinates.
    * @param coords
    *    Elements coordinates.
-   * @throws std::out_of_range
-   *    If the number of coordinates is invalid, or any of them is out of bounds.
+   * @warning
+   *    This method does *not* test for bounds, but it uses asserts to catch bad accesses on debug builds.
    * @note
    *    This is a convenience function that allows access without requiring a vector when the
    *    number of dimensions is known in advance (i.e. `at(x, y, z)` instead of `at(std::vector<size_t>{x, y, z})`).
@@ -565,11 +565,11 @@ private:
   size_t get_offset(const std::vector<size_t>& coords) const;
 
   /**
-   * Gets the total offset for the given coordinates.
+   * Get the offset for the given attribute name
    * @throws std::out_of_range
-   *    If the number of coordinates is invalid, or any of them is out of bounds, or the attribute does not exist.
+   *    If the attribute is unknown.
    */
-  size_t get_offset(std::vector<size_t> coords, const std::string& attr) const;
+  size_t get_attr_offset(const std::string& attr) const;
 
   /**
    * Compute the stride size for each dimension
@@ -580,33 +580,33 @@ private:
    * Helper to expand at with a variable number of arguments
    */
   template <typename... D>
-  T& at_helper(std::vector<size_t>& acc, size_t i, D... rest);
+  T& at_helper(size_t offset_acc, size_t axis, size_t i, D... rest);
 
   /**
    * Helper to expand at with a variable number of arguments (base case)
    */
-  T& at_helper(std::vector<size_t>& acc);
+  T& at_helper(size_t offset_acc, size_t axis);
 
   /**
    * Helper to expand at with a variable number of arguments, being the last an attribute name
    */
-  T& at_helper(std::vector<size_t>& acc, const std::string& attr);
+  T& at_helper(size_t offset_acc, size_t axis, const std::string& attr);
 
   /**
    * Helper to expand constant at with a variable number of arguments
    */
   template <typename... D>
-  const T& at_helper(std::vector<size_t>& acc, size_t i, D... rest) const;
+  const T& at_helper(size_t offset_acc, size_t axis, size_t i, D... rest) const;
 
   /**
    * Helper to expand constant at with a variable number of arguments (base case)
    */
-  const T& at_helper(std::vector<size_t>& acc) const;
+  const T& at_helper(size_t offset_acc, size_t axis) const;
 
   /**
    * Helper to expand constant at with a variable number of arguments, being the last an attribute name
    */
-  const T& at_helper(std::vector<size_t>& acc, const std::string& attr) const;
+  const T& at_helper(size_t offset_acc, size_t axis, const std::string& attr) const;
 
   template <typename... D>
   self_type& reshape_helper(std::vector<size_t>& acc, size_t i, D... rest);
