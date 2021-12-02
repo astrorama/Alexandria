@@ -62,7 +62,7 @@ NdArray<T> sum(const NdArray<T>& array, int axis);
  * @param array
  *  The ndarray
  * @param kbegin
- *  Iterator to the beginning of the knot valuess
+ *  Iterator to the beginning of the knot values
  * @param kend
  *  Iterator to the end of the knot values
  * @param axis
