@@ -1,0 +1,55 @@
+# Python does not use malloc/free and family,
+# so supress the warnings coming from Python
+# memory functions
+
+{
+    PyObjectFreeConditional
+    Memcheck:Cond
+    fun:_PyObject_Free
+}
+
+{
+    PyObjectFreeValue8
+    Memcheck:Value8
+    fun:_PyObject_Free
+}
+
+{
+    PyObjectFreeAddr4
+    Memcheck:Addr4
+    fun:_PyObject_Free
+}
+
+{
+    PyReallocConditional,
+    Memcheck:Cond
+    fun:_PyObject_Realloc
+}
+
+{
+    PyReallocValue8
+    Memcheck:Value8
+    fun:_PyObject_Realloc
+}
+
+{
+    PyReallocAddr4
+    Memcheck:Addr4
+    fun:_PyObject_Realloc
+}
+
+# Known issue with boost 1.69
+# See https://euclid.roe.ac.uk/issues/13538
+{
+   BoostFSCond
+   Memcheck:Cond
+   fun:_ZN5boost10filesystem6detail28directory_iterator_incrementERNS0_18directory_iteratorEPNS_6system10error_codeE
+}
+
+# quoted_manip
+{
+   quoted_manip
+   Memcheck:Cond
+   fun:_ZN5boost2io6detailrsIcSt11char_traitsIcESaIcEEERSt13basic_istreamIT_T0_ESA_RKNS1_12quoted_proxyIRNSt7__cxx1112basic_stringIS7_S8_T1_EES7_EE
+}
+
