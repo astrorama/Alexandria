@@ -130,6 +130,7 @@ Table FitsReader::readImpl(long rows) {
   // CCfits reads per column, so we first read all the columns and then we
   // create all the rows
   std::vector<std::vector<Row::cell_type>> data;
+  data.reserve(table_hdu.numCols());
   for (int i = 1; i <= table_hdu.numCols(); ++i) {
     // The i-1 is because CCfits starts from 1 and ColumnInfo from 0
     // We use a clone of the column because CCfits will cache in memory the read data, so multiple calls
@@ -145,15 +146,17 @@ Table FitsReader::readImpl(long rows) {
   m_current_row += rows;
 
   std::vector<Row> row_list;
+  row_list.reserve(rows);
   for (int i = 0; i < rows; ++i) {
-    std::vector<Row::cell_type> cells{};
-    for (const auto& column_data : data) {
-      cells.push_back(column_data[i]);
+    std::vector<Row::cell_type> cells;
+    cells.reserve(data.size());
+    for (auto& column_data : data) {
+      cells.emplace_back(std::move(column_data[i]));
     }
-    row_list.push_back(Row{cells, m_column_info});
+    row_list.emplace_back(cells, m_column_info);
   }
 
-  return Table{row_list};
+  return Table(std::move(row_list));
 }
 
 void FitsReader::skip(long rows) {
