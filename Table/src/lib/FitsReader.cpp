@@ -132,8 +132,14 @@ Table FitsReader::readImpl(long rows) {
   std::vector<std::vector<Row::cell_type>> data;
   for (int i = 1; i <= table_hdu.numCols(); ++i) {
     // The i-1 is because CCfits starts from 1 and ColumnInfo from 0
-    data.push_back(translateColumn(table_hdu.column(i), m_column_info->getDescription(i - 1).type, m_current_row,
-                                   m_current_row + rows - 1));
+    // We use a clone of the column because CCfits will cache in memory the read data, so multiple calls
+    // to readImpl will steadily increase the memory consumption, which will only be released when
+    // the FitsReader is destroyed (~FitsReader() => ~Table() => ~Column())
+    // For scalars this is not a big deal, but when the column has an array (i.e. a bunch of PDZs), the
+    // pile up can be significant after a while.
+    std::unique_ptr<CCfits::Column> column(table_hdu.column(i).clone());
+    data.emplace_back(
+        translateColumn(*column, m_column_info->getDescription(i - 1).type, m_current_row, m_current_row + rows - 1));
   }
 
   m_current_row += rows;
