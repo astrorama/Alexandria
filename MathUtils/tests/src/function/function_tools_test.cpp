@@ -31,15 +31,23 @@
 #include <boost/test/unit_test.hpp>
 
 class DummyMultiplyFunction : public Euclid::MathUtils::Function {
+
   double operator()(const double) const override {
     return 0;
   }
+
+  void operator()(const std::vector<double>& xs, std::vector<double>& out) const override {
+    out.resize(xs.size());
+    std::fill(out.begin(), out.end(), 0);
+  }
+
   std::unique_ptr<Euclid::MathUtils::Function> clone() const override {
     return std::unique_ptr<Euclid::MathUtils::Function>{new DummyMultiplyFunction{}};
   }
 };
 
-std::unique_ptr<Euclid::MathUtils::Function> dummyMultiply(const Euclid::MathUtils::Function&, const Euclid::MathUtils::Function&) {
+std::unique_ptr<Euclid::MathUtils::Function> dummyMultiply(const Euclid::MathUtils::Function&,
+                                                           const Euclid::MathUtils::Function&) {
   return std::unique_ptr<Euclid::MathUtils::Function>(new DummyMultiplyFunction{});
 }
 
@@ -47,6 +55,12 @@ class FunctionType1 : public Euclid::MathUtils::Function {
   double operator()(const double) const override {
     return 0;
   }
+
+  void operator()(const std::vector<double>& xs, std::vector<double>& out) const override {
+    out.resize(xs.size());
+    std::fill(out.begin(), out.end(), 0);
+  }
+
   std::unique_ptr<Euclid::MathUtils::Function> clone() const override {
     return std::unique_ptr<Euclid::MathUtils::Function>{new FunctionType1{}};
   }
@@ -56,6 +70,12 @@ class FunctionType2 : public Euclid::MathUtils::Function {
   double operator()(const double) const override {
     return 0;
   }
+
+  void operator()(const std::vector<double>& xs, std::vector<double>& out) const override {
+    out.resize(xs.size());
+    std::fill(out.begin(), out.end(), 0);
+  }
+
   std::unique_ptr<Euclid::MathUtils::Function> clone() const override {
     return std::unique_ptr<Euclid::MathUtils::Function>{new FunctionType2{}};
   }

@@ -57,6 +57,19 @@ public:
 protected:
   explicit PiecewiseBase(std::vector<double> knots) : m_knots(std::move(knots)) {}
 
+  ssize_t findKnot(double x) const {
+    auto knotsBegin = m_knots.begin();
+    if (x < *knotsBegin) {
+      return -1;
+    }
+    if (x == *knotsBegin) {
+      return 0;
+    }
+    auto knotsEnd = m_knots.end();
+    auto findX    = std::lower_bound(knotsBegin, knotsEnd, x);
+    return findX - knotsBegin;
+  }
+
   /// A vector where the knots are kept
   std::vector<double> m_knots;
 };
@@ -71,7 +84,7 @@ protected:
  * interval defined by the piecewise knots. Outside of the knots range the
  * Piecewise evaluates zero.
  */
-class ELEMENTS_API Piecewise : public PiecewiseBase {
+class ELEMENTS_API Piecewise final : public PiecewiseBase {
 
 public:
   /**
@@ -100,6 +113,10 @@ public:
   /// Returns the value of the piecewise function for the given value, by using
   /// the correct sub-function. Values outside of the knots evaluate to zero.
   double operator()(const double) const override;
+
+  /// Returns the value of the piecewise function for the given values, by using
+  /// the correct sub-function. Values outside of the knots evaluate to zero.
+  void operator()(const std::vector<double>& xs, std::vector<double>& out) const override;
 
   /// Creates a Piecewise function with the same knots and sub-functions. Note
   /// that the sub-functions are not cloned, but just a pointer is copied.

@@ -28,13 +28,21 @@
 #include "MathUtils/function/Differentiable.h"
 #include "MathUtils/function/Function.h"
 #include "MathUtils/function/Integrable.h"
+#include <algorithm>
 
 class FunctionMock : public Euclid::MathUtils::Function {
 public:
   explicit FunctionMock(const double value) : m_value{value} {}
+
   double operator()(const double) const override {
     return m_value;
   }
+
+  void operator()(const std::vector<double>& xs, std::vector<double>& out) const override {
+    out.resize(xs.size());
+    std::fill(out.begin(), out.end(), m_value);
+  }
+
   std::unique_ptr<Euclid::MathUtils::Function> clone() const override {
     return std::unique_ptr<Euclid::MathUtils::Function>{new FunctionMock{m_value}};
   }
@@ -46,12 +54,20 @@ private:
 class IntegrableMock : public Euclid::MathUtils::Integrable {
 public:
   explicit IntegrableMock(const double value) : m_value{value} {}
+
   double operator()(const double) const override {
     return m_value;
   }
+
+  void operator()(const std::vector<double>& xs, std::vector<double>& out) const override {
+    out.resize(xs.size());
+    std::fill(out.begin(), out.end(), m_value);
+  }
+
   std::unique_ptr<Euclid::MathUtils::Function> clone() const override {
     return std::unique_ptr<Euclid::MathUtils::Function>{new IntegrableMock{m_value}};
   }
+
   double integrate(const double min, const double max) const override {
     m_min = min;
     m_max = max;
@@ -73,12 +89,20 @@ public:
       return 1;
     }
   }
+
+  void operator()(const std::vector<double>& xs, std::vector<double>& out) const override {
+    out.resize(xs.size());
+    std::transform(xs.begin(), xs.end(), out.begin(), std::cref(*this));
+  }
+
   std::unique_ptr<Euclid::MathUtils::Function> clone() const override {
     return std::unique_ptr<Euclid::MathUtils::Function>{new DifferentiableMock{}};
   }
+
   std::shared_ptr<Euclid::MathUtils::Function> derivative() const override {
     return nullptr;
   }
+
   std::shared_ptr<Euclid::MathUtils::Function> indefiniteIntegral() const override {
     if (!m_func) {
       m_func.reset(new DifferentiableMock{});

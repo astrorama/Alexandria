@@ -41,7 +41,7 @@ namespace MathUtils {
  * This class provide this functionality. In particular it allows to build a
  * Function out of a Lamda expression.
  */
-class FunctionAdapter : public Function {
+class FunctionAdapter final : public Function {
 public:
   /**
    * @brief Constructor
@@ -60,6 +60,14 @@ public:
    * @return The value of the output domain
    */
   double operator()(const double x) const override;
+
+  /**
+   * Converts the vector of x values from the input domain to the output domain
+   * by calling the internal std::function<double(double)> repeatedly.
+   * @param xs The values to convert
+   * @param out Output vector
+   */
+  void operator()(const std::vector<double>& xs, std::vector<double>& out) const;
 
   /**
    * Creates a clone of the function adapter object.

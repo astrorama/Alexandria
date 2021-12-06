@@ -42,6 +42,11 @@ struct simpsonsRule_Fixture {
       return m_a;
     }
 
+    void operator()(const std::vector<double>& xs, std::vector<double>& out) const override {
+      out.resize(xs.size());
+      std::fill(out.begin(), out.end(), m_a);
+    }
+
     std::unique_ptr<Euclid::MathUtils::Function> clone() const override {
       return std::unique_ptr<Euclid::MathUtils::Function>{new ConstFunction(m_a)};
     }
@@ -59,6 +64,11 @@ struct simpsonsRule_Fixture {
 
     double operator()(const double x) const override {
       return m_a * x + m_b;
+    }
+
+    void operator()(const std::vector<double>& xs, std::vector<double>& out) const override {
+      out.resize(xs.size());
+      std::transform(xs.begin(), xs.end(), out.begin(), std::cref(*this));
     }
 
     std::unique_ptr<Euclid::MathUtils::Function> clone() const override {
@@ -81,6 +91,11 @@ struct simpsonsRule_Fixture {
       return m_a * x * x + m_b * x + m_c;
     }
 
+    void operator()(const std::vector<double>& xs, std::vector<double>& out) const override {
+      out.resize(xs.size());
+      std::transform(xs.begin(), xs.end(), out.begin(), std::cref(*this));
+    }
+
     std::unique_ptr<Euclid::MathUtils::Function> clone() const override {
       return std::unique_ptr<Euclid::MathUtils::Function>{new QuadraticFunction(m_a, m_b, m_c)};
     }
@@ -100,6 +115,11 @@ struct simpsonsRule_Fixture {
 
     double operator()(const double x) const override {
       return m_a * x * x * x + m_b * x * x + m_c * x + m_d;
+    }
+
+    void operator()(const std::vector<double>& xs, std::vector<double>& out) const override {
+      out.resize(xs.size());
+      std::transform(xs.begin(), xs.end(), out.begin(), std::cref(*this));
     }
 
     std::unique_ptr<Euclid::MathUtils::Function> clone() const override {
@@ -124,6 +144,11 @@ struct simpsonsRule_Fixture {
       return m_a * std::exp(x * m_b);
     }
 
+    void operator()(const std::vector<double>& xs, std::vector<double>& out) const override {
+      out.resize(xs.size());
+      std::transform(xs.begin(), xs.end(), out.begin(), std::cref(*this));
+    }
+
     std::unique_ptr<Euclid::MathUtils::Function> clone() const override {
       return std::unique_ptr<Euclid::MathUtils::Function>{new ExpFunction(m_a, m_b)};
     }
@@ -142,6 +167,11 @@ struct simpsonsRule_Fixture {
       return 1. / std::sqrt(x * x * x);
     }
 
+    void operator()(const std::vector<double>& xs, std::vector<double>& out) const override {
+      out.resize(xs.size());
+      std::transform(xs.begin(), xs.end(), out.begin(), std::cref(*this));
+    }
+
     std::unique_ptr<Euclid::MathUtils::Function> clone() const override {
       return std::unique_ptr<Euclid::MathUtils::Function>{new TestFunction()};
     }
@@ -154,6 +184,11 @@ struct simpsonsRule_Fixture {
       m_called.insert(value);
       m_called_number++;
       return m_result[value];
+    }
+
+    void operator()(const std::vector<double>& xs, std::vector<double>& out) const override {
+      out.resize(xs.size());
+      std::transform(xs.begin(), xs.end(), out.begin(), std::cref(*this));
     }
 
     std::unique_ptr<Euclid::MathUtils::Function> clone() const override {

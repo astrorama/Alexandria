@@ -24,6 +24,7 @@
  */
 
 #include "MathUtils/function/FunctionAdapter.h"
+#include <algorithm>
 
 namespace Euclid {
 namespace MathUtils {
@@ -32,6 +33,11 @@ FunctionAdapter::FunctionAdapter(std::function<double(double)> function) : m_fun
 
 double FunctionAdapter::operator()(const double x) const {
   return m_function(x);
+}
+
+void FunctionAdapter::operator()(const std::vector<double>& xs, std::vector<double>& out) const {
+  out.resize(xs.size());
+  std::transform(xs.begin(), xs.end(), out.begin(), m_function);
 }
 
 std::unique_ptr<Function> FunctionAdapter::clone() const {

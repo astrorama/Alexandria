@@ -68,19 +68,19 @@ const std::vector<std::unique_ptr<Function>>& Piecewise::getFunctions() const {
 }
 
 double Piecewise::operator()(const double x) const {
-  auto knotsBegin = m_knots.begin();
-  if (x < *knotsBegin) {
-    return 0;
+  auto i = findKnot(x);
+  if (i < 0 || i >= static_cast<ssize_t>(m_knots.size())) {
+    return 0.;
   }
-  if (x == *knotsBegin) {
+  if (i == 0) {
     return (*m_functions[0])(x);
   }
-  auto knotsEnd = m_knots.end();
-  auto findX    = std::lower_bound(knotsBegin, knotsEnd, x);
-  if (findX == knotsEnd) {
-    return 0;
-  }
-  return (*m_functions[findX - knotsBegin - 1])(x);
+  return (*m_functions[i - 1])(x);
+}
+
+void Piecewise::operator()(const std::vector<double>& xs, std::vector<double>& out) const {
+  out.resize(xs.size());
+  std::transform(xs.begin(), xs.end(), out.begin(), std::cref(*this));
 }
 
 std::unique_ptr<Function> Piecewise::clone() const {

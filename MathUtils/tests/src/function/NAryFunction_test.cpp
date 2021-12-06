@@ -31,6 +31,14 @@ public:
     return m_a * x + m_b * y + m_c;
   }
 
+  void operator()(const std::vector<double>& xs, const std::vector<double>& ys,
+                  std::vector<double>& out) const override {
+    out.resize(xs.size());
+    for (size_t i = 0; i < xs.size(); ++i) {
+      out[i] = (*this)(xs[i], ys[i]);
+    }
+  }
+
   std::unique_ptr<BinaryFunction> clone() const override {
     return Euclid::make_unique<ABinaryFunction>(m_a, m_b, m_c);
   }
@@ -47,6 +55,14 @@ public:
 
   double operator()(double x, double y, double z) const override {
     return m_a * x + m_b * y + m_c * z;
+  }
+
+  void operator()(const std::vector<double>& xs, const std::vector<double>& ys, const std::vector<double>& zs,
+                  std::vector<double>& out) const override {
+    out.resize(xs.size());
+    for (size_t i = 0; i < xs.size(); ++i) {
+      out[i] = m_a * xs[i] + m_b * ys[i] + m_c * zs[i];
+    }
   }
 
   std::unique_ptr<TernaryFunction> clone() const override {

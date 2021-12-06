@@ -45,7 +45,8 @@ struct AdaptativeIntegration_Fixture {
       return functorCall(function, min, max, order);
     }
 
-    double operator()(const Euclid::MathUtils::Function& function, double min, double max, double previous_value, int order) {
+    double operator()(const Euclid::MathUtils::Function& function, double min, double max, double previous_value,
+                      int order) {
       return functorCallPrev(function, min, max, previous_value, order);
     }
 
@@ -66,7 +67,8 @@ struct AdaptativeIntegration_Fixture {
       return functorCall(function, min, max, order);
     }
 
-    double operator()(const Euclid::MathUtils::Function& function, double min, double max, double previous_value, int order) {
+    double operator()(const Euclid::MathUtils::Function& function, double min, double max, double previous_value,
+                      int order) {
       return functorCallPrev(function, min, max, previous_value, order);
     }
 
@@ -83,6 +85,11 @@ struct AdaptativeIntegration_Fixture {
 
     double operator()(const double) const override {
       return m_a;
+    }
+
+    void operator()(const std::vector<double>& xs, std::vector<double>& out) const override {
+      out.resize(xs.size());
+      std::fill(out.begin(), out.end(), m_a);
     }
 
     std::unique_ptr<Euclid::MathUtils::Function> clone() const override {
