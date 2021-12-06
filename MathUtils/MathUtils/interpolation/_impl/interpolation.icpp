@@ -26,7 +26,13 @@ struct InterpNAdapter<N, _index_sequence<Is...>> : NAryFunction<N> {
     using type = double;
   };
 
-  InterpNAdapter(const Coordinates<N>& grid, const NdArray::NdArray<double>& values, InterpolationType type, bool extrapolate)
+  template <std::size_t>
+  struct Vectors {
+    using type = std::vector<double>;
+  };
+
+  InterpNAdapter(const Coordinates<N>& grid, const NdArray::NdArray<double>& values, InterpolationType type,
+                 bool extrapolate)
       : m_interpn(std::tuple<std::vector<typename Doubles<Is>::type>...>{grid[N - Is - 1]...}, values, extrapolate) {
     if (type != InterpolationType::LINEAR) {
       throw InterpolationException() << "Only linear interpolation is supported for N-dimensional grids";
@@ -36,6 +42,10 @@ struct InterpNAdapter<N, _index_sequence<Is...>> : NAryFunction<N> {
   double operator()(typename Doubles<Is>::type... xn) const override {
     auto as_tuple = std::make_tuple(xn...);
     return m_interpn(std::get<N - Is - 1>(as_tuple)...);
+  }
+
+  void operator()(const typename Vectors<Is>::type&..., std::vector<double>&) const override {
+    throw Elements::Exception() << "Not implemented";
   }
 
   std::unique_ptr<NAryFunction<N>> clone() const override {
@@ -49,8 +59,8 @@ private:
 };
 
 template <std::size_t N>
-std::unique_ptr<NAryFunction<N>> interpn(const Coordinates<N>& grid, const NdArray::NdArray<double>& values, InterpolationType type,
-                                         bool extrapolate) {
+std::unique_ptr<NAryFunction<N>> interpn(const Coordinates<N>& grid, const NdArray::NdArray<double>& values,
+                                         InterpolationType type, bool extrapolate) {
   return Euclid::make_unique<InterpNAdapter<N, _make_index_sequence<N>>>(grid, values, type, extrapolate);
 }
 

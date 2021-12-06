@@ -23,6 +23,7 @@
  */
 
 #include "MathUtils/function/Polynomial.h"
+#include <algorithm>
 #include <cmath>
 #include <memory>
 #include <utility>
@@ -44,6 +45,11 @@ double Polynomial::operator()(const double x) const {
     xPow *= x;
   }
   return result;
+}
+
+void Polynomial::operator()(const std::vector<double>& xs, std::vector<double>& out) const {
+  out.resize(xs.size());
+  std::transform(xs.begin(), xs.end(), out.begin(), *this);
 }
 
 std::unique_ptr<Function> Polynomial::clone() const {

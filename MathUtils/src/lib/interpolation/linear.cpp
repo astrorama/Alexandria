@@ -38,20 +38,19 @@ public:
   virtual ~LinearInterpolator() = default;
 
   double operator()(double x) const override {
-    auto knotsBegin = m_knots.begin();
-    if (x < *knotsBegin) {
+    auto i = findKnot(x);
+    if (i < 0 || i >= static_cast<ssize_t>(m_knots.size())) {
       return 0;
     }
-    if (x == *knotsBegin) {
+    if (i == 0) {
       return m_coef1.front() * x + m_coef0.front();
     }
-    auto knotsEnd = m_knots.end();
-    auto findX    = std::lower_bound(knotsBegin, knotsEnd, x);
-    if (findX == knotsEnd) {
-      return 0;
-    }
-    auto i = findX - knotsBegin - 1;
-    return m_coef1[i] * x + m_coef0[i];
+    return m_coef1[i - 1] * x + m_coef0[i - 1];
+  }
+
+  void operator()(const std::vector<double>& xs, std::vector<double>& out) const override {
+    out.resize(xs.size());
+    std::transform(xs.begin(), xs.end(), out.begin(), *this);
   }
 
   std::unique_ptr<NAryFunction> clone() const override {

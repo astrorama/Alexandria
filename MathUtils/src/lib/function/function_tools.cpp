@@ -26,6 +26,8 @@
 #include "ElementsKernel/Exception.h"
 #include "MathUtils/function/Integrable.h"
 #include "MathUtils/function/multiplication.h"
+#include <algorithm>
+#include <functional>
 
 namespace Euclid {
 namespace MathUtils {
@@ -45,12 +47,19 @@ double integrate(const Function& function, const double min, const double max,
                               << "requiere that you provide a NumericalIntegrationScheme";
 }
 
-class DefaultMultiplication : public Function {
+class DefaultMultiplication final : public Function {
 public:
   DefaultMultiplication(const Function& f1, const Function& f2) : m_f1{f1.clone()}, m_f2{f2.clone()} {}
+
   double operator()(const double x) const override {
     return (*m_f1)(x) * (*m_f2)(x);
   }
+
+  void operator()(const std::vector<double>& xs, std::vector<double>& out) const override {
+    out.resize(xs.size());
+    std::transform(xs.begin(), xs.end(), out.begin(), std::cref(*this));
+  }
+
   std::unique_ptr<Function> clone() const override {
     return std::unique_ptr<Function>{new DefaultMultiplication{*m_f1, *m_f2}};
   }

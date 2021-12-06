@@ -28,6 +28,7 @@
 #include "AlexandriaKernel/index_sequence.h"
 #include "ElementsKernel/Exception.h"
 #include <memory>
+#include <vector>
 
 namespace Euclid {
 namespace MathUtils {
@@ -54,6 +55,9 @@ public:
   template <std::size_t>
   using Doubles = double;
 
+  template <std::size_t>
+  using Vectors = std::vector<double>;
+
   /// Default destructor
   virtual ~NAryFunctionImpl() = default;
 
@@ -63,6 +67,15 @@ public:
    * @return The value of the output domain
    */
   virtual double operator()(Doubles<Is>... xn) const = 0;
+
+  /**
+   * Operate over a set of input vectors, output a vector.
+   * When a function is going to be evaluated over a grid, this can improve the performance since the
+   * tight loop does not need to do indireections.
+   * @param xs Set of input vectors
+   * @param output Output vector. Concrete implementations must resize if needed.
+   */
+  virtual void operator()(const Vectors<Is>&... xs, std::vector<double>& output) const = 0;
 };
 
 /**

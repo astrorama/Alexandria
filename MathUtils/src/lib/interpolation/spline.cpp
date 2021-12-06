@@ -43,20 +43,20 @@ public:
   virtual ~CubicInterpolator() = default;
 
   double operator()(double x) const override {
-    auto knotsBegin = m_knots.begin();
-    if (x < *knotsBegin) {
-      return 0;
+    auto i = findKnot(x);
+    if (i < 0 || i >= static_cast<ssize_t>(m_knots.size())) {
+      return 0.;
     }
-    if (x == *knotsBegin) {
+    if (i == 0) {
       return m_coef3.front() * x * x * x + m_coef2.front() * x * x + m_coef1.front() * x + m_coef0.front();
     }
-    auto knotsEnd = m_knots.end();
-    auto findX    = std::lower_bound(knotsBegin, knotsEnd, x);
-    if (findX == knotsEnd) {
-      return 0;
-    }
-    auto i = findX - knotsBegin - 1;
+    --i;
     return m_coef3[i] * x * x * x + m_coef2[i] * x * x + m_coef1[i] * x + m_coef0[i];
+  }
+
+  void operator()(const std::vector<double>& xs, std::vector<double>& out) const override {
+    out.resize(xs.size());
+    std::transform(xs.begin(), xs.end(), out.begin(), *this);
   }
 
   std::unique_ptr<NAryFunction> clone() const override {

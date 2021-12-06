@@ -40,7 +40,7 @@ namespace MathUtils {
  *
  * @brief Represents a polynomial function
  */
-class ELEMENTS_API Polynomial : public Differentiable {
+class ELEMENTS_API Polynomial final : public Differentiable {
 
 public:
   /**
@@ -60,6 +60,9 @@ public:
 
   /// Calculates the value of the polynomial for the given value
   double operator()(const double) const override;
+
+  /// Calculates the value of the polynomial for the given values
+  void operator()(const std::vector<double>& xs, std::vector<double>& out) const override;
 
   /// Creates a new polynomial with the same coefficients
   std::unique_ptr<Function> clone() const override;
