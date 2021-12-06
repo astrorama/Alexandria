@@ -27,6 +27,7 @@
 
 #include <AlexandriaKernel/memory_tools.h>
 #include <ElementsKernel/Exception.h>
+#include <ElementsKernel/Unused.h>
 #include <algorithm>
 #include <cassert>
 #include <cmath>
@@ -183,7 +184,8 @@ public:
    */
   template <typename IterType, typename WeightIterType, typename BinType,
             typename = typename std::enable_if<std::is_move_constructible<BinType>::value>::type>
-  Histogram(IterType begin, IterType end, WeightIterType wbegin, WeightIterType wend, BinType&& bin_type) {
+  Histogram(IterType begin, IterType end, WeightIterType wbegin, ELEMENTS_UNUSED WeightIterType wend,
+            BinType&& bin_type) {
     assert(wend - wbegin == end - begin);
     auto binning_impl = make_unique<ComputationImpl<BinType>>(std::move(bin_type));
     binning_impl->computeBins(begin, end, wbegin);

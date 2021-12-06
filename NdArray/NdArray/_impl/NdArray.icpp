@@ -18,6 +18,7 @@
 
 #ifdef NDARRAY_IMPL
 
+#include <ElementsKernel/Unused.h>
 #include <algorithm>
 #include <cstring>
 
@@ -459,14 +460,14 @@ T& NdArray<T>::at_helper(size_t offset_acc, size_t axis, size_t i, D... rest) {
 }
 
 template <typename T>
-T& NdArray<T>::at_helper(size_t offset_acc, size_t axis) {
+T& NdArray<T>::at_helper(size_t offset_acc, ELEMENTS_UNUSED size_t axis) {
   assert(axis == m_shape.size());
   assert(offset_acc < m_container->size());
   return m_container->at(offset_acc);
 }
 
 template <typename T>
-T& NdArray<T>::at_helper(size_t offset_acc, size_t axis, const std::string& attr) {
+T& NdArray<T>::at_helper(size_t offset_acc, ELEMENTS_UNUSED size_t axis, const std::string& attr) {
   offset_acc += get_attr_offset(attr);
   assert(axis == m_shape.size() - 1);
   assert(offset_acc < m_container->size());
@@ -482,14 +483,14 @@ const T& NdArray<T>::at_helper(size_t offset_acc, size_t axis, size_t i, D... re
 }
 
 template <typename T>
-const T& NdArray<T>::at_helper(size_t offset_acc, size_t axis) const {
+const T& NdArray<T>::at_helper(size_t offset_acc, ELEMENTS_UNUSED size_t axis) const {
   assert(axis == m_shape.size());
   assert(offset_acc < m_container->size());
   return m_container->at(offset_acc);
 }
 
 template <typename T>
-const T& NdArray<T>::at_helper(size_t offset_acc, size_t axis, const std::string& attr) const {
+const T& NdArray<T>::at_helper(size_t offset_acc, ELEMENTS_UNUSED size_t axis, const std::string& attr) const {
   offset_acc += get_attr_offset(attr);
   assert(axis == m_shape.size() - 1);
   assert(offset_acc < m_container->size());
