@@ -50,7 +50,32 @@ public:
 
   void operator()(const std::vector<double>& xs, std::vector<double>& out) const override {
     out.resize(xs.size());
-    std::transform(xs.begin(), xs.end(), out.begin(), *this);
+    // Find the first X that is within the range
+    auto first_x = std::lower_bound(xs.begin(), xs.end(), m_knots.front());
+    auto n_less  = first_x - xs.begin();
+
+    // Opening 0s
+    auto o = out.begin() + n_less;
+    std::fill(out.begin(), o, 0.);
+
+    // To avoid if within the loop, treat values exactly equal to the first knot here
+    auto x = xs.begin() + n_less;
+    while (*x == m_knots.front()) {
+      *o = m_coef1.front() * *x + m_coef0.front();
+      ++o, ++x;
+    }
+
+    // Interpolate values within range
+    auto current_knot = std::lower_bound(m_knots.begin(), m_knots.end(), *x);
+    while (o != out.end() && current_knot < m_knots.end()) {
+      auto i       = current_knot - m_knots.begin();
+      *o           = m_coef1[i - 1] * *x + m_coef0[i - 1];
+      ++o, ++x;
+      current_knot = std::find_if(current_knot, m_knots.end(), [x](double k) { return k >= *x; });
+    }
+
+    // Trailing 0s
+    std::fill(o, out.end(), 0.);
   }
 
   std::unique_ptr<NAryFunction> clone() const override {

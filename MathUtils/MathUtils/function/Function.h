@@ -74,8 +74,15 @@ public:
    * tight loop does not need to do indireections.
    * @param xs Set of input vectors
    * @param output Output vector. Concrete implementations must resize if needed.
+   * @warning
+   *    For unary functions, xs must be sorted. This allows better performance.
    */
-  virtual void operator()(const Vectors<Is>&... xs, std::vector<double>& output) const = 0;
+  virtual void operator()(const Vectors<Is>&... xs, std::vector<double>& output) const {
+    output.resize(std::get<0>(std::tuple<const Vectors<Is>&...>(xs...)).size());
+    for (size_t i = 0; i < output.size(); ++i) {
+      output[i] = (*this)(xs[i]...);
+    }
+  }
 };
 
 /**

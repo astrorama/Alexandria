@@ -222,5 +222,28 @@ BOOST_FIXTURE_TEST_CASE(Spline_Integrate, Spline_Fixture) {
 }
 
 //-----------------------------------------------------------------------------
+// Call with a vector
+//-----------------------------------------------------------------------------
+BOOST_FIXTURE_TEST_CASE(Spline_Vector, Spline_Fixture) {
+  // When
+  auto cubic = Euclid::MathUtils::interpolate(x, y, Euclid::MathUtils::InterpolationType::CUBIC_SPLINE, false);
+  std::vector<double> xs{-20., -18., -16., -14., -12., -10., -8., -6., -4., -2.,
+                         2.,   4.,   6.,   8.,   10.,  12.,  14., 16., 18., 20.};
+  std::vector<double> output;
+
+  // Then
+  std::vector<double> expected{0.0,         0.0,          0.0,          0.0,         0.0,
+                               0.544021111, -0.989358247, 0.279415498,  0.756802495, -0.909297427,
+                               0.909297427, -0.756802495, -0.279415498, 0.989358247, 0.0,
+                               0.0,         0.0,          0.0,          0.0,         0.0};
+
+  (*cubic)(xs, output);
+  BOOST_REQUIRE_EQUAL(output.size(), xs.size());
+  for (size_t i = 0; i < xs.size(); ++i) {
+    BOOST_CHECK_CLOSE(output[i], expected[i], close_tolerance);
+  }
+}
+
+//-----------------------------------------------------------------------------
 
 BOOST_AUTO_TEST_SUITE_END()

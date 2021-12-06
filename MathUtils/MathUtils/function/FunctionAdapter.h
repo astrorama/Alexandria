@@ -67,7 +67,7 @@ public:
    * @param xs The values to convert
    * @param out Output vector
    */
-  void operator()(const std::vector<double>& xs, std::vector<double>& out) const;
+  void operator()(const std::vector<double>& xs, std::vector<double>& out) const override;
 
   /**
    * Creates a clone of the function adapter object.

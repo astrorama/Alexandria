@@ -71,11 +71,6 @@ class FunctionType2 : public Euclid::MathUtils::Function {
     return 0;
   }
 
-  void operator()(const std::vector<double>& xs, std::vector<double>& out) const override {
-    out.resize(xs.size());
-    std::fill(out.begin(), out.end(), 0);
-  }
-
   std::unique_ptr<Euclid::MathUtils::Function> clone() const override {
     return std::unique_ptr<Euclid::MathUtils::Function>{new FunctionType2{}};
   }

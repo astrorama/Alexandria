@@ -190,4 +190,48 @@ BOOST_FIXTURE_TEST_CASE(Linear_Integration, Linear_Fixture) {
 
 //-----------------------------------------------------------------------------
 
+BOOST_FIXTURE_TEST_CASE(Linear_Vector, Linear_Fixture) {
+  // Given
+  std::vector<double> x{-1., 0., 1., 2., 8., 10.};
+  std::vector<double> y{4., 3., 1., 2., 2., 20.};
+  std::vector<double> x2{-2., -1., -0.5, 0., 1., 1.7, 5., 9., 10.1};
+
+  // When
+  auto linear = Euclid::MathUtils::interpolate(x, y, Euclid::MathUtils::InterpolationType::LINEAR, false);
+
+  std::vector<double> output;
+  (*linear)(x2, output);
+
+  // Then
+  std::vector<double> expected{0., 4., 3.5, 3., 1., 1.7, 2., 11., 0.};
+  BOOST_REQUIRE_EQUAL(output.size(), x2.size());
+  for (size_t i = 0; i < output.size(); ++i) {
+    BOOST_CHECK_CLOSE(output[i], expected[i], close_tolerance);
+  }
+}
+
+//-----------------------------------------------------------------------------
+
+BOOST_FIXTURE_TEST_CASE(LinearExtrapolate_Vector, Linear_Fixture) {
+  // Given
+  std::vector<double> x{-1., 0., 1., 2., 8., 10.};
+  std::vector<double> y{4., 3., 1., 2., 2., 20.};
+  std::vector<double> x2{-2., -1., -0.5, 0., 1., 1.7, 5., 9., 10.1};
+
+  // When
+  auto linear = Euclid::MathUtils::interpolate(x, y, Euclid::MathUtils::InterpolationType::LINEAR, true);
+
+  std::vector<double> output;
+  (*linear)(x2, output);
+
+  // Then
+  std::vector<double> expected{5., 4., 3.5, 3., 1., 1.7, 2., 11., 20.9};
+  BOOST_REQUIRE_EQUAL(output.size(), x2.size());
+  for (size_t i = 0; i < output.size(); ++i) {
+    BOOST_CHECK_CLOSE(output[i], expected[i], close_tolerance);
+  }
+}
+
+//-----------------------------------------------------------------------------
+
 BOOST_AUTO_TEST_SUITE_END()
