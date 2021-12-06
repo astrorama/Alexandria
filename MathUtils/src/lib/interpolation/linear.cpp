@@ -125,11 +125,11 @@ private:
 
 std::unique_ptr<Function> linearInterpolation(const std::vector<double>& x, const std::vector<double>& y,
                                               bool extrapolate) {
-  std::vector<double> coef0, coef1, knots(x);
+  std::vector<double> coef0(x.size()), coef1(x.size()), knots(x);
 
   for (size_t i = 0; i < x.size() - 1; i++) {
-    coef1.emplace_back((y[i + 1] - y[i]) / (x[i + 1] - x[i]));
-    coef0.emplace_back(y[i] - coef1.back() * x[i]);
+    coef1[i] = (y[i + 1] - y[i]) / (x[i + 1] - x[i]);
+    coef0[i] = y[i] - coef1[i] * x[i];
   }
 
   if (extrapolate) {
