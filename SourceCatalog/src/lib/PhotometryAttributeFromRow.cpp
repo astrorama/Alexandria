@@ -140,8 +140,8 @@ std::unique_ptr<Attribute> PhotometryAttributeFromRow::createAttribute(const Euc
                                                       context_desc.c_str(), flux, error);
     }
 
-    bool missing_data =
-        std::isnan(flux) | (m_missing_photometry_enabled && Elements::isEqual(flux, m_missing_photometry_flag));
+    bool missing_data = std::isnan(flux) | std::isnan(error) |
+                        (m_missing_photometry_enabled && Elements::isEqual(flux, m_missing_photometry_flag));
 
     if (m_missing_photometry_enabled && missing_data) {
       error = 0.;
