@@ -6,7 +6,8 @@ find_package(CCfits)
 
 #===== Libraries ===============================================================
 
-elements_add_library(GridContainer src/lib/*.cpp
+elements_add_library(GridContainer
+                     LINKER_LANGUAGE CXX
                      LINK_LIBRARIES Boost ElementsKernel CCfits Table XYDataset
                      INCLUDE_DIRS CCfits
                      PUBLIC_HEADERS GridContainer)
