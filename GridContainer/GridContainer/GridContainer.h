@@ -95,13 +95,31 @@ namespace GridContainer {
  */
 template <typename GridCellManager, typename... AxesTypes>
 class GridContainer {
+public:
+  /// The type of the values stored in the grid cells
+  typedef typename GridCellManagerTraits<GridCellManager>::data_type      cell_type;
 
+private:
   // The following aliases are used to simplify the definitions inside the class
   typedef typename GridCellManagerTraits<GridCellManager>::iterator cell_manager_iter_type;
 
+  template <typename GCM>
+  static cell_type* ptr_test(...);
+
+  template<typename GCM>
+  static typename GCM::pointer_type ptr_test(typename GCM::pointer_type*);
+
+  template<typename GCM>
+  static cell_type& ref_test(...);
+
+  template<typename GCM>
+  static typename GCM::reference_type ref_test(typename GCM::reference_type*);
+
 public:
-  /// The type of the values stored in the grid cells
-  typedef typename GridCellManagerTraits<GridCellManager>::data_type cell_type;
+  /// Pointer type
+  typedef decltype(ptr_test<GridCellManagerTraits<GridCellManager>>(nullptr)) pointer_type;
+  /// Reference type
+  typedef decltype(ref_test<GridCellManagerTraits<GridCellManager>>(nullptr)) reference_type;
 
   /// The type of the tuple keeping the axes of the grid
   typedef std::tuple<GridAxis<AxesTypes>...> AxesTuple;
@@ -111,11 +129,11 @@ public:
   using axis_type = typename std::tuple_element<I, std::tuple<AxesTypes...>>::type;
 
   // The iterator type of the GridContainer. See at the end of the file for its declaration
-  template <typename CellType>
+  template <typename CellType, typename PointerType, typename ReferenceType>
   class iter;
 
-  typedef iter<cell_type>       iterator;
-  typedef iter<cell_type const> const_iterator;
+  typedef iter<cell_type, pointer_type, reference_type>                   iterator;
+  typedef iter<cell_type const, pointer_type const, reference_type const> const_iterator;
 
   /**
    * @brief Constructs a GridContainer with the given axes
@@ -137,6 +155,12 @@ public:
    */
   explicit GridContainer(std::tuple<GridAxis<AxesTypes>...> axes_tuple);
 
+  /**
+   * Forward parameters to the GridCellManager factory
+   */
+  template <typename... Args>
+  GridContainer(std::tuple<GridAxis<AxesTypes>...> axes_tuple, Args&&... args);
+
   /// Default move constructor and move assignment operator
   GridContainer(GridContainer<GridCellManager, AxesTypes...>&&) = default;
   GridContainer& operator=(GridContainer<GridCellManager, AxesTypes...>&&) = default;
@@ -147,6 +171,9 @@ public:
   // is deleted.
   GridContainer(const GridContainer<GridCellManager, AxesTypes...>&) = delete;
   GridContainer& operator=(const GridContainer<GridCellManager, AxesTypes...>&) = delete;
+
+  /// But if needed be, allow explicit copies and let GridCellManager optimize them away if possible
+  GridContainer copy() const;
 
   /// Default destructor
   virtual ~GridContainer() = default;
@@ -196,10 +223,10 @@ public:
    * @param indices The indices of the axes
    * @return A reference to the cell
    */
-  const cell_type& operator()(decltype(std::declval<GridAxis<AxesTypes>>().size())... indices) const;
+  const reference_type operator()(decltype(std::declval<GridAxis<AxesTypes>>().size())... indices) const;
 
   /// @copydoc operator() (decltype(std::declval<GridAxis<AxesTypes>>().size())...) const
-  cell_type& operator()(decltype(std::declval<GridAxis<AxesTypes>>().size())... indices);
+  reference_type operator()(decltype(std::declval<GridAxis<AxesTypes>>().size())... indices);
 
   /**
    * Returns a reference to the grid cell for the given axes indices, to be
@@ -341,6 +368,10 @@ public:
   template <int I>
   const GridContainer<GridCellManager, AxesTypes...> fixAxisByValue(const axis_type<I>& value) const;
 
+  const GridCellManager& getCellManager() const {
+    return *m_cell_manager;
+  }
+
 private:
   /// A tuple containing the axes of the grid
   std::tuple<GridAxis<AxesTypes>...> m_axes;
@@ -353,9 +384,12 @@ private:
   /// A map containing the axes which have been fixed, if this grid is a slice
   std::map<size_t, size_t> m_fixed_indices{};
   /// A pointer to the data of the grid
-  std::shared_ptr<GridCellManager> m_cell_manager{
-      GridCellManagerTraits<GridCellManager>::factory(GridConstructionHelper<AxesTypes...>::getAxisIndexFactor(
-          m_axes, TemplateLoopCounter<sizeof...(AxesTypes) - 1>{}))};
+  std::shared_ptr<GridCellManager> m_cell_manager;
+
+  /**
+   * Default constructor
+   */
+  GridContainer();
 
   /**
    * @brief Slice constructor
@@ -391,8 +425,9 @@ private:
  * fixAxisByValue() methods.
  */
 template <typename GridCellManager, typename... AxesTypes>
-template <typename CellType>
-class GridContainer<GridCellManager, AxesTypes...>::iter : public std::iterator<std::forward_iterator_tag, CellType> {
+template <typename CellType, typename PointerType, typename ReferenceType>
+class GridContainer<GridCellManager, AxesTypes...>::iter
+    : public std::iterator<std::forward_iterator_tag, CellType, std::ptrdiff_t, PointerType, ReferenceType> {
 public:
   /**
    * @brief Constructs a new iterator for the given grid
@@ -406,10 +441,10 @@ public:
   iter(const GridContainer<GridCellManager, AxesTypes...>& owner, const cell_manager_iter_type& data_iter);
 
   /// Copy constructor
-  iter(const iter<CellType>&) = default;
+  iter(const iter&) = default;
 
   /// Move constructor
-  iter(iter<CellType>&&) = default;
+  iter(iter&&) = default;
 
   /// Copy operator of the iterator
   iter& operator=(const iter& other);
@@ -418,16 +453,16 @@ public:
   iter& operator++();
 
   /// Returns a reference to the cell value
-  CellType& operator*();
+  ReferenceType operator*();
 
   /// Returns a reference to the cell value (const version)
-  typename std::add_const<CellType>::type& operator*() const;
+  typename std::add_const<ReferenceType>::type operator*() const;
 
   /// Returns a pointer to the cell value
-  CellType* operator->();
+  PointerType operator->();
 
   /// Returns a pointer to the cell value (const version)
-  typename std::add_const<CellType>::type* operator->() const;
+  typename std::add_const<PointerType>::type operator->() const;
 
   /// Compares two iterators for equality. Should be used only for iterators
   /// of the same grid.

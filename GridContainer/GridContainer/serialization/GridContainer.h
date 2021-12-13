@@ -109,10 +109,20 @@ void serialize(Archive& ar, Euclid::GridContainer::GridContainer<GridCellManager
 /// NOTE: Any changes in this method should be reflected in the
 /// load_construct_data method.
 template <class Archive, typename GridCellManager, typename... AxesTypes>
-void save_construct_data(Archive& ar, const Euclid::GridContainer::GridContainer<GridCellManager, AxesTypes...>* t,
-                         const unsigned int) {
+void save_construct_data(
+    Archive& ar, const Euclid::GridContainer::GridContainer<GridCellManager, AxesTypes...>* t, const unsigned int,
+    typename std::enable_if<std::is_default_constructible<GridCellManager>::value>::type* = nullptr) {
   std::tuple<Euclid::GridContainer::GridAxis<AxesTypes>...> axes_tuple = t->getAxesTuple();
   ar << axes_tuple;
+}
+
+template <class Archive, typename GridCellManager, typename... AxesTypes>
+void save_construct_data(
+    Archive& ar, const Euclid::GridContainer::GridContainer<GridCellManager, AxesTypes...>* t, const unsigned int,
+    typename std::enable_if<!std::is_default_constructible<GridCellManager>::value>::type* = nullptr) {
+  std::tuple<Euclid::GridContainer::GridAxis<AxesTypes>...> axes_tuple = t->getAxesTuple();
+  ar << axes_tuple;
+  ar << t->getCellManager().getConstructorParameters();
 }
 
 /// Helper method which constructs an GridAxis object with empty name and
@@ -128,14 +138,26 @@ Euclid::GridContainer::GridAxis<T> emptyGridAxis() {
 /// NOTE: Any changes in this method should be reflected in the
 /// save_construct_data method.
 template <class Archive, typename GridCellManager, typename... AxesTypes>
-void load_construct_data(Archive& ar, Euclid::GridContainer::GridContainer<GridCellManager, AxesTypes...>* t,
-                         const unsigned int) {
+void load_construct_data(
+    Archive& ar, Euclid::GridContainer::GridContainer<GridCellManager, AxesTypes...>* t, const unsigned int,
+    typename std::enable_if<std::is_default_constructible<GridCellManager>::value>::type* = nullptr) {
   // We create a tuple containing empty GridAxis objects. These will be replaced
   // when we read from the stream with the real GridAxis objects. We have to do
   // that because the GridAxis does not have a default constructor.
   std::tuple<Euclid::GridContainer::GridAxis<AxesTypes>...> axes_tuple{(emptyGridAxis<AxesTypes>())...};
   ar >> axes_tuple;
   ::new (t) Euclid::GridContainer::GridContainer<GridCellManager, AxesTypes...>(axes_tuple);
+}
+
+template <class Archive, typename GridCellManager, typename... AxesTypes>
+void load_construct_data(
+    Archive& ar, Euclid::GridContainer::GridContainer<GridCellManager, AxesTypes...>* t, const unsigned int,
+    typename std::enable_if<!std::is_default_constructible<GridCellManager>::value>::type* = nullptr) {
+  std::tuple<Euclid::GridContainer::GridAxis<AxesTypes>...> axes_tuple{(emptyGridAxis<AxesTypes>())...};
+  typename Euclid::GridContainer::GridCellManagerTraits<GridCellManager>::constructor_parameters grid_cell_manager_args;
+  ar >> axes_tuple;
+  ar >> grid_cell_manager_args;
+  ::new (t) Euclid::GridContainer::GridContainer<GridCellManager, AxesTypes...>(axes_tuple, grid_cell_manager_args);
 }
 
 } /* end of namespace serialization */

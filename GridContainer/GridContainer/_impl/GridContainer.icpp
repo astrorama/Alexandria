@@ -29,22 +29,47 @@ namespace Euclid {
 namespace GridContainer {
 
 template <typename GridCellManager, typename... AxesTypes>
-GridContainer<GridCellManager, AxesTypes...>::GridContainer(GridAxis<AxesTypes>... axes) : m_axes{std::move(axes)...} {}
+GridContainer<GridCellManager, AxesTypes...>::GridContainer(GridAxis<AxesTypes>... axes) : m_axes{std::move(axes)...} {
+  m_cell_manager =
+      GridCellManagerTraits<GridCellManager>::factory(GridConstructionHelper<AxesTypes...>::getAxisIndexFactor(
+          m_axes, TemplateLoopCounter<sizeof...(AxesTypes) - 1>{}));
+}
 
 template <typename GridCellManager, typename... AxesTypes>
 GridContainer<GridCellManager, AxesTypes...>::GridContainer(std::tuple<GridAxis<AxesTypes>...> axes_tuple)
-    : m_axes{std::move(axes_tuple)} {}
+    : m_axes{std::move(axes_tuple)} {
+  m_cell_manager =
+      GridCellManagerTraits<GridCellManager>::factory(GridConstructionHelper<AxesTypes...>::getAxisIndexFactor(
+          m_axes, TemplateLoopCounter<sizeof...(AxesTypes) - 1>{}));
+}
+
+template <typename GridCellManager, typename... AxesTypes>
+template <typename... Args>
+GridContainer<GridCellManager, AxesTypes...>::GridContainer(std::tuple<GridAxis<AxesTypes>...> axes_tuple,
+                                                            Args&&... args)
+    : m_axes{std::move(axes_tuple)} {
+  m_cell_manager = GridCellManagerTraits<GridCellManager>::factory(
+      GridConstructionHelper<AxesTypes...>::getAxisIndexFactor(m_axes, TemplateLoopCounter<sizeof...(AxesTypes) - 1>{}),
+      std::forward<Args>(args)...);
+}
 
 template <typename... AxesTypes>
-std::tuple<GridAxis<AxesTypes>...> fixAxis(const std::tuple<GridAxis<AxesTypes>...>& original, size_t axis, size_t index) {
+std::tuple<GridAxis<AxesTypes>...> fixAxis(const std::tuple<GridAxis<AxesTypes>...>& original, size_t axis,
+                                           size_t index) {
   std::tuple<GridAxis<AxesTypes>...> result{original};
   GridConstructionHelper<AxesTypes...>::template findAndFixAxis(result, axis, index, TemplateLoopCounter<0>{});
   return result;
 }
 
 template <typename GridCellManager, typename... AxesTypes>
-GridContainer<GridCellManager, AxesTypes...>::GridContainer(const GridContainer<GridCellManager, AxesTypes...>& other, size_t axis,
-                                                            size_t index)
+GridContainer<GridCellManager, AxesTypes...>::GridContainer()
+    : m_cell_manager{
+          GridCellManagerTraits<GridCellManager>::factory(GridConstructionHelper<AxesTypes...>::getAxisIndexFactor(
+              m_axes, TemplateLoopCounter<sizeof...(AxesTypes) - 1>{}))} {}
+
+template <typename GridCellManager, typename... AxesTypes>
+GridContainer<GridCellManager, AxesTypes...>::GridContainer(const GridContainer<GridCellManager, AxesTypes...>& other,
+                                                            size_t axis, size_t index)
     : m_axes{other.m_axes}
     , m_axes_fixed{fixAxis(other.m_axes, axis, index)}
     , m_fixed_indices{other.m_fixed_indices}
@@ -120,8 +145,8 @@ size_t GridContainer<GridCellManager, AxesTypes...>::size() const {
 }
 
 template <typename GridCellManager, typename... AxesTypes>
-auto GridContainer<GridCellManager, AxesTypes...>::operator()(decltype(std::declval<GridAxis<AxesTypes>>().size())... indices) const
-    -> const cell_type& {
+auto GridContainer<GridCellManager, AxesTypes...>::operator()(
+    decltype(std::declval<GridAxis<AxesTypes>>().size())... indices) const -> const reference_type {
   size_t total_index = m_index_helper.totalIndex(indices...);
   // If we have fixed axes we need to move the index accordingly
   for (auto& pair : m_fixed_indices) {
@@ -131,14 +156,19 @@ auto GridContainer<GridCellManager, AxesTypes...>::operator()(decltype(std::decl
 }
 
 template <typename GridCellManager, typename... AxesTypes>
-auto GridContainer<GridCellManager, AxesTypes...>::operator()(decltype(std::declval<GridAxis<AxesTypes>>().size())... indices)
-    -> cell_type& {
-  return const_cast<cell_type&>(static_cast<const GridContainer&>(*this)(indices...));
+auto GridContainer<GridCellManager, AxesTypes...>::operator()(
+    decltype(std::declval<GridAxis<AxesTypes>>().size())... indices) -> reference_type {
+  size_t total_index = m_index_helper.totalIndex(indices...);
+  // If we have fixed axes we need to move the index accordingly
+  for (auto& pair : m_fixed_indices) {
+    total_index += pair.second * m_index_helper.m_axes_index_factors[pair.first];
+  }
+  return (*m_cell_manager)[total_index];
 }
 
 template <typename GridCellManager, typename... AxesTypes>
-auto GridContainer<GridCellManager, AxesTypes...>::at(decltype(std::declval<GridAxis<AxesTypes>>().size())... indices) const
-    -> const cell_type& {
+auto GridContainer<GridCellManager, AxesTypes...>::at(
+    decltype(std::declval<GridAxis<AxesTypes>>().size())... indices) const -> const cell_type& {
   // First make a check that all the fixed axes are zero
   m_index_helper.checkAllFixedAreZero(m_fixed_indices, indices...);
   size_t total_index = m_index_helper.totalIndexChecked(indices...);
@@ -183,7 +213,8 @@ struct InfimumHelper<0> {
   using Index = std::size_t;
 
   template <typename... AxesType>
-  static std::tuple<std::size_t> getIndex(const std::tuple<AxesType...>& coords, const std::tuple<GridAxis<AxesType>...>& axes) {
+  static std::tuple<std::size_t> getIndex(const std::tuple<AxesType...>&           coords,
+                                          const std::tuple<GridAxis<AxesType>...>& axes) {
     auto i0 = std::get<0>(axes).infimum(std::get<0>(coords));
     return std::make_tuple(i0);
   }
@@ -210,7 +241,8 @@ auto GridContainer<GridCellManager, AxesTypes...>::infimum(const std::tuple<Axes
 
 template <typename GridCellManager, typename... AxesTypes>
 template <int I>
-GridContainer<GridCellManager, AxesTypes...> GridContainer<GridCellManager, AxesTypes...>::fixAxisByIndex(size_t index) {
+GridContainer<GridCellManager, AxesTypes...>
+GridContainer<GridCellManager, AxesTypes...>::fixAxisByIndex(size_t index) {
   if (index >= getOriginalAxis<I>().size()) {
     throw Elements::Exception() << "Index (" << index << ") out of axis " << getOriginalAxis<I>().name() << " size ("
                                 << getOriginalAxis<I>().size() << ")";
