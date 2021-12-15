@@ -110,11 +110,14 @@ double simple_interpolation(double x, const std::vector<double>& xp, const std::
   if (xp.size() == 1) {
     return (extrapolate || xp.front() == x) ? yp.front() : 0.;
   }
+
+  if ((x < xp.front() || x > xp.back()) && !extrapolate) {
+    return 0;
+  }
+
   auto        gt = std::upper_bound(xp.begin(), xp.end(), x);
   std::size_t i  = gt - xp.begin();
   if (i == 0) {
-    if (!extrapolate && x < xp.front())
-      return 0.;
     ++i;
   }
   if (i == xp.size()) {
@@ -122,13 +125,17 @@ double simple_interpolation(double x, const std::vector<double>& xp, const std::
       return 0.;
     --i;
   }
-  double x1 = xp[i], x0 = xp[i - 1];
-  double y1 = yp[i], y0 = yp[i - 1];
+  return simple_interpolation(x, std::array<double, 2>{xp[i - 1], xp[i]}, std::array<double, 2>{yp[i - 1], yp[i]},
+                              extrapolate);
+}
 
-  if (x1 == x0) {
-    return (x1 + y1) / 2.;
+double simple_interpolation(double x, const std::array<double, 2>& xp, const std::array<double, 2>& yp,
+                            bool extrapolate) noexcept {
+  if ((x < xp[0] || x > xp[1]) && !extrapolate) {
+    return 0;
   }
-
+  double x1 = xp[1], x0 = xp[0];
+  double y1 = yp[1], y0 = yp[0];
   double coef1 = (y1 - y0) / (x1 - x0);
   double coef0 = y0 - coef1 * x0;
   return coef0 + coef1 * x;

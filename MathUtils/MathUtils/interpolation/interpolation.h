@@ -104,8 +104,9 @@ using Coordinates = std::array<std::vector<double>, N>;
  *  vectors of size 3. The shape of values must be (3, 3, 3)
  */
 template <std::size_t N>
-ELEMENTS_API std::unique_ptr<NAryFunction<N>> interpn(const Coordinates<N>& grid, const NdArray::NdArray<double>& values,
-                                                      InterpolationType type, bool extrapolate = false);
+ELEMENTS_API std::unique_ptr<NAryFunction<N>> interpn(const Coordinates<N>&           grid,
+                                                      const NdArray::NdArray<double>& values, InterpolationType type,
+                                                      bool extrapolate = false);
 
 /**
  * Simple linear interpolation
@@ -122,6 +123,9 @@ ELEMENTS_API std::unique_ptr<NAryFunction<N>> interpn(const Coordinates<N>& grid
  */
 ELEMENTS_API double simple_interpolation(double x, const std::vector<double>& xp, const std::vector<double>& yp,
                                          bool extrapolate = false);
+
+ELEMENTS_API double simple_interpolation(double x, const std::array<double, 2>& xp, const std::array<double, 2>& yp,
+                                         bool extrapolate = false) noexcept;
 
 }  // namespace MathUtils
 }  // end of namespace Euclid
