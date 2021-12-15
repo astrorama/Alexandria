@@ -56,11 +56,41 @@ struct InterpolationImpl<T, typename std::enable_if<std::is_floating_point<T>::v
   }
 };
 
+template <typename T>
+struct InterpolationImpl<T, typename std::enable_if<std::is_integral<T>::value>::type> {
+  static double interpolate(const T x, const std::vector<T>& knots, const std::vector<double>& values,
+                            bool /*extrapolate*/) {
+    if (x < knots.front() || x > knots.back())
+      return 0.;
+    return values[x];
+  }
+
+  template <typename... Rest>
+  static double interpolate(const T x, const std::vector<T>& knots,
+                            const std::vector<std::unique_ptr<InterpN<Rest...>>>& interpolators, bool,
+                            const Rest... rest) {
+    if (x < knots.front() || x > knots.back())
+      return 0.;
+    return (*interpolators[x])(rest...);
+  }
+
+  static void checkOrder(const std::vector<T>& knots) {
+    if (knots.front() != 0) {
+      throw InterpolationException("int axis must start at 0");
+    }
+    for (auto b = knots.begin() + 1; b != knots.end(); ++b) {
+      if (*b - *(b - 1) != 1) {
+        throw InterpolationException("int values must be contiguous");
+      }
+    }
+  }
+};
+
 /**
  * Trait for discrete types
  */
 template <typename T>
-struct InterpolationImpl<T, typename std::enable_if<!std::is_floating_point<T>::value>::type> {
+struct InterpolationImpl<T, typename std::enable_if<!std::is_arithmetic<T>::value>::type> {
   static double interpolate(const T x, const std::vector<T>& knots, const std::vector<double>& values,
                             bool /*extrapolate*/) {
     std::size_t i = std::find(knots.begin(), knots.end(), x) - knots.begin();
