@@ -69,13 +69,13 @@ std::vector<std::string> getAsciiFormatList(const Table& table) {
       format_list.push_back("I1");
     } else if (type == typeid(int32_t) || type == typeid(int64_t)) {
       size_t width = maxWidth(table, column_index);
-      format_list.push_back("I" + boost::lexical_cast<std::string>(std::max(1ul, width)));
+      format_list.push_back("I" + boost::lexical_cast<std::string>(std::max(static_cast<size_t>(1), width)));
     } else if (type == typeid(float) || type == typeid(double)) {
       size_t width = maxWidthScientific(table, column_index);
-      format_list.push_back("E" + boost::lexical_cast<std::string>(std::max(1ul, width)));
+      format_list.push_back("E" + boost::lexical_cast<std::string>(std::max(static_cast<size_t>(1), width)));
     } else if (type == typeid(std::string)) {
       size_t width = maxWidth(table, column_index);
-      format_list.push_back("A" + boost::lexical_cast<std::string>(std::max(1ul, width)));
+      format_list.push_back("A" + boost::lexical_cast<std::string>(std::max(static_cast<size_t>(1), width)));
     } else {
       throw Elements::Exception() << "Unsupported column format for FITS ASCII table export: " << type.name();
     }
@@ -161,7 +161,7 @@ const std::map<std::type_index, std::function<std::string(const Table&, size_t)>
      [](const Table& table, size_t column) {
        size_t width = maxWidth(table, column);
        // CCfits uses the width as denominator, so it can't be 0!
-       return boost::lexical_cast<std::string>(std::max(1ul, width)) + "A";
+       return boost::lexical_cast<std::string>(std::max(static_cast<size_t>(1), width)) + "A";
      }},
     // NdArray
     {typeid(NdArray<int32_t>), GenericNdFormat<int32_t>},
