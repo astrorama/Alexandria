@@ -55,9 +55,9 @@ elements_add_library(Pyston src/lib/*.cpp
 #                        INCLUDE_DIRS Boost ElementsExamples
 #                        LINK_LIBRARIES Boost ElementsExamples)
 #===============================================================================
-elements_add_executable(Example src/program/Example.cpp
-        INCLUDE_DIRS ElementsKernel Pyston
-        LINK_LIBRARIES ElementsKernel Pyston)
+#elements_add_executable(Example src/program/Example.cpp
+#        INCLUDE_DIRS ElementsKernel Pyston
+#        LINK_LIBRARIES ElementsKernel Pyston)
 
 #===============================================================================
 # Declare the Boost tests here
