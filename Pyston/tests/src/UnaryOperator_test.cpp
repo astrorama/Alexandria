@@ -55,11 +55,11 @@ BOOST_FIXTURE_TEST_CASE(UnaryInt_test, PythonFixture) {
   py::extract<std::shared_ptr<Node<int64_t>>> negative_comp(py_negative_comp);
   py::extract<std::shared_ptr<Node<int64_t>>> identity_comp(py_identiy_comp);
 
-  BOOST_CHECK_EQUAL(negative_comp()->eval(22l), -22);
-  BOOST_CHECK_EQUAL(negative_comp()->eval(48l), -48);
+  BOOST_CHECK_EQUAL(negative_comp()->eval(static_cast<int64_t>(22)), -22);
+  BOOST_CHECK_EQUAL(negative_comp()->eval(static_cast<int64_t>(48)), -48);
 
-  BOOST_CHECK_EQUAL(identity_comp()->eval(22l), 22);
-  BOOST_CHECK_EQUAL(identity_comp()->eval(48l), 48);
+  BOOST_CHECK_EQUAL(identity_comp()->eval(static_cast<int64_t>(22)), 22);
+  BOOST_CHECK_EQUAL(identity_comp()->eval(static_cast<int64_t>(48)), 48);
 }
 
 BOOST_FIXTURE_TEST_CASE(Functions_test, PythonFixture) {

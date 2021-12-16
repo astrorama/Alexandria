@@ -73,7 +73,7 @@ BOOST_FIXTURE_TEST_CASE(NoAttributeCall_test, PythonFixture) {
 
   BOOST_TEST_MESSAGE(textRepr(comp()));
   prototype.erase("flux");
-  prototype["radius"] = 55l;
+  prototype["radius"] = static_cast<int64_t>(55);
   BOOST_CHECK_THROW(comp()->eval(prototype, 123.), std::out_of_range);
 }
 
@@ -128,7 +128,7 @@ def with_conditional(o, y):
 
   BOOST_CHECK_CLOSE(rv, -18., 1e-8);
 
-  prototype["flux"] = 16l;
+  prototype["flux"] = static_cast<int64_t>(16);
   ret               = py_func(prototype, 8.);
   rv                = py::extract<double>(ret);
   BOOST_CHECK_CLOSE(rv, 12., 1e-8);
