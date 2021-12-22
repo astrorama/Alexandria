@@ -21,6 +21,7 @@
 #include <ElementsKernel/Unused.h>
 #include <algorithm>
 #include <cstring>
+#include <utility>
 
 namespace Euclid {
 namespace NdArray {
@@ -32,7 +33,7 @@ NdArray<T>::Iterator<Const>::Iterator(ContainerInterface* container_ptr, size_t 
                                       size_t start)
     : m_container_ptr(container_ptr)
     , m_offset(offset)
-    , m_row_size(std::accumulate(shape.begin(), shape.end(), 1, std::multiplies<size_t>()))
+    , m_row_size(std::accumulate(shape.begin(), shape.end(), 1, std::multiplies<>()))
     , m_stride{strides.back()}
     , m_i{start} {}
 
@@ -60,7 +61,7 @@ auto NdArray<T>::Iterator<Const>::operator++() -> Iterator& {
 
 template <typename T>
 template <bool Const>
-auto NdArray<T>::Iterator<Const>::operator++(int) -> Iterator {
+auto NdArray<T>::Iterator<Const>::operator++(int) -> const Iterator {
   return Iterator{m_container_ptr, m_offset, m_row_size, m_stride, m_i + 1};
 }
 
@@ -150,20 +151,20 @@ bool NdArray<T>::Iterator<Const>::operator>(const Iterator& other) {
 }
 
 template <typename T>
-NdArray<T>::NdArray(const std::vector<size_t>& shape_)
+NdArray<T>::NdArray(std::vector<size_t> shape_)
     : m_offset(0)
-    , m_shape(shape_)
-    , m_size(std::accumulate(m_shape.begin(), m_shape.end(), 1u, std::multiplies<size_t>()))
+    , m_shape(std::move(shape_))
+    , m_size(std::accumulate(m_shape.begin(), m_shape.end(), 1u, std::multiplies<>()))
     , m_container(new ContainerWrapper<std::vector>(m_size)) {
   update_strides();
 }
 
 template <typename T>
 template <template <class...> class Container>
-NdArray<T>::NdArray(const std::vector<size_t>& shape_, const Container<T>& data)
+NdArray<T>::NdArray(std::vector<size_t> shape_, const Container<T>& data)
     : m_offset(0)
-    , m_shape(shape_)
-    , m_size(std::accumulate(m_shape.begin(), m_shape.end(), 1u, std::multiplies<size_t>()))
+    , m_shape(std::move(shape_))
+    , m_size(std::accumulate(m_shape.begin(), m_shape.end(), 1u, std::multiplies<>()))
     , m_container(new ContainerWrapper<Container>(data)) {
   if (m_size != m_container->size()) {
     throw std::invalid_argument("Data size does not match the shape");
@@ -173,10 +174,10 @@ NdArray<T>::NdArray(const std::vector<size_t>& shape_, const Container<T>& data)
 
 template <typename T>
 template <template <class...> class Container>
-NdArray<T>::NdArray(const std::vector<size_t>& shape_, Container<T>&& data)
+NdArray<T>::NdArray(std::vector<size_t> shape_, Container<T>&& data)
     : m_offset(0)
-    , m_shape(shape_)
-    , m_size(std::accumulate(m_shape.begin(), m_shape.end(), 1u, std::multiplies<size_t>()))
+    , m_shape(std::move(shape_))
+    , m_size(std::accumulate(m_shape.begin(), m_shape.end(), 1u, std::multiplies<>()))
     , m_container(new ContainerWrapper<Container>(std::move(data))) {
   if (m_size != m_container->size()) {
     throw std::invalid_argument("Data size does not match the shape");
@@ -186,10 +187,10 @@ NdArray<T>::NdArray(const std::vector<size_t>& shape_, Container<T>&& data)
 
 template <typename T>
 template <typename II>
-NdArray<T>::NdArray(const std::vector<size_t>& shape_, II ibegin, II iend)
+NdArray<T>::NdArray(std::vector<size_t> shape_, II ibegin, II iend)
     : m_offset(0)
-    , m_shape(shape_)
-    , m_size(std::accumulate(m_shape.begin(), m_shape.end(), 1u, std::multiplies<size_t>()))
+    , m_shape(std::move(shape_))
+    , m_size(std::accumulate(m_shape.begin(), m_shape.end(), 1u, std::multiplies<>()))
     , m_container(new ContainerWrapper<std::vector>(ibegin, iend)) {
   if (m_size != m_container->size()) {
     throw std::invalid_argument("Data size does not match the shape");
@@ -202,7 +203,7 @@ NdArray<T>::NdArray(const self_type* other)
     : m_offset(0)
     , m_shape(other->m_shape)
     , m_attr_names(other->m_attr_names)
-    , m_size(std::accumulate(m_shape.begin(), m_shape.end(), 1u, std::multiplies<size_t>()))
+    , m_size(std::accumulate(m_shape.begin(), m_shape.end(), 1u, std::multiplies<>()))
     , m_container(other->m_container->copy()) {
   update_strides();
 }
@@ -225,7 +226,7 @@ auto NdArray<T>::reshape(const std::vector<size_t>& new_shape) -> self_type& {
   if (!m_attr_names.empty())
     throw std::invalid_argument("Can not reshape arrays with attribute names");
 
-  size_t new_size = std::accumulate(new_shape.begin(), new_shape.end(), 1, std::multiplies<size_t>());
+  size_t new_size = std::accumulate(new_shape.begin(), new_shape.end(), 1, std::multiplies<>());
   if (new_size != m_size) {
     throw std::range_error("New shape does not match the number of contained elements");
   }
@@ -354,14 +355,14 @@ auto NdArray<T>::concatenate(const self_type& other) -> self_type& {
 }
 
 template <typename T>
-NdArray<T>::NdArray(std::shared_ptr<ContainerInterface> container, size_t offset, const std::vector<size_t>& shape_,
-                    const std::vector<size_t>& stride, const std::vector<std::string>& attr_names)
+NdArray<T>::NdArray(std::shared_ptr<ContainerInterface> container, size_t offset, std::vector<size_t> shape_,
+                    std::vector<size_t> stride, std::vector<std::string> attr_names)
     : m_offset(offset)
-    , m_shape(shape_)
-    , m_stride_size(stride)
-    , m_attr_names(attr_names)
+    , m_shape(std::move(shape_))
+    , m_stride_size(std::move(stride))
+    , m_attr_names(std::move(attr_names))
     , m_size(std::accumulate(m_shape.begin(), m_shape.end(), 1, std::multiplies<size_t>()))
-    , m_container(container) {}
+    , m_container(std::move(container)) {}
 
 template <typename T>
 auto NdArray<T>::slice(size_t i) -> self_type {

@@ -92,7 +92,7 @@ public:
     /**
      * Post-increment
      */
-    Iterator operator++(int);
+    const Iterator operator++(int);
 
     /**
      * Two iterators are equal if they point to the same position on the same data
@@ -194,7 +194,7 @@ public:
    *    The shape of the matrix. The number of elements in shape corresponds to the number
    *    of dimensions, the values to each dimension size.
    */
-  explicit NdArray(const std::vector<size_t>& shape_);
+  explicit NdArray(std::vector<size_t> shape_);
 
   /**
    * Constructs a matrix and initialize it with the given data.
@@ -207,7 +207,7 @@ public:
    *    If the data size does not corresponds to the matrix size.
    */
   template <template <class...> class Container = std::vector>
-  NdArray(const std::vector<size_t>& shape_, const Container<T>& data);
+  NdArray(std::vector<size_t> shape_, const Container<T>& data);
 
   /**
    * Constructs a matrix and initialize it with the given data.
@@ -224,7 +224,7 @@ public:
    *    If the data size does not corresponds to the matrix size.
    */
   template <template <class...> class Container = std::vector>
-  NdArray(const std::vector<size_t>& shape_, Container<T>&& data);
+  NdArray(std::vector<size_t> shape_, Container<T>&& data);
 
   /**
    * Constructs a matrix and initialize it with from the given iterators
@@ -239,7 +239,7 @@ public:
    *    If the data size does not corresponds to the matrix size.
    */
   template <typename Iterator>
-  NdArray(const std::vector<size_t>& shape_, Iterator begin, Iterator end);
+  NdArray(std::vector<size_t> shape_, Iterator begin, Iterator end);
 
   /**
    * Constructs a matrix, giving a name to each of the items on the last dimension
@@ -272,7 +272,7 @@ public:
   /**
    * Move constructor
    */
-  NdArray(self_type&&) = default;
+  NdArray(self_type&&) noexcept = default;
 
   /**
    * Assignment
@@ -503,7 +503,7 @@ private:
 
     ContainerWrapper(const ContainerWrapper&) = delete;
 
-    ContainerWrapper(ContainerWrapper&&) = default;
+    ContainerWrapper(ContainerWrapper&&) noexcept = default;
 
     template <typename... Args>
     explicit ContainerWrapper(Args&&... args) : m_container(std::forward<Args>(args)...) {
@@ -554,8 +554,8 @@ private:
   /**
    * Private constructor used for slices
    */
-  NdArray(std::shared_ptr<ContainerInterface> container, size_t offset, const std::vector<size_t>& shape,
-          const std::vector<size_t>& stride, const std::vector<std::string>& attr_names);
+  NdArray(std::shared_ptr<ContainerInterface> container, size_t offset, std::vector<size_t> shape,
+          std::vector<size_t> stride, std::vector<std::string> attr_names);
 
   /**
    * Gets the total offset for the given coordinates.
