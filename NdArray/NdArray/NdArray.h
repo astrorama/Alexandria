@@ -293,7 +293,7 @@ public:
    * @return
    *    A vector with as many elements as number of dimensions, containing the size of each one.
    */
-  const std::vector<size_t> shape() const {
+  const std::vector<size_t>& shape() const {
     return m_shape;
   }
 
