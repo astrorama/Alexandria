@@ -45,8 +45,7 @@ struct InterpolationImpl<T, typename std::enable_if<std::is_floating_point<T>::v
     double y1 = (*interpolators[x1i])(rest...);
     double y2 = (*interpolators[x2i])(rest...);
 
-    return simple_interpolation(x, std::array<double, 2>{knots[x1i], knots[x2i]}, std::array<double, 2>{y1, y2},
-                                extrapolate);
+    return simple_interpolation(x, knots[x1i], knots[x2i], y1, y2, extrapolate);
   }
 
   static void checkOrder(const std::vector<T>& knots) {

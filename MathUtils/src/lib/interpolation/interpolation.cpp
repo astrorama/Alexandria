@@ -125,20 +125,15 @@ double simple_interpolation(double x, const std::vector<double>& xp, const std::
       return 0.;
     --i;
   }
-  return simple_interpolation(x, std::array<double, 2>{xp[i - 1], xp[i]}, std::array<double, 2>{yp[i - 1], yp[i]},
-                              extrapolate);
+  return simple_interpolation(x, xp[i - 1], xp[i], yp[i - 1], yp[i], extrapolate);
 }
 
-double simple_interpolation(double x, const std::array<double, 2>& xp, const std::array<double, 2>& yp,
-                            bool extrapolate) noexcept {
-  if ((x < xp[0] || x > xp[1]) && !extrapolate) {
-    return 0;
-  }
-  double x1 = xp[1], x0 = xp[0];
-  double y1 = yp[1], y0 = yp[0];
-  double coef1 = (y1 - y0) / (x1 - x0);
-  double coef0 = y0 - coef1 * x0;
-  return coef0 + coef1 * x;
+double simple_interpolation(double x, double x0, double x1, double y0, double y1, bool extrapolate) noexcept {
+  // Looks convolved, but this avoids branching
+  double within = ((x >= x0) & (x <= x1)) | extrapolate;
+  double coef1  = (y1 - y0) / (x1 - x0);
+  double coef0  = y0 - coef1 * x0;
+  return within * (coef0 + coef1 * x);
 }
 
 }  // namespace MathUtils

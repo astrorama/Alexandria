@@ -123,9 +123,11 @@ ELEMENTS_API std::unique_ptr<NAryFunction<N>> interpn(const Coordinates<N>&     
  */
 ELEMENTS_API double simple_interpolation(double x, const std::vector<double>& xp, const std::vector<double>& yp,
                                          bool extrapolate = false);
-
-ELEMENTS_API double simple_interpolation(double x, const std::array<double, 2>& xp, const std::array<double, 2>& yp,
-                                         bool extrapolate = false) noexcept;
+/**
+ * Linear interpolation on a segment
+ */
+ELEMENTS_API double simple_interpolation(double x, double x0, double x1, double y0, double y1,
+                                         bool extrapolate) noexcept;
 
 }  // namespace MathUtils
 }  // end of namespace Euclid
