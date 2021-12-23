@@ -111,7 +111,7 @@ NdArray<int> bin_samples(const std::vector<std::tuple<double, double>>& samples,
 
 //-----------------------------------------------------------------------------
 
-BOOST_AUTO_TEST_SUITE(NdDistribution_test)
+BOOST_AUTO_TEST_SUITE(NdSampler_test)
 
 //-----------------------------------------------------------------------------
 
@@ -327,7 +327,7 @@ BOOST_FIXTURE_TEST_CASE(SingleDiscreteValue, RandomFixture) {
   mean /= sample_count;
 
   // 1.916667 is the weighted average
-  BOOST_CHECK_CLOSE_FRACTION(mean, 1.916667, 0.062);
+  BOOST_CHECK_CLOSE_FRACTION(mean, 1.916667, 0.1);
   BOOST_CHECK_EQUAL(count_a, sample_count);
 
   // Swap axes
