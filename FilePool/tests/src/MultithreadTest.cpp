@@ -116,7 +116,7 @@ static void openThread(FileManager& manager, std::pair<std::mutex, std::map<File
 BOOST_AUTO_TEST_CASE(MultithreadOpenTest) {
   int                                                                    n_threads = randInt(8, 32);
   std::vector<std::pair<std::mutex, std::map<FileManager::FileId, int>>> fd_maps(n_threads);
-  LRUFileManager                                                         manager(5);
+  LRUFileManager                                                         manager;
   boost::thread_group                                                    thread_group;
 
   for (int i = 0; i < n_threads; ++i) {
