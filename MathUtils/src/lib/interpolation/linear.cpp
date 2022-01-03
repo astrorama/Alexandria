@@ -68,10 +68,10 @@ public:
     // Interpolate values within range
     auto current_knot = std::lower_bound(m_knots.begin(), m_knots.end(), *x);
     while (o != out.end() && current_knot < m_knots.end()) {
+      current_knot = std::find_if(current_knot, m_knots.end(), [x](double k) { return k >= *x; });
       auto i       = current_knot - m_knots.begin();
       *o           = m_coef1[i - 1] * *x + m_coef0[i - 1];
       ++o, ++x;
-      current_knot = std::find_if(current_knot, m_knots.end(), [x](double k) { return k >= *x; });
     }
 
     // Trailing 0s
