@@ -16,7 +16,8 @@ struct InterpolationImpl;
  */
 template <typename T>
 struct InterpolationImpl<T, typename std::enable_if<std::is_floating_point<T>::value>::type> {
-  static double interpolate(const T x, const std::vector<T>& knots, const std::vector<double>& values, bool extrapolate) {
+  static double interpolate(const T x, const std::vector<T>& knots, const std::vector<double>& values,
+                            bool extrapolate) {
     return simple_interpolation(x, knots, values, extrapolate);
   }
 
@@ -44,7 +45,7 @@ struct InterpolationImpl<T, typename std::enable_if<std::is_floating_point<T>::v
     double y1 = (*interpolators[x1i])(rest...);
     double y2 = (*interpolators[x2i])(rest...);
 
-    return simple_interpolation(x, {knots[x1i], knots[x2i]}, {y1, y2}, extrapolate);
+    return simple_interpolation(x, knots[x1i], knots[x2i], y1, y2, extrapolate);
   }
 
   static void checkOrder(const std::vector<T>& knots) {
@@ -54,12 +55,43 @@ struct InterpolationImpl<T, typename std::enable_if<std::is_floating_point<T>::v
   }
 };
 
+template <typename T>
+struct InterpolationImpl<T, typename std::enable_if<std::is_integral<T>::value>::type> {
+  static double interpolate(const T x, const std::vector<T>& knots, const std::vector<double>& values,
+                            bool /*extrapolate*/) {
+    if (x < knots.front() || x > knots.back())
+      return 0.;
+    return values[x];
+  }
+
+  template <typename... Rest>
+  static double interpolate(const T x, const std::vector<T>& knots,
+                            const std::vector<std::unique_ptr<InterpN<Rest...>>>& interpolators, bool,
+                            const Rest... rest) {
+    if (x < knots.front() || x > knots.back())
+      return 0.;
+    return (*interpolators[x])(rest...);
+  }
+
+  static void checkOrder(const std::vector<T>& knots) {
+    if (knots.front() != 0) {
+      throw InterpolationException("int axis must start at 0");
+    }
+    for (auto b = knots.begin() + 1; b != knots.end(); ++b) {
+      if (*b - *(b - 1) != 1) {
+        throw InterpolationException("int values must be contiguous");
+      }
+    }
+  }
+};
+
 /**
  * Trait for discrete types
  */
 template <typename T>
-struct InterpolationImpl<T, typename std::enable_if<!std::is_floating_point<T>::value>::type> {
-  static double interpolate(const T x, const std::vector<T>& knots, const std::vector<double>& values, bool /*extrapolate*/) {
+struct InterpolationImpl<T, typename std::enable_if<!std::is_arithmetic<T>::value>::type> {
+  static double interpolate(const T x, const std::vector<T>& knots, const std::vector<double>& values,
+                            bool /*extrapolate*/) {
     std::size_t i = std::find(knots.begin(), knots.end(), x) - knots.begin();
     if (i >= knots.size() || knots[i] != x)
       return 0.;
@@ -68,7 +100,8 @@ struct InterpolationImpl<T, typename std::enable_if<!std::is_floating_point<T>::
 
   template <typename... Rest>
   static double interpolate(const T x, const std::vector<T>& knots,
-                            const std::vector<std::unique_ptr<InterpN<Rest...>>>& interpolators, bool, const Rest... rest) {
+                            const std::vector<std::unique_ptr<InterpN<Rest...>>>& interpolators, bool,
+                            const Rest... rest) {
     std::size_t i = std::find(knots.begin(), knots.end(), x) - knots.begin();
     if (i >= knots.size() || knots[i] != x)
       return 0.;
@@ -97,11 +130,12 @@ public:
   InterpN(const std::tuple<std::vector<T>>& grid, const NdArray::NdArray<double>& values, bool extrapolate)
       : m_knots(std::get<0>(grid)), m_values(values.begin(), values.end()), m_extrapolate(extrapolate) {
     if (values.shape().size() != 1) {
-      throw InterpolationException() << "values and coordinates dimensionalities must match: " << values.shape().size() << " != 1";
+      throw InterpolationException() << "values and coordinates dimensionalities must match: " << values.shape().size()
+                                     << " != 1";
     }
     if (m_knots.size() != values.size()) {
-      throw InterpolationException() << "The size of the grid and the size of the values do not match: " << m_knots.size()
-                                     << " != " << m_values.size();
+      throw InterpolationException() << "The size of the grid and the size of the values do not match: "
+                                     << m_knots.size() << " != " << m_values.size();
     }
   }
 
@@ -144,7 +178,8 @@ public:
    * @param type
    * @param extrapolate
    */
-  InterpN(const std::tuple<std::vector<T>, std::vector<Rest>...>& grid, const NdArray::NdArray<double>& values, bool extrapolate)
+  InterpN(const std::tuple<std::vector<T>, std::vector<Rest>...>& grid, const NdArray::NdArray<double>& values,
+          bool extrapolate)
       : m_extrapolate(extrapolate) {
     constexpr std::size_t N = sizeof...(Rest) + 1;
 

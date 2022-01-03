@@ -44,6 +44,10 @@ namespace MathUtils {
  *
  * @warning
  *  For discrete dimensions, even if extrapolate is true, undefined bins will be considered to have a value of 0.
+ *
+ * @warning
+ *  For integer dimensions, values are expected to start at 0 and be strictly incremental. This is a compromise to
+ *  improve the sampling performance (direct access to an array instead of a search)
  */
 template <typename... AxisType>
 class InterpN {
