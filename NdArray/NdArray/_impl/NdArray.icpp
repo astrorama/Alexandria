@@ -252,21 +252,21 @@ T& NdArray<T>::at(const std::vector<size_t>& coords) {
 template <typename T>
 const T& NdArray<T>::at(const std::vector<size_t>& coords) const {
   auto offset = get_offset(coords);
-  // cppcheck-suppress "returnTempReference"
+  // cppcheck-suppress returnTempReference
   return m_container->at(offset);
 }
 
 template <typename T>
 T& NdArray<T>::at(const std::vector<size_t>& coords, const std::string& attr) {
   auto offset = get_offset(coords, attr);
-  // cppcheck-suppress "returnTempReference"
+  // cppcheck-suppress returnTempReference
   return m_container->at(offset);
 }
 
 template <typename T>
 const T& NdArray<T>::at(const std::vector<size_t>& coords, const std::string& attr) const {
   auto offset = get_offset(coords, attr);
-  // cppcheck-suppress "returnTempReference"
+  // cppcheck-suppress returnTempReference
   return m_container->at(offset);
 }
 
@@ -487,6 +487,7 @@ template <typename T>
 const T& NdArray<T>::at_helper(size_t offset_acc, ELEMENTS_UNUSED size_t axis) const {
   assert(axis == m_shape.size());
   assert(offset_acc < m_container->size());
+  // cppcheck-suppress returnTempReference
   return m_container->at(offset_acc);
 }
 
@@ -495,6 +496,7 @@ const T& NdArray<T>::at_helper(size_t offset_acc, ELEMENTS_UNUSED size_t axis, c
   offset_acc += get_attr_offset(attr);
   assert(axis == m_shape.size() - 1);
   assert(offset_acc < m_container->size());
+  // cppcheck-suppress returnTempReference
   return m_container->at(offset_acc);
 }
 
