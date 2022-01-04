@@ -114,7 +114,9 @@ template <typename T>
 struct GridCellManagerTraits<std::vector<T>> {
 
   /// The type of the data kept by the GridCellManager
-  typedef T data_type;
+  typedef T  data_type;
+  typedef T& reference_type;
+  typedef T* pointer_type;
 
   /// The iterator type which is used to iterate through the data kept in the
   /// cell manager

@@ -38,5 +38,8 @@ elements_add_unit_test(GridCellManagerTraits_test tests/src/GridCellManagerTrait
 elements_add_unit_test(GridContainer_test tests/src/GridContainer_test.cpp
                        LINK_LIBRARIES GridContainer TYPE Boost)
 
+elements_add_unit_test(GridContainerNoDefaultConstructor_test tests/src/GridContainerNoDefaultConstructor_test.cpp
+                       LINK_LIBRARIES GridContainer TYPE Boost)
+
 elements_add_unit_test(serialize_test tests/src/serialize_test.cpp
                        LINK_LIBRARIES GridContainer TYPE Boost)
