@@ -226,6 +226,17 @@ BOOST_AUTO_TEST_CASE(findCenteredInterval_tray_test) {
   BOOST_CHECK_CLOSE(interval.second, 4., 0.0001);
 }
 
+BOOST_AUTO_TEST_CASE(findCenteredInterval_step_test) {
+  std::vector<double> x = {0., 1., 2., 3., 4., 5., 6.};
+  std::vector<double> y = {0., 0., 0., 100, 100, 100, 100};
+
+  Euclid::MathUtils::Cumulative cumul{x, y};
+
+  std::pair<double, double> interval = cumul.findCenteredInterval(0.8);
+  BOOST_CHECK_CLOSE(interval.first, 2., 0.0001);
+  BOOST_CHECK_CLOSE(interval.second, 3., 0.0001);
+}
+
 //-----------------------------------------------------------------------------
 
 BOOST_AUTO_TEST_SUITE_END()
