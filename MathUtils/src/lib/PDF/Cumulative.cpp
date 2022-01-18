@@ -102,16 +102,20 @@ void Cumulative::normalize() {
 }
 
 double Cumulative::findValue(double ratio, TrayPosition position) const {
+
   if (ratio > 1. || ratio < 0.) {
     throw Elements::Exception("Cumulative::findValue : ratio parameter must be in range [0,1]");
   }
+
   double value  = m_y_sampling.back() * ratio;
+
   auto   iter_x = m_x_sampling.cbegin();
   auto   iter_y = m_y_sampling.cbegin();
   while (iter_y != m_y_sampling.cend() && (*iter_y) < value) {
     ++iter_x;
     ++iter_y;
   }
+
   double begin_value = *iter_x;
   double tray        = *iter_y;
   while (iter_y != m_y_sampling.cend() && (*iter_y) == tray) {
@@ -174,17 +178,42 @@ std::pair<double, double> Cumulative::findMinInterval(double rate) const {
 }
 
 std::pair<double, double> Cumulative::findCenteredInterval(double rate) const {
+
   if (rate > 1. || rate <= 0.) {
     throw Elements::Exception("Cumulative::findCenteredInterval : rate parameter must be in range ]0,1]");
   }
 
-  double min_rate = 0.5 - rate / 2.0;
-  double max_rate = 0.5 + rate / 2.0;
+  double min_value  = m_y_sampling.back() * (0.5 - rate / 2.0);
+  double max_value  = m_y_sampling.back() * (0.5 + rate / 2.0);
 
-  double min_x = findValue(min_rate, TrayPosition::end);
-  double max_x = findValue(max_rate, TrayPosition::begin);
+  auto iter_x = m_x_sampling.cbegin();
+  auto iter_y = m_y_sampling.cbegin();
+  while (iter_y != m_y_sampling.cend() && (*iter_y) < min_value) {
+    ++iter_x;
+    ++iter_y;
+  }
 
-  return std::make_pair(min_x, max_x);
+  if ((*iter_y) < max_value) {
+    double tray = *iter_y;
+    while (iter_y != m_y_sampling.cend() && (*iter_y) == tray) {
+      ++iter_x;
+      ++iter_y;
+    }
+    double min_x = (iter_x != m_x_sampling.begin()) ? *(iter_x - 1) : *iter_x;
+
+    while (iter_y != m_y_sampling.cend() && (*iter_y) < max_value) {
+      ++iter_x;
+      ++iter_y;
+    }
+    double max_x = *iter_x;
+
+    return std::make_pair(min_x, max_x);
+  } else {
+    double min_x = (iter_x != m_x_sampling.begin()) ? *(iter_x - 1) : *iter_x;
+    double max_x = *iter_x;
+
+    return std::make_pair(min_x, max_x);
+  }
 }
 
 }  // namespace MathUtils
