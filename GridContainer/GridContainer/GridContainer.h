@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2021 Euclid Science Ground Segment
+ * Copyright (C) 2012-2022 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -240,10 +240,10 @@ public:
    * @throws Elements::Exception
    *    if any of the indices is out of range
    */
-  const cell_type& at(decltype(std::declval<GridAxis<AxesTypes>>().size())... indices) const;
+  const reference_type at(decltype(std::declval<GridAxis<AxesTypes>>().size())... indices) const;
 
   /// @copydoc at(decltype(std::declval<GridAxis<AxesTypes>>().size())...) const
-  cell_type& at(decltype(std::declval<GridAxis<AxesTypes>>().size())... indices);
+  reference_type at(decltype(std::declval<GridAxis<AxesTypes>>().size())... indices);
 
   /**
    * @brief Returns the grid indexes to the greatest knot less or equal to the given coordinates

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2021 Euclid Science Ground Segment
+ * Copyright (C) 2012-2022 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -168,7 +168,13 @@ auto GridContainer<GridCellManager, AxesTypes...>::operator()(
 
 template <typename GridCellManager, typename... AxesTypes>
 auto GridContainer<GridCellManager, AxesTypes...>::at(
-    decltype(std::declval<GridAxis<AxesTypes>>().size())... indices) const -> const cell_type& {
+    decltype(std::declval<GridAxis<AxesTypes>>().size())... indices) const -> const reference_type {
+  return const_cast<GridContainer*>(this)->at(indices...);
+}
+
+template <typename GridCellManager, typename... AxesTypes>
+auto GridContainer<GridCellManager, AxesTypes...>::at(decltype(std::declval<GridAxis<AxesTypes>>().size())... indices)
+    -> reference_type {
   // First make a check that all the fixed axes are zero
   m_index_helper.checkAllFixedAreZero(m_fixed_indices, indices...);
   size_t total_index = m_index_helper.totalIndexChecked(indices...);
@@ -177,12 +183,6 @@ auto GridContainer<GridCellManager, AxesTypes...>::at(
     total_index += pair.second * m_index_helper.m_axes_index_factors[pair.first];
   }
   return (*m_cell_manager)[total_index];
-}
-
-template <typename GridCellManager, typename... AxesTypes>
-auto GridContainer<GridCellManager, AxesTypes...>::at(decltype(std::declval<GridAxis<AxesTypes>>().size())... indices)
-    -> cell_type& {
-  return const_cast<cell_type&>(static_cast<const GridContainer&>(*this).at(indices...));
 }
 
 template <std::size_t I>
