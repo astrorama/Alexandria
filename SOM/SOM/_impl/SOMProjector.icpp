@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2021 Euclid Science Ground Segment
+ * Copyright (C) 2012-2022 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -29,9 +29,9 @@ namespace SOM {
 
 namespace SOMProjector_impl {
 
-template <typename T, std::size_t ND, typename DistFunc, typename InputIter, typename AdderFunc, typename BmuFunc>
-SOMProjector::ProjectGrid<T> project_impl(const SOM<ND, DistFunc>& som, InputIter begin, InputIter end, AdderFunc adder_func,
-                                          BmuFunc bmu_func, const T& init_cell) {
+template <typename T, typename DistFunc, typename InputIter, typename AdderFunc, typename BmuFunc>
+SOMProjector::ProjectGrid<T> project_impl(const SOM<DistFunc>& som, InputIter begin, InputIter end,
+                                          AdderFunc adder_func, BmuFunc bmu_func, const T& init_cell) {
 
   // Create the grid to return
   auto                         size = som.getSize();
@@ -61,8 +61,8 @@ SOMProjector::ProjectGrid<T> project_impl(const SOM<ND, DistFunc>& som, InputIte
 
 }  // namespace SOMProjector_impl
 
-template <typename T, std::size_t ND, typename DistFunc, typename InputIter, typename WeightFunc, typename AdderFunc>
-SOMProjector::ProjectGrid<T> SOMProjector::project(const SOM<ND, DistFunc>& som, InputIter begin, InputIter end,
+template <typename T, typename DistFunc, typename InputIter, typename WeightFunc, typename AdderFunc>
+SOMProjector::ProjectGrid<T> SOMProjector::project(const SOM<DistFunc>& som, InputIter begin, InputIter end,
                                                    WeightFunc weight_func, AdderFunc adder_func, const T& init_cell) {
 
   auto bmu_func = [&som, &weight_func](const typename std::iterator_traits<InputIter>::value_type& input) {
@@ -72,13 +72,14 @@ SOMProjector::ProjectGrid<T> SOMProjector::project(const SOM<ND, DistFunc>& som,
   return SOMProjector_impl::project_impl(som, begin, end, adder_func, bmu_func, init_cell);
 }
 
-template <typename T, std::size_t ND, typename DistFunc, typename InputIter, typename WeightFunc, typename UncertaintyFunc,
+template <typename T, typename DistFunc, typename InputIter, typename WeightFunc, typename UncertaintyFunc,
           typename AdderFunc>
-SOMProjector::ProjectGrid<T> SOMProjector::project(const SOM<ND, DistFunc>& som, InputIter begin, InputIter end,
-                                                   WeightFunc weight_func, UncertaintyFunc uncertainty_func, AdderFunc adder_func,
-                                                   const T& init_cell) {
+SOMProjector::ProjectGrid<T> SOMProjector::project(const SOM<DistFunc>& som, InputIter begin, InputIter end,
+                                                   WeightFunc weight_func, UncertaintyFunc uncertainty_func,
+                                                   AdderFunc adder_func, const T& init_cell) {
 
-  auto bmu_func = [&som, &weight_func, &uncertainty_func](const typename std::iterator_traits<InputIter>::value_type& input) {
+  auto bmu_func = [&som, &weight_func,
+                   &uncertainty_func](const typename std::iterator_traits<InputIter>::value_type& input) {
     return som.findBMU(input, weight_func, uncertainty_func);
   };
 

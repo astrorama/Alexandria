@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2021 Euclid Science Ground Segment
+ * Copyright (C) 2012-2022 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -26,12 +26,13 @@
 namespace Euclid {
 namespace SOM {
 
-template <std::size_t ND, typename DistFunc>
-SOM<ND, DistFunc>::SOM(std::size_t x, std::size_t y, InitFunc::Signature init_func)
-    : m_cells(ImplTools::indexAxis("X", x), ImplTools::indexAxis("Y", y)), m_size(x, y) {
+template <typename DistFunc>
+SOM<DistFunc>::SOM(std::size_t dimensions, std::size_t x, std::size_t y, InitFunc::Signature init_func)
+    : m_dimensions(dimensions), m_cells(ImplTools::indexAxis("X", x), ImplTools::indexAxis("Y", y)), m_size(x, y) {
 
   // Initialize all the grid cells using the given function
   for (auto& array : m_cells) {
+    array.resize(m_dimensions);
     for (auto& w : array) {
       w = init_func();
     }
@@ -39,56 +40,61 @@ SOM<ND, DistFunc>::SOM(std::size_t x, std::size_t y, InitFunc::Signature init_fu
 
 }  // end of namespace SOM_impl
 
-template <std::size_t ND, typename DistFunc>
-const std::pair<std::size_t, std::size_t>& SOM<ND, DistFunc>::getSize() const {
+template <typename DistFunc>
+const std::pair<std::size_t, std::size_t>& SOM<DistFunc>::getSize() const {
   return m_size;
 }
 
-template <std::size_t ND, typename DistFunc>
-typename std::array<double, ND>& SOM<ND, DistFunc>::operator()(std::size_t x, std::size_t y) {
+template <typename DistFunc>
+std::size_t SOM<DistFunc>::getDimensions() const {
+  return m_dimensions;
+}
+
+template <typename DistFunc>
+typename std::vector<double>& SOM<DistFunc>::operator()(std::size_t x, std::size_t y) {
   return m_cells(x, y);
 }
 
-template <std::size_t ND, typename DistFunc>
-const typename std::array<double, ND>& SOM<ND, DistFunc>::operator()(std::size_t x, std::size_t y) const {
+template <typename DistFunc>
+const typename std::vector<double>& SOM<DistFunc>::operator()(std::size_t x, std::size_t y) const {
   return m_cells(x, y);
 }
 
-template <std::size_t ND, typename DistFunc>
-typename SOM<ND, DistFunc>::iterator SOM<ND, DistFunc>::begin() {
+template <typename DistFunc>
+typename SOM<DistFunc>::iterator SOM<DistFunc>::begin() {
   return m_cells.begin();
 }
 
-template <std::size_t ND, typename DistFunc>
-typename SOM<ND, DistFunc>::iterator SOM<ND, DistFunc>::end() {
+template <typename DistFunc>
+typename SOM<DistFunc>::iterator SOM<DistFunc>::end() {
   return m_cells.end();
 }
 
-template <std::size_t ND, typename DistFunc>
-typename SOM<ND, DistFunc>::const_iterator SOM<ND, DistFunc>::begin() const {
+template <typename DistFunc>
+typename SOM<DistFunc>::const_iterator SOM<DistFunc>::begin() const {
   return m_cells.begin();
 }
 
-template <std::size_t ND, typename DistFunc>
-typename SOM<ND, DistFunc>::const_iterator SOM<ND, DistFunc>::end() const {
+template <typename DistFunc>
+typename SOM<DistFunc>::const_iterator SOM<DistFunc>::end() const {
   return m_cells.end();
 }
 
-template <std::size_t ND, typename DistFunc>
-typename SOM<ND, DistFunc>::const_iterator SOM<ND, DistFunc>::cbegin() {
+template <typename DistFunc>
+typename SOM<DistFunc>::const_iterator SOM<DistFunc>::cbegin() {
   return m_cells.cbegin();
 }
 
-template <std::size_t ND, typename DistFunc>
-typename SOM<ND, DistFunc>::const_iterator SOM<ND, DistFunc>::cend() {
+template <typename DistFunc>
+typename SOM<DistFunc>::const_iterator SOM<DistFunc>::cend() {
   return m_cells.cend();
 }
 
 namespace SOM_impl {
 
-template <std::size_t ND, typename DistFunc>
-std::tuple<std::size_t, std::size_t, double> findBMU_impl(const SOM<ND, DistFunc>&                             som,
-                                                          std::function<double(const std::array<double, ND>&)> dist_func) {
+template <typename DistFunc>
+std::tuple<std::size_t, std::size_t, double> findBMU_impl(const SOM<DistFunc>&                              som,
+                                                          std::function<double(const std::vector<double>&)> dist_func) {
   auto   result_iter      = som.begin();
   double closest_distance = std::numeric_limits<double>::max();
   for (auto iter = som.begin(); iter != som.end(); ++iter) {
@@ -103,42 +109,46 @@ std::tuple<std::size_t, std::size_t, double> findBMU_impl(const SOM<ND, DistFunc
 
 }  // end of namespace SOM_impl
 
-template <std::size_t ND, typename DistFunc>
-std::tuple<std::size_t, std::size_t, double> SOM<ND, DistFunc>::findBMU(const std::array<double, ND>& input) const {
+template <typename DistFunc>
+std::tuple<std::size_t, std::size_t, double> SOM<DistFunc>::findBMU(const std::vector<double>& input) const {
+  assert(input.size() == m_dimensions);
   DistFunc dist_func{};
-  return SOM_impl::findBMU_impl<ND, DistFunc>(
-      *this, [&dist_func, &input](const std::array<double, ND>& cell) -> double { return dist_func.distance(cell, input); });
+  return SOM_impl::findBMU_impl<DistFunc>(*this, [&dist_func, &input](const std::vector<double>& cell) -> double {
+    return dist_func.distance(cell, input);
+  });
 }
 
-template <std::size_t ND, typename DistFunc>
-std::tuple<std::size_t, std::size_t, double> SOM<ND, DistFunc>::findBMU(const std::array<double, ND>& input,
-                                                                        const std::array<double, ND>& uncertainties) const {
+template <typename DistFunc>
+std::tuple<std::size_t, std::size_t, double> SOM<DistFunc>::findBMU(const std::vector<double>& input,
+                                                                    const std::vector<double>& uncertainties) const {
+  assert(input.size() == uncertainties.size() && input.size() == m_dimensions);
   DistFunc dist_func{};
-  return SOM_impl::findBMU_impl<ND, DistFunc>(*this,
-                                              [&dist_func, &input, &uncertainties](const std::array<double, ND>& cell) -> double {
-                                                return dist_func.distance(cell, input, uncertainties);
-                                              });
+  return SOM_impl::findBMU_impl<DistFunc>(
+      *this, [&dist_func, &input, &uncertainties](const std::vector<double>& cell) -> double {
+        return dist_func.distance(cell, input, uncertainties);
+      });
 }
 
-template <std::size_t ND, typename DistFunc>
+template <typename DistFunc>
 template <typename InputType, typename WeightFunc>
-std::tuple<std::size_t, std::size_t, double> SOM<ND, DistFunc>::findBMU(const InputType& input, WeightFunc weight_func) const {
+std::tuple<std::size_t, std::size_t, double> SOM<DistFunc>::findBMU(const InputType& input,
+                                                                    WeightFunc       weight_func) const {
 
-  static_assert(std::is_same<decltype(std::declval<WeightFunc>()(input)), std::array<double, ND>>::value,
-                "WeightFunc must be callable with input as parameter, returning an std::array<double, ND>");
+  static_assert(std::is_same<decltype(std::declval<WeightFunc>()(input)), std::vector<double>>::value,
+                "WeightFunc must be callable with input as parameter, returning an std::vector<double>");
 
   return findBMU(weight_func(input));
 }
 
-template <std::size_t ND, typename DistFunc>
+template <typename DistFunc>
 template <typename InputType, typename WeightFunc, typename UncertaintyFunc>
-std::tuple<std::size_t, std::size_t, double> SOM<ND, DistFunc>::findBMU(const InputType& input, WeightFunc weight_func,
-                                                                        UncertaintyFunc uncertainty_func) const {
+std::tuple<std::size_t, std::size_t, double> SOM<DistFunc>::findBMU(const InputType& input, WeightFunc weight_func,
+                                                                    UncertaintyFunc uncertainty_func) const {
 
-  static_assert(std::is_same<decltype(std::declval<WeightFunc>()(input)), std::array<double, ND>>::value,
-                "WeightFunc must be callable with input as parameter, returning an std::array<double, ND>");
-  static_assert(std::is_same<decltype(std::declval<UncertaintyFunc>()(input)), std::array<double, ND>>::value,
-                "UncertaintyFunc must be callable with input as parameter, returning an std::array<double, ND>");
+  static_assert(std::is_same<decltype(std::declval<WeightFunc>()(input)), std::vector<double>>::value,
+                "WeightFunc must be callable with input as parameter, returning an std::vector<double>");
+  static_assert(std::is_same<decltype(std::declval<UncertaintyFunc>()(input)), std::vector<double>>::value,
+                "UncertaintyFunc must be callable with input as parameter, returning an std::vector<double>");
 
   return findBMU(weight_func(input), uncertainty_func(input));
 }

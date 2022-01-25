@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2021 Euclid Science Ground Segment
+ * Copyright (C) 2012-2022 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -25,7 +25,8 @@
 #define SOM_DISTANCE_H
 
 #include <array>
-#include <cmath>  // for sqrt
+#include <cassert>  // for assert
+#include <cmath>    // for sqrt
 
 #include "ElementsKernel/Exception.h"
 
@@ -33,41 +34,43 @@ namespace Euclid {
 namespace SOM {
 namespace Distance {
 
-template <typename std::size_t ND>
 class Interface {
 
 public:
   virtual ~Interface() = default;
 
-  virtual double distance(const std::array<double, ND>& left, const std::array<double, ND>& right) const = 0;
+  virtual double distance(const std::vector<double>& left, const std::vector<double>& right) const = 0;
 
-  virtual double distance(const std::array<double, ND>&, const std::array<double, ND>&,
-                          const std::array<double, ND>&) const {
+  virtual double distance(const std::vector<double>&, const std::vector<double>&, const std::vector<double>&) const {
     throw Elements::Exception() << "Distance with uncertainties is not supported "
                                 << "for this type of distance";
   }
 };
 
-template <typename std::size_t ND>
-class L2 : public Interface<ND> {
+class L2 : public Interface {
 
 public:
   virtual ~L2() = default;
 
-  double distance(const std::array<double, ND>& left, const std::array<double, ND>& right) const override {
+  double distance(const std::vector<double>& left, const std::vector<double>& right) const override {
+    assert(left.size() == right.size());
     double result = 0;
-    for (std::size_t i = 0; i < ND; ++i) {
-      result += (left[i] - right[i]) * (left[i] - right[i]);
+    for (auto li = left.begin(), ri = right.begin(); li < left.end(); ++li, ++ri) {
+      double diff = (*li - *ri);
+      result += diff * diff;
     }
     return std::sqrt(result);
   }
 
-  double distance(const std::array<double, ND>& left, const std::array<double, ND>& right,
-                  const std::array<double, ND>& uncertainties) const override {
+  double distance(const std::vector<double>& left, const std::vector<double>& right,
+                  const std::vector<double>& uncertainties) const override {
+    assert(left.size() == right.size() && left.size() == uncertainties.size());
+
     double result = 0;
-    for (std::size_t i = 0; i < ND; ++i) {
-      double up   = (left[i] - right[i]) * (left[i] - right[i]);
-      double down = uncertainties[i] * uncertainties[i];
+    for (auto li = left.begin(), ri = right.begin(), ui = uncertainties.begin(); li < left.end(); ++li, ++ri, ++ui) {
+      double diff = *li - *ri;
+      double up   = diff * diff;
+      double down = *ui * *ui;
       result += up / down;
     }
     return std::sqrt(result);

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2021 Euclid Science Ground Segment
+ * Copyright (C) 2012-2022 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -38,8 +38,8 @@ public:
   SOMTrainer(NeighborhoodFunc::Signature neighborhood_func, LearningRestraintFunc::Signature learning_restraint_func)
       : m_neighborhood_func(neighborhood_func), m_learning_restraint_func(learning_restraint_func) {}
 
-  template <std::size_t ND, typename DistFunc, typename InputIter, typename InputToWeightFunc>
-  void train(SOM<ND, DistFunc>& som, std::size_t iter_no, InputIter begin, InputIter end, InputToWeightFunc weight_func,
+  template <typename DistFunc, typename InputIter, typename InputToWeightFunc>
+  void train(SOM<DistFunc>& som, std::size_t iter_no, InputIter begin, InputIter end, InputToWeightFunc weight_func,
              const SamplingPolicy::Interface<InputIter>& sampling_policy = SamplingPolicy::FullSet<InputIter>{}) {
 
     // We repeat the training for iter_no iterations
@@ -74,7 +74,7 @@ public:
           // Get the weights of the cell and update them
           if (neighborhood_factor != 0) {
             auto& cell_weights = *cell_it;
-            for (std::size_t wi = 0; wi < ND; ++wi) {
+            for (std::size_t wi = 0; wi < som.getDimensions(); ++wi) {
               cell_weights[wi] =
                   cell_weights[wi] + neighborhood_factor * learn_factor * (input_weights[wi] - cell_weights[wi]);
             }

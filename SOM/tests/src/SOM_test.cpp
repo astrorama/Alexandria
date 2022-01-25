@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2021 Euclid Science Ground Segment
+ * Copyright (C) 2012-2022 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -42,7 +42,7 @@ BOOST_AUTO_TEST_SUITE(SOM_test)
 
 BOOST_AUTO_TEST_CASE(example_test) {
 
-  SOM<2> som{5, 5, InitFunc::uniformRandom(0, 1)};
+  SOM<> som{2, 5, 5, InitFunc::uniformRandom(0, 1)};
   som.findBMU({1, 2});
   som.findBMU({1, 2}, {0.1, 0.4});
 
@@ -50,7 +50,7 @@ BOOST_AUTO_TEST_CASE(example_test) {
 
   SOMTrainer trainer{NeighborhoodFunc::linearUnitDisk(3), LearningRestraintFunc::linear()};
   auto       weight_func = [](const std::pair<double, double>& p) {
-    std::array<double, 2> res;
+    std::vector<double> res(2);
     res[0] = p.first;
     res[1] = p.second;
     return res;
