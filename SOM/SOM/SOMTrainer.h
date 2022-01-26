@@ -68,7 +68,7 @@ public:
 
         for (std::size_t cell_y = 0; cell_y < size_y; ++cell_y) {
           for (std::size_t cell_x = 0; cell_x < size_x; ++cell_x) {
-            auto& cell = som(cell_x, cell_y);
+            auto cell = som(cell_x, cell_y);
 
             // Compute the factor based on the distance of the BMU and the cell
             auto neighborhood_factor = m_neighborhood_func({bmu_x, bmu_y}, {cell_x, cell_y}, i, iter_no);

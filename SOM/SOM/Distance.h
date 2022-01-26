@@ -29,6 +29,7 @@
 #include <cmath>    // for sqrt
 
 #include "ElementsKernel/Exception.h"
+#include "ElementsKernel/Unused.h"
 
 namespace Euclid {
 namespace SOM {
@@ -37,11 +38,15 @@ namespace Distance {
 class Interface {
 
 public:
+  using const_iterator = std::vector<double>::const_iterator;
+
   virtual ~Interface() = default;
 
-  virtual double distance(const std::vector<double>& left, const std::vector<double>& right) const = 0;
+  virtual double distance(const_iterator begin1, const_iterator end1, const_iterator begin2) const = 0;
 
-  virtual double distance(const std::vector<double>&, const std::vector<double>&, const std::vector<double>&) const {
+  virtual double distance(const_iterator ELEMENTS_UNUSED begin1, const_iterator ELEMENTS_UNUSED end1,
+                          const_iterator ELEMENTS_UNUSED begin2,
+                          const_iterator ELEMENTS_UNUSED begin_uncertainties) const {
     throw Elements::Exception() << "Distance with uncertainties is not supported "
                                 << "for this type of distance";
   }
@@ -52,25 +57,23 @@ class L2 : public Interface {
 public:
   virtual ~L2() = default;
 
-  double distance(const std::vector<double>& left, const std::vector<double>& right) const override {
-    assert(left.size() == right.size());
+  double distance(const_iterator begin1, const_iterator end1, const_iterator begin2) const override {
     double result = 0;
-    for (auto li = left.begin(), ri = right.begin(); li < left.end(); ++li, ++ri) {
-      double diff = (*li - *ri);
+    for (; begin1 < end1; ++begin1, ++begin2) {
+      double diff = (*begin1 - *begin2);
       result += diff * diff;
     }
     return std::sqrt(result);
   }
 
-  double distance(const std::vector<double>& left, const std::vector<double>& right,
-                  const std::vector<double>& uncertainties) const override {
-    assert(left.size() == right.size() && left.size() == uncertainties.size());
+  double distance(const_iterator begin1, const_iterator end1, const_iterator begin2,
+                  const_iterator begin_uncertainties) const override {
 
     double result = 0;
-    for (auto li = left.begin(), ri = right.begin(), ui = uncertainties.begin(); li < left.end(); ++li, ++ri, ++ui) {
-      double diff = *li - *ri;
+    for (; begin1 < end1; ++begin1, ++begin2, ++begin_uncertainties) {
+      double diff = *begin1 - *begin2;
       double up   = diff * diff;
-      double down = *ui * *ui;
+      double down = *begin_uncertainties * *begin_uncertainties;
       result += up / down;
     }
     return std::sqrt(result);

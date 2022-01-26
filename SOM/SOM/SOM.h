@@ -25,6 +25,7 @@
 #ifndef _SOM_SOM_H
 #define _SOM_SOM_H
 
+#include "GridContainer/GridCellManagerVectorOfVectors.h"
 #include "GridContainer/GridContainer.h"
 #include "SOM/Distance.h"
 #include "SOM/InitFunc.h"
@@ -49,9 +50,11 @@ class SOM {
                 "DistFunc must be a subclass of the Distance::Interface");
 
 public:
-  using CellGridType   = GridContainer::GridContainer<std::vector<std::vector<double>>, std::size_t, std::size_t>;
-  using iterator       = typename CellGridType::iterator;
-  using const_iterator = typename CellGridType::const_iterator;
+  using GridCellManager = GridContainer::GridCellManagerVectorOfVectors<double>;
+  using CellGridType    = GridContainer::GridContainer<GridCellManager, std::size_t, std::size_t>;
+  using iterator        = typename CellGridType::iterator;
+  using const_iterator  = typename CellGridType::const_iterator;
+  using reference_type  = typename CellGridType::reference_type;
 
   SOM(std::size_t nd, std::size_t x, std::size_t y, InitFunc::Signature init_func = InitFunc::zero);
 
@@ -63,9 +66,9 @@ public:
    */
   virtual ~SOM() = default;
 
-  std::vector<double>& operator()(std::size_t x, std::size_t y);
+  reference_type operator()(std::size_t x, std::size_t y);
 
-  const std::vector<double>& operator()(std::size_t x, std::size_t y) const;
+  const reference_type operator()(std::size_t x, std::size_t y) const;
 
   const std::pair<std::size_t, std::size_t>& getSize() const;
 

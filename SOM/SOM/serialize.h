@@ -25,6 +25,7 @@
 #define SOM_SERIALIZE_H
 
 #include "ElementsKernel/Exception.h"
+#include "GridContainer/serialization/GridCellManagerVectorOfVectors.h"
 #include "SOM/Distance.h"
 #include "SOM/serialization/SOM.h"
 #include <CCfits/CCfits>
@@ -39,7 +40,7 @@ template <typename OArchive, typename DistFunc>
 void somExport(std::ostream& out, const SOM<DistFunc>& som) {
   // Do NOT delete this pointer!!! It  points to the actual som
   const SOM<DistFunc>* ptr = &som;
-  OArchive                 boa{out};
+  OArchive             boa{out};
   boa << ptr;
 }
 
@@ -110,8 +111,8 @@ SOM<DistFunc> somFitsImport(const std::string& filename) {
     throw Elements::Exception() << "Data array in file " << filename << " does not have 3 dimensions";
   }
   std::size_t dim = fits.pHDU().axis(2);
-  std::size_t x = fits.pHDU().axis(0);
-  std::size_t y = fits.pHDU().axis(1);
+  std::size_t x   = fits.pHDU().axis(0);
+  std::size_t y   = fits.pHDU().axis(1);
 
   // Read the data from the file
   std::valarray<double> data;
@@ -119,9 +120,9 @@ SOM<DistFunc> somFitsImport(const std::string& filename) {
 
   // Copy the data in a SOM object
   SOM<DistFunc> result{dim, x, y};
-  int               i = 0;
+  int           i = 0;
   for (std::size_t w_i = 0; w_i < dim; ++w_i) {
-    for (auto& w_arr : result) {
+    for (auto w_arr : result) {
       w_arr[w_i] = data[i];
       ++i;
     }

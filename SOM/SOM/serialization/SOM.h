@@ -43,7 +43,7 @@ void save(Archive& ar, const Euclid::SOM::SOM<DistFunc>& som, const unsigned int
 
 template <class Archive, typename DistFunc>
 void load(Archive& ar, Euclid::SOM::SOM<DistFunc>& som, const unsigned int) {
-  for (auto& cell : som) {
+  for (auto cell : som) {
     ar >> cell;
   }
 }
