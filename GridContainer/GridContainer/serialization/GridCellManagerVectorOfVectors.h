@@ -20,7 +20,7 @@
 #define GRIDCONTAINER_SERIALIZATION_GRIDCONTAINER_H
 
 #include "GridContainer/GridCellManagerVectorOfVectors.h"
-#include <boost/serialization/array_wrapper.hpp>
+#include <boost/serialization/array.hpp>
 #include <boost/serialization/collection_traits.hpp>
 #include <boost/serialization/nvp.hpp>
 #include <boost/serialization/serialization.hpp>
@@ -33,7 +33,7 @@ void save(Archive& ar, const Euclid::GridContainer::VectorValueProxy<T>& value_p
   size_t count = value_proxy.size();
   ar << BOOST_SERIALIZATION_NVP(count);
   if (count > 0) {
-    ar << make_array<const T, size_t>(static_cast<const T*>(&value_proxy[0]), count);
+    ar << make_array<const T>(static_cast<const T*>(&value_proxy[0]), count);
   }
 }
 

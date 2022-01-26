@@ -29,7 +29,7 @@ namespace SOM {
 template <typename DistFunc>
 SOM<DistFunc>::SOM(std::size_t dimensions, std::size_t x, std::size_t y, InitFunc::Signature init_func)
     : m_dimensions(dimensions)
-    , m_cells({ImplTools::indexAxis("X", x), ImplTools::indexAxis("Y", y)}, m_dimensions)
+    , m_cells(std::make_tuple(ImplTools::indexAxis("X", x), ImplTools::indexAxis("Y", y)), m_dimensions)
     , m_size(x, y) {
 
   // Initialize all the grid cells using the given function

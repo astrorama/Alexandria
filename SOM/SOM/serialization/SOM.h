@@ -57,7 +57,8 @@ template <class Archive, typename DistFunc>
 void save_construct_data(Archive& ar, const Euclid::SOM::SOM<DistFunc>* t, const unsigned int) {
   std::string dist_func_type = typeid(DistFunc).name();
   ar << dist_func_type;
-  ar << t->getDimensions();
+  auto dim = t->getDimensions();
+  ar << dim;
   auto size = t->getSize();
   ar << size.first;
   ar << size.second;

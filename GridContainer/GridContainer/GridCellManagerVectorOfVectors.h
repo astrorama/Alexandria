@@ -21,6 +21,7 @@
 
 #include "AlexandriaKernel/memory_tools.h"
 #include "GridContainer/GridCellManagerTraits.h"
+#include <cstddef>
 #include <vector>
 
 namespace Euclid {
@@ -164,11 +165,11 @@ struct VectorValueProxy {
   }
 
   bool operator==(const VectorValueProxy& other) const {
-    return std::equal(m_begin, m_end, other.m_begin, other.m_end);
+    return size() == other.size() && std::equal(m_begin, m_end, other.m_begin);
   }
 
   bool operator!=(const VectorValueProxy& other) const {
-    return !std::equal(m_begin, m_end, other.m_begin, other.m_end);
+    return size() != other.size() || !std::equal(m_begin, m_end, other.m_begin);
   }
 
   operator std::vector<T>() const {
@@ -184,8 +185,8 @@ struct VectorValueProxy {
   }
 
 private:
-  VectorValueProxy(typename std::vector<T>::iterator begin, typename std::vector<T>::iterator end)
-      : m_begin(begin), m_end(end){};
+  VectorValueProxy(typename std::vector<T>::iterator begin_, typename std::vector<T>::iterator end_)
+      : m_begin(begin_), m_end(end_){};
 
   typename std::vector<T>::iterator m_begin, m_end;
 
