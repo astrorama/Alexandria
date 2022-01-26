@@ -58,25 +58,26 @@ public:
         auto input_weights = weight_func(*it);
 
         // Find the coordinates of the BMU for the input
-        std::size_t bmu_x;
-        std::size_t bmu_y;
+        std::size_t bmu_x, bmu_y;
         double      nd_distance;
         std::tie(bmu_x, bmu_y, nd_distance) = som.findBMU(*it, weight_func);
 
         // Now go through all the cells and update their values according their coordinates
-        for (auto cell_it = som.begin(); cell_it != som.end(); ++cell_it) {
+        std::size_t size_x, size_y;
+        std::tie(size_x, size_y) = som.getSize();
 
-          // Compute the factor based on the distance of the BMU and the cell
-          auto cell_x              = cell_it.template axisValue<0>();
-          auto cell_y              = cell_it.template axisValue<1>();
-          auto neighborhood_factor = m_neighborhood_func({bmu_x, bmu_y}, {cell_x, cell_y}, i, iter_no);
+        for (std::size_t cell_y = 0; cell_y < size_y; ++cell_y) {
+          for (std::size_t cell_x = 0; cell_x < size_x; ++cell_x) {
+            auto& cell = som(cell_x, cell_y);
 
-          // Get the weights of the cell and update them
-          if (neighborhood_factor != 0) {
-            auto& cell_weights = *cell_it;
-            for (std::size_t wi = 0; wi < som.getDimensions(); ++wi) {
-              cell_weights[wi] =
-                  cell_weights[wi] + neighborhood_factor * learn_factor * (input_weights[wi] - cell_weights[wi]);
+            // Compute the factor based on the distance of the BMU and the cell
+            auto neighborhood_factor = m_neighborhood_func({bmu_x, bmu_y}, {cell_x, cell_y}, i, iter_no);
+
+            // Get the weights of the cell and update them
+            if (neighborhood_factor != 0) {
+              for (std::size_t wi = 0; wi < som.getDimensions(); ++wi) {
+                cell[wi] = cell[wi] + neighborhood_factor * learn_factor * (input_weights[wi] - cell[wi]);
+              }
             }
           }
         }
