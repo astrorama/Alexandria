@@ -18,6 +18,7 @@
  */
 
 #include "KdTree/KdTree.h"
+#include <array>
 #include <boost/test/unit_test.hpp>
 
 //-----------------------------------------------------------------------------
