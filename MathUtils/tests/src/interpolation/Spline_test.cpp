@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2021 Euclid Science Ground Segment
+ * Copyright (C) 2012-2022 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -241,6 +241,32 @@ BOOST_FIXTURE_TEST_CASE(Spline_Vector, Spline_Fixture) {
   BOOST_REQUIRE_EQUAL(output.size(), xs.size());
   for (size_t i = 0; i < xs.size(); ++i) {
     BOOST_CHECK_CLOSE(output[i], expected[i], close_tolerance);
+  }
+}
+
+//-----------------------------------------------------------------------------
+
+BOOST_FIXTURE_TEST_CASE(InterpolateAllOutside, Spline_Fixture) {
+  // Given
+  std::vector<double> x2{-30., -20., -15.};
+  std::vector<double> x3{40., 50., 60., 80.};
+
+  // When
+  auto cubic = Euclid::MathUtils::interpolate(x, y, Euclid::MathUtils::InterpolationType::CUBIC_SPLINE, false);
+
+  // Then
+  std::vector<double> output;
+  (*cubic)(x2, output);
+  BOOST_CHECK_EQUAL(output.size(), x2.size());
+
+  for (auto& v : output) {
+    BOOST_CHECK_EQUAL(v, 0.);
+  }
+
+  (*cubic)(x3, output);
+  BOOST_CHECK_EQUAL(output.size(), x3.size());
+  for (auto& v : output) {
+    BOOST_CHECK_EQUAL(v, 0.);
   }
 }
 

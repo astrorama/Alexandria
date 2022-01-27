@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2021 Euclid Science Ground Segment
+ * Copyright (C) 2012-2022 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -229,6 +229,34 @@ BOOST_FIXTURE_TEST_CASE(LinearExtrapolate_Vector, Linear_Fixture) {
   BOOST_REQUIRE_EQUAL(output.size(), x2.size());
   for (size_t i = 0; i < output.size(); ++i) {
     BOOST_CHECK_CLOSE(output[i], expected[i], close_tolerance);
+  }
+}
+
+//-----------------------------------------------------------------------------
+
+BOOST_FIXTURE_TEST_CASE(LinearInterpolateAllOutside, Linear_Fixture) {
+  // Given
+  std::vector<double> x{-1., 0., 1., 2., 8., 10.};
+  std::vector<double> y{4., 3., 1., 2., 2., 20.};
+  std::vector<double> x2{-20., -10., -5};
+  std::vector<double> x3{40., 50., 60, 70., 80.};
+
+  // When
+  auto linear = Euclid::MathUtils::interpolate(x, y, Euclid::MathUtils::InterpolationType::LINEAR, false);
+
+  // Then
+  std::vector<double> output;
+  (*linear)(x2, output);
+  BOOST_CHECK_EQUAL(output.size(), x2.size());
+
+  for (auto& v : output) {
+    BOOST_CHECK_EQUAL(v, 0.);
+  }
+
+  (*linear)(x3, output);
+  BOOST_CHECK_EQUAL(output.size(), x3.size());
+  for (auto& v : output) {
+    BOOST_CHECK_EQUAL(v, 0.);
   }
 }
 
