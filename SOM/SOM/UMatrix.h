@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2021 Euclid Science Ground Segment
+ * Copyright (C) 2012-2022 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -34,8 +34,8 @@ using UMatrix = GridContainer::GridContainer<std::vector<double>, std::size_t, s
 
 enum class UMatrixType { MIN, MAX, MEAN };
 
-template <std::size_t ND, typename DistFunc = Distance::L2<ND>>
-UMatrix computeUMatrix(const SOM<ND, DistFunc>& som, UMatrixType type = UMatrixType::MEAN);
+template <typename DistFunc = Distance::L2>
+UMatrix computeUMatrix(const SOM<DistFunc>& som, UMatrixType type = UMatrixType::MEAN);
 
 }  // namespace SOM
 }  // namespace Euclid

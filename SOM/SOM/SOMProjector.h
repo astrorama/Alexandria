@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2021 Euclid Science Ground Segment
+ * Copyright (C) 2012-2022 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -37,13 +37,13 @@ public:
   template <typename T>
   using ProjectGrid = GridContainer::GridContainer<std::vector<T>, std::size_t, std::size_t>;
 
-  template <typename T, std::size_t ND, typename DistFunc, typename InputIter, typename WeightFunc, typename AdderFunc>
-  static ProjectGrid<T> project(const SOM<ND, DistFunc>& som, InputIter begin, InputIter end, WeightFunc weight_func,
+  template <typename T, typename DistFunc, typename InputIter, typename WeightFunc, typename AdderFunc>
+  static ProjectGrid<T> project(const SOM<DistFunc>& som, InputIter begin, InputIter end, WeightFunc weight_func,
                                 AdderFunc adder_func, const T& init_cell = T{});
 
-  template <typename T, std::size_t ND, typename DistFunc, typename InputIter, typename WeightFunc,
+  template <typename T, typename DistFunc, typename InputIter, typename WeightFunc,
             typename UncertaintyFunc, typename AdderFunc>
-  static ProjectGrid<T> project(const SOM<ND, DistFunc>& som, InputIter begin, InputIter end, WeightFunc weight_func,
+  static ProjectGrid<T> project(const SOM<DistFunc>& som, InputIter begin, InputIter end, WeightFunc weight_func,
                                 UncertaintyFunc uncertainty_func, AdderFunc adder_func, const T& init_cell = T{});
 };
 

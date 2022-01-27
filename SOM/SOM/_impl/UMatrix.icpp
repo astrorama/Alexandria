@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2021 Euclid Science Ground Segment
+ * Copyright (C) 2012-2022 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -32,16 +32,18 @@ namespace SOM {
 namespace UMatrix_impl {
 
 std::map<UMatrixType, std::function<double(const std::vector<double>&)>> type_func_map{
-    {UMatrixType::MIN, [](const std::vector<double>& dist_list) { return *std::min_element(dist_list.begin(), dist_list.end()); }},
-    {UMatrixType::MAX, [](const std::vector<double>& dist_list) { return *std::max_element(dist_list.begin(), dist_list.end()); }},
+    {UMatrixType::MIN,
+     [](const std::vector<double>& dist_list) { return *std::min_element(dist_list.begin(), dist_list.end()); }},
+    {UMatrixType::MAX,
+     [](const std::vector<double>& dist_list) { return *std::max_element(dist_list.begin(), dist_list.end()); }},
     {UMatrixType::MEAN, [](const std::vector<double>& dist_list) {
        return std::accumulate(dist_list.begin(), dist_list.end(), 0.) / dist_list.size();
      }}};
 
 }
 
-template <std::size_t ND, typename DistFunc>
-UMatrix computeUMatrix(const SOM<ND, DistFunc>& som, UMatrixType type) {
+template <typename DistFunc>
+UMatrix computeUMatrix(const SOM<DistFunc>& som, UMatrixType type) {
 
   DistFunc dist_func{};
 
@@ -69,7 +71,9 @@ UMatrix computeUMatrix(const SOM<ND, DistFunc>& som, UMatrixType type) {
             continue;
           }
 
-          dist_list.push_back(dist_func.distance(som(x, y), som(i, j)));
+          auto sxy = som(x, y);
+          auto sij = som(i, j);
+          dist_list.push_back(dist_func.distance(sxy.begin(), sxy.end(), sij.begin()));
         }
       }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2021 Euclid Science Ground Segment
+ * Copyright (C) 2012-2022 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -42,7 +42,7 @@ using namespace Euclid::SOM;
 // This should not be done, but it is the only way I found to get this test to compile in CentOS7
 // BOOST_TEST_DONT_PRINT_LOG_VALUE didn't work there
 namespace std {
-std::ostream& operator<<(std::ostream& out, const std::array<double, 2>& array) {
+std::ostream& operator<<(std::ostream& out, const std::vector<double>& array) {
   out << '[' << array[0] << ", " << array[1] << ']';
   return out;
 }
@@ -54,7 +54,7 @@ std::ostream& operator<<(std::ostream& out, const std::pair<size_t, size_t>& pai
 }  // namespace std
 
 struct SerializationFixture {
-  SOM<2> m_som{5, 5, InitFunc::uniformRandom(0, 1)};
+  SOM<> m_som{2, 5, 5, InitFunc::uniformRandom(0, 1)};
 
   SerializationFixture() {
     m_som.findBMU({1, 2});
@@ -64,7 +64,7 @@ struct SerializationFixture {
 
     SOMTrainer trainer{NeighborhoodFunc::linearUnitDisk(3), LearningRestraintFunc::linear()};
     auto       weight_func = [](const std::pair<double, double>& p) {
-      std::array<double, 2> res;
+      std::vector<double> res(2);
       res[0] = p.first;
       res[1] = p.second;
       return res;
@@ -94,8 +94,9 @@ BOOST_FIXTURE_TEST_CASE_TEMPLATE(serialize_som_test, T, archive_types, Serializa
   std::stringstream stream;
   somExport<typename T::oarchive>(stream, m_som);
 
-  auto result = somImport<typename T::iarchive, 2>(stream);
+  auto result = somImport<typename T::iarchive>(stream);
 
+  BOOST_CHECK_EQUAL(m_som.getDimensions(), 2);
   BOOST_CHECK_EQUAL(m_som.getSize(), result.getSize());
   BOOST_CHECK_EQUAL_COLLECTIONS(m_som.begin(), m_som.end(), result.begin(), result.end());
 }
@@ -106,7 +107,8 @@ BOOST_FIXTURE_TEST_CASE(serialize_som_fits_test, SerializationFixture) {
   Elements::TempPath fits_file;
 
   somFitsExport(fits_file.path().native(), m_som);
-  auto result = somFitsImport<2>(fits_file.path().native());
+  auto result = somFitsImport(fits_file.path().native());
+  BOOST_CHECK_EQUAL(m_som.getDimensions(), 2);
   BOOST_CHECK_EQUAL(m_som.getSize(), result.getSize());
   BOOST_CHECK_EQUAL_COLLECTIONS(m_som.begin(), m_som.end(), result.begin(), result.end());
 }

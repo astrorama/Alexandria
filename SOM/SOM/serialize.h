@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2021 Euclid Science Ground Segment
+ * Copyright (C) 2012-2022 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -25,6 +25,7 @@
 #define SOM_SERIALIZE_H
 
 #include "ElementsKernel/Exception.h"
+#include "GridContainer/serialization/GridCellManagerVectorOfVectors.h"
 #include "SOM/Distance.h"
 #include "SOM/serialization/SOM.h"
 #include <CCfits/CCfits>
@@ -35,55 +36,55 @@
 namespace Euclid {
 namespace SOM {
 
-template <typename OArchive, std::size_t ND, typename DistFunc>
-void somExport(std::ostream& out, const SOM<ND, DistFunc>& som) {
+template <typename OArchive, typename DistFunc>
+void somExport(std::ostream& out, const SOM<DistFunc>& som) {
   // Do NOT delete this pointer!!! It  points to the actual som
-  const SOM<ND, DistFunc>* ptr = &som;
-  OArchive                 boa{out};
+  const SOM<DistFunc>* ptr = &som;
+  OArchive             boa{out};
   boa << ptr;
 }
 
-template <std::size_t ND, typename DistFunc>
-void somBinaryExport(std::ostream& out, const SOM<ND, DistFunc>& som) {
+template <typename DistFunc>
+void somBinaryExport(std::ostream& out, const SOM<DistFunc>& som) {
   somExport<boost::archive::binary_oarchive>(out, som);
 }
 
-template <typename IArchive, std::size_t ND, typename DistFunc = Distance::L2<ND>>
-SOM<ND, DistFunc> somImport(std::istream& in) {
+template <typename IArchive, typename DistFunc = Distance::L2>
+SOM<DistFunc> somImport(std::istream& in) {
   IArchive bia{in};
   // Do NOT delete manually this pointer. It is wrapped with a unique_ptr later.
-  SOM<ND, DistFunc>* ptr;
+  SOM<DistFunc>* ptr;
   bia >> ptr;
-  std::unique_ptr<SOM<ND, DistFunc>> smart_ptr{ptr};
+  std::unique_ptr<SOM<DistFunc>> smart_ptr{ptr};
   // We move out to the result the som pointed by the pointer. The unique_ptr
   // will delete the (now empty) pointed object
   return std::move(*smart_ptr);
 }
 
-template <std::size_t ND, typename DistFunc = Distance::L2<ND>>
-SOM<ND, DistFunc> somBinaryImport(std::istream& in) {
-  return somImport<boost::archive::binary_iarchive, ND, DistFunc>(in);
+template <typename DistFunc = Distance::L2>
+SOM<DistFunc> somBinaryImport(std::istream& in) {
+  return somImport<boost::archive::binary_iarchive, DistFunc>(in);
 }
 
-template <std::size_t ND, typename DistFunc>
-void somFitsExport(const std::string& filename, const SOM<ND, DistFunc>& som) {
+template <typename DistFunc>
+void somFitsExport(const std::string& filename, const SOM<DistFunc>& som) {
 
   // Create the output file and the array HDU
   int         n_axes = 3;
   std::size_t x;
   std::size_t y;
   std::tie(x, y)           = som.getSize();
-  long         ax_sizes[3] = {long(x), long(y), long(ND)};
+  long         ax_sizes[3] = {long(x), long(y), long(som.getDimensions())};
   CCfits::FITS fits(filename, DOUBLE_IMG, n_axes, ax_sizes);
 
   // Write in the header the DistFunc type
   fits.pHDU().addKey("DISTFUNC", typeid(DistFunc).name(), "");
 
   // Create a valarray with the SOM data
-  std::size_t           total_size = x * y * ND;
+  std::size_t           total_size = x * y * som.getDimensions();
   std::valarray<double> data(total_size);
   int                   i = 0;
-  for (std::size_t w_i = 0; w_i < ND; ++w_i) {
+  for (std::size_t w_i = 0; w_i < som.getDimensions(); ++w_i) {
     for (auto& w_arr : som) {
       data[i] = w_arr[w_i];
       ++i;
@@ -92,8 +93,8 @@ void somFitsExport(const std::string& filename, const SOM<ND, DistFunc>& som) {
   fits.pHDU().write(1, total_size, data);
 }
 
-template <std::size_t ND, typename DistFunc = Distance::L2<ND>>
-SOM<ND, DistFunc> somFitsImport(const std::string& filename) {
+template <typename DistFunc = Distance::L2>
+SOM<DistFunc> somFitsImport(const std::string& filename) {
 
   CCfits::FITS fits(filename, CCfits::Read);
 
@@ -109,22 +110,19 @@ SOM<ND, DistFunc> somFitsImport(const std::string& filename) {
   if (fits.pHDU().axes() != 3) {
     throw Elements::Exception() << "Data array in file " << filename << " does not have 3 dimensions";
   }
-  if (fits.pHDU().axis(2) != ND) {
-    throw Elements::Exception() << "Weights dimension of array in file " << filename << " should have size " << ND
-                                << " but was " << fits.pHDU().axis(2);
-  }
-  std::size_t x = fits.pHDU().axis(0);
-  std::size_t y = fits.pHDU().axis(1);
+  std::size_t dim = fits.pHDU().axis(2);
+  std::size_t x   = fits.pHDU().axis(0);
+  std::size_t y   = fits.pHDU().axis(1);
 
   // Read the data from the file
   std::valarray<double> data;
   fits.pHDU().read(data);
 
   // Copy the data in a SOM object
-  SOM<ND, DistFunc> result{x, y};
-  int               i = 0;
-  for (std::size_t w_i = 0; w_i < ND; ++w_i) {
-    for (auto& w_arr : result) {
+  SOM<DistFunc> result{dim, x, y};
+  int           i = 0;
+  for (std::size_t w_i = 0; w_i < dim; ++w_i) {
+    for (auto w_arr : result) {
       w_arr[w_i] = data[i];
       ++i;
     }
