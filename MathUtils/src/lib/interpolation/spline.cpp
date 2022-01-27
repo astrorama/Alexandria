@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2021 Euclid Science Ground Segment
+ * Copyright (C) 2012-2022 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -66,10 +66,13 @@ public:
 
     // To avoid if within the loop, treat values exactly equal to the first knot here
     auto x = xs.begin() + n_less;
-    while (*x == m_knots.front()) {
+    while (x < xs.end() && *x == m_knots.front()) {
       auto x2 = *x * *x;
       *o      = m_coef3.front() * x2 * *x + m_coef2.front() * x2 + m_coef1.front() * *x + m_coef0.front();
       ++o, ++x;
+    }
+    if (x == xs.end()) {
+      return;
     }
 
     // Interpolate values within range
