@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2021 Euclid Science Ground Segment
+ * Copyright (C) 2012-2022 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -31,7 +31,11 @@ namespace Table {
 
 ColumnDescription::ColumnDescription(std::string input_name, std::type_index input_type, std::string input_unit,
                                      std::string input_description)
-    : name(input_name), type(input_type), unit(input_unit), description(input_description) {
+    : ColumnDescription(input_name, input_type, 0, input_unit, input_description) {}
+
+ColumnDescription::ColumnDescription(std::string input_name, std::type_index input_type, std::size_t input_size,
+                                     std::string input_unit, std::string input_description)
+    : name(input_name), type(input_type), unit(input_unit), description(input_description), size(input_size) {
   static const regex::regex vertical_whitespace{".*[\\n\\v\\f\\r].*"};
 
   if (input_name.empty()) {

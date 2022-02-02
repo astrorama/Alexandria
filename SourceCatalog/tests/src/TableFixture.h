@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2021 Euclid Science Ground Segment
+ * Copyright (C) 2012-2022 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -49,7 +49,7 @@ struct TableFixture {
   // A test table with two flux columns and two rows
   const std::vector<Euclid::Table::ColumnInfo::info_type> info_list{
       Euclid::Table::ColumnInfo::info_type(source_id_name, typeid(int64_t)),
-      Euclid::Table::ColumnInfo::info_type(source_id_str_name, typeid(std::string)),
+      Euclid::Table::ColumnInfo::info_type(source_id_str_name, typeid(std::string), 3),
       Euclid::Table::ColumnInfo::info_type("Boolean", typeid(bool)),
       Euclid::Table::ColumnInfo::info_type("Integer", typeid(int32_t)),
       Euclid::Table::ColumnInfo::info_type("Long", typeid(int64_t)),

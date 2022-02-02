@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2021 Euclid Science Ground Segment
+ * Copyright (C) 2012-2022 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -69,8 +69,9 @@ AsciiReader& AsciiReader::fixColumnNames(std::vector<std::string> column_names) 
 
   m_column_names = std::move(column_names);
 
-  std::set<std::string> set{};
-  static const regex::regex vertical_whitespace{".*[\\n\\v\\f\\r].*"};  // Checks if input contains any whitespace characters
+  std::set<std::string>     set{};
+  static const regex::regex vertical_whitespace{".*[\\n\\v\\f\\r].*"};  // Checks if input contains any whitespace
+                                                                        // characters
   for (const auto& name : m_column_names) {
     if (name.empty()) {
       throw Elements::Exception() << "Empty string column names are not allowed";
@@ -91,6 +92,22 @@ AsciiReader& AsciiReader::fixColumnNames(std::vector<std::string> column_names) 
 }
 
 AsciiReader& AsciiReader::fixColumnTypes(std::vector<std::type_index> column_types) {
+  if (m_reading_started) {
+    throw Elements::Exception() << "Fixing the column types after reading "
+                                << "has started is not allowed";
+  }
+
+  std::transform(column_types.begin(), column_types.end(), std::back_inserter(m_column_types),
+                 [](std::type_index type) { return std::make_pair(type, std::size_t(0)); });
+
+  if (!m_column_names.empty() && !m_column_types.empty() && m_column_names.size() != m_column_types.size()) {
+    throw Elements::Exception() << "Different number of column names and types";
+  }
+
+  return *this;
+}
+
+AsciiReader& AsciiReader::fixColumnTypes(std::vector<std::pair<std::type_index, std::size_t>> column_types) {
   if (m_reading_started) {
     throw Elements::Exception() << "Fixing the column types after reading "
                                 << "has started is not allowed";
@@ -126,10 +143,10 @@ void AsciiReader::readColumnInfo() {
   auto auto_names = autoDetectColumnNames(in, m_comment, columns_number);
   auto auto_desc  = autoDetectColumnDescriptions(in, m_comment);
 
-  std::vector<std::string>     names{};
-  std::vector<std::type_index> types{};
-  std::vector<std::string>     units{};
-  std::vector<std::string>     descriptions{};
+  std::vector<std::string>                             names{};
+  std::vector<std::pair<std::type_index, std::size_t>> types{};
+  std::vector<std::string>                             units{};
+  std::vector<std::string>                             descriptions{};
   for (size_t i = 0; i < columns_number; ++i) {
     if (m_column_names.empty()) {
       names.emplace_back(auto_names[i]);
@@ -139,7 +156,7 @@ void AsciiReader::readColumnInfo() {
     auto info = auto_desc.find(auto_names[i]);
     if (info != auto_desc.end()) {
       if (m_column_types.empty()) {
-        types.emplace_back(info->second.type);
+        types.emplace_back(info->second.type, info->second.size);
       } else {
         types.emplace_back(m_column_types[i]);
       }
@@ -147,7 +164,7 @@ void AsciiReader::readColumnInfo() {
       descriptions.emplace_back(info->second.description);
     } else {
       if (m_column_types.empty()) {
-        types.emplace_back(typeid(std::string));
+        types.emplace_back(typeid(std::string), 0);
       } else {
         types.emplace_back(m_column_types[i]);
       }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2021 Euclid Science Ground Segment
+ * Copyright (C) 2012-2022 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -73,15 +73,16 @@ BOOST_FIXTURE_TEST_CASE(autoDetectColumnTypesAscii, FitsReaderHelper_Fixture) {
   CCfits::Table*           table_hdu = fits->addTable("ASCII", 0, names, types, units, CCfits::HduType::AsciiTbl);
 
   // When
-  std::vector<std::type_index> result = Euclid::Table::autoDetectColumnTypes(*table_hdu);
+  auto result = Euclid::Table::autoDetectColumnTypes(*table_hdu);
 
   // Then
   BOOST_CHECK_EQUAL(result.size(), 5);
-  BOOST_CHECK(result[0] == typeid(std::string));
-  BOOST_CHECK(result[1] == typeid(int64_t));
-  BOOST_CHECK(result[2] == typeid(double));
-  BOOST_CHECK(result[3] == typeid(double));
-  BOOST_CHECK(result[4] == typeid(double));
+  BOOST_CHECK(result[0].first == typeid(std::string));
+  BOOST_CHECK_EQUAL(result[0].second, 10);
+  BOOST_CHECK(result[1].first == typeid(int64_t));
+  BOOST_CHECK(result[2].first == typeid(double));
+  BOOST_CHECK(result[3].first == typeid(double));
+  BOOST_CHECK(result[4].first == typeid(double));
 }
 
 //-----------------------------------------------------------------------------
@@ -98,25 +99,32 @@ BOOST_FIXTURE_TEST_CASE(autoDetectColumnTypesBinary, FitsReaderHelper_Fixture) {
   CCfits::Table*           table_hdu = fits->addTable("Binary", 0, names, types);
 
   // When
-  std::vector<std::type_index> result = Euclid::Table::autoDetectColumnTypes(*table_hdu);
+  auto result = Euclid::Table::autoDetectColumnTypes(*table_hdu);
 
   // Then
   BOOST_CHECK_EQUAL(result.size(), 15);
-  BOOST_CHECK(result[0] == typeid(bool));
-  BOOST_CHECK(result[1] == typeid(int32_t));
-  BOOST_CHECK(result[2] == typeid(int32_t));
-  BOOST_CHECK(result[3] == typeid(int32_t));
-  BOOST_CHECK(result[4] == typeid(int64_t));
-  BOOST_CHECK(result[5] == typeid(std::string));
-  BOOST_CHECK(result[6] == typeid(float));
-  BOOST_CHECK(result[7] == typeid(double));
-  BOOST_CHECK(result[8] == typeid(std::vector<int32_t>));
-  BOOST_CHECK(result[9] == typeid(std::vector<int32_t>));
-  BOOST_CHECK(result[10] == typeid(std::vector<int32_t>));
-  BOOST_CHECK(result[11] == typeid(std::vector<int64_t>));
-  BOOST_CHECK(result[12] == typeid(std::vector<float>));
-  BOOST_CHECK(result[13] == typeid(std::vector<double>));
-  BOOST_CHECK(result[14] == typeid(double));
+  BOOST_CHECK(result[0].first == typeid(bool));
+  BOOST_CHECK(result[1].first == typeid(int32_t));
+  BOOST_CHECK(result[2].first == typeid(int32_t));
+  BOOST_CHECK(result[3].first == typeid(int32_t));
+  BOOST_CHECK(result[4].first == typeid(int64_t));
+  BOOST_CHECK(result[5].first == typeid(std::string));
+  BOOST_CHECK_EQUAL(result[5].second, 10);
+  BOOST_CHECK(result[6].first == typeid(float));
+  BOOST_CHECK(result[7].first == typeid(double));
+  BOOST_CHECK(result[8].first == typeid(std::vector<int32_t>));
+  BOOST_CHECK_EQUAL(result[8].second, 2);
+  BOOST_CHECK(result[9].first == typeid(std::vector<int32_t>));
+  BOOST_CHECK_EQUAL(result[9].second, 3);
+  BOOST_CHECK(result[10].first == typeid(std::vector<int32_t>));
+  BOOST_CHECK_EQUAL(result[10].second, 4);
+  BOOST_CHECK(result[11].first == typeid(std::vector<int64_t>));
+  BOOST_CHECK_EQUAL(result[11].second, 5);
+  BOOST_CHECK(result[12].first == typeid(std::vector<float>));
+  BOOST_CHECK_EQUAL(result[12].second, 6);
+  BOOST_CHECK(result[13].first == typeid(std::vector<double>));
+  BOOST_CHECK_EQUAL(result[13].second, 7);
+  BOOST_CHECK(result[14].first == typeid(double));
 }
 
 //-----------------------------------------------------------------------------

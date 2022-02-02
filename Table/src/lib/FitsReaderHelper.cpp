@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2021 Euclid Science Ground Segment
+ * Copyright (C) 2012-2022 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -45,17 +45,18 @@ std::vector<std::string> autoDetectColumnNames(const CCfits::Table& table_hdu) {
   return names;
 }
 
-std::type_index asciiFormatToType(const std::string& format) {
+std::pair<std::type_index, std::size_t> asciiFormatToType(const std::string& format) {
   if (format[0] == 'A') {
-    return typeid(std::string);
+    std::size_t size = std::stoi(format.substr(1));
+    return {typeid(std::string), size};
   } else if (format[0] == 'I') {
-    return typeid(int64_t);
+    return {typeid(int64_t), 0};
   } else if (format[0] == 'F') {
-    return typeid(double);
+    return {typeid(double), 0};
   } else if (format[0] == 'E') {
-    return typeid(double);
+    return {typeid(double), 0};
   } else if (format[0] == 'D') {
-    return typeid(double);
+    return {typeid(double), 0};
   }
   throw Elements::Exception() << "FITS ASCII table format " << format << " is not "
                               << "yet supported";
@@ -73,7 +74,8 @@ extern const std::vector<std::pair<char, std::type_index>>  //
                   {'E', typeid(std::vector<float>)},   {'D', typeid(std::vector<double>)},
                   {'A', typeid(std::string)}};
 
-std::type_index binaryFormatToType(const std::string& format, const std::vector<size_t>& shape) {
+std::pair<std::type_index, std::size_t> binaryFormatToType(const std::string&         format,
+                                                           const std::vector<size_t>& shape) {
   // Get the size out of the format string
   char ft   = format.front();
   int  size = 1;
@@ -87,7 +89,7 @@ std::type_index binaryFormatToType(const std::string& format, const std::vector<
     auto i = std::find_if(NdTypeMap.begin(), NdTypeMap.end(),
                           [ft](const std::pair<char, std::type_index>& p) { return p.first == ft; });
     if (i != NdTypeMap.end()) {
-      return i->second;
+      return {i->second, size};
     }
   }
   // If the dimensionality is 1, it is a scalar
@@ -95,7 +97,7 @@ std::type_index binaryFormatToType(const std::string& format, const std::vector<
     auto i = std::find_if(ScalarTypeMap.begin(), ScalarTypeMap.end(),
                           [ft](const std::pair<char, std::type_index>& p) { return p.first == ft; });
     if (i != ScalarTypeMap.end()) {
-      return i->second;
+      return {i->second, size};
     }
   }
   // Last, vectors
@@ -103,7 +105,7 @@ std::type_index binaryFormatToType(const std::string& format, const std::vector<
     auto i = std::find_if(VectorTypeMap.begin(), VectorTypeMap.end(),
                           [ft](const std::pair<char, std::type_index>& p) { return p.first == ft; });
     if (i != VectorTypeMap.end()) {
-      return i->second;
+      return {i->second, size};
     }
   }
   throw Elements::Exception() << "FITS binary table format " << format << " is not "
@@ -125,8 +127,8 @@ std::vector<size_t> parseTDIM(const std::string& tdim) {
   return result;
 }
 
-std::vector<std::type_index> autoDetectColumnTypes(const CCfits::Table& table_hdu) {
-  std::vector<std::type_index> types{};
+std::vector<std::pair<std::type_index, std::size_t>> autoDetectColumnTypes(const CCfits::Table& table_hdu) {
+  std::vector<std::pair<std::type_index, std::size_t>> types{};
   for (int i = 1; i <= table_hdu.numCols(); i++) {
     auto& column = table_hdu.column(i);
 

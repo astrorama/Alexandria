@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2021 Euclid Science Ground Segment
+ * Copyright (C) 2012-2022 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -60,7 +60,7 @@ ELEMENTS_API std::vector<std::string> autoDetectColumnNames(const CCfits::Table&
  * @throws Elements::Exception
  *    if a column type is not supported
  */
-ELEMENTS_API std::vector<std::type_index> autoDetectColumnTypes(const CCfits::Table& table_hdu);
+ELEMENTS_API std::vector<std::pair<std::type_index, std::size_t>> autoDetectColumnTypes(const CCfits::Table& table_hdu);
 
 /// Reads the column units based on the TUNITn keyword
 ELEMENTS_API std::vector<std::string> autoDetectColumnUnits(const CCfits::Table& table_hdu);

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2021 Euclid Science Ground Segment
+ * Copyright (C) 2012-2022 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -211,6 +211,8 @@ BOOST_FIXTURE_TEST_CASE(ReadSuccess, FitsReader_Fixture) {
   BOOST_CHECK(column_info.getDescription(8).type == typeid(NdArray<double>));
   BOOST_CHECK(column_info.getDescription(9).type == typeid(double));
   BOOST_CHECK(column_info.getDescription(10).type == typeid(std::vector<double>));
+
+  BOOST_CHECK_EQUAL(column_info.getDescription(3).size, 10);
 
   std::vector<std::string> units{"deg", "mag", "erg", "ph", "s", "m", "pc", "count", "x", "x", "x"};
   for (size_t i = 0; i < column_info.size(); ++i) {
