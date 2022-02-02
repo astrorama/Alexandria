@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2021 Euclid Science Ground Segment
+ * Copyright (C) 2012-2022 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -62,6 +62,10 @@ public:
   ColumnDescription(std::string name, std::type_index type = typeid(std::string), std::string unit = "",
                     std::string description = "");
 
+  // cppcheck-suppress  noExplicitConstructor
+  ColumnDescription(std::string name, std::type_index type, std::size_t size, std::string unit = "",
+                    std::string description = "");
+
   ColumnDescription(const ColumnDescription&) = default;
   ColumnDescription(ColumnDescription&&)      = default;
   ColumnDescription& operator=(const ColumnDescription&) = default;
@@ -82,6 +86,7 @@ public:
   std::type_index type;
   std::string     unit;
   std::string     description;
+  std::size_t     size;
 
 }; /* End of ColumnDescription class */
 

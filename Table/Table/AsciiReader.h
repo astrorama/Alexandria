@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2021 Euclid Science Ground Segment
+ * Copyright (C) 2012-2022 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -171,6 +171,8 @@ public:
    */
   AsciiReader& fixColumnTypes(std::vector<std::type_index> column_types);
 
+  AsciiReader& fixColumnTypes(std::vector<std::pair<std::type_index, std::size_t>> column_types);
+
   /**
    * @brief Returns the column information of the table
    * @details
@@ -224,12 +226,12 @@ private:
 
   void readColumnInfo();
 
-  std::unique_ptr<InstOrRefHolder<std::istream>> m_stream_holder;
-  bool                                           m_reading_started = false;
-  std::string                                    m_comment         = "#";
-  std::vector<std::type_index>                   m_column_types{};
-  std::vector<std::string>                       m_column_names{};
-  std::shared_ptr<ColumnInfo>                    m_column_info;
+  std::unique_ptr<InstOrRefHolder<std::istream>>       m_stream_holder;
+  bool                                                 m_reading_started = false;
+  std::string                                          m_comment         = "#";
+  std::vector<std::pair<std::type_index, std::size_t>> m_column_types{};
+  std::vector<std::string>                             m_column_names{};
+  std::shared_ptr<ColumnInfo>                          m_column_info;
 
 }; /* End of AsciiReader class */
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2021 Euclid Science Ground Segment
+ * Copyright (C) 2012-2022 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -45,7 +45,7 @@ std::string scientificFormat(T value) {
 }
 
 size_t maxWidth(const Table& table, size_t column_index) {
-  size_t width = 0;
+  size_t width = table.getColumnInfo()->getDescription(column_index).size;
   for (const auto& row : table) {
     width = std::max(width, boost::lexical_cast<std::string>(row[column_index]).size());
   }
