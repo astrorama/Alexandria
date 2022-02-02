@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2021 Euclid Science Ground Segment
+ * Copyright (C) 2012-2022 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -210,8 +210,8 @@ void writeNpyHeader(std::ostream& out, std::vector<size_t> shape, const std::vec
 
   // Pad header with spaces so the header block is 64 bytes aligned
   size_t total_length = sizeof(NPY_MAGIC) + sizeof(NPY_VERSION) + sizeof(header_len) + header_len + 1;  // Keep 1 for \n
-  size_t padding      = 64 - total_length % 64;
-  if (padding) {
+  if (total_length % 64 > 0) {
+    size_t padding = 64 - total_length % 64;
     header << std::string(padding, '\x20');
   }
   header << '\n';
