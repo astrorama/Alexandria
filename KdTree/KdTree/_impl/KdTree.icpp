@@ -149,9 +149,10 @@ std::size_t KdTree<T, DistanceMethod>::countPointsWithinRadius(const T& coord, d
 
 template <typename T>
 bool EuclideanDistance<T>::isCloserThan(const T& a, const T& b, double distance) {
-  using Traits       = KdTreeTraits<T>;
-  double square_dist = 0.0;
-  for (std::size_t i = 0; i < Traits::getDimensions(a); i++) {
+  using Traits                  = KdTreeTraits<T>;
+  double            square_dist = 0.0;
+  const std::size_t dim         = Traits::getDimensions(a);
+  for (std::size_t i = 0; i < dim; i++) {
     double delta = Traits::getCoord(a, i) - Traits::getCoord(b, i);
     square_dist += delta * delta;
   }
@@ -160,9 +161,10 @@ bool EuclideanDistance<T>::isCloserThan(const T& a, const T& b, double distance)
 
 template <typename T>
 bool ChebyshevDistance<T>::isCloserThan(const T& a, const T& b, double distance) {
-  using Traits = KdTreeTraits<T>;
-  double max_d = 0.;
-  for (std::size_t i = 0; i < Traits::getDimensions(a); ++i) {
+  using Traits            = KdTreeTraits<T>;
+  double            max_d = 0.;
+  const std::size_t dim   = Traits::getDimensions(a);
+  for (std::size_t i = 0; i < dim; ++i) {
     double delta = std::abs(Traits::getCoord(a, i) - Traits::getCoord(b, i));
     if (delta > max_d) {
       max_d = delta;
