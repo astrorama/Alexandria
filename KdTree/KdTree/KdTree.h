@@ -63,6 +63,7 @@ public:
 
   explicit KdTree(const std::vector<T>& data, std::size_t leaf_size = 100);
   std::vector<T> findPointsWithinRadius(const T& coord, double radius) const;
+  std::size_t countPointsWithinRadius(const T& coord, double radius) const;
 
 private:
   class Node;

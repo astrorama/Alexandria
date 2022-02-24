@@ -22,8 +22,9 @@ namespace KdTree {
 template <typename T, typename DistanceMethod>
 class KdTree<T, DistanceMethod>::Node {
 public:
-  virtual std::vector<T> findPointsWithinRadius(const T& coord, double radius) const = 0;
-  virtual ~Node()                                                                    = default;
+  virtual void        findPointsWithinRadius(const T& coord, double radius, std::vector<T>& selection) const = 0;
+  virtual std::size_t countPointsWithinRadius(const T& coord, double radius) const                           = 0;
+  virtual ~Node()                                                                                            = default;
 };
 
 template <typename T, typename DistanceMethod>
@@ -32,15 +33,24 @@ public:
   explicit Leaf(const std::vector<T>&& data) : m_data(data) {}
   virtual ~Leaf() = default;
 
-  std::vector<T> findPointsWithinRadius(const T& coord, double radius) const override {
-    std::vector<T> selection;
+  void findPointsWithinRadius(const T& coord, double radius, std::vector<T>& selection) const override {
+    selection.reserve(selection.size() + m_data.size());
     for (auto& entry : m_data) {
       if (DistanceMethod::isCloserThan(entry, coord, radius)) {
-        selection.push_back(entry);
+        selection.emplace_back(entry);
       }
     }
-    return selection;
   }
+
+  std::size_t countPointsWithinRadius(const T& coord, double radius) const override {
+    std::size_t count = 0;
+    for (auto& entry : m_data) {
+      if (DistanceMethod::isCloserThan(entry, coord, radius)) {
+        ++count;
+      }
+    }
+    return count;
+  };
 
 private:
   const std::vector<T> m_data;
@@ -79,21 +89,25 @@ public:
     }
   }
 
-  std::vector<T> findPointsWithinRadius(const T& coord, double radius) const override {
+  void findPointsWithinRadius(const T& coord, double radius, std::vector<T>& selection) const override {
     if (Traits::getCoord(coord, m_axis) + radius < m_split_value) {
-      return m_left_child->findPointsWithinRadius(coord, radius);
+      m_left_child->findPointsWithinRadius(coord, radius, selection);
     } else if (Traits::getCoord(coord, m_axis) - radius > m_split_value) {
-      return m_right_child->findPointsWithinRadius(coord, radius);
+      m_right_child->findPointsWithinRadius(coord, radius, selection);
     } else {
-      auto left  = m_left_child->findPointsWithinRadius(coord, radius);
-      auto right = m_right_child->findPointsWithinRadius(coord, radius);
+      m_left_child->findPointsWithinRadius(coord, radius, selection);
+      m_right_child->findPointsWithinRadius(coord, radius, selection);
+    }
+  }
 
-      std::vector<T> merge;
-      merge.reserve(left.size() + right.size());
-      merge.insert(merge.end(), left.begin(), left.end());
-      merge.insert(merge.end(), right.begin(), right.end());
-
-      return merge;
+  std::size_t countPointsWithinRadius(const T& coord, double radius) const override {
+    if (Traits::getCoord(coord, m_axis) + radius < m_split_value) {
+      return m_left_child->countPointsWithinRadius(coord, radius);
+    } else if (Traits::getCoord(coord, m_axis) - radius > m_split_value) {
+      return m_right_child->countPointsWithinRadius(coord, radius);
+    } else {
+      return m_left_child->countPointsWithinRadius(coord, radius) +
+             m_right_child->countPointsWithinRadius(coord, radius);
     }
   }
 
@@ -123,7 +137,14 @@ KdTree<T, DistanceMethod>::KdTree(const std::vector<T>& data, std::size_t leaf_s
 
 template <typename T, typename DistanceMethod>
 std::vector<T> KdTree<T, DistanceMethod>::findPointsWithinRadius(const T& coord, double radius) const {
-  return m_root->findPointsWithinRadius(coord, radius);
+  std::vector<T> output;
+  m_root->findPointsWithinRadius(coord, radius, output);
+  return output;
+}
+
+template <typename T, typename DistanceMethod>
+std::size_t KdTree<T, DistanceMethod>::countPointsWithinRadius(const T& coord, double radius) const {
+  return m_root->countPointsWithinRadius(coord, radius);
 }
 
 template <typename T>
