@@ -26,8 +26,15 @@ namespace KdTree {
 
 template <typename T>
 struct KdTreeTraits {
+  /**
+   * @return the number of dimensions
+   */
   static std::size_t getDimensions(const T& t);
-  static double      getCoord(const T& t, size_t index);
+
+  /**
+   * @return the value for the coordinate `index`
+   */
+  static double getCoord(const T& t, size_t index);
 };
 
 /**
@@ -40,7 +47,7 @@ struct EuclideanDistance {
 };
 
 /**
- * Chebyshev Distance: |max(x_i - y_i)|
+ * Chebyshev Distance: max(|x_i - y_i|)
  * @tparam T
  */
 template <typename T>
@@ -53,7 +60,8 @@ struct ChebyshevDistance {
  * @brief A simple N-dimensional KdTree for speeding-up elements within range types of queries.
  *
  * template arguments: T type, a traits implementation to access coordinates must be provided
- *                     S maximum number of elements in leaf nodes (must be >= 4, in practice we want larger anyway)
+ *                     DistanceMethod type, a class providing a static method indicating if two points
+ *                                    are closer than a given distance
  */
 
 template <typename T, typename DistanceMethod = EuclideanDistance<T>>
@@ -62,7 +70,21 @@ public:
   using Traits = KdTreeTraits<T>;
 
   explicit KdTree(const std::vector<T>& data, std::size_t leaf_size = 100);
+
+  /**
+   * Return the points that are within the given radius from the coordinate `coord`
+   * @param coord
+   * @param radius
+   * @return
+   */
   std::vector<T> findPointsWithinRadius(const T& coord, double radius) const;
+
+  /**
+   * Count how many points are within the given radius from the coordonate `coord`
+   * @param coord
+   * @param radius
+   * @return
+   */
   std::size_t countPointsWithinRadius(const T& coord, double radius) const;
 
 private:
