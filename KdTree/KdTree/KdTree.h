@@ -15,8 +15,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#ifndef _SEUTILS_KDTREE_H_
-#define _SEUTILS_KDTREE_H_
+#ifndef _KDTREE_KDTREE_H_
+#define _KDTREE_KDTREE_H_
 
 #include <algorithm>
 #include <memory>
@@ -128,4 +128,4 @@ struct KdTreeTraits<std::array<U, S>> {
 
 #include "_impl/KdTree.icpp"
 
-#endif /* _SEUTILS_KDTREE_H_ */
+#endif /* _KDTREE_KDTREE_H_ */
