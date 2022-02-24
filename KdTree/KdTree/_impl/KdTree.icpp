@@ -15,30 +15,27 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
+#include <stdexcept>
+
 namespace KdTree {
 
-template<typename T, size_t N, size_t S>
-class KdTree<T, N, S>::Node {
+template <typename T, typename DistanceMethod>
+class KdTree<T, DistanceMethod>::Node {
 public:
-  virtual std::vector<T> findPointsWithinRadius(Coord coord, double radius) const = 0;
-  virtual ~Node() = default;
+  virtual std::vector<T> findPointsWithinRadius(const T& coord, double radius) const = 0;
+  virtual ~Node()                                                                    = default;
 };
 
-template<typename T, size_t N, size_t S>
-class KdTree<T, N, S>::Leaf : public KdTree::Node {
+template <typename T, typename DistanceMethod>
+class KdTree<T, DistanceMethod>::Leaf : public KdTree::Node {
 public:
   explicit Leaf(const std::vector<T>&& data) : m_data(data) {}
   virtual ~Leaf() = default;
 
-  std::vector<T> findPointsWithinRadius(Coord coord, double radius) const override {
+  std::vector<T> findPointsWithinRadius(const T& coord, double radius) const override {
     std::vector<T> selection;
     for (auto& entry : m_data) {
-      double square_dist = 0.0;
-      for (size_t i =0; i < N; i++) {
-        double delta = Traits::getCoord(entry, i) - coord.coord[i];
-        square_dist += delta * delta;
-      }
-      if (square_dist < radius*radius) {
+      if (DistanceMethod::isCloserThan(entry, coord, radius)) {
         selection.push_back(entry);
       }
     }
@@ -49,14 +46,13 @@ private:
   const std::vector<T> m_data;
 };
 
-template<typename T, size_t N, size_t S>
-class KdTree<T, N, S>::Split : public KdTree::Node  {
+template <typename T, typename DistanceMethod>
+class KdTree<T, DistanceMethod>::Split : public KdTree::Node {
 public:
   virtual ~Split() = default;
-  explicit Split(std::vector<T> data, size_t axis) : m_axis(axis) {
-    std::sort(data.begin(), data.end(), [axis](const T& a, const T& b) -> bool {
-      return Traits::getCoord(a, axis) < Traits::getCoord(b, axis);
-    });
+  explicit Split(std::size_t dimensionality, std::size_t leaf_size, std::vector<T> data, size_t axis) : m_axis(axis) {
+    std::sort(data.begin(), data.end(),
+              [axis](const T& a, const T& b) -> bool { return Traits::getCoord(a, axis) < Traits::getCoord(b, axis); });
 
     double a = Traits::getCoord(data.at(data.size() / 2 - 1), axis);
     double b = Traits::getCoord(data.at(data.size() / 2), axis);
@@ -71,25 +67,25 @@ public:
     std::vector<T> left(data.begin(), data.begin() + data.size() / 2);
     std::vector<T> right(data.begin() + data.size() / 2, data.end());
 
-    if (left.size() > S) {
-      m_left_child = std::make_shared<Split>(std::move(left), (axis+1) % N);
+    if (left.size() > leaf_size) {
+      m_left_child = std::make_shared<Split>(dimensionality, leaf_size, std::move(left), (axis + 1) % dimensionality);
     } else {
       m_left_child = std::make_shared<Leaf>(std::move(left));
     }
-    if (right.size() > S) {
-      m_right_child = std::make_shared<Split>(std::move(right), (axis+1) % N);
+    if (right.size() > leaf_size) {
+      m_right_child = std::make_shared<Split>(dimensionality, leaf_size, std::move(right), (axis + 1) % dimensionality);
     } else {
       m_right_child = std::make_shared<Leaf>(std::move(right));
     }
   }
 
-  std::vector<T> findPointsWithinRadius(Coord coord, double radius) const override {
-    if (coord.coord[m_axis] + radius < m_split_value) {
+  std::vector<T> findPointsWithinRadius(const T& coord, double radius) const override {
+    if (Traits::getCoord(coord, m_axis) + radius < m_split_value) {
       return m_left_child->findPointsWithinRadius(coord, radius);
-    } else if (coord.coord[m_axis] - radius > m_split_value) {
+    } else if (Traits::getCoord(coord, m_axis) - radius > m_split_value) {
       return m_right_child->findPointsWithinRadius(coord, radius);
     } else {
-      auto left = m_left_child->findPointsWithinRadius(coord, radius);
+      auto left  = m_left_child->findPointsWithinRadius(coord, radius);
       auto right = m_right_child->findPointsWithinRadius(coord, radius);
 
       std::vector<T> merge;
@@ -109,19 +105,49 @@ private:
   std::shared_ptr<Node> m_right_child;
 };
 
-template<typename T, size_t N, size_t S>
-KdTree<T, N, S>::KdTree(const std::vector<T>& data) {
-  if (data.size() > S) {
-    m_root = std::make_shared<Split>(data, 0);
+template <typename T, typename DistanceMethod>
+KdTree<T, DistanceMethod>::KdTree(const std::vector<T>& data, std::size_t leaf_size) {
+  if (!data.empty()) {
+    m_dimensionality = Traits::getDimensions(data.front());
+  } else {
+    m_dimensionality = 0;
+  }
+
+  if (data.size() > leaf_size) {
+    m_root = std::make_shared<Split>(m_dimensionality, leaf_size, data, 0);
   } else {
     std::vector<T> data_copy(data);
     m_root = std::make_shared<Leaf>(std::move(data_copy));
   }
 }
 
-template<typename T, size_t N, size_t S>
-std::vector<T> KdTree<T, N, S>::findPointsWithinRadius(Coord coord, double radius) const {
+template <typename T, typename DistanceMethod>
+std::vector<T> KdTree<T, DistanceMethod>::findPointsWithinRadius(const T& coord, double radius) const {
   return m_root->findPointsWithinRadius(coord, radius);
 }
 
+template <typename T>
+bool EuclideanDistance<T>::isCloserThan(const T& a, const T& b, double distance) {
+  using Traits       = KdTreeTraits<T>;
+  double square_dist = 0.0;
+  for (std::size_t i = 0; i < Traits::getDimensions(a); i++) {
+    double delta = Traits::getCoord(a, i) - Traits::getCoord(b, i);
+    square_dist += delta * delta;
+  }
+  return square_dist < distance * distance;
 }
+
+template <typename T>
+bool ChebyshevDistance<T>::isCloserThan(const T& a, const T& b, double distance) {
+  using Traits = KdTreeTraits<T>;
+  double max_d = 0.;
+  for (std::size_t i = 0; i < Traits::getDimensions(a); ++i) {
+    double delta = std::abs(Traits::getCoord(a, i) - Traits::getCoord(b, i));
+    if (delta > max_d) {
+      max_d = delta;
+    }
+  }
+  return max_d <= distance;
+}
+
+}  // namespace KdTree

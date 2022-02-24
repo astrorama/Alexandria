@@ -18,15 +18,34 @@
 #ifndef _SEUTILS_KDTREE_H_
 #define _SEUTILS_KDTREE_H_
 
-#include <vector>
-#include <memory>
 #include <algorithm>
+#include <memory>
+#include <vector>
 
 namespace KdTree {
 
 template <typename T>
 struct KdTreeTraits {
-  static double getCoord(const T& t, size_t index);
+  static std::size_t getDimensions(const T& t);
+  static double      getCoord(const T& t, size_t index);
+};
+
+/**
+ * Euclidean distance
+ * @tparam T
+ */
+template <typename T>
+struct EuclideanDistance {
+  static bool isCloserThan(const T& a, const T& b, double distance);
+};
+
+/**
+ * Chebyshev Distance: |max(x_i - y_i)|
+ * @tparam T
+ */
+template <typename T>
+struct ChebyshevDistance {
+  static bool isCloserThan(const T& a, const T& b, double distance);
 };
 
 /**
@@ -34,28 +53,52 @@ struct KdTreeTraits {
  * @brief A simple N-dimensional KdTree for speeding-up elements within range types of queries.
  *
  * template arguments: T type, a traits implementation to access coordinates must be provided
- *                     N number of dimensions
  *                     S maximum number of elements in leaf nodes (must be >= 4, in practice we want larger anyway)
  */
 
-template<typename T, size_t N=2, size_t S=100>
+template <typename T, typename DistanceMethod = EuclideanDistance<T>>
 class KdTree {
 public:
   using Traits = KdTreeTraits<T>;
 
-  struct Coord {
-    double coord[N];
-  };
-
-  explicit KdTree(const std::vector<T>& data);
-  std::vector<T> findPointsWithinRadius(Coord coord, double radius) const;
+  explicit KdTree(const std::vector<T>& data, std::size_t leaf_size = 100);
+  std::vector<T> findPointsWithinRadius(const T& coord, double radius) const;
 
 private:
   class Node;
   class Leaf;
   class Split;
 
+  std::size_t           m_dimensionality;
   std::shared_ptr<Node> m_root;
+};
+
+/**
+ * Trait specialization for std::vector
+ */
+template <typename U>
+struct KdTreeTraits<std::vector<U>> {
+  static std::size_t getDimensions(const std::vector<U>& t) {
+    return t.size();
+  }
+
+  static double getCoord(const std::vector<U>& t, size_t index) {
+    return t[index];
+  }
+};
+
+/**
+ * Trait specialization for std::array
+ */
+template <typename U, std::size_t S>
+struct KdTreeTraits<std::array<U, S>> {
+  static std::size_t getDimensions(const std::array<U, S>& t) {
+    return S;
+  }
+
+  static double getCoord(const std::array<U, S>& t, size_t index) {
+    return t[index];
+  }
 };
 
 }  // namespace KdTree
