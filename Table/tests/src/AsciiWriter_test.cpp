@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2021 Euclid Science Ground Segment
+ * Copyright (C) 2012-2022 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -40,7 +40,7 @@ struct AsciiWriter_Fixture {
                                                ColumnInfo::info_type("NdArray", typeid(NdArray<double>))};
   std::shared_ptr<ColumnInfo>        column_info{new ColumnInfo{info_list}};
   std::vector<Row::cell_type>        values0{
-      true, std::string{"Two 1"}, 1, 4.1, 0.f, std::vector<double>{1.1, 1.2}, NdArray<double>{{2, 2}, {1, 2, 3, 4}}};
+      true, std::string{"Two 1"}, 1, 4.158963613258, 0.f, std::vector<double>{1.1, 1.2}, NdArray<double>{{2, 2}, {1, 2, 3, 4}}};
   Row                         row0{values0, column_info};
   std::vector<Row::cell_type> values1{
       false, std::string{"Two 2"}, 1234567890, 42e-16, 0.f, std::vector<double>{2.1, 2.2}, NdArray<double>{{2, 2}, {9, 8, 7, 6}}};
@@ -101,11 +101,11 @@ BOOST_FIXTURE_TEST_CASE(addData, AsciiWriter_Fixture) {
                                 "# Column: DoubleVector [double]\n"
                                 "# Column: NdArray [double+]\n"
                                 "\n"
-                                "# Boolean \"A Long Column Name\"    Integer       D F    DoubleVector      NdArray\n"
+                                "# Boolean \"A Long Column Name\"    Integer              D F    DoubleVector      NdArray\n"
                                 "\n"
-                                "        1              \"Two 1\"          1     4.1 0         1.1,1.2 <2,2>1,2,3,4\n"
-                                "        0              \"Two 2\" 1234567890 4.2e-15 0         2.1,2.2 <2,2>9,8,7,6\n"
-                                "        1              \"Two 3\"        234     4.3 0 3.1,3.2,3.3,3.4 <2,2>1,3,5,7\n"));
+                                "        1              \"Two 1\"          1 4.158963613258 0         1.1,1.2 <2,2>1,2,3,4\n"
+                                "        0              \"Two 2\" 1234567890        4.2e-15 0         2.1,2.2 <2,2>9,8,7,6\n"
+                                "        1              \"Two 3\"        234            4.3 0 3.1,3.2,3.3,3.4 <2,2>1,3,5,7\n"));
 
   BOOST_CHECK_EQUAL(stream_double_slash.str(),
                     std::string("// Column: Boolean bool (unit1) - Desc1\n"
@@ -116,11 +116,11 @@ BOOST_FIXTURE_TEST_CASE(addData, AsciiWriter_Fixture) {
                                 "// Column: DoubleVector [double]\n"
                                 "// Column: NdArray [double+]\n"
                                 "\n"
-                                "// Boolean \"A Long Column Name\"    Integer       D F    DoubleVector      NdArray\n"
+                                "// Boolean \"A Long Column Name\"    Integer              D F    DoubleVector      NdArray\n"
                                 "\n"
-                                "         1              \"Two 1\"          1     4.1 0         1.1,1.2 <2,2>1,2,3,4\n"
-                                "         0              \"Two 2\" 1234567890 4.2e-15 0         2.1,2.2 <2,2>9,8,7,6\n"
-                                "         1              \"Two 3\"        234     4.3 0 3.1,3.2,3.3,3.4 <2,2>1,3,5,7\n"));
+                                "         1              \"Two 1\"          1 4.158963613258 0         1.1,1.2 <2,2>1,2,3,4\n"
+                                "         0              \"Two 2\" 1234567890        4.2e-15 0         2.1,2.2 <2,2>9,8,7,6\n"
+                                "         1              \"Two 3\"        234            4.3 0 3.1,3.2,3.3,3.4 <2,2>1,3,5,7\n"));
 }
 
 //-----------------------------------------------------------------------------
@@ -144,17 +144,17 @@ BOOST_FIXTURE_TEST_CASE(addDataNoColumnInfo, AsciiWriter_Fixture) {
 
   // Then
   BOOST_CHECK_EQUAL(stream_hash.str(),
-                    std::string("# Boolean \"A Long Column Name\"    Integer       D F    DoubleVector      NdArray\n"
+                    std::string("# Boolean \"A Long Column Name\"    Integer              D F    DoubleVector      NdArray\n"
                                 "\n"
-                                "        1              \"Two 1\"          1     4.1 0         1.1,1.2 <2,2>1,2,3,4\n"
-                                "        0              \"Two 2\" 1234567890 4.2e-15 0         2.1,2.2 <2,2>9,8,7,6\n"
-                                "        1              \"Two 3\"        234     4.3 0 3.1,3.2,3.3,3.4 <2,2>1,3,5,7\n"));
+                                "        1              \"Two 1\"          1 4.158963613258 0         1.1,1.2 <2,2>1,2,3,4\n"
+                                "        0              \"Two 2\" 1234567890        4.2e-15 0         2.1,2.2 <2,2>9,8,7,6\n"
+                                "        1              \"Two 3\"        234            4.3 0 3.1,3.2,3.3,3.4 <2,2>1,3,5,7\n"));
   BOOST_CHECK_EQUAL(stream_double_slash.str(),
-                    std::string("// Boolean \"A Long Column Name\"    Integer       D F    DoubleVector      NdArray\n"
+                    std::string("// Boolean \"A Long Column Name\"    Integer              D F    DoubleVector      NdArray\n"
                                 "\n"
-                                "         1              \"Two 1\"          1     4.1 0         1.1,1.2 <2,2>1,2,3,4\n"
-                                "         0              \"Two 2\" 1234567890 4.2e-15 0         2.1,2.2 <2,2>9,8,7,6\n"
-                                "         1              \"Two 3\"        234     4.3 0 3.1,3.2,3.3,3.4 <2,2>1,3,5,7\n"));
+                                "         1              \"Two 1\"          1 4.158963613258 0         1.1,1.2 <2,2>1,2,3,4\n"
+                                "         0              \"Two 2\" 1234567890        4.2e-15 0         2.1,2.2 <2,2>9,8,7,6\n"
+                                "         1              \"Two 3\"        234            4.3 0 3.1,3.2,3.3,3.4 <2,2>1,3,5,7\n"));
 }
 
 //-----------------------------------------------------------------------------
@@ -192,11 +192,11 @@ BOOST_FIXTURE_TEST_CASE(addDataComments, AsciiWriter_Fixture) {
                                 "# Column: DoubleVector [double]\n"
                                 "# Column: NdArray [double+]\n"
                                 "\n"
-                                "# Boolean \"A Long Column Name\"    Integer       D F    DoubleVector      NdArray\n"
+                                "# Boolean \"A Long Column Name\"    Integer              D F    DoubleVector      NdArray\n"
                                 "\n"
-                                "        1              \"Two 1\"          1     4.1 0         1.1,1.2 <2,2>1,2,3,4\n"
-                                "        0              \"Two 2\" 1234567890 4.2e-15 0         2.1,2.2 <2,2>9,8,7,6\n"
-                                "        1              \"Two 3\"        234     4.3 0 3.1,3.2,3.3,3.4 <2,2>1,3,5,7\n"));
+                                "        1              \"Two 1\"          1 4.158963613258 0         1.1,1.2 <2,2>1,2,3,4\n"
+                                "        0              \"Two 2\" 1234567890        4.2e-15 0         2.1,2.2 <2,2>9,8,7,6\n"
+                                "        1              \"Two 3\"        234            4.3 0 3.1,3.2,3.3,3.4 <2,2>1,3,5,7\n"));
   BOOST_CHECK_EQUAL(stream_double_slash.str(),
                     std::string("// First comment\n"
                                 "// Second comment\n"
@@ -209,11 +209,11 @@ BOOST_FIXTURE_TEST_CASE(addDataComments, AsciiWriter_Fixture) {
                                 "// Column: DoubleVector [double]\n"
                                 "// Column: NdArray [double+]\n"
                                 "\n"
-                                "// Boolean \"A Long Column Name\"    Integer       D F    DoubleVector      NdArray\n"
+                                "// Boolean \"A Long Column Name\"    Integer              D F    DoubleVector      NdArray\n"
                                 "\n"
-                                "         1              \"Two 1\"          1     4.1 0         1.1,1.2 <2,2>1,2,3,4\n"
-                                "         0              \"Two 2\" 1234567890 4.2e-15 0         2.1,2.2 <2,2>9,8,7,6\n"
-                                "         1              \"Two 3\"        234     4.3 0 3.1,3.2,3.3,3.4 <2,2>1,3,5,7\n"));
+                                "         1              \"Two 1\"          1 4.158963613258 0         1.1,1.2 <2,2>1,2,3,4\n"
+                                "         0              \"Two 2\" 1234567890        4.2e-15 0         2.1,2.2 <2,2>9,8,7,6\n"
+                                "         1              \"Two 3\"        234            4.3 0 3.1,3.2,3.3,3.4 <2,2>1,3,5,7\n"));
 }
 
 //-----------------------------------------------------------------------------
