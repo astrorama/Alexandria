@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2021 Euclid Science Ground Segment
+ * Copyright (C) 2012-2022 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -128,9 +128,41 @@ ELEMENTS_API std::vector<std::string> autoDetectColumnNames(std::istream& in, co
  */
 ELEMENTS_API Row::cell_type convertToCellType(const std::string& value, std::type_index type);
 
+/**
+ * @param in The stream to read the column names from
+ * @param comment The comment pattern
+ * @return true if there is at least one more row
+ */
 ELEMENTS_API bool hasNextRow(std::istream& in, const std::string& comment);
 
+/**
+ *
+ * @param in The stream to read the column names from
+ * @param comment The comment pattern
+ * @return The number of remaining rows
+ */
 ELEMENTS_API std::size_t countRemainingRows(std::istream& in, const std::string& comment);
+
+/**
+ * @param line Line from the file
+ * @param comment The comment pattern
+ * @return The tokens within the line (splitting based on whitespaces, trimmed)
+ */
+ELEMENTS_API std::vector<std::string> splitLine(std::string line, const std::string& comment);
+
+/**
+ * @param in The stream to read the column names from
+ * @param comment The comment pattern
+ * @return The tokens within the *first* data line (skipping comments)
+ */
+ELEMENTS_API std::vector<std::string> firstDataLine(std::istream& in, const std::string& comment);
+
+/**
+ * Guess the data type of a given token (i.e. if a float, an integer or a string)
+ * @param token
+ * @return A pair type, length (if it can be inferred)
+ */
+ELEMENTS_API std::pair<std::type_index, std::size_t> guessColumnType(const std::string& token);
 
 }  // namespace Table
 }  // end of namespace Euclid
