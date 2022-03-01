@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2021 Euclid Science Ground Segment
+ * Copyright (C) 2012-2022 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -28,6 +28,7 @@
 #include "NdArray/NdArray.h"
 #include <boost/algorithm/string.hpp>
 #include <boost/lexical_cast.hpp>
+#include <boost/spirit/include/qi.hpp>
 #include <boost/tokenizer.hpp>
 #include <set>
 #include <sstream>
@@ -366,6 +367,52 @@ std::size_t countRemainingRows(std::istream& in, const std::string& comment) {
     }
   }
   return count;
+}
+
+std::vector<std::string> splitLine(std::string line, const std::string& comment) {
+  std::vector<std::string> cells;
+  size_t                   comment_pos = line.find(comment);
+
+  if (comment_pos != std::string::npos) {
+    line = line.substr(0, comment_pos);
+  }
+  boost::trim(line);
+  if (!line.empty()) {
+    std::stringstream line_stream(line);
+    size_t            count = 0;
+    std::string       token;
+    line_stream >> boost::io::quoted(token);
+    while (line_stream) {
+      cells.emplace_back(token);
+      line_stream >> boost::io::quoted(token);
+      ++count;
+    }
+  }
+  return cells;
+}
+
+std::vector<std::string> firstDataLine(std::istream& in, const std::string& comment) {
+  StreamRewinder rewinder{in};
+  std::string    line(comment);
+  while (in && boost::starts_with(line, comment)) {
+    getline(in, line);
+  }
+  return splitLine(line, comment);
+}
+
+std::pair<std::type_index, std::size_t> guessColumnType(const std::string& token) {
+  namespace qi = boost::spirit::qi;
+  double d;
+  long   l;
+
+  auto it1 = token.begin(), it2 = it1;
+  if (qi::parse(it1, token.end(), qi::long_, l) && it1 == token.end()) {
+    return {typeid(long), 0};
+  }
+  if (qi::parse(it2, token.end(), qi::double_, d) && it2 == token.end()) {
+    return {typeid(double), 0};
+  }
+  return {typeid(std::string), std::size_t(0)};
 }
 
 }  // namespace Table

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2021 Euclid Science Ground Segment
+ * Copyright (C) 2012-2022 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -248,7 +248,8 @@ BOOST_FIXTURE_TEST_CASE(ReadSuccess, AsciiReader_Fixture) {
   BOOST_CHECK_EQUAL(boost::get<std::vector<double>>(table[3][9])[2], 4.3);
   auto ndarray       = boost::get<NdArray<double>>(table[3][10]);
   auto ndarray_shape = ndarray.shape();
-  BOOST_CHECK_EQUAL_COLLECTIONS(ndarray_shape.begin(), ndarray_shape.end(), nd_expected_shape.begin(), nd_expected_shape.end());
+  BOOST_CHECK_EQUAL_COLLECTIONS(ndarray_shape.begin(), ndarray_shape.end(), nd_expected_shape.begin(),
+                                nd_expected_shape.end());
 }
 
 //-----------------------------------------------------------------------------
@@ -258,7 +259,8 @@ BOOST_FIXTURE_TEST_CASE(ReadSuccess, AsciiReader_Fixture) {
 BOOST_FIXTURE_TEST_CASE(ReadOverrideTypes, AsciiReader_Fixture) {
 
   // Given
-  std::vector<std::type_index> types{typeid(bool), typeid(std::string), typeid(int32_t), typeid(int32_t), typeid(int32_t)};
+  std::vector<std::type_index> types{typeid(bool), typeid(std::string), typeid(int32_t), typeid(int32_t),
+                                     typeid(int32_t)};
   std::stringstream            in{multiple_comments};
 
   // When
@@ -351,8 +353,9 @@ BOOST_FIXTURE_TEST_CASE(ReadWrongColumnTypesNumber, AsciiReader_Fixture) {
 
   // Given
   std::vector<std::type_index> wrong_types_less{typeid(bool), typeid(bool), typeid(bool)};
-  std::vector<std::type_index> wrong_types_more{typeid(bool), typeid(bool), typeid(bool), typeid(bool), typeid(bool), typeid(bool),
-                                                typeid(bool), typeid(bool), typeid(bool), typeid(bool), typeid(bool), typeid(bool)};
+  std::vector<std::type_index> wrong_types_more{typeid(bool), typeid(bool), typeid(bool), typeid(bool),
+                                                typeid(bool), typeid(bool), typeid(bool), typeid(bool),
+                                                typeid(bool), typeid(bool), typeid(bool), typeid(bool)};
   std::stringstream            inless{all_types};
   std::stringstream            inmore{all_types};
 
@@ -461,6 +464,29 @@ BOOST_FIXTURE_TEST_CASE(WithQuotes, AsciiReader_Fixture) {
   BOOST_CHECK_EQUAL(boost::get<bool>(table[1][0]), true);
   BOOST_CHECK_EQUAL(boost::get<std::string>(table[0][1]), "regular");
   BOOST_CHECK_EQUAL(boost::get<std::string>(table[1][1]), "spaces here too");
+}
+
+//-----------------------------------------------------------------------------
+
+BOOST_AUTO_TEST_CASE(autoTypeDetection_test) {
+  std::stringstream input(std::string("# No Type Hints"
+                                      "1 string    2.8 variadic 0\n"
+                                      "2 something 3.4 template -2\n"
+                                      "3 foobar    1e5 C++      4\n"));
+
+  // When
+  auto reader = AsciiReader{input};
+  reader.setCommentIndicator("#");
+
+  Table table       = reader.read();
+  auto  column_info = table.getColumnInfo();
+
+  // Then
+  BOOST_CHECK(column_info->getDescription(0).type == typeid(long));
+  BOOST_CHECK(column_info->getDescription(1).type == typeid(std::string));
+  BOOST_CHECK(column_info->getDescription(2).type == typeid(double));
+  BOOST_CHECK(column_info->getDescription(3).type == typeid(std::string));
+  BOOST_CHECK(column_info->getDescription(4).type == typeid(long));
 }
 
 //-----------------------------------------------------------------------------

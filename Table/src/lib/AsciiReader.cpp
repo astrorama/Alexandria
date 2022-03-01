@@ -50,28 +50,6 @@ static std::string _peekLine(std::istream& in) {
   return line;
 }
 
-static std::vector<std::string> _splitLine(std::string line, const std::string& comment_marker) {
-  std::vector<std::string> cells;
-  size_t                   comment_pos = line.find(comment_marker);
-
-  if (comment_pos != std::string::npos) {
-    line = line.substr(0, comment_pos);
-  }
-  boost::trim(line);
-  if (!line.empty()) {
-    std::stringstream line_stream(line);
-    size_t            count = 0;
-    std::string       token;
-    line_stream >> boost::io::quoted(token);
-    while (line_stream) {
-      cells.emplace_back(token);
-      line_stream >> boost::io::quoted(token);
-      ++count;
-    }
-  }
-  return cells;
-}
-
 AsciiReader::AsciiReader(std::istream& stream) : AsciiReader(InstOrRefHolder<std::istream>::create(stream)) {}
 
 AsciiReader::AsciiReader(const std::string& filename) : AsciiReader(create<std::ifstream>(filename)) {}
@@ -173,10 +151,12 @@ void AsciiReader::readColumnInfo() {
   auto auto_names = autoDetectColumnNames(in, m_comment, columns_number);
   auto auto_desc  = autoDetectColumnDescriptions(in, m_comment);
 
-  std::vector<std::string>                             names{};
-  std::vector<std::pair<std::type_index, std::size_t>> types{};
-  std::vector<std::string>                             units{};
-  std::vector<std::string>                             descriptions{};
+  std::vector<std::string>                             names;
+  std::vector<std::pair<std::type_index, std::size_t>> types;
+  std::vector<std::string>                             units;
+  std::vector<std::string>                             descriptions;
+  auto                                                 first_line = firstDataLine(in, m_comment);
+
   for (size_t i = 0; i < columns_number; ++i) {
     if (m_column_names.empty()) {
       names.emplace_back(auto_names[i]);
@@ -193,10 +173,12 @@ void AsciiReader::readColumnInfo() {
       units.emplace_back(info->second.unit);
       descriptions.emplace_back(info->second.description);
     } else {
-      if (m_column_types.empty()) {
-        types.emplace_back(typeid(std::string), 0);
-      } else {
+      if (!m_column_types.empty()) {
         types.emplace_back(m_column_types[i]);
+      } else if (i < first_line.size()) {
+        types.emplace_back(guessColumnType(first_line[i]));
+      } else {
+        types.emplace_back(typeid(std::string), 0);
       }
       units.emplace_back("");
       descriptions.emplace_back("");
@@ -236,7 +218,7 @@ Table AsciiReader::readImpl(long rows) {
   while (in && rows != 0) {
     std::string line;
     getline(in, line);
-    auto tokens = _splitLine(line, m_comment);
+    auto tokens = splitLine(line, m_comment);
     if (tokens.empty()) {
       continue;
     }
@@ -247,7 +229,7 @@ Table AsciiReader::readImpl(long rows) {
     std::vector<Row::cell_type> values;
     values.reserve(tokens.size());
     std::size_t index = 0;
-    std::transform(tokens.begin(), tokens.end(), std::back_inserter(values), [this, &index](const std::string &token){
+    std::transform(tokens.begin(), tokens.end(), std::back_inserter(values), [this, &index](const std::string& token) {
       return convertToCellType(token, m_column_info->getDescription(index++).type);
     });
     row_list.push_back(Row{std::move(values), m_column_info});
