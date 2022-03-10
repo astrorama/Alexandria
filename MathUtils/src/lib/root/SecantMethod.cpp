@@ -17,6 +17,7 @@
  */
 
 #include "MathUtils/root/SecantMethod.h"
+#include <cmath>
 
 namespace Euclid {
 namespace MathUtils {
@@ -36,9 +37,10 @@ std::pair<double, SecantEndReason> secantMethod(const Function& func, double x0,
 
     if (x2 <= params.min) {
       return std::make_pair(params.min, SecantEndReason::FAILED);
-    }
-    if (x2 >= params.max) {
+    } else if (x2 >= params.max) {
       return std::make_pair(params.max, SecantEndReason::FAILED);
+    } else if (std::isnan(x2)) {
+      return std::make_pair(x1, SecantEndReason::FAILED_NAN);
     }
     x0 = x1;
     x1 = x2;

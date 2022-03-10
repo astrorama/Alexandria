@@ -25,7 +25,7 @@
 namespace Euclid {
 namespace MathUtils {
 
-enum class SecantEndReason { SUCCESS, MAX_ITER, TOLERANCE, FAILED };
+enum class SecantEndReason { SUCCESS, MAX_ITER, TOLERANCE, FAILED, FAILED_NAN };
 
 struct SecantParams {
   size_t max_iter = 1000;
