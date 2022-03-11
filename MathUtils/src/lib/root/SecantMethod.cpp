@@ -22,30 +22,47 @@
 namespace Euclid {
 namespace MathUtils {
 
-std::pair<double, SecantEndReason> secantMethod(const Function& func, double x0, double x1,
-                                                const SecantParams& params) {
-  for (std::size_t i = 0; i < params.max_iter; ++i) {
-    double y1 = func(x1);
-    if (y1 == 0.) {
-      return std::make_pair(x1, SecantEndReason::SUCCESS);
-    } else if (std::abs(y1) < params.atol) {
-      return std::make_pair(x1, SecantEndReason::TOLERANCE);
+SecantReturn secantMethod(const Function& func, double x0, double x1, const SecantParams& params) {
+  SecantReturn ret{x0, SecantEndReason::SUCCESS, 0};
+
+  double y0 = func(x0);
+
+  if (!std::isfinite(y0)) {
+    return {x0, SecantEndReason::VALUE_ERROR, 0};
+  }
+
+  for (ret.iterations = 0; ret.iterations < params.max_iter; ++ret.iterations) {
+    if (std::abs(y0) <= params.atol) {
+      break;
     }
 
-    double y0 = func(x0);
+    double y1 = func(x1);
+    if (!std::isfinite(y1)) {
+      ret.reason = SecantEndReason::VALUE_ERROR;
+      break;
+    }
+    if (y1 == y0) {
+      ret.reason = SecantEndReason::GRADIENT;
+      break;
+    }
+
     double x2 = x1 - y1 * ((x1 - x0) / (y1 - y0));
 
     if (x2 <= params.min) {
-      return std::make_pair(params.min, SecantEndReason::FAILED);
+      ret.root   = params.min;
+      ret.reason = SecantEndReason::OUT_OF_BOUNDS;
+      break;
     } else if (x2 >= params.max) {
-      return std::make_pair(params.max, SecantEndReason::FAILED);
-    } else if (std::isnan(x2)) {
-      return std::make_pair(x1, SecantEndReason::FAILED_NAN);
+      ret.root   = params.max;
+      ret.reason = SecantEndReason::OUT_OF_BOUNDS;
+      break;
     }
-    x0 = x1;
-    x1 = x2;
+    x0       = x1;
+    x1       = x2;
+    y0       = y1;
+    ret.root = x0;
   }
-  return std::make_pair(x0, SecantEndReason::MAX_ITER);
+  return ret;
 }
 
 }  // namespace MathUtils

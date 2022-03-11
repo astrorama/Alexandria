@@ -25,17 +25,22 @@
 namespace Euclid {
 namespace MathUtils {
 
-enum class SecantEndReason { SUCCESS, MAX_ITER, TOLERANCE, FAILED, FAILED_NAN };
+enum class SecantEndReason { SUCCESS, MAX_ITER, GRADIENT, OUT_OF_BOUNDS, VALUE_ERROR };
 
 struct SecantParams {
-  size_t max_iter = 1000;
-  double atol     = 1e-8;
-  double min      = -std::numeric_limits<double>::infinity();
-  double max      = std::numeric_limits<double>::infinity();
+  std::size_t max_iter = 1000;
+  double      atol     = 1e-8;
+  double      min      = -std::numeric_limits<double>::infinity();
+  double      max      = std::numeric_limits<double>::infinity();
 };
 
-std::pair<double, SecantEndReason> secantMethod(const Function& func, double x0, double x1,
-                                                const SecantParams& params = SecantParams{});
+struct SecantReturn {
+  double          root;
+  SecantEndReason reason;
+  std::size_t     iterations;
+};
+
+SecantReturn secantMethod(const Function& func, double x0, double x1, const SecantParams& params = SecantParams{});
 
 }  // namespace MathUtils
 }  // namespace Euclid
