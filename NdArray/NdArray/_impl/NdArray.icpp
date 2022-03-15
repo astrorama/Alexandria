@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2021 Euclid Science Ground Segment
+ * Copyright (C) 2012-2022 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -127,13 +127,13 @@ auto NdArray<T>::Iterator<Const>::operator-(const Iterator& other) -> difference
 template <typename T>
 template <bool Const>
 auto NdArray<T>::Iterator<Const>::operator[](size_t i) -> value_t& {
-  return m_container_ptr->at(m_offset + (m_i + i) * m_stride);
+  return m_container_ptr->get(m_offset + (m_i + i) * m_stride);
 }
 
 template <typename T>
 template <bool Const>
 auto NdArray<T>::Iterator<Const>::operator[](size_t i) const -> value_t {
-  return m_container_ptr->at(m_offset + (m_i + i) * m_stride);
+  return m_container_ptr->get(m_offset + (m_i + i) * m_stride);
 }
 
 template <typename T>
@@ -183,6 +183,23 @@ NdArray<T>::NdArray(std::vector<size_t> shape_, Container<T>&& data)
     throw std::invalid_argument("Data size does not match the shape");
   }
   update_strides();
+}
+
+template <typename T>
+template <template <class...> class Container>
+NdArray<T>::NdArray(std::vector<size_t> shape_, std::vector<size_t> strides_, Container<T>&& data)
+    : m_offset(0)
+    , m_shape(std::move(shape_))
+    , m_stride_size(std::move(strides_))
+    , m_size(std::accumulate(m_shape.begin(), m_shape.end(), 1u, std::multiplies<size_t>()))
+    , m_total_stride(m_shape.front() * m_stride_size.front())
+    , m_container(new ContainerWrapper<Container>(std::move(data))) {
+  if (m_shape.size() != m_stride_size.size()) {
+    throw std::invalid_argument("The size of the shape and strides parameters do not match");
+  }
+  if (!std::is_sorted(m_stride_size.rbegin(), m_stride_size.rend())) {
+    throw std::runtime_error("Only C style arrays are supported");
+  }
 }
 
 template <typename T>
@@ -246,28 +263,28 @@ template <typename T>
 T& NdArray<T>::at(const std::vector<size_t>& coords) {
   auto offset = get_offset(coords);
   // cppcheck-suppress "returnTempReference"
-  return m_container->at(offset);
+  return m_container->get(offset);
 }
 
 template <typename T>
 const T& NdArray<T>::at(const std::vector<size_t>& coords) const {
   auto offset = get_offset(coords);
   // cppcheck-suppress returnTempReference
-  return m_container->at(offset);
+  return m_container->get(offset);
 }
 
 template <typename T>
 T& NdArray<T>::at(const std::vector<size_t>& coords, const std::string& attr) {
   auto offset = get_offset(coords, attr);
   // cppcheck-suppress returnTempReference
-  return m_container->at(offset);
+  return m_container->get(offset);
 }
 
 template <typename T>
 const T& NdArray<T>::at(const std::vector<size_t>& coords, const std::string& attr) const {
   auto offset = get_offset(coords, attr);
   // cppcheck-suppress returnTempReference
-  return m_container->at(offset);
+  return m_container->get(offset);
 }
 
 template <typename T>
@@ -340,7 +357,7 @@ auto NdArray<T>::concatenate(const self_type& other) -> self_type& {
   }
 
   // New shape
-  auto old_size  = m_container->size();
+  auto old_size  = size();
   auto new_shape = m_shape;
   new_shape[0] += other.m_shape[0];
 
@@ -348,7 +365,7 @@ auto NdArray<T>::concatenate(const self_type& other) -> self_type& {
   m_container->resize(new_shape);
 
   // Copy to the end
-  std::copy(std::begin(other), std::end(other), m_container->m_data_ptr + old_size);
+  std::copy(std::begin(other), std::end(other), std::begin(*this) + old_size);
   // Done!
   m_shape = new_shape;
   return *this;
@@ -362,6 +379,7 @@ NdArray<T>::NdArray(std::shared_ptr<ContainerInterface> container, size_t offset
     , m_stride_size(std::move(stride))
     , m_attr_names(std::move(attr_names))
     , m_size(std::accumulate(m_shape.begin(), m_shape.end(), 1, std::multiplies<size_t>()))
+    , m_total_stride(m_stride_size.front() * m_shape.front())
     , m_container(std::move(container)) {}
 
 template <typename T>
@@ -411,6 +429,11 @@ auto NdArray<T>::rslice(size_t i) const -> const self_type {
 }
 
 template <typename T>
+void NdArray<T>::next_slice() {
+  m_offset += m_total_stride;
+}
+
+template <typename T>
 size_t NdArray<T>::get_offset(const std::vector<size_t>& coords) const {
   if (coords.size() != m_shape.size()) {
     throw std::out_of_range("Invalid number of coordinates, got " + std::to_string(coords.size()) + ", expected " +
@@ -426,7 +449,7 @@ size_t NdArray<T>::get_offset(const std::vector<size_t>& coords) const {
     offset += coords[i] * m_stride_size[i];
   }
 
-  assert(offset < m_container->size());
+  assert(offset < m_container->nbytes());
   return offset;
 }
 
@@ -435,18 +458,20 @@ size_t NdArray<T>::get_attr_offset(const std::string& attr) const {
   auto i = std::find(m_attr_names.begin(), m_attr_names.end(), attr);
   if (i == m_attr_names.end())
     throw std::out_of_range(attr);
-  return i - m_attr_names.begin();
+  return (i - m_attr_names.begin()) * sizeof(T);
 }
 
 template <typename T>
 void NdArray<T>::update_strides() {
   m_stride_size.resize(m_shape.size());
 
-  size_t acc = 1;
+  size_t acc = sizeof(T);
   for (size_t i = m_stride_size.size(); i > 0; --i) {
     m_stride_size[i - 1] = acc;
     acc *= m_shape[i - 1];
   }
+
+  m_total_stride = m_shape.front() * m_stride_size.front();
 }
 
 /**
@@ -463,16 +488,16 @@ T& NdArray<T>::at_helper(size_t offset_acc, size_t axis, size_t i, D... rest) {
 template <typename T>
 T& NdArray<T>::at_helper(size_t offset_acc, ELEMENTS_UNUSED size_t axis) {
   assert(axis == m_shape.size());
-  assert(offset_acc < m_container->size());
-  return m_container->at(offset_acc);
+  assert(offset_acc < m_container->nbytes());
+  return m_container->get(offset_acc);
 }
 
 template <typename T>
 T& NdArray<T>::at_helper(size_t offset_acc, ELEMENTS_UNUSED size_t axis, const std::string& attr) {
   offset_acc += get_attr_offset(attr);
   assert(axis == m_shape.size() - 1);
-  assert(offset_acc < m_container->size());
-  return m_container->at(offset_acc);
+  assert(offset_acc < m_container->nbytes());
+  return m_container->get(offset_acc);
 }
 
 template <typename T>
@@ -486,18 +511,18 @@ const T& NdArray<T>::at_helper(size_t offset_acc, size_t axis, size_t i, D... re
 template <typename T>
 const T& NdArray<T>::at_helper(size_t offset_acc, ELEMENTS_UNUSED size_t axis) const {
   assert(axis == m_shape.size());
-  assert(offset_acc < m_container->size());
+  assert(offset_acc < m_container->nbytes());
   // cppcheck-suppress returnTempReference
-  return m_container->at(offset_acc);
+  return m_container->get(offset_acc);
 }
 
 template <typename T>
 const T& NdArray<T>::at_helper(size_t offset_acc, ELEMENTS_UNUSED size_t axis, const std::string& attr) const {
   offset_acc += get_attr_offset(attr);
   assert(axis == m_shape.size() - 1);
-  assert(offset_acc < m_container->size());
+  assert(offset_acc < m_container->nbytes());
   // cppcheck-suppress returnTempReference
-  return m_container->at(offset_acc);
+  return m_container->get(offset_acc);
 }
 
 template <typename T>

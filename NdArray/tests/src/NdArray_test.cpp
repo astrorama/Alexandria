@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2021 Euclid Science Ground Segment
+ * Copyright (C) 2012-2022 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -298,6 +298,21 @@ BOOST_AUTO_TEST_CASE(Slice_test) {
 
   std::vector<int> expected_second{11, 11, 11, 22, 22, 22, 33, 33, 33};
   BOOST_CHECK_EQUAL_COLLECTIONS(second.begin(), second.end(), expected_second.begin(), expected_second.end());
+}
+
+//-----------------------------------------------------------------------------
+
+BOOST_AUTO_TEST_CASE(NextSlice_test) {
+  NdArray<int> m({2, 3, 3}, {1, 1, 1, 2, 2, 2, 3, 3, 3, 11, 11, 11, 22, 22, 22, 33, 33, 33});
+  BOOST_CHECK_EQUAL(m.size(), 18);
+
+  auto first  = m.slice(0);
+  std::vector<int> expected_first{1, 1, 1, 2, 2, 2, 3, 3, 3};
+  BOOST_CHECK_EQUAL_COLLECTIONS(first.begin(), first.end(), expected_first.begin(), expected_first.end());
+
+  first.next_slice();
+  std::vector<int> expected_second{11, 11, 11, 22, 22, 22, 33, 33, 33};
+  BOOST_CHECK_EQUAL_COLLECTIONS(first.begin(), first.end(), expected_second.begin(), expected_second.end());
 }
 
 //-----------------------------------------------------------------------------
