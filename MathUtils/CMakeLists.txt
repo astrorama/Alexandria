@@ -13,7 +13,7 @@ find_package(Boost REQUIRED)
 elements_add_library(MathUtils
                       src/lib/function/*.cpp src/lib/helpers/*.cpp src/lib/interpolation/*.cpp
                       src/lib/numericalIntegration/*.cpp src/lib/numericalDifferentiation/*.cpp
-                      src/lib/PDF/*.cpp src/lib/regression/*.cpp
+                      src/lib/PDF/*.cpp src/lib/regression/*.cpp src/lib/root/*.cpp
                      LINK_LIBRARIES NdArray XYDataset
                      PUBLIC_HEADERS MathUtils)
 
@@ -53,6 +53,9 @@ elements_add_unit_test(NdSampler_test tests/src/PDF/NdSampler_test.cpp
                      LINK_LIBRARIES MathUtils SourceCatalog TYPE Boost)
 
 elements_add_unit_test(LinearRegression_test tests/src/regression/LinearRegression_test.cpp
+                     LINK_LIBRARIES MathUtils TYPE Boost)
+
+elements_add_unit_test(SecantMethod_test tests/src/root/SecantMethod_test.cpp
                      LINK_LIBRARIES MathUtils TYPE Boost)
 
 if (Boost_VERSION GREATER "106600")
