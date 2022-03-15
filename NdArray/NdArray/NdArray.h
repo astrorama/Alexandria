@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2021 Euclid Science Ground Segment
+ * Copyright (C) 2012-2022 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -212,7 +212,7 @@ public:
   /**
    * Constructs a matrix and initialize it with the given data.
    * @tparam Container
-   *    Owns the memory used by the NdArray. It must expose the methods size() and data().
+   *    Owns the memory used by the NdArray. It must expose the methods size(), resize() and data().
    * @param shape_
    *    The shape of the matrix. The number of elements in shape corresponds to the number
    *    of dimensions, the values to each dimension size.
@@ -225,6 +225,27 @@ public:
    */
   template <template <class...> class Container = std::vector>
   NdArray(std::vector<size_t> shape_, Container<T>&& data);
+
+  /**
+   * Construct a matrix with a custom container and strides.
+   * @tparam Container
+   *    Owns the memory used by the NdArray. It must expose the methods size(), resize() and data().
+   * @param shape_
+   *    The shape of the matrix. The number of elements in shape corresponds to the number
+   *    of dimensions, the values to each dimension size.
+   * @param strides_
+   *    The number of bytes we need to jump between adjacent positions on a given dimension
+   * @param data
+   *    The initial data.
+   *    The NdArray will move the data into its internal storage! This avoids a copy, but remember to
+   *    not use data after this call.
+   * @throws std::runtime_error
+   *    If the data is not in C order.
+   * @throws std::invalid_argument
+   *    If the shape and strides dimension do not match.
+   */
+  template <template <class...> class Container = std::vector>
+  NdArray(std::vector<size_t> shape_, std::vector<size_t> strides_, Container<T>&& data);
 
   /**
    * Constructs a matrix and initialize it with from the given iterators
@@ -295,6 +316,22 @@ public:
    */
   const std::vector<size_t>& shape() const {
     return m_shape;
+  }
+
+  /**
+   * @param i
+   * @return The size of the axis i
+   */
+  size_t shape(std::size_t i) const {
+    return m_shape[i];
+  }
+
+  const std::vector<std::size_t>& strides() const {
+    return m_stride_size;
+  }
+
+  std::size_t strides(std::size_t i) const {
+    return m_stride_size[i];
   }
 
   /**
@@ -455,6 +492,8 @@ public:
    */
   const self_type rslice(size_t i) const;
 
+  void next_slice(void);
+
   /**
    * @return
    *    Attribute names
@@ -465,27 +504,32 @@ private:
   size_t                   m_offset;
   std::vector<size_t>      m_shape, m_stride_size;
   std::vector<std::string> m_attr_names;
-  size_t                   m_size;
+  size_t                   m_size, m_total_stride;
 
   struct ContainerInterface {
     /// Owned by the specific implementation ContainerWrapper,
     /// but exposed here to avoid indirections
-    T* m_data_ptr;
+    char*  m_data_ptr;
 
     virtual ~ContainerInterface() = default;
 
-    /// @copydoc std::vector::at
-    T at(size_t offset) const {
-      return m_data_ptr[offset];
+    /// Get the element at the given absolute offset (in bytes)
+    T get(size_t offset) const {
+      return *reinterpret_cast<T*>(m_data_ptr + offset);
     }
 
-    /// @copydoc std::vector::at
-    T& at(size_t offset) {
-      return m_data_ptr[offset];
+    /// Get a reference to the element at the given absolute offset (in bytes)
+    T& get(size_t offset) {
+      return *reinterpret_cast<T*>(m_data_ptr + offset);
     }
 
     /// @copydoc std::vector::size
     virtual size_t size() const = 0;
+
+    /// Get the size in bytes
+    size_t nbytes() const {
+      return size() * sizeof(T);
+    }
 
     /// Resize container
     virtual void resize(const std::vector<size_t>& shape) = 0;
@@ -497,6 +541,7 @@ private:
   template <template <class...> class Container>
   struct ContainerWrapper : public ContainerInterface {
     using ContainerInterface::m_data_ptr;
+
     Container<T> m_container;
 
     ~ContainerWrapper() = default;
@@ -507,7 +552,7 @@ private:
 
     template <typename... Args>
     explicit ContainerWrapper(Args&&... args) : m_container(std::forward<Args>(args)...) {
-      m_data_ptr = m_container.data();
+      m_data_ptr = reinterpret_cast<char*>(m_container.data());
     }
 
     size_t size() const final {
@@ -536,7 +581,7 @@ private:
      */
     void resize(const std::vector<size_t>& shape) final {
       resizeImpl<T>(shape);
-      m_data_ptr = m_container.data();
+      m_data_ptr = reinterpret_cast<char*>(m_container.data());
     }
 
     std::unique_ptr<ContainerInterface> copy() const final {
