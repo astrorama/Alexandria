@@ -28,18 +28,32 @@ namespace MathUtils {
 enum class SecantEndReason { SUCCESS, MAX_ITER, GRADIENT, OUT_OF_BOUNDS, VALUE_ERROR };
 
 struct SecantParams {
-  std::size_t max_iter = 1000;
-  double      atol     = 1e-8;
-  double      min      = -std::numeric_limits<double>::infinity();
-  double      max      = std::numeric_limits<double>::infinity();
+  std::size_t max_iter = 1000;  ///< Maximum number of iterations
+  double      atol     = 1e-8;  ///< The method will finish once func(root) <= atol
+  /// If the gradient moves the next iteration below this limit, clip the result
+  double min = -std::numeric_limits<double>::infinity();
+  /// If the gradient moves the next iteration above this limit, clip the result
+  double max = std::numeric_limits<double>::infinity();
 };
 
 struct SecantReturn {
-  double          root;
-  SecantEndReason reason;
-  std::size_t     iterations;
+  double          root;        ///< Solution for the function
+  SecantEndReason reason;      ///< End reason
+  std::size_t     iterations;  ///< Number of iterations
 };
 
+/**
+ * Find the root of the function func (i.e. func(root) = 0) applying the secant method. The solution
+ * should be close to the initial guesses x0, x1
+ * @param func
+ *  The function to solve
+ * @param x0
+ * @param x1
+ * @param params
+ * @return The result of the root solution
+ * @see SecantReturn
+ * @see SecantEndReason
+ */
 SecantReturn secantMethod(const Function& func, double x0, double x1, const SecantParams& params = SecantParams{});
 
 }  // namespace MathUtils
