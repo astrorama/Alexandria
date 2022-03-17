@@ -98,7 +98,7 @@ auto NdArray<T>::Iterator<Const>::operator+=(size_t n) -> Iterator& {
 
 template <typename T>
 template <bool Const>
-auto NdArray<T>::Iterator<Const>::operator+(size_t n) -> Iterator {
+auto NdArray<T>::Iterator<Const>::operator+(size_t n) const -> Iterator {
   return Iterator{m_container_ptr, m_offset, m_row_size, m_stride, m_i + n};
 }
 
@@ -112,7 +112,7 @@ auto NdArray<T>::Iterator<Const>::operator-=(size_t n) -> Iterator& {
 
 template <typename T>
 template <bool Const>
-auto NdArray<T>::Iterator<Const>::operator-(size_t n) -> Iterator {
+auto NdArray<T>::Iterator<Const>::operator-(size_t n) const -> Iterator {
   assert(n <= m_i);
   return Iterator{m_container_ptr, m_offset, m_row_size, m_stride, m_i - n};
 }

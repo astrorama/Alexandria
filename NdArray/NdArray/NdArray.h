@@ -130,7 +130,7 @@ public:
      * @note
      *  No out of bounds check is perform! Going beyond the end of the container is undefined behavior
      */
-    Iterator operator+(size_t n);
+    Iterator operator+(size_t n) const;
 
     /**
      * Decrement the iterator n times in place
@@ -146,7 +146,7 @@ public:
      *  There is an assert in place to make sure n is not greater than the current position.
      *  However, the assert can be gone when compiling for release
      */
-    Iterator operator-(size_t n);
+    Iterator operator-(size_t n) const;
 
     /**
      * @return The number of positions between this and other
