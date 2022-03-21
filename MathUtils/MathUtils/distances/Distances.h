@@ -42,14 +42,14 @@ struct Chi2Distance {
    */
   template <typename Scale, typename Iterator>
   static auto distance(Scale scale, Iterator ref_begin, Iterator ref_end, Iterator target_begin)
-      -> decltype(ref_begin->flux) {
-    decltype(ref_begin->flux) acc = 0.;
+      -> decltype(ref_begin->getFlux()) {
+    decltype(ref_begin->getFlux()) acc = 0.;
 
     for (auto ri = ref_begin, ti = target_begin; ri != ref_end; ++ri, ++ti) {
-      auto ref_val = scale * ri->flux;
-      auto ref_err = scale * ri->error;
-      auto tar_val = ti->flux;
-      auto tar_err = ti->error;
+      auto ref_val = scale * ri->getFlux();
+      auto ref_err = scale * ri->getError();
+      auto tar_val = ti->getFlux();
+      auto tar_err = ti->getError();
       auto nom     = (ref_val - tar_val) * (ref_val - tar_val);
       auto den     = ref_err * ref_err + tar_err * tar_err;
       acc += nom / den;
@@ -67,13 +67,13 @@ struct Chi2Distance {
    * @return
    */
   template <typename Iterator>
-  static auto guessScale(Iterator ref_begin, Iterator ref_end, Iterator target_begin) -> decltype(ref_begin->flux) {
-    decltype(ref_begin->flux) nom = 0., den = 0.;
+  static auto guessScale(Iterator ref_begin, Iterator ref_end, Iterator target_begin) -> decltype(ref_begin->getFlux()) {
+    decltype(ref_begin->getFlux()) nom = 0., den = 0.;
 
     for (auto ri = ref_begin, ti = target_begin; ri != ref_end; ++ri, ++ti) {
-      auto err_sqr = (ti->error * ti->error);
-      nom += (ri->flux * ti->flux) / err_sqr;
-      den += (ri->flux * ri->flux) / err_sqr;
+      auto err_sqr = (ti->getError() * ti->getError());
+      nom += (ri->getFlux() * ti->getFlux()) / err_sqr;
+      den += (ri->getFlux() * ri->getFlux()) / err_sqr;
     }
 
     return nom / den;
@@ -87,14 +87,14 @@ struct Chi2Distance {
    */
   template <typename Scale, typename Iterator>
   static auto daDistance(Scale scale, Iterator ref_begin, Iterator ref_end, Iterator target_begin)
-      -> decltype(ref_begin->flux) {
-    decltype(ref_begin->flux) acc = 0.;
+      -> decltype(ref_begin->getFlux()) {
+    decltype(ref_begin->getFlux()) acc = 0.;
 
     for (auto ri = ref_begin, ti = target_begin; ri != ref_end; ++ri, ++ti) {
-      auto ref_val = ri->flux;
-      auto ref_err = ri->error;
-      auto tar_val = ti->flux;
-      auto tar_err = ti->error;
+      auto ref_val = ri->getFlux();
+      auto ref_err = ri->getError();
+      auto tar_val = ti->getFlux();
+      auto tar_err = ti->getError();
 
       auto ref_err_sq = ref_err * ref_err;
       auto tar_err_sq = tar_err * tar_err;
@@ -115,11 +115,11 @@ struct Chi2Distance {
 struct EuclideanDistance {
   template <typename Scale, typename Iterator>
   static auto distance(Scale scale, Iterator ref_begin, Iterator ref_end, Iterator target_begin)
-      -> decltype(ref_begin->flux) {
-    decltype(ref_begin->flux) acc = 0.;
+      -> decltype(ref_begin->getFlux()) {
+    decltype(ref_begin->getFlux()) acc = 0.;
 
     for (auto ri = ref_begin, ti = target_begin; ri != ref_end; ++ri, ++ti) {
-      auto d = (scale * ri->flux) - (ti->flux);
+      auto d = (scale * ri->getFlux()) - (ti->getFlux());
       acc += d * d;
     }
 
@@ -135,12 +135,12 @@ struct EuclideanDistance {
    * @return
    */
   template <typename Iterator>
-  static auto guessScale(Iterator ref_begin, Iterator ref_end, Iterator target_begin) -> decltype(ref_begin->flux) {
-    decltype(ref_begin->flux) nom = 0., den = 0.;
+  static auto guessScale(Iterator ref_begin, Iterator ref_end, Iterator target_begin) -> decltype(ref_begin->getFlux()) {
+    decltype(ref_begin->getFlux()) nom = 0., den = 0.;
 
     for (auto ri = ref_begin, ti = target_begin; ri != ref_end; ++ri, ++ti) {
-      nom += (ti->flux * ti->flux);
-      den += (ri->flux * ri->flux);
+      nom += (ti->getFlux() * ti->getFlux());
+      den += (ri->getFlux() * ri->getFlux());
     }
 
     return std::sqrt(nom) / std::sqrt(den);
@@ -154,13 +154,13 @@ struct EuclideanDistance {
    */
   template <typename Scale, typename Iterator>
   static auto daDistance(Scale scale, Iterator ref_begin, Iterator ref_end, Iterator target_begin)
-      -> decltype(ref_begin->flux) {
-    decltype(ref_begin->flux) den = 0., nom_sum_sqr = 0., nom_sum_prod = 0.;
+      -> decltype(ref_begin->getFlux()) {
+    decltype(ref_begin->getFlux()) den = 0., nom_sum_sqr = 0., nom_sum_prod = 0.;
 
     for (auto ri = ref_begin, ti = target_begin; ri != ref_end; ++ri, ++ti) {
-      nom_sum_sqr += ri->flux * ri->flux;
-      nom_sum_prod += ri->flux * ti->flux;
-      den += (ti->flux - scale * ri->flux) * (ti->flux - scale * ri->flux);
+      nom_sum_sqr += ri->getFlux() * ri->getFlux();
+      nom_sum_prod += ri->getFlux() * ti->getFlux();
+      den += (ti->getFlux() - scale * ri->getFlux()) * (ti->getFlux() - scale * ri->getFlux());
     }
 
     return (scale * nom_sum_sqr - nom_sum_prod) / std::sqrt(den);
