@@ -27,7 +27,7 @@ namespace MathUtils {
 struct Likelihood {
   template <typename Scale, typename Iterator>
   static auto weight(Scale scale, Iterator ref_begin, Iterator ref_end, Iterator target_begin)
-      -> decltype(ref_begin->flux) {
+      -> decltype(ref_begin->getFlux()) {
     auto chi2 = Chi2Distance::distance(scale, ref_begin, ref_end, target_begin);
     return std::exp(-0.5f * chi2);
   }
@@ -36,7 +36,7 @@ struct Likelihood {
 struct InverseChi2 {
   template <typename Scale, typename Iterator>
   static auto weight(Scale scale, Iterator ref_begin, Iterator ref_end, Iterator target_begin)
-      -> decltype(ref_begin->flux) {
+      -> decltype(ref_begin->getFlux()) {
     return 1.f / Chi2Distance::distance(scale, ref_begin, ref_end, target_begin);
   }
 };
@@ -44,7 +44,7 @@ struct InverseChi2 {
 struct InverseEuclidean {
   template <typename Scale, typename Iterator>
   static auto weight(Scale scale, Iterator ref_begin, Iterator ref_end, Iterator target_begin)
-      -> decltype(ref_begin->flux) {
+      -> decltype(ref_begin->getFlux()) {
     return 1.f / EuclideanDistance::distance(scale, ref_begin, ref_end, target_begin);
   }
 };
