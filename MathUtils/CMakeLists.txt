@@ -30,6 +30,11 @@ endif()
 
 
 #===== Boost tests =============================================================
+elements_add_unit_test(Distances_test tests/src/distances/Distances_test.cpp
+                       LINK_LIBRARIES MathUtils SourceCatalog TYPE Boost)
+
+elements_add_unit_test(Weights_test tests/src/distances/Weights_test.cpp
+                       LINK_LIBRARIES MathUtils SourceCatalog TYPE Boost)
 
 elements_add_unit_test(function_all_tests tests/src/function/*_test.cpp
                        LINK_LIBRARIES MathUtils XYDataset TYPE Boost)
