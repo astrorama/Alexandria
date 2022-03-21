@@ -22,6 +22,7 @@
 #include <boost/filesystem/path.hpp>
 #include <list>
 #include <map>
+#include <memory>
 #include <mutex>
 
 namespace Euclid {
