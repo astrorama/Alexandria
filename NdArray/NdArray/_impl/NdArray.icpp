@@ -365,9 +365,10 @@ auto NdArray<T>::concatenate(const self_type& other) -> self_type& {
   m_container->resize(new_shape);
 
   // Copy to the end
-  std::copy(std::begin(other), std::end(other), std::begin(*this) + old_size);
+  std::copy(std::begin(other), std::end(other), &m_container->get(0) + old_size);
   // Done!
   m_shape = new_shape;
+  m_size += other.m_size;
   return *this;
 }
 

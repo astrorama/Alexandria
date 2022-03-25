@@ -214,9 +214,30 @@ BOOST_AUTO_TEST_CASE(Concatenate_test) {
 
   BOOST_CHECK_EQUAL(m.shape()[0], 4);
   BOOST_CHECK_EQUAL(m.shape()[1], 3);
+  BOOST_CHECK_EQUAL(m.size(), 12);
 
   std::vector<int> expected = values1;
-  std::copy(values2.begin(), values2.end(), std::back_inserter(values1));
+  std::copy(values2.begin(), values2.end(), std::back_inserter(expected));
+
+  BOOST_CHECK_EQUAL_COLLECTIONS(expected.begin(), expected.end(), m.begin(), m.end());
+}
+
+//-----------------------------------------------------------------------------
+
+BOOST_AUTO_TEST_CASE(ConcatenateNamed_test) {
+  std::vector<int>               values1{1, 2, 3, 4, 5, 6};
+  std::vector<int>               values2{50, 60, 70, 80, 90, 100};
+  const std::vector<std::string> attr_names{"ID", "SED", "PDZ"};
+  NdArray<int>                   m(std::vector<size_t>{2}, attr_names, values1);
+  NdArray<int>                   add(std::vector<size_t>{2}, attr_names, values2);
+
+  m.concatenate(add);
+
+  BOOST_CHECK_EQUAL(m.shape()[0], 4);
+  BOOST_CHECK_EQUAL(m.shape()[1], 3);
+
+  std::vector<int> expected = values1;
+  std::copy(values2.begin(), values2.end(), std::back_inserter(expected));
 
   BOOST_CHECK_EQUAL_COLLECTIONS(expected.begin(), expected.end(), m.begin(), m.end());
 }
@@ -306,7 +327,7 @@ BOOST_AUTO_TEST_CASE(NextSlice_test) {
   NdArray<int> m({2, 3, 3}, {1, 1, 1, 2, 2, 2, 3, 3, 3, 11, 11, 11, 22, 22, 22, 33, 33, 33});
   BOOST_CHECK_EQUAL(m.size(), 18);
 
-  auto first  = m.slice(0);
+  auto             first = m.slice(0);
   std::vector<int> expected_first{1, 1, 1, 2, 2, 2, 3, 3, 3};
   BOOST_CHECK_EQUAL_COLLECTIONS(first.begin(), first.end(), expected_first.begin(), expected_first.end());
 
@@ -450,6 +471,32 @@ BOOST_AUTO_TEST_CASE(BadSlicing_test) {
   NdArray<int> array({20, 10});
   BOOST_CHECK_THROW(array.slice(-1), std::out_of_range);
   BOOST_CHECK_THROW(array.rslice(11), std::out_of_range);
+}
+
+//-----------------------------------------------------------------------------
+
+BOOST_AUTO_TEST_CASE(FillWithIterator_test) {
+  NdArray<int> array({10, 10});
+  std::fill(array.begin(), array.end(), -1);
+  for (size_t y = 0; y < 10; ++y) {
+    for (size_t x = 0; x < 10; ++x) {
+      BOOST_CHECK_EQUAL(array.at(x, y), -1);
+    }
+  }
+}
+
+//-----------------------------------------------------------------------------
+
+BOOST_AUTO_TEST_CASE(FillWithIteratorNamed_test) {
+  const std::vector<std::string> attr_names{"ID", "SED", "PDZ"};
+  NdArray<int>                   named{{20}, attr_names};
+  std::fill(named.begin(), named.end(), -1);
+
+  for (size_t i = 0; i < 10; ++i) {
+    BOOST_CHECK_EQUAL(named.at(i, "ID"), -1);
+    BOOST_CHECK_EQUAL(named.at(i, "SED"), -1);
+    BOOST_CHECK_EQUAL(named.at(i, "PDZ"), -1);
+  }
 }
 
 //-----------------------------------------------------------------------------
