@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2021 Euclid Science Ground Segment
+ * Copyright (C) 2012-2022 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -179,6 +179,22 @@ public:
    */
   void addComment(const std::string& message) override;
 
+  /**
+   * @brief Sets a header key/value pair
+   * @tparam T
+   *    Value type
+   * @param key
+   *    Header name
+   * @param value
+   *    Header value
+   * @param comment
+   *    Header comment
+   */
+  template <typename T>
+  void setHeader(const std::string& key, T&& value, const std::string& comment = "") {
+    m_headers.emplace_back(Header{key, comment, value});
+  }
+
 protected:
   /// Creates the FITS file if it needs to be created, the table HDU if the
   /// name already exist and writes the comments.
@@ -189,13 +205,19 @@ protected:
   void append(const Table& table) override;
 
 private:
-  std::string                   m_filename      = "";
+  struct Header {
+    std::string    m_key, m_comment;
+    Row::cell_type m_value;
+  };
+
+  std::string                   m_filename;
   std::shared_ptr<CCfits::FITS> m_fits          = nullptr;
   bool                          m_initialized   = false;
   bool                          m_override_file = true;
   Format                        m_format        = Format::BINARY;
-  std::string                   m_hdu_name      = "";
-  std::vector<std::string>      m_comments{};
+  std::string                   m_hdu_name;
+  std::vector<std::string>      m_comments;
+  std::vector<Header>           m_headers;
   int                           m_hdu_index    = -1;
   long                          m_current_line = 0;
 
