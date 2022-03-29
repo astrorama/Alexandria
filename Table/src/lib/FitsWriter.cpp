@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2021 Euclid Science Ground Segment
+ * Copyright (C) 2012-2022 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -29,6 +29,20 @@
 
 namespace Euclid {
 namespace Table {
+
+struct HeaderVisitor : public boost::static_visitor<void> {
+
+  HeaderVisitor(CCfits::HDU* hdu, const std::string& key, const std::string& comment)
+      : m_hdu(hdu), m_key(key), m_comment(comment) {}
+
+  template <typename T>
+  void operator()(T&& val) const {
+    m_hdu->addKey(m_key, val, m_comment);
+  }
+
+  CCfits::HDU*       m_hdu;
+  const std::string &m_key, &m_comment;
+};
 
 FitsWriter::FitsWriter(const std::string& filename, bool override_flag)
     : m_filename(filename), m_override_file(override_flag) {}
@@ -105,6 +119,11 @@ void FitsWriter::init(const Table& table) {
       if (!shape_str.empty()) {
         table_hdu->addKey(CCfits::Column::TDIM() + std::to_string(column_index + 1), shape_str, "");
       }
+    }
+
+    for (auto& h : m_headers) {
+      HeaderVisitor visitor{table_hdu, h.m_key, h.m_comment};
+      boost::apply_visitor(visitor, h.m_value);
     }
 
     for (auto& c : m_comments) {

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2021 Euclid Science Ground Segment
+ * Copyright (C) 2012-2022 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -104,6 +104,8 @@ BOOST_FIXTURE_TEST_CASE(writeBinary, BinaryFitsWriter_Fixture) {
   FitsWriter writer{fits_file_path};
   writer.setFormat(FitsWriter::Format::BINARY);
   writer.setHduName("BinaryTable");
+  writer.setHeader("MYSTR", std::string("MyValue"), "This is a comment");
+  writer.setHeader("MYINT", 1234, "Another comment");
 
   // When
   writer.addData(table);
@@ -233,6 +235,22 @@ BOOST_FIXTURE_TEST_CASE(writeBinary, BinaryFitsWriter_Fixture) {
   std::valarray<float> expectedv{1.5, 2.6, 3.7};
   result.column(9).read(vector, 1);
   BOOST_CHECK_EQUAL_COLLECTIONS(std::begin(vector), std::end(vector), std::begin(expectedv), std::end(expectedv));
+
+  // When
+  std::string my_string_val;
+  int my_int_val;
+
+  auto& my_string = result.keyWord("MYSTR");
+  auto& my_int = result.keyWord("MYINT");
+
+  my_string.value(my_string_val);
+  my_int.value(my_int_val);
+
+  // Then
+  BOOST_CHECK_EQUAL(my_string_val, "MyValue");
+  BOOST_CHECK_EQUAL(my_int_val, 1234);
+  BOOST_CHECK_EQUAL(my_string.comment(), "This is a comment");
+  BOOST_CHECK_EQUAL(my_int.comment(), "Another comment");
 }
 
 //-----------------------------------------------------------------------------
