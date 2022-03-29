@@ -65,6 +65,9 @@ std::unique_ptr<Function> interpolate(const std::vector<double>& x, const std::v
   final_x.emplace_back(x[0]);
   final_y.emplace_back(y[0]);
   for (std::size_t i = 1; i < x.size(); ++i) {
+    if (x[i] == x[i - 1] && y[i] == y[i - 1]) {
+      continue;
+    }
     if (x[i] < x[i - 1]) {
       throw InterpolationException() << "Only increasing X values are supported "
                                      << "but found " << x[i] << " after " << x[i - 1];
@@ -98,6 +101,9 @@ std::unique_ptr<Function> interpolate(const Euclid::XYDataset::XYDataset& datase
   y.reserve(dataset.size());
   for (auto& pair : dataset) {
     if (!x.empty()) {
+      if (pair.first == x.back() && pair.second == y.back()) {
+        continue;
+      }
       if (pair.first < x.back()) {
         throw InterpolationException() << "Only increasing X values are supported "
                                        << "but found " << pair.first << " after " << x.back();
