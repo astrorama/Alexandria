@@ -24,6 +24,7 @@
 
 using Euclid::MathUtils::FunctionAdapter;
 using Euclid::MathUtils::SecantEndReason;
+using Euclid::MathUtils::SecantParams;
 using Euclid::MathUtils::secantMethod;
 
 namespace Euclid {
@@ -98,8 +99,12 @@ BOOST_AUTO_TEST_CASE(NotSolvable_test) {
 //-----------------------------------------------------------------------------
 
 BOOST_AUTO_TEST_CASE(NotSolvableButClose_test) {
+  SecantParams params;
+  params.min = 1;
+  params.max = 10;
+
   FunctionAdapter func([](double v) { return 1 + v; });
-  auto            result = secantMethod(func, 5, 10, {100, 1e-8, 1, 10});
+  auto            result = secantMethod(func, 5, 10, params);
   BOOST_CHECK_CLOSE(result.root, 1., 1e-8);
   BOOST_CHECK_EQUAL(result.reason, SecantEndReason::OUT_OF_BOUNDS);
 }
@@ -107,11 +112,15 @@ BOOST_AUTO_TEST_CASE(NotSolvableButClose_test) {
 //-----------------------------------------------------------------------------
 
 BOOST_AUTO_TEST_CASE(ValueError_test) {
+  SecantParams params;
+  params.min = 1;
+  params.max = 10;
+
   FunctionAdapter func(static_cast<double (*)(double)>(&std::log));
-  auto            result = secantMethod(func, -1, 1, {100, 1e-8, 1, 10});
+  auto            result = secantMethod(func, -1, 1, params);
   BOOST_CHECK_EQUAL(result.reason, SecantEndReason::VALUE_ERROR);
 
-  result = secantMethod(func, 0.5, -1, {100, 1e-8, 1, 10});
+  result = secantMethod(func, 0.5, -1, params);
   BOOST_CHECK_EQUAL(result.reason, SecantEndReason::VALUE_ERROR);
 }
 
