@@ -70,6 +70,35 @@ BOOST_FIXTURE_TEST_CASE(Linear, Linear_Fixture) {
   BOOST_CHECK_SMALL(value9, small_tolerance);
 }
 
+BOOST_FIXTURE_TEST_CASE(LinearXYDataset, Linear_Fixture) {
+
+  // Given
+  auto dataset = Euclid::XYDataset::XYDataset::factory({-1., 0., 1., 2., 8., 10.}, {4., 3., 1., 2., 2., 20.});
+
+  // When
+  auto   linear = Euclid::MathUtils::interpolate(dataset, Euclid::MathUtils::InterpolationType::LINEAR, false);
+  double value1 = (*linear)(-2.);
+  double value2 = (*linear)(-1.);
+  double value3 = (*linear)(-.5);
+  double value4 = (*linear)(0.);
+  double value5 = (*linear)(1.);
+  double value6 = (*linear)(1.7);
+  double value7 = (*linear)(5.);
+  double value8 = (*linear)(9.);
+  double value9 = (*linear)(10.1);
+
+  // Then
+  BOOST_CHECK_SMALL(value1, small_tolerance);
+  BOOST_CHECK_CLOSE(value2, 4., close_tolerance);
+  BOOST_CHECK_CLOSE(value3, 3.5, close_tolerance);
+  BOOST_CHECK_CLOSE(value4, 3., close_tolerance);
+  BOOST_CHECK_CLOSE(value5, 1., close_tolerance);
+  BOOST_CHECK_CLOSE(value6, 1.7, close_tolerance);
+  BOOST_CHECK_CLOSE(value7, 2., close_tolerance);
+  BOOST_CHECK_CLOSE(value8, 11., close_tolerance);
+  BOOST_CHECK_SMALL(value9, small_tolerance);
+}
+
 //-----------------------------------------------------------------------------
 // Test the linear interpolation, with extrapolation on the edges
 //-----------------------------------------------------------------------------
@@ -82,6 +111,35 @@ BOOST_FIXTURE_TEST_CASE(LinearExtrapolation, Linear_Fixture) {
 
   // When
   auto   linear = Euclid::MathUtils::interpolate(x, y, Euclid::MathUtils::InterpolationType::LINEAR, true);
+  double value1 = (*linear)(-2.);
+  double value2 = (*linear)(-1.);
+  double value3 = (*linear)(-.5);
+  double value4 = (*linear)(0.);
+  double value5 = (*linear)(1.);
+  double value6 = (*linear)(1.7);
+  double value7 = (*linear)(5.);
+  double value8 = (*linear)(9.);
+  double value9 = (*linear)(10.1);
+
+  // Then
+  BOOST_CHECK_CLOSE(value1, 5., close_tolerance);
+  BOOST_CHECK_CLOSE(value2, 4., close_tolerance);
+  BOOST_CHECK_CLOSE(value3, 3.5, close_tolerance);
+  BOOST_CHECK_CLOSE(value4, 3., close_tolerance);
+  BOOST_CHECK_CLOSE(value5, 1., close_tolerance);
+  BOOST_CHECK_CLOSE(value6, 1.7, close_tolerance);
+  BOOST_CHECK_CLOSE(value7, 2., close_tolerance);
+  BOOST_CHECK_CLOSE(value8, 11., close_tolerance);
+  BOOST_CHECK_CLOSE(value9, 20.9, close_tolerance);
+}
+
+BOOST_FIXTURE_TEST_CASE(LinearExtrapolationXYDataset, Linear_Fixture) {
+
+  // Given
+  auto dataset = Euclid::XYDataset::XYDataset::factory({-1., 0., 1., 2., 8., 10.}, {4., 3., 1., 2., 2., 20.});
+
+  // When
+  auto   linear = Euclid::MathUtils::interpolate(dataset, Euclid::MathUtils::InterpolationType::LINEAR, true);
   double value1 = (*linear)(-2.);
   double value2 = (*linear)(-1.);
   double value3 = (*linear)(-.5);
@@ -129,6 +187,27 @@ BOOST_FIXTURE_TEST_CASE(Linear1DataPoint, Linear_Fixture) {
   BOOST_CHECK_CLOSE(value5, 42., close_tolerance);
 }
 
+BOOST_FIXTURE_TEST_CASE(Linear1DataPointXYDataset, Linear_Fixture) {
+
+  // Given
+  auto dataset = Euclid::XYDataset::XYDataset::factory({2.}, {42.});
+
+  // When
+  auto   linear = Euclid::MathUtils::interpolate(dataset, Euclid::MathUtils::InterpolationType::LINEAR, true);
+  double value1 = (*linear)(-2.);
+  double value2 = (*linear)(-1.);
+  double value3 = (*linear)(-.5);
+  double value4 = (*linear)(2.);
+  double value5 = (*linear)(100.);
+
+  // Then
+  BOOST_CHECK_CLOSE(value1, 42., close_tolerance);
+  BOOST_CHECK_CLOSE(value2, 42., close_tolerance);
+  BOOST_CHECK_CLOSE(value3, 42., close_tolerance);
+  BOOST_CHECK_CLOSE(value4, 42., close_tolerance);
+  BOOST_CHECK_CLOSE(value5, 42., close_tolerance);
+}
+
 //-----------------------------------------------------------------------------
 // Do not extrapolate a single point
 //-----------------------------------------------------------------------------
@@ -140,6 +219,23 @@ BOOST_FIXTURE_TEST_CASE(Linear1DataPointNoExtrapolate, Linear_Fixture) {
 
   // When
   auto   linear = Euclid::MathUtils::interpolate(x, y, Euclid::MathUtils::InterpolationType::LINEAR, false);
+  double value1 = (*linear)(-2.);
+  double value2 = (*linear)(2.);
+  double value3 = (*linear)(5.);
+
+  // Then
+  BOOST_CHECK_EQUAL(value1, 0.);
+  BOOST_CHECK_CLOSE(value2, 42., close_tolerance);
+  BOOST_CHECK_EQUAL(value3, 0.);
+}
+
+BOOST_FIXTURE_TEST_CASE(Linear1DataPointNoExtrapolateXYDataset, Linear_Fixture) {
+
+  // Given
+  auto dataset = Euclid::XYDataset::XYDataset::factory({2.}, {42.});
+
+  // When
+  auto   linear = Euclid::MathUtils::interpolate(dataset, Euclid::MathUtils::InterpolationType::LINEAR, false);
   double value1 = (*linear)(-2.);
   double value2 = (*linear)(2.);
   double value3 = (*linear)(5.);

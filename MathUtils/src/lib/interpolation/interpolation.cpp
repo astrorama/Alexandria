@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2021 Euclid Science Ground Segment
+ * Copyright (C) 2012-2022 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -65,11 +65,6 @@ std::unique_ptr<Function> interpolate(const std::vector<double>& x, const std::v
   final_x.emplace_back(x[0]);
   final_y.emplace_back(y[0]);
   for (std::size_t i = 1; i < x.size(); ++i) {
-    if (x[i] == x[i - 1]) {
-      if (y[i] == y[i - 1]) {
-        continue;
-      }
-    }
     if (x[i] < x[i - 1]) {
       throw InterpolationException() << "Only increasing X values are supported "
                                      << "but found " << x[i] << " after " << x[i - 1];
@@ -89,15 +84,36 @@ std::unique_ptr<Function> interpolate(const std::vector<double>& x, const std::v
 
 std::unique_ptr<Function> interpolate(const Euclid::XYDataset::XYDataset& dataset, InterpolationType type,
                                       bool extrapolate) {
+  if (dataset.size() == 1) {
+    auto c = dataset.front();
+    if (extrapolate) {
+      return make_unique<FunctionAdapter>([c](double) { return c.second; });
+    }
+    return make_unique<FunctionAdapter>([c](double v) { return c.second * (v == c.first); });
+  }
+
   std::vector<double> x;
   std::vector<double> y;
   x.reserve(dataset.size());
   y.reserve(dataset.size());
   for (auto& pair : dataset) {
+    if (!x.empty()) {
+      if (pair.first < x.back()) {
+        throw InterpolationException() << "Only increasing X values are supported "
+                                       << "but found " << pair.first << " after " << x.back();
+      }
+    }
     x.emplace_back(pair.first);
     y.emplace_back(pair.second);
   }
-  return interpolate(x, y, type, extrapolate);
+
+  switch (type) {
+  case InterpolationType::LINEAR:
+    return linearInterpolation(x, y, extrapolate);
+  case InterpolationType::CUBIC_SPLINE:
+    return splineInterpolation(x, y, extrapolate);
+  }
+  return nullptr;
 }
 
 double simple_interpolation(double x, const std::vector<double>& xp, const std::vector<double>& yp, bool extrapolate) {
