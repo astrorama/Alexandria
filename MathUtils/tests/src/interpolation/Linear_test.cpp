@@ -358,4 +358,19 @@ BOOST_FIXTURE_TEST_CASE(LinearInterpolateAllOutside, Linear_Fixture) {
 
 //-----------------------------------------------------------------------------
 
+BOOST_FIXTURE_TEST_CASE(LinearInterpolateStepIntegrate, Linear_Fixture) {
+  // Given
+  std::vector<double> x{0., 1., 1., 2., 3., 4.};
+  std::vector<double> y{0., 0., 1., 1., 1., 0.};
+
+  // When
+  auto linear = Euclid::MathUtils::interpolate(x, y, Euclid::MathUtils::InterpolationType::LINEAR, false);
+
+  // Then
+  auto integral = Euclid::MathUtils::integrate(*linear, 0., 4.);
+  BOOST_CHECK_CLOSE(integral, 2.5, close_tolerance);
+}
+
+//-----------------------------------------------------------------------------
+
 BOOST_AUTO_TEST_SUITE_END()
