@@ -24,8 +24,10 @@
  */
 #include "SourceCatalog/CatalogFromTable.h"
 #include "SourceCatalog/SourceAttributes/Photometry.h"
+#include "SourceCatalog/PhotometryParsingException.h"
 #include "Table/CastVisitor.h"
 #include "Table/ColumnInfo.h"
+#include "ElementsKernel/Exception.h"
 #include <vector>
 
 namespace Euclid {
@@ -60,9 +62,16 @@ Euclid::SourceCatalog::Catalog CatalogFromTable::createCatalog(const Euclid::Tab
     auto source_id = boost::apply_visitor(castVisitor, row[m_source_id_index]);
 
     std::vector<std::shared_ptr<Attribute>> attribute_ptr_vector;
-
-    for (auto& attribute_from_table_ptr : m_attribute_from_row_ptr_vector) {
-      attribute_ptr_vector.push_back(attribute_from_table_ptr->createAttribute(row));
+    try {
+		for (auto& attribute_from_table_ptr : m_attribute_from_row_ptr_vector) {
+		  attribute_ptr_vector.push_back(attribute_from_table_ptr->createAttribute(row));
+		}
+    } catch (const PhotometryParsingException& parsing_exception) {
+    	throw Elements::Exception()<< "Parsing error while parsing the source with Id = " << source_id << " : " << parsing_exception.what();
+    } catch(const std::exception& e) {
+    	throw Elements::Exception() << "Error while parsing the source with Id = " << source_id << " : " << e.what();
+    } catch (...) {
+    	throw Elements::Exception() << "Error while parsing the source with Id = " << source_id;
     }
 
     source_vector.push_back(Source{source_id, move(attribute_ptr_vector)});
