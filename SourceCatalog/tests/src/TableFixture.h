@@ -147,6 +147,11 @@ struct TableFixture {
       std::string{"first"}, spec_z_val_row0,     spec_z_err_row0};
   const Euclid::Table::Row row_neg_error_flag{values12, column_info_ptr};
 
+  const std::vector<Euclid::Table::Row::cell_type> values13{
+       int64_t(1012),        std::string{"ID13"}, true,           1, int64_t{123}, 0.F, std::numeric_limits<double>::quiet_NaN(), 3., 0.5, 0.3,
+       std::string{"first"}, spec_z_val_row0,     spec_z_err_row0};
+   const Euclid::Table::Row row_nan_flux{values13, column_info_ptr};
+
   // Two filter names
   const std::string v_filter_name{"TestGroup/VtestName"};
   const std::string r_filter_name{"TestGroup/RtestName"};

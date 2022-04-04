@@ -135,18 +135,15 @@ std::unique_ptr<Attribute> PhotometryAttributeFromRow::createAttribute(const Euc
     }
 
     bool upper_limit = false;
-    if (std::isinf(flux)) {
-      throw SourceCatalog::PhotometryParsingException("Infinite flux encountered when parsing the Photometry",
-                                                      context_desc.c_str(), flux, error);
-    }
 
-    bool missing_data = std::isnan(flux) | std::isnan(error) |
+
+    bool missing_data = !std::isfinite(flux) | !std::isfinite(error) |
                         (m_missing_photometry_enabled && Elements::isEqual(flux, m_missing_photometry_flag));
 
     if (m_missing_photometry_enabled && missing_data) {
       error = 0.;
     } else if (!m_missing_photometry_enabled && missing_data) {
-      throw SourceCatalog::PhotometryParsingException("NAN flux encountered when parsing the Photometry ",
+      throw SourceCatalog::PhotometryParsingException("Non finite flux encountered when parsing the Photometry ",
                                                       context_desc.c_str(), flux, error);
     } else if (m_upper_limit_enabled) {
       /** Upper limit enabled **/
