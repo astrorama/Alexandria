@@ -59,6 +59,7 @@ jobs:
         env:
           REPOSITORY_USER: ${{ secrets.REPOSITORY_USER }}
           REPOSITORY_PASSWORD: ${{ secrets.REPOSITORY_PASSWORD }}
+          REPOSITORY_KEY: ${{ secrets.REPOSITORY_KEY }}
         with:
           rpm-dir: ${{ steps.build.outputs.rpm-dir }}
           srpm-dir: ${{ steps.build.outputs.srpm-dir }}
