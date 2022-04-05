@@ -1,4 +1,4 @@
-name: RPM - Artifactory
+name: RPM - Repository
 
 on:
   push:
@@ -56,6 +56,7 @@ jobs:
           retention-days: 15
       - name: Upload RPM to repository
         uses: astrorama/actions/upload-rpm@master
+        if: ${{ github.repository_owner == 'astrorama' }}
         env:
           REPOSITORY_USER: ${{ secrets.REPOSITORY_USER }}
           REPOSITORY_PASSWORD: ${{ secrets.REPOSITORY_PASSWORD }}
