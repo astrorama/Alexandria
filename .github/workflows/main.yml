@@ -3,10 +3,9 @@ name: RPM - Repository
 on:
   push:
     branches: [ master, develop ]
-  pull_request:
+    tags: [ '*' ]
+ pull_request:
     branches: [ master, develop ]
-  tags:
-    - '*'
   workflow_dispatch:
 
 jobs:
