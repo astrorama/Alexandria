@@ -1,5 +1,5 @@
 # Alexandria
-[![RPM - Bintray](https://github.com/astrorama/Alexandria/workflows/RPM%20-%20Bintray/badge.svg)](https://github.com/astrorama/Alexandria/actions?query=workflow%3A%22RPM+-+Bintray%22)
+[![RPM - Repository](https://github.com/astrorama/Alexandria/actions/workflows/main.yml/badge.svg?branch=develop)](https://github.com/astrorama/Alexandria/actions/workflows/main.yml)
 [![CodeFactor](https://www.codefactor.io/repository/github/astrorama/alexandria/badge)](https://www.codefactor.io/repository/github/astrorama/alexandria)
 
 SDC-CH common library for the Euclid project
