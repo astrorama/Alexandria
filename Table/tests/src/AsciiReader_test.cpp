@@ -482,11 +482,11 @@ BOOST_AUTO_TEST_CASE(autoTypeDetection_test) {
   auto  column_info = table.getColumnInfo();
 
   // Then
-  BOOST_CHECK(column_info->getDescription(0).type == typeid(long));
+  BOOST_CHECK(column_info->getDescription(0).type == typeid(int64_t));
   BOOST_CHECK(column_info->getDescription(1).type == typeid(std::string));
   BOOST_CHECK(column_info->getDescription(2).type == typeid(double));
   BOOST_CHECK(column_info->getDescription(3).type == typeid(std::string));
-  BOOST_CHECK(column_info->getDescription(4).type == typeid(long));
+  BOOST_CHECK(column_info->getDescription(4).type == typeid(int64_t));
 }
 
 //-----------------------------------------------------------------------------
