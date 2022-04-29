@@ -407,7 +407,7 @@ std::pair<std::type_index, std::size_t> guessColumnType(const std::string& token
 
   auto it1 = token.begin(), it2 = it1;
   if (qi::parse(it1, token.end(), qi::long_, l) && it1 == token.end()) {
-    return {typeid(long), 0};
+    return {typeid(int64_t), 0};
   }
   if (qi::parse(it2, token.end(), qi::double_, d) && it2 == token.end()) {
     return {typeid(double), 0};
