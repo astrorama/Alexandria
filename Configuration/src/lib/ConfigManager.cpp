@@ -79,13 +79,13 @@ static void cleanupNonRegisteredDependencies(std::map<std::type_index, std::set<
       }
     }
     for (auto& to_remove : unregistered_values) {
-      logger.info() << "Removing configuration dependency " << pair.first.name() << " -> " << to_remove.name();
+      logger.debug() << "Removing configuration dependency " << pair.first.name() << " -> " << to_remove.name();
       pair.second.erase(to_remove);
     }
   }
   for (auto& to_remove : unregistered_keys) {
     for (auto& value : dep_map.at(to_remove)) {
-      logger.info() << "Removing configuration dependency " << to_remove.name() << " -> " << value.name();
+      logger.debug() << "Removing configuration dependency " << to_remove.name() << " -> " << value.name();
     }
     dep_map.erase(to_remove);
   }
