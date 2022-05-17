@@ -368,6 +368,10 @@ public:
   template <int I>
   const GridContainer<GridCellManager, AxesTypes...> fixAxisByValue(const axis_type<I>& value) const;
 
+  GridCellManager& getCellManager() {
+    return *m_cell_manager;
+  }
+
   const GridCellManager& getCellManager() const {
     return *m_cell_manager;
   }
