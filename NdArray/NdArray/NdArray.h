@@ -186,7 +186,7 @@ public:
   /**
    * Destructor.
    */
-  virtual ~NdArray() = default;
+  ~NdArray() = default;
 
   /**
    * Constructs a default-initialized matrix with the given shape.
@@ -288,7 +288,7 @@ public:
    * @note
    *    The underlying data is not copied, but shared
    */
-  NdArray(const self_type&) = default;
+  NdArray(const self_type&);
 
   /**
    * Move constructor
@@ -300,7 +300,7 @@ public:
    * @note
    *    The underlying data is not copied, but shared
    */
-  NdArray& operator=(const NdArray&) = default;
+  NdArray& operator=(const NdArray&);
 
   /**
    * Create a copy of the NdArray
@@ -315,7 +315,7 @@ public:
    *    A vector with as many elements as number of dimensions, containing the size of each one.
    */
   const std::vector<size_t>& shape() const {
-    return m_shape;
+    return m_details_ptr->m_shape;
   }
 
   /**
@@ -323,15 +323,15 @@ public:
    * @return The size of the axis i
    */
   size_t shape(std::size_t i) const {
-    return m_shape[i];
+    return m_details_ptr->m_shape[i];
   }
 
   const std::vector<std::size_t>& strides() const {
-    return m_stride_size;
+    return m_details_ptr->m_stride_size;
   }
 
   std::size_t strides(std::size_t i) const {
-    return m_stride_size[i];
+    return m_details_ptr->m_stride_size[i];
   }
 
   /**
@@ -501,15 +501,10 @@ public:
   const std::vector<std::string>& attributes() const;
 
 private:
-  size_t                   m_offset;
-  std::vector<size_t>      m_shape, m_stride_size;
-  std::vector<std::string> m_attr_names;
-  size_t                   m_size, m_total_stride;
-
   struct ContainerInterface {
     /// Owned by the specific implementation ContainerWrapper,
     /// but exposed here to avoid indirections
-    char*  m_data_ptr;
+    char* m_data_ptr;
 
     virtual ~ContainerInterface() = default;
 
@@ -589,7 +584,17 @@ private:
     }
   };
 
-  std::shared_ptr<ContainerInterface> m_container;
+  // NdArray is used inside Table as one of the possible column types
+  // Since the cell_type is a variant, it must be as big as the biggest type (NdArray)
+  // plus a marker for the valid type, plus any alignment requirement.
+  // This indirection makes NdArray only 8 bytes in size!
+  struct Details {
+    size_t                              m_offset, m_size, m_total_stride;
+    std::vector<size_t>                 m_shape, m_stride_size;
+    std::vector<std::string>            m_attr_names;
+    std::shared_ptr<ContainerInterface> m_container;
+  };
+  std::unique_ptr<Details> m_details_ptr;
 
   /**
    * Private constructor used for deep copies

@@ -32,6 +32,8 @@ using namespace Euclid::NdArray;
 
 BOOST_AUTO_TEST_SUITE(Matrix_test)
 
+static_assert(sizeof(NdArray<int>) == 8, "Expected NdArray<int> to have size 8");
+
 //-----------------------------------------------------------------------------
 
 BOOST_AUTO_TEST_CASE(OneDimension_test) {

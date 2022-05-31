@@ -152,21 +152,28 @@ bool NdArray<T>::Iterator<Const>::operator>(const Iterator& other) {
 
 template <typename T>
 NdArray<T>::NdArray(std::vector<size_t> shape_)
-    : m_offset(0)
-    , m_shape(std::move(shape_))
-    , m_size(std::accumulate(m_shape.begin(), m_shape.end(), 1u, std::multiplies<size_t>()))
-    , m_container(new ContainerWrapper<std::vector>(m_size)) {
+    : m_details_ptr(new Details{0,
+                                std::accumulate(shape_.begin(), shape_.end(), 1u, std::multiplies<size_t>()),
+                                0,
+                                std::move(shape_),
+                                {},
+                                {},
+                                nullptr}) {
+  m_details_ptr->m_container = std::make_shared<ContainerWrapper<std::vector>>(m_details_ptr->m_size);
   update_strides();
 }
 
 template <typename T>
 template <template <class...> class Container>
 NdArray<T>::NdArray(std::vector<size_t> shape_, const Container<T>& data)
-    : m_offset(0)
-    , m_shape(std::move(shape_))
-    , m_size(std::accumulate(m_shape.begin(), m_shape.end(), 1u, std::multiplies<size_t>()))
-    , m_container(new ContainerWrapper<Container>(data)) {
-  if (m_size != m_container->size()) {
+    : m_details_ptr(new Details{0,
+                                std::accumulate(shape_.begin(), shape_.end(), 1u, std::multiplies<size_t>()),
+                                0,
+                                std::move(shape_),
+                                {},
+                                {},
+                                std::make_shared<ContainerWrapper<Container>>(data)}) {
+  if (m_details_ptr->m_size != m_details_ptr->m_container->size()) {
     throw std::invalid_argument("Data size does not match the shape");
   }
   update_strides();
@@ -175,11 +182,14 @@ NdArray<T>::NdArray(std::vector<size_t> shape_, const Container<T>& data)
 template <typename T>
 template <template <class...> class Container>
 NdArray<T>::NdArray(std::vector<size_t> shape_, Container<T>&& data)
-    : m_offset(0)
-    , m_shape(std::move(shape_))
-    , m_size(std::accumulate(m_shape.begin(), m_shape.end(), 1u, std::multiplies<size_t>()))
-    , m_container(new ContainerWrapper<Container>(std::move(data))) {
-  if (m_size != m_container->size()) {
+    : m_details_ptr(new Details{0,
+                                std::accumulate(shape_.begin(), shape_.end(), 1u, std::multiplies<size_t>()),
+                                0,
+                                std::move(shape_),
+                                {},
+                                {},
+                                std::make_shared<ContainerWrapper<Container>>(std::move(data))}) {
+  if (m_details_ptr->m_size != m_details_ptr->m_container->size()) {
     throw std::invalid_argument("Data size does not match the shape");
   }
   update_strides();
@@ -188,16 +198,17 @@ NdArray<T>::NdArray(std::vector<size_t> shape_, Container<T>&& data)
 template <typename T>
 template <template <class...> class Container>
 NdArray<T>::NdArray(std::vector<size_t> shape_, std::vector<size_t> strides_, Container<T>&& data)
-    : m_offset(0)
-    , m_shape(std::move(shape_))
-    , m_stride_size(std::move(strides_))
-    , m_size(std::accumulate(m_shape.begin(), m_shape.end(), 1u, std::multiplies<size_t>()))
-    , m_total_stride(m_shape.front() * m_stride_size.front())
-    , m_container(new ContainerWrapper<Container>(std::move(data))) {
-  if (m_shape.size() != m_stride_size.size()) {
+    : m_details_ptr(new Details{0,
+                                std::accumulate(shape_.begin(), shape_.end(), 1u, std::multiplies<size_t>()),
+                                0,
+                                std::move(shape_),
+                                std::move(strides_),
+                                {},
+                                std::make_shared<ContainerWrapper<Container>>(std::move(data))}) {
+  if (m_details_ptr->m_shape.size() != m_details_ptr->m_stride_size.size()) {
     throw std::invalid_argument("The size of the shape and strides parameters do not match");
   }
-  if (!std::is_sorted(m_stride_size.rbegin(), m_stride_size.rend())) {
+  if (!std::is_sorted(m_details_ptr->m_stride_size.rbegin(), m_details_ptr->m_stride_size.rend())) {
     throw std::runtime_error("Only C style arrays are supported");
   }
 }
@@ -205,24 +216,22 @@ NdArray<T>::NdArray(std::vector<size_t> shape_, std::vector<size_t> strides_, Co
 template <typename T>
 template <typename II>
 NdArray<T>::NdArray(std::vector<size_t> shape_, II ibegin, II iend)
-    : m_offset(0)
-    , m_shape(std::move(shape_))
-    , m_size(std::accumulate(m_shape.begin(), m_shape.end(), 1u, std::multiplies<size_t>()))
-    , m_container(new ContainerWrapper<std::vector>(ibegin, iend)) {
-  if (m_size != m_container->size()) {
+    : m_details_ptr(new Details{0,
+                                std::accumulate(shape_.begin(), shape_.end(), 1u, std::multiplies<size_t>()),
+                                0,
+                                std::move(shape_),
+                                {},
+                                {},
+                                std::make_shared<ContainerWrapper<std::vector>>(ibegin, iend)}) {
+  if (m_details_ptr->m_size != m_details_ptr->m_container->size()) {
     throw std::invalid_argument("Data size does not match the shape");
   }
   update_strides();
 }
 
 template <typename T>
-NdArray<T>::NdArray(const self_type* other)
-    : m_offset(0)
-    , m_shape(other->m_shape)
-    , m_attr_names(other->m_attr_names)
-    , m_size(std::accumulate(m_shape.begin(), m_shape.end(), 1u, std::multiplies<size_t>()))
-    , m_container(other->m_container->copy()) {
-  update_strides();
+NdArray<T>::NdArray(const self_type* other) : m_details_ptr(make_unique<Details>(*other->m_details_ptr)) {
+  m_details_ptr->m_container = other->m_details_ptr->m_container->copy();
 }
 
 inline std::vector<size_t> appendAttrShape(std::vector<size_t> shape, size_t append) {
@@ -235,19 +244,19 @@ template <typename T>
 template <typename... Args>
 NdArray<T>::NdArray(const std::vector<size_t>& shape_, const std::vector<std::string>& attr_names, Args&&... args)
     : NdArray(appendAttrShape(shape_, attr_names.size()), std::forward<Args>(args)...) {
-  m_attr_names = attr_names;
+  m_details_ptr->m_attr_names = attr_names;
 }
 
 template <typename T>
 auto NdArray<T>::reshape(const std::vector<size_t>& new_shape) -> self_type& {
-  if (!m_attr_names.empty())
+  if (!m_details_ptr->m_attr_names.empty())
     throw std::invalid_argument("Can not reshape arrays with attribute names");
 
   size_t new_size = std::accumulate(new_shape.begin(), new_shape.end(), 1, std::multiplies<size_t>());
-  if (new_size != m_size) {
+  if (new_size != m_details_ptr->m_size) {
     throw std::range_error("New shape does not match the number of contained elements");
   }
-  m_shape = new_shape;
+  m_details_ptr->m_shape = new_shape;
   update_strides();
   return *this;
 }
@@ -263,65 +272,69 @@ template <typename T>
 T& NdArray<T>::at(const std::vector<size_t>& coords) {
   auto offset = get_offset(coords);
   // cppcheck-suppress "returnTempReference"
-  return m_container->get(offset);
+  return m_details_ptr->m_container->get(offset);
 }
 
 template <typename T>
 const T& NdArray<T>::at(const std::vector<size_t>& coords) const {
   auto offset = get_offset(coords);
   // cppcheck-suppress returnTempReference
-  return m_container->get(offset);
+  return m_details_ptr->m_container->get(offset);
 }
 
 template <typename T>
 T& NdArray<T>::at(const std::vector<size_t>& coords, const std::string& attr) {
   auto offset = get_offset(coords, attr);
   // cppcheck-suppress returnTempReference
-  return m_container->get(offset);
+  return m_details_ptr->m_container->get(offset);
 }
 
 template <typename T>
 const T& NdArray<T>::at(const std::vector<size_t>& coords, const std::string& attr) const {
   auto offset = get_offset(coords, attr);
   // cppcheck-suppress returnTempReference
-  return m_container->get(offset);
+  return m_details_ptr->m_container->get(offset);
 }
 
 template <typename T>
 template <typename... D>
 T& NdArray<T>::at(size_t i, D... rest) {
-  return at_helper(m_offset, 0, i, rest...);
+  return at_helper(m_details_ptr->m_offset, 0, i, rest...);
 }
 
 template <typename T>
 template <typename... D>
 const T& NdArray<T>::at(size_t i, D... rest) const {
-  return at_helper(m_offset, 0, i, rest...);
+  return at_helper(m_details_ptr->m_offset, 0, i, rest...);
 }
 
 template <typename T>
 auto NdArray<T>::begin() -> iterator {
-  return iterator{m_container.get(), m_offset, m_shape, m_stride_size, 0};
+  return iterator{m_details_ptr->m_container.get(), m_details_ptr->m_offset, m_details_ptr->m_shape,
+                  m_details_ptr->m_stride_size, 0};
 }
 
 template <typename T>
 auto NdArray<T>::end() -> iterator {
-  return iterator{m_container.get(), m_offset, m_shape, m_stride_size, size()};
+  return iterator{m_details_ptr->m_container.get(), m_details_ptr->m_offset, m_details_ptr->m_shape,
+                  m_details_ptr->m_stride_size, size()};
 }
 
 template <typename T>
 auto NdArray<T>::begin() const -> const_iterator {
-  return const_iterator{m_container.get(), m_offset, m_shape, m_stride_size, 0};
+  return const_iterator{m_details_ptr->m_container.get(), m_details_ptr->m_offset, m_details_ptr->m_shape,
+                        m_details_ptr->m_stride_size, 0};
 }
 
 template <typename T>
 auto NdArray<T>::end() const -> const_iterator {
-  return const_iterator{m_container.get(), m_offset, m_shape, m_stride_size, size()};
+  return const_iterator{m_details_ptr->m_container.get(), m_details_ptr->m_offset, m_details_ptr->m_shape,
+                        m_details_ptr->m_stride_size, size()};
 }
 
 template <typename T>
 size_t NdArray<T>::size() const {
-  return m_size;
+  return m_details_ptr->m_size;
 }
 
 template <typename T>
@@ -342,64 +355,69 @@ bool NdArray<T>::operator!=(const self_type& b) const {
 
 template <typename T>
 const std::vector<std::string>& NdArray<T>::attributes() const {
-  return m_attr_names;
+  return m_details_ptr->m_attr_names;
 }
 
 template <typename T>
 auto NdArray<T>::concatenate(const self_type& other) -> self_type& {
   // Verify dimensionality
-  if (m_shape.size() != other.m_shape.size()) {
+  if (m_details_ptr->m_shape.size() != other.m_details_ptr->m_shape.size()) {
     throw std::length_error("Can not concatenate arrays with different dimensionality");
   }
-  for (size_t i = 1; i < m_shape.size(); ++i) {
-    if (m_shape[i] != other.m_shape[i])
+  for (size_t i = 1; i < m_details_ptr->m_shape.size(); ++i) {
+    if (m_details_ptr->m_shape[i] != other.m_details_ptr->m_shape[i])
       throw std::length_error("The size of all axis except for the first one must match");
   }
 
   // New shape
   auto old_size  = size();
-  auto new_shape = m_shape;
-  new_shape[0] += other.m_shape[0];
+  auto new_shape = m_details_ptr->m_shape;
+  new_shape[0] += other.m_details_ptr->m_shape[0];
 
   // Resize container
-  m_container->resize(new_shape);
+  m_details_ptr->m_container->resize(new_shape);
 
   // Copy to the end
-  std::copy(std::begin(other), std::end(other), &m_container->get(0) + old_size);
+  std::copy(std::begin(other), std::end(other), &m_details_ptr->m_container->get(0) + old_size);
   // Done!
-  m_shape = new_shape;
-  m_size += other.m_size;
+  m_details_ptr->m_shape = new_shape;
+  m_details_ptr->m_size += other.m_details_ptr->m_size;
   return *this;
 }
 
 template <typename T>
 NdArray<T>::NdArray(std::shared_ptr<ContainerInterface> container, size_t offset, std::vector<size_t> shape_,
                     std::vector<size_t> stride, std::vector<std::string> attr_names)
-    : m_offset(offset)
-    , m_shape(std::move(shape_))
-    , m_stride_size(std::move(stride))
-    , m_attr_names(std::move(attr_names))
-    , m_size(std::accumulate(m_shape.begin(), m_shape.end(), 1, std::multiplies<size_t>()))
-    , m_total_stride(m_stride_size.front() * m_shape.front())
-    , m_container(std::move(container)) {}
+    : m_details_ptr(new Details{offset, std::accumulate(shape_.begin(), shape_.end(), 1ul, std::multiplies<size_t>()),
+                                stride.front() * shape_.front(), std::move(shape_), std::move(stride),
+                                std::move(attr_names), std::move(container)}) {}
+
+template <typename T>
+NdArray<T>::NdArray(const self_type& other) : m_details_ptr(make_unique<Details>(*other.m_details_ptr)) {}
+
+template <typename T>
+NdArray<T>& NdArray<T>::operator=(const self_type& other) {
+  m_details_ptr = make_unique<Details>(*other.m_details_ptr);
+  return *this;
+}
 
 template <typename T>
 auto NdArray<T>::slice(size_t i) -> self_type {
-  if (m_shape.size() <= 1) {
+  if (m_details_ptr->m_shape.size() <= 1) {
     throw std::out_of_range("Can not slice a one dimensional array");
   }
   std::vector<std::string> attrs;
-  if (!m_attr_names.empty()) {
-    attrs.resize(m_attr_names.size());
-    std::copy(m_attr_names.begin(), m_attr_names.end(), attrs.begin());
+  if (!m_details_ptr->m_attr_names.empty()) {
+    attrs.resize(m_details_ptr->m_attr_names.size());
+    std::copy(m_details_ptr->m_attr_names.begin(), m_details_ptr->m_attr_names.end(), attrs.begin());
   }
-  if (i >= m_shape[0]) {
+  if (i >= m_details_ptr->m_shape[0]) {
     throw std::out_of_range("Axis 0 out of range");
   }
-  auto                offset = m_offset + i * m_stride_size[0];
-  std::vector<size_t> stride_(m_stride_size.begin() + 1, m_stride_size.end());
-  std::vector<size_t> shape_(m_shape.begin() + 1, m_shape.end());
-  return NdArray(m_container, offset, std::move(shape_), std::move(stride_), std::move(attrs));
+  auto                offset = m_details_ptr->m_offset + i * m_details_ptr->m_stride_size[0];
+  std::vector<size_t> stride_(m_details_ptr->m_stride_size.begin() + 1, m_details_ptr->m_stride_size.end());
+  std::vector<size_t> shape_(m_details_ptr->m_shape.begin() + 1, m_details_ptr->m_shape.end());
+  return NdArray(m_details_ptr->m_container, offset, std::move(shape_), std::move(stride_), std::move(attrs));
 }
 
 template <typename T>
@@ -409,19 +427,20 @@ auto NdArray<T>::slice(size_t i) const -> const self_type {
 
 template <typename T>
 auto NdArray<T>::rslice(size_t i) -> self_type {
-  if (m_shape.size() <= 1) {
+  if (m_details_ptr->m_shape.size() <= 1) {
     throw std::out_of_range("Can not slice a one dimensional array");
   }
-  if (!m_attr_names.empty()) {
+  if (!m_details_ptr->m_attr_names.empty()) {
     throw std::invalid_argument("Can not slice on the last axis for arrays with attribute names");
   }
-  if (i >= m_shape.back()) {
+  if (i >= m_details_ptr->m_shape.back()) {
     throw std::out_of_range("Axis -1 out of range");
   }
-  auto                offset = m_offset + i * m_stride_size.back();
-  std::vector<size_t> strides_(m_stride_size.begin(), m_stride_size.end() - 1);
-  std::vector<size_t> shape_(m_shape.begin(), m_shape.end() - 1);
-  return NdArray(m_container, offset, std::move(shape_), std::move(strides_), m_attr_names);
+  auto                offset = m_details_ptr->m_offset + i * m_details_ptr->m_stride_size.back();
+  std::vector<size_t> strides_(m_details_ptr->m_stride_size.begin(), m_details_ptr->m_stride_size.end() - 1);
+  std::vector<size_t> shape_(m_details_ptr->m_shape.begin(), m_details_ptr->m_shape.end() - 1);
+  return NdArray(m_details_ptr->m_container, offset, std::move(shape_), std::move(strides_),
+                 m_details_ptr->m_attr_names);
 }
 
 template <typename T>
@@ -431,48 +450,48 @@ auto NdArray<T>::rslice(size_t i) const -> const self_type {
 
 template <typename T>
 void NdArray<T>::next_slice() {
-  m_offset += m_total_stride;
+  m_details_ptr->m_offset += m_details_ptr->m_total_stride;
 }
 
 template <typename T>
 size_t NdArray<T>::get_offset(const std::vector<size_t>& coords) const {
-  if (coords.size() != m_shape.size()) {
+  if (coords.size() != m_details_ptr->m_shape.size()) {
     throw std::out_of_range("Invalid number of coordinates, got " + std::to_string(coords.size()) + ", expected " +
-                            std::to_string(m_shape.size()));
+                            std::to_string(m_details_ptr->m_shape.size()));
   }
 
-  size_t offset = m_offset;
+  size_t offset = m_details_ptr->m_offset;
   for (size_t i = 0; i < coords.size(); ++i) {
-    if (coords[i] >= m_shape[i]) {
-      throw std::out_of_range(std::to_string(coords[i]) + " >= " + std::to_string(m_shape[i]) + " for axis " +
-                              std::to_string(i));
+    if (coords[i] >= m_details_ptr->m_shape[i]) {
+      throw std::out_of_range(std::to_string(coords[i]) + " >= " + std::to_string(m_details_ptr->m_shape[i]) +
+                              " for axis " + std::to_string(i));
     }
-    offset += coords[i] * m_stride_size[i];
+    offset += coords[i] * m_details_ptr->m_stride_size[i];
   }
 
-  assert(offset < m_container->nbytes());
+  assert(offset < m_details_ptr->m_container->nbytes());
   return offset;
 }
 
 template <typename T>
 size_t NdArray<T>::get_attr_offset(const std::string& attr) const {
-  auto i = std::find(m_attr_names.begin(), m_attr_names.end(), attr);
-  if (i == m_attr_names.end())
+  auto i = std::find(m_details_ptr->m_attr_names.begin(), m_details_ptr->m_attr_names.end(), attr);
+  if (i == m_details_ptr->m_attr_names.end())
     throw std::out_of_range(attr);
-  return (i - m_attr_names.begin()) * sizeof(T);
+  return (i - m_details_ptr->m_attr_names.begin()) * sizeof(T);
 }
 
 template <typename T>
 void NdArray<T>::update_strides() {
-  m_stride_size.resize(m_shape.size());
+  m_details_ptr->m_stride_size.resize(m_details_ptr->m_shape.size());
 
   size_t acc = sizeof(T);
-  for (size_t i = m_stride_size.size(); i > 0; --i) {
-    m_stride_size[i - 1] = acc;
-    acc *= m_shape[i - 1];
+  for (size_t i = m_details_ptr->m_stride_size.size(); i > 0; --i) {
+    m_details_ptr->m_stride_size[i - 1] = acc;
+    acc *= m_details_ptr->m_shape[i - 1];
   }
 
-  m_total_stride = m_shape.front() * m_stride_size.front();
+  m_details_ptr->m_total_stride = m_details_ptr->m_shape.front() * m_details_ptr->m_stride_size.front();
 }
 
 /**
@@ -481,49 +500,49 @@ void NdArray<T>::update_strides() {
 template <typename T>
 template <typename... D>
 T& NdArray<T>::at_helper(size_t offset_acc, size_t axis, size_t i, D... rest) {
-  assert(axis <= m_shape.size() && i < m_shape[axis]);
-  offset_acc += i * m_stride_size[axis];
+  assert(axis <= m_details_ptr->m_shape.size() && i < m_details_ptr->m_shape[axis]);
+  offset_acc += i * m_details_ptr->m_stride_size[axis];
   return at_helper(offset_acc, ++axis, rest...);
 }
 
 template <typename T>
 T& NdArray<T>::at_helper(size_t offset_acc, ELEMENTS_UNUSED size_t axis) {
-  assert(axis == m_shape.size());
-  assert(offset_acc < m_container->nbytes());
-  return m_container->get(offset_acc);
+  assert(axis == m_details_ptr->m_shape.size());
+  assert(offset_acc < m_details_ptr->m_container->nbytes());
+  return m_details_ptr->m_container->get(offset_acc);
 }
 
 template <typename T>
 T& NdArray<T>::at_helper(size_t offset_acc, ELEMENTS_UNUSED size_t axis, const std::string& attr) {
   offset_acc += get_attr_offset(attr);
-  assert(axis == m_shape.size() - 1);
-  assert(offset_acc < m_container->nbytes());
-  return m_container->get(offset_acc);
+  assert(axis == m_details_ptr->m_shape.size() - 1);
+  assert(offset_acc < m_details_ptr->m_container->nbytes());
+  return m_details_ptr->m_container->get(offset_acc);
 }
 
 template <typename T>
 template <typename... D>
 const T& NdArray<T>::at_helper(size_t offset_acc, size_t axis, size_t i, D... rest) const {
-  assert(axis <= m_shape.size() && i < m_shape[axis]);
-  offset_acc += i * m_stride_size[axis];
+  assert(axis <= m_details_ptr->m_shape.size() && i < m_details_ptr->m_shape[axis]);
+  offset_acc += i * m_details_ptr->m_stride_size[axis];
   return at_helper(offset_acc, ++axis, rest...);
 }
 
 template <typename T>
 const T& NdArray<T>::at_helper(size_t offset_acc, ELEMENTS_UNUSED size_t axis) const {
-  assert(axis == m_shape.size());
-  assert(offset_acc < m_container->nbytes());
+  assert(axis == m_details_ptr->m_shape.size());
+  assert(offset_acc < m_details_ptr->m_container->nbytes());
   // cppcheck-suppress returnTempReference
-  return m_container->get(offset_acc);
+  return m_details_ptr->m_container->get(offset_acc);
 }
 
 template <typename T>
 const T& NdArray<T>::at_helper(size_t offset_acc, ELEMENTS_UNUSED size_t axis, const std::string& attr) const {
   offset_acc += get_attr_offset(attr);
-  assert(axis == m_shape.size() - 1);
-  assert(offset_acc < m_container->nbytes());
+  assert(axis == m_details_ptr->m_shape.size() - 1);
+  assert(offset_acc < m_details_ptr->m_container->nbytes());
   // cppcheck-suppress returnTempReference
-  return m_container->get(offset_acc);
+  return m_details_ptr->m_container->get(offset_acc);
 }
 
 template <typename T>
