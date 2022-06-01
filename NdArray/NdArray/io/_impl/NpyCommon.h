@@ -252,6 +252,10 @@ public:
     return m_n_elements;
   }
 
+  size_t nbytes() const {
+    return m_max_size;
+  }
+
   T* data() {
     return m_data;
   }

@@ -522,9 +522,7 @@ private:
     virtual size_t size() const = 0;
 
     /// Get the size in bytes
-    size_t nbytes() const {
-      return size() * sizeof(T);
-    }
+    virtual size_t nbytes() const = 0;
 
     /// Resize container
     virtual void resize(const std::vector<size_t>& shape) = 0;
@@ -552,6 +550,20 @@ private:
 
     size_t size() const final {
       return m_container.size();
+    }
+
+    template<typename T2>
+    auto nbytesImpl(int) const -> decltype(std::declval<Container<T2>>().nbytes()) {
+      return m_container.nbytes();
+    }
+
+    template<typename T2>
+    size_t nbytesImpl(...) const {
+      return m_container.size() * sizeof(T2);
+    }
+
+    size_t nbytes() const final {
+      return nbytesImpl<T>(0);
     }
 
     template <typename T2>
