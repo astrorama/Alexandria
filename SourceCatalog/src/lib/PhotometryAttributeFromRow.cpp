@@ -85,11 +85,11 @@ PhotometryAttributeFromRow::~PhotometryAttributeFromRow() {}
 
 std::pair<double, double> PhotometryAttributeFromRow::convertFromMag(const double mag, const double mag_err) const {
 
-  if (Elements::isEqual(mag, m_missing_photometry_flag) || std::isnan(mag)) {
+  if (Elements::almostEqual2sComplement(mag, m_missing_photometry_flag) || std::isnan(mag)) {
     return std::make_pair(m_missing_photometry_flag, 0);
   } else {
     // check if the error is a flag
-    bool is_flag = Elements::isEqual(mag_err, m_n_upper_limit_flag);
+    bool is_flag = Elements::almostEqual2sComplement(mag_err, m_n_upper_limit_flag);
 
     // compute the flux and the error
     double flux = 3.631e9 * std::pow(10, -0.4 * mag);
@@ -138,7 +138,7 @@ std::unique_ptr<Attribute> PhotometryAttributeFromRow::createAttribute(const Euc
 
 
     bool missing_data = !std::isfinite(flux) | !std::isfinite(error) |
-                        (m_missing_photometry_enabled && Elements::isEqual(flux, m_missing_photometry_flag));
+                        (m_missing_photometry_enabled && Elements::almostEqual2sComplement(flux, m_missing_photometry_flag));
 
     if (m_missing_photometry_enabled && missing_data) {
       error = 0.;
@@ -153,13 +153,13 @@ std::unique_ptr<Attribute> PhotometryAttributeFromRow::createAttribute(const Euc
       }
       if (error < 0) {
         /** Actual upper limit **/
-        if (Elements::isEqual(error, m_n_upper_limit_flag)) {
+        if (Elements::almostEqual2sComplement(error, m_n_upper_limit_flag)) {
           error = flux / n_threshod_iter->second;
         }
         upper_limit = true;
         if (flux <= 0) {
           throw SourceCatalog::PhotometryParsingException(
-              "Negative or Zero flux encountered when parsing the Photometry", context_desc.c_str(), flux, error);
+              "Negative or Zero flux encountered when parsing the Photometry ", context_desc.c_str(), flux, error);
         }
 
         error = std::abs(error);
@@ -168,7 +168,7 @@ std::unique_ptr<Attribute> PhotometryAttributeFromRow::createAttribute(const Euc
       /** Upper limit disabled **/
       if (error <= 0) {
         throw SourceCatalog::PhotometryParsingException(
-            "Negative or Zero error encountered when parsing the Photometry", context_desc.c_str(), flux, error);
+            "Negative or Zero error encountered when parsing the Photometry ", context_desc.c_str(), flux, error);
       }
     }
 

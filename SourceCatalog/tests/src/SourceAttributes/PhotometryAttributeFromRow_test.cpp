@@ -62,7 +62,45 @@ BOOST_FIXTURE_TEST_CASE(createAttribute_test, TableFixture) {
     BOOST_CHECK_CLOSE(photometry->find(r_filter_name)->error, error2_row1, tolerance);
     BOOST_CHECK(!photometry->find(r_filter_name)->missing_photometry_flag);
   }
+
+
+  PhotometryAttributeFromRow paft2{column_info_ptr, filter_name_mapping, true, -99, true, threshold_mapping, -99};
+
+  // case with upper limit (negative error)
+  std::unique_ptr<Euclid::SourceCatalog::Attribute> attribute_ptr_2 = paft2.createAttribute(row_1_flux_neg_error);
+  BOOST_CHECK(dynamic_cast<Euclid::SourceCatalog::Photometry*>(attribute_ptr_2.get()) != nullptr);
+  photometry = dynamic_cast<Euclid::SourceCatalog::Photometry*>(attribute_ptr_2.get());
+  BOOST_CHECK_CLOSE(photometry->find(v_filter_name)->flux, 1, tolerance);
+  BOOST_CHECK_CLOSE(photometry->find(v_filter_name)->error, 0.5, tolerance);
+  BOOST_CHECK(photometry->find(v_filter_name)->upper_limit_flag);
+  BOOST_CHECK(!photometry->find(v_filter_name)->missing_photometry_flag);
+
+  // case with upper limit (flag)
+  std::unique_ptr<Euclid::SourceCatalog::Attribute> attribute_ptr_3 = paft2.createAttribute(row_neg_error_flag);
+  BOOST_CHECK(dynamic_cast<Euclid::SourceCatalog::Photometry*>(attribute_ptr_3.get()) != nullptr);
+  photometry = dynamic_cast<Euclid::SourceCatalog::Photometry*>(attribute_ptr_3.get());
+  BOOST_CHECK_CLOSE(photometry->find(v_filter_name)->flux, 1, tolerance);
+  BOOST_CHECK_CLOSE(photometry->find(v_filter_name)->error, 1/3.0, tolerance);
+  BOOST_CHECK(photometry->find(v_filter_name)->upper_limit_flag);
+  BOOST_CHECK(!photometry->find(v_filter_name)->missing_photometry_flag);
+
+  // case with missing value and upper limit (negative error)
+  std::unique_ptr<Euclid::SourceCatalog::Attribute> attribute_ptr_4 = paft2.createAttribute(row_flag_flux_neg_error);
+  BOOST_CHECK(dynamic_cast<Euclid::SourceCatalog::Photometry*>(attribute_ptr_4.get()) != nullptr);
+  photometry = dynamic_cast<Euclid::SourceCatalog::Photometry*>(attribute_ptr_4.get());
+  BOOST_CHECK(!photometry->find(v_filter_name)->upper_limit_flag);
+  BOOST_CHECK(photometry->find(v_filter_name)->missing_photometry_flag);
+
+
+  // case with missing value and upper limit (flag)
 }
+
+
+
+
+
+
+
 
 
 BOOST_FIXTURE_TEST_CASE(convert_from_mag_test, TableFixture) {
