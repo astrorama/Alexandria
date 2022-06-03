@@ -164,38 +164,117 @@ std::vector<std::string> autoDetectColumnDescriptions(const CCfits::Table& table
 }
 
 template <typename T>
-std::vector<Row::cell_type> convertScalarColumn(CCfits::Column& column, long first, long last) {
-  std::vector<T> data;
-  column.read(data, first, last);
-  std::vector<Row::cell_type> result;
-  for (auto value : data) {
-    result.push_back(value);
+T dynamicCastWrapper(CCfits::Column* column) {
+  auto column_data = dynamic_cast<T>(column);
+  if (column_data == nullptr) {
+    throw Elements::Exception() << "Could not convert the CCfits::Column into " << typeid(T).name();
   }
+  return column_data;
+}
+
+template <typename T>
+std::vector<Row::cell_type> convertScalarColumn(CCfits::Column& column, long first, long last) {
+  std::vector<Row::cell_type> result;
+  auto                        column_data = dynamicCastWrapper<CCfits::ColumnData<T>*>(&column);
+
+  column_data->readData(first, last - first + 1);
+
+  const auto& data = column_data->data();
+  result.reserve(data.size());
+  std::copy(data.begin(), data.end(), std::back_inserter(result));
+  return result;
+}
+
+// The handling of 32 and 64 bits integer is complicated by the fact
+// that the specification says J is 32 and K is 64, but cfitsio maps them to "long" and "long long" instead
+// This template allows fall-back between long => int32_t and long long => int64_t
+template <typename T, typename FallbackT>
+std::vector<Row::cell_type> convertScalarColumnFallback(CCfits::Column& column, long first, long last) {
+  std::vector<Row::cell_type> result;
+  auto                        column_data = dynamic_cast<CCfits::ColumnData<T>*>(&column);
+  if (column_data != nullptr) {
+    column_data->readData(first, last - first + 1);
+    const auto& data = column_data->data();
+    result.reserve(data.size());
+    std::copy(data.begin(), data.end(), std::back_inserter(result));
+  } else {
+    auto fallback_column_data = dynamicCastWrapper<CCfits::ColumnData<FallbackT>*>(&column);
+    fallback_column_data->readData(first, last - first + 1);
+    const auto& data = fallback_column_data->data();
+    result.reserve(data.size());
+    std::transform(data.begin(), data.end(), std::back_inserter(result), [](FallbackT v) { return static_cast<T>(v); });
+  }
+  return result;
+}
+
+template <>
+std::vector<Row::cell_type> convertScalarColumn<int32_t>(CCfits::Column& column, long first, long last) {
+  return convertScalarColumnFallback<int32_t, long>(column, first, last);
+}
+
+template <>
+std::vector<Row::cell_type> convertScalarColumn<int64_t>(CCfits::Column& column, long first, long last) {
+  return convertScalarColumnFallback<int64_t, long long>(column, first, last);
+}
+
+template <typename T>
+std::vector<std::vector<T>> getVectorData(CCfits::Column& column, long first, long last) {
+  auto column_data = dynamicCastWrapper<CCfits::ColumnVectorData<T>*>(&column);
+  column_data->readData(first, last - first + 1);
+  const auto&                 data = column_data->data();
+  std::vector<std::vector<T>> result(data.size());
+  std::transform(data.begin(), data.end(), result.begin(),
+                 [](const std::valarray<T>& array) { return std::vector<T>(std::begin(array), std::end(array)); });
   return result;
 }
 
 template <typename T>
 std::vector<Row::cell_type> convertVectorColumn(CCfits::Column& column, long first, long last) {
-  std::vector<std::valarray<T>> data;
-  column.readArrays(data, first, last);
+  auto                        data = getVectorData<T>(column, first, last);
   std::vector<Row::cell_type> result;
-  for (auto& valar : data) {
-    result.push_back(std::vector<T>(std::begin(valar), std::end(valar)));
+  result.reserve(data.size());
+  for (auto& v : data) {
+    result.emplace_back(std::move(v));
   }
   return result;
 }
 
-template <typename T>
-std::vector<Row::cell_type> convertNdArrayColumn(CCfits::Column& column, long first, long last) {
-  std::vector<std::valarray<T>> data;
-  column.readArrays(data, first, last);
-  std::vector<size_t> shape = parseTDIM(column.dimen());
-
+// Specializations for int32_t and int64_t with fallback
+template <typename T, typename FallbackT>
+std::vector<Row::cell_type> convertVectorWithFallback(CCfits::Column& column, long first, long last) {
   std::vector<Row::cell_type> result;
-  for (auto& valar : data) {
-    result.push_back(NdArray<T>(shape, std::move(std::vector<T>(std::begin(valar), std::end(valar)))));
+  if (dynamic_cast<CCfits::ColumnVectorData<T>*>(&column)) {
+    auto data = getVectorData<T>(column, first, last);
+    result.reserve(data.size());
+    for (auto& v : data) {
+      result.emplace_back(std::move(v));
+    }
+  } else {
+    auto data = getVectorData<FallbackT>(column, first, last);
+    result.reserve(data.size());
+    std::transform(data.begin(), data.end(), std::back_inserter(result),
+                   [](const std::vector<FallbackT>& v) { return std::vector<T>(v.begin(), v.end()); });
   }
   return result;
+}
+
+template <>
+std::vector<Row::cell_type> convertVectorColumn<int32_t>(CCfits::Column& column, long first, long last) {
+  return convertVectorWithFallback<int32_t, long>(column, first, last);
+}
+
+template <>
+std::vector<Row::cell_type> convertVectorColumn<int64_t>(CCfits::Column& column, long first, long last) {
+  return convertVectorWithFallback<int64_t, long long>(column, first, last);
+}
+
+template <typename T>
+std::vector<Row::cell_type> convertNdArrayColumn(CCfits::Column& column, long first, long last) {
+  std::vector<size_t> shape = parseTDIM(column.dimen());
+  auto                data  = convertVectorColumn<T>(column, first, last);
+  std::transform(std::make_move_iterator(data.begin()), std::make_move_iterator(data.end()), data.begin(),
+                 [shape](Row::cell_type&& v) { return NdArray<T>(shape, std::move(boost::get<std::vector<T>>(v))); });
+  return data;
 }
 
 std::vector<Row::cell_type> translateColumn(CCfits::Column& column, std::type_index type) {
