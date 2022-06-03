@@ -38,7 +38,7 @@ static Elements::Logging logger = Elements::Logging::getLogger("PhotometryCatalo
 
 static const std::string MISSING_PHOTOMETRY_FLAG{"missing-photometry-flag"};
 static const std::string ENABLE_UPPER_LIMIT{"enable-upper-limit"};
-static const std::string UPPER_LIMIT_USE_THRESHOLD_FLAG{"upper-limit-use-threshod-flag"};
+static const std::string UPPER_LIMIT_USE_THRESHOLD_FLAG{"upper-limit-use-threshold-flag"};
 
 PhotometryCatalogConfig::PhotometryCatalogConfig(long manager_id) : Configuration(manager_id) {
   declareDependency<CatalogConfig>();

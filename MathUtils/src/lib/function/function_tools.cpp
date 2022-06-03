@@ -44,7 +44,7 @@ double integrate(const Function& function, const double min, const double max,
   }
 
   throw Elements::Exception() << "Numerical integration of non-Integrable Functions "
-                              << "requiere that you provide a NumericalIntegrationScheme";
+                              << "requieres that you provide a NumericalIntegrationScheme";
 }
 
 class DefaultMultiplication final : public Function {

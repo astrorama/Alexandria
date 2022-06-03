@@ -137,6 +137,12 @@ struct TableFixture {
       int64_t(1009),        std::string{"ID10"}, true,           1, int64_t{123}, 0.F, 0., 3., -0.5, 0.3,
       std::string{"first"}, spec_z_val_row0,     spec_z_err_row0};
   const Euclid::Table::Row                         row_zero_flux_neg_error{values10, column_info_ptr};
+
+  const std::vector<Euclid::Table::Row::cell_type> values10b{
+      int64_t(1009),        std::string{"ID10b"}, true,           1, int64_t{123}, 0.F, 1., 3., -0.5, 0.3,
+      std::string{"first"}, spec_z_val_row0,     spec_z_err_row0};
+  const Euclid::Table::Row                         row_1_flux_neg_error{values10b, column_info_ptr};
+
   const std::vector<Euclid::Table::Row::cell_type> values11{
       int64_t(1010),        std::string{"ID11"}, true,           1, int64_t{123}, 0.F, -1., 3., -0.5, 0.3,
       std::string{"first"}, spec_z_val_row0,     spec_z_err_row0};
