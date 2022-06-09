@@ -131,7 +131,6 @@ Table FitsReader::readImpl(long rows) {
   // create all the rows
   std::vector<std::vector<Row::cell_type>> data;
   data.reserve(table_hdu.numCols());
-  table_hdu.makeThisCurrent();
   for (int i = 1; i <= table_hdu.numCols(); ++i) {
     // The i-1 is because CCfits starts from 1 and ColumnInfo from 0
     // We use a clone of the column because CCfits will cache in memory the read data, so multiple calls
@@ -139,11 +138,6 @@ Table FitsReader::readImpl(long rows) {
     // the FitsReader is destroyed (~FitsReader() => ~Table() => ~Column())
     // For scalars this is not a big deal, but when the column has an array (i.e. a bunch of PDZs), the
     // pile up can be significant after a while.
-    // CCfits will call makeThisCurrent *for each column*
-    // This can be very inefficient, since each call will trigger the parsing of the HDU headers (!!)
-    // Each convertColumn *can* assume makeThisCurrent() has been called here and
-    // *should* do a cast to CCfits::ColumnData to avoid this overhead. This is what CCfits::Column does anyway
-    // when reading ¯\_(ツ)_/¯
     std::unique_ptr<CCfits::Column> column(table_hdu.column(i).clone());
     data.emplace_back(
         translateColumn(*column, m_column_info->getDescription(i - 1).type, m_current_row, m_current_row + rows - 1));
