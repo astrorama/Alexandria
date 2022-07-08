@@ -156,7 +156,7 @@ public:
   template <typename IterType, typename BinType,
             typename = typename std::enable_if<std::is_move_constructible<BinType>::value>::type>
   Histogram(IterType begin, IterType end, BinType&& bin_type) {
-    auto binning_impl = make_unique<ComputationImpl<BinType>>(std::move(bin_type));
+    auto binning_impl = make_unique<ComputationImpl<BinType>>(std::forward<BinType>(bin_type));
     binning_impl->computeBins(begin, end, ConstantWeight{});
     m_binning_concept = std::move(binning_impl);
   }
@@ -187,7 +187,7 @@ public:
   Histogram(IterType begin, IterType end, WeightIterType wbegin, ELEMENTS_UNUSED WeightIterType wend,
             BinType&& bin_type) {
     assert(wend - wbegin == end - begin);
-    auto binning_impl = make_unique<ComputationImpl<BinType>>(std::move(bin_type));
+    auto binning_impl = make_unique<ComputationImpl<BinType>>(std::forward(bin_type));
     binning_impl->computeBins(begin, end, wbegin);
     m_binning_concept = std::move(binning_impl);
   }
