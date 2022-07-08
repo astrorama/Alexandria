@@ -53,22 +53,22 @@ public:
   /**
    * @brief move constructor
    */
-  Cumulative(Cumulative&& other);
+  Cumulative(Cumulative&& other) = default;
 
   /**
    * @brief move assignation operator
    */
-  Cumulative& operator=(Cumulative&& other);
+  Cumulative& operator=(Cumulative&& other) = default;
 
   /**
    * @brief copy constructor
    */
-  Cumulative(const Cumulative& other);
+  Cumulative(const Cumulative& other) = default;
 
   /**
    * @brief copy assignation operator
    */
-  Cumulative& operator=(const Cumulative& other);
+  Cumulative& operator=(const Cumulative& other) = default;
 
   /**
    * @brief Constructor from the sampling of a cumulative

@@ -27,7 +27,7 @@ namespace Euclid {
 
 Semaphore::Semaphore(unsigned int i) : m_impl(new SemaphoreImpl(i)) {}
 
-Semaphore::~Semaphore() {}
+Semaphore::~Semaphore() = default;
 
 void Semaphore::release() {
   m_impl->post();

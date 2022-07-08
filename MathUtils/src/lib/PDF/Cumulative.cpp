@@ -30,23 +30,6 @@
 namespace Euclid {
 namespace MathUtils {
 
-Cumulative::Cumulative(Cumulative&& other)
-    : m_x_sampling(std::move(other.m_x_sampling)), m_y_sampling(std::move(other.m_y_sampling)) {}
-
-Cumulative& Cumulative::operator=(Cumulative&& other) {
-  m_x_sampling = std::move(other.m_x_sampling);
-  m_y_sampling = std::move(other.m_y_sampling);
-  return *this;
-}
-
-Cumulative::Cumulative(const Cumulative& other) : m_x_sampling(other.m_x_sampling), m_y_sampling(other.m_y_sampling) {}
-
-Cumulative& Cumulative ::operator=(const Cumulative& other) {
-  m_x_sampling = other.m_x_sampling;
-  m_y_sampling = other.m_y_sampling;
-  return *this;
-}
-
 Cumulative::Cumulative(std::vector<double>& x_sampling, std::vector<double>& y_sampling)
     : m_x_sampling(x_sampling), m_y_sampling(y_sampling) {
   if (x_sampling.size() != y_sampling.size()) {
@@ -107,10 +90,10 @@ double Cumulative::findValue(double ratio, TrayPosition position) const {
     throw Elements::Exception("Cumulative::findValue : ratio parameter must be in range [0,1]");
   }
 
-  double value  = m_y_sampling.back() * ratio;
+  double value = m_y_sampling.back() * ratio;
 
-  auto   iter_x = m_x_sampling.cbegin();
-  auto   iter_y = m_y_sampling.cbegin();
+  auto iter_x = m_x_sampling.cbegin();
+  auto iter_y = m_y_sampling.cbegin();
   while (iter_y != m_y_sampling.cend() && (*iter_y) < value) {
     ++iter_x;
     ++iter_y;
@@ -183,8 +166,8 @@ std::pair<double, double> Cumulative::findCenteredInterval(double rate) const {
     throw Elements::Exception("Cumulative::findCenteredInterval : rate parameter must be in range ]0,1]");
   }
 
-  double min_value  = m_y_sampling.back() * (0.5 - rate / 2.0);
-  double max_value  = m_y_sampling.back() * (0.5 + rate / 2.0);
+  double min_value = m_y_sampling.back() * (0.5 - rate / 2.0);
+  double max_value = m_y_sampling.back() * (0.5 + rate / 2.0);
 
   auto iter_x = m_x_sampling.cbegin();
   auto iter_y = m_y_sampling.cbegin();

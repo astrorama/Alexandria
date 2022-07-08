@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2021 Euclid Science Ground Segment
+ * Copyright (C) 2012-2022 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -77,8 +77,8 @@ struct CatalogFixture {
   std::shared_ptr<Attribute> coordinates_1_ptr{new Coordinates{expected_ra_1, expected_dec_1}};
   std::shared_ptr<Attribute> coordinates_2_ptr{new Coordinates{expected_ra_2, expected_dec_2}};
 
-  std::shared_ptr<Attribute>              spec_redshift_ptr{new SpectroscopicRedshift{expected_z_value, expected_z_error}};
-  std::shared_ptr<Attribute>              photometry_ptr{new Photometry{filter_name_vector_ptr, photometry_vector}};
+  std::shared_ptr<Attribute> spec_redshift_ptr{new SpectroscopicRedshift{expected_z_value, expected_z_error}};
+  std::shared_ptr<Attribute> photometry_ptr{new Photometry{filter_name_vector_ptr, photometry_vector}};
   std::vector<std::shared_ptr<Attribute>> attribute_vector_1{coordinates_1_ptr, spec_redshift_ptr, photometry_ptr};
   std::vector<std::shared_ptr<Attribute>> attribute_vector_2{coordinates_2_ptr, spec_redshift_ptr};
 
@@ -93,34 +93,6 @@ struct CatalogFixture {
 
   // create the catalog
   Catalog catalog{source_vector};
-
-  CatalogFixture() {
-
-    //    // First source
-    //    shared_ptr<Coordinates> coordinates_ptr1(new Coordinates(expectedRa1, expectedDec1));
-    //    shared_ptr<SpectroscopicRedshift> spec_redshift_ptr1(new SpectroscopicRedshift(expectedZvalue1, expectedZerror1));
-    //    shared_ptr<Photometry> photometry_ptr1(new Photometry{createPhotometryMap()});
-    //    attribute_vector1.push_back(coordinates_ptr1);
-    //    attribute_vector1.push_back(spec_redshift_ptr1);
-    //    attribute_vector1.push_back(photometry_ptr1);
-    //
-    //    // Second source
-    //    shared_ptr<Coordinates> coordinates_ptr2(new Coordinates(expectedRa2, expectedDec2));
-    //    shared_ptr<SpectroscopicRedshift> spec_redshift_ptr2(new SpectroscopicRedshift(expectedZvalue2, expectedZerror2));
-    //    attribute_vector2.push_back(coordinates_ptr2);
-    //    attribute_vector2.push_back(spec_redshift_ptr2);
-    //
-    //    // Store sources in a vector
-    //    source_vector.push_back(Source(expectedSourceId1, attribute_vector1));
-    //    source_vector.push_back(Source(expectedSourceId2, attribute_vector2));
-    //
-    //    catPtr = new Catalog(source_vector);
-  }
-
-  virtual ~CatalogFixture() noexcept {
-    // teardown
-    // delete catPtr;
-  }
 };
 
 }  // end of namespace SourceCatalog

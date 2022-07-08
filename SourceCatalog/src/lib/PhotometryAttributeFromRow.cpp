@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2021 Euclid Science Ground Segment
+ * Copyright (C) 2012-2022 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -81,7 +81,7 @@ PhotometryAttributeFromRow::PhotometryAttributeFromRow(
   }
 }
 
-PhotometryAttributeFromRow::~PhotometryAttributeFromRow() {}
+PhotometryAttributeFromRow::~PhotometryAttributeFromRow() = default;
 
 std::pair<double, double> PhotometryAttributeFromRow::convertFromMag(const double mag, const double mag_err) const {
 
@@ -136,9 +136,9 @@ std::unique_ptr<Attribute> PhotometryAttributeFromRow::createAttribute(const Euc
 
     bool upper_limit = false;
 
-
-    bool missing_data = !std::isfinite(flux) | !std::isfinite(error) |
-                        (m_missing_photometry_enabled && Elements::almostEqual2sComplement(flux, m_missing_photometry_flag));
+    bool missing_data =
+        !std::isfinite(flux) | !std::isfinite(error) |
+        (m_missing_photometry_enabled && Elements::almostEqual2sComplement(flux, m_missing_photometry_flag));
 
     if (m_missing_photometry_enabled && missing_data) {
       error = 0.;

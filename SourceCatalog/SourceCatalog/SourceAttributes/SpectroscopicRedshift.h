@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2021 Euclid Science Ground Segment
+ * Copyright (C) 2012-2022 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -48,7 +48,7 @@ public:
    */
   SpectroscopicRedshift(double value, double error) : m_value(value), m_error(error) {}
 
-  virtual ~SpectroscopicRedshift() {}
+  ~SpectroscopicRedshift() override = default;
 
   double getValue() const {
     return m_value;

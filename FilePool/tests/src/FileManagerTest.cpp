@@ -29,7 +29,7 @@ using namespace Euclid::FilePool;
  */
 class NoopFileManager : public FileManager {
 public:
-  NoopFileManager() {}
+  NoopFileManager() = default;
 
 protected:
   void notifyIntentToOpen(bool) final {}
