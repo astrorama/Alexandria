@@ -37,11 +37,12 @@ struct Spline_Fixture {
 
   std::vector<double> x, y;
 
-  Spline_Fixture() {
-    for (double xValue = -10.; xValue <= 10.; xValue += 0.1) {
-      x.push_back(xValue);
-      y.push_back(sin(xValue));
-    }
+  Spline_Fixture() : x(200), y(200) {
+    std::generate(x.begin(), x.end(), [xvalue = -10.1]() mutable {
+      xvalue += 0.1;
+      return xvalue;
+    });
+    std::transform(x.begin(), x.end(), y.begin(), &sin);
   }
 };
 

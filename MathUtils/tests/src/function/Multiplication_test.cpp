@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2021 Euclid Science Ground Segment
+ * Copyright (C) 2012-2022 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -81,9 +81,10 @@ BOOST_FIXTURE_TEST_CASE(PiecewiseWithGeneric, Multiplication_Fixture) {
 
   // Then
   BOOST_CHECK(multPointer);
-  Euclid::MathUtils::Piecewise* piecePointer = dynamic_cast<Euclid::MathUtils::Piecewise*>(multPointer.get());
+  auto piecePointer = dynamic_cast<Euclid::MathUtils::Piecewise*>(multPointer.get());
   BOOST_CHECK(piecePointer);
-  for (double x = -2.; x <= 3.; x += .1) {
+  for (size_t i = 0; i < 50; ++i) {
+    double x = -2. + (i * 0.1);
     BOOST_CHECK_CLOSE((*multPointer)(x), piecewise(x) * generic(x), close_tolerance);
   }
 }
@@ -120,7 +121,8 @@ BOOST_FIXTURE_TEST_CASE(PiecewiseWithPiecewise, Multiplication_Fixture) {
   auto                resKnots = piecePointer->getKnots();
   std::vector<double> expectedKnots{.5, .7, 1., 1.5, 2.};
   BOOST_CHECK_EQUAL_COLLECTIONS(resKnots.begin(), resKnots.end(), expectedKnots.begin(), expectedKnots.end());
-  for (double x = -2.; x <= 7.; x += .1) {
+  for (size_t i = 0; i < 90; ++i) {
+    double x = -2. + (i * 0.1);
     BOOST_CHECK_CLOSE((*multPointer)(x), p1(x) * p2(x), close_tolerance);
   }
 
@@ -135,7 +137,8 @@ BOOST_FIXTURE_TEST_CASE(PiecewiseWithPiecewise, Multiplication_Fixture) {
   resKnots      = piecePointer->getKnots();
   expectedKnots = {.5, .7, 1., 1.5, 2.};
   BOOST_CHECK_EQUAL_COLLECTIONS(resKnots.begin(), resKnots.end(), expectedKnots.begin(), expectedKnots.end());
-  for (double x = -2.; x <= 7.; x += .1) {
+  for (size_t i = 0; i < 90; ++i) {
+    double x = -2. + (i * 0.1);
     BOOST_CHECK_CLOSE((*multPointer)(x), p1(x) * p2(x), close_tolerance);
   }
 }

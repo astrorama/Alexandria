@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2021 Euclid Science Ground Segment
+ * Copyright (C) 2012-2022 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -102,8 +102,8 @@ BOOST_FIXTURE_TEST_CASE(FunctionOperator, Polynomial_Fixture) {
   std::vector<double>           coef{2.5, 0.8, -1.3, 0.02};
   Euclid::MathUtils::Polynomial polynomial{coef};
 
-  for (double x = -10.; x <= 10.; x += 0.1) {
-
+  for (size_t i = 0; i < 200; ++i) {
+    double x = -10. + (i * 0.1);
     // When
     double expected = 2.5 + 0.8 * x - 1.3 * x * x + 0.02 * x * x * x;
     double polValue = polynomial(x);
