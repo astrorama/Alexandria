@@ -20,7 +20,6 @@
 
 #include <ElementsKernel/Unused.h>
 #include <algorithm>
-#include <cstring>
 #include <utility>
 
 namespace Euclid {
@@ -68,7 +67,7 @@ auto NdArray<T>::Iterator<Const>::operator++(int) -> const Iterator {
 template <typename T>
 template <bool Const>
 bool NdArray<T>::Iterator<Const>::operator==(const Iterator& other) const {
-  return std::memcmp(this, &other, sizeof(*this)) == 0;
+  return m_container_ptr == other.m_container_ptr && m_offset == other.m_offset && m_i == other.m_i;
 }
 
 template <typename T>
