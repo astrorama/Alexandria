@@ -93,8 +93,8 @@ BOOST_AUTO_TEST_CASE(NameWithWhitespaces) {
   std::string new_page        = "New\fPage";
 
   // Then
-  ColumnDescription{space};
-  ColumnDescription{tab};
+  [[maybe_unused]] ColumnDescription col_with_space{space};
+  [[maybe_unused]] ColumnDescription col_with_tab{tab};
   BOOST_CHECK_THROW(ColumnDescription{carriage_return}, Elements::Exception);
   BOOST_CHECK_THROW(ColumnDescription{new_line}, Elements::Exception);
   BOOST_CHECK_THROW(ColumnDescription{new_page}, Elements::Exception);

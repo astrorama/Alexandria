@@ -115,8 +115,8 @@ BOOST_FIXTURE_TEST_CASE(ConstructorCellValueWithWhitespace, Row_Fixture) {
                                                       std::vector<double>{6.1, 6.2}};
 
   // Then
-  Euclid::Table::Row(space, column_info);
-  Euclid::Table::Row(tab, column_info);
+  [[maybe_unused]] Euclid::Table::Row row_with_spaces(space, column_info);
+  [[maybe_unused]] Euclid::Table::Row row_with_tabs(tab, column_info);
   BOOST_CHECK_THROW(Euclid::Table::Row(carriage_return, column_info), Elements::Exception);
   BOOST_CHECK_THROW(Euclid::Table::Row(new_line, column_info), Elements::Exception);
   BOOST_CHECK_THROW(Euclid::Table::Row(new_page, column_info), Elements::Exception);

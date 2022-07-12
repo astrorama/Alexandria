@@ -35,13 +35,15 @@ struct Spline_Fixture {
   const double close_tolerance{1.2E-2};
   const double small_tolerance{1E-10};
 
-  std::vector<double> x, y;
+  std::vector<double> x = std::vector<double>(200);
+  std::vector<double> y = std::vector<double>(200);
 
   Spline_Fixture() {
-    for (double xValue = -10.; xValue <= 10.; xValue += 0.1) {
-      x.push_back(xValue);
-      y.push_back(sin(xValue));
-    }
+    std::generate(x.begin(), x.end(), [xvalue = -10.1]() mutable {
+      xvalue += 0.1;
+      return xvalue;
+    });
+    std::transform(x.begin(), x.end(), y.begin(), &sin);
   }
 };
 

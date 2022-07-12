@@ -21,6 +21,17 @@
 #include <ElementsKernel/Temporary.h>
 #include <boost/mpl/list.hpp>
 #include <boost/test/unit_test.hpp>
+#include <random>
+
+struct RandomGeneratorFixture {
+  std::mt19937 rng{std::random_device()()};
+
+  template <typename T>
+  std::function<T()> generator() {
+    std::uniform_int_distribution<int> dist;
+    return [dist, this]() mutable { return static_cast<T>(dist(this->rng) % 100); };
+  }
+};
 
 using namespace Euclid::NdArray;
 
@@ -28,12 +39,12 @@ BOOST_AUTO_TEST_SUITE(Npy_test)
 
 typedef boost::mpl::list<int32_t, int64_t, float, double> array_type;
 
-BOOST_AUTO_TEST_CASE_TEMPLATE(Npy1d_readwrite_test, T, array_type) {
+BOOST_FIXTURE_TEST_CASE_TEMPLATE(Npy1d_readwrite_test, T, array_type, RandomGeneratorFixture) {
   std::stringstream stream;
 
   // Construct NdArray
   NdArray<T> ndarray({100});
-  std::generate(ndarray.begin(), ndarray.end(), []() { return std::rand() % 100; });
+  std::generate(ndarray.begin(), ndarray.end(), generator<T>());
 
   // Write NPY
   writeNpy(stream, ndarray);
@@ -47,12 +58,12 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(Npy1d_readwrite_test, T, array_type) {
   BOOST_CHECK_EQUAL_COLLECTIONS(ndarray.begin(), ndarray.end(), rend.begin(), rend.end());
 }
 
-BOOST_AUTO_TEST_CASE_TEMPLATE(Npy2d_readwrite_test, T, array_type) {
+BOOST_FIXTURE_TEST_CASE_TEMPLATE(Npy2d_readwrite_test, T, array_type, RandomGeneratorFixture) {
   std::stringstream stream;
 
   // Construct NdArray
   NdArray<T> ndarray({50, 2});
-  std::generate(ndarray.begin(), ndarray.end(), []() { return std::rand() % 100; });
+  std::generate(ndarray.begin(), ndarray.end(), generator<T>());
 
   // Write NPY
   writeNpy(stream, ndarray);
@@ -67,12 +78,12 @@ BOOST_AUTO_TEST_CASE_TEMPLATE(Npy2d_readwrite_test, T, array_type) {
   BOOST_CHECK_EQUAL_COLLECTIONS(ndarray.begin(), ndarray.end(), rend.begin(), rend.end());
 }
 
-BOOST_AUTO_TEST_CASE_TEMPLATE(Npy1d_python_test, T, array_type) {
+BOOST_FIXTURE_TEST_CASE_TEMPLATE(Npy1d_python_test, T, array_type, RandomGeneratorFixture) {
   Elements::TempFile file(std::string("npy_1d_test_") + typeid(T).name() + "_%%.npy");
 
   // Construct NdArray
   NdArray<T> ndarray({100});
-  std::generate(ndarray.begin(), ndarray.end(), []() { return std::rand() % 100; });
+  std::generate(ndarray.begin(), ndarray.end(), generator<T>());
 
   // Write NPY
   writeNpy(file.path(), ndarray);
@@ -89,15 +100,15 @@ print(a.sum())
 
   T sum;
   output >> sum;
-  BOOST_CHECK_EQUAL(std::accumulate(ndarray.begin(), ndarray.end(), 0), sum);
+  BOOST_CHECK_EQUAL(std::accumulate(ndarray.begin(), ndarray.end(), static_cast<T>(0)), sum);
 }
 
-BOOST_AUTO_TEST_CASE_TEMPLATE(Npy2d_python_test, T, array_type) {
+BOOST_FIXTURE_TEST_CASE_TEMPLATE(Npy2d_python_test, T, array_type, RandomGeneratorFixture) {
   Elements::TempFile file(std::string("npy_testpy_") + typeid(T).name() + "_%%.npy");
 
   // Construct NdArray
   NdArray<T> ndarray({50, 2});
-  std::generate(ndarray.begin(), ndarray.end(), []() { return std::rand() % 100; });
+  std::generate(ndarray.begin(), ndarray.end(), generator<T>());
 
   // Write NPY
   writeNpy(file.path(), ndarray);
@@ -143,12 +154,12 @@ a = np.save(sys.argv[1], np.arange(0, 100, dtype='=u4').reshape(2, 5, 10))
   BOOST_CHECK_EQUAL(ndarray.shape()[2], 10);
 }
 
-BOOST_AUTO_TEST_CASE(Npy_badtype_test) {
+BOOST_FIXTURE_TEST_CASE(Npy_badtype_test, RandomGeneratorFixture) {
   std::stringstream stream;
 
   // Construct NdArray
   NdArray<double> ndarray({50, 2});
-  std::generate(ndarray.begin(), ndarray.end(), []() { return std::rand() % 100; });
+  std::generate(ndarray.begin(), ndarray.end(), generator<double>());
 
   // Write NPY
   writeNpy(stream, ndarray);

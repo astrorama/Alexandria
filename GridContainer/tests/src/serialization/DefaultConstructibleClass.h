@@ -27,7 +27,6 @@
 
 class DefaultConstructibleClass {
 public:
-  DefaultConstructibleClass() {}
   double value = 0;
 };
 

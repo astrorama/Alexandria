@@ -175,9 +175,7 @@ struct TableFixture {
     threshold_mapping.push_back(std::make_pair(r_filter_name, 5.0));
   }
 
-  ~TableFixture() {
-    // teardown
-  }
+  ~TableFixture() = default;
 };
 
 }  // end of namespace SourceCatalog

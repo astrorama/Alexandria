@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2021 Euclid Science Ground Segment
+ * Copyright (C) 2012-2022 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -25,6 +25,7 @@
 #include "MathUtils/function/FunctionAdapter.h"
 #include "MathUtils/numericalDifferentiation/FiniteDifference.h"
 #include <boost/test/unit_test.hpp>
+#include <numeric>
 #if BOOST_VERSION >= 105900
 #include <boost/test/tools/floating_point_comparison.hpp>
 #else
@@ -38,12 +39,10 @@ struct FiniteDifference_Fixture {
   double close_tolerance{1E-4};
   double small_tolerance{1E-20};
 
-  std::vector<double> xs;
+  std::vector<double> xs = std::vector<double>(20);
 
   FiniteDifference_Fixture() {
-    for (double xValue = -10.; xValue <= 10.; xValue += 1) {
-      xs.push_back(xValue);
-    }
+    std::iota(xs.begin(), xs.end(), -10.);
   }
 };
 

@@ -45,7 +45,7 @@ namespace SourceCatalog {
 class AttributeFromRow {
 
 public:
-  virtual ~AttributeFromRow() {}
+  virtual ~AttributeFromRow() = default;
 
   /**
    * @brief The createAttribute method for creating an Attribute from a Table row

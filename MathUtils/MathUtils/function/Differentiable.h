@@ -49,7 +49,7 @@ namespace MathUtils {
 class ELEMENTS_API Differentiable : public Integrable {
 public:
   /// Default destructor
-  virtual ~Differentiable() {}
+  virtual ~Differentiable() = default;
 
   /// Returns a Function representing the derivative
   virtual std::shared_ptr<Function> derivative() const = 0;

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2021 Euclid Science Ground Segment
+ * Copyright (C) 2012-2022 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -61,7 +61,7 @@ public:
       : m_source_id(source_id), m_attribute_vector(std::move(attributeVector)) {}
 
   /// Virtual default destructor
-  virtual ~Source() {}
+  virtual ~Source() = default;
 
   /**
    * @brief Get the source ID
@@ -109,7 +109,7 @@ class CastSourceIdVisitor : public boost::static_visitor<Source::id_type> {
   }
 
 public:
-  CastSourceIdVisitor() {}
+  CastSourceIdVisitor() = default;
 
   Source::id_type operator()(const std::string& from) const {
     return from;

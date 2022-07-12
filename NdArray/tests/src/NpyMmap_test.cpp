@@ -21,6 +21,17 @@
 #include "TestHelper.h"
 #include <ElementsKernel/Temporary.h>
 #include <boost/test/unit_test.hpp>
+#include <random>
+
+struct RandomGeneratorFixture {
+  std::mt19937 rng{std::random_device()()};
+
+  template <typename T>
+  std::function<T()> generator() {
+    std::uniform_int_distribution<int> dist;
+    return [dist, this]() mutable { return static_cast<T>(dist(this->rng) % 100); };
+  }
+};
 
 using namespace Euclid::NdArray;
 
@@ -30,12 +41,12 @@ BOOST_AUTO_TEST_SUITE(NpyMmap_test)
 
 //-----------------------------------------------------------------------------
 
-BOOST_AUTO_TEST_CASE(MmapOpen_test) {
+BOOST_FIXTURE_TEST_CASE(MmapOpen_test, RandomGeneratorFixture) {
   Elements::TempFile file("npy_mmap_%%.npy");
 
   // Create npy
   NdArray<int32_t> ndarray({50, 10, 40});
-  std::generate(ndarray.begin(), ndarray.end(), []() { return std::rand() % 1024; });
+  std::generate(ndarray.begin(), ndarray.end(), generator<int32_t>());
   writeNpy(file.path(), ndarray);
 
   // Open with mmap
@@ -61,12 +72,12 @@ BOOST_AUTO_TEST_CASE(MmapOpen_test) {
 
 //-----------------------------------------------------------------------------
 
-BOOST_AUTO_TEST_CASE(MmapOpenPrivate_test) {
+BOOST_FIXTURE_TEST_CASE(MmapOpenPrivate_test, RandomGeneratorFixture) {
   Elements::TempFile file("npy_mmap_%%.npy");
 
   // Create npy
   NdArray<int32_t> ndarray({50, 10, 40});
-  std::generate(ndarray.begin(), ndarray.end(), []() { return std::rand() % 1024; });
+  std::generate(ndarray.begin(), ndarray.end(), generator<int32_t>());
   writeNpy(file.path(), ndarray);
 
   // Open with mmap
@@ -94,12 +105,12 @@ BOOST_AUTO_TEST_CASE(MmapOpenPrivate_test) {
 
 //-----------------------------------------------------------------------------
 
-BOOST_AUTO_TEST_CASE(MmapOpenReadOnly_test) {
+BOOST_FIXTURE_TEST_CASE(MmapOpenReadOnly_test, RandomGeneratorFixture) {
   Elements::TempFile file("npy_mmap_%%.npy");
 
   // Create npy
   NdArray<int32_t> ndarray({50, 10, 40});
-  std::generate(ndarray.begin(), ndarray.end(), []() { return std::rand() % 1024; });
+  std::generate(ndarray.begin(), ndarray.end(), generator<int32_t>());
   writeNpy(file.path(), ndarray);
 
   // Open with mmap
@@ -304,12 +315,12 @@ assert np.allclose(a[100:]['Y'], 4.2)
 
 //-----------------------------------------------------------------------------
 
-BOOST_AUTO_TEST_CASE(BadDtype_test) {
+BOOST_FIXTURE_TEST_CASE(BadDtype_test, RandomGeneratorFixture) {
   Elements::TempFile file("npy_mmap_%%.npy");
 
   // Create npy
   NdArray<int32_t> ndarray({50, 10, 40});
-  std::generate(ndarray.begin(), ndarray.end(), []() { return std::rand() % 1024; });
+  std::generate(ndarray.begin(), ndarray.end(), generator<int32_t>());
   writeNpy(file.path(), ndarray);
 
   // Open with mmap

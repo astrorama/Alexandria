@@ -1,5 +1,5 @@
-/**
- * @copyright (C) 2012-2020 Euclid Science Ground Segment
+/*
+ * Copyright (C) 2022 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -25,7 +25,7 @@ struct FunctionEvalHelper {
   template <typename Functor, typename ChildrenSet>
   static R eval(const Context& context, const Arguments& args, const Functor& functor, const ChildrenSet& children,
                 Evaluated&&... evaluated) {
-    auto a = std::get<N - 1>(children)->eval(context, args);
+    auto&& a = std::get<N - 1>(children)->eval(context, args);
     return FunctionEvalHelper<R, N - 1, decltype(a), Evaluated...>::eval(
         context, args, functor, children, std::forward<decltype(a)>(a), std::forward<Evaluated>(evaluated)...);
   }

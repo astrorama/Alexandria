@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2021 Euclid Science Ground Segment
+ * Copyright (C) 2012-2022 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -61,7 +61,6 @@ struct FitsParser_Fixture {
     addTable(*fits);
     std::unique_ptr<CCfits::FITS> fits_nodata{new CCfits::FITS("!" + fits_nodata_file, CCfits::RWmode::Write)};
   }
-  ~FitsParser_Fixture() {}
 };
 
 //-----------------------------------------------------------------------------

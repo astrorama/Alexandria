@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2021 Euclid Science Ground Segment
+ * Copyright (C) 2012-2022 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -87,7 +87,8 @@ BOOST_FIXTURE_TEST_CASE(hubble_distance, CosmologicalDistances_Fixture) {
 
   CosmologicalDistances distances{};
 
-  for (double h_0 = 65.; h_0 < 100.; h_0 += 2.1) {
+  for (size_t i = 0; i < 17; ++i) {
+    double                 h_0 = 65. + (static_cast<double>(i) * 2.1);
     CosmologicalParameters parameters{omega_m, omega_lambda, h_0};
     double                 expected = 2.99792458e+11 / h_0;  // in [pc]
     BOOST_CHECK(Elements::isEqual(expected, distances.hubbleDistance(parameters)));

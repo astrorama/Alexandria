@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2021 Euclid Science Ground Segment
+ * Copyright (C) 2012-2022 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -23,11 +23,11 @@
  *     Author: Pierre Dubath
  */
 #include "SourceCatalog/CatalogFromTable.h"
-#include "SourceCatalog/SourceAttributes/Photometry.h"
+#include "ElementsKernel/Exception.h"
 #include "SourceCatalog/PhotometryParsingException.h"
+#include "SourceCatalog/SourceAttributes/Photometry.h"
 #include "Table/CastVisitor.h"
 #include "Table/ColumnInfo.h"
-#include "ElementsKernel/Exception.h"
 #include <vector>
 
 namespace Euclid {
@@ -46,8 +46,7 @@ CatalogFromTable::CatalogFromTable(std::shared_ptr<Euclid::Table::ColumnInfo>   
   m_attribute_from_row_ptr_vector = std::move(attribute_from_row_ptr_vector);
 }
 
-CatalogFromTable::~CatalogFromTable() {
-}
+CatalogFromTable::~CatalogFromTable() = default;
 
 Euclid::SourceCatalog::Catalog CatalogFromTable::createCatalog(const Euclid::Table::Table& input_table) {
 
@@ -63,15 +62,16 @@ Euclid::SourceCatalog::Catalog CatalogFromTable::createCatalog(const Euclid::Tab
 
     std::vector<std::shared_ptr<Attribute>> attribute_ptr_vector;
     try {
-		for (auto& attribute_from_table_ptr : m_attribute_from_row_ptr_vector) {
-		  attribute_ptr_vector.push_back(attribute_from_table_ptr->createAttribute(row));
-		}
+      for (auto& attribute_from_table_ptr : m_attribute_from_row_ptr_vector) {
+        attribute_ptr_vector.push_back(attribute_from_table_ptr->createAttribute(row));
+      }
     } catch (const PhotometryParsingException& parsing_exception) {
-    	throw Elements::Exception()<< "Parsing error while parsing the source with Id = " << source_id << " : " << parsing_exception.what();
-    } catch(const std::exception& e) {
-    	throw Elements::Exception() << "Error while parsing the source with Id = " << source_id << " : " << e.what();
+      throw Elements::Exception() << "Parsing error while parsing the source with Id = " << source_id << " : "
+                                  << parsing_exception.what();
+    } catch (const std::exception& e) {
+      throw Elements::Exception() << "Error while parsing the source with Id = " << source_id << " : " << e.what();
     } catch (...) {
-    	throw Elements::Exception() << "Error while parsing the source with Id = " << source_id;
+      throw Elements::Exception() << "Error while parsing the source with Id = " << source_id;
     }
 
     source_vector.push_back(Source{source_id, move(attribute_ptr_vector)});

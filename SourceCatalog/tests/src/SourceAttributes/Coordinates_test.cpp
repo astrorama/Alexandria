@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2021 Euclid Science Ground Segment
+ * Copyright (C) 2012-2022 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -33,15 +33,8 @@ using namespace Euclid::SourceCatalog;
 //-----------------------------------------------------------------------------
 
 struct CoordinatesFixture {
-
-  double expected_ra;
-  double expected_dec;
-
-  CoordinatesFixture() {
-    expected_ra  = 1.5;
-    expected_dec = 2.8;
-  }
-  ~CoordinatesFixture() {}
+  double expected_ra  = 1.5;
+  double expected_dec = 2.8;
 };
 
 //----------------------------------------------------------------------------

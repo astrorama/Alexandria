@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2021 Euclid Science Ground Segment
+ * Copyright (C) 2012-2022 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -41,7 +41,7 @@ namespace SourceCatalog {
 class Coordinates : public Attribute {
 public:
   Coordinates(double ra, double dec) : m_ra(ra), m_dec(dec) {}
-  virtual ~Coordinates() {}
+  ~Coordinates() override = default;
 
   double getDec() const {
     return m_dec;
