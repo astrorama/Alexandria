@@ -84,7 +84,7 @@ BOOST_FIXTURE_TEST_CASE(PiecewiseWithGeneric, Multiplication_Fixture) {
   auto piecePointer = dynamic_cast<Euclid::MathUtils::Piecewise*>(multPointer.get());
   BOOST_CHECK(piecePointer);
   for (size_t i = 0; i < 50; ++i) {
-    double x = -2. + (i * 0.1);
+    double x = -2. + (static_cast<double>(i) * 0.1);
     BOOST_CHECK_CLOSE((*multPointer)(x), piecewise(x) * generic(x), close_tolerance);
   }
 }
@@ -122,7 +122,7 @@ BOOST_FIXTURE_TEST_CASE(PiecewiseWithPiecewise, Multiplication_Fixture) {
   std::vector<double> expectedKnots{.5, .7, 1., 1.5, 2.};
   BOOST_CHECK_EQUAL_COLLECTIONS(resKnots.begin(), resKnots.end(), expectedKnots.begin(), expectedKnots.end());
   for (size_t i = 0; i < 90; ++i) {
-    double x = -2. + (i * 0.1);
+    double x = -2. + (static_cast<double>(i) * 0.1);
     BOOST_CHECK_CLOSE((*multPointer)(x), p1(x) * p2(x), close_tolerance);
   }
 
@@ -138,7 +138,7 @@ BOOST_FIXTURE_TEST_CASE(PiecewiseWithPiecewise, Multiplication_Fixture) {
   expectedKnots = {.5, .7, 1., 1.5, 2.};
   BOOST_CHECK_EQUAL_COLLECTIONS(resKnots.begin(), resKnots.end(), expectedKnots.begin(), expectedKnots.end());
   for (size_t i = 0; i < 90; ++i) {
-    double x = -2. + (i * 0.1);
+    double x = -2. + (static_cast<double>(i) * 0.1);
     BOOST_CHECK_CLOSE((*multPointer)(x), p1(x) * p2(x), close_tolerance);
   }
 }

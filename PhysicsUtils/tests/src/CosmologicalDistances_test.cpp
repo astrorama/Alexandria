@@ -88,7 +88,7 @@ BOOST_FIXTURE_TEST_CASE(hubble_distance, CosmologicalDistances_Fixture) {
   CosmologicalDistances distances{};
 
   for (size_t i = 0; i < 17; ++i) {
-    double                 h_0 = 65. + (i * 2.1);
+    double                 h_0 = 65. + (static_cast<double>(i) * 2.1);
     CosmologicalParameters parameters{omega_m, omega_lambda, h_0};
     double                 expected = 2.99792458e+11 / h_0;  // in [pc]
     BOOST_CHECK(Elements::isEqual(expected, distances.hubbleDistance(parameters)));

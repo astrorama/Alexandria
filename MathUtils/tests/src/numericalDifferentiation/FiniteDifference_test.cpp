@@ -39,9 +39,9 @@ struct FiniteDifference_Fixture {
   double close_tolerance{1E-4};
   double small_tolerance{1E-20};
 
-  std::vector<double> xs;
+  std::vector<double> xs = std::vector<double>(20);
 
-  FiniteDifference_Fixture() : xs(20) {
+  FiniteDifference_Fixture() {
     std::iota(xs.begin(), xs.end(), -10.);
   }
 };

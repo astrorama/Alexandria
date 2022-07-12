@@ -103,7 +103,7 @@ BOOST_FIXTURE_TEST_CASE(FunctionOperator, Polynomial_Fixture) {
   Euclid::MathUtils::Polynomial polynomial{coef};
 
   for (size_t i = 0; i < 200; ++i) {
-    double x = -10. + (i * 0.1);
+    double x = -10. + (static_cast<double>(i) * 0.1);
     // When
     double expected = 2.5 + 0.8 * x - 1.3 * x * x + 0.02 * x * x * x;
     double polValue = polynomial(x);
