@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2021 Euclid Science Ground Segment
+ * Copyright (C) 2012-2022 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -44,6 +44,8 @@ namespace NdArray {
  *  The underlying numpy format is expected to match the template type T
  * @note
  *  If you open in read-only mode, assign to a const NdArray to avoid accidental writes
+ * @note
+ *  max_size will be overridden by the actual file size if it is greater
  */
 template <typename T>
 NdArray<T> mmapNpy(const boost::filesystem::path&              path,

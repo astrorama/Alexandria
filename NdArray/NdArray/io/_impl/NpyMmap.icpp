@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2021 Euclid Science Ground Segment
+ * Copyright (C) 2012-2022 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -39,10 +39,8 @@ NdArray<T> mmapNpy(const boost::filesystem::path& path, boost::iostreams::mapped
   boost::iostreams::mapped_file_params map_params;
   map_params.path  = path.native();
   map_params.flags = mode;
-  if (max_size)
-    map_params.length = max_size;
-  else
-    max_size = boost::filesystem::file_size(path);
+  max_size = std::max(max_size, boost::filesystem::file_size(path));
+  map_params.length = max_size;
 
   boost::iostreams::mapped_file input(map_params);
   MappedStream                  stream(input.operator boost::iostreams::mapped_file_source&());
