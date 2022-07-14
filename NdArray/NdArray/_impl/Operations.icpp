@@ -137,7 +137,7 @@ void sort(NdArray<T>& array, const std::vector<std::string>& attrs) {
   const auto&         array_attrs = array.attributes();
   for (size_t i = 0; i < attrs.size(); ++i) {
     auto pos = std::find(array_attrs.begin(), array_attrs.end(), attrs[i]);
-    if (pos == attrs.end()) {
+    if (pos == array_attrs.end()) {
       throw std::out_of_range(attrs[i]);
     }
     attr_idx[i] = pos - array_attrs.begin();
