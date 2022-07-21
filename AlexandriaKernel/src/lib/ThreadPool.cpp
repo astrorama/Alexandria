@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2021 Euclid Science Ground Segment
+ * Copyright (C) 2012-2022 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -46,21 +46,28 @@ public:
       , m_exception_ptr(exception_ptr) {}
 
   void operator()() {
-    while (m_run_flag.get() && m_exception_ptr == nullptr) {
-      // Check if there is anything it the queue to be done and get it
+    while (m_run_flag.get()) {
       std::unique_ptr<ThreadPool::Task> task_ptr = nullptr;
-      std::unique_lock<std::mutex>      lock{m_queue_mutex.get()};
-      if (!m_queue.get().empty()) {
-        task_ptr = Euclid::make_unique<ThreadPool::Task>(m_queue.get().front());
-        m_queue.get().pop_front();
+
+      {
+        std::unique_lock<std::mutex> lock{m_queue_mutex.get()};
+        // If an exception was thrown, stop just here
+        if (m_exception_ptr != nullptr) {
+          break;
+        }
+        // Check if there is anything it the queue to be done and get it
+        if (!m_queue.get().empty()) {
+          task_ptr = Euclid::make_unique<ThreadPool::Task>(m_queue.get().front());
+          m_queue.get().pop_front();
+        }
       }
-      lock.unlock();
 
       // If we have some work to do, do it. Otherwise sleep for some time.
       if (task_ptr) {
         try {
           (*task_ptr)();
         } catch (...) {
+          std::unique_lock<std::mutex> lock{m_queue_mutex.get()};
           m_exception_ptr.get() = std::current_exception();
         }
       } else {
@@ -115,6 +122,7 @@ void waitWorkers(std::vector<std::atomic<bool>>& worker_flags, unsigned int wait
 }  // namespace
 
 bool ThreadPool::checkForException(bool rethrow) {
+  std::lock_guard<std::mutex> lock(m_queue_mutex);
   if (m_exception_ptr) {
     if (rethrow) {
       std::rethrow_exception(m_exception_ptr);
@@ -144,10 +152,14 @@ size_t ThreadPool::activeThreads() const {
 void ThreadPool::block() {
   // Wait for the queue to be empty
   bool queue_is_empty = false;
-  while (!queue_is_empty && m_exception_ptr == nullptr) {
-    std::unique_lock<std::mutex> lock{m_queue_mutex};
-    queue_is_empty = m_queue.empty();
-    lock.unlock();
+  while (!queue_is_empty) {
+    {
+      std::unique_lock<std::mutex> lock{m_queue_mutex};
+      if (m_exception_ptr != nullptr) {
+        break;
+      }
+      queue_is_empty = m_queue.empty();
+    }
     if (!queue_is_empty) {
       std::this_thread::sleep_for(std::chrono::milliseconds(m_empty_queue_wait_time));
     }
