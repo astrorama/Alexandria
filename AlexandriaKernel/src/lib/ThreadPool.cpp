@@ -149,7 +149,7 @@ size_t ThreadPool::activeThreads() const {
   return m_worker_done_flags.size() - done;
 }
 
-void ThreadPool::block() {
+void ThreadPool::block(bool throw_on_exception) {
   // Wait for the queue to be empty
   bool queue_is_empty = false;
   while (!queue_is_empty) {
@@ -167,15 +167,15 @@ void ThreadPool::block() {
   // Wait for the workers to finish the currently executing tasks
   waitWorkers(m_worker_sleeping_flags, m_empty_queue_wait_time);
   // Check if any worker finished with an exception
-  checkForException(true);
+  checkForException(throw_on_exception);
 }
 
 ThreadPool::~ThreadPool() {
-  // Stop all the workers. They will stop right after they finish the task
-  // they already run.
+  // Wait for the pool to be done with anything queued
+  block(false);
+  // Tell the threads to finish
   std::fill(m_worker_run_flags.begin(), m_worker_run_flags.end(), false);
-  // Now wait until all the workers have finish any current tasks
-  waitWorkers(m_worker_done_flags, m_empty_queue_wait_time);
+  // Now wait until all the workers have exited
   for (auto& worker : m_workers) {
     worker.join();
   }

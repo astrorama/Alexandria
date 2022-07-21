@@ -118,7 +118,8 @@ BOOST_AUTO_TEST_CASE(destructor_test) {
 
   // Then
   std::lock_guard<std::mutex> lock{mutex};
-  BOOST_CHECK_EQUAL(output.size(), 5);
+  BOOST_CHECK_EQUAL(output.size(), 6);
+  BOOST_CHECK(output.count(100));
   BOOST_CHECK(output.count(500));
   BOOST_CHECK(output.count(700));
   BOOST_CHECK(output.count(300));
@@ -150,7 +151,7 @@ BOOST_AUTO_TEST_CASE(checkForException_test) {
 
   // When
   pool.submit(ExceptionTask());
-  std::this_thread::sleep_for(std::chrono::milliseconds(100));
+  pool.block(false);
 
   // Then
   BOOST_CHECK(pool.checkForException());
