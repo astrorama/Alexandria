@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2021 Euclid Science Ground Segment
+ * Copyright (C) 2012-2022 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -24,8 +24,8 @@
 
 #include <chrono>
 #include <mutex>
+#include <set>
 #include <thread>
-#include <vector>
 
 #include <boost/test/unit_test.hpp>
 
@@ -37,18 +37,18 @@ using namespace Euclid;
 class SleepTask {
 
 public:
-  SleepTask(int sleep, std::mutex& mutex, std::vector<int>& output) : m_sleep(sleep), m_mutex(mutex), m_output(output) {}
+  SleepTask(int sleep, std::mutex& mutex, std::set<int>& output) : m_sleep(sleep), m_mutex(mutex), m_output(output) {}
 
   void operator()() {
     std::this_thread::sleep_for(std::chrono::milliseconds(m_sleep));
     std::lock_guard<std::mutex> lock{m_mutex.get()};
-    m_output.get().push_back(m_sleep);
+    m_output.get().emplace(m_sleep);
   }
 
 private:
-  int                                      m_sleep;
-  std::reference_wrapper<std::mutex>       m_mutex;
-  std::reference_wrapper<std::vector<int>> m_output;
+  int                                   m_sleep;
+  std::reference_wrapper<std::mutex>    m_mutex;
+  std::reference_wrapper<std::set<int>> m_output;
 };
 
 class ExceptionTask {
@@ -68,9 +68,9 @@ BOOST_AUTO_TEST_SUITE(ThreadPool_test)
 BOOST_AUTO_TEST_CASE(block_test) {
 
   // Given
-  std::mutex       mutex;
-  std::vector<int> output{};
-  ThreadPool       pool{4, 10};
+  std::mutex    mutex;
+  std::set<int> output{};
+  ThreadPool    pool{4, 10};
 
   // When
   pool.submit(SleepTask(1000, mutex, output));
@@ -86,12 +86,12 @@ BOOST_AUTO_TEST_CASE(block_test) {
   std::lock_guard<std::mutex> lock{mutex};
   BOOST_CHECK(!pool.checkForException());
   BOOST_CHECK_EQUAL(output.size(), 6);
-  BOOST_CHECK_EQUAL(output[0], 500);
-  BOOST_CHECK_EQUAL(output[1], 700);
-  BOOST_CHECK_EQUAL(output[2], 100);
-  BOOST_CHECK_EQUAL(output[3], 350);
-  BOOST_CHECK_EQUAL(output[4], 900);
-  BOOST_CHECK_EQUAL(output[5], 1000);
+  BOOST_CHECK(output.count(500));
+  BOOST_CHECK(output.count(700));
+  BOOST_CHECK(output.count(100));
+  BOOST_CHECK(output.count(350));
+  BOOST_CHECK(output.count(900));
+  BOOST_CHECK(output.count(1000));
 
   BOOST_CHECK_GT(pool.activeThreads(), 0);
 }
@@ -101,8 +101,8 @@ BOOST_AUTO_TEST_CASE(block_test) {
 BOOST_AUTO_TEST_CASE(destructor_test) {
 
   // Given
-  std::mutex       mutex;
-  std::vector<int> output{};
+  std::mutex    mutex;
+  std::set<int> output{};
 
   // When
   {
@@ -118,12 +118,13 @@ BOOST_AUTO_TEST_CASE(destructor_test) {
 
   // Then
   std::lock_guard<std::mutex> lock{mutex};
-  BOOST_CHECK_EQUAL(output.size(), 5);
-  BOOST_CHECK_EQUAL(output[0], 500);
-  BOOST_CHECK_EQUAL(output[1], 700);
-  BOOST_CHECK_EQUAL(output[2], 300);
-  BOOST_CHECK_EQUAL(output[3], 900);
-  BOOST_CHECK_EQUAL(output[4], 1000);
+  BOOST_CHECK_EQUAL(output.size(), 6);
+  BOOST_CHECK(output.count(100));
+  BOOST_CHECK(output.count(500));
+  BOOST_CHECK(output.count(700));
+  BOOST_CHECK(output.count(300));
+  BOOST_CHECK(output.count(900));
+  BOOST_CHECK(output.count(1000));
 }
 
 //-----------------------------------------------------------------------------
@@ -150,7 +151,7 @@ BOOST_AUTO_TEST_CASE(checkForException_test) {
 
   // When
   pool.submit(ExceptionTask());
-  std::this_thread::sleep_for(std::chrono::milliseconds(100));
+  pool.block(false);
 
   // Then
   BOOST_CHECK(pool.checkForException());

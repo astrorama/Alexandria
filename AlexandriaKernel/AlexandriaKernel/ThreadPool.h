@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2021 Euclid Science Ground Segment
+ * Copyright (C) 2012-2022 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -91,7 +91,7 @@ public:
 
   /// Blocks the calling thread until all the tasks in the pool queue are finished.
   /// Note that submitting tasks until this method returns is not allowed.
-  void block();
+  void block(bool throw_on_exception = true);
 
   /// Checks if any task has thrown an exception and optionally rethrows it
   bool checkForException(bool rethrow = false);
