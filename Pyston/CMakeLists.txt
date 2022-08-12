@@ -14,6 +14,7 @@ elements_subdir(Pyston)
 #         elements_depends_on_subdirs(ElementsKernel)
 #===============================================================================
 elements_depends_on_subdirs(ElementsKernel)
+elements_depends_on_subdirs(Table)
 
 #===============================================================================
 # Add the find_package macro (a pure CMake command) here to locate the
@@ -37,11 +38,11 @@ elements_add_library(Pyston src/lib/*.cpp
         INCLUDE_DIRS
           BoostPython
           PythonLibs PythonInterp
-          ElementsKernel SEImplementation
+          Table ElementsKernel
         LINK_LIBRARIES
           BoostPython
           PythonLibs PythonInterp
-          ElementsKernel
+          Table ElementsKernel
         PUBLIC_HEADERS Pyston)
 
 #===============================================================================
@@ -85,6 +86,9 @@ elements_add_unit_test(PystonMultithreadTest tests/src/Multithread_test.cpp
         LINK_LIBRARIES Pyston
         TYPE Boost)
 elements_add_unit_test(PystonUnaryOperatorTest tests/src/UnaryOperator_test.cpp
+        LINK_LIBRARIES Pyston
+        TYPE Boost)
+elements_add_unit_test(Table2Numpy_test tests/src/Table2Numpy_test.cpp
         LINK_LIBRARIES Pyston
         TYPE Boost)
 
