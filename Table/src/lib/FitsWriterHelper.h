@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2021 Euclid Science Ground Segment
+ * Copyright (C) 2012-2022 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -70,9 +70,9 @@ ELEMENTS_API std::vector<std::string> getBinaryFormatList(const Table& table);
  * @param column_index
  * @return A string directly usable with TDIM (i.e. (3,2))
  */
-ELEMENTS_API std::string getTDIM(const Table& table, size_t column_index);
+ELEMENTS_API std::string getTDIM(const Table& table, int column_index);
 
-void populateColumn(const Table& table, size_t column_index, CCfits::ExtHDU& table_hdu, long first_row = 1);
+void populateColumn(const Table& table, int column_index, const CCfits::ExtHDU& table_hdu, long first_row = 1);
 
 }  // namespace Table
 }  // end of namespace Euclid

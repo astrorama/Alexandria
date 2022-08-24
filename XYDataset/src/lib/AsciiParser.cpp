@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2021 Euclid Science Ground Segment
+ * Copyright (C) 2012-2022 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -52,7 +52,7 @@ std::string AsciiParser::getName(const std::string& file) {
   if (dataset_name == "") {
     // IF not present chack the first non-empty line (Backward comatibility)
     std::ifstream sfile(file);
-    std::string line{};
+    std::string   line{};
     // Check dataset name is in the file
     // Convention: read until found first non empty line, removing empty lines.
     while (line.empty() && sfile.good()) {
@@ -90,13 +90,12 @@ std::string AsciiParser::getParameter(const std::string& file, const std::string
     std::getline(sfile, line);
     boost::smatch s_match;
     if (!line.empty() && boost::regex_match(line, s_match, expression)) {
-      if (value!="") {
-         value +=";";
+      if (value != "") {
+        value += ";";
       }
       std::string new_val = s_match[1].str();
       boost::trim(new_val);
       value += new_val;
-
     }
   }
   return value;
@@ -114,11 +113,11 @@ std::unique_ptr<XYDataset> AsciiParser::getDataset(const std::string& file) {
     // Read file into a Table object
     auto table = Table::AsciiReader{sfile}.fixColumnTypes({typeid(double), typeid(double)}).read();
     // Put the Table data into vector pair
-    std::vector<std::pair<double, double>> vector_pair;
-    for (auto row : table) {
-      vector_pair.push_back(std::make_pair(boost::get<double>(row[0]), boost::get<double>(row[1])));
-    }
-    dataset_ptr = std::unique_ptr<XYDataset>{new XYDataset(vector_pair)};
+    std::vector<std::pair<double, double>> vector_pair(table.size());
+    std::transform(table.begin(), table.end(), vector_pair.begin(), [](const Table::Row& row) {
+      return std::make_pair(boost::get<double>(row[0]), boost::get<double>(row[1]));
+    });
+    dataset_ptr = make_unique<XYDataset>(std::move(vector_pair));
   }
 
   return dataset_ptr;
@@ -141,8 +140,9 @@ bool AsciiParser::isDatasetFile(const std::string& file) {
       // We should have 2 double values only on one line
       try {
         std::stringstream ss(line);
-        std::string       empty_string{};
-        std::string       d1, d2;
+        std::string       empty_string;
+        std::string       d1;
+        std::string       d2;
         ss >> d1 >> d2 >> empty_string;
         boost::lexical_cast<double>(d1);
         boost::lexical_cast<double>(d2);

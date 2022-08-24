@@ -118,9 +118,8 @@ std::vector<size_t> parseTDIM(const std::string& tdim) {
     auto                                          subtdim = tdim.substr(1, tdim.size() - 2);
     boost::char_separator<char>                   sep{","};
     boost::tokenizer<boost::char_separator<char>> tok{subtdim, sep};
-    for (auto& s : tok) {
-      result.push_back(boost::lexical_cast<size_t>(s));
-    }
+    std::transform(tok.begin(), tok.end(), std::back_inserter(result),
+                   [](const std::string& s) { return boost::lexical_cast<size_t>(s); });
     // Note: the shape is in fortran order, so we need to reverse
     std::reverse(result.begin(), result.end());
   }
@@ -168,9 +167,7 @@ std::vector<Row::cell_type> convertScalarColumn(CCfits::Column& column, long fir
   std::vector<T> data;
   column.read(data, first, last);
   std::vector<Row::cell_type> result;
-  for (auto value : data) {
-    result.push_back(value);
-  }
+  std::copy(data.begin(), data.end(), std::back_inserter(result));
   return result;
 }
 
@@ -179,9 +176,9 @@ std::vector<Row::cell_type> convertVectorColumn(CCfits::Column& column, long fir
   std::vector<std::valarray<T>> data;
   column.readArrays(data, first, last);
   std::vector<Row::cell_type> result;
-  for (auto& valar : data) {
-    result.push_back(std::vector<T>(std::begin(valar), std::end(valar)));
-  }
+  result.reserve(data.size());
+  std::transform(data.begin(), data.end(), std::back_inserter(result),
+                 [](const std::valarray<T>& valar) { return std::vector<T>(std::begin(valar), std::end(valar)); });
   return result;
 }
 
@@ -189,12 +186,12 @@ template <typename T>
 std::vector<Row::cell_type> convertNdArrayColumn(CCfits::Column& column, long first, long last) {
   std::vector<std::valarray<T>> data;
   column.readArrays(data, first, last);
-  std::vector<size_t> shape = parseTDIM(column.dimen());
-
+  std::vector<size_t>         shape = parseTDIM(column.dimen());
   std::vector<Row::cell_type> result;
-  for (auto& valar : data) {
-    result.push_back(NdArray<T>(shape, std::move(std::vector<T>(std::begin(valar), std::end(valar)))));
-  }
+  result.reserve(data.size());
+  std::transform(data.begin(), data.end(), std::back_inserter(result), [&shape](const std::valarray<T>& valar) {
+    return NdArray<T>(shape, std::move(std::vector<T>(std::begin(valar), std::end(valar))));
+  });
   return result;
 }
 

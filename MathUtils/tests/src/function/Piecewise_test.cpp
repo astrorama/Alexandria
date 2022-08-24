@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2021 Euclid Science Ground Segment
+ * Copyright (C) 2012-2022 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -66,15 +66,12 @@ BOOST_FIXTURE_TEST_CASE(Constructor, Piecewise_Fixture) {
 //-----------------------------------------------------------------------------
 
 BOOST_FIXTURE_TEST_CASE(ConstructorUnorderedKnots, Piecewise_Fixture) {
-
   // Given
   std::vector<double>                                       knots{-1., 0.5, 0.25, 10.};
-  std::vector<std::shared_ptr<Euclid::MathUtils::Function>> functions{};
-  for (double knot : knots) {
-    functions.push_back(std::shared_ptr<Euclid::MathUtils::Function>(new IntegrableMock(knot)));
-  }
+  std::vector<std::shared_ptr<Euclid::MathUtils::Function>> functions(knots.size());
+  std::transform(knots.begin(), knots.end(), functions.begin(),
+                 [](double knot) { return std::make_shared<IntegrableMock>(knot); });
   functions.pop_back();
-
   // Then
   BOOST_CHECK_THROW(Euclid::MathUtils::Piecewise(knots, functions), Elements::Exception);
 }
@@ -84,14 +81,11 @@ BOOST_FIXTURE_TEST_CASE(ConstructorUnorderedKnots, Piecewise_Fixture) {
 //-----------------------------------------------------------------------------
 
 BOOST_FIXTURE_TEST_CASE(ConstructorWrongSizes, Piecewise_Fixture) {
-
   // Given
   std::vector<double>                                       knots{-1., -0.5, 0.25, 10.};
-  std::vector<std::shared_ptr<Euclid::MathUtils::Function>> functions{};
-  for (double knot : knots) {
-    functions.push_back(std::shared_ptr<Euclid::MathUtils::Function>(new IntegrableMock(knot)));
-  }
-
+  std::vector<std::shared_ptr<Euclid::MathUtils::Function>> functions(knots.size());
+  std::transform(knots.begin(), knots.end(), functions.begin(),
+                 [](double knot) { return std::make_shared<IntegrableMock>(knot); });
   // Then
   BOOST_CHECK_THROW(Euclid::MathUtils::Piecewise(knots, functions), Elements::Exception);
 }
@@ -104,10 +98,9 @@ BOOST_FIXTURE_TEST_CASE(Clone, Piecewise_Fixture) {
 
   // Given
   std::vector<double>                                       knots{-1., -0.5, 0.25, 10.};
-  std::vector<std::shared_ptr<Euclid::MathUtils::Function>> functions{};
-  for (double knot : knots) {
-    functions.push_back(std::shared_ptr<Euclid::MathUtils::Function>(new IntegrableMock(knot)));
-  }
+  std::vector<std::shared_ptr<Euclid::MathUtils::Function>> functions(knots.size());
+  std::transform(knots.begin(), knots.end(), functions.begin(),
+                 [](double knot) { return std::make_shared<IntegrableMock>(knot); });
   functions.pop_back();
   Euclid::MathUtils::Piecewise piecewise{knots, functions};
 
@@ -130,10 +123,9 @@ BOOST_FIXTURE_TEST_CASE(FunctionOperator, Piecewise_Fixture) {
 
   // Given
   std::vector<double>                                       knots{-1., -0.5, 0.25, 10.};
-  std::vector<std::shared_ptr<Euclid::MathUtils::Function>> functions{};
-  for (double knot : knots) {
-    functions.push_back(std::shared_ptr<Euclid::MathUtils::Function>(new IntegrableMock(knot)));
-  }
+  std::vector<std::shared_ptr<Euclid::MathUtils::Function>> functions(knots.size());
+  std::transform(knots.begin(), knots.end(), functions.begin(),
+                 [](double knot) { return std::make_shared<IntegrableMock>(knot); });
   functions.pop_back();
 
   // When

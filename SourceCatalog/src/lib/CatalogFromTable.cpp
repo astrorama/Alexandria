@@ -41,7 +41,7 @@ CatalogFromTable::CatalogFromTable(std::shared_ptr<Euclid::Table::ColumnInfo>   
   if (source_id_index_ptr == nullptr) {
     throw Elements::Exception() << "Column info does not have the column " << source_id_column_name;
   }
-  m_source_id_index = *(source_id_index_ptr);
+  m_source_id_index = *source_id_index_ptr;
 
   m_attribute_from_row_ptr_vector = std::move(attribute_from_row_ptr_vector);
 }
@@ -56,15 +56,15 @@ Euclid::SourceCatalog::Catalog CatalogFromTable::createCatalog(const Euclid::Tab
   // must be of the same
   CastSourceIdVisitor castVisitor;
 
-  for (auto row : input_table) {
+  for (const auto& row : input_table) {
 
     auto source_id = boost::apply_visitor(castVisitor, row[m_source_id_index]);
 
-    std::vector<std::shared_ptr<Attribute>> attribute_ptr_vector;
+    std::vector<std::shared_ptr<Attribute>> attribute_ptr_vector(m_attribute_from_row_ptr_vector.size());
     try {
-      for (auto& attribute_from_table_ptr : m_attribute_from_row_ptr_vector) {
-        attribute_ptr_vector.push_back(attribute_from_table_ptr->createAttribute(row));
-      }
+      std::transform(m_attribute_from_row_ptr_vector.begin(), m_attribute_from_row_ptr_vector.end(),
+                     attribute_ptr_vector.begin(),
+                     [&row](const std::shared_ptr<AttributeFromRow>& attr) { return attr->createAttribute(row); });
     } catch (const PhotometryParsingException& parsing_exception) {
       throw Elements::Exception() << "Parsing error while parsing the source with Id = " << source_id << " : "
                                   << parsing_exception.what();
@@ -74,7 +74,7 @@ Euclid::SourceCatalog::Catalog CatalogFromTable::createCatalog(const Euclid::Tab
       throw Elements::Exception() << "Error while parsing the source with Id = " << source_id;
     }
 
-    source_vector.push_back(Source{source_id, move(attribute_ptr_vector)});
+    source_vector.emplace_back(source_id, std::move(attribute_ptr_vector));
   }
 
   return Catalog{source_vector};
