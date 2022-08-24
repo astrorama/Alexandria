@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2021 Euclid Science Ground Segment
+ * Copyright (C) 2012-2022 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -25,7 +25,7 @@
 #ifndef _CONFIGURATION_PHOTOMETRICBANDMAPPINGCONFIG_H
 #define _CONFIGURATION_PHOTOMETRICBANDMAPPINGCONFIG_H
 
-#include <boost/filesystem.hpp>
+#include <boost/filesystem/path.hpp>
 #include <string>
 #include <utility>
 #include <vector>
@@ -47,7 +47,7 @@ class PhotometricBandMappingConfig : public Configuration {
 public:
   using MappingMap             = std::vector<std::pair<std::string, std::pair<std::string, std::string>>>;
   using UpperLimitThresholdMap = std::vector<std::pair<std::string, float>>;
-  using ConvertFromMagMap = std::vector<std::pair<std::string, bool>>;
+  using ConvertFromMagMap      = std::vector<std::pair<std::string, bool>>;
 
   /// Constructs a new PhotometricBandMappingConfig object
   explicit PhotometricBandMappingConfig(long manager_id);
@@ -129,26 +129,26 @@ public:
   const UpperLimitThresholdMap& getUpperLimitThresholdMapping();
 
   /**
-    * @brief
-    * Returns the mapping of the flag indicating if the photometry has to be computed from a MAG_AB
-    *
-    * @return
-    *    The mapping of flag for MAG_AB conversion
-    * @throws Elements::Exception
-    *    If the instance is not yet initialized
-    */
-   const ConvertFromMagMap& getConvertFromMagMapping();
+   * @brief
+   * Returns the mapping of the flag indicating if the photometry has to be computed from a MAG_AB
+   *
+   * @return
+   *    The mapping of flag for MAG_AB conversion
+   * @throws Elements::Exception
+   *    If the instance is not yet initialized
+   */
+  const ConvertFromMagMap& getConvertFromMagMapping();
 
-   /**
-      * @brief
-      * Returns the mapping file to be used by other configuration class
-      *
-      * @return
-      *    The mapping file
-      * @throws Elements::Exception
-      *    If the instance is not yet initialized
-      */
-   const boost::filesystem::path getMappingFile();
+  /**
+   * @brief
+   * Returns the mapping file to be used by other configuration class
+   *
+   * @return
+   *    The mapping file
+   * @throws Elements::Exception
+   *    If the instance is not yet initialized
+   */
+  const boost::filesystem::path getMappingFile();
 
 private:
   boost::filesystem::path m_base_dir;
