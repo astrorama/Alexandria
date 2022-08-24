@@ -1,16 +1,19 @@
 /*
- * Copyright (C) 2012-2021 Euclid Science Ground Segment
+ * Copyright (C) 2012-2022 Euclid Science Ground Segment
  *
- * This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General
- * Public License as published by the Free Software Foundation; either version 3.0 of the License, or (at your option)
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 3.0 of the License, or (at your option)
  * any later version.
  *
- * This library is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
- * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
  *
- * You should have received a copy of the GNU Lesser General Public License along with this library; if not, write to
- * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this library; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
 /**
@@ -84,6 +87,21 @@ class ConfigManager {
 public:
   /// Returns a reference to the ConfigManager with the given ID
   static ConfigManager& getInstance(long id);
+
+  /**
+   * Destroy a ConfigManager instance
+   * @warning This is a dangerous thing to do, since something somewhere may be holding a reference
+   *          to the given instance. However, since the ConfigManager instances are kept on a static
+   *          map, it is *undefined* when they will be destroyed at the end of the process.
+   *          In those situations, it may be necessary to destroy them by hand before some other global
+   *          dependency is torn down (I am looking at sourcextractor++ and the Python interpreter, which is
+   *          required by the ModelFittingConfig)
+   */
+  static void deregisterInstance(long id);
+
+  long getId() const {
+    return m_id;
+  }
 
   /**
    * @brief Destructor

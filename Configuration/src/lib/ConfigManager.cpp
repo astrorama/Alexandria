@@ -32,15 +32,19 @@ namespace po = boost::program_options;
 namespace Euclid {
 namespace Configuration {
 
-static Elements::Logging logger = Elements::Logging::getLogger("ConfigManager");
+static Elements::Logging                              logger = Elements::Logging::getLogger("ConfigManager");
+static std::map<long, std::unique_ptr<ConfigManager>> manager_map{};
 
 ConfigManager& ConfigManager::getInstance(long id) {
-  static std::map<long, std::unique_ptr<ConfigManager>> manager_map{};
-  auto&                                                 manager_ptr = manager_map[id];
+  auto& manager_ptr = manager_map[id];
   if (manager_ptr == nullptr) {
     manager_ptr.reset(new ConfigManager{id});
   }
   return *manager_ptr;
+}
+
+void ConfigManager::deregisterInstance(long id) {
+  manager_map.erase(id);
 }
 
 ConfigManager::ConfigManager(long id) : m_id{id} {}
