@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2021 Euclid Science Ground Segment
+ * Copyright (C) 2012-2022 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -23,6 +23,7 @@
  */
 
 #include "MathUtils/function/Piecewise.h"
+#include "AlexandriaKernel/memory_tools.h"
 #include "ElementsKernel/Exception.h"
 #include "MathUtils/function/function_tools.h"
 #include <algorithm>
@@ -39,7 +40,7 @@ Piecewise::Piecewise(std::vector<double> knots, std::vector<std::shared_ptr<Func
 
   m_functions.reserve(functions.size());
   std::transform(functions.begin(), functions.end(), std::back_inserter(m_functions),
-                 [](std::shared_ptr<Function>& f) { return f->clone(); });
+                 [](const std::shared_ptr<Function>& f) { return f->clone(); });
 
   auto knotsIter = m_knots.begin();
   while (++knotsIter != m_knots.end()) {
@@ -86,10 +87,9 @@ void Piecewise::operator()(const std::vector<double>& xs, std::vector<double>& o
 std::unique_ptr<Function> Piecewise::clone() const {
   std::vector<std::unique_ptr<Function>> cloned_functions;
   cloned_functions.reserve(m_functions.size());
-  for (auto& f : m_functions) {
-    cloned_functions.emplace_back(f->clone());
-  }
-  return std::unique_ptr<Function>{new Piecewise(m_knots, std::move(cloned_functions))};
+  std::transform(m_functions.begin(), m_functions.end(), std::back_inserter(cloned_functions),
+                 [](const std::unique_ptr<Function>& f) { return f->clone(); });
+  return make_unique<Piecewise>(m_knots, std::move(cloned_functions));
 }
 
 double Piecewise::integrate(const double x1, const double x2) const {

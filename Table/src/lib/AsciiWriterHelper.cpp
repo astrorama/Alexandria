@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2021 Euclid Science Ground Segment
+ * Copyright (C) 2012-2022 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -41,10 +41,10 @@ using NdArray::NdArray;
 extern const std::vector<std::pair<std::string, std::type_index>> KeywordTypeMap;
 
 std::string typeToKeyword(std::type_index type) {
-  for (auto p = KeywordTypeMap.begin(); p != KeywordTypeMap.end(); ++p) {
-    if (p->second == type) {
-      return p->first;
-    }
+  auto i = std::find_if(KeywordTypeMap.begin(), KeywordTypeMap.end(),
+                        [type](const std::pair<std::string, std::type_index>& p) { return p.second == type; });
+  if (i != KeywordTypeMap.end()) {
+    return i->first;
   }
   throw Elements::Exception() << "Conversion to string for type " << type.name() << " is not supported";
 }
@@ -56,14 +56,12 @@ std::vector<size_t> calculateColumnLengths(const Table& table) {
   for (size_t i = 0; i < column_info->size(); ++i) {
     sizes.push_back(quoted(column_info->getDescription(i).name).size());
   }
-  for (auto row : table) {
+  for (const auto& row : table) {
     for (size_t i = 0; i < sizes.size(); ++i) {
       sizes[i] = std::max(sizes[i], boost::apply_visitor(ToStringVisitor{}, row[i]).size());
     }
   }
-  for (auto& s : sizes) {
-    s += 1;
-  }
+  std::for_each(sizes.begin(), sizes.end(), [](size_t& s) { ++s; });
   return sizes;
 }
 

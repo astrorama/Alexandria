@@ -105,10 +105,10 @@ extern const std::vector<std::pair<std::string, std::type_index>> KeywordTypeMap
 };
 
 std::type_index keywordToType(const std::string& keyword) {
-  for (auto p = KeywordTypeMap.begin(); p != KeywordTypeMap.end(); ++p) {
-    if (p->first == keyword) {
-      return p->second;
-    }
+  auto i = std::find_if(KeywordTypeMap.begin(), KeywordTypeMap.end(),
+                        [keyword](const std::pair<std::string, std::type_index>& p) { return p.first == keyword; });
+  if (i != KeywordTypeMap.end()) {
+    return i->second;
   }
   throw Elements::Exception() << "Unknown column type keyword " << keyword;
 }
@@ -141,20 +141,16 @@ std::map<std::string, ColumnDescription> autoDetectColumnDescriptions(std::istre
           }
           line_stream >> boost::io::quoted(token);
           std::type_index type = typeid(std::string);
-          if (line_stream) {
-            if (!boost::starts_with(token, "(") && token != "-") {
-              type = keywordToType(token);
-              line_stream >> boost::io::quoted(token);
-            }
+          if (line_stream && !boost::starts_with(token, "(") && token != "-") {
+            type = keywordToType(token);
+            line_stream >> boost::io::quoted(token);
           }
           std::string unit = "";
-          if (line_stream) {
-            if (boost::starts_with(token, "(")) {
-              unit = token;
-              unit.erase(unit.begin());
-              unit.erase(unit.end() - 1);
-              line_stream >> boost::io::quoted(token);
-            }
+          if (line_stream && boost::starts_with(token, "(")) {
+            unit = token;
+            unit.erase(unit.begin());
+            unit.erase(unit.end() - 1);
+            line_stream >> boost::io::quoted(token);
           }
           if (line_stream && token == "-") {
             line_stream >> boost::io::quoted(token);
@@ -231,7 +227,7 @@ std::vector<std::string> autoDetectColumnNames(std::istream& in, const std::stri
 
   // If the names are empty we fill them with the column descriprion ones
   if (names.empty()) {
-    if (desc_names.size() != 0 && desc_names.size() != columns_number) {
+    if (!desc_names.empty() && desc_names.size() != columns_number) {
       logger.warn() << "Number of column descriptions does not matches the number"
                     << " of the columns";
     }
@@ -244,8 +240,8 @@ std::vector<std::string> autoDetectColumnNames(std::istream& in, const std::stri
     }
   }
   // Check for duplicate names
-  std::set<std::string> set{};
-  for (auto name : names) {
+  std::set<std::string, std::less<std::string>> set{};
+  for (const auto& name : names) {
     if (!set.insert(name).second) {
       throw Elements::Exception() << "Duplicate column name " << name;
     }
@@ -260,9 +256,8 @@ std::vector<T> convertStringToVector(const std::string& str) {
   std::vector<T>                                result{};
   boost::char_separator<char>                   sep{","};
   boost::tokenizer<boost::char_separator<char>> tok{str, sep};
-  for (auto& s : tok) {
-    result.push_back(boost::get<T>(convertToCellType(s, typeid(T))));
-  }
+  std::transform(tok.begin(), tok.end(), std::back_inserter(result),
+                 [](const std::string& s) { return boost::get<T>(convertToCellType(s, typeid(T))); });
   return result;
 }
 
@@ -405,7 +400,8 @@ std::pair<std::type_index, std::size_t> guessColumnType(const std::string& token
   double d;
   long   l;
 
-  auto it1 = token.begin(), it2 = it1;
+  auto it1 = token.begin();
+  auto it2 = it1;
   if (qi::parse(it1, token.end(), qi::long_, l) && it1 == token.end()) {
     return {typeid(int64_t), 0};
   }

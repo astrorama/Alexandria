@@ -66,16 +66,16 @@ std::vector<std::string> getAsciiFormatList(const Table& table) {
   for (size_t column_index = 0; column_index < column_info->size(); ++column_index) {
     auto type = column_info->getDescription(column_index).type;
     if (type == typeid(bool)) {
-      format_list.push_back("I1");
+      format_list.emplace_back("I1");
     } else if (type == typeid(int32_t) || type == typeid(int64_t)) {
       size_t width = maxWidth(table, column_index);
-      format_list.push_back("I" + boost::lexical_cast<std::string>(std::max(static_cast<size_t>(1), width)));
+      format_list.emplace_back("I" + boost::lexical_cast<std::string>(std::max(static_cast<size_t>(1), width)));
     } else if (type == typeid(float) || type == typeid(double)) {
       size_t width = maxWidthScientific(table, column_index);
-      format_list.push_back("E" + boost::lexical_cast<std::string>(std::max(static_cast<size_t>(1), width)));
+      format_list.emplace_back("E" + boost::lexical_cast<std::string>(std::max(static_cast<size_t>(1), width)));
     } else if (type == typeid(std::string)) {
       size_t width = maxWidth(table, column_index);
-      format_list.push_back("A" + boost::lexical_cast<std::string>(std::max(static_cast<size_t>(1), width)));
+      format_list.emplace_back("A" + boost::lexical_cast<std::string>(std::max(static_cast<size_t>(1), width)));
     } else {
       throw Elements::Exception() << "Unsupported column format for FITS ASCII table export: " << type.name();
     }
@@ -118,17 +118,13 @@ extern const std::vector<std::pair<char, std::type_index>> ScalarTypeMap;
 
 template <typename T>
 static std::string GenericScalarFormat(const Table&, size_t) {
-  char type_format = '\0';
-  for (auto p = ScalarTypeMap.begin(); p != ScalarTypeMap.end(); ++p) {
-    if (p->second == typeid(T)) {
-      type_format = p->first;
-      break;
-    }
-  }
-  if (!type_format) {
+  auto i = std::find_if(ScalarTypeMap.begin(), ScalarTypeMap.end(), [](const std::pair<char, std::type_index>&p){
+    return p.second == typeid(T);
+  });
+  if (i == ScalarTypeMap.end()) {
     throw Elements::Exception() << "Unsupported column format for FITS binary table export: " << typeid(T).name();
   }
-  return std::string(1, type_format);
+  return std::string(1, i->first);
 }
 
 template <typename T>
@@ -189,11 +185,10 @@ std::vector<std::string> getBinaryFormatList(const Table& table) {
 }
 
 template <typename T>
-std::vector<T> createColumnData(const Euclid::Table::Table& table, size_t column_index) {
-  std::vector<T> data{};
-  for (const auto& row : table) {
-    data.push_back(boost::get<T>(row[column_index]));
-  }
+std::vector<T> createColumnData(const Table& table, size_t column_index) {
+  std::vector<T> data(table.size());
+  std::transform(table.begin(), table.end(), data.begin(),
+                 [column_index](const Row& row) { return boost::get<T>(row[column_index]); });
   return data;
 }
 
@@ -243,7 +238,7 @@ std::vector<T> createSingleNdArrayVectorColumnData(const Euclid::Table::Table& t
 }
 
 template <typename T>
-void populateVectorColumn(const Table& table, size_t column_index, CCfits::ExtHDU& table_hdu, long first_row) {
+void populateVectorColumn(const Table& table, int column_index, const CCfits::ExtHDU& table_hdu, long first_row) {
   const auto& vec = boost::get<std::vector<T>>(table[0][column_index]);
   if (vec.size() > 1) {
     table_hdu.column(column_index + 1).writeArrays(createVectorColumnData<T>(table, column_index), first_row);
@@ -253,7 +248,7 @@ void populateVectorColumn(const Table& table, size_t column_index, CCfits::ExtHD
 }
 
 template <typename T>
-void populateNdArrayColumn(const Table& table, size_t column_index, CCfits::ExtHDU& table_hdu, long first_row) {
+void populateNdArrayColumn(const Table& table, int column_index, const CCfits::ExtHDU& table_hdu, long first_row) {
   const auto& nd = boost::get<NdArray<T>>(table[0][column_index]);
   if (nd.size() > 1) {
     table_hdu.column(column_index + 1).writeArrays(createNdArrayColumnData<T>(table, column_index), first_row);
@@ -262,7 +257,7 @@ void populateNdArrayColumn(const Table& table, size_t column_index, CCfits::ExtH
   }
 }
 
-std::string getTDIM(const Table& table, size_t column_index) {
+std::string getTDIM(const Table& table, int column_index) {
   if (table.size() == 0) {
     return "";
   }
@@ -284,10 +279,7 @@ std::string getTDIM(const Table& table, size_t column_index) {
     return "";
   }
 
-  int64_t ncells = 1;
-  for (auto& axis : shape) {
-    ncells *= axis;
-  }
+  int64_t ncells = std::accumulate(shape.begin(), shape.end(), 1, std::multiplies<size_t>());
   if (ncells == 1) {
     return "";
   }
@@ -295,7 +287,7 @@ std::string getTDIM(const Table& table, size_t column_index) {
   std::stringstream stream;
   stream << '(';
 
-  int j;
+  size_t j;
   for (j = shape.size() - 1; j > 0; --j) {
     stream << shape[j] << ",";
   }
@@ -304,7 +296,7 @@ std::string getTDIM(const Table& table, size_t column_index) {
   return stream.str();
 }
 
-void populateColumn(const Table& table, size_t column_index, CCfits::ExtHDU& table_hdu, long first_row) {
+void populateColumn(const Table& table, int column_index, const CCfits::ExtHDU& table_hdu, long first_row) {
   if (table.size() == 0) {
     return;
   }

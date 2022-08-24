@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2021 Euclid Science Ground Segment
+ * Copyright (C) 2012-2022 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -87,10 +87,7 @@ static std::vector<fs::path> getOrder(const fs::path& dir) {
   }
 
   // Put the remaining files into the result vector
-  for (auto& file : remaining_files) {
-    result.emplace_back(file);
-  }
-
+  std::copy(remaining_files.begin(), remaining_files.end(), std::back_inserter(result));
   return result;
 }
 
@@ -129,7 +126,7 @@ FileSystemProvider::FileSystemProvider(const std::string& root_path, std::unique
   // Get all files below the root directory
   if (fs::is_directory(fspath)) {
     auto dir_contents = getRecursiveDirectoryContents(fspath);
-    for (auto& file : dir_contents) {
+    for (const auto& file : dir_contents) {
       if (fs::is_regular_file(file) && m_parser->isDatasetFile(file.string())) {
         std::string dataset_name = m_parser->getName(file.string());
         // Remove empty dataset name
@@ -186,13 +183,13 @@ std::vector<QualifiedName> FileSystemProvider::listContents(const std::string& g
   // Fill up vector with qualified name from the map
   // Insert all qualified name where path contains the group name at the
   // first position
-  for (auto qualified_name : m_order_names) {
+  for (const auto& qualified_name : m_order_names) {
     if (boost::starts_with(qualified_name.qualifiedName(), my_group)) {
       qualified_name_vector.push_back(qualified_name);
     }
   }  // Eof for
 
-  return (qualified_name_vector);
+  return qualified_name_vector;
 }
 
 //-----------------------------------------------------------------------------
