@@ -52,7 +52,7 @@ public:
   }
 };
 
-class L2 : public Interface {
+class L2 final : public Interface {
 
 public:
   virtual ~L2() = default;

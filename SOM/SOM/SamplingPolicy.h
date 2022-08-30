@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2021 Euclid Science Ground Segment
+ * Copyright (C) 2012-2022 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -43,7 +43,7 @@ public:
 };
 
 template <typename IterType>
-class FullSet : public Interface<IterType> {
+class FullSet final : public Interface<IterType> {
 
 public:
   IterType start(IterType begin, IterType) const override {
@@ -56,21 +56,15 @@ public:
 };
 
 template <typename IterType>
-class Bootstrap : public Interface<IterType> {
+class Bootstrap final : public Interface<IterType> {
 
 public:
+  Bootstrap(IterType begin, IterType end) : m_end(end), m_dist{0, static_cast<int>(std::distance(begin, end) - 1)} {}
+
   IterType start(IterType begin, IterType end) const override {
-
-    m_end = end;
-
-    std::random_device              rd;
-    std::mt19937                    gen(rd());
-    std::uniform_int_distribution<> dis(0, std::distance(begin, end) - 1);
-    auto                            random_index = dis(gen);
-
-    auto result = begin;
+    auto random_index = m_dist(m_gen);
+    auto result       = begin;
     std::advance(result, random_index);
-
     return result;
   }
 
@@ -79,16 +73,18 @@ public:
   }
 
 private:
-  mutable IterType m_end;
+  IterType                                m_end;
+  mutable std::mt19937                    m_gen{std::random_device{}()};
+  mutable std::uniform_int_distribution<> m_dist;
 };
 
 template <typename IterType>
-Bootstrap<IterType> bootstrapFactory(IterType) {
-  return Bootstrap<IterType>{};
+Bootstrap<IterType> bootstrapFactory(IterType begin, IterType end) {
+  return Bootstrap<IterType>{begin, end};
 }
 
 template <typename IterType>
-class Jackknife : public Interface<IterType> {
+class Jackknife final : public Interface<IterType> {
 
 public:
   explicit Jackknife(std::size_t sample_size) : m_sample_size(sample_size), m_current(sample_size) {

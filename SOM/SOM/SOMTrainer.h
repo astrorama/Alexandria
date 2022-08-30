@@ -38,9 +38,10 @@ public:
   SOMTrainer(NeighborhoodFunc::Signature neighborhood_func, LearningRestraintFunc::Signature learning_restraint_func)
       : m_neighborhood_func(neighborhood_func), m_learning_restraint_func(learning_restraint_func) {}
 
-  template <typename DistFunc, typename InputIter, typename InputToWeightFunc>
+  template <typename DistFunc, typename InputIter, typename InputToWeightFunc,
+            template <class> class Sampler = SamplingPolicy::FullSet>
   void train(SOM<DistFunc>& som, std::size_t iter_no, InputIter begin, InputIter end, InputToWeightFunc weight_func,
-             const SamplingPolicy::Interface<InputIter>& sampling_policy = SamplingPolicy::FullSet<InputIter>{}) {
+             const Sampler<InputIter>& sampling_policy = Sampler<InputIter>{}) {
 
     // We repeat the training for iter_no iterations
     for (std::size_t i = 0; i < iter_no; ++i) {
