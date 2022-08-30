@@ -56,15 +56,15 @@ public:
       m_last_total               = total_iterations;
       const double time_constant = static_cast<double>(total_iterations) / m_sigma_log;
       const double sigma         = m_init_sigma * std::exp(-1. * static_cast<double>(iteration) / time_constant);
-      m_sigma_quare              = sigma * sigma;
+      m_sigma_square             = sigma * sigma;
     }
 
-    auto   x           = static_cast<double>(bmu.first - cell.first);
-    auto   y           = static_cast<double>(bmu.second - cell.second);
-    double dist_square = x * x + y * y;
+    const auto x           = static_cast<double>(static_cast<int>(bmu.first) - static_cast<int>(cell.first));
+    const auto y           = static_cast<double>(static_cast<int>(bmu.second) - static_cast<int>(cell.second));
+    const auto dist_square = x * x + y * y;
 
-    if (dist_square < m_cutoff_mult_square * m_sigma_quare) {
-      return std::exp(-1. * dist_square / (2. * m_sigma_quare));
+    if (dist_square < m_cutoff_mult_square * m_sigma_square) {
+      return std::exp(-1. * dist_square / (2. * m_sigma_square));
     } else {
       return 0.;
     }
@@ -76,7 +76,7 @@ private:
   const double m_cutoff_mult_square;
   std::size_t  m_last_iteration = 0;
   std::size_t  m_last_total     = 0;
-  double       m_sigma_quare    = 0.;
+  double       m_sigma_square   = 0.;
 };
 
 }  // namespace NeighborhoodFunc
