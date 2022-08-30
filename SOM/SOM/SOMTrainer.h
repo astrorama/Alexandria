@@ -32,11 +32,13 @@
 namespace Euclid {
 namespace SOM {
 
+template <typename NeighborhoodFunction>
 class SOMTrainer {
 
 public:
-  SOMTrainer(NeighborhoodFunc::Signature neighborhood_func, LearningRestraintFunc::Signature learning_restraint_func)
-      : m_neighborhood_func(neighborhood_func), m_learning_restraint_func(learning_restraint_func) {}
+  SOMTrainer(NeighborhoodFunction neighborhood_func, LearningRestraintFunc::Signature learning_restraint_func)
+      : m_neighborhood_func(std::move(neighborhood_func))
+      , m_learning_restraint_func(std::move(learning_restraint_func)) {}
 
   template <typename DistFunc, typename InputIter, typename InputToWeightFunc,
             template <class> class Sampler = SamplingPolicy::FullSet>
@@ -87,7 +89,7 @@ public:
   }
 
 private:
-  NeighborhoodFunc::Signature      m_neighborhood_func;
+  NeighborhoodFunction             m_neighborhood_func;
   LearningRestraintFunc::Signature m_learning_restraint_func;
 };
 
