@@ -91,16 +91,15 @@ typename SOM<DistFunc>::const_iterator SOM<DistFunc>::cend() {
   return m_cells.cend();
 }
 
-namespace SOM_impl {
-
 template <typename DistFunc>
-std::tuple<std::size_t, std::size_t, double>
-findBMU_impl(const SOM<DistFunc>&                                                  som,
-             std::function<double(const GridContainer::VectorValueProxy<double>&)> dist_func) {
-  auto   result_iter      = som.begin();
-  double closest_distance = std::numeric_limits<double>::max();
-  for (auto iter = som.begin(); iter != som.end(); ++iter) {
-    double dist = dist_func(*iter);
+std::tuple<std::size_t, std::size_t, double> SOM<DistFunc>::findBMU(const std::vector<double>& input) const {
+  assert(input.size() == m_dimensions);
+  DistFunc dist_func{};
+  auto     result_iter      = begin();
+  double   closest_distance = std::numeric_limits<double>::max();
+  auto     end_             = end();
+  for (auto iter = begin(); iter != end_; ++iter) {
+    double dist = dist_func.distance(std::cbegin(*iter), std::cend(*iter), input.begin());
     if (dist < closest_distance) {
       result_iter      = iter;
       closest_distance = dist;
@@ -109,27 +108,22 @@ findBMU_impl(const SOM<DistFunc>&                                               
   return std::make_tuple(result_iter.template axisValue<0>(), result_iter.template axisValue<1>(), closest_distance);
 }
 
-}  // end of namespace SOM_impl
-
-template <typename DistFunc>
-std::tuple<std::size_t, std::size_t, double> SOM<DistFunc>::findBMU(const std::vector<double>& input) const {
-  assert(input.size() == m_dimensions);
-  DistFunc dist_func{};
-  return SOM_impl::findBMU_impl<DistFunc>(
-      *this, [&dist_func, &input](const GridContainer::VectorValueProxy<double>& cell) -> double {
-        return dist_func.distance(cell.begin(), cell.end(), input.begin());
-      });
-}
-
 template <typename DistFunc>
 std::tuple<std::size_t, std::size_t, double> SOM<DistFunc>::findBMU(const std::vector<double>& input,
                                                                     const std::vector<double>& uncertainties) const {
-  assert(input.size() == uncertainties.size() && input.size() == m_dimensions);
-  DistFunc dist_func{};
-  return SOM_impl::findBMU_impl<DistFunc>(
-      *this, [&dist_func, &input, &uncertainties](const GridContainer::VectorValueProxy<double>& cell) -> double {
-        return dist_func.distance(cell.begin(), cell.end(), input.begin(), uncertainties.begin());
-      });
+  assert(input.size() == m_dimensions);
+  DistFunc   dist_func{};
+  auto       result_iter      = begin();
+  double     closest_distance = std::numeric_limits<double>::max();
+  const auto end_             = end();
+  for (auto iter = begin(); iter != end_; ++iter) {
+    double dist = dist_func.distance(std::cbegin(*iter), std::cend(*iter), input.begin(), uncertainties.begin());
+    if (dist < closest_distance) {
+      result_iter      = iter;
+      closest_distance = dist;
+    }
+  }
+  return std::make_tuple(result_iter.template axisValue<0>(), result_iter.template axisValue<1>(), closest_distance);
 }
 
 template <typename DistFunc>
