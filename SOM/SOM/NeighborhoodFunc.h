@@ -34,7 +34,7 @@ namespace NeighborhoodFunc {
 
 class LinearUnitDisk {
 public:
-  LinearUnitDisk(double initial_radius) : m_r_square(initial_radius * initial_radius){};
+  explicit LinearUnitDisk(double initial_radius) : m_r_square(initial_radius * initial_radius){};
 
   double operator()(std::pair<std::size_t, std::size_t> bmu, std::pair<std::size_t, std::size_t> cell,
                     std::size_t iteration, std::size_t total_iterations);
