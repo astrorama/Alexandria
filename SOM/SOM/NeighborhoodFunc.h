@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2021 Euclid Science Ground Segment
+ * Copyright (C) 2012-2022 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -25,19 +25,59 @@
 #define SOM_NEIGHBORHOODFUNC_H
 
 #include <ElementsKernel/Export.h>
+#include <cmath>
 #include <functional>
 
 namespace Euclid {
 namespace SOM {
 namespace NeighborhoodFunc {
 
-using Signature =
-    std::function<double(std::pair<std::size_t, std::size_t> bmu, std::pair<std::size_t, std::size_t> cell,
-                         std::size_t iteration, std::size_t total_iterations)>;
+class LinearUnitDisk {
+public:
+  explicit LinearUnitDisk(double initial_radius) : m_r_square(initial_radius * initial_radius){};
 
-ELEMENTS_API Signature linearUnitDisk(double initial_radius);
+  double operator()(std::pair<std::size_t, std::size_t> bmu, std::pair<std::size_t, std::size_t> cell,
+                    std::size_t iteration, std::size_t total_iterations);
 
-ELEMENTS_API Signature kohonen(std::size_t x_size, std::size_t y_size, double sigma_cutoff_mult = 1.);
+private:
+  double m_r_square;
+};
+
+class Kohonen {
+public:
+  Kohonen(std::size_t x_size, std::size_t y_size, double sigma_cutoff_mult);
+
+  double operator()(std::pair<std::size_t, std::size_t> bmu, std::pair<std::size_t, std::size_t> cell,
+                    std::size_t iteration, std::size_t total_iterations) {
+    // If we have new iteration we recompute the sigma, otherwise we use the already
+    // calculated one
+    if (m_last_iteration != iteration || m_last_total != total_iterations) {
+      m_last_iteration           = iteration;
+      m_last_total               = total_iterations;
+      const double time_constant = static_cast<double>(total_iterations) / m_sigma_log;
+      const double sigma         = m_init_sigma * std::exp(-1. * static_cast<double>(iteration) / time_constant);
+      m_sigma_square             = sigma * sigma;
+    }
+
+    const auto x           = static_cast<double>(static_cast<int>(bmu.first) - static_cast<int>(cell.first));
+    const auto y           = static_cast<double>(static_cast<int>(bmu.second) - static_cast<int>(cell.second));
+    const auto dist_square = x * x + y * y;
+
+    if (dist_square < m_cutoff_mult_square * m_sigma_square) {
+      return std::exp(-1. * dist_square / (2. * m_sigma_square));
+    } else {
+      return 0.;
+    }
+  }
+
+private:
+  const double m_init_sigma;
+  const double m_sigma_log;
+  const double m_cutoff_mult_square;
+  std::size_t  m_last_iteration = 0;
+  std::size_t  m_last_total     = 0;
+  double       m_sigma_square   = 0.;
+};
 
 }  // namespace NeighborhoodFunc
 }  // namespace SOM

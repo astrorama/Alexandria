@@ -52,14 +52,14 @@ public:
   }
 };
 
-class L2 : public Interface {
+class L2 final : public Interface {
 
 public:
   virtual ~L2() = default;
 
   double distance(const_iterator begin1, const_iterator end1, const_iterator begin2) const override {
     double result = 0;
-    for (; begin1 < end1; ++begin1, ++begin2) {
+    for (; begin1 != end1; ++begin1, ++begin2) {
       double diff = (*begin1 - *begin2);
       result += diff * diff;
     }
@@ -70,7 +70,7 @@ public:
                   const_iterator begin_uncertainties) const override {
 
     double result = 0;
-    for (; begin1 < end1; ++begin1, ++begin2, ++begin_uncertainties) {
+    for (; begin1 != end1; ++begin1, ++begin2, ++begin_uncertainties) {
       double diff = *begin1 - *begin2;
       double up   = diff * diff;
       double down = *begin_uncertainties * *begin_uncertainties;

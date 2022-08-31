@@ -48,8 +48,9 @@ BOOST_AUTO_TEST_CASE(example_test) {
 
   std::vector<std::pair<double, double>> trainset{{1, 1}, {0, 0}, {0, 1}, {1, 0}};
 
-  SOMTrainer trainer{NeighborhoodFunc::linearUnitDisk(3), LearningRestraintFunc::linear()};
-  auto       weight_func = [](const std::pair<double, double>& p) {
+  SOMTrainer<NeighborhoodFunc::LinearUnitDisk> trainer{NeighborhoodFunc::LinearUnitDisk{3},
+                                                       LearningRestraintFunc::linear()};
+  auto                                         weight_func = [](const std::pair<double, double>& p) {
     std::vector<double> res(2);
     res[0] = p.first;
     res[1] = p.second;

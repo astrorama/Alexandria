@@ -151,6 +151,14 @@ struct VectorValueProxy {
     return m_end;
   }
 
+  const_iterator cbegin() const {
+    return m_begin;
+  }
+
+  const_iterator cend() const {
+    return m_end;
+  }
+
   std::size_t size() const {
     return m_end - m_begin;
   }
