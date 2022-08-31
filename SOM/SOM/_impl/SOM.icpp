@@ -99,7 +99,7 @@ std::tuple<std::size_t, std::size_t, double> SOM<DistFunc>::findBMU(const std::v
   double   closest_distance = std::numeric_limits<double>::max();
   auto     end_             = end();
   for (auto iter = begin(); iter != end_; ++iter) {
-    double dist = dist_func.distance(std::cbegin(*iter), std::cend(*iter), input.begin());
+    double dist = dist_func.distance(iter->cbegin(), iter->cend(), input.cbegin());
     if (dist < closest_distance) {
       result_iter      = iter;
       closest_distance = dist;
@@ -117,7 +117,7 @@ std::tuple<std::size_t, std::size_t, double> SOM<DistFunc>::findBMU(const std::v
   double     closest_distance = std::numeric_limits<double>::max();
   const auto end_             = end();
   for (auto iter = begin(); iter != end_; ++iter) {
-    double dist = dist_func.distance(std::cbegin(*iter), std::cend(*iter), input.begin(), uncertainties.begin());
+    double dist = dist_func.distance(iter->cbegin(), iter->cend(), input.cbegin(), uncertainties.cbegin());
     if (dist < closest_distance) {
       result_iter      = iter;
       closest_distance = dist;
