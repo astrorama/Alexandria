@@ -1,5 +1,5 @@
-/**
- * @copyright (C) 2012-2020 Euclid Science Ground Segment
+/*
+ * Copyright (C) 2022 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -52,6 +52,16 @@ public:
 
 protected:
   PyGILState_STATE& m_state;
+};
+
+class SaveThread {
+public:
+  SaveThread();
+
+  ~SaveThread();
+
+protected:
+  PyThreadState* m_state;
 };
 
 }  // end of namespace Pyston

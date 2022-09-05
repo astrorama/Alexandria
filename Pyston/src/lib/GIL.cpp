@@ -52,4 +52,12 @@ GILReleaser::~GILReleaser() {
   ++s_lock_count;
 }
 
+SaveThread::SaveThread() {
+  m_state = PyEval_SaveThread();
+}
+
+SaveThread::~SaveThread() {
+  PyEval_RestoreThread(m_state);
+}
+
 }  // end of namespace Pyston
