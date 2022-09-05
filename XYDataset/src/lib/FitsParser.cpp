@@ -23,20 +23,14 @@
  * @author Nicolas Morisset
  */
 
-#include <CCfits/CCfits>
-#include <boost/regex.hpp>
-#include <fstream>
-#include <iostream>
-
+#include "XYDataset/FitsParser.h"
 #include "ElementsKernel/Exception.h"
 #include "ElementsKernel/Unused.h"
-
 #include "StringFunctions.h"
 #include "Table/FitsReader.h"
-#include "XYDataset/FitsParser.h"
-
-using boost::regex;
-using boost::regex_match;
+#include <CCfits/CCfits>
+#include <fstream>
+#include <iostream>
 
 namespace Euclid {
 namespace XYDataset {

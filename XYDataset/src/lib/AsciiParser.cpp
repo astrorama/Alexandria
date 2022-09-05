@@ -23,21 +23,15 @@
  * @author Nicolas Morisset
  */
 
-#include <boost/algorithm/string.hpp>
-#include <boost/regex.hpp>
-#include <fstream>
-#include <iostream>
-#include <sstream>
-
-#include "boost/lexical_cast.hpp"
-
+#include "XYDataset/AsciiParser.h"
+#include "AlexandriaKernel/RegexHelper.h"
 #include "ElementsKernel/Exception.h"
 #include "StringFunctions.h"
 #include "Table/AsciiReader.h"
-#include "XYDataset/AsciiParser.h"
-
-using boost::regex;
-using boost::regex_match;
+#include <boost/algorithm/string.hpp>
+#include <boost/lexical_cast.hpp>
+#include <fstream>
+#include <iostream>
 
 namespace Euclid {
 namespace XYDataset {
@@ -59,9 +53,9 @@ std::string AsciiParser::getName(const std::string& file) {
       std::getline(sfile, line);
     }
 
-    boost::regex  expression(m_regex_name);
-    boost::smatch s_match;
-    if (boost::regex_match(line, s_match, expression)) {
+    regex::regex  expression(m_regex_name);
+    regex::smatch s_match;
+    if (regex::regex_match(line, s_match, expression)) {
       dataset_name = s_match[1].str();
     } else {
       // Dataset name is the filename without extension and path
@@ -84,12 +78,12 @@ std::string AsciiParser::getParameter(const std::string& file, const std::string
   std::string  line{};
   std::string  dataset_name{};
   std::string  reg_ex_str = "^\\s*#\\s*" + key_word + "\\s*:\\s*(.+)\\s*$";
-  boost::regex expression(reg_ex_str);
+  regex::regex expression(reg_ex_str);
 
   while (sfile.good()) {
     std::getline(sfile, line);
-    boost::smatch s_match;
-    if (!line.empty() && boost::regex_match(line, s_match, expression)) {
+    regex::smatch s_match;
+    if (!line.empty() && regex::regex_match(line, s_match, expression)) {
       if (value != "") {
         value += ";";
       }
@@ -131,9 +125,9 @@ bool AsciiParser::isDatasetFile(const std::string& file) {
     std::string line{};
     // Convention: read until found first non empty line, removing empty lines.
     // Escape also the dataset name and comment lines
-    boost::regex  expression("\\s*#.*");
-    boost::smatch s_match;
-    while ((line.empty() || boost::regex_match(line, s_match, expression)) && sfile.good()) {
+    regex::regex  expression("\\s*#.*");
+    regex::smatch s_match;
+    while ((line.empty() || regex::regex_match(line, s_match, expression)) && sfile.good()) {
       std::getline(sfile, line);
     }
     if (sfile.good()) {
