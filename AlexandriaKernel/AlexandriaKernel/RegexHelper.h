@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2021 Euclid Science Ground Segment
+ * Copyright (C) 2012-2022 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -29,6 +29,7 @@ using boost::match_results;
 using boost::regex;
 using boost::regex_match;
 using boost::regex_search;
+using boost::smatch;
 }  // namespace regex
 }  // namespace Euclid
 #else
@@ -40,6 +41,7 @@ using std::match_results;
 using std::regex;
 using std::regex_match;
 using std::regex_search;
+using std::smatch;
 }  // namespace regex
 }  // namespace Euclid
 #endif
