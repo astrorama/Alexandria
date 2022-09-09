@@ -24,10 +24,6 @@ elements_depends_on_subdirs(ElementsKernel)
 find_package(PythonInterp ${PYTHON_EXPLICIT_VERSION} REQUIRED)
 find_package(PythonLibs ${PYTHON_EXPLICIT_VERSION} REQUIRED)
 find_package(BoostPython ${PYTHON_EXPLICIT_VERSION})
-find_package(Boost 1.53 REQUIRED COMPONENTS filesystem timer)
-find_package(PythonInterp ${PYTHON_EXPLICIT_VERSION} REQUIRED)
-find_package(PythonLibs ${PYTHON_EXPLICIT_VERSION} REQUIRED)
-find_package(BoostPython ${PYTHON_EXPLICIT_VERSION})
 
 #===============================================================================
 # Declare the library dependencies here
@@ -39,11 +35,11 @@ find_package(BoostPython ${PYTHON_EXPLICIT_VERSION})
 #===============================================================================
 elements_add_library(Pyston src/lib/*.cpp
         INCLUDE_DIRS
-          Boost BoostPython
+          BoostPython
           PythonLibs PythonInterp
           ElementsKernel SEImplementation
         LINK_LIBRARIES
-          Boost BoostPython
+          BoostPython
           PythonLibs PythonInterp
           ElementsKernel
         PUBLIC_HEADERS Pyston)

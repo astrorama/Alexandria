@@ -14,16 +14,16 @@ if (NOT BoostPython_FOUND)
     find_package(PythonInterp ${PYTHON_EXPLICIT_VERSION} REQUIRED)
 
     # Explicit versions
-    set (_BOOST_PYTHON_LIST "python${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR}" "python${PYTHON_VERSION_MAJOR}")
+    set (_BOOST_PYTHON_LIST "${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR}" "${PYTHON_VERSION_MAJOR}")
 
     # Only for python2, without suffix
     if (BoostPython_FIND_VERSION VERSION_LESS 3)
-        list (APPEND _BOOST_PYTHON_LIST "python")
+        list (APPEND _BOOST_PYTHON_LIST "")
     endif ()
 
     # Pick the most restrictive
     foreach (_BOOST_PYTHON IN LISTS _BOOST_PYTHON_LIST)
-        find_package(Boost COMPONENTS "${_BOOST_PYTHON}")
+        find_package(Boost 1.63 REQUIRED COMPONENTS "python${_BOOST_PYTHON}" "numpy${_BOOST_PYTHON}")
         if (Boost_FOUND)
             set (BoostPython_INCLUDE_DIRS ${Boost_INCLUDE_DIRS})
             set (BoostPython_LIBRARIES ${Boost_LIBRARIES})
