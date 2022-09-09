@@ -51,7 +51,7 @@ private:
   struct ContainerWrapper;
 
 public:
-  typedef NdArray<T> self_type;
+  using self_type = NdArray<T>;
 
   /**
    * Iterator type
@@ -63,7 +63,9 @@ public:
       : public std::iterator<std::random_access_iterator_tag, typename std::conditional<Const, const T, T>::type> {
   private:
     ContainerInterface* m_container_ptr;
-    size_t              m_offset, m_row_size, m_stride;
+    size_t              m_offset;
+    size_t              m_row_size;
+    size_t              m_stride;
     size_t              m_i;
 
     Iterator(ContainerInterface* container_ptr, size_t offset, const std::vector<size_t>& shape,
@@ -180,8 +182,8 @@ public:
     bool operator>(const Iterator& other);
   };
 
-  typedef Iterator<true>  const_iterator;
-  typedef Iterator<false> iterator;
+  using const_iterator = Iterator<true>;
+  using iterator       = Iterator<false>;
 
   /**
    * Destructor.
@@ -601,8 +603,11 @@ private:
   // plus a marker for the valid type, plus any alignment requirement.
   // This indirection makes NdArray only 8 bytes in size!
   struct Details {
-    size_t                              m_offset, m_size, m_total_stride;
-    std::vector<size_t>                 m_shape, m_stride_size;
+    size_t                              m_offset;
+    size_t                              m_size;
+    size_t                              m_total_stride;
+    std::vector<size_t>                 m_shape;
+    std::vector<size_t>                 m_stride_size;
     std::vector<std::string>            m_attr_names;
     std::shared_ptr<ContainerInterface> m_container;
   };
