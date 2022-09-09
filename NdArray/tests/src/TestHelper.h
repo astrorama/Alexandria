@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2021 Euclid Science Ground Segment
+ * Copyright (C) 2012-2022 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -28,7 +28,7 @@
 /**
  * Run embedded Python code
  */
-static std::stringstream runPython(const char* code, const boost::filesystem::path& npy) {
+static std::unique_ptr<std::stringstream> runPython(const char* code, const boost::filesystem::path& npy) {
   namespace bp = boost::process;
   Elements::TempFile code_file("npy_%%%%.py");
   std::ofstream      out(code_file.path().native());
@@ -44,8 +44,8 @@ static std::stringstream runPython(const char* code, const boost::filesystem::pa
   int          r = bp::system(python_exec, code_file.path().native(), npy.native(), bp::std_out > py_output);
   BOOST_CHECK_EQUAL(r, 0);
 
-  std::stringstream stream;
-  stream << py_output.rdbuf();
+  auto stream = Euclid::make_unique<std::stringstream>();
+  (*stream) << py_output.rdbuf();
   return stream;
 }
 

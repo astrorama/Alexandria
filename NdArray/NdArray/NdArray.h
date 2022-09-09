@@ -541,7 +541,7 @@ private:
 
     ContainerWrapper(const ContainerWrapper&) = delete;
 
-    ContainerWrapper(ContainerWrapper&&) noexcept = default;
+    ContainerWrapper(ContainerWrapper&&) = default;
 
     template <typename... Args>
     explicit ContainerWrapper(Args&&... args) : m_container(std::forward<Args>(args)...) {
@@ -552,12 +552,12 @@ private:
       return m_container.size();
     }
 
-    template<typename T2>
+    template <typename T2>
     auto nbytesImpl(int) const -> decltype(std::declval<Container<T2>>().nbytes()) {
       return m_container.nbytes();
     }
 
-    template<typename T2>
+    template <typename T2>
     size_t nbytesImpl(...) const {
       return m_container.size() * sizeof(T2);
     }
