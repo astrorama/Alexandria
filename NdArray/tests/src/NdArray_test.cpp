@@ -22,6 +22,7 @@
  * @author Alejandro Alvarez Ayllon
  */
 
+#include "NdArray/Borrowed.h"
 #include "NdArray/NdArray.h"
 #include <boost/test/unit_test.hpp>
 #include <sstream>
@@ -499,6 +500,15 @@ BOOST_AUTO_TEST_CASE(FillWithIteratorNamed_test) {
     BOOST_CHECK_EQUAL(named.at(i, "SED"), -1);
     BOOST_CHECK_EQUAL(named.at(i, "PDZ"), -1);
   }
+}
+
+//-----------------------------------------------------------------------------
+
+BOOST_AUTO_TEST_CASE(Borrowed_test) {
+  std::vector<int> v{1, 2, 3, 4};
+  NdArray<int>     not_owning({2, 2}, BorrowedRange<int>{v.data(), v.size()});
+  BOOST_CHECK_EQUAL(not_owning.size(), v.size());
+  BOOST_CHECK_EQUAL(&(*not_owning.begin()), v.data());
 }
 
 //-----------------------------------------------------------------------------
