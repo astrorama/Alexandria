@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2021 Euclid Science Ground Segment
+ * Copyright (C) 2012-2022 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -99,7 +99,7 @@ print(a.sum())
   auto                  output = runPython(PYCODE, file.path());
 
   T sum;
-  output >> sum;
+  (*output) >> sum;
   BOOST_CHECK_EQUAL(std::accumulate(ndarray.begin(), ndarray.end(), static_cast<T>(0)), sum);
 }
 
@@ -130,7 +130,7 @@ print((a[:,0] * a[:,1]).sum())
   }
 
   T weighted_sum;
-  output >> weighted_sum;
+  (*output) >> weighted_sum;
   BOOST_CHECK_EQUAL(expected, weighted_sum);
 }
 
