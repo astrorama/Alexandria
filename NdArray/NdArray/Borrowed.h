@@ -16,54 +16,33 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#ifndef PYSTON_GIL_H
-#define PYSTON_GIL_H
+#ifndef ALEXANDRIA_BORROWED_H
+#define ALEXANDRIA_BORROWED_H
 
-#include <Python.h>
+#include <new>
 
-namespace Pyston {
+namespace Euclid {
+namespace NdArray {
 
-/**
- * RAII for the Global Interlock: Acquires at construction and releases at destruction
- */
-class GILLocker {
-public:
-  GILLocker();
+template <typename T>
+struct BorrowedRange {
+  T* const          m_begin;
+  std::size_t const m_size;
 
-  ~GILLocker();
+  T* data() const {
+    return m_begin;
+  }
 
-  static size_t getLockCount();
+  std::size_t size() const {
+    return m_size;
+  }
 
-protected:
-  PyGILState_STATE m_state;
-  friend class GILReleaser;
+  void resize(std::size_t) const {
+    throw std::bad_alloc();
+  }
 };
 
-/**
- * RAII for the Global Interlock: Releases at construction and locks at destruction
- */
-class GILReleaser {
-public:
-  explicit GILReleaser(PyGILState_STATE& state);
+}  // namespace NdArray
+}  // namespace Euclid
 
-  explicit GILReleaser(GILLocker&);
-
-  ~GILReleaser();
-
-protected:
-  PyGILState_STATE& m_state;
-};
-
-class SaveThread {
-public:
-  SaveThread();
-
-  ~SaveThread();
-
-protected:
-  PyThreadState* m_state;
-};
-
-}  // end of namespace Pyston
-
-#endif  // PYSTON_GIL_H
+#endif  // ALEXANDRIA_BORROWED_H

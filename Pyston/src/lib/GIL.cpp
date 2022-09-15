@@ -1,5 +1,5 @@
-/**
- * @copyright (C) 2012-2020 Euclid Science Ground Segment
+/*
+ * Copyright (C) 2022 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -23,12 +23,16 @@ namespace Pyston {
 static size_t s_lock_count = 0;
 
 GILLocker::GILLocker() {
-  m_state = PyGILState_Ensure();
-  ++s_lock_count;
+  if (Py_IsInitialized()) {
+    m_state = PyGILState_Ensure();
+    ++s_lock_count;
+  }
 }
 
 GILLocker::~GILLocker() {
-  PyGILState_Release(m_state);
+  if (Py_IsInitialized()) {
+    PyGILState_Release(m_state);
+  }
 }
 
 size_t GILLocker::getLockCount() {
@@ -46,6 +50,14 @@ GILReleaser::GILReleaser(GILLocker& locker) : m_state(locker.m_state) {
 GILReleaser::~GILReleaser() {
   m_state = PyGILState_Ensure();
   ++s_lock_count;
+}
+
+SaveThread::SaveThread() {
+  m_state = PyEval_SaveThread();
+}
+
+SaveThread::~SaveThread() {
+  PyEval_RestoreThread(m_state);
 }
 
 }  // end of namespace Pyston
