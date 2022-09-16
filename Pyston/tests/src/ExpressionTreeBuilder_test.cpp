@@ -1,5 +1,5 @@
-/**
- * @copyright (C) 2012-2020 Euclid Science Ground Segment
+/*
+ * Copyright (C) 2022 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -101,7 +101,7 @@ def raises_exception(x, y, z):
     transparent(1, 2, 0.4);
     BOOST_FAIL("Call should have raised an exception");
   } catch (const Exception& ex) {
-    BOOST_CHECK_EQUAL(std::string(ex.what()), "Invalid Z value");
+    BOOST_CHECK_EQUAL(std::string(ex.what()), "ValueError: Invalid Z value");
     BOOST_CHECK_GT(ex.getTraceback().size(), 0);
     bool func_in_trace = false;
     for (auto& trace : ex.getTraceback()) {
