@@ -1,5 +1,5 @@
-/**
- * @copyright (C) 2012-2020 Euclid Science Ground Segment
+/*
+ * Copyright (C) 2012-2022 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -38,13 +38,15 @@ Exception::Exception() {
   py::handle<> handle_value(pvalue);
   py::handle<> handle_traceback(py::allow_null(ptraceback));
 
-  // Get only the error message
+  // Get the error message and exception type
   py::object err_msg_obj(py::handle<>(PyObject_Str(pvalue)));
   m_error_msg = py::extract<std::string>(err_msg_obj);
   if (m_error_msg.empty()) {
     py::object err_repr_obj(py::handle<>(PyObject_Repr(pvalue)));
     m_error_msg = py::extract<std::string>(err_repr_obj);
   }
+  py::object err_msg_type(py::handle<>(PyObject_GetAttrString(ptype, "__name__")));
+  m_error_msg = std::string(py::extract<std::string>(err_msg_type)) + ": " + m_error_msg;
 
   // Generate traceback
   if (ptraceback) {
