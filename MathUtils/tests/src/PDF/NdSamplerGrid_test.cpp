@@ -27,6 +27,7 @@
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/test/unit_test.hpp>
+#include <fstream>
 
 using namespace Euclid::MathUtils;
 using namespace Euclid::NdArray;
