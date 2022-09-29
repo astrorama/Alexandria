@@ -1,4 +1,4 @@
-/*
+/**
  * Copyright (C) 2022 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
@@ -77,6 +77,20 @@ BOOST_FIXTURE_TEST_CASE(Chi2Distance_test, DistancesFixture) {
 
 //-----------------------------------------------------------------------------
 
+BOOST_FIXTURE_TEST_CASE(Chi2DistanceInfError_test, DistancesFixture) {
+  // With identical value
+  target_obj[0]     = ref_obj[0];
+  auto ref_distance = Chi2Distance::distance(1., ref_obj.begin(), ref_obj.end(), target_obj.begin());
+
+  // With infinite error
+  target_obj[0] = FluxErrorPair(0, std::numeric_limits<double>::infinity());
+  auto distance = Chi2Distance::distance(1., ref_obj.begin(), ref_obj.end(), target_obj.begin());
+  static_assert(std::is_same<decltype(distance), double>::value, "Distance must match the photometry value");
+  BOOST_CHECK_CLOSE(distance, ref_distance, 1e-7);
+}
+
+//-----------------------------------------------------------------------------
+
 BOOST_FIXTURE_TEST_CASE(Chi2Scale_test, DistancesFixture) {
   std::vector<FluxErrorPair> new_target(ref_obj);
   std::transform(ref_obj.begin(), ref_obj.end(), new_target.begin(), [](FluxErrorPair fe) {
@@ -87,6 +101,24 @@ BOOST_FIXTURE_TEST_CASE(Chi2Scale_test, DistancesFixture) {
   auto scale = Chi2Distance::guessScale(ref_obj.begin(), ref_obj.end(), new_target.begin());
   static_assert(std::is_same<decltype(scale), double>::value, "Scale must match the photometry value");
   BOOST_CHECK_CLOSE(scale, 8.0, 1e-7);
+}
+
+//-----------------------------------------------------------------------------
+
+BOOST_FIXTURE_TEST_CASE(Chi2ScaleInfError_test, DistancesFixture) {
+  std::vector<FluxErrorPair> new_target(ref_obj);
+  std::transform(ref_obj.begin(), ref_obj.end(), new_target.begin(), [](FluxErrorPair fe) {
+    fe.flux *= 8.;
+    return fe;
+  });
+  // Ignoring the first value
+  auto ref_scale = Chi2Distance::guessScale(std::next(ref_obj.begin()), ref_obj.end(), std::next(new_target.begin()));
+
+  // With infinite error
+  new_target[0] = FluxErrorPair(4, std::numeric_limits<double>::infinity());
+  auto scale    = Chi2Distance::guessScale(ref_obj.begin(), ref_obj.end(), new_target.begin());
+  static_assert(std::is_same<decltype(scale), double>::value, "Scale must match the photometry value");
+  BOOST_CHECK_CLOSE(scale, ref_scale, 1e-7);
 }
 
 //-----------------------------------------------------------------------------
