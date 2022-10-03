@@ -1,4 +1,4 @@
-/*
+/**
  * Copyright (C) 2012-2022 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
@@ -265,6 +265,11 @@ template <typename... D>
 auto NdArray<T>::reshape(size_t i, D... rest) -> self_type& {
   std::vector<size_t> acc{i};
   return reshape_helper(acc, rest...);
+}
+
+template <typename T>
+const T& NdArray<T>::front() const {
+  return m_details_ptr->m_container->get(m_details_ptr->m_offset);
 }
 
 template <typename T>
