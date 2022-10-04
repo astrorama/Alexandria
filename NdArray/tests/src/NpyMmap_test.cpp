@@ -1,5 +1,5 @@
-/*
- * Copyright (C) 2012-2021 Euclid Science Ground Segment
+/**
+ * Copyright (C) 2012-2022 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -68,6 +68,7 @@ BOOST_FIXTURE_TEST_CASE(MmapOpen_test, RandomGeneratorFixture) {
   auto read = readNpy<int32_t>(file.path());
   BOOST_CHECK_EQUAL(read.at(0, 1, 2), 1024 + 42);
   BOOST_CHECK_EQUAL(read.at(42, 5, 33), 1024 + 108);
+  BOOST_CHECK_EQUAL(read.front(), ndarray.front());
 }
 
 //-----------------------------------------------------------------------------

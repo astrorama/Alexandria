@@ -1,4 +1,4 @@
-/*
+/**
  * Copyright (C) 2012-2022 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
@@ -362,6 +362,11 @@ public:
    */
   template <typename... D>
   self_type& reshape(size_t i, D... rest);
+
+  /**
+   * @return A reference to the front element
+   */
+  const T& front() const;
 
   /**
    * Gets a reference to the value stored at the given coordinates.

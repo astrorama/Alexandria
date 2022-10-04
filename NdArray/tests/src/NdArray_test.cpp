@@ -1,4 +1,4 @@
-/*
+/**
  * Copyright (C) 2012-2022 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
@@ -44,6 +44,7 @@ BOOST_AUTO_TEST_CASE(OneDimension_test) {
   BOOST_CHECK_EQUAL(m.shape().size(), 1);
   BOOST_CHECK_EQUAL(m.shape()[0], 5);
   BOOST_CHECK_EQUAL(m.at(0), 10);
+  BOOST_CHECK_EQUAL(m.front(), 10);
 }
 
 //-----------------------------------------------------------------------------
@@ -61,6 +62,7 @@ BOOST_AUTO_TEST_CASE(TwoDimension_test) {
   BOOST_CHECK_EQUAL((m.at(0, 0)), 10);
   BOOST_CHECK_EQUAL((m.at(std::vector<size_t>{0, 0})), 10);
   BOOST_CHECK_EQUAL((m.at(1, 1)), 20);
+  BOOST_CHECK_EQUAL(m.front(), 10);
 
   const NdArray<int>& cm = m;
   BOOST_CHECK_EQUAL((cm.at(1, 1)), 20);
@@ -304,6 +306,7 @@ BOOST_AUTO_TEST_CASE(Slice_test) {
   BOOST_CHECK_EQUAL(first.at(0, 0), 1);
   BOOST_CHECK_EQUAL(first.at(1, 0), 2);
   BOOST_CHECK_EQUAL(first.at(2, 1), 3);
+  BOOST_CHECK_EQUAL(first.front(), 1);
 
   std::vector<int> expected_first{1, 1, 1, 2, 2, 2, 3, 3, 3};
   BOOST_CHECK_EQUAL_COLLECTIONS(first.begin(), first.end(), expected_first.begin(), expected_first.end());
@@ -319,6 +322,7 @@ BOOST_AUTO_TEST_CASE(Slice_test) {
   BOOST_CHECK_EQUAL(second.at(1, 0), 22);
   BOOST_CHECK_EQUAL(second.at({2, 1}), 33);
   BOOST_CHECK_EQUAL(second.at(2, 1), 33);
+  BOOST_CHECK_EQUAL(second.front(), 11);
 
   std::vector<int> expected_second{11, 11, 11, 22, 22, 22, 33, 33, 33};
   BOOST_CHECK_EQUAL_COLLECTIONS(second.begin(), second.end(), expected_second.begin(), expected_second.end());
@@ -333,10 +337,12 @@ BOOST_AUTO_TEST_CASE(NextSlice_test) {
   auto             first = m.slice(0);
   std::vector<int> expected_first{1, 1, 1, 2, 2, 2, 3, 3, 3};
   BOOST_CHECK_EQUAL_COLLECTIONS(first.begin(), first.end(), expected_first.begin(), expected_first.end());
+  BOOST_CHECK_EQUAL(first.front(), 1);
 
   first.next_slice();
   std::vector<int> expected_second{11, 11, 11, 22, 22, 22, 33, 33, 33};
   BOOST_CHECK_EQUAL_COLLECTIONS(first.begin(), first.end(), expected_second.begin(), expected_second.end());
+  BOOST_CHECK_EQUAL(first.front(), 11);
 }
 
 //-----------------------------------------------------------------------------
@@ -355,6 +361,7 @@ BOOST_AUTO_TEST_CASE(SliceTwice_test) {
   BOOST_CHECK_EQUAL(second.at(0), 3);
   BOOST_CHECK_EQUAL(second.at(1), 3);
   BOOST_CHECK_EQUAL(second.at(2), 3);
+  BOOST_CHECK_EQUAL(second.front(), 3);
 
   std::vector<int> expected_second{3, 3, 3};
   BOOST_CHECK_EQUAL_COLLECTIONS(second.begin(), second.end(), expected_second.begin(), expected_second.end());
@@ -395,6 +402,7 @@ BOOST_AUTO_TEST_CASE(RSlice_test) {
   BOOST_CHECK_EQUAL(first.at(1, 1), 22);
   BOOST_CHECK_EQUAL(first.at(0, 2), 3);
   BOOST_CHECK_EQUAL(first.at(1, 2), 33);
+  BOOST_CHECK_EQUAL(first.front(), 1);
 
   std::vector<int> expected_first{1, 2, 3, 11, 22, 33};
   BOOST_CHECK_EQUAL_COLLECTIONS(first.begin(), first.end(), expected_first.begin(), expected_first.end());
@@ -429,6 +437,7 @@ BOOST_AUTO_TEST_CASE(RSliceTwice_test) {
 
   BOOST_CHECK_EQUAL(second.at(0), 3);
   BOOST_CHECK_EQUAL(second.at(1), 33);
+  BOOST_CHECK_EQUAL(second.front(), 3);
 
   std::vector<int> expected_second{3, 33};
   BOOST_CHECK_EQUAL_COLLECTIONS(second.begin(), second.end(), expected_second.begin(), expected_second.end());
