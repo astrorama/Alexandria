@@ -1,5 +1,5 @@
-/*
- * Copyright (C) 2012-2021 Euclid Science Ground Segment
+/**
+ * Copyright (C) 2012-2022 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -74,8 +74,8 @@ Row::Row(std::vector<cell_type> values, std::shared_ptr<ColumnInfo> column_info)
   for (std::size_t i = 0; i < m_values.size(); ++i) {
     auto& value_type  = m_values[i].type();
     auto& column_type = column_info->getDescription(i).type;
-    auto& column_name = column_info->getDescription(i).name;
     if (std::type_index{value_type} != column_type) {
+      auto& column_name = column_info->getDescription(i).name;
       throw Elements::Exception() << "Incompatible cell type for " << column_name << ": expected "
                                   << demangle(column_type.name()) << ", got " << demangle(value_type.name());
     }
