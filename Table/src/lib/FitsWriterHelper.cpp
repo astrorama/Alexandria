@@ -1,4 +1,4 @@
-/*
+/**
  * Copyright (C) 2012-2022 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
@@ -24,13 +24,15 @@
 
 #include "FitsWriterHelper.h"
 #include "ElementsKernel/Exception.h"
+#include "ReaderHelper.h"
 #include "Table/Table.h"
 #include <CCfits/CCfits>
 #include <algorithm>
 #include <boost/lexical_cast.hpp>
-#include <iomanip>
 #include <sstream>
 #include <valarray>
+
+using Euclid::Table::operator<<;
 
 namespace Euclid {
 namespace Table {
@@ -38,16 +40,16 @@ namespace Table {
 using NdArray::NdArray;
 
 template <typename T>
-std::string scientificFormat(T value) {
+std::string scientificFormat(const T& value) {
   std::ostringstream stream;
-  stream << std::scientific << value;
+  stream << std::scientific << cell_stream_adaptor(value);
   return stream.str();
 }
 
 size_t maxWidth(const Table& table, size_t column_index) {
   size_t width = table.getColumnInfo()->getDescription(column_index).size;
   for (const auto& row : table) {
-    width = std::max(width, boost::lexical_cast<std::string>(row[column_index]).size());
+    width = std::max(width, boost::lexical_cast<std::string>(cell_stream_adaptor(row[column_index])).size());
   }
   return width;
 }
@@ -118,9 +120,8 @@ extern const std::vector<std::pair<char, std::type_index>> ScalarTypeMap;
 
 template <typename T>
 static std::string GenericScalarFormat(const Table&, size_t) {
-  auto i = std::find_if(ScalarTypeMap.begin(), ScalarTypeMap.end(), [](const std::pair<char, std::type_index>&p){
-    return p.second == typeid(T);
-  });
+  auto i = std::find_if(ScalarTypeMap.begin(), ScalarTypeMap.end(),
+                        [](const std::pair<char, std::type_index>& p) { return p.second == typeid(T); });
   if (i == ScalarTypeMap.end()) {
     throw Elements::Exception() << "Unsupported column format for FITS binary table export: " << typeid(T).name();
   }

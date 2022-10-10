@@ -1,5 +1,5 @@
-/*
- * Copyright (C) 2012-2021 Euclid Science Ground Segment
+/**
+ * Copyright (C) 2012-2022 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -57,6 +57,21 @@ template <>
 class CastVisitor<std::string> : public boost::static_visitor<std::string> {
 
 public:
+  template <typename T>
+  std::string operator()(const std::vector<T>& v) const {
+    std::stringstream result{};
+    auto              it = v.begin();
+    if (it != v.end()) {
+      result << *it;
+      ++it;
+    }
+    while (it != v.end()) {
+      result << ',' << *it;
+      ++it;
+    }
+    return result.str();
+  }
+
   template <typename From>
   std::string operator()(const From& from) const {
     std::stringstream result{};

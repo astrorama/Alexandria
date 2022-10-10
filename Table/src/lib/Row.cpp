@@ -35,32 +35,39 @@ using boost::units::detail::demangle;
 using boost::core::demangle;
 #endif
 
-namespace std {
-
-template <typename T>
-std::ostream& operator<<(std::ostream& s, const std::vector<T>& v) {
-  auto it = v.begin();
-  if (it != v.end()) {
-    s << *it;
-    ++it;
-  }
-  while (it != v.end()) {
-    s << ',' << *it;
-    ++it;
-  }
-  return s;
-}
-
-template std::ostream& operator<<<double>(std::ostream& s, const std::vector<double>& v);
-template std::ostream& operator<<<float>(std::ostream& s, const std::vector<float>& v);
-template std::ostream& operator<<<std::int64_t>(std::ostream& s, const std::vector<std::int64_t>& v);
-template std::ostream& operator<<<std::int32_t>(std::ostream& s, const std::vector<std::int32_t>& v);
-template std::ostream& operator<<<bool>(std::ostream& s, const std::vector<bool>& v);
-
-}  // namespace std
-
 namespace Euclid {
 namespace Table {
+
+struct StreamCellVisitor : public boost::static_visitor<void> {
+
+  StreamCellVisitor(std::ostream& s) : m_stream(s) {}
+
+  template <typename T>
+  void operator()(const std::vector<T>& v) const {
+    auto it = v.begin();
+    if (it != v.end()) {
+      m_stream << *it;
+      ++it;
+    }
+    while (it != v.end()) {
+      m_stream << ',' << *it;
+      ++it;
+    }
+  }
+
+  template <typename T>
+  void operator()(const T& val) const {
+    m_stream << val;
+  }
+
+  std::ostream& m_stream;
+};
+
+std::ostream& operator<<(std::ostream& s, const cell_stream_adaptor& cell) {
+  StreamCellVisitor visitor{s};
+  boost::apply_visitor(visitor, cell.m_cell);
+  return s;
+}
 
 Row::Row(std::vector<cell_type> values, std::shared_ptr<ColumnInfo> column_info)
     : m_values(std::move(values)), m_column_info{column_info} {
@@ -80,7 +87,8 @@ Row::Row(std::vector<cell_type> values, std::shared_ptr<ColumnInfo> column_info)
                                   << demangle(column_type.name()) << ", got " << demangle(value_type.name());
     }
   }
-  static const regex::regex vertical_whitespace{".*[\\n\\v\\f\\r].*"};  // Checks if input contains any whitespace characters
+  static const regex::regex vertical_whitespace{".*[\\n\\v\\f\\r].*"};  // Checks if input contains any whitespace
+                                                                        // characters
   for (auto cell : m_values) {
     if (cell.type() == typeid(std::string)) {
       std::string value = boost::get<std::string>(cell);

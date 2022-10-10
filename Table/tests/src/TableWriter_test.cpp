@@ -1,5 +1,5 @@
-/*
- * Copyright (C) 2012-2021 Euclid Science Ground Segment
+/**
+ * Copyright (C) 2012-2022 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -25,6 +25,7 @@
 #include "ElementsKernel/EnableGMock.h"
 #include "ElementsKernel/Exception.h"
 #include "Table/TableWriter.h"
+#include "Table/TestHelper.h"
 #include <boost/test/unit_test.hpp>
 
 using namespace Euclid::Table;
