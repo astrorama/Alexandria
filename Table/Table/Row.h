@@ -158,7 +158,7 @@ private:
  * functions to the std namespace is undefined behaviour since C++14
  */
 struct cell_stream_adaptor {
-  cell_stream_adaptor(const Row::cell_type& cell) : m_cell(cell){};
+  explicit cell_stream_adaptor(const Row::cell_type& cell) : m_cell(cell){};
 
   const Row::cell_type& m_cell;
 };

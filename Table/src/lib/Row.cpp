@@ -40,7 +40,7 @@ namespace Table {
 
 struct StreamCellVisitor : public boost::static_visitor<void> {
 
-  StreamCellVisitor(std::ostream& s) : m_stream(s) {}
+  explicit StreamCellVisitor(std::ostream& s) : m_stream(s) {}
 
   template <typename T>
   void operator()(const std::vector<T>& v) const {
