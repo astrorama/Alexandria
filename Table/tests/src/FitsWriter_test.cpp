@@ -157,8 +157,8 @@ BOOST_FIXTURE_TEST_CASE(writeBinary, BinaryFitsWriter_Fixture) {
   result.column(1).read(bool_data, 1, 2);
 
   // Then
-  BOOST_CHECK(bool_data[0] == true);
-  BOOST_CHECK(bool_data[1] == false);
+  BOOST_CHECK(bool_data[0]);
+  BOOST_CHECK(!bool_data[1]);
 
   // When
   std::vector<int32_t> int_data{};
