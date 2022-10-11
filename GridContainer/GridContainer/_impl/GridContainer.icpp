@@ -1,4 +1,4 @@
-/*
+/**
  * Copyright (C) 2012-2022 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
@@ -79,6 +79,13 @@ GridContainer<GridCellManager, AxesTypes...>::GridContainer(const GridContainer<
     throw Elements::Exception() << "Axis " << axis << " is already fixed";
   }
   m_fixed_indices[axis] = index;
+}
+
+template <typename GridCellManager, typename... AxesTypes>
+auto GridContainer<GridCellManager, AxesTypes...>::copy() const -> GridContainer {
+  GridContainer clone{m_axes};
+  std::copy(begin(), end(), std::begin(clone));
+  return clone;
 }
 
 template <typename GridCellManager, typename... AxesTypes>

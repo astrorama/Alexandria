@@ -1,4 +1,4 @@
-/*
+/**
  * Copyright (C) 2012-2022 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
@@ -167,12 +167,12 @@ public:
 
   // Do not allow copying of GridContainer objects. This is done because these
   // objects will most of the time be very big and copying them will be a
-  // bottleneck. To avoid unvoluntary copy constructor calls, this constructor
+  // bottleneck. To avoid involuntary copy constructor calls, this constructor
   // is deleted.
   GridContainer(const GridContainer<GridCellManager, AxesTypes...>&) = delete;
   GridContainer& operator=(const GridContainer<GridCellManager, AxesTypes...>&) = delete;
 
-  /// But if needed be, allow explicit copies and let GridCellManager optimize them away if possible
+  /// But if needed be, allow explicit copies
   GridContainer copy() const;
 
   /// Default destructor
