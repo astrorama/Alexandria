@@ -1,5 +1,5 @@
-/*
- * Copyright (C) 2012-2021 Euclid Science Ground Segment
+/**
+ * Copyright (C) 2012-2022 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -74,7 +74,9 @@ auto FileHandler::getWriteAccessor(bool try_lock) -> std::unique_ptr<FileAccesso
   }
 
   auto typed_ptr = dynamic_cast<TypedFdWrapper<TFD>*>(fd_ptr.get());
-  assert(typed_ptr != nullptr);
+  if (typed_ptr == nullptr) {
+    throw std::logic_error("Failed to cast type-erased file descriptor wrapper");
+  }
   auto fd = std::move(typed_ptr->m_fd);
   auto id = typed_ptr->m_id;
 
@@ -139,7 +141,9 @@ auto FileHandler::getReadAccessor(bool try_lock) -> std::unique_ptr<FileAccessor
 
   // Build and return accessor
   TypedFdWrapper<TFD>* typed_ptr = dynamic_cast<TypedFdWrapper<TFD>*>(fd_ptr.get());
-  assert(typed_ptr != nullptr);
+  if (typed_ptr == nullptr) {
+    throw std::logic_error("Failed to cast type-erased file descriptor wrapper");
+  }
   auto fd = std::move(typed_ptr->m_fd);
   auto id = typed_ptr->m_id;
 

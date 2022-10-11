@@ -1,5 +1,5 @@
-/*
- * Copyright (C) 2012-2021 Euclid Science Ground Segment
+/**
+ * Copyright (C) 2012-2022 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -36,13 +36,6 @@
 #include "NdArray/NdArray.h"
 #include "Table/ColumnInfo.h"
 
-namespace std {
-
-template <typename T>
-std::ostream& operator<<(std::ostream& s, const std::vector<T>& v);
-
-}
-
 namespace Euclid {
 namespace Table {
 
@@ -65,12 +58,12 @@ class ELEMENTS_API Row {
 
 public:
   /// The possible cell types
-  typedef boost::variant<bool, int32_t, int64_t, float, double, std::string, std::vector<bool>, std::vector<int32_t>,
-                         std::vector<int64_t>, std::vector<float>, std::vector<double>, NdArray::NdArray<int32_t>,
-                         NdArray::NdArray<int64_t>, NdArray::NdArray<float>, NdArray::NdArray<double>>
-      cell_type;
+  using cell_type =
+      boost::variant<bool, int32_t, int64_t, float, double, std::string, std::vector<bool>, std::vector<int32_t>,
+                     std::vector<int64_t>, std::vector<float>, std::vector<double>, NdArray::NdArray<int32_t>,
+                     NdArray::NdArray<int64_t>, NdArray::NdArray<float>, NdArray::NdArray<double>>;
 
-  typedef std::vector<cell_type>::const_iterator const_iterator;
+  using const_iterator = std::vector<cell_type>::const_iterator;
 
   /**
    * @brief
@@ -157,6 +150,20 @@ private:
   std::vector<cell_type>      m_values;
   std::shared_ptr<ColumnInfo> m_column_info;
 };
+
+/**
+ * Wrap a cell so it can be streamed. This is necessary since Row::cell_type& contains
+ * non-streamable types, as std::vector.
+ * Before Alexandria 2.27, there was an overload of operator<< for std::vector, but adding
+ * functions to the std namespace is undefined behaviour since C++14
+ */
+struct cell_stream_adaptor {
+  explicit cell_stream_adaptor(const Row::cell_type& cell) : m_cell(cell){};
+
+  const Row::cell_type& m_cell;
+};
+
+std::ostream& operator<<(std::ostream& out, const cell_stream_adaptor& cell);
 
 }  // namespace Table
 }  // end of namespace Euclid

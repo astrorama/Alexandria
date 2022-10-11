@@ -1,4 +1,4 @@
-/*
+/**
  * Copyright (C) 2012-2022 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
@@ -25,12 +25,12 @@
 #ifndef TABLE_ASCIIWRITERHELPER_H
 #define TABLE_ASCIIWRITERHELPER_H
 
+#include "ElementsKernel/Export.h"
+#include "ReaderHelper.h"
+#include "Table/Table.h"
 #include <sstream>
 #include <typeindex>
 #include <vector>
-
-#include "ElementsKernel/Export.h"
-#include "Table/Table.h"
 
 namespace Euclid {
 namespace Table {
@@ -84,6 +84,21 @@ struct ToStringVisitor : public boost::static_visitor<std::string> {
   std::string operator()(const double from) const {
     std::stringstream q;
     q << std::setprecision(std::numeric_limits<double>::digits10) << from;
+    return q.str();
+  }
+
+  template <typename T>
+  std::string operator()(const std::vector<T>& v) const {
+    std::stringstream q;
+    auto              it = v.begin();
+    if (it != v.end()) {
+      q << *it;
+      ++it;
+    }
+    while (it != v.end()) {
+      q << ',' << *it;
+      ++it;
+    }
     return q.str();
   }
 
