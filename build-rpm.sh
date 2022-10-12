@@ -16,7 +16,7 @@ RELEASE=${1:-1}
 
 cd /src
 
-BASEURL=https://raw.githubusercontent.com/astrorama/actions/v3
+BASEURL=https://raw.githubusercontent.com/astrorama/actions/v3.3
 
 # Repositories
 curl ${BASEURL}/setup-dependencies/setup-repositories.sh | bash
