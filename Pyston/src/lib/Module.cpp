@@ -45,7 +45,7 @@ PyObject* shared_ptr_to_python(std::shared_ptr<T> const& x) {
   if (!x)
     return python::detail::none();
   else if (shared_ptr_deleter* d = std::get_deleter<shared_ptr_deleter>(x))
-    return incref(get_pointer(d->owner));
+    return xincref(get_pointer(d->owner));
   else
     return converter::registered<std::shared_ptr<T> const&>::converters.to_python(&x);
 }

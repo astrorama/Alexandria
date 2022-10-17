@@ -1,5 +1,5 @@
 /**
- * @copyright (C) 2012-2020 Euclid Science Ground Segment
+ * Copyright (C) 2012-2022 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -21,6 +21,7 @@
 
 #include <ElementsKernel/Exception.h>
 #include <ElementsKernel/Logging.h>
+#include <boost/python/object.hpp>
 
 namespace Pyston {
 
@@ -55,8 +56,14 @@ public:
   /// Log error message and traceback
   const Exception& log(log4cpp::Priority::Value level, Elements::Logging& logger) const;
 
+  /// Call PyErr_Restore and restore the error. This can be used when Pyston::Exception goes back to Python.
+  void restore() const;
+
 private:
-  std::list<Location> m_traceback;
+  std::list<Location>   m_traceback;
+  boost::python::object m_error_type;
+  boost::python::object m_error_value;
+  boost::python::object m_error_traceback;
 };
 
 }  // end of namespace Pyston
