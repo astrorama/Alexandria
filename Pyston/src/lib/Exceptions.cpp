@@ -1,4 +1,4 @@
-/*
+/**
  * Copyright (C) 2012-2022 Euclid Science Ground Segment
  *
  * This library is free software; you can redistribute it and/or modify it under
@@ -34,9 +34,9 @@ Exception::Exception() {
   PyErr_Fetch(&ptype, &pvalue, &ptraceback);
   PyErr_NormalizeException(&ptype, &pvalue, &ptraceback);
 
-  py::handle<> handle_type(ptype);
-  py::handle<> handle_value(pvalue);
-  py::handle<> handle_traceback(py::allow_null(ptraceback));
+  m_error_type      = py::object(py::handle<>(ptype));
+  m_error_value     = py::object(py::handle<>(pvalue));
+  m_error_traceback = py::object(py::handle<>(py::allow_null(ptraceback)));
 
   // Get the error message and exception type
   py::object err_msg_obj(py::handle<>(PyObject_Str(pvalue)));
@@ -50,16 +50,12 @@ Exception::Exception() {
 
   // Generate traceback
   if (ptraceback) {
-    py::object traceback(handle_traceback);
-    while (traceback) {
+    for (auto traceback = m_error_traceback; traceback; traceback = traceback.attr("tb_next")) {
       Location loc;
       loc.lineno   = py::extract<long>(traceback.attr("tb_lineno"));
       loc.filename = py::extract<std::string>(traceback.attr("tb_frame").attr("f_code").attr("co_filename"));
       loc.funcname = py::extract<std::string>(traceback.attr("tb_frame").attr("f_code").attr("co_name"));
-
       m_traceback.emplace_back(loc);
-
-      traceback = traceback.attr("tb_next");
     }
   }
 
@@ -78,6 +74,10 @@ const Exception& Exception::log(log4cpp::Priority::Value level, Elements::Loggin
     logger.log(level, msg.str());
   }
   return *this;
+}
+
+void Exception::restore() const {
+  PyErr_Restore(py::xincref(m_error_type.ptr()), py::xincref(m_error_value.ptr()), py::xincref(m_error_traceback.ptr()));
 }
 
 }  // end of namespace Pyston
