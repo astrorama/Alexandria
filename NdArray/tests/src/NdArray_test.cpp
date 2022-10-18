@@ -33,7 +33,7 @@ using namespace Euclid::NdArray;
 
 BOOST_AUTO_TEST_SUITE(Matrix_test)
 
-static_assert(sizeof(NdArray<int>) == 8, "Expected NdArray<int> to have size 8");
+static_assert(sizeof(NdArray<int>) == sizeof(void*), "Expected NdArray<int> to have the size of a pointer");
 
 //-----------------------------------------------------------------------------
 
