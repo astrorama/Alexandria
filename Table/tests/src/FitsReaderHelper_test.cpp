@@ -94,15 +94,15 @@ BOOST_FIXTURE_TEST_CASE(autoDetectColumnTypesBinary, FitsReaderHelper_Fixture) {
   // Given
   std::vector<std::string> names{"Bool",      "Byte",       "Short",       "Int",          "Long",
                                  "String",    "Float",      "Double",      "ByteVector",   "ShortVector",
-                                 "IntVector", "LongVector", "FloatVector", "DoubleVector", "Scalar"};
-  std::vector<std::string> types{"L", "B", "I", "J", "K", "10A", "E", "D", "2B", "3I", "4J", "5K", "6E", "7D", "1D"};
+                                 "IntVector", "LongVector", "FloatVector", "DoubleVector", "Scalar", "String"};
+  std::vector<std::string> types{"L", "B", "I", "J", "K", "10A", "E", "D", "2B", "3I", "4J", "5K", "6E", "7D", "1D", "1A"};
   CCfits::Table*           table_hdu = fits->addTable("Binary", 0, names, types);
 
   // When
   auto result = Euclid::Table::autoDetectColumnTypes(*table_hdu);
 
   // Then
-  BOOST_CHECK_EQUAL(result.size(), 15);
+  BOOST_CHECK_EQUAL(result.size(), 16);
   BOOST_CHECK(result[0].first == typeid(bool));
   BOOST_CHECK(result[1].first == typeid(int32_t));
   BOOST_CHECK(result[2].first == typeid(int32_t));
@@ -125,6 +125,8 @@ BOOST_FIXTURE_TEST_CASE(autoDetectColumnTypesBinary, FitsReaderHelper_Fixture) {
   BOOST_CHECK(result[13].first == typeid(std::vector<double>));
   BOOST_CHECK_EQUAL(result[13].second, 7);
   BOOST_CHECK(result[14].first == typeid(double));
+  BOOST_CHECK(result[15].first == typeid(std::string));
+  BOOST_CHECK_EQUAL(result[15].second, 1);
 }
 
 //-----------------------------------------------------------------------------
