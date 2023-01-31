@@ -22,6 +22,7 @@
  * @author nikoapos
  */
 
+#include <cstdint>
 #include <boost/test/unit_test.hpp>
 
 #include "Table/CastVisitor.h"
