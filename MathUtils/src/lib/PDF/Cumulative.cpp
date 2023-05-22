@@ -25,6 +25,7 @@
 #include "MathUtils/PDF/Cumulative.h"
 #include "ElementsKernel/Exception.h"
 #include "XYDataset/XYDataset.h"
+#include "MathUtils/interpolation/interpolation.h"
 #include <cstdlib>  // for size_t
 
 namespace Euclid {
@@ -205,17 +206,8 @@ double Cumulative::eval(double x_value) const {
 		throw Elements::Exception("Cumulative::eval : provided value is outside of the x range");
 	}
 
-	size_t bellow=0;
-	for (size_t index=1; index<m_x_sampling.size(); index++){
-		if (m_x_sampling[index]>=x_value){
-			bellow = index-1;
-			break;
-		}
-	}
-
-	double ratio = (x_value - m_x_sampling[bellow])/(m_x_sampling[bellow+1] - m_x_sampling[bellow]);
-
-	return m_y_sampling[bellow] + ratio*(m_y_sampling[bellow+1] - m_y_sampling[bellow]);
+	auto function = interpolate(m_x_sampling,m_y_sampling, InterpolationType::LINEAR, false);
+    return (*function)(x_value);
 }
 
 }  // namespace MathUtils
