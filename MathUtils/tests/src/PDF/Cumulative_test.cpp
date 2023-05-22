@@ -237,6 +237,36 @@ BOOST_AUTO_TEST_CASE(findCenteredInterval_step_test) {
   BOOST_CHECK_CLOSE(interval.second, 3., 0.0001);
 }
 
+BOOST_AUTO_TEST_CASE(eval_test) {
+  std::vector<double> x = {0., 1., 2., 3., 4., 5., 10.};
+  std::vector<double> y = {0., 0.1, 0.2, 0.3, 0.4, 0.5, 1.};
+
+  Euclid::MathUtils::Cumulative cumul{x, y};
+
+  double value = cumul.eval(1.);
+  BOOST_CHECK_CLOSE(value, 0.1, 0.0001);
+
+  value = cumul.eval(1.5);
+  BOOST_CHECK_CLOSE(value, 0.15, 0.0001);
+
+
+  value = cumul.eval(2.0);
+  BOOST_CHECK_CLOSE(value, 0.2, 0.0001);
+
+
+  value = cumul.eval(0);
+  BOOST_CHECK_CLOSE(value, 0.0, 0.0001);
+
+
+  value = cumul.eval(10);
+  BOOST_CHECK_CLOSE(value, 1.0, 0.0001);
+
+
+  BOOST_CHECK_THROW(cumul.eval(-0.1), Elements::Exception);
+  BOOST_CHECK_THROW(cumul.eval(10.1), Elements::Exception);
+
+}
+
 //-----------------------------------------------------------------------------
 
 BOOST_AUTO_TEST_SUITE_END()
