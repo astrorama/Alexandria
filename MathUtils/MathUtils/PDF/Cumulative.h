@@ -146,6 +146,15 @@ public:
   std::pair<double, double> findCenteredInterval(double rate) const;
 
   /**
+   * @brief return the value of the cumulative at a given value of the horizontal axis.
+   * If the value do not match one of the knot a linear implementation is done.
+   *
+   * @param x_value value at which the cumulative must be evaluated.
+   * @return the value of the
+   */
+  double eval(double x_value) const;
+
+  /**
    * @brief Destructor
    */
   virtual ~Cumulative() = default;

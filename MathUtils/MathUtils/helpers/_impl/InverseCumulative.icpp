@@ -19,11 +19,14 @@
 #ifdef INVERSE_CUMULATIVE_IMPL
 
 #include "MathUtils/helpers/Solvers.h"
+#include "ElementsKernel/Logging.h"
 #include <algorithm>
 #include <cassert>
+#include <cmath>
 
 namespace Euclid {
 namespace MathUtils {
+static Elements::Logging loggerinverseCumul = Elements::Logging::getLogger("LoggerInverseCumulative");
 
 /**
  * Specialization for floating point (linear interpolation of the PDF)
@@ -64,10 +67,12 @@ public:
     const double unnormed_p = p * m_range + m_min;
 
     // Find segment
-    if (unnormed_p <= m_cdf.front())
-      return m_knots.front();
-    if (unnormed_p >= m_cdf.back())
-      return m_knots.back();
+    if (unnormed_p <= m_cdf.front()) {
+      	return m_knots.front();
+    }
+    if (unnormed_p >= m_cdf.back()) {
+        return m_knots.back();
+    }
 
     std::size_t i = std::upper_bound(m_cdf.begin(), m_cdf.end(), unnormed_p) - m_cdf.begin() - 1;
 
@@ -117,7 +122,15 @@ public:
       return s0;
     }
     assert(s1 >= x0 - 1e-8 && s1 <= x1 + 1e-8);
+    
+    // Worse case scenario: we got out of the double bound
+    if (! std::isfinite(s1)) {
+    	loggerinverseCumul.warn()<<"Computation of the inverse Cumulative is not finite: use the median value.";
+    	s1 = (x0+x1)/2;
+    }
+    
     return s1;
+      
   }
 
 private:
