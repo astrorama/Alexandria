@@ -29,6 +29,7 @@
 #include <CCfits/CCfits>
 #include <boost/filesystem.hpp>
 #include <type_traits>
+#include <cstdint>
 #include <valarray>
 
 namespace Euclid {
