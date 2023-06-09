@@ -26,6 +26,7 @@
 
 #include "Table/CastVisitor.h"
 #include "Table/Row.h"
+#include <cstdint>  // for std::int64_t
 
 using namespace Euclid::Table;
 
