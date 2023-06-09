@@ -25,6 +25,7 @@
 #include <boost/filesystem.hpp>
 #include <boost/test/unit_test.hpp>
 #include <fstream>
+#include <cstdint>
 
 #include "ElementsKernel/Temporary.h"
 #include "SourceCatalog/SourceAttributes/Photometry.h"

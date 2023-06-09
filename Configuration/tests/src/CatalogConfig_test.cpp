@@ -24,6 +24,7 @@
 #include <boost/test/unit_test.hpp>
 #include <fstream>
 #include <string>
+#include <cstdint>
 
 #include "ElementsKernel/Temporary.h"
 #include "Table/AsciiWriter.h"
