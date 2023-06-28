@@ -131,6 +131,37 @@ BOOST_AUTO_TEST_CASE(area_test) {
   BOOST_CHECK_CLOSE(modes[0].getModeArea(), 2.7, 0.001);
 }
 
+BOOST_AUTO_TEST_CASE(area_limit_test) {
+
+  std::vector<double> sampling{0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0};
+  std::vector<double> pdf{0.0, 1, 3, 2, 4, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+  auto                full_pdf = Euclid::XYDataset::XYDataset::factory(sampling, pdf);
+  auto                modes    = Euclid::MathUtils::extractNHighestModes(full_pdf, 0.8, 1);
+
+  // area
+  BOOST_CHECK_CLOSE(modes[0].getModeArea(), 1.0, 0.000001);
+
+
+  std::vector<double> sampling_2{0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0};
+  std::vector<double> pdf_2{10, 5.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+  auto full_pdf_2 = Euclid::XYDataset::XYDataset::factory(sampling_2, pdf_2);
+  modes    = Euclid::MathUtils::extractNHighestModes(full_pdf_2, 0.8, 1);
+
+  // area
+  BOOST_CHECK_CLOSE(modes[0].getModeArea(), 1.0, 0.000001);
+
+  std::vector<double> sampling_3{0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0};
+  std::vector<double> pdf_3{20, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+  auto full_pdf_3 = Euclid::XYDataset::XYDataset::factory(sampling_3, pdf_3);
+  modes    = Euclid::MathUtils::extractNHighestModes(full_pdf_3, 0.8, 1);
+
+  // area
+  BOOST_CHECK_CLOSE(modes[0].getModeArea(), 1.0, 0.000001);
+
+}
+
+
+
 BOOST_AUTO_TEST_CASE(order_test) {
 
   std::vector<double> sampling{0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0};

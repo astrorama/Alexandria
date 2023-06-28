@@ -104,9 +104,9 @@ std::pair<double, double> avgArea(std::pair<std::vector<double>, std::vector<dou
   for (size_t index = min_x; index <= max_x; ++index) {
     double dx = 0.;
     if (index == 0) {
-      dx = pdf.first[index + 1] - pdf.first[index];
+      dx = (pdf.first[index + 1] - pdf.first[index])/2.0;
     } else if (index == pdf.first.size() - 1) {
-      dx = pdf.first[index] - pdf.first[index - 1];
+      dx = (pdf.first[index] - pdf.first[index - 1])/2.0;
     } else {
       dx = (pdf.first[index + 1] - pdf.first[index - 1]) / 2.0;
     }
