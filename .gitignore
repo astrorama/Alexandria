@@ -13,3 +13,4 @@
 /PAQA
 /build.*
 /sonar-project.properties
+/.justfile
