@@ -23,6 +23,7 @@
  */
 
 #include <boost/test/unit_test.hpp>
+#include <cstdint>
 
 #include "Table/CastVisitor.h"
 #include "Table/Row.h"
