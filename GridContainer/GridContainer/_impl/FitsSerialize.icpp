@@ -28,6 +28,7 @@
 #include "XYDataset/QualifiedName.h"
 #include <CCfits/CCfits>
 #include <boost/filesystem.hpp>
+#include <cstdint>
 #include <type_traits>
 #include <valarray>
 #include <cstdint>
@@ -97,7 +98,8 @@ struct GridAxesToFitsHelper {
 
   template <int I>
   static void addGridAxesToFitsFile(const boost::filesystem::path& filename, const std::string& array_hdu_name,
-                                    const std::tuple<GridAxis<AxesTypes>...>& axes_tuple, const TemplateLoopCounter<I>&) {
+                                    const std::tuple<GridAxis<AxesTypes>...>& axes_tuple,
+                                    const TemplateLoopCounter<I>&) {
     addGridAxesToFitsFile(filename, array_hdu_name, axes_tuple, TemplateLoopCounter<I - 1>{});
 
     auto& axis     = std::get<I - 1>(axes_tuple);
@@ -121,8 +123,8 @@ struct GridAxesToFitsHelper {
         .addData(table);
   }
 
-  static void addGridAxesToFitsFile(const boost::filesystem::path&, const std::string&, const std::tuple<GridAxis<AxesTypes>...>&,
-                                    const TemplateLoopCounter<0>&) {}
+  static void addGridAxesToFitsFile(const boost::filesystem::path&, const std::string&,
+                                    const std::tuple<GridAxis<AxesTypes>...>&, const TemplateLoopCounter<0>&) {}
 };
 
 template <typename GridCellManager, typename... AxesTypes>
@@ -151,7 +153,8 @@ void gridFitsExport(const boost::filesystem::path& filename, const std::string& 
     fits.currentExtension().write(1, grid.size(), data);
   }
 
-  GridAxesToFitsHelper<AxesTypes...>::addGridAxesToFitsFile(filename, hdu_name, axes, TemplateLoopCounter<sizeof...(AxesTypes)>{});
+  GridAxesToFitsHelper<AxesTypes...>::addGridAxesToFitsFile(filename, hdu_name, axes,
+                                                            TemplateLoopCounter<sizeof...(AxesTypes)>{});
 }
 
 template <typename GridType>
@@ -209,7 +212,8 @@ class GridAxisFitsReader {
 public:
   static typename AxesTupleType<GridType::axisNumber() - 1>::type readAllAxes(CCfits::FITS& fits, int hdu_index) {
     auto name = fits.extension(hdu_index).name();
-    return readAxesTuple(fits, name, hdu_index + GridType::axisNumber(), TemplateLoopCounter<GridType::axisNumber() - 1>{});
+    return readAxesTuple(fits, name, hdu_index + GridType::axisNumber(),
+                         TemplateLoopCounter<GridType::axisNumber() - 1>{});
   }
 };
 
