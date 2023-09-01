@@ -20,8 +20,6 @@
 #define PYSTON_FUNCTORS_H
 
 #include <cmath>
-#include <boost/functional.hpp>
-#include <cmath>
 
 namespace Pyston {
 
@@ -29,7 +27,7 @@ namespace Pyston {
  * Convenience functor, used to attach a method for the unary '+' operator
  */
 template <typename T>
-struct Identity : public boost::functional::detail::unary_function<T, T> {
+struct Identity {
   T operator()(T value) const {
     return value;
   }
@@ -47,7 +45,7 @@ struct Identity : public boost::functional::detail::unary_function<T, T> {
  *  A pointer to the function being wrapped
  */
 template <typename R, typename T, R (*wrapped)(T)>
-struct UnaryWrapper : public boost::functional::detail::unary_function<T, R> {
+struct UnaryWrapper {
   R operator()(T value) const {
     return wrapped(value);
   }
@@ -65,7 +63,7 @@ struct UnaryWrapper : public boost::functional::detail::unary_function<T, R> {
  *  A pointer to the function being wrapped
  */
 template <typename R, typename T, R (*wrapped)(T, T)>
-struct BinaryWrapper : public boost::functional::detail::binary_function<T, T, R> {
+struct BinaryWrapper {
   R operator()(T left, T right) const {
     return wrapped(left, right);
   }
