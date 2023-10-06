@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 Note: the issue number refer to SDC-CH internal tracking.
 
 ## [Unreleased]
+
+## [2.31.0] 2023-10-06
 ### Changed
  - Switch to Elements 6.2.3
  
