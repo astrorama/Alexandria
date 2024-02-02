@@ -146,6 +146,7 @@ void sort(NdArray<T>& array, const std::vector<std::string>& attrs) {
   size_t count    = array.shape()[0];
   size_t row_size = array.shape()[1] * sizeof(T);
 
+
 #ifdef __APPLE__
   auto compare = [](void* context, const void* a, const void* b) {
 #else
@@ -169,6 +170,66 @@ void sort(NdArray<T>& array, const std::vector<std::string>& attrs) {
 #else
   qsort_r(&(*array.begin()), count, row_size, compare, &attr_idx);
 #endif
+}
+  
+template <typename T1, typename T2>
+bool sameShape(const NdArray<T1>& array_1, const NdArray<T2>& array_2) {
+	auto shape_1 = array_1.shape();
+	auto shape_2 = array_2.shape();
+	if (shape_1.size()!=shape_2.size()) {
+		return false;
+	}
+
+	for (size_t index = 0; index < shape_1.size(); ++index) {
+		if (shape_1[index] != shape_2[index]) {
+			return false;
+		}
+	}
+
+	return true;
+}
+  
+  
+template <typename T1, typename T2>
+NdArray<T1> multiplyElements(const NdArray<T1>& array_1, const NdArray<T2>& array_2) {
+	static_assert(((std::is_integral<T1>::value && std::is_integral<T2>::value && sizeof(T1) >= sizeof(T2)) || 
+			      (std::is_floating_point<T1>::value && std::is_floating_point<T2>::value && sizeof(T1) >= sizeof(T2)) || 
+				  (std::is_floating_point<T1>::value &&  std::is_integral<T2>::value)), 
+				  "Provided NdArray base Types cannot be multiplyed or stored in the first NdArray base type"
+			      );	
+	if (!sameShape(array_1, array_2)) {
+		throw std::invalid_argument("Provided NdArrays do not have the same shape.");
+	}
+	
+	auto result = array_1.copy();
+	auto iter_2 = array_2.begin();
+	for (auto iter_res = result.begin(); iter_res != result.end(); ++iter_res) {
+		(*iter_res)*=(*iter_2);
+		++iter_2;
+	}
+	
+	return result;
+}
+
+template <typename T1, typename T2>
+NdArray<T1> addElements(const NdArray<T1>& array_1, const NdArray<T2>& array_2) {
+	static_assert(((std::is_integral<T1>::value && std::is_integral<T2>::value && sizeof(T1) >= sizeof(T2)) || 
+			      (std::is_floating_point<T1>::value && std::is_floating_point<T2>::value && sizeof(T1) >= sizeof(T2)) || 
+				  (std::is_floating_point<T1>::value &&  std::is_integral<T2>::value)), 
+				  "Provided NdArray base Types cannot be multiplyed or stored in the first NdArray base type"
+			      );
+	if (!sameShape(array_1, array_2)) {
+		throw std::invalid_argument("Provided NdArrays do not have the same shape.");
+	}
+	
+	auto result = array_1.copy();
+	auto iter_2 = array_2.begin();
+	for (auto iter_res = result.begin(); iter_res != result.end(); ++iter_res) {
+		(*iter_res)+=(*iter_2);
+		++iter_2;
+	}
+	
+	return result;
 }
 
 }  // namespace NdArray
