@@ -108,6 +108,47 @@ std::vector<std::size_t> argmin(const NdArray<T>& array);
 template <typename T>
 void sort(NdArray<T>& array, const std::vector<std::string>& attrs);
 
+/**
+ * Check 2 ndarray have the same dimensions
+ * @param array_1
+ *  The first ndarray
+ * @param array_2
+ *  The second ndarray
+ * @return
+ *  evaluation result
+ */
+template <typename T1, typename T2>
+bool sameShape(const NdArray<T1>& array_1, const NdArray<T2>& array_2);
+
+/**
+ * Multiply element-wise 2 ndarray with the same dimensions. Both NdArray must be in {int,float,double} wider first.
+ * @param array_1
+ *  The first ndarray
+ * @param array_2
+ *  The second ndarray
+ * @throws std::invalid_argument
+ *    If the 2 array have not the same dimensions.
+ * @return
+ *  Another NdArray
+ */
+template <typename T1, typename T2>
+NdArray<T1> multiplyElements(const NdArray<T1>& array_1, const NdArray<T2>& array_2);
+
+/**
+ * Add element-wise 2 ndarray with the same dimensions. Both NdArray must be in {int,float,double} wider first.
+ * @param array_1
+ *  The first ndarray
+ * @param array_2
+ *  The second ndarray
+ * @throws std::invalid_argument
+ *    If the 2 array have not the same dimensions.
+ * @return
+ *  Another NdArray
+ */
+template <typename T1, typename T2>
+NdArray<T1> addElements(const NdArray<T1>& array_1, const NdArray<T2>& array_2);
+
+
 }  // namespace NdArray
 }  // namespace Euclid
 
