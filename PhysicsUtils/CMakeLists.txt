@@ -14,4 +14,3 @@ elements_add_unit_test(CosmologicalParameters_test tests/src/CosmologicalParamet
 
 elements_add_unit_test(CosmologicalDistances_test tests/src/CosmologicalDistances_test.cpp
                        LINK_LIBRARIES PhysicsUtils MathUtils TYPE Boost)
-

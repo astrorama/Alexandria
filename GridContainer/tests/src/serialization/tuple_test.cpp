@@ -149,8 +149,9 @@ BOOST_AUTO_TEST_CASE(combinationOfValues) {
   // Note that we must force the types we will read and that we have to use
   // some dummy default values which will be replaced with the ones from the
   // stream
-  auto result = std::make_tuple(Euclid::GridContainer::GridAxis<double>{"", {}}, Euclid::GridContainer::GridAxis<DCC>{"", {}},
-                                Euclid::GridContainer::GridAxis<NDCC>{"", {}});
+  auto result =
+      std::make_tuple(Euclid::GridContainer::GridAxis<double>{"", {}}, Euclid::GridContainer::GridAxis<DCC>{"", {}},
+                      Euclid::GridContainer::GridAxis<NDCC>{"", {}});
   boost::archive::binary_iarchive bia{stream};
   bia >> result;
 

@@ -37,8 +37,8 @@ BOOST_AUTO_TEST_CASE(GetTail) {
 //-----------------------------------------------------------------------------
 
 BOOST_AUTO_TEST_CASE(MoveTail) {
-  std::unique_ptr<std::string> str_ptr(new std::string("HELLO THERE!"));
-  std::vector<int> vector{1,2,3,4};
+  std::unique_ptr<std::string>                                       str_ptr(new std::string("HELLO THERE!"));
+  std::vector<int>                                                   vector{1, 2, 3, 4};
   std::tuple<double, std::vector<int>, std::unique_ptr<std::string>> tuple(55., vector, std::move(str_ptr));
 
   // This will not compile

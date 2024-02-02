@@ -33,12 +33,12 @@ using Elements::isEqual;
 struct GridContainer_Fixture {
   typedef Euclid::GridContainer::GridContainer<std::vector<double>, int, int, int, int> GridContainerType;
   typedef Euclid::GridContainer::GridAxis<int>                                          IntAxis;
-  IntAxis                                                                               axis1{"Axis 1", {1, 2, 3, 4, 5}};
-  IntAxis                                                                               axis2{"Axis 2", {1, 2, 3}};
-  IntAxis                                                                               axis3{"Axis 3", {1, 2, 3, 4, 5, 6}};
-  IntAxis                                                                               axis4{"Axis 4", {1, 2}};
-  std::tuple<IntAxis, IntAxis, IntAxis, IntAxis>                                        axes_tuple{axis1, axis2, axis3, axis4};
-  size_t total_size = axis1.size() * axis2.size() * axis3.size() * axis4.size();
+  IntAxis                                        axis1{"Axis 1", {1, 2, 3, 4, 5}};
+  IntAxis                                        axis2{"Axis 2", {1, 2, 3}};
+  IntAxis                                        axis3{"Axis 3", {1, 2, 3, 4, 5, 6}};
+  IntAxis                                        axis4{"Axis 4", {1, 2}};
+  std::tuple<IntAxis, IntAxis, IntAxis, IntAxis> axes_tuple{axis1, axis2, axis3, axis4};
+  size_t                                         total_size = axis1.size() * axis2.size() * axis3.size() * axis4.size();
 };
 
 //-----------------------------------------------------------------------------
@@ -61,17 +61,17 @@ BOOST_FIXTURE_TEST_CASE(GridAxisConstructor, GridContainer_Fixture) {
     BOOST_CHECK_EQUAL(value, 0.);
   }
   BOOST_CHECK_EQUAL(std::get<0>(result_axes_tuple).name(), axis1.name());
-  BOOST_CHECK_EQUAL_COLLECTIONS(std::get<0>(result_axes_tuple).begin(), std::get<0>(result_axes_tuple).end(), axis1.begin(),
-                                axis1.end());
+  BOOST_CHECK_EQUAL_COLLECTIONS(std::get<0>(result_axes_tuple).begin(), std::get<0>(result_axes_tuple).end(),
+                                axis1.begin(), axis1.end());
   BOOST_CHECK_EQUAL(std::get<1>(result_axes_tuple).name(), axis2.name());
-  BOOST_CHECK_EQUAL_COLLECTIONS(std::get<1>(result_axes_tuple).begin(), std::get<1>(result_axes_tuple).end(), axis2.begin(),
-                                axis2.end());
+  BOOST_CHECK_EQUAL_COLLECTIONS(std::get<1>(result_axes_tuple).begin(), std::get<1>(result_axes_tuple).end(),
+                                axis2.begin(), axis2.end());
   BOOST_CHECK_EQUAL(std::get<2>(result_axes_tuple).name(), axis3.name());
-  BOOST_CHECK_EQUAL_COLLECTIONS(std::get<2>(result_axes_tuple).begin(), std::get<2>(result_axes_tuple).end(), axis3.begin(),
-                                axis3.end());
+  BOOST_CHECK_EQUAL_COLLECTIONS(std::get<2>(result_axes_tuple).begin(), std::get<2>(result_axes_tuple).end(),
+                                axis3.begin(), axis3.end());
   BOOST_CHECK_EQUAL(std::get<3>(result_axes_tuple).name(), axis4.name());
-  BOOST_CHECK_EQUAL_COLLECTIONS(std::get<3>(result_axes_tuple).begin(), std::get<3>(result_axes_tuple).end(), axis4.begin(),
-                                axis4.end());
+  BOOST_CHECK_EQUAL_COLLECTIONS(std::get<3>(result_axes_tuple).begin(), std::get<3>(result_axes_tuple).end(),
+                                axis4.begin(), axis4.end());
 }
 
 //-----------------------------------------------------------------------------
@@ -90,17 +90,17 @@ BOOST_FIXTURE_TEST_CASE(GridAxisTupleConstructor, GridContainer_Fixture) {
     BOOST_CHECK_EQUAL(value, 0.);
   }
   BOOST_CHECK_EQUAL(std::get<0>(result_axes_tuple).name(), axis1.name());
-  BOOST_CHECK_EQUAL_COLLECTIONS(std::get<0>(result_axes_tuple).begin(), std::get<0>(result_axes_tuple).end(), axis1.begin(),
-                                axis1.end());
+  BOOST_CHECK_EQUAL_COLLECTIONS(std::get<0>(result_axes_tuple).begin(), std::get<0>(result_axes_tuple).end(),
+                                axis1.begin(), axis1.end());
   BOOST_CHECK_EQUAL(std::get<1>(result_axes_tuple).name(), axis2.name());
-  BOOST_CHECK_EQUAL_COLLECTIONS(std::get<1>(result_axes_tuple).begin(), std::get<1>(result_axes_tuple).end(), axis2.begin(),
-                                axis2.end());
+  BOOST_CHECK_EQUAL_COLLECTIONS(std::get<1>(result_axes_tuple).begin(), std::get<1>(result_axes_tuple).end(),
+                                axis2.begin(), axis2.end());
   BOOST_CHECK_EQUAL(std::get<2>(result_axes_tuple).name(), axis3.name());
-  BOOST_CHECK_EQUAL_COLLECTIONS(std::get<2>(result_axes_tuple).begin(), std::get<2>(result_axes_tuple).end(), axis3.begin(),
-                                axis3.end());
+  BOOST_CHECK_EQUAL_COLLECTIONS(std::get<2>(result_axes_tuple).begin(), std::get<2>(result_axes_tuple).end(),
+                                axis3.begin(), axis3.end());
   BOOST_CHECK_EQUAL(std::get<3>(result_axes_tuple).name(), axis4.name());
-  BOOST_CHECK_EQUAL_COLLECTIONS(std::get<3>(result_axes_tuple).begin(), std::get<3>(result_axes_tuple).end(), axis4.begin(),
-                                axis4.end());
+  BOOST_CHECK_EQUAL_COLLECTIONS(std::get<3>(result_axes_tuple).begin(), std::get<3>(result_axes_tuple).end(),
+                                axis4.begin(), axis4.end());
 }
 
 //-----------------------------------------------------------------------------
@@ -532,8 +532,9 @@ BOOST_FIXTURE_TEST_CASE(fixIteratorByIndexTwiceForSameAxis, GridContainer_Fixtur
   const GridContainerType& const_grid = grid;
 
   // When
-  auto iterator       = grid.begin().fixAxisByIndex<0>(0).fixAxisByIndex<1>(0).fixAxisByIndex<2>(0).fixAxisByIndex<3>(0);
-  auto const_iterator = const_grid.begin().fixAxisByIndex<0>(0).fixAxisByIndex<1>(0).fixAxisByIndex<2>(0).fixAxisByIndex<3>(0);
+  auto iterator = grid.begin().fixAxisByIndex<0>(0).fixAxisByIndex<1>(0).fixAxisByIndex<2>(0).fixAxisByIndex<3>(0);
+  auto const_iterator =
+      const_grid.begin().fixAxisByIndex<0>(0).fixAxisByIndex<1>(0).fixAxisByIndex<2>(0).fixAxisByIndex<3>(0);
 
   // Then
   iterator.fixAxisByIndex<0>(0);
@@ -725,8 +726,9 @@ BOOST_FIXTURE_TEST_CASE(fixIteratorByValueTwiceForSameAxis, GridContainer_Fixtur
   const GridContainerType& const_grid = grid;
 
   // When
-  auto iterator       = grid.begin().fixAxisByValue<0>(1).fixAxisByValue<1>(1).fixAxisByValue<2>(1).fixAxisByValue<3>(1);
-  auto const_iterator = const_grid.begin().fixAxisByValue<0>(1).fixAxisByValue<1>(1).fixAxisByValue<2>(1).fixAxisByValue<3>(1);
+  auto iterator = grid.begin().fixAxisByValue<0>(1).fixAxisByValue<1>(1).fixAxisByValue<2>(1).fixAxisByValue<3>(1);
+  auto const_iterator =
+      const_grid.begin().fixAxisByValue<0>(1).fixAxisByValue<1>(1).fixAxisByValue<2>(1).fixAxisByValue<3>(1);
 
   // Then
   iterator.fixAxisByValue<0>(1);
@@ -874,8 +876,8 @@ BOOST_FIXTURE_TEST_CASE(sliceChancesReflected, GridContainer_Fixture) {
 
   // Given
   GridContainerType grid{axes_tuple};
-  auto              slice_index = grid.fixAxisByIndex<0>(2).fixAxisByIndex<1>(2).fixAxisByIndex<2>(2).fixAxisByIndex<3>(1);
-  auto              slice_value = grid.fixAxisByValue<0>(2).fixAxisByValue<1>(2).fixAxisByValue<2>(2).fixAxisByValue<3>(1);
+  auto slice_index = grid.fixAxisByIndex<0>(2).fixAxisByIndex<1>(2).fixAxisByIndex<2>(2).fixAxisByIndex<3>(1);
+  auto slice_value = grid.fixAxisByValue<0>(2).fixAxisByValue<1>(2).fixAxisByValue<2>(2).fixAxisByValue<3>(1);
 
   // When
   *slice_index.begin() = -10;
@@ -914,14 +916,17 @@ BOOST_FIXTURE_TEST_CASE(sliceAxes, GridContainer_Fixture) {
   BOOST_CHECK_EQUAL_COLLECTIONS(slice.getAxis<3>().begin(), slice.getAxis<3>().end(), axis4.begin(), axis4.end());
   BOOST_CHECK_EQUAL(const_slice.size(), grid.size() / axis2.size());
   BOOST_CHECK_EQUAL(const_slice.getAxis<0>().name(), axis1.name());
-  BOOST_CHECK_EQUAL_COLLECTIONS(const_slice.getAxis<0>().begin(), const_slice.getAxis<0>().end(), axis1.begin(), axis1.end());
+  BOOST_CHECK_EQUAL_COLLECTIONS(const_slice.getAxis<0>().begin(), const_slice.getAxis<0>().end(), axis1.begin(),
+                                axis1.end());
   BOOST_CHECK_EQUAL(const_slice.getAxis<1>().name(), axis2.name());
-  BOOST_CHECK_EQUAL_COLLECTIONS(const_slice.getAxis<1>().begin(), const_slice.getAxis<1>().end(), expected_fixed_axis.begin(),
-                                expected_fixed_axis.end());
+  BOOST_CHECK_EQUAL_COLLECTIONS(const_slice.getAxis<1>().begin(), const_slice.getAxis<1>().end(),
+                                expected_fixed_axis.begin(), expected_fixed_axis.end());
   BOOST_CHECK_EQUAL(const_slice.getAxis<2>().name(), axis3.name());
-  BOOST_CHECK_EQUAL_COLLECTIONS(const_slice.getAxis<2>().begin(), const_slice.getAxis<2>().end(), axis3.begin(), axis3.end());
+  BOOST_CHECK_EQUAL_COLLECTIONS(const_slice.getAxis<2>().begin(), const_slice.getAxis<2>().end(), axis3.begin(),
+                                axis3.end());
   BOOST_CHECK_EQUAL(const_slice.getAxis<3>().name(), axis4.name());
-  BOOST_CHECK_EQUAL_COLLECTIONS(const_slice.getAxis<3>().begin(), const_slice.getAxis<3>().end(), axis4.begin(), axis4.end());
+  BOOST_CHECK_EQUAL_COLLECTIONS(const_slice.getAxis<3>().begin(), const_slice.getAxis<3>().end(), axis4.begin(),
+                                axis4.end());
 }
 
 //-----------------------------------------------------------------------------

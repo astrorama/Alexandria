@@ -24,8 +24,8 @@
 
 #include "MathUtils/PDF/Cumulative.h"
 #include "ElementsKernel/Exception.h"
-#include "XYDataset/XYDataset.h"
 #include "MathUtils/interpolation/interpolation.h"
+#include "XYDataset/XYDataset.h"
 #include <cstdlib>  // for size_t
 
 namespace Euclid {
@@ -200,14 +200,13 @@ std::pair<double, double> Cumulative::findCenteredInterval(double rate) const {
   }
 }
 
-
 double Cumulative::eval(double x_value) const {
-	if (x_value < m_x_sampling[0] || x_value > m_x_sampling[m_x_sampling.size()-1]) {
-		throw Elements::Exception("Cumulative::eval : provided value is outside of the x range");
-	}
+  if (x_value < m_x_sampling[0] || x_value > m_x_sampling[m_x_sampling.size() - 1]) {
+    throw Elements::Exception("Cumulative::eval : provided value is outside of the x range");
+  }
 
-	auto function = interpolate(m_x_sampling,m_y_sampling, InterpolationType::LINEAR, false);
-    return (*function)(x_value);
+  auto function = interpolate(m_x_sampling, m_y_sampling, InterpolationType::LINEAR, false);
+  return (*function)(x_value);
 }
 
 }  // namespace MathUtils

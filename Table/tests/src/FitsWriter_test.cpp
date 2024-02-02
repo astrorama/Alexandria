@@ -238,10 +238,10 @@ BOOST_FIXTURE_TEST_CASE(writeBinary, BinaryFitsWriter_Fixture) {
 
   // When
   std::string my_string_val;
-  int my_int_val;
+  int         my_int_val;
 
   auto& my_string = result.keyWord("MYSTR");
-  auto& my_int = result.keyWord("MYINT");
+  auto& my_int    = result.keyWord("MYINT");
 
   my_string.value(my_string_val);
   my_int.value(my_int_val);

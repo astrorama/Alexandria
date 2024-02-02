@@ -22,9 +22,9 @@
 #include <CCfits/CCfits>
 #include <boost/filesystem.hpp>
 #include <boost/test/unit_test.hpp>
+#include <cstdint>
 #include <fstream>
 #include <string>
-#include <cstdint>
 
 #include "ElementsKernel/Temporary.h"
 #include "Table/AsciiWriter.h"
@@ -96,7 +96,7 @@ struct CatalogConfig_fixture : public ConfigManager_fixture {
   const std::string SOURCE_ID_COLUMN_NAME{"source-id-column-name"};
   const std::string SOURCE_ID_COLUMN_INDEX{"source-id-column-index"};
 
-  Table table = createTestTable();
+  Table table       = createTestTable();
   Table empty_table = createEmptyTable();
 
   Elements::TempDir temp_dir;

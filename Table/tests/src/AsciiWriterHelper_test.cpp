@@ -38,7 +38,8 @@ struct AsciiWriterHelper_Fixture {
       Euclid::Table::ColumnInfo::info_type("F", typeid(float)),
       Euclid::Table::ColumnInfo::info_type("DoubleVector", typeid(std::vector<double>))};
   std::shared_ptr<Euclid::Table::ColumnInfo> column_info{new Euclid::Table::ColumnInfo{info_list}};
-  std::vector<Euclid::Table::Row::cell_type> values0{true, std::string{"Two-1"}, 1, 4.1, 0.f, std::vector<double>{1.1, 1.2}};
+  std::vector<Euclid::Table::Row::cell_type> values0{true, std::string{"Two-1"},         1, 4.1,
+                                                     0.f,  std::vector<double>{1.1, 1.2}};
   Euclid::Table::Row                         row0{values0, column_info};
   std::vector<Euclid::Table::Row::cell_type> values1{false, std::string{"Two-2"},         1234567890, 42e-16,
                                                      0.f,   std::vector<double>{2.1, 2.2}};

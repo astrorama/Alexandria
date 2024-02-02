@@ -97,7 +97,7 @@ template <typename GridCellManager, typename... AxesTypes>
 class GridContainer {
 public:
   /// The type of the values stored in the grid cells
-  typedef typename GridCellManagerTraits<GridCellManager>::data_type      cell_type;
+  typedef typename GridCellManagerTraits<GridCellManager>::data_type cell_type;
 
 private:
   // The following aliases are used to simplify the definitions inside the class
@@ -106,13 +106,13 @@ private:
   template <typename GCM>
   static cell_type* ptr_test(...);
 
-  template<typename GCM>
+  template <typename GCM>
   static typename GCM::pointer_type ptr_test(typename GCM::pointer_type*);
 
-  template<typename GCM>
+  template <typename GCM>
   static cell_type& ref_test(...);
 
-  template<typename GCM>
+  template <typename GCM>
   static typename GCM::reference_type ref_test(typename GCM::reference_type*);
 
 public:
@@ -162,14 +162,14 @@ public:
   GridContainer(std::tuple<GridAxis<AxesTypes>...> axes_tuple, Args&&... args);
 
   /// Default move constructor and move assignment operator
-  GridContainer(GridContainer<GridCellManager, AxesTypes...>&&) = default;
+  GridContainer(GridContainer<GridCellManager, AxesTypes...>&&)            = default;
   GridContainer& operator=(GridContainer<GridCellManager, AxesTypes...>&&) = default;
 
   // Do not allow copying of GridContainer objects. This is done because these
   // objects will most of the time be very big and copying them will be a
   // bottleneck. To avoid involuntary copy constructor calls, this constructor
   // is deleted.
-  GridContainer(const GridContainer<GridCellManager, AxesTypes...>&) = delete;
+  GridContainer(const GridContainer<GridCellManager, AxesTypes...>&)            = delete;
   GridContainer& operator=(const GridContainer<GridCellManager, AxesTypes...>&) = delete;
 
   /// But if needed be, allow explicit copies

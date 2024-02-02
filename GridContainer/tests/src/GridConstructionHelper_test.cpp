@@ -46,7 +46,8 @@ BOOST_AUTO_TEST_SUITE(GridConstructionHelper_test)
 BOOST_FIXTURE_TEST_CASE(createAxesSizesVector, GridConstructionHelper_Fixture) {
 
   // When
-  std::vector<size_t> result = Helper::createAxesSizesVector(axes_tuple, Euclid::GridContainer::TemplateLoopCounter<4>{});
+  std::vector<size_t> result =
+      Helper::createAxesSizesVector(axes_tuple, Euclid::GridContainer::TemplateLoopCounter<4>{});
 
   // Then
   BOOST_CHECK_EQUAL(result.size(), 4u);
@@ -63,7 +64,8 @@ BOOST_FIXTURE_TEST_CASE(createAxesSizesVector, GridConstructionHelper_Fixture) {
 BOOST_FIXTURE_TEST_CASE(createAxisIndexFactorVector, GridConstructionHelper_Fixture) {
 
   // When
-  std::vector<size_t> result = Helper::createAxisIndexFactorVector(axes_tuple, Euclid::GridContainer::TemplateLoopCounter<4>{});
+  std::vector<size_t> result =
+      Helper::createAxisIndexFactorVector(axes_tuple, Euclid::GridContainer::TemplateLoopCounter<4>{});
 
   // Then
   BOOST_CHECK_EQUAL(result.size(), 5u);

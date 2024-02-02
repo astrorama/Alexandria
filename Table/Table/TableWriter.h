@@ -50,10 +50,10 @@ class TableWriter {
 public:
   TableWriter() = default;
 
-  TableWriter(TableWriter&&) = default;
+  TableWriter(TableWriter&&)            = default;
   TableWriter& operator=(TableWriter&&) = default;
 
-  TableWriter(const TableWriter&) = delete;
+  TableWriter(const TableWriter&)            = delete;
   TableWriter& operator=(const TableWriter&) = delete;
 
   virtual ~TableWriter() = default;

@@ -19,7 +19,7 @@
 #include "AlexandriaKernel/index_sequence.h"
 #include "ElementsKernel/Auxiliary.h"
 #include "MathUtils/PDF/NdSampler.h"
-//#include "NdArray/io/NpyMmap.h"
+// #include "NdArray/io/NpyMmap.h"
 #include "MathUtils/PDF/NdSamplerFromGrid.h"
 #include "SourceCatalog/SourceAttributes/Photometry.h"
 #include "XYDataset/QualifiedName.h"
@@ -51,11 +51,13 @@ struct RandomFixture {
 
 // 1D distribution
 struct N1DistributionFixture : public RandomFixture {
-  NdArray<double>     pdf{{22}, {2.85464796e-04, 1.78549711e-03, 8.00204861e-03, 2.56968795e-02, 5.91302213e-02, 9.75175304e-02,
-                             1.15450181e-01, 9.92703248e-02, 6.71295789e-02, 5.13934433e-02, 6.71295789e-02, 9.92703248e-02,
-                             1.15450181e-01, 9.75175304e-02, 5.91302213e-02, 2.56968795e-02, 8.00204861e-03, 1.78549711e-03,
-                             2.85464796e-04, 3.27025166e-05, 2.68438603e-06, 1.57886115e-07}};
-  std::vector<double> knots{-1., 0., 1., 2., 3., 4., 5., 6., 7., 8., 9., 10., 11., 12., 13., 14., 15., 16., 17., 18., 19., 20.};
+  NdArray<double>     pdf{{22},
+                          {2.85464796e-04, 1.78549711e-03, 8.00204861e-03, 2.56968795e-02, 5.91302213e-02, 9.75175304e-02,
+                           1.15450181e-01, 9.92703248e-02, 6.71295789e-02, 5.13934433e-02, 6.71295789e-02, 9.92703248e-02,
+                           1.15450181e-01, 9.75175304e-02, 5.91302213e-02, 2.56968795e-02, 8.00204861e-03, 1.78549711e-03,
+                           2.85464796e-04, 3.27025166e-05, 2.68438603e-06, 1.57886115e-07}};
+  std::vector<double> knots{-1., 0.,  1.,  2.,  3.,  4.,  5.,  6.,  7.,  8.,  9.,
+                            10., 11., 12., 13., 14., 15., 16., 17., 18., 19., 20.};
 };
 
 // 2D distribution
@@ -77,7 +79,8 @@ std::vector<int> bin_samples(const std::vector<std::tuple<double>>& samples, con
   return result;
 }
 
-std::vector<int> bin_samples(const std::vector<std::tuple<std::string>>& samples, const std::vector<std::string>& bins) {
+std::vector<int> bin_samples(const std::vector<std::tuple<std::string>>& samples,
+                             const std::vector<std::string>&             bins) {
   std::vector<int> result(bins.size());
   for (auto v : samples) {
     auto bin = std::find(bins.begin(), bins.end(), std::get<0>(v)) - bins.begin();
@@ -265,8 +268,9 @@ BOOST_FIXTURE_TEST_CASE(Sample3DDiscrete, N3DistributionFixture) {
   auto sample = dist3.draw(sample_count, rng);
 
   // This will not compile if the output sample type is not what we expect
-  static_assert(std::is_same<std::remove_reference<decltype(sample[0])>::type, std::tuple<MyEnum, double, double>>::value,
-                "Compile time check!");
+  static_assert(
+      std::is_same<std::remove_reference<decltype(sample[0])>::type, std::tuple<MyEnum, double, double>>::value,
+      "Compile time check!");
 
   BOOST_CHECK_EQUAL(sample.size(), sample_count);
 
@@ -331,7 +335,8 @@ BOOST_FIXTURE_TEST_CASE(SingleDiscreteValue, RandomFixture) {
   BOOST_CHECK_EQUAL(count_a, sample_count);
 
   // Swap axes
-  NdSampler<double, MyEnum> dist2p(std::tuple<std::vector<double>, std::vector<MyEnum>>(knots1, knots0), pdf.reshape(1, 4));
+  NdSampler<double, MyEnum> dist2p(std::tuple<std::vector<double>, std::vector<MyEnum>>(knots1, knots0),
+                                   pdf.reshape(1, 4));
   auto                      samplep = dist2p.draw(sample_count, rng);
 
   mean    = 0;
@@ -370,7 +375,8 @@ BOOST_FIXTURE_TEST_CASE(SingleContinuousValue, RandomFixture) {
   BOOST_CHECK_GT(counts[MyEnum::B], counts[MyEnum::C]);
 
   // Swap axes
-  NdSampler<double, MyEnum> dist2p(std::tuple<std::vector<double>, std::vector<MyEnum>>(knots1, knots0), pdf.reshape(3, 1));
+  NdSampler<double, MyEnum> dist2p(std::tuple<std::vector<double>, std::vector<MyEnum>>(knots1, knots0),
+                                   pdf.reshape(3, 1));
   auto                      samplep = dist2p.draw(sample_count, rng);
   mean                              = 0;
   counts.clear();
@@ -493,7 +499,8 @@ BOOST_FIXTURE_TEST_CASE(RepeatedNonContiguousContinuous, RandomFixture) {
 
   // Swap axes
   try {
-    NdSampler<double, MyEnum> dist2(std::tuple<std::vector<double>, std::vector<MyEnum>>{knots1, knots0}, pdf.reshape(5, 3));
+    NdSampler<double, MyEnum> dist2(std::tuple<std::vector<double>, std::vector<MyEnum>>{knots1, knots0},
+                                    pdf.reshape(5, 3));
     dist2.draw(sample_count, rng);
     BOOST_FAIL("Should have thrown");
   } catch (const Elements::Exception&) {

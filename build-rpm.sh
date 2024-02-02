@@ -26,4 +26,3 @@ curl ${BASEURL}/setup-dependencies/install-dependencies.sh | bash -s /src/.githu
 
 # Build rpm
 curl ${BASEURL}/elements-build-rpm/build-rpm.sh | bash -s /build "${RELEASE}"
-

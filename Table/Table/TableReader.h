@@ -50,10 +50,10 @@ class TableReader {
 public:
   TableReader() = default;
 
-  TableReader(TableReader&&) = default;
+  TableReader(TableReader&&)            = default;
   TableReader& operator=(TableReader&&) = default;
 
-  TableReader(const TableReader&) = delete;
+  TableReader(const TableReader&)            = delete;
   TableReader& operator=(const TableReader&) = delete;
 
   virtual ~TableReader() = default;

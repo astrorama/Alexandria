@@ -85,4 +85,3 @@ elements_add_unit_test(AdaptativeIntegration_test tests/src/numericalIntegration
                          LINK_LIBRARIES GMock MathUtils TYPE Boost
                          INCLUDE_DIRS GMock)
 endif(GMOCK_FOUND)
-

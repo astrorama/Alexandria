@@ -29,10 +29,12 @@ namespace Euclid {
 namespace MathUtils {
 
 /// Performs linear interpolation for the given set of data points
-std::unique_ptr<Function> linearInterpolation(const std::vector<double>& x, const std::vector<double>& y, bool extrapolate);
+std::unique_ptr<Function> linearInterpolation(const std::vector<double>& x, const std::vector<double>& y,
+                                              bool extrapolate);
 
 /// Performs cubic spline interpolation for the given set of data points
-std::unique_ptr<Function> splineInterpolation(const std::vector<double>& x, const std::vector<double>& y, bool extrapolate);
+std::unique_ptr<Function> splineInterpolation(const std::vector<double>& x, const std::vector<double>& y,
+                                              bool extrapolate);
 
 }  // namespace MathUtils
 }  // end of namespace Euclid

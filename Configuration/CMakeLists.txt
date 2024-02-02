@@ -1,5 +1,5 @@
 #===============================================================================
-# Load elements_subdir macro here 
+# Load elements_subdir macro here
 # Examples:
 #   For declaring a project module:
 #         elements_subdir(ElementsExamples)
@@ -7,7 +7,7 @@
 elements_subdir(Configuration)
 
 #===============================================================================
-# Load elements_depends_on_subdirs macro here 
+# Load elements_depends_on_subdirs macro here
 #   For creating a dependency onto an other accessible module
 #         elements_depends_on_subdirs(ElementsKernel)
 #===============================================================================
@@ -16,7 +16,7 @@ elements_depends_on_subdirs(SourceCatalog)
 elements_depends_on_subdirs(Table)
 
 #===============================================================================
-# Add the find_package macro (a pure CMake command) here to locate the 
+# Add the find_package macro (a pure CMake command) here to locate the
 # libraries.
 # Examples:
 #          find_package(CppUnit)
@@ -51,32 +51,32 @@ elements_add_library(Configuration src/lib/*.cpp
 #                       INCLUDE_DIRS ElementsExamples
 #                       LINK_LIBRARIES ElementsExamples TYPE Boost)
 #===============================================================================
-elements_add_unit_test(Configuration_test tests/src/Configuration_test.cpp 
+elements_add_unit_test(Configuration_test tests/src/Configuration_test.cpp
                      LINK_LIBRARIES Configuration
                      TYPE Boost)
-elements_add_unit_test(ConfigManager_test tests/src/ConfigManager_test.cpp 
+elements_add_unit_test(ConfigManager_test tests/src/ConfigManager_test.cpp
                      LINK_LIBRARIES Configuration
                      TYPE Boost)
-elements_add_unit_test(CatalogConfig_test tests/src/CatalogConfig_test.cpp 
+elements_add_unit_test(CatalogConfig_test tests/src/CatalogConfig_test.cpp
                      LINK_LIBRARIES Configuration
                      TYPE Boost)
-elements_add_unit_test(SpecZCatalogConfig_test tests/src/SpecZCatalogConfig_test.cpp 
+elements_add_unit_test(SpecZCatalogConfig_test tests/src/SpecZCatalogConfig_test.cpp
                      LINK_LIBRARIES Configuration
                      TYPE Boost)
-elements_add_unit_test(PhotometryCatalogConfig_test tests/src/PhotometryCatalogConfig_test.cpp 
+elements_add_unit_test(PhotometryCatalogConfig_test tests/src/PhotometryCatalogConfig_test.cpp
                      LINK_LIBRARIES Configuration
                      TYPE Boost)
-elements_add_unit_test(PhotometricBandMappingConfig_test tests/src/PhotometricBandMappingConfig_test.cpp 
+elements_add_unit_test(PhotometricBandMappingConfig_test tests/src/PhotometricBandMappingConfig_test.cpp
                      LINK_LIBRARIES Configuration
                      TYPE Boost)
-elements_add_unit_test(ProgramOptionsHelper_test tests/src/ProgramOptionsHelper_test.cpp 
+elements_add_unit_test(ProgramOptionsHelper_test tests/src/ProgramOptionsHelper_test.cpp
                      LINK_LIBRARIES Configuration
                      TYPE Boost)
 
 #===============================================================================
 # Declare the Python programs here
 # Examples :
-# elements_add_python_program(PythonProgramExample 
+# elements_add_python_program(PythonProgramExample
 #                             ElementsExamples.PythonProgramExample)
 #===============================================================================
 
@@ -87,7 +87,7 @@ elements_add_unit_test(ProgramOptionsHelper_test tests/src/ProgramOptionsHelper_
 #===============================================================================
 
 #===============================================================================
-# Add the elements_install_conf_files macro 
+# Add the elements_install_conf_files macro
 # Examples:
 #          elements_install_conf_files()
 #===============================================================================

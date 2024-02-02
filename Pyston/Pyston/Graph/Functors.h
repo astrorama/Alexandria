@@ -155,7 +155,7 @@ using ArcTanh = UnaryWrapper<T, T, std::atanh>;
 
 /// Wraps atan2
 template <typename T>
-using ArcTan2 = BinaryWrapper<T,T, std::atan2>;
+using ArcTan2 = BinaryWrapper<T, T, std::atan2>;
 
 /// Wraps fmod
 template <typename T>

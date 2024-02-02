@@ -24,9 +24,9 @@
 #include <map>
 #include <string>
 
-#include <boost/program_options.hpp>
-#include "ElementsKernel/ProgramHeaders.h"
 #include "ALEXANDRIA_VERSION.h"
+#include "ElementsKernel/ProgramHeaders.h"
+#include <boost/program_options.hpp>
 
 using boost::program_options::options_description;
 using boost::program_options::variable_value;
@@ -34,9 +34,8 @@ using boost::program_options::variable_value;
 class AlexandriaVersion : public Elements::Program {
 
 public:
-
   options_description defineSpecificProgramOptions() override {
-    options_description options {};
+    options_description options{};
     return options;
   }
 
@@ -44,10 +43,6 @@ public:
     std::cout << ALEXANDRIA_VERSION_STRING << std::endl;
     return Elements::ExitCode::OK;
   }
-
 };
 
 MAIN_FOR(AlexandriaVersion)
-
-
-

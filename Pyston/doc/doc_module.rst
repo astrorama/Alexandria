@@ -51,7 +51,7 @@ This is how `numpy <https://numpy.org/>`__ or
 
    a = np.random.rand(5, 20)
    b = np.random.rand(5, 20)
-   x = a + b * 5 
+   x = a + b * 5
 
 Which is turned into
 
@@ -251,7 +251,7 @@ From Python
    import pyston
 
    def get_world_parameters(x, y):
-       ra = DependentParameter(lambda x,y: pyston.pixToWorldAlpha(x, y), x, y)                                        
+       ra = DependentParameter(lambda x,y: pyston.pixToWorldAlpha(x, y), x, y)
        return ra, dec
 
 build

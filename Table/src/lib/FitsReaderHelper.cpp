@@ -68,7 +68,7 @@ extern const std::vector<std::pair<char, std::type_index>>  //
         {'K', typeid(NdArray<int64_t>)}, {'E', typeid(NdArray<float>)},   {'D', typeid(NdArray<double>)},
     },
     ScalarTypeMap{{'L', typeid(bool)},    {'J', typeid(int32_t)}, {'B', typeid(int32_t)}, {'I', typeid(int32_t)},
-                  {'K', typeid(int64_t)}, {'E', typeid(float)},   {'D', typeid(double)}, {'A', typeid(std::string)}},
+                  {'K', typeid(int64_t)}, {'E', typeid(float)},   {'D', typeid(double)},  {'A', typeid(std::string)}},
     VectorTypeMap{{'B', typeid(std::vector<int32_t>)}, {'I', typeid(std::vector<int32_t>)},
                   {'J', typeid(std::vector<int32_t>)}, {'K', typeid(std::vector<int64_t>)},
                   {'E', typeid(std::vector<float>)},   {'D', typeid(std::vector<double>)},

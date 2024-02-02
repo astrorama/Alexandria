@@ -249,22 +249,17 @@ BOOST_AUTO_TEST_CASE(eval_test) {
   value = cumul.eval(1.5);
   BOOST_CHECK_CLOSE(value, 0.15, 0.0001);
 
-
   value = cumul.eval(2.0);
   BOOST_CHECK_CLOSE(value, 0.2, 0.0001);
-
 
   value = cumul.eval(0);
   BOOST_CHECK_CLOSE(value, 0.0, 0.0001);
 
-
   value = cumul.eval(10);
   BOOST_CHECK_CLOSE(value, 1.0, 0.0001);
 
-
   BOOST_CHECK_THROW(cumul.eval(-0.1), Elements::Exception);
   BOOST_CHECK_THROW(cumul.eval(10.1), Elements::Exception);
-
 }
 
 //-----------------------------------------------------------------------------

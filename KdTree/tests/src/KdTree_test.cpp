@@ -28,7 +28,7 @@ struct DataNode {
   uint32_t              m_label = 0;
 
   DataNode() = default;
-  explicit DataNode(std::array<double, 3> args): m_coords(args) {}
+  explicit DataNode(std::array<double, 3> args) : m_coords(args) {}
 };
 
 //-----------------------------------------------------------------------------

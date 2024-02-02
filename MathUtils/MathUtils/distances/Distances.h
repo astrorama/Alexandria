@@ -67,7 +67,8 @@ struct Chi2Distance {
    * @return
    */
   template <typename Iterator>
-  static auto guessScale(Iterator ref_begin, Iterator ref_end, Iterator target_begin) -> decltype(ref_begin->getFlux()) {
+  static auto guessScale(Iterator ref_begin, Iterator ref_end, Iterator target_begin)
+      -> decltype(ref_begin->getFlux()) {
     decltype(ref_begin->getFlux()) nom = 0., den = 0.;
 
     for (auto ri = ref_begin, ti = target_begin; ri != ref_end; ++ri, ++ti) {
@@ -135,7 +136,8 @@ struct EuclideanDistance {
    * @return
    */
   template <typename Iterator>
-  static auto guessScale(Iterator ref_begin, Iterator ref_end, Iterator target_begin) -> decltype(ref_begin->getFlux()) {
+  static auto guessScale(Iterator ref_begin, Iterator ref_end, Iterator target_begin)
+      -> decltype(ref_begin->getFlux()) {
     decltype(ref_begin->getFlux()) nom = 0., den = 0.;
 
     for (auto ri = ref_begin, ti = target_begin; ri != ref_end; ++ri, ++ti) {

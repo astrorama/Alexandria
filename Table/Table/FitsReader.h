@@ -98,10 +98,10 @@ public:
   /// HDU name
   FitsReader(const std::string& filename, const std::string& hduName);
 
-  FitsReader(FitsReader&&) = default;
+  FitsReader(FitsReader&&)            = default;
   FitsReader& operator=(FitsReader&&) = default;
 
-  FitsReader(const FitsReader&) = delete;
+  FitsReader(const FitsReader&)            = delete;
   FitsReader& operator=(const FitsReader&) = delete;
 
   /**

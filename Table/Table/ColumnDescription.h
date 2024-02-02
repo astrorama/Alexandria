@@ -66,10 +66,10 @@ public:
   ColumnDescription(std::string name, std::type_index type, std::size_t size, std::string unit = "",
                     std::string description = "");
 
-  ColumnDescription(const ColumnDescription&) = default;
-  ColumnDescription(ColumnDescription&&)      = default;
+  ColumnDescription(const ColumnDescription&)            = default;
+  ColumnDescription(ColumnDescription&&)                 = default;
   ColumnDescription& operator=(const ColumnDescription&) = default;
-  ColumnDescription& operator=(ColumnDescription&&) = default;
+  ColumnDescription& operator=(ColumnDescription&&)      = default;
 
   /// Returns true if the two ColumnDescriptions do not describe the same column
   bool operator!=(const ColumnDescription& other) const {

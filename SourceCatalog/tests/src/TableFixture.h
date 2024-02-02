@@ -136,12 +136,12 @@ struct TableFixture {
   const std::vector<Euclid::Table::Row::cell_type> values10{
       int64_t(1009),        std::string{"ID10"}, true,           1, int64_t{123}, 0.F, 0., 3., -0.5, 0.3,
       std::string{"first"}, spec_z_val_row0,     spec_z_err_row0};
-  const Euclid::Table::Row                         row_zero_flux_neg_error{values10, column_info_ptr};
+  const Euclid::Table::Row row_zero_flux_neg_error{values10, column_info_ptr};
 
   const std::vector<Euclid::Table::Row::cell_type> values10b{
       int64_t(1009),        std::string{"ID10b"}, true,           1, int64_t{123}, 0.F, 1., 3., -0.5, 0.3,
-      std::string{"first"}, spec_z_val_row0,     spec_z_err_row0};
-  const Euclid::Table::Row                         row_1_flux_neg_error{values10b, column_info_ptr};
+      std::string{"first"}, spec_z_val_row0,      spec_z_err_row0};
+  const Euclid::Table::Row row_1_flux_neg_error{values10b, column_info_ptr};
 
   const std::vector<Euclid::Table::Row::cell_type> values11{
       int64_t(1010),        std::string{"ID11"}, true,           1, int64_t{123}, 0.F, -1., 3., -0.5, 0.3,
@@ -153,10 +153,20 @@ struct TableFixture {
       std::string{"first"}, spec_z_val_row0,     spec_z_err_row0};
   const Euclid::Table::Row row_neg_error_flag{values12, column_info_ptr};
 
-  const std::vector<Euclid::Table::Row::cell_type> values13{
-       int64_t(1012),        std::string{"ID13"}, true,           1, int64_t{123}, 0.F, std::numeric_limits<double>::quiet_NaN(), 3., 0.5, 0.3,
-       std::string{"first"}, spec_z_val_row0,     spec_z_err_row0};
-   const Euclid::Table::Row row_nan_flux{values13, column_info_ptr};
+  const std::vector<Euclid::Table::Row::cell_type> values13{int64_t(1012),
+                                                            std::string{"ID13"},
+                                                            true,
+                                                            1,
+                                                            int64_t{123},
+                                                            0.F,
+                                                            std::numeric_limits<double>::quiet_NaN(),
+                                                            3.,
+                                                            0.5,
+                                                            0.3,
+                                                            std::string{"first"},
+                                                            spec_z_val_row0,
+                                                            spec_z_err_row0};
+  const Euclid::Table::Row                         row_nan_flux{values13, column_info_ptr};
 
   // Two filter names
   const std::string v_filter_name{"TestGroup/VtestName"};

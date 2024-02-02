@@ -77,8 +77,8 @@ BOOST_FIXTURE_TEST_CASE(ConstructorNullColumnInfo, Row_Fixture) {
 BOOST_FIXTURE_TEST_CASE(ConstructorWrongCellType, Row_Fixture) {
 
   // Given
-  std::vector<Euclid::Table::Row::cell_type> values{std::string{"One"},           std::string{"Two"}, std::string{"Three"}, 4., 5,
-                                                    std::vector<double>{6.1, 6.2}};
+  std::vector<Euclid::Table::Row::cell_type> values{
+      std::string{"One"}, std::string{"Two"}, std::string{"Three"}, 4., 5, std::vector<double>{6.1, 6.2}};
 
   // Then
   BOOST_CHECK_THROW(Euclid::Table::Row(values, column_info), Elements::Exception);
@@ -91,7 +91,8 @@ BOOST_FIXTURE_TEST_CASE(ConstructorWrongCellType, Row_Fixture) {
 BOOST_FIXTURE_TEST_CASE(ConstructorEmptyCellValue, Row_Fixture) {
 
   // Given
-  std::vector<Euclid::Table::Row::cell_type> values{std::string{"One"}, std::string{""}, 3., 4., 5, std::vector<double>{6.1, 6.2}};
+  std::vector<Euclid::Table::Row::cell_type> values{std::string{"One"},           std::string{""}, 3., 4., 5,
+                                                    std::vector<double>{6.1, 6.2}};
 
   // Then
   BOOST_CHECK_THROW(Euclid::Table::Row(values, column_info), Elements::Exception);

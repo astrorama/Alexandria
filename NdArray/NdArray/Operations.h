@@ -148,7 +148,6 @@ NdArray<T1> multiplyElements(const NdArray<T1>& array_1, const NdArray<T2>& arra
 template <typename T1, typename T2>
 NdArray<T1> addElements(const NdArray<T1>& array_1, const NdArray<T2>& array_2);
 
-
 }  // namespace NdArray
 }  // namespace Euclid
 

@@ -48,7 +48,7 @@ loop for all registered Configurations
     note over Mgr, Conf
         **Pre-Initialization**
         Configurations are called in random order. They should not access their dependencies.
-        Dedicated for fast sanity tests of the input like: file existence, max smaller than 
+        Dedicated for fast sanity tests of the input like: file existence, max smaller than
         min, etc...), to detect wrong input as fast as possible.
     end note
     Mgr -> Conf : preInitialize(UserValues)
@@ -110,7 +110,7 @@ participant Configuration as Conf
 group repeated for all required configurations
     [-> Mgr : registerConfiguration(type)
     activate Mgr
-    
+
     create Conf
     Mgr -> Conf : create instance
     Mgr -> Conf : getDependencies()

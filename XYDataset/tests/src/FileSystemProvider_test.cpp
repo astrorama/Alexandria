@@ -112,8 +112,8 @@ BOOST_FIXTURE_TEST_CASE(empty_datasetname_test, FileSystemProvider_Fixture) {
   group                                    = "filter/MER/";
   std::vector<QualifiedName> result_vector = fsp.listContents(group);
   BOOST_CHECK_EQUAL(2, result_vector.size());
-  BOOST_CHECK(std::find(result_vector.begin(), result_vector.end(), QualifiedName{{"filter", "MER"}, "Dataset_name_for_file1"}) !=
-              result_vector.end());
+  BOOST_CHECK(std::find(result_vector.begin(), result_vector.end(),
+                        QualifiedName{{"filter", "MER"}, "Dataset_name_for_file1"}) != result_vector.end());
   BOOST_CHECK(std::find(result_vector.begin(), result_vector.end(), QualifiedName{{"filter", "MER"}, "file2"}) !=
               result_vector.end());
 }
@@ -166,8 +166,8 @@ BOOST_FIXTURE_TEST_CASE(listContent_test, FileSystemProvider_Fixture) {
   group                                    = "filter/MER//";
   std::vector<QualifiedName> result_vector = fsp.listContents(group);
   BOOST_CHECK_EQUAL(2, result_vector.size());
-  BOOST_CHECK(std::find(result_vector.begin(), result_vector.end(), QualifiedName{{"filter", "MER"}, "Dataset_name_for_file1"}) !=
-              result_vector.end());
+  BOOST_CHECK(std::find(result_vector.begin(), result_vector.end(),
+                        QualifiedName{{"filter", "MER"}, "Dataset_name_for_file1"}) != result_vector.end());
   BOOST_CHECK(std::find(result_vector.begin(), result_vector.end(), QualifiedName{{"filter", "MER"}, "file2"}) !=
               result_vector.end());
 

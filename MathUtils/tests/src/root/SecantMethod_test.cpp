@@ -24,8 +24,8 @@
 
 using Euclid::MathUtils::FunctionAdapter;
 using Euclid::MathUtils::SecantEndReason;
-using Euclid::MathUtils::SecantParams;
 using Euclid::MathUtils::secantMethod;
+using Euclid::MathUtils::SecantParams;
 
 namespace Euclid {
 namespace MathUtils {

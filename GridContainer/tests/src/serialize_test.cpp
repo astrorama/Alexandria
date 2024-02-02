@@ -236,15 +236,19 @@ BOOST_AUTO_TEST_CASE(GridContainerSerializationFits) {
   // Then
   BOOST_CHECK_EQUAL(result1.axisNumber(), grid1.axisNumber());
   BOOST_CHECK_EQUAL(result1.getAxis<0>().name(), name11);
-  BOOST_CHECK_EQUAL_COLLECTIONS(result1.getAxis<0>().begin(), result1.getAxis<0>().end(), knots11.begin(), knots11.end());
+  BOOST_CHECK_EQUAL_COLLECTIONS(result1.getAxis<0>().begin(), result1.getAxis<0>().end(), knots11.begin(),
+                                knots11.end());
   BOOST_CHECK_EQUAL_COLLECTIONS(result1.begin(), result1.end(), grid1.begin(), grid1.end());
   BOOST_CHECK_EQUAL(result2.axisNumber(), grid2.axisNumber());
   BOOST_CHECK_EQUAL(result2.getAxis<0>().name(), name21);
-  BOOST_CHECK_EQUAL_COLLECTIONS(result2.getAxis<0>().begin(), result2.getAxis<0>().end(), knots21.begin(), knots21.end());
+  BOOST_CHECK_EQUAL_COLLECTIONS(result2.getAxis<0>().begin(), result2.getAxis<0>().end(), knots21.begin(),
+                                knots21.end());
   BOOST_CHECK_EQUAL(result2.getAxis<1>().name(), name22);
-  BOOST_CHECK_EQUAL_COLLECTIONS(result2.getAxis<1>().begin(), result2.getAxis<1>().end(), knots22.begin(), knots22.end());
+  BOOST_CHECK_EQUAL_COLLECTIONS(result2.getAxis<1>().begin(), result2.getAxis<1>().end(), knots22.begin(),
+                                knots22.end());
   BOOST_CHECK_EQUAL(result2.getAxis<2>().name(), name23);
-  BOOST_CHECK_EQUAL_COLLECTIONS(result2.getAxis<2>().begin(), result2.getAxis<2>().end(), knots23.begin(), knots23.end());
+  BOOST_CHECK_EQUAL_COLLECTIONS(result2.getAxis<2>().begin(), result2.getAxis<2>().end(), knots23.begin(),
+                                knots23.end());
   BOOST_CHECK_EQUAL_COLLECTIONS(result2.begin(), result2.end(), grid2.begin(), grid2.end());
 }
 

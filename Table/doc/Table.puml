@@ -52,7 +52,7 @@ class cell_type {
     vector<int64>
     vector<float>
     vector<double>
-    
+
 }
 
 class CastVisitor<From, To> {

@@ -125,10 +125,10 @@ public:
    */
   explicit FitsWriter(std::shared_ptr<CCfits::FITS> fits);
 
-  FitsWriter(FitsWriter&&) = default;
+  FitsWriter(FitsWriter&&)            = default;
   FitsWriter& operator=(FitsWriter&&) = default;
 
-  FitsWriter(const FitsWriter&) = delete;
+  FitsWriter(const FitsWriter&)            = delete;
   FitsWriter& operator=(const FitsWriter&) = delete;
 
   /**

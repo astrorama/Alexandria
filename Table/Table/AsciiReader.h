@@ -121,10 +121,10 @@ public:
   /// Constructs an AsciiReader which reads from the given file
   explicit AsciiReader(const std::string& filename);
 
-  AsciiReader(AsciiReader&&) = default;
+  AsciiReader(AsciiReader&&)            = default;
   AsciiReader& operator=(AsciiReader&&) = default;
 
-  AsciiReader(const AsciiReader&) = delete;
+  AsciiReader(const AsciiReader&)            = delete;
   AsciiReader& operator=(const AsciiReader&) = delete;
 
   /**

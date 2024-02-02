@@ -77,7 +77,8 @@ const Exception& Exception::log(log4cpp::Priority::Value level, Elements::Loggin
 }
 
 void Exception::restore() const {
-  PyErr_Restore(py::xincref(m_error_type.ptr()), py::xincref(m_error_value.ptr()), py::xincref(m_error_traceback.ptr()));
+  PyErr_Restore(py::xincref(m_error_type.ptr()), py::xincref(m_error_value.ptr()),
+                py::xincref(m_error_traceback.ptr()));
 }
 
 }  // end of namespace Pyston

@@ -115,10 +115,10 @@ public:
   /// it already exists)
   explicit AsciiWriter(const std::string& filename);
 
-  AsciiWriter(AsciiWriter&&) = default;
+  AsciiWriter(AsciiWriter&&)            = default;
   AsciiWriter& operator=(AsciiWriter&&) = default;
 
-  AsciiWriter(const AsciiWriter&) = delete;
+  AsciiWriter(const AsciiWriter&)            = delete;
   AsciiWriter& operator=(const AsciiWriter&) = delete;
 
   /**

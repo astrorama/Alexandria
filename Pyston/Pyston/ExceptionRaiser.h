@@ -59,7 +59,7 @@ public:
 
 private:
   std::string m_msg;
-  bool m_recoverable;
+  bool        m_recoverable;
 };
 
 }  // end of namespace Pyston

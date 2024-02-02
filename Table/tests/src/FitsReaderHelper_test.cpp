@@ -92,10 +92,11 @@ BOOST_FIXTURE_TEST_CASE(autoDetectColumnTypesAscii, FitsReaderHelper_Fixture) {
 BOOST_FIXTURE_TEST_CASE(autoDetectColumnTypesBinary, FitsReaderHelper_Fixture) {
 
   // Given
-  std::vector<std::string> names{"Bool",      "Byte",       "Short",       "Int",          "Long",
-                                 "String",    "Float",      "Double",      "ByteVector",   "ShortVector",
-                                 "IntVector", "LongVector", "FloatVector", "DoubleVector", "Scalar", "String"};
-  std::vector<std::string> types{"L", "B", "I", "J", "K", "10A", "E", "D", "2B", "3I", "4J", "5K", "6E", "7D", "1D", "1A"};
+  std::vector<std::string> names{"Bool",        "Byte",         "Short",      "Int",         "Long",      "String",
+                                 "Float",       "Double",       "ByteVector", "ShortVector", "IntVector", "LongVector",
+                                 "FloatVector", "DoubleVector", "Scalar",     "String"};
+  std::vector<std::string> types{"L",  "B",  "I",  "J",  "K",  "10A", "E",  "D",
+                                 "2B", "3I", "4J", "5K", "6E", "7D",  "1D", "1A"};
   CCfits::Table*           table_hdu = fits->addTable("Binary", 0, names, types);
 
   // When

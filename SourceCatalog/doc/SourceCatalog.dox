@@ -10,7 +10,7 @@ namespace SourceCatalog {
 
 This module builds a vector container of Source objects, a map
 of source identification and an index which is the location of the Source
-object in the vector container. 
+object in the vector container.
 
 \section chcat_includes Includes and Namespaces
 
@@ -40,13 +40,13 @@ readable.
 
 
 Before creating a Catalog object we need to create a vector of Source objects. A Source
-object consists of a source identification number and a vector of shared pointers 
+object consists of a source identification number and a vector of shared pointers
 to Attribute objects.
-There are three Attribute objects for a Source : Photometry, SpectroscopicRedshift and 
+There are three Attribute objects for a Source : Photometry, SpectroscopicRedshift and
 Coordinates objects.
 
 \subsection chcat_coord The Coordinates Attribute
- 
+
 We define the Coordinates Attribute as follows:
 
 \code{.cpp}
@@ -54,7 +54,7 @@ We define the Coordinates Attribute as follows:
   double dec_1 = -36.27363;
   double ra_2  = 281.4657;
   double dec_2 = -26.27363;
-  
+
   shared_ptr<Attribute> coordinates_1_ptr { new Coordinates{ra_1, dec_1} };
   shared_ptr<Attribute> coordinates_2_ptr { new Coordinates{ra_2, dec_2} };
 \endcode
@@ -87,8 +87,8 @@ We define the SpectroscopicRedshift Attribute as follows:
  shared_ptr<Attribute> spec_redshift_ptr { new SpectroscopicRedshift {z_value, z_error} };
 \endcode
 
-In the above example a SpectroscopicRedshift object needs two double values, 
-a redshift value and the associated error. 
+In the above example a SpectroscopicRedshift object needs two double values,
+a redshift value and the associated error.
 
 \subsubsection chcat_spec_sub The getValue and getError Functions
 
@@ -116,7 +116,7 @@ We define the Photometry Attribute as follows:
 
 The Photometry object needs two parameters. The \b filter_name_vector_ptr parameter
 is a shared pointer to a vector of strings and the \b photometry_vector parameter is
-a vector of FluxErrorPair objects. The FluxErrorPair objects consist of a couple of 
+a vector of FluxErrorPair objects. The FluxErrorPair objects consist of a couple of
 double values, the flux and the error associated to this flux.
 The following example shows how to define them.
 
@@ -132,7 +132,7 @@ The following example shows how to define them.
  const double flux_2  = 0.01537575674;
  const double error_2 = 0.00354616;
  vector<FluxErrorPair> photometry_vector { FluxErrorPair(flux_1,error_1), FluxErrorPair(flux_2, error_2) };
- 
+
  // Creation of the Photometry pointer
  shared_ptr<Attribute> photometry_ptr    { new Photometry { filter_name_vector_ptr, photometry_vector } };
 \endcode
@@ -173,7 +173,7 @@ Output
 
 \subsection chcat_sourcesub The Source Object
 
-Now we need to create a vector of shared pointers to the Attribute objects 
+Now we need to create a vector of shared pointers to the Attribute objects
 for building a Source object as follows:
 
 \code{.cpp}
@@ -187,13 +187,13 @@ From this step we are ready to create the Source objects as follows:
 \code{.cpp}
   Source source_1{ 10000, attribute_vector_1};
   Source source_2{ 20000, attribute_vector_2};
-  
+
   // Store Source objects in a vector
-  vector<Source> source_vector { source_1, source_2 }; 
+  vector<Source> source_vector { source_1, source_2 };
 \endcode
 
 The Source object needs an identifier(a number) and a vector of shared pointers
-to its Attribute objects. In this example above we have created two Source objects as 
+to its Attribute objects. In this example above we have created two Source objects as
 a Catalog object needs a vector of Source objects.
 
 \subsubsection chcat_getsourcefctsubid The getId Function
@@ -226,7 +226,7 @@ Output:
 \section chcat_catalog The Catalog Class
 
 From this step we can create a Catalog object providing the vector of
-Source objects as follows: 
+Source objects as follows:
 
 \code{.cpp}
   Catalog catalog{ source_vector };
@@ -234,7 +234,7 @@ Source objects as follows:
 
 \subsection chcat_catalogsize The size Function
 
-To know the size of a Catalog object, use the size function 
+To know the size of a Catalog object, use the size function
 as follows:
 
 \code{.cpp}
@@ -266,7 +266,7 @@ Output:
 
 \subsection chcat_catalogfind The find Function?
 
-To find a Source object in the Catalog using the identification number (e.g. 20000), 
+To find a Source object in the Catalog using the identification number (e.g. 20000),
 proceed as follows:
 
 \code{.cpp}

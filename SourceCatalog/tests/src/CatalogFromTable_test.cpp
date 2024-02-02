@@ -58,7 +58,8 @@ BOOST_FIXTURE_TEST_CASE(createCatalog_test, TableFixture) {
 
   BOOST_CHECK_EQUAL(catalog.size(), 2);
   BOOST_CHECK_EQUAL(boost::get<int64_t>(catalog.find(source_id_1)->getId()), source_id_1);
-  BOOST_CHECK_CLOSE(catalog.find(source_id_2)->getAttribute<Photometry>()->find(r_filter_name)->flux, flux2_row1, tolerance);
+  BOOST_CHECK_CLOSE(catalog.find(source_id_2)->getAttribute<Photometry>()->find(r_filter_name)->flux, flux2_row1,
+                    tolerance);
 }
 
 BOOST_FIXTURE_TEST_CASE(createCatalogWithStringId_test, TableFixture) {
@@ -76,7 +77,8 @@ BOOST_FIXTURE_TEST_CASE(createCatalogWithStringId_test, TableFixture) {
 
   BOOST_CHECK_EQUAL(catalog.size(), 2);
   BOOST_CHECK_EQUAL(boost::get<std::string>(catalog.find(source_str_id_1)->getId()), source_str_id_1);
-  BOOST_CHECK_CLOSE(catalog.find(source_str_id_2)->getAttribute<Photometry>()->find(r_filter_name)->flux, flux2_row1, tolerance);
+  BOOST_CHECK_CLOSE(catalog.find(source_str_id_2)->getAttribute<Photometry>()->find(r_filter_name)->flux, flux2_row1,
+                    tolerance);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

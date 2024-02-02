@@ -40,7 +40,8 @@ boost::test_tools::predicate_result checkAllClose(const XYDataset& a, const XYDa
     for (auto i = a.begin(), j = b.begin(); i != a.end(); ++i, ++j) {
       if (!Elements::isEqual(i->first, j->first) || !Elements::isEqual(i->second, j->second)) {
         res = false;
-        res.message() << '<' << i->first << ',' << i->second << '>' << " != " << '<' << j->first << ',' << j->second << ">\n";
+        res.message() << '<' << i->first << ',' << i->second << '>' << " != " << '<' << j->first << ',' << j->second
+                      << ">\n";
       }
     }
   }

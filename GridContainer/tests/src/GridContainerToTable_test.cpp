@@ -32,9 +32,9 @@ struct SimpleGridContainer_Fixture {
   typedef GridAxis<float>                                                  FloatAxis;
   IntAxis                                                                  axis1{"Axis 1", {1, 2, 3, 4, 5}};
   IntAxis                                                                  axis2{"Axis 2", {1, 2, 3}};
-  StrAxis                                                                  axis3{"Axis 3", {"a", "b", "c", "d", "e", "f"}};
-  FloatAxis                                                                axis4{"Axis 4", {1, 2}};
-  std::tuple<IntAxis, IntAxis, StrAxis, FloatAxis>                         axes_tuple{axis1, axis2, axis3, axis4};
+  StrAxis                                          axis3{"Axis 3", {"a", "b", "c", "d", "e", "f"}};
+  FloatAxis                                        axis4{"Axis 4", {1, 2}};
+  std::tuple<IntAxis, IntAxis, StrAxis, FloatAxis> axes_tuple{axis1, axis2, axis3, axis4};
 
   GridContainerType grid{axis1, axis2, axis3, axis4};
 

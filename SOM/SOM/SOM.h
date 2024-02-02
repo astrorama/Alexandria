@@ -58,7 +58,7 @@ public:
 
   SOM(std::size_t nd, std::size_t x, std::size_t y, InitFunc::Signature init_func = InitFunc::zero);
 
-  SOM(SOM<DistFunc>&&) = default;
+  SOM(SOM<DistFunc>&&)            = default;
   SOM& operator=(SOM<DistFunc>&&) = default;
 
   /**

@@ -28,7 +28,7 @@ struct NonCopyableFd {
   int m_fd;
 
   explicit NonCopyableFd(int fd) : m_fd(fd) {}
-  NonCopyableFd(const NonCopyableFd&) = delete;
+  NonCopyableFd(const NonCopyableFd&)            = delete;
   NonCopyableFd& operator=(const NonCopyableFd&) = delete;
 
   NonCopyableFd(NonCopyableFd&& other) {
@@ -75,7 +75,7 @@ BOOST_AUTO_TEST_CASE(WriteTest) {
 
   {
     // Only one writer
-    NonCopyableFd f1(1);
+    NonCopyableFd                    f1(1);
     FileWriteAccessor<NonCopyableFd> a1(std::move(f1), callback, boost::unique_lock<boost::shared_mutex>(mutex));
 
     BOOST_CHECK_EQUAL(a1.m_fd.m_fd, 1);

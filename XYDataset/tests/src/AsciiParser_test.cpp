@@ -80,7 +80,6 @@ struct AsciiParser_Fixture {
     offile_nodataset_name << "1111. 1111.1\n";
     offile_nodataset_name.close();
 
-
     std::ofstream offile_dataset_name_as_param_file(base_directory + file_dataset_name_as_param_file);
     // Fill up file
     offile_dataset_name_as_param_file << "\n";
@@ -152,7 +151,6 @@ BOOST_FIXTURE_TEST_CASE(getParameter_function_test, AsciiParser_Fixture) {
   BOOST_CHECK_EQUAL("", parser.getParameter(base_directory + file_nodataset_name, "TEST"));
 }
 
-
 BOOST_FIXTURE_TEST_CASE(getParameter_multiline_function_test, AsciiParser_Fixture) {
 
   BOOST_TEST_MESSAGE(" ");
@@ -162,8 +160,8 @@ BOOST_FIXTURE_TEST_CASE(getParameter_multiline_function_test, AsciiParser_Fixtur
   // The dataset is the correct name, result: Keyword value
   AsciiParser parser{};
 
-  BOOST_CHECK_EQUAL("TEST_VALUE;OTHER_TEST_VALUE", parser.getParameter(base_directory + file_dataset_name_as_param_file, "TEST"));
-
+  BOOST_CHECK_EQUAL("TEST_VALUE;OTHER_TEST_VALUE",
+                    parser.getParameter(base_directory + file_dataset_name_as_param_file, "TEST"));
 }
 //-----------------------------------------------------------------------------
 // Test the exception of the getName function

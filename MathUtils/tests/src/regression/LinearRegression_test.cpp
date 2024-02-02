@@ -44,7 +44,8 @@ BOOST_AUTO_TEST_CASE(regression_test) {
 //-----------------------------------------------------------------------------
 
 BOOST_AUTO_TEST_CASE(wrong_size) {
-  BOOST_CHECK_THROW(linearRegression(std::vector<double>{1., 2., 3.}, std::vector<double>{1., 2.}), Elements::Exception);
+  BOOST_CHECK_THROW(linearRegression(std::vector<double>{1., 2., 3.}, std::vector<double>{1., 2.}),
+                    Elements::Exception);
   BOOST_CHECK_THROW(linearRegression(std::vector<double>{}, std::vector<double>{}), Elements::Exception);
 }
 

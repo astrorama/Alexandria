@@ -29,7 +29,6 @@ namespace Pyston {
  */
 class UnrecoverableError : public std::logic_error {
 public:
-
   /**
    * Constructor
    * @param msg

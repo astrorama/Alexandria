@@ -50,7 +50,7 @@ struct RandomFixture {
 
 static std::size_t scaleMax(const std::map<std::size_t, std::size_t>& scale_count) {
   typedef std::map<std::size_t, std::size_t>::value_type scale_pair_t;
-  auto                                                   max_i = std::max_element(scale_count.begin(), scale_count.end(),
+  auto max_i = std::max_element(scale_count.begin(), scale_count.end(),
                                 [](const scale_pair_t& a, const scale_pair_t& b) { return a.second < b.second; });
   return max_i->first;
 }
