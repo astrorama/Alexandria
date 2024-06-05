@@ -27,6 +27,7 @@
 #include "MathUtils/numericalIntegration/SimpsonsRule.h"
 #include <boost/test/unit_test.hpp>
 #include <set>
+#include <cmath>
 
 struct simpsonsRule_Fixture {
   Euclid::MathUtils::SimpsonsRule quadrature{};
