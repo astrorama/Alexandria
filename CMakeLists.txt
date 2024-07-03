@@ -12,4 +12,4 @@ set(CXX_SUGGEST_OVERRIDE ON
     FORCE)
 
 # Declare project name and version
-elements_project(Alexandria 2.31.2 USE Elements 6.3.0 DESCRIPTION "SDC-CH common library for the Euclid project")
+elements_project(Alexandria 2.31.3 USE Elements 6.3.0 DESCRIPTION "SDC-CH common library for the Euclid project")

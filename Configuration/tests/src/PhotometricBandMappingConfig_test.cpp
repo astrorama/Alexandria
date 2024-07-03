@@ -56,6 +56,7 @@ struct PhotometricBandMappingConfig_fixture : public ConfigManager_fixture {
   std::string       named_mapping_filename{"named_mapping.txt"};
   std::string       named_mapping_other_order_filename{"named_mapping_other_order.txt"};
   std::string       named_mapping_other_column_filename{"named_mapping_other_column.txt"};
+  std::string       named_mapping_other_column_space_filename{"named_mapping_other_column_space.txt"};
 
 
   std::string       faulty_filter_mapping_filename{"faulty_mapping.txt"};
@@ -95,7 +96,12 @@ struct PhotometricBandMappingConfig_fixture : public ConfigManager_fixture {
                                   "Filter2 A2 F2 F2_ERR 0 3\n"
                                   "Filter3 A3 F3 F3_ERR 1 5\n"
                                   "Filter4 A4 F4 F4_ERR 0 5\n"};
-
+                                  
+    std::string named_mapping_other_column_space{"# Filter,  Additional  Column,  Flux Column, Error Column, Convert from MAG,  Upper Limit/error  ratio\n"
+                                  " Filter1 A1 F1  F1_ERR 1  3 \n"
+                                  "Filter2 A2 F2 F2_ERR 0 3\n"
+                                  "Filter3 A3 F3  F3_ERR  1  5\n"
+                                  "Filter4 A4   F4 F4_ERR 0 5    \n"};
 
     std::string faulty_mapping{"#Comment\n"
                                "Filter3 F3 F3_ERR a5a.1.2\n"};
@@ -121,6 +127,11 @@ struct PhotometricBandMappingConfig_fixture : public ConfigManager_fixture {
     {
       std::ofstream out{(temp_dir.path() / named_mapping_other_column_filename).string()};
       out << named_mapping_other_column;
+    }
+    
+    {
+      std::ofstream out{(temp_dir.path() / named_mapping_other_column_space_filename).string()};
+      out << named_mapping_other_column_space;
     }
 
     {
@@ -474,6 +485,64 @@ BOOST_FIXTURE_TEST_CASE(named_column_other_column_test, PhotometricBandMappingCo
   BOOST_CHECK_EQUAL(result_mag[3].first, "Filter4");
   BOOST_CHECK_EQUAL(result_mag[3].second, false);
 }
+
+
+
+BOOST_FIXTURE_TEST_CASE(named_column_other_column_space_test, PhotometricBandMappingConfig_fixture) {
+
+  // Given
+  config_manager.registerConfiguration<PhotometricBandMappingConfig>();
+  config_manager.closeRegistration();
+  options_map[FILTER_MAPPING_FILE].value() = boost::any(named_mapping_other_column_space_filename);
+
+  // When
+  config_manager.initialize(options_map);
+  auto& result = config_manager.getConfiguration<PhotometricBandMappingConfig>().getPhotometricBandMapping();
+
+  // Then
+  BOOST_CHECK_EQUAL(result.size(), 4);
+  BOOST_CHECK_EQUAL(result[0].first, "Filter1");
+  BOOST_CHECK_EQUAL(result[0].second.first, "F1");
+  BOOST_CHECK_EQUAL(result[0].second.second, "F1_ERR");
+  BOOST_CHECK_EQUAL(result[1].first, "Filter2");
+  BOOST_CHECK_EQUAL(result[1].second.first, "F2");
+  BOOST_CHECK_EQUAL(result[1].second.second, "F2_ERR");
+  BOOST_CHECK_EQUAL(result[2].first, "Filter3");
+  BOOST_CHECK_EQUAL(result[2].second.first, "F3");
+  BOOST_CHECK_EQUAL(result[2].second.second, "F3_ERR");
+  BOOST_CHECK_EQUAL(result[3].first, "Filter4");
+  BOOST_CHECK_EQUAL(result[3].second.first, "F4");
+  BOOST_CHECK_EQUAL(result[3].second.second, "F4_ERR");
+
+  // When
+  auto& result_tr = config_manager.getConfiguration<PhotometricBandMappingConfig>().getUpperLimitThresholdMapping();
+
+  // Then
+  BOOST_CHECK_EQUAL(result_tr.size(), 4);
+  BOOST_CHECK_EQUAL(result_tr[0].first, "Filter1");
+  BOOST_CHECK_EQUAL(result_tr[0].second, 3);
+  BOOST_CHECK_EQUAL(result_tr[1].first, "Filter2");
+  BOOST_CHECK_EQUAL(result_tr[1].second, 3);
+  BOOST_CHECK_EQUAL(result_tr[2].first, "Filter3");
+  BOOST_CHECK_EQUAL(result_tr[2].second, 5);
+  BOOST_CHECK_EQUAL(result_tr[3].first, "Filter4");
+  BOOST_CHECK_EQUAL(result_tr[3].second, 5);
+
+  // When
+  auto& result_mag = config_manager.getConfiguration<PhotometricBandMappingConfig>().getConvertFromMagMapping();
+
+  // Then
+  BOOST_CHECK_EQUAL(result_mag.size(), 4);
+  BOOST_CHECK_EQUAL(result_mag[0].first, "Filter1");
+  BOOST_CHECK_EQUAL(result_mag[0].second, true);
+  BOOST_CHECK_EQUAL(result_mag[1].first, "Filter2");
+  BOOST_CHECK_EQUAL(result_mag[1].second, false);
+  BOOST_CHECK_EQUAL(result_mag[2].first, "Filter3");
+  BOOST_CHECK_EQUAL(result_mag[2].second, true);
+  BOOST_CHECK_EQUAL(result_mag[3].first, "Filter4");
+  BOOST_CHECK_EQUAL(result_mag[3].second, false);
+}
+
 
 
 BOOST_FIXTURE_TEST_CASE(defaultmag_test, PhotometricBandMappingConfig_fixture) {
