@@ -56,6 +56,7 @@ struct PhotometricBandMappingConfig_fixture : public ConfigManager_fixture {
   std::string named_mapping_filename{"named_mapping.txt"};
   std::string named_mapping_other_order_filename{"named_mapping_other_order.txt"};
   std::string named_mapping_other_column_filename{"named_mapping_other_column.txt"};
+  std::string named_mapping_other_column_space_filename{"named_mapping_other_column_space.txt"};
 
   std::string faulty_filter_mapping_filename{"faulty_mapping.txt"};
   fs::path    relative_filename{fs::path{"relative"} / filter_mapping_filename};
