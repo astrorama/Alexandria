@@ -11,10 +11,11 @@
 #   BoostPython_LIBRARIES
 
 if (NOT BoostPython_FOUND)
-    find_package(PythonInterp ${PYTHON_EXPLICIT_VERSION} REQUIRED)
+    find_package(Python ${PYTHON_EXPLICIT_VERSION} COMPONENTS Interpreter REQUIRED)
 
     # Explicit versions
-    set (_BOOST_PYTHON_LIST "${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR}" "${PYTHON_VERSION_MAJOR}")
+    set (_BOOST_PYTHON_LIST "${Python_VERSION_MAJOR}${Python_VERSION_MINOR}" "${Python_VERSION_MAJOR}")
+#    set (_BOOST_PYTHON_LIST "312" "3")
 
     # Only for python2, without suffix
     if (BoostPython_FIND_VERSION VERSION_LESS 3)

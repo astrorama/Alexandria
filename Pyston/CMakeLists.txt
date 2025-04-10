@@ -22,8 +22,8 @@ elements_depends_on_subdirs(Table)
 # Examples:
 #          find_package(CppUnit)
 #===============================================================================
-find_package(PythonInterp ${PYTHON_EXPLICIT_VERSION} REQUIRED)
-find_package(PythonLibs ${PYTHON_EXPLICIT_VERSION} REQUIRED)
+
+find_package(Python ${PYTHON_EXPLICIT_VERSION} COMPONENTS Interpreter Development REQUIRED)
 find_package(BoostPython ${PYTHON_EXPLICIT_VERSION})
 
 #===============================================================================
@@ -37,11 +37,11 @@ find_package(BoostPython ${PYTHON_EXPLICIT_VERSION})
 elements_add_library(Pyston src/lib/*.cpp
         INCLUDE_DIRS
           BoostPython
-          PythonLibs PythonInterp
+          Python
           Table ElementsKernel
         LINK_LIBRARIES
           BoostPython
-          PythonLibs PythonInterp
+          Python
           Table ElementsKernel
         PUBLIC_HEADERS Pyston)
 
