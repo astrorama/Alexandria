@@ -1,3 +1,6 @@
+CMAKE_MINIMUM_REQUIRED(VERSION 3.25)
+
+
 elements_subdir(SourceCatalog)
 
 elements_depends_on_subdirs(Table)

@@ -1,3 +1,5 @@
+CMAKE_MINIMUM_REQUIRED(VERSION 3.25)
+
 elements_subdir(GridContainer)
 
 elements_depends_on_subdirs(ElementsKernel Table XYDataset)

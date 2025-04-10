@@ -1,3 +1,5 @@
+CMAKE_MINIMUM_REQUIRED(VERSION 3.25)
+
 elements_subdir(MathUtils)
 
 elements_depends_on_subdirs(GridContainer)

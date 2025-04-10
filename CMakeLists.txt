@@ -1,5 +1,4 @@
-CMAKE_MINIMUM_REQUIRED(VERSION 2.8.12)
-
+CMAKE_MINIMUM_REQUIRED(VERSION 3.25)
 
 #---------------------------------------------------------------
 # Load macros and functions for Elements-based projects
