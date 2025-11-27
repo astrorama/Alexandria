@@ -21,6 +21,7 @@
  * @date 29 oct. 2015
  * @author Florian Dubath
  */
+#include <cmath>
 #include "ElementsKernel/Exception.h"
 #include "ElementsKernel/Real.h"
 #include "MathUtils/function/Function.h"

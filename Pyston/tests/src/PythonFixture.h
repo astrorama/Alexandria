@@ -58,6 +58,7 @@ struct PythonFixture {
   PythonFixture() {
     static Singleton singleton;
     gil_state                = PyGILState_Ensure();
+    PyErr_Clear();
     auto main_module         = boost::python::import("__main__");
     main_namespace           = main_module.attr("__dict__");
     main_namespace["pyston"] = boost::python::import("pyston");

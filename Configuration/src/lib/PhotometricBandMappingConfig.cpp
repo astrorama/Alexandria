@@ -25,6 +25,7 @@
 #include <algorithm>
 #include <boost/algorithm/string.hpp>
 #include <fstream>
+#include <boost/regex.hpp>
 #include <sstream>
 #include <tuple>
 
@@ -88,6 +89,7 @@ parseFile(fs::path filename) {
                                                 "Convert from MAG"};
 
   while (std::getline(in, line)) {
+    line = boost::regex_replace(line, boost::regex("[' ']{2,}"), " ");
     boost::trim(line);
     if (line[0] == '#') {
       if (!header_found) {

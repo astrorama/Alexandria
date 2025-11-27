@@ -91,6 +91,13 @@ BOOST_FIXTURE_TEST_CASE(createAttribute_test, TableFixture) {
   photometry = dynamic_cast<Euclid::SourceCatalog::Photometry*>(attribute_ptr_4.get());
   BOOST_CHECK(!photometry->find(v_filter_name)->upper_limit_flag);
   BOOST_CHECK(photometry->find(v_filter_name)->missing_photometry_flag);
+  
+  // case with flux but missing error (missing flag)
+  std::unique_ptr<Euclid::SourceCatalog::Attribute> attribute_ptr_5 = paft2.createAttribute(row_nan_err);
+  BOOST_CHECK(dynamic_cast<Euclid::SourceCatalog::Photometry*>(attribute_ptr_5.get()) != nullptr);
+  photometry = dynamic_cast<Euclid::SourceCatalog::Photometry*>(attribute_ptr_5.get());
+  BOOST_CHECK(!photometry->find(v_filter_name)->upper_limit_flag);
+  BOOST_CHECK(photometry->find(v_filter_name)->missing_photometry_flag);
 
   // case with missing value and upper limit (flag)
 }
