@@ -32,6 +32,7 @@
 #include <boost/units/detail/utility.hpp>
 using boost::units::detail::demangle;
 #else
+#include <boost/core/demangle.hpp>
 using boost::core::demangle;
 #endif
 
