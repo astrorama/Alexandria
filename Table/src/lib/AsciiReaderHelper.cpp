@@ -30,6 +30,7 @@
 #include <boost/lexical_cast.hpp>
 #include <boost/spirit/include/qi.hpp>
 #include <boost/tokenizer.hpp>
+#include <boost/io/quoted.hpp>
 #include <set>
 #include <sstream>
 
