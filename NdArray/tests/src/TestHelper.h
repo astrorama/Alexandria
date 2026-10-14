@@ -21,15 +21,21 @@
 
 #include "ElementsKernel/Temporary.h"
 #include <boost/filesystem/path.hpp>
-#include <boost/process/v1.hpp>
 #include <boost/test/unit_test.hpp>
 #include <sstream>
+
+#if BOOST_VERSION < 108800
+#include <boost/process.hpp>
+namespace bp = boost::process;
+#else
+#include <boost/process/v1.hpp>
+namespace bp = boost::process::v1;
+#endif
 
 /**
  * Run embedded Python code
  */
 static std::unique_ptr<std::stringstream> runPython(const char* code, const boost::filesystem::path& npy) {
-  namespace bp = boost::process::v1;
   Elements::TempFile code_file("npy_%%%%.py");
   std::ofstream      out(code_file.path().native());
   out << code;
