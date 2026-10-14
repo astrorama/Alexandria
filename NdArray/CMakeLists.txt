@@ -9,7 +9,7 @@ find_package(Boost REQUIRED COMPONENTS iostreams)
 
 #===== Libraries ===============================================================
 list(APPEND NDARRAY_SOURCES src/Operations.cpp)
-if (Boost_VERSION GREATER "105800")
+if ((Boost_VERSION GREATER "105800") OR (Boost_VERSION_STRING VERSION_GREATER 1.58.0))
     list(APPEND NDARRAY_SOURCES src/NpyCommon.cpp)
 endif ()
 
@@ -23,7 +23,7 @@ elements_add_unit_test(NdArray_test tests/src/NdArray_test.cpp
 elements_add_unit_test(NdArrayOps_test tests/src/NdArrayOps_test.cpp
         LINK_LIBRARIES NdArray TYPE Boost)
 
-if (Boost_VERSION GREATER "105800")
+if ((Boost_VERSION GREATER "105800") OR (Boost_VERSION_STRING VERSION_GREATER 1.58.0))
     elements_add_unit_test(Npy_test tests/src/Npy_test.cpp
             LINK_LIBRARIES NdArray TYPE Boost)
 
